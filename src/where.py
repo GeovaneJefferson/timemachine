@@ -18,21 +18,24 @@ get_hd_name = os.listdir("/media/"+user_name+"/")
 hd_list = {"1":[],"2":[],"3":[],"4":[]};
 
 #SRC LOCATION
-#src_where_py = "src/where.py"
-#src_user_config = "src/user.ini"
-
+src_where_py = "src/where.py"
+src_user_config = "src/user.ini"
+src_ui_where = "src/where.ui"
+src_restore_small_icon = "src/icons/restore_small.png"
 #DST LOCATION
-dst_where_py = home_user+"/.local/share/timemachine/src/where.py"
-dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# dst_where_py = home_user+"/.local/share/timemachine/src/where.py"
+# dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_ui_where = home_user+"/.local/share/timemachine/src/gui.ui"
+#dst_restore_small_icon = home_user+"/.local/share/timemachine/src/icons/restore_small.png"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
-config.read(dst_user_config)
+config.read(src_user_config)
 
 class TimeMachine(QMainWindow):
     def __init__(self):
         super(TimeMachine, self).__init__()
-        loadUi(home_user+"/.local/share/timemachine/src/where.ui",self)
+        loadUi(src_ui_where,self)
         self.button_where_cancel.clicked.connect(self.on_button_where_cancel_clicked)
         self.button_where_refresh.clicked.connect(self.on_button_where_refresh_clicked)
                 
@@ -78,7 +81,7 @@ class TimeMachine(QMainWindow):
         #---Set buttons---#
         if  (bool(self.option1)) == True:
             label1_image = QLabel(self)
-            pixmap = QPixmap(home_user+"/.local/share/timemachine/src/icons/restore_small.png")
+            pixmap = QPixmap(src_restore_small_icon)
             label1_image.setPixmap(pixmap)
             label1_image.setFixedSize(48, 48)
             label1_image.move(30, 35)
@@ -91,7 +94,7 @@ class TimeMachine(QMainWindow):
 
             if (bool(self.option2)) == True:
                 label2_image = QLabel(self)
-                pixmap = QPixmap(home_user+"/.local/share/timemachine/src/icons/restore_small.png")
+                pixmap = QPixmap(src_restore_small_icon)
                 label2_image.setPixmap(pixmap)
                 label2_image.setFixedSize(48, 48)
                 label2_image.move(30, 30*3)
@@ -104,7 +107,7 @@ class TimeMachine(QMainWindow):
                 
                 if (bool(self.option3)) == True:
                     label3_image = QLabel(self)
-                    pixmap = QPixmap(home_user+"/.local/share/timemachine/src/icons/restore_small.png")
+                    pixmap = QPixmap(src_restore_small_icon)
                     label3_image.setPixmap(pixmap)
                     label3_image.setFixedSize(48, 48)
                     label3_image.move(50, 30*4)
@@ -117,7 +120,7 @@ class TimeMachine(QMainWindow):
 
                     if (bool(self.option4)) == True:
                         label4_image = QLabel(self)
-                        pixmap = QPixmap(home_user+"/.local/share/timemachine/src/icons/restore_small.png")
+                        pixmap = QPixmap(src_restore_small_icon)
                         label4_image.setPixmap(pixmap)
                         label4_image.setFixedSize(48, 48)
                         label4_image.move(50, 30*5)
@@ -130,7 +133,7 @@ class TimeMachine(QMainWindow):
 
     def on_button1_clicked(self, button):
         #----Read/Load user.config (backup automatically)----#
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+self.option1)
         config.set('EXTERNAL', 'name', self.option1)
         config.write(cfgfile)
@@ -139,7 +142,7 @@ class TimeMachine(QMainWindow):
 
     def on_button2_clicked(self, button):
         #----Read/Load user.config (backup automatically)----#
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+self.option2)
         config.set('EXTERNAL', 'name', self.option2)
         config.write(cfgfile)
@@ -148,7 +151,7 @@ class TimeMachine(QMainWindow):
 
     def on_button3_clicked(self, button):
         #----Read/Load user.config (backup automatically)----#
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+self.option3)
         config.set('EXTERNAL', 'name', self.option3)
         config.write(cfgfile)
@@ -157,7 +160,7 @@ class TimeMachine(QMainWindow):
 
     def on_button4_clicked(self, button):
         #----Read/Load user.config (backup automatically)----#
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+self.option4)
         config.set('EXTERNAL', 'name', self.option4)
         config.write(cfgfile)
@@ -168,7 +171,7 @@ class TimeMachine(QMainWindow):
         exit()
 
     def on_button_where_refresh_clicked(self, button):
-        sub.Popen("python3 "+dst_where_py,shell=True)
+        sub.Popen("python3 "+src_where_py,shell=True)
         exit()
 
 # main

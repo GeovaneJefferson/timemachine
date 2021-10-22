@@ -11,18 +11,20 @@ from PyQt5.QtGui import *
 
 home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
-#src_user_config = "src/user.ini"
+src_user_config = "src/user.ini"
+src_ui_folders = "src/folders.ui"
 
-dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_ui_folders = home_user+"/.local/share/timemachine/src/folders.ui"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
-config.read(dst_user_config)
+config.read(src_user_config)
 
-class Options(QMainWindow):
+class Folders(QMainWindow):
     def __init__(self):
-        super(Options, self).__init__()
-        loadUi("src/options.ui",self)
+        super(Folders, self).__init__()
+        loadUi(src_ui_folders,self)
         self.button_folders_cancel.clicked.connect(self.on_button_folders_cancel_clicked)
         self.button_folders_done.clicked.connect(self.on_button_folders_done_clicked)
 
@@ -67,7 +69,7 @@ class Options(QMainWindow):
         if  (bool(one_list)) == True:
             self.one_checkbox.setText(one_list)
             
-            # cfgfile = open(dst_user_config, 'a')
+            # cfgfile = open(src_user_config, 'a')
             # config.set('FOLDER', one_list, '')
             # config.write(cfgfile)
             # cfgfile.close() 
@@ -132,84 +134,84 @@ class Options(QMainWindow):
 
     def on_desktop_checkbox_clicked(self):
         if self.desktop_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'desktop', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Desktop")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'desktop', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_documents_checkbox_clicked(self):
         if self.documents_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'documents', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Documents")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'documents', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_downloads_checkbox_clicked(self):
         if self.downloads_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'downloads', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Downloads")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'downloads', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_music_checkbox_clicked(self):
         if self.music_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'music', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Music")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'music', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_pictures_checkbox_clicked(self):
         if self.pictures_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'pictures', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Picture")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'pictures', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_videos_checkbox_clicked(self):
         if self.videos_checkbox.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'videos', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Videos")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('FOLDER', 'videos', 'false')
             config.write(cfgfile)
             cfgfile.close() 
@@ -222,7 +224,7 @@ class Options(QMainWindow):
 
 # main
 app = QApplication(sys.argv)
-main_screen = Options()
+main_screen = Folders()
 widget = QtWidgets.QStackedWidget()
 appIcon = QIcon("src/icons/restore.png")
 widget.setWindowIcon(appIcon)
