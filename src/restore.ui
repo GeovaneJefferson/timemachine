@@ -635,6 +635,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QRadioButton" name="type_video">
+       <property name="text">
+        <string>Video</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QRadioButton" name="type_other">
        <property name="text">
         <string>Other</string>

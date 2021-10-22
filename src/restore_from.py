@@ -18,9 +18,24 @@ user_name = getpass.getuser()
 
 src_user_config = "src/user.ini"
 
+#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 get_folder = ()
 get_type = ()
+
+desktop_selected = False
+downloads_selected = False
+documents_selected = False
+music_selected = False
+pictures_selected = False
+videos_selected = False
+
+application_selected = False
+text_selected = False
+audio_selected = False
+image_selected = False
+video_selected = False
+other_selected = False
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -28,6 +43,7 @@ config.read(src_user_config)
 
 #TIMER
 timer = QtCore.QTimer()
+
 class Restore(QMainWindow):
 
     def __init__(self):
@@ -39,6 +55,13 @@ class Restore(QMainWindow):
         self.folder_music.toggled.connect(self.on_music_selected)
         self.folder_pictures.toggled.connect(self.on_pictures_selected)
         self.folder_videos.toggled.connect(self.on_videos_selected)
+
+        self.type_application.toggled.connect(self.on_application_selected)
+        self.type_text.toggled.connect(self.on_text_selected)
+        self.type_audio.toggled.connect(self.on_audio_selected)
+        self.type_image.toggled.connect(self.on_image_selected)
+        self.type_video.toggled.connect(self.on_video_selected)
+        self.type_other.toggled.connect(self.on_other_selected)
         
         #TIMER
         timer.timeout.connect(self.updates)
@@ -47,13 +70,6 @@ class Restore(QMainWindow):
 
     def updates(self):
         #RADIO CHOOSE
-        desktop_selected = False
-        downloads_selected = False
-        documents_selected = False
-        music_selected = False
-        pictures_selected = False
-        videos_selected = False
-
         if desktop_selected == True:
             self.folder_desktop.setCheck(True)
             print("Desktop")
@@ -101,6 +117,30 @@ class Restore(QMainWindow):
     def on_videos_selected(self):
         if self.folder_videos.isChecked():
             print("You did choose videos")
+    
+    def on_application_selected(self):
+        if self.type_application.isChecked():
+            print("You did choose application")
+
+    def on_text_selected(self):
+        if self.type_text.isChecked():
+            print("You did choose text")
+
+    def on_audio_selected(self):
+        if self.type_audio.isChecked():
+            print("You did choose audio")
+
+    def on_image_selected(self):
+        if self.type_image.isChecked():
+            print("You did choose image")
+
+    def on_video_selected(self):
+        if self.type_video.isChecked():
+            print("You did choose video")
+
+    def on_other_selected(self):
+        if self.type_other.isChecked():
+            print("You did choose other")
 
 app = QApplication(sys.argv)
 main_screen = Restore()
