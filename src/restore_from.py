@@ -26,29 +26,56 @@ get_type = ()
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
+#TIMER
+timer = QtCore.QTimer()
 class Restore(QMainWindow):
+
     def __init__(self):
         super(Restore, self).__init__()
         loadUi("src/restore.ui",self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
-        self.folder_downloads.toggled.connect(self.on_desktop_selected)
-        self.folder_documents.toggled.connect(self.on_desktop_selected)
-        self.folder_Music.toggled.connect(self.on_desktop_selected)
-        self.folder_pictures.toggled.connect(self.on_desktop_selected)
-        self.folder_videos.toggled.connect(self.on_desktop_selected)
+        self.folder_downloads.toggled.connect(self.on_downloads_selected)
+        self.folder_documents.toggled.connect(self.on_documents_selected)
+        self.folder_music.toggled.connect(self.on_music_selected)
+        self.folder_pictures.toggled.connect(self.on_pictures_selected)
+        self.folder_videos.toggled.connect(self.on_videos_selected)
         
+        #TIMER
+        timer.timeout.connect(self.updates)
+        timer.start(1000) # update every second
+        self.updates()
+
+    def updates(self):
         #RADIO CHOOSE
-        if self.folder_desktop.setCheck(True):
+        desktop_selected = False
+        downloads_selected = False
+        documents_selected = False
+        music_selected = False
+        pictures_selected = False
+        videos_selected = False
+
+        if desktop_selected == True:
+            self.folder_desktop.setCheck(True)
             print("Desktop")
-        if self.folder_documents.setCheck(True):
-            print("Documents")
-        if self.folder_downloads.setCheck(True):
+
+        if downloads_selected == True:
+            self.folder_downloads.setCheck(True)
             print("Downloads")
-        if self.folder_music.setCheck(True):
+
+        if documents_selected == True:
+            self.folder_documents.setCheck(True)
+            print("Documents")
+
+        if music_selected == "true":
+            self.folder_music.setCheck(True)
             print("Music")
-        if self.folder_pictures.setCheck(True):
-            print("Pictures")            
-        if self.folder_videos.setCheck(True):
+
+        if pictures_selected == "true":
+            self.folder_pictures.setCheck(True)
+            print("Pictures")  
+
+        if videos_selected == True:
+            self.folder_videos.setCheck(True)
             print("videos")
 
     def on_desktop_selected(self):
