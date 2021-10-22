@@ -720,6 +720,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QRadioButton" name="folder_downloads">
+       <property name="text">
+        <string>Downloads</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QRadioButton" name="folder_music">
        <property name="text">
         <string>Music</string>
