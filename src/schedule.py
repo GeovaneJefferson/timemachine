@@ -15,16 +15,16 @@ user_name = getpass.getuser()
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
 #SRC LOCATION 
-#src_backup_check_py = "src/backup_check.py"
-#src_user_config = "src/user.ini"
+src_backup_check_py = "src/backup_check.py"
+src_user_config = "src/user.ini"
 
 #DST LOCATION
-dst_backup_check_py = home_user+"/.local/share/timemachine/src/backup_check.py"
-dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# dst_backup_check_py = home_user+"/.local/share/timemachine/src/backup_check.py"
+# dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
-config.read(dst_user_config)
+config.read(src_user_config)
 
 class Schedule(QMainWindow):
     def __init__(self):
@@ -34,7 +34,7 @@ class Schedule(QMainWindow):
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
 
-        config.read(dst_user_config)
+        config.read(src_user_config)
         
         #---read hours to show saved time---#        
         hrs = (config.get('SCHEDULE', 'hours'))
@@ -71,28 +71,28 @@ class Schedule(QMainWindow):
 
     def on_check_sun_clicked(self):
         if self.check_sun.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'sun', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Sun")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'sun', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_check_mon_clicked(self):
         if self.check_mon.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'mon', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Mon")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'mon', 'false')
             config.write(cfgfile)
             cfgfile.close()        
@@ -100,70 +100,70 @@ class Schedule(QMainWindow):
 
     def on_check_tue_clicked(self):
         if self.check_tue.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'tue', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Tue")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'tue', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_check_wed_clicked(self):
         if self.check_wed.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'wed', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Wed")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'wed', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_check_thu_clicked(self):
         if self.check_thu.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'thu', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Thu")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'thu', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_check_fri_clicked(self):
         if self.check_fri.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'fri', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Fri")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'fri', 'false')
             config.write(cfgfile)
             cfgfile.close() 
 
     def on_check_sat_clicked(self):
         if self.check_sat.isChecked():
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'sat', 'true')
             config.write(cfgfile)
             cfgfile.close() 
             print("Sat")
         else:
         #----Remove (.desktop) if user wants to----#
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'sat', 'false')
             config.write(cfgfile)
             cfgfile.close() 
@@ -173,13 +173,13 @@ class Schedule(QMainWindow):
         hours = str(hours)
         print((str(hours)))
 
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('SCHEDULE', 'hours', hours)
         config.write(cfgfile)
         cfgfile.close()
         
         if hours in min_fix:
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'hours', '0'+hours)
             config.write(cfgfile)
             cfgfile.close()
@@ -189,19 +189,18 @@ class Schedule(QMainWindow):
         minutes = str(minutes)
         print((str(minutes)))
 
-        cfgfile = open(dst_user_config, 'w')
+        cfgfile = open(src_user_config, 'w')
         config.set('SCHEDULE', 'minutes', minutes)
         config.write(cfgfile)
         cfgfile.close()
         
         if minutes in min_fix:
-            cfgfile = open(dst_user_config, 'w')
+            cfgfile = open(src_user_config, 'w')
             config.set('SCHEDULE', 'minutes', '0'+minutes)
             config.write(cfgfile)
             cfgfile.close()
 
     def on_save_clicked(self):
-        sub.Popen("python3 "+dst_backup_check_py,shell=True)
         exit()
 
 # main
