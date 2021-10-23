@@ -17,6 +17,7 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 src_user_config = "src/user.ini"
+src_restore_icon = "src/icons/restore.png"
 
 #dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
@@ -48,7 +49,7 @@ class Restore(QMainWindow):
 
     def __init__(self):
         super(Restore, self).__init__()
-        loadUi("src/restore.ui",self)
+        loadUi(src_restore_icon,self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
         self.folder_downloads.toggled.connect(self.on_downloads_selected)
         self.folder_documents.toggled.connect(self.on_documents_selected)
@@ -145,7 +146,7 @@ class Restore(QMainWindow):
 app = QApplication(sys.argv)
 main_screen = Restore()
 widget = QtWidgets.QStackedWidget()
-appIcon = QIcon("src/icons/restore.png")
+appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
 widget.addWidget(main_screen)
 widget.setFixedHeight(600)
