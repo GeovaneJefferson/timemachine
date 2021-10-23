@@ -13,6 +13,7 @@ home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
 src_user_config = "src/user.ini"
 src_ui_folders = "src/folders.ui"
+src_restore_icon = "src/icons/restore_48.png"
 
 #dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 #dst_ui_folders = home_user+"/.local/share/timemachine/src/folders.ui"
@@ -226,7 +227,7 @@ class Folders(QMainWindow):
 app = QApplication(sys.argv)
 main_screen = Folders()
 widget = QtWidgets.QStackedWidget()
-appIcon = QIcon("src/icons/restore.png")
+appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
 widget.addWidget(main_screen)
 widget.setFixedHeight(350)
