@@ -43,8 +43,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>328</x>
-      <y>148</y>
+      <x>315</x>
+      <y>150</y>
       <width>16</width>
       <height>51</height>
      </rect>
@@ -64,9 +64,9 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>203</x>
-      <y>190</y>
-      <width>95</width>
+      <x>260</x>
+      <y>192</y>
+      <width>51</width>
       <height>30</height>
      </rect>
     </property>
@@ -77,9 +77,9 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>344</x>
-      <y>190</y>
-      <width>95</width>
+      <x>320</x>
+      <y>192</y>
+      <width>71</width>
       <height>30</height>
      </rect>
     </property>
@@ -90,7 +90,7 @@
    <widget class="QPushButton" name="button_save">
     <property name="geometry">
      <rect>
-      <x>276</x>
+      <x>264</x>
       <y>230</y>
       <width>110</width>
       <height>30</height>
@@ -103,9 +103,9 @@
    <widget class="QSpinBox" name="label_hours">
     <property name="geometry">
      <rect>
-      <x>205</x>
-      <y>160</y>
-      <width>110</width>
+      <x>259</x>
+      <y>162</y>
+      <width>50</width>
       <height>30</height>
      </rect>
     </property>
@@ -126,9 +126,9 @@
    <widget class="QSpinBox" name="label_minutes">
     <property name="geometry">
      <rect>
-      <x>345</x>
-      <y>160</y>
-      <width>110</width>
+      <x>332</x>
+      <y>162</y>
+      <width>50</width>
       <height>30</height>
      </rect>
     </property>

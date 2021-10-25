@@ -126,27 +126,11 @@ class TimeMachine(QMainWindow):
 
         print("Current time:"+current_hour+":"+current_minute)
         print("Day:"+day_name)
-        if day_name == "Sun":
-            if current_hour >= next_hour and current_minute >= next_minute:
-                if read_next_backup_mon == "true":
-                    next_day = "Mon"
-                elif read_next_backup_tue == "true":
-                    next_day = "Tue"
-                elif read_next_backup_wed == "true":
-                    next_day = "Wed"
-                elif read_next_backup_thu == "true":
-                    next_day = "Thu"
-                elif read_next_backup_fri == "true":
-                    next_day = "Fri"
-                elif read_next_backup_sat == "true":
-                    next_day = "Sat"
-                elif read_next_backup_sun == "true":
-                    next_day = "Sun"
-            else:
-                next_day = "Today"
 
         if day_name == "Mon":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_mon == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_tue == "true":
                     next_day = "Tue"
                 elif read_next_backup_wed == "true":
@@ -161,11 +145,11 @@ class TimeMachine(QMainWindow):
                     next_day = "Sun"
                 elif read_next_backup_mon == "true":
                     next_day = "Mon"
-            else:
-                next_day = "Today"
 
         if day_name == "Tue":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_tue == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_wed == "true":
                     next_day = "Wed"
                 elif read_next_backup_thu == "true":
@@ -180,11 +164,11 @@ class TimeMachine(QMainWindow):
                     next_day = "Mon"
                 elif read_next_backup_tue == "true":
                     next_day = "Tue"
-            else:
-                next_day = "Today"
-                
+
         if day_name == "Wed":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_wed == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_thu == "true":
                     next_day = "Thu"
                 elif read_next_backup_fri == "true":
@@ -199,11 +183,11 @@ class TimeMachine(QMainWindow):
                     next_day = "Tue"
                 elif read_next_backup_wed == "true":
                     next_day = "Wed"
-            else:
-                next_day = "Today"
 
         if day_name == "Thu":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_thu == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_fri == "true":
                     next_day = "Fri"
                 elif read_next_backup_sat == "true":
@@ -218,14 +202,14 @@ class TimeMachine(QMainWindow):
                     next_day = "Wed"
                 elif read_next_backup_thu == "true":
                     next_day = "Thu"
-            else:
-                next_day = "Today"
 
         if day_name == "Fri":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_fri == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_sat == "true":
                     next_day = "Sat"
-                if read_next_backup_sun == "true":
+                elif read_next_backup_sun == "true":
                     next_day = "Sun"
                 elif read_next_backup_mon == "true":
                     next_day = "Mon"
@@ -237,11 +221,11 @@ class TimeMachine(QMainWindow):
                     next_day = "Thu"
                 elif read_next_backup_fri == "true":
                     next_day = "Fri"
-            else:
-                next_day = "Today"
 
         if day_name == "Sat":
-            if current_hour >= next_hour and current_minute >= next_minute:
+            if read_next_backup_sat == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
                 if read_next_backup_sun == "true":
                     next_day = "Sun"
                 elif read_next_backup_mon == "true":
@@ -256,8 +240,139 @@ class TimeMachine(QMainWindow):
                     next_day = "Fri"
                 elif read_next_backup_sat == "true":
                     next_day = "Sat"
-            else:
-                next_day = "Today"
+
+        # if day_name == "Sun":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         elif read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #     else:
+        #         next_day = "Today"
+
+        # if day_name == "Mon":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         elif read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #     else:
+        #         next_day = "Today"
+
+        # if day_name == "Tue":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         elif read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #     else:
+        #         next_day = "Today"
+                
+        # if day_name == "Wed":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         elif read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #     else:
+        #         next_day = "Today"
+
+        # if day_name == "Thu":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         elif read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #     else:
+        #         next_day = "Today"
+
+        # if day_name == "Fri":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #         if read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #     else:
+        #         next_day = "Today"
+
+        # if day_name == "Sat":
+        #     if current_hour >= next_hour and current_minute >= next_minute:
+        #         if read_next_backup_sun == "true":
+        #             next_day = "Sun"
+        #         elif read_next_backup_mon == "true":
+        #             next_day = "Mon"
+        #         elif read_next_backup_tue == "true":
+        #             next_day = "Tue"
+        #         elif read_next_backup_wed == "true":
+        #             next_day = "Wed"
+        #         elif read_next_backup_thu == "true":
+        #             next_day = "Thu"
+        #         elif read_next_backup_fri == "true":
+        #             next_day = "Fri"
+        #         elif read_next_backup_sat == "true":
+        #             next_day = "Sat"
+        #     else:
+        #         next_day = "Today"
 
         #SET NEXT BACKUP INI FILE
         config.read(src_user_config)

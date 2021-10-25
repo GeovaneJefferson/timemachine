@@ -18,6 +18,7 @@ user_name = getpass.getuser()
 
 src_user_config = "src/user.ini"
 src_restore_icon = "src/icons/restore_48.png"
+src_ui_restore = "src/restore.ui"
 
 #dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
@@ -49,7 +50,7 @@ class Restore(QMainWindow):
 
     def __init__(self):
         super(Restore, self).__init__()
-        loadUi("src/restore.ui",self)
+        loadUi(src_ui_restore,self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
         self.folder_downloads.toggled.connect(self.on_downloads_selected)
         self.folder_documents.toggled.connect(self.on_documents_selected)
@@ -64,41 +65,59 @@ class Restore(QMainWindow):
         self.type_video.toggled.connect(self.on_video_selected)
         self.type_other.toggled.connect(self.on_other_selected)
         
-        #TIMER
-        timer.timeout.connect(self.updates)
-        timer.start(1000) # update every second
-        self.updates()
-
-    def updates(self):
         #RADIO CHOOSE
+        self.place = "None"
         if desktop_selected == True:
-            self.folder_desktop.setCheck(True)
             print("Desktop")
+            self.folder_desktop.setCheck(True)
 
         if downloads_selected == True:
-            self.folder_downloads.setCheck(True)
+            self.place = "Downloads"
             print("Downloads")
+            self.folder_downloads.setCheck(True)
 
         if documents_selected == True:
-            self.folder_documents.setCheck(True)
+            self.place = "Documents"
             print("Documents")
+            self.folder_documents.setCheck(True)
 
         if music_selected == "true":
-            self.folder_music.setCheck(True)
+            self.place = "Music"
             print("Music")
+            self.folder_music.setCheck(True)
 
         if pictures_selected == "true":
-            self.folder_pictures.setCheck(True)
+            self.place = "Pictures"
             print("Pictures")  
+            self.folder_pictures.setCheck(True)
 
         if videos_selected == True:
-            self.folder_videos.setCheck(True)
+            self.place = "Videos"
             print("videos")
+            self.folder_videos.setCheck(True)
+        print(self.place)
+
+    #     #TIMER
+    #     timer.timeout.connect(self.updates)
+    #     timer.start(1000) # update every second
+    #     self.updates()
+
+    # def updates(self):
+    #     pass
 
     def on_desktop_selected(self):
         if self.folder_desktop.isChecked():
             print("You did choose desktop")
 
+            print("place = ",self.place)
+            loc = "/media/geovane/USB/22-10-21/"
+
+        for root, directories, files in os.walk(loc):
+            for file in files:
+                if file.endswith(".txt"):
+                    show_file = (os.path.join(root, file))
+                    print(show_file)
+                        
     def on_downloads_selected(self):
         if self.folder_downloads.isChecked():
             print("You did choose downloads")
