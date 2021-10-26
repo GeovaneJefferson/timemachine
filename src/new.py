@@ -10,6 +10,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import * 
 from PyQt5.QtGui import * 
 
+home_user = str(Path.home())
 user_name = getpass.getuser()
 get_hd_name = os.listdir("/media/"+user_name+"/")
 
@@ -34,25 +35,6 @@ class TimeMachine(QMainWindow):
         loadUi(src_ui_where,self)
         self.button_where_cancel.clicked.connect(self.on_button_where_cancel_clicked)
         self.button_where_refresh.clicked.connect(self.on_button_where_refresh_clicked)
-
-        #ADD BUTTONS AND IMAGES FOR EACH HD
-        vertical = 20
-        vertical_img = 32
-        for self.storage in get_hd_name:
-            print(self.storage)
-            label_image = QLabel(self)
-            pixmap = QPixmap(src_restore_small_icon)
-            label_image.setPixmap(pixmap)
-            label_image.setFixedSize(48, 48)
-            label_image.move(30, vertical_img)
-            vertical_img = vertical_img + 50
-    
-            button = QPushButton(self.storage, self.where_frame)
-            button.setFixedSize(280, 30)
-            button.move(60, vertical)
-            vertical = vertical + 50
-            button.clicked.connect(self.on_button_clicked)
-            button.show()
 
     def on_button_clicked(self, button):
         #----Read/Load user.config (backup automatically)----#
