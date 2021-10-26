@@ -82,7 +82,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="timemachine.qrc"/>
+  <include location="icons/timemachine.qrc"/>
  </resources>
  <connections/>
 </ui>

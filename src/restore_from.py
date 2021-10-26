@@ -15,6 +15,7 @@ from PyQt5.QtGui import *
 
 home_user = str(Path.home())
 user_name = getpass.getuser()
+when_list = []
 
 src_user_config = "src/user.ini"
 src_restore_icon = "src/icons/restore_48.png"
@@ -65,37 +66,48 @@ class Restore(QMainWindow):
         self.type_video.toggled.connect(self.on_video_selected)
         self.type_other.toggled.connect(self.on_other_selected)
         
-        #RADIO CHOOSE
-        self.place = "None"
+        #GET FOLDERS
+        read_hd_name = config['EXTERNAL']['name']    
+        hd_folder = "/media/"+user_name+"/"+read_hd_name
+
+        times = len(os.listdir(hd_folder))
+        print(times)
+
+        for file in os.listdir(hd_folder):  
+            if not file.startswith('.'):
+                when_list.append(file)
+     
+                print(when_list)
+                
+        #RADIO FOLDER
         if desktop_selected == True:
             print("Desktop")
             self.folder_desktop.setCheck(True)
 
         if downloads_selected == True:
-            self.place = "Downloads"
             print("Downloads")
             self.folder_downloads.setCheck(True)
 
         if documents_selected == True:
-            self.place = "Documents"
             print("Documents")
             self.folder_documents.setCheck(True)
 
         if music_selected == "true":
-            self.place = "Music"
             print("Music")
             self.folder_music.setCheck(True)
 
         if pictures_selected == "true":
-            self.place = "Pictures"
             print("Pictures")  
             self.folder_pictures.setCheck(True)
 
         if videos_selected == True:
-            self.place = "Videos"
             print("videos")
             self.folder_videos.setCheck(True)
-        print(self.place)
+
+        #RADIO WHEN
+        if videos_selected == True:
+            print("videos")
+            self.folder_videos.setCheck(True)    
 
     #     #TIMER
     #     timer.timeout.connect(self.updates)
@@ -108,15 +120,13 @@ class Restore(QMainWindow):
     def on_desktop_selected(self):
         if self.folder_desktop.isChecked():
             print("You did choose desktop")
+            loc = "/media/geovane/USB/22-10-21/Desktop"
 
-            print("place = ",self.place)
-            loc = "/media/geovane/USB/22-10-21/"
-
-        for root, directories, files in os.walk(loc):
-            for file in files:
-                if file.endswith(".txt"):
-                    show_file = (os.path.join(root, file))
-                    print(show_file)
+            for root, directories, files in os.walk(loc):
+                for file in files:
+                    if file.endswith(".txt"):
+                        show_file = (os.path.join(root, file))
+                        print(show_file)
                         
     def on_downloads_selected(self):
         if self.folder_downloads.isChecked():

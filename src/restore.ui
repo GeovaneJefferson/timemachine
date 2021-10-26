@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>880</width>
+    <height>711</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>0</y>
+      <y>-20</y>
       <width>21</width>
       <height>611</height>
      </rect>
@@ -600,7 +600,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>320</y>
+      <y>300</y>
       <width>221</width>
       <height>211</height>
      </rect>
@@ -653,8 +653,8 @@
    <widget class="QLabel" name="label_35">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>290</y>
+      <x>90</x>
+      <y>270</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -666,9 +666,9 @@
    <widget class="QLabel" name="label_37">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>90</x>
       <y>44</y>
-      <width>61</width>
+      <width>51</width>
       <height>27</height>
      </rect>
     </property>
@@ -680,7 +680,7 @@
     <property name="geometry">
      <rect>
       <x>-11</x>
-      <y>310</y>
+      <y>290</y>
       <width>260</width>
       <height>20</height>
      </rect>
@@ -760,7 +760,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>280</y>
+      <y>260</y>
       <width>260</width>
       <height>20</height>
      </rect>
@@ -772,7 +772,7 @@
    <widget class="QScrollBar" name="verticalScrollBar">
     <property name="geometry">
      <rect>
-      <x>880</x>
+      <x>855</x>
       <y>70</y>
       <width>16</width>
       <height>501</height>
@@ -780,6 +780,85 @@
     </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>540</y>
+      <width>221</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QRadioButton" name="when_1">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="when_2">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="when_3">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="when_4">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>500</y>
+      <width>260</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_38">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>510</y>
+      <width>51</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;When&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_6">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>530</y>
+      <width>260</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <zorder>layoutWidget</zorder>
@@ -801,6 +880,10 @@
    <zorder>line_3</zorder>
    <zorder>line_4</zorder>
    <zorder>verticalScrollBar</zorder>
+   <zorder>layoutWidget_2</zorder>
+   <zorder>line_5</zorder>
+   <zorder>label_38</zorder>
+   <zorder>line_6</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
