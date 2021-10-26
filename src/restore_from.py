@@ -73,11 +73,17 @@ class Restore(QMainWindow):
         times = len(os.listdir(hd_folder))
         print(times)
 
-        for file in os.listdir(hd_folder):  
-            if not file.startswith('.'):
-                when_list.append(file)
-     
-                print(when_list)
+        vertical = 320
+        #vertical_img = 32
+        for self.file in os.listdir(hd_folder):  
+            if not self.file.startswith('.'):
+                print(self.file)
+                files_checkbox = QCheckBox(self.file, self)
+                files_checkbox.setFixedSize(310, 22)
+                files_checkbox.move(280, vertical)
+                vertical = vertical + 30
+                # #button.clicked.connect(self.on_button_clicked)
+                files_checkbox.show()
                 
         #RADIO FOLDER
         if desktop_selected == True:
