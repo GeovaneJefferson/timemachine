@@ -18,13 +18,13 @@ hour = str(hour)
 minute = date_time.strftime("%M")
 minute = str(minute)
 
-#src_user_config = "src/user.ini"
+src_user_config = "src/user.ini"
 
-dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
-config.read(dst_user_config)
+config.read(src_user_config)
 
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
@@ -32,9 +32,13 @@ flatpak_list = r.readlines()
 
 class Main():
     def backup_now_pressed(self):
-        read_hd_hd = (config.get('EXTERNAL', 'hd'))
+        read_hd_hd = config['EXTERNAL']['hd']
+        print(read_hd_hd)
 
-        date_folder = (read_hd_hd+"/"+date_day+"-"+date_month+"-"+date_year)
+        #CREATE TMB FOLDER
+        create_tmb = read_hd_hd+"/TMB"
+        date_folder = (create_tmb+"/"+date_day+"-"+date_month+"-"+date_year)
+
         #---Location to ---#
         path_desktop = (date_folder+"/Desktop")
         path_documents = (date_folder+"/Documents")
@@ -48,8 +52,12 @@ class Main():
         #---start by look into home_user.config for backup now---#
         backup_now_checker = config['DEFAULT']['backup_now']
         if backup_now_checker == "true":
-            print("Backup is true")
             try:
+                if os.path.exists(create_tmb):
+                    pass
+                else:
+                    os.system("mkdir "+create_tmb)
+                
                 if os.path.exists(date_folder):
                     pass
                 else:
@@ -133,8 +141,8 @@ class Main():
 
                     #---After backup is done ---# 
                     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",shell=True)
-                    config.read(dst_user_config)
-                    cfgfile = open(dst_user_config, 'w')
+                    config.read(src_user_config)
+                    cfgfile = open(src_user_config, 'w')
                     config.set('DEFAULT', 'backup_now', 'false')
                     config.set('INFO', 'latest', day_name+', '+hour+':'+minute)
                     config.write(cfgfile)
