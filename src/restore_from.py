@@ -15,7 +15,6 @@ from PyQt5.QtGui import *
 
 home_user = str(Path.home())
 user_name = getpass.getuser()
-when_list = []
 
 src_user_config = "src/user.ini"
 src_restore_icon = "src/icons/restore_48.png"
@@ -68,19 +67,19 @@ class Restore(QMainWindow):
         
         #GET FOLDERS
         read_hd_name = config['EXTERNAL']['name']    
-        hd_folder = "/media/"+user_name+"/"+read_hd_name
+        hd_folder = "/media/"+user_name+"/"+read_hd_name+"/TMB"
 
         times = len(os.listdir(hd_folder))
         print(times)
 
-        vertical = 320
+        vertical = 550
         #vertical_img = 32
         for self.file in os.listdir(hd_folder):  
             if not self.file.startswith('.'):
                 print(self.file)
                 files_checkbox = QCheckBox(self.file, self)
                 files_checkbox.setFixedSize(310, 22)
-                files_checkbox.move(280, vertical)
+                files_checkbox.move(10, vertical)
                 vertical = vertical + 30
                 # #button.clicked.connect(self.on_button_clicked)
                 files_checkbox.show()
