@@ -236,46 +236,6 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>540</y>
-      <width>221</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QRadioButton" name="when_1">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="when_2">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="when_3">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="when_4">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="Line" name="line_5">
     <property name="geometry">
      <rect>
@@ -339,7 +299,6 @@
    <zorder>line_3</zorder>
    <zorder>line_4</zorder>
    <zorder>verticalScrollBar</zorder>
-   <zorder>layoutWidget_2</zorder>
    <zorder>line_5</zorder>
    <zorder>label_38</zorder>
    <zorder>line_6</zorder>
