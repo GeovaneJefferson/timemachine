@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>880</width>
-    <height>711</height>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
       <x>240</x>
       <y>-20</y>
       <width>21</width>
-      <height>611</height>
+      <height>751</height>
      </rect>
     </property>
     <property name="orientation">
@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>300</y>
+      <y>470</y>
       <width>221</width>
       <height>211</height>
      </rect>
@@ -108,7 +108,7 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>270</y>
+      <y>210</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -121,7 +121,7 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>44</y>
+      <y>441</y>
       <width>51</width>
       <height>27</height>
      </rect>
@@ -134,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>-11</x>
-      <y>290</y>
+      <y>230</y>
       <width>260</width>
       <height>20</height>
      </rect>
@@ -160,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>240</y>
       <width>221</width>
       <height>201</height>
      </rect>
@@ -214,7 +214,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>260</y>
+      <y>430</y>
       <width>260</width>
       <height>20</height>
      </rect>
@@ -226,7 +226,7 @@
    <widget class="QScrollBar" name="verticalScrollBar">
     <property name="geometry">
      <rect>
-      <x>855</x>
+      <x>851</x>
       <y>70</y>
       <width>16</width>
       <height>501</height>
@@ -236,24 +236,11 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="Line" name="line_5">
-    <property name="geometry">
-     <rect>
-      <x>-10</x>
-      <y>500</y>
-      <width>260</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_38">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>510</y>
+      <y>70</y>
       <width>51</width>
       <height>27</height>
      </rect>
@@ -266,7 +253,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>530</y>
+      <y>90</y>
       <width>260</width>
       <height>20</height>
      </rect>
@@ -288,6 +275,32 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Files&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>460</y>
+      <width>260</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_7">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>200</y>
+      <width>260</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>lineEdit</zorder>
    <zorder>line_2</zorder>
@@ -299,10 +312,11 @@
    <zorder>line_3</zorder>
    <zorder>line_4</zorder>
    <zorder>verticalScrollBar</zorder>
-   <zorder>line_5</zorder>
    <zorder>label_38</zorder>
    <zorder>line_6</zorder>
    <zorder>label_14</zorder>
+   <zorder>line_5</zorder>
+   <zorder>line_7</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

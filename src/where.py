@@ -51,22 +51,23 @@ class TimeMachine(QMainWindow):
             button.setFixedSize(280, 30)
             button.move(60, vertical)
             vertical = vertical + 50
-            button.clicked.connect(self.on_button_clicked)
+            text = button.text()
             button.show()
+            button.clicked.connect(lambda ch, text=text : self.on_button_clicked(text))
 
-    def on_button_clicked(self, button):
+    def on_button_clicked(self, choose):
         #----Read/Load user.config (backup automatically)----#
         cfgfile = open(src_user_config, 'w')
-        config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+self.storage)
-        config.set('EXTERNAL', 'name', self.storage)
+        config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+choose)
+        config.set('EXTERNAL', 'name', choose)
         config.write(cfgfile)
         cfgfile.close()
         exit()
 
-    def on_button_where_cancel_clicked(self, button):
+    def on_button_where_cancel_clicked(self):
         exit()
 
-    def on_button_where_refresh_clicked(self, button):
+    def on_button_where_refresh_clicked(self):
         sub.Popen("python3 "+src_where_py,shell=True)
         exit()
 

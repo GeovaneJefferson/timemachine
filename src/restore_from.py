@@ -1,6 +1,5 @@
 import subprocess as sub
 import configparser
-import shutil
 import getpass
 import datetime
 import os
@@ -52,11 +51,11 @@ class Restore(QMainWindow):
         super(Restore, self).__init__()
         loadUi(src_ui_restore,self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
-        self.folder_downloads.toggled.connect(self.on_downloads_selected)
-        self.folder_documents.toggled.connect(self.on_documents_selected)
-        self.folder_music.toggled.connect(self.on_music_selected)
-        self.folder_pictures.toggled.connect(self.on_pictures_selected)
-        self.folder_videos.toggled.connect(self.on_videos_selected)
+        self.folder_downloads.toggled.connect(self.on_desktop_selected)
+        self.folder_documents.toggled.connect(self.on_desktop_selected)
+        self.folder_music.toggled.connect(self.on_desktop_selected)
+        self.folder_pictures.toggled.connect(self.on_desktop_selected)
+        self.folder_videos.toggled.connect(self.on_desktop_selected)
 
         self.type_application.toggled.connect(self.on_application_selected)
         self.type_text.toggled.connect(self.on_text_selected)
@@ -64,25 +63,6 @@ class Restore(QMainWindow):
         self.type_image.toggled.connect(self.on_image_selected)
         self.type_video.toggled.connect(self.on_video_selected)
         self.type_other.toggled.connect(self.on_other_selected)
-        
-        #GET FOLDERS
-        read_hd_name = config['EXTERNAL']['name']    
-        hd_folder = "/media/"+user_name+"/"+read_hd_name+"/TMB"
-
-        times = len(os.listdir(hd_folder))
-        print(times)
-
-        vertical = 550
-        #vertical_img = 32
-        for self.file in os.listdir(hd_folder):  
-            if not self.file.startswith('.'):
-                print(self.file)
-                files_checkbox = QCheckBox(self.file, self)
-                files_checkbox.setFixedSize(310, 22)
-                files_checkbox.move(10, vertical)
-                vertical = vertical + 30
-                # #button.clicked.connect(self.on_button_clicked)
-                files_checkbox.show()
                 
         #RADIO FOLDER
         if desktop_selected == True:
@@ -109,49 +89,76 @@ class Restore(QMainWindow):
             print("videos")
             self.folder_videos.setCheck(True)
 
-        #RADIO WHEN
         if videos_selected == True:
             print("videos")
-            self.folder_videos.setCheck(True)    
+            self.folder_videos.setCheck(True) 
+
+        #WHEN CHECKBOXES  (SHOW FOLDERS OPTIONS)
+        self.read_hd_name = config['EXTERNAL']['name']    
+        self.tmb_folder = "/media/"+user_name+"/"+self.read_hd_name+"/TMB"
+
+        when_vert_space = 108
+        for self.file in os.listdir(self.tmb_folder):  
+            if not self.file.startswith('.'):
+                self.when_checkbox = QRadioButton(self.file, self)
+                self.when_checkbox.autoExclusive
+                self.when_checkbox.setFixedSize(310, 22)
+                self.when_checkbox.move(10, when_vert_space)
+                when_vert_space = when_vert_space + 30
+                text = self.when_checkbox.text()
+                self.when_checkbox.show()   
+                self.when_checkbox.clicked.connect(lambda ch, text=text : self.test(text))
+
+    def test(self,x):
+        if self.folder_desktop.isChecked():
+            self.folder_loc = "/Desktop" 
+
+        if self.folder_downloads.isChecked():
+            self.folder_loc = "Downlaods" 
+
+        if self.folder_documents.isChecked():
+            self.folder_loc = "/Documents" 
+
+        if self.folder_music.isChecked():
+            self.folder_loc = "/Music" 
+
+        if self.folder_pictures.isChecked():
+            self.folder_loc = "/Pictures" 
+
+        if self.folder_videos.isChecked():
+            self.folder_loc = "/Videos" 
+
 
     #     #TIMER
     #     timer.timeout.connect(self.updates)
-    #     timer.start(1000) # update every second
+    #     timer.start(2000) # update every second
     #     self.updates()
 
     # def updates(self):
-    #     pass
+    #     #GET FOLDERS
+
 
     def on_desktop_selected(self):
         if self.folder_desktop.isChecked():
-            print("You did choose desktop")
-            loc = "/media/geovane/USB/22-10-21/Desktop"
+            self.folder_loc = "/Desktop" 
+            go_to = self.tmb_folder+"/27-10-21"+self.folder_loc
+            when_vert_space = 310
+            for self.file in os.listdir(go_to):  
+                if not self.file.startswith('.'):
+                    print(self.file)
+                    self.files_checkbox = QCheckBox(self.file, self)
+                    self.files_checkbox.autoExclusive
+                    self.files_checkbox.setFixedSize(310, 22)
+                    self.files_checkbox.move(280, when_vert_space)
+                    when_vert_space = when_vert_space + 30
+                    text = self.files_checkbox.text()
+                    self.files_checkbox.show()  
 
-            for root, directories, files in os.walk(loc):
-                for file in files:
-                    if file.endswith(".txt"):
-                        show_file = (os.path.join(root, file))
-                        print(show_file)
-                        
-    def on_downloads_selected(self):
-        if self.folder_downloads.isChecked():
-            print("You did choose downloads")
-
-    def on_documents_selected(self):
-        if self.folder_documents.isChecked():
-            print("You did choose documents")
-
-    def on_music_selected(self):
-        if self.folder_music.isChecked():
-            print("You did choose music")
-
-    def on_pictures_selected(self):
-        if self.folder_pictures.isChecked():
-            print("You did choose pictures")
-
-    def on_videos_selected(self):
-        if self.folder_videos.isChecked():
-            print("You did choose videos")
+            # for root, directories, files in os.walk(loc):
+            #     for file in files:
+            #         if file.endswith(".txt"):
+            #             show_file = (os.path.join(root, file))
+            #             print(show_file)
     
     def on_application_selected(self):
         if self.type_application.isChecked():
@@ -183,7 +190,7 @@ widget = QtWidgets.QStackedWidget()
 appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
 widget.addWidget(main_screen)
-widget.setFixedHeight(600)
+widget.setFixedHeight(750)
 widget.setFixedWidth(900)
 widget.setWindowTitle("Time Machine")
 widget.show()
