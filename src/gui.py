@@ -241,7 +241,7 @@ class TimeMachine(QMainWindow):
                 elif read_next_backup_sat == "true":
                     next_day = "Sat"
 
-        #SET NEXT BACKUP INI FILE
+        #AVA NEXT BACKUP TO INI FILE
         config.read(src_user_config)
         cfgfile = open(src_user_config, 'w')
         config.set('INFO', 'next', next_day+', '+next_hour+':'+next_minute)
@@ -249,7 +249,7 @@ class TimeMachine(QMainWindow):
         cfgfile.close()
 
     def on_selected_backup_disk_clicked(self, button):
-        #CHOOSE EXTERNAL
+        #CHOOSE EXTERNAL HD
         sub.call("python3 "+src_where_py,shell=True)
 
     def on_backup_automatically_toggled(self):
@@ -280,6 +280,7 @@ class TimeMachine(QMainWindow):
             config.set('DEFAULT', 'auto_backup', 'false')
             config.write(cfgfile)
             cfgfile.close()
+
         #START BACKUP CHECK
         sub.Popen("python3 "+src_backup_check_py,shell=True)
 
@@ -305,7 +306,7 @@ class TimeMachine(QMainWindow):
 app = QApplication(sys.argv)
 main_screen = TimeMachine()
 widget = QtWidgets.QStackedWidget()
-appIcon = QIcon("src/icons/restore.png")
+appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
 widget.addWidget(main_screen)
 widget.setFixedHeight(450)
