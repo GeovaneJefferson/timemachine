@@ -17,14 +17,14 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION 
-src_schedule_py = "src/schedule.py"
+src_options_py = "src/options.py"
 src_backup_py = "src/backup_check.py"
 src_restore_icon = "src/icons/restore_48.png"
 src_backup_py = "src/backup_check.py"
 src_user_config = "src/user.ini"
 src_where_py  = "src/where.py"
 src_backup_now = "src/backup_now.py"
-src_folders_py = "src/folders.py"
+src_folders_py = "src/options.py"
 src_backup_icon = "src/icons/backup.png"
 src_backup_check = "src/backup_check.desktop"
 src_backup_check_py  = "src/backup_check.py"
@@ -65,9 +65,8 @@ class TimeMachine(QMainWindow):
         loadUi(src_ui,self)
         self.auto_checkbox.clicked.connect(self.on_backup_automatically_toggled)
         self.button_disk.clicked.connect(self.on_selected_backup_disk_clicked)
-        self.button_schedule.clicked.connect(self.on_schedule_clicked)
-        self.button_folders.clicked.connect(self.on_folders_clicked)
-        
+        self.button_options.clicked.connect(self.on_options_clicked)
+
         #TIMER
         timer.timeout.connect(self.updates)
         timer.start(1000) # update every second
@@ -284,13 +283,9 @@ class TimeMachine(QMainWindow):
         #START BACKUP CHECK
         sub.Popen("python3 "+src_backup_check_py,shell=True)
 
-    def on_schedule_clicked(self, button):
+    def on_options_clicked(self, button):
         #CALL SCHEDULE
-        sub.call("python3 "+src_schedule_py,shell=True)
-
-    def on_folders_clicked(self, button):
-        #CALL FOLDERS SELECTOR
-        sub.call("python3 "+src_folders_py,shell=True)   
+        sub.call("python3 "+src_options_py,shell=True)
 
     def on_button_backup_now_clicked(self, button):
         #SET BACKUP NOW TO TRUE

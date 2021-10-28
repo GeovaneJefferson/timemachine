@@ -14,71 +14,47 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="label_next_backup">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>50</y>
-      <width>95</width>
+      <x>15</x>
+      <y>15</y>
+      <width>251</width>
       <height>30</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Days to run:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Choose which folders will be back up:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QSpinBox" name="label_minutes">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>170</y>
-      <width>95</width>
+      <x>477</x>
+      <y>152</y>
+      <width>50</width>
       <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time to run:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>315</x>
-      <y>200</y>
-      <width>16</width>
-      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
-      <italic>false</italic>
       <bold>true</bold>
      </font>
     </property>
-    <property name="text">
-     <string>:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>242</y>
-      <width>51</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;hours&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <property name="maximum">
+     <number>59</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>242</y>
+      <x>465</x>
+      <y>182</y>
       <width>71</width>
       <height>30</height>
      </rect>
@@ -87,24 +63,24 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;minutes&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="button_save">
+   <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>264</x>
-      <y>280</y>
-      <width>110</width>
+      <x>270</x>
+      <y>40</y>
+      <width>95</width>
       <height>30</height>
      </rect>
     </property>
     <property name="text">
-     <string>Save</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Days to run:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="label_hours">
     <property name="geometry">
      <rect>
-      <x>259</x>
-      <y>212</y>
+      <x>404</x>
+      <y>152</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -123,32 +99,25 @@
      <enum>QAbstractSpinBox::DefaultStepType</enum>
     </property>
    </widget>
-   <widget class="QSpinBox" name="label_minutes">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>332</x>
-      <y>212</y>
-      <width>50</width>
+      <x>405</x>
+      <y>182</y>
+      <width>51</width>
       <height>30</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="maximum">
-     <number>59</number>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;hours&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>100</y>
-      <width>621</width>
+      <x>270</x>
+      <y>70</y>
+      <width>421</width>
       <height>56</height>
      </rect>
     </property>
@@ -204,56 +173,79 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>680</width>
-      <height>420</height>
+      <x>460</x>
+      <y>140</y>
+      <width>16</width>
+      <height>51</height>
      </rect>
     </property>
-    <property name="currentIndex">
-     <number>0</number>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
     </property>
-    <widget class="QWidget" name="tab">
-     <attribute name="icon">
-      <iconset resource="icons/timemachine.qrc">
-       <normaloff>:/newPrefix/desktop.png</normaloff>:/newPrefix/desktop.png</iconset>
-     </attribute>
-     <attribute name="title">
-      <string>Folders</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Schedule</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Settings</string>
-     </attribute>
+    <property name="text">
+     <string>:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>130</y>
+      <width>95</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Time to run:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QScrollArea" name="folders_frame">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>230</width>
+      <height>370</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>226</width>
+       <height>366</height>
+      </rect>
+     </property>
+     <widget class="QScrollBar" name="verticalScrollBar">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>9</y>
+        <width>20</width>
+        <height>351</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
     </widget>
    </widget>
-   <zorder>tabWidget</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label_3</zorder>
-   <zorder>label_4</zorder>
-   <zorder>label_5</zorder>
-   <zorder>button_save</zorder>
-   <zorder>label_hours</zorder>
-   <zorder>label_minutes</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>pushButton_2</zorder>
-   <zorder>pushButton_3</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="icons/timemachine.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

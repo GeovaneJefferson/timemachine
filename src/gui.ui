@@ -46,7 +46,7 @@
      <string>Back Up Automatically</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="button_folders">
+   <widget class="QPushButton" name="button_options">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -56,7 +56,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Folders</string>
+     <string>Options</string>
     </property>
    </widget>
    <widget class="QPushButton" name="button_disk">
@@ -162,19 +162,6 @@ border-radius:25px;
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next backup: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_schedule">
-    <property name="geometry">
-     <rect>
-      <x>505</x>
-      <y>395</y>
-      <width>85</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Schedule</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_last_backup_2">
