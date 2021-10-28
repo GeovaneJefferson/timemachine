@@ -35,32 +35,50 @@ class Options(QMainWindow):
         vertical = 10
         for self.folders in get_home_folders:
             if not self.folders.startswith('.'):
-                other_folder_checkbox = QCheckBox(self.folders, self.folders_frame)
-                other_folder_checkbox.setFixedSize(310, 22)
-                other_folder_checkbox.move(10 ,vertical)
+                self.folders_checkbox = QCheckBox(self.folders, self.folders_frame)
+                self.folders_checkbox.setFixedSize(310, 22)
+                self.folders_checkbox.move(10 ,vertical)
                 vertical = vertical + 25
-                text = other_folder_checkbox.text()
-                other_folder_checkbox.show()
-                other_folder_checkbox.clicked.connect(lambda ch, text=text : self.on_desktop_checkbox_clicked(text))
+                text = self.folders_checkbox.text()
+ 
+                self.folders_checkbox.show()
+                self.folders_checkbox.clicked.connect(lambda ch, text=text : self.on_folders_checked(text))
                 print(self.folders)
 
-    # def on_videos_checkbox_clicked(self):
-    #     if self.videos_checkbox.isChecked():
-    #         cfgfile = open(src_user_config, 'w')
-    #         config.set('FOLDER', 'videos', 'true')
-    #         config.write(cfgfile)
-    #         cfgfile.close() 
-    #         print("Videos")
-    #     else:
-    #     #----Remove (.desktop) if user wants to----#
-    #         cfgfile = open(src_user_config, 'w')
-    #         config.set('FOLDER', 'videos', 'false')
-    #         config.write(cfgfile)
-    #         cfgfile.close() 
+        # with open(src_user_config, 'r') as configfile:
+        #     x=config.get('FOLDER')
+        #     if x != "":
+        #         print(x)
+        #     else:
+        #         print("NONE")
 
+        # exit()
+                
+                with open(src_user_config, 'w+') as configfile:
+                    self.folders_checkbox = str(self.folders_checkbox)
+                    self.folders_checkbox.replace("","_")
+                    config.set('FOLDER', self.folders, 'false')
+                    config.write(configfile)
 
-        config.read(src_user_config)
+    def on_folders_checked(self,result):
+        if self.folders_checkbox.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', result, 'true')
+                config.write(configfile)
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', result, 'true')
+                config.write(configfile)
         
+
+        # else:
+        # #----Remove (.desktop) if user wants to----#
+        #     cfgfile = open(src_user_config, 'w')
+        #     config.set('FOLDER', 'videos', 'false')
+        #     config.write(cfgfile)
+        #     cfgfile.close() 
+        
+#SCHEDULE OPTIONS
         #---read hours to show saved time---#        
         hrs = (config.get('SCHEDULE', 'hours'))
         hrs = int(hrs)
