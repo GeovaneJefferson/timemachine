@@ -97,14 +97,14 @@ class Restore(QMainWindow):
         self.read_hd_name = config['EXTERNAL']['name']    
         self.tmb_folder = "/media/"+user_name+"/"+self.read_hd_name+"/TMB"
 
-        when_vert_space = 108
+        vertical = 108
         for self.file in os.listdir(self.tmb_folder):  
             if not self.file.startswith('.'):
                 self.when_checkbox = QRadioButton(self.file, self)
                 self.when_checkbox.autoExclusive
                 self.when_checkbox.setFixedSize(310, 22)
-                self.when_checkbox.move(10, when_vert_space)
-                when_vert_space = when_vert_space + 30
+                self.when_checkbox.move(10, vertical)
+                vertical = vertical + 30
                 text = self.when_checkbox.text()
                 self.when_checkbox.show()   
                 self.when_checkbox.clicked.connect(lambda ch, text=text : self.test(text))
