@@ -33,7 +33,7 @@
    <widget class="QSpinBox" name="label_minutes">
     <property name="geometry">
      <rect>
-      <x>477</x>
+      <x>472</x>
       <y>152</y>
       <width>50</width>
       <height>30</height>
@@ -53,7 +53,7 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>465</x>
+      <x>460</x>
       <y>182</y>
       <width>71</width>
       <height>30</height>
@@ -66,7 +66,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>265</x>
       <y>40</y>
       <width>95</width>
       <height>30</height>
@@ -79,7 +79,7 @@
    <widget class="QSpinBox" name="label_hours">
     <property name="geometry">
      <rect>
-      <x>404</x>
+      <x>399</x>
       <y>152</y>
       <width>50</width>
       <height>30</height>
@@ -102,7 +102,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>405</x>
+      <x>400</x>
       <y>182</y>
       <width>51</width>
       <height>30</height>
@@ -115,7 +115,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>265</x>
       <y>70</y>
       <width>421</width>
       <height>56</height>
@@ -176,7 +176,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>455</x>
       <y>140</y>
       <width>16</width>
       <height>51</height>
@@ -197,7 +197,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>265</x>
       <y>130</y>
       <width>95</width>
       <height>30</height>
