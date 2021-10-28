@@ -52,7 +52,7 @@ class Restore(QMainWindow):
         loadUi(src_ui_restore,self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
         self.folder_downloads.toggled.connect(self.on_desktop_selected)
-        self.folder_documents.toggled.connect(self.on_desktop_selected)
+        self.folder_documents.toggled.connect(self.on_documents_selected)
         self.folder_music.toggled.connect(self.on_desktop_selected)
         self.folder_pictures.toggled.connect(self.on_desktop_selected)
         self.folder_videos.toggled.connect(self.on_desktop_selected)
@@ -110,11 +110,12 @@ class Restore(QMainWindow):
                 self.when_checkbox.clicked.connect(lambda ch, text=text : self.test(text))
 
     def test(self,x):
+        print(x)
         if self.folder_desktop.isChecked():
             self.folder_loc = "/Desktop" 
 
         if self.folder_downloads.isChecked():
-            self.folder_loc = "Downlaods" 
+            self.folder_loc = "/Downloads" 
 
         if self.folder_documents.isChecked():
             self.folder_loc = "/Documents" 
@@ -145,7 +146,6 @@ class Restore(QMainWindow):
             when_vert_space = 310
             for self.file in os.listdir(go_to):  
                 if not self.file.startswith('.'):
-                    print(self.file)
                     self.files_checkbox = QCheckBox(self.file, self)
                     self.files_checkbox.autoExclusive
                     self.files_checkbox.setFixedSize(310, 22)
@@ -154,6 +154,20 @@ class Restore(QMainWindow):
                     text = self.files_checkbox.text()
                     self.files_checkbox.show()  
 
+    def on_documents_selected(self):
+        if self.folder_documents.isChecked():
+            self.folder_loc = "/Documents" 
+            go_to = self.tmb_folder+"/27-10-21"+self.folder_loc
+            when_vert_space = 310
+            for self.file in os.listdir(go_to):  
+                if not self.file.startswith('.'):
+                    self.files_checkbox = QCheckBox(self.file, self)
+                    self.files_checkbox.autoExclusive
+                    self.files_checkbox.setFixedSize(310, 22)
+                    self.files_checkbox.move(280, when_vert_space)
+                    when_vert_space = when_vert_space + 30
+                    text = self.files_checkbox.text()
+                    self.files_checkbox.show()  
             # for root, directories, files in os.walk(loc):
             #     for file in files:
             #         if file.endswith(".txt"):
