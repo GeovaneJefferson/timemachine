@@ -1,38 +1,63 @@
 import configparser
-import subprocess as sub
-import getpass
 import sys
+import os
 
 from pathlib import Path
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import QSize    
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import * 
-from PyQt5.QtGui import * 
+from PyQt5.QtGui import *
 
 home_user = str(Path.home())
-user_name = getpass.getuser()
-
+get_home_folders = os.listdir(home_user)
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
-#SRC LOCATION 
-src_backup_check_py = "src/backup_check.py"
 src_user_config = "src/user.ini"
+src_ui_options = "src/options.ui"
+src_restore_icon = "src/icons/restore_48.png"
 
-#DST LOCATION
-# dst_backup_check_py = home_user+"/.local/share/timemachine/src/backup_check.py"
-# dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+#dst_ui_folders = home_user+"/.local/share/timemachine/src/folders.ui"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
-class Schedule(QMainWindow):
+class Options(QMainWindow):
     def __init__(self):
-        super(Schedule, self).__init__()
-        loadUi("src/schedule.ui",self)
-        self.button_save.clicked.connect(self.on_save_clicked)
+        super(Options, self).__init__()
+        loadUi(src_ui_options,self)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+
+        #ADD BUTTONS AND IMAGES FOR EACH HD
+        vertical = 10
+        for self.folders in get_home_folders:
+            if not self.folders.startswith('.'):
+                other_folder_checkbox = QCheckBox(self.folders, self.folders_frame)
+                other_folder_checkbox.setFixedSize(310, 22)
+                other_folder_checkbox.move(10 ,vertical)
+                vertical = vertical + 25
+                text = other_folder_checkbox.text()
+                other_folder_checkbox.show()
+                other_folder_checkbox.clicked.connect(lambda ch, text=text : self.on_desktop_checkbox_clicked(text))
+                print(self.folders)
+
+    # def on_videos_checkbox_clicked(self):
+    #     if self.videos_checkbox.isChecked():
+    #         cfgfile = open(src_user_config, 'w')
+    #         config.set('FOLDER', 'videos', 'true')
+    #         config.write(cfgfile)
+    #         cfgfile.close() 
+    #         print("Videos")
+    #     else:
+    #     #----Remove (.desktop) if user wants to----#
+    #         cfgfile = open(src_user_config, 'w')
+    #         config.set('FOLDER', 'videos', 'false')
+    #         config.write(cfgfile)
+    #         cfgfile.close() 
+
 
         config.read(src_user_config)
         
@@ -200,19 +225,16 @@ class Schedule(QMainWindow):
             config.write(cfgfile)
             cfgfile.close()
 
-    def on_save_clicked(self):
-        exit()
-
 # main
 app = QApplication(sys.argv)
-main_screen = Schedule()
 widget = QtWidgets.QStackedWidget()
-appIcon = QIcon("src/icons/restore.png")
+appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
-widget.addWidget(main_screen)
+main_window = Options()
+widget.addWidget(main_window)
 widget.setFixedHeight(450)
 widget.setFixedWidth(700)
-widget.setWindowTitle("Schedule")
+widget.setWindowTitle("Options")
 widget.show()
 sys.exit(app.exec_())
 
