@@ -10,11 +10,11 @@ t = 2
 home_user = str(Path.home())
 user_name = getpass.getuser()
 
-#src_user_config = "src/user.ini"
-#src_backup_now_py = "src/backup_now.py"
+src_user_config = "src/user.ini"
+src_backup_now_py = "src/backup_now.py"
 
-dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-dst_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# dst_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
 
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
@@ -24,7 +24,7 @@ def checker():
     for i in range(3):
         #CONFIGPARSER
         config = configparser.ConfigParser()
-        config.read(dst_user_config)
+        config.read(src_user_config)
         read_hd_hd = config['EXTERNAL']['name']
 
         try:
@@ -40,7 +40,7 @@ def checker():
     while True:
         #----Read/Load user.config (backup automatically)----#
         config = configparser.ConfigParser()
-        config.read(dst_user_config)
+        config.read(src_user_config)
 
         get_schedule_sun = (config.get('SCHEDULE', 'sun'))
         get_schedule_mon = (config.get('SCHEDULE', 'mon'))
@@ -105,12 +105,12 @@ def checker():
             print("Waiting for the right time to backup...")
             time.sleep(t)
 
-    cfgfile = open(dst_user_config, 'w')
+    cfgfile = open(src_user_config, 'w')
     config.set('DEFAULT', 'backup_now', 'true')
     config.write(cfgfile)
     cfgfile.close() 
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
-    sub.Popen("python3 "+dst_backup_now_py,shell=True)
+    sub.Popen("python3 "+src_backup_now_py,shell=True)
     exit()
 
 checker()
