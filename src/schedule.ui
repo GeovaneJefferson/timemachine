@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>30</y>
+      <y>50</y>
       <width>95</width>
       <height>30</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>120</y>
+      <y>170</y>
       <width>95</width>
       <height>30</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>315</x>
-      <y>150</y>
+      <y>200</y>
       <width>16</width>
       <height>51</height>
      </rect>
@@ -65,7 +65,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>192</y>
+      <y>242</y>
       <width>51</width>
       <height>30</height>
      </rect>
@@ -78,7 +78,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>192</y>
+      <y>242</y>
       <width>71</width>
       <height>30</height>
      </rect>
@@ -91,7 +91,7 @@
     <property name="geometry">
      <rect>
       <x>264</x>
-      <y>230</y>
+      <y>280</y>
       <width>110</width>
       <height>30</height>
      </rect>
@@ -104,7 +104,7 @@
     <property name="geometry">
      <rect>
       <x>259</x>
-      <y>162</y>
+      <y>212</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -127,7 +127,7 @@
     <property name="geometry">
      <rect>
       <x>332</x>
-      <y>162</y>
+      <y>212</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -147,9 +147,9 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>80</y>
+      <y>100</y>
       <width>621</width>
-      <height>24</height>
+      <height>56</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -204,9 +204,56 @@
      </item>
     </layout>
    </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>680</width>
+      <height>420</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="icon">
+      <iconset resource="icons/timemachine.qrc">
+       <normaloff>:/newPrefix/desktop.png</normaloff>:/newPrefix/desktop.png</iconset>
+     </attribute>
+     <attribute name="title">
+      <string>Folders</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Schedule</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Settings</string>
+     </attribute>
+    </widget>
+   </widget>
+   <zorder>tabWidget</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
+   <zorder>button_save</zorder>
+   <zorder>label_hours</zorder>
+   <zorder>label_minutes</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>pushButton</zorder>
+   <zorder>pushButton_2</zorder>
+   <zorder>pushButton_3</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons/timemachine.qrc"/>
+ </resources>
  <connections/>
 </ui>
