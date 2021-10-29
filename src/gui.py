@@ -67,20 +67,25 @@ class TimeMachine(QMainWindow):
         self.button_disk.clicked.connect(self.on_selected_backup_disk_clicked)
         self.button_options.clicked.connect(self.on_options_clicked)
 
+        #BACKUP NOW BUTTON
+        self.button_backup_now = QPushButton("Back Up Now",self)
+        self.button_backup_now.setGeometry(430, 150, 120, 30)
+        self.button_backup_now.clicked.connect(self.on_button_backup_now_clicked)
+
         #TIMER
         timer.timeout.connect(self.updates)
         timer.start(1000) # update every second
         self.updates()
 
     def updates(self):
-        #Read/Load user.config
+        #READ INI FILE
         config.read(src_user_config)
         auto_backup = config['DEFAULT']['auto_backup'] 
         read_hd_name = config['EXTERNAL']['name']     
         read_last_backup = config['INFO']['latest']
         read_next_backup = config['INFO']['next']
 
-        #VAR#        
+        #VAR       
         next_day = "None"
         next_hour  = (config.get('SCHEDULE', 'hours'))
         next_minute  = (config.get('SCHEDULE', 'minutes'))
@@ -92,46 +97,40 @@ class TimeMachine(QMainWindow):
         read_next_backup_fri = (config.get('SCHEDULE', 'fri'))
         read_next_backup_sat= (config.get('SCHEDULE', 'sat'))
 
-        #BACKUP NOW BUTTON
-        self.button_backup_now = QPushButton("Back Up Now",self)
-        self.button_backup_now.setGeometry(430, 150, 120, 30)
-        self.button_backup_now.clicked.connect(self.on_button_backup_now_clicked)
-        search_for_hd = os.listdir("/media/"+user_name+"/"+read_hd_name)
-
-
-        #EXTERNAL HD STATUS
-        try:
-            #EXTERNAL NAME
-            if read_hd_name and search_for_hd != " ":
-                self.label_usb_name.setText(read_hd_name)
-                self.label_usb_name.setFont(QFont('Arial', 18))
-                self.button_backup_now.show()
-                print(bool(read_hd_name))
-            else:
-                self.button_backup_now.hide()  
-
-            self.label_external_hd.setText("External HD: Conected")
-            self.label_external_hd.setFont(QFont('Arial', 10))    
-            palette = self.label_external_hd.palette()
-            color = QColor('Green')
-            palette.setColor(QPalette.Foreground, color)
-            self.label_external_hd.setPalette(palette)   
-
-            self.label_usb_name.setText(read_hd_name)
-            self.label_usb_name.setFont(QFont('Arial', 18))
-
-        except FileNotFoundError:
-            self.label_external_hd.setText("External HD: Disconected")
-            palette = self.label_external_hd.palette()
-            color = QColor('Red')
-            palette.setColor(QPalette.Foreground, color)
-            self.label_external_hd.setPalette(palette)
-            print("Button not found!")
-
         #AUTO BACKUP
         if auto_backup == "true":
             self.auto_checkbox.setChecked(True)
 
+        #SET HD NAME TO LABEL
+        self.label_usb_name.setText(read_hd_name)
+        self.label_usb_name.setFont(QFont('Arial', 18))
+
+        try:
+            #CHECK IF EXTERNAL CAN BE FOUND
+            search_for_hd = os.listdir("/media/"+user_name+"/"+read_hd_name)
+            #EXTERNAL NAME AND STATUS
+            if read_hd_name != "":
+                self.label_usb_name.setText(read_hd_name)
+                self.label_usb_name.setFont(QFont('Arial', 18))
+                #SHOW BACKUP NOW BUTTON
+                self.button_backup_now.show()
+                #SET NAME AND COLOR
+                self.label_external_hd.setText("External HD: Conected")
+                self.label_external_hd.setFont(QFont('Arial', 10))    
+                palette = self.label_external_hd.palette()
+                color = QColor('Green')
+                palette.setColor(QPalette.Foreground, color)
+                self.label_external_hd.setPalette(palette)   
+        except FileNotFoundError:
+            #HIDE BACKUP NOW BUTTON
+            self.button_backup_now.hide()  
+            #SET NAME AND COLOR
+            self.label_external_hd.setText("External HD: Disconected")
+            palette = self.label_external_hd.palette()
+            color = QColor('Red')
+            palette.setColor(QPalette.Foreground, color)
+            self.label_external_hd.setPalette(palette) 
+        
         #LAST BACKUP LABEL
         if read_last_backup == "":
             self.label_last_backup.setText("Last Backup: None")
@@ -148,6 +147,7 @@ class TimeMachine(QMainWindow):
             self.label_next_backup.setText("Next Backup: "+read_next_backup)
             self.label_next_backup.setFont(QFont('Arial', 10))  
 
+        #PRINT CURRENT TIME AND DAY
         print("Current time:"+current_hour+":"+current_minute)
         print("Day:"+day_name)
 
@@ -265,12 +265,10 @@ class TimeMachine(QMainWindow):
                 elif read_next_backup_sat == "true":
                     next_day = "Sat"
 
-        #AVA NEXT BACKUP TO INI FILE
-        config.read(src_user_config)
-        cfgfile = open(src_user_config, 'w')
-        config.set('INFO', 'next', next_day+', '+next_hour+':'+next_minute)
-        config.write(cfgfile)  
-        cfgfile.close()
+        #SAVE NEXT BACKUP TO INI FILE
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'next', next_day+', '+next_hour+':'+next_minute)
+            config.write(configfile)  
 
     def on_selected_backup_disk_clicked(self, button):
         #CHOOSE EXTERNAL HD
