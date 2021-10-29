@@ -31,6 +31,11 @@ class Options(QMainWindow):
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
 
+        
+
+        self.update()
+
+    def update(self):
         #ADD BUTTONS AND IMAGES FOR EACH HD
         vertical = 10
         for self.folders in get_home_folders:
@@ -40,35 +45,32 @@ class Options(QMainWindow):
                 self.folders_checkbox.move(10 ,vertical)
                 vertical = vertical + 25
                 text = self.folders_checkbox.text()
- 
                 self.folders_checkbox.show()
-                self.folders_checkbox.clicked.connect(lambda ch, text=text : self.on_folders_checked(text))
-                print(self.folders)
+                if self.folders_checkbox.isChecked():
+                    self.folders_checkbox.clicked.connect(lambda ch, text=text : self.on_folders_checked(text))
+                    
+                # with open(src_user_config, 'w') as configfile:
+                #     self.folders_checkbox = str(self.folders_checkbox).replace(" ","_")
+                #     config.set('FOLDER', self.folders, 'false')
+                #     config.write(configfile)
 
-        # with open(src_user_config, 'r') as configfile:
-        #     x=config.get('FOLDER')
-        #     if x != "":
-        #         print(x)
-        #     else:
-        #         print("NONE")
-
-        # exit()
-                
-                with open(src_user_config, 'w+') as configfile:
-                    self.folders_checkbox = str(self.folders_checkbox)
-                    self.folders_checkbox.replace("","_")
-                    config.set('FOLDER', self.folders, 'false')
-                    config.write(configfile)
+        with open(src_user_config, 'r') as configfile:
+            for key in config['FOLDER']:  
+                print(key)
 
     def on_folders_checked(self,result):
-        if self.folders_checkbox.isChecked():
-            with open(src_user_config, 'w') as configfile:
-                config.set('FOLDER', result, 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
-                config.set('FOLDER', result, 'true')
-                config.write(configfile)
+        print(result)
+        # if self.folders_checkbox == "true":
+        #     print("ACTIVATE")
+        with open(src_user_config, 'w') as configfile:
+            config.set('FOLDER', result, 'true')
+            config.write(configfile)
+
+        # else:
+        #     print("DEACTIVATE")
+            # with open(src_user_config, 'w') as configfile:
+            #     config.set('FOLDER', self.folders_checkbox, 'false')
+            #     config.write(configfile)
         
 
         # else:
@@ -250,8 +252,8 @@ appIcon = QIcon(src_restore_icon)
 widget.setWindowIcon(appIcon)
 main_window = Options()
 widget.addWidget(main_window)
-widget.setFixedHeight(450)
-widget.setFixedWidth(700)
+widget.setFixedHeight(550)
+widget.setFixedWidth(800)
 widget.setWindowTitle("Options")
 widget.show()
 sys.exit(app.exec_())
