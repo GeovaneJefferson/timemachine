@@ -11,13 +11,14 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import * 
 
 user_name = getpass.getuser()
-get_hd_name = os.listdir("/media/"+user_name+"/")
+show_all_hd = os.listdir("/media/"+user_name+"/")
 
 #SRC LOCATION
 src_where_py = "src/where.py"
 src_user_config = "src/user.ini"
 src_ui_where = "src/where.ui"
 src_restore_small_icon = "src/icons/restore_small.png"
+
 #DST LOCATION
 # dst_where_py = home_user+"/.local/share/timemachine/src/where.py"
 # dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
@@ -38,7 +39,7 @@ class TimeMachine(QMainWindow):
         #ADD BUTTONS AND IMAGES FOR EACH HD
         vertical = 20
         vertical_img = 32
-        for self.storage in get_hd_name:
+        for self.storage in show_all_hd:
             print(self.storage)
             label_image = QLabel(self)
             pixmap = QPixmap(src_restore_small_icon)
