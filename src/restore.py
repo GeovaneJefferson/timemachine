@@ -30,11 +30,7 @@ def set_wallpaper():
     with open(path, "r") as reader:
         for apps in reader:
             Read_The_File = reader.readline()
-            count_apps = (len(reader.readlines()))
-
             sub.call("flatpak install flathub -y --noninteractive  "+Read_The_File,shell=True)
-            per_apps = int(100/count_apps)
-            print(per_apps,"applications to be installed")
             
     print("flatpaks apps was restored successfully!")
     exit()
