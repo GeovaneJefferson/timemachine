@@ -1,4 +1,5 @@
 TIME MACHINE
+
 To install:
 -Inside timemachine folder, right click, "open terminal" and drag and drop "Install.py" and press Enter.
 
