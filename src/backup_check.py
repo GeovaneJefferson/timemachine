@@ -10,11 +10,13 @@ t = 2
 home_user = str(Path.home())
 user_name = getpass.getuser()
 
-src_user_config = "src/user.ini"
-src_backup_now_py = "src/backup_now.py"
+#SRC LOCATION
+# src_user_config = "src/user.ini"
+# src_backup_now_py = "src/backup_now.py"
 
-# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-# dst_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
+#DST LOCATION
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
 
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
@@ -35,7 +37,7 @@ def checker():
             #---If external HD is not available ---# 
             sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Insert your external HD, mount it\n and we will do the rest for you.' 5",shell=True)
             print("No HD found...")
-            time.sleep(60)
+            time.sleep(10)
 
     while True:
         #----Read/Load user.config (backup automatically)----#

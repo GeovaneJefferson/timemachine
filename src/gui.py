@@ -17,32 +17,33 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION 
-src_options_py = "src/options.py"
-src_backup_py = "src/backup_check.py"
-src_restore_icon = "src/icons/restore_48.png"
-src_backup_py = "src/backup_check.py"
-src_user_config = "src/user.ini"
-src_where_py  = "src/where.py"
-src_backup_now = "src/backup_now.py"
-src_folders_py = "src/options.py"
-src_backup_icon = "src/icons/backup.png"
-src_backup_check = "src/backup_check.desktop"
-src_backup_check_py  = "src/backup_check.py"
-src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-src_ui = "src/gui.ui"
+# src_options_py = "src/options.py"
+# src_backup_py = "src/backup_check.py"
+# src_restore_icon = "src/icons/restore_48.png"
+# src_backup_py = "src/backup_check.py"
+# src_user_config = "src/user.ini"
+# src_where_py  = "src/where.py"
+# src_backup_now = "src/backup_now.py"
+# src_folders_py = "src/options.py"
+# src_backup_icon = "src/icons/backup.png"
+# src_backup_check = "src/backup_check.desktop"
+# src_backup_check_py  = "src/backup_check.py"
+# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+# src_ui = "src/gui.ui"
 
 #DST LOCATION
-# dst_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
-# dst_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
-# dst_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-# dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-# dst_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
-# dst_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
-# dst_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
-# dst_where_py  = home_user+"/.local/share/timemachine/src/where.py"
-# dst_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
-# dst_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
-# dst_ui = home_user+"/.local/share/timemachine/src/gui.ui"
+src_options_py = home_user+"/.local/share/timemachine/src/options.py"
+src_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
+src_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
+src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+src_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
+src_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
+src_where_py  = home_user+"/.local/share/timemachine/src/where.py"
+src_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
+src_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
+src_ui = home_user+"/.local/share/timemachine/src/gui.ui"
 
 #GET HOUR, MINUTE
 now = datetime.datetime.now()
@@ -66,6 +67,7 @@ class TimeMachine(QMainWindow):
         self.auto_checkbox.clicked.connect(self.on_backup_automatically_toggled)
         self.button_disk.clicked.connect(self.on_selected_backup_disk_clicked)
         self.button_options.clicked.connect(self.on_options_clicked)
+        self.button_donate.clicked.connect(self.on_button_donate_clicked)
 
         #BACKUP NOW BUTTON
         self.button_backup_now = QPushButton("Back Up Now",self)
@@ -107,7 +109,7 @@ class TimeMachine(QMainWindow):
 
         try:
             #CHECK IF EXTERNAL CAN BE FOUND
-            search_for_hd = os.listdir("/media/"+user_name+"/"+read_hd_name)
+            os.listdir("/media/"+user_name+"/"+read_hd_name)
             #EXTERNAL NAME AND STATUS
             if read_hd_name != "":
                 self.label_usb_name.setText(read_hd_name)
@@ -121,6 +123,8 @@ class TimeMachine(QMainWindow):
                 color = QColor('Green')
                 palette.setColor(QPalette.Foreground, color)
                 self.label_external_hd.setPalette(palette)   
+            else:
+                self.button_backup_now.hide()  
         except FileNotFoundError:
             #HIDE BACKUP NOW BUTTON
             self.button_backup_now.hide()  
@@ -150,6 +154,25 @@ class TimeMachine(QMainWindow):
         #PRINT CURRENT TIME AND DAY
         print("Current time:"+current_hour+":"+current_minute)
         print("Day:"+day_name)
+
+        if day_name == "Sun":
+            if read_next_backup_sun == "true" and current_hour <= next_hour and current_minute <= next_minute:
+                next_day = "Today"
+            else:
+                if read_next_backup_mon == "true":
+                    next_day = "Mon"
+                elif read_next_backup_tue == "true":
+                    next_day = "Tue"
+                elif read_next_backup_wed == "true":
+                    next_day = "Wed"
+                elif read_next_backup_thu == "true":
+                    next_day = "Thu"
+                elif read_next_backup_fri == "true":
+                    next_day = "Fri"
+                elif read_next_backup_sat == "true":
+                    next_day = "Sat"
+                elif read_next_backup_sun == "true":
+                    next_day = "Sun"
 
         if day_name == "Mon":
             if read_next_backup_mon == "true" and current_hour <= next_hour and current_minute <= next_minute:
@@ -270,7 +293,7 @@ class TimeMachine(QMainWindow):
             config.set('INFO', 'next', next_day+', '+next_hour+':'+next_minute)
             config.write(configfile)  
 
-    def on_selected_backup_disk_clicked(self, button):
+    def on_selected_backup_disk_clicked(self):
         #CHOOSE EXTERNAL HD
         sub.call("python3 "+src_where_py,shell=True)
 
@@ -287,10 +310,9 @@ class TimeMachine(QMainWindow):
                 print("Auto backup was successfully activated!")
                 
                 #SET AUTO BACKUP TO TRUE
-                cfgfile = open(src_user_config, 'w')
-                config.set('DEFAULT', 'auto_backup', 'true')
-                config.write(cfgfile)
-                cfgfile.close()
+                with open(src_user_config, 'w') as configfile:
+                    config.set('DEFAULT', 'auto_backup', 'true')
+                    config.write(configfile) 
         else:
             #REMOVE .DESKTOP FROM DST
             sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was deactivated!' 5",shell=True)
@@ -298,28 +320,28 @@ class TimeMachine(QMainWindow):
             sub.Popen("rm "+src_backup_check_desktop,shell=True)
 
             #SET AUTO BACKUP TO FALSE
-            cfgfile = open(src_user_config, 'w')
-            config.set('DEFAULT', 'auto_backup', 'false')
-            config.write(cfgfile)
-            cfgfile.close()
+            with open(src_user_config, 'w') as configfile:
+                config.set('DEFAULT', 'auto_backup', 'false')
+                config.write(configfile) 
 
         #START BACKUP CHECK
         sub.Popen("python3 "+src_backup_check_py,shell=True)
 
-    def on_options_clicked(self, button):
+    def on_options_clicked(self):
         #CALL SCHEDULE
         sub.call("python3 "+src_options_py,shell=True)
 
-    def on_button_backup_now_clicked(self, button):
+    def on_button_backup_now_clicked(self):
         #SET BACKUP NOW TO TRUE
-        config.read(src_user_config)
-        cfgfile = open(src_user_config, 'w')
-        config.set('DEFAULT', 'backup_now', 'true')
-        config.write(cfgfile)
-        cfgfile.close()
+        with open(src_user_config, 'w') as configfile:
+            config.set('DEFAULT', 'backup_now', 'true')
+            config.write(configfile) 
 
-        #START BACKUP NOW
-        sub.Popen("python3 "+src_backup_now,shell=True)
+            #START BACKUP NOW
+            sub.Popen("python3 "+src_backup_now,shell=True)
+
+    def on_button_donate_clicked(self):
+        sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff",shell=True)
 
 app = QApplication(sys.argv)
 main_screen = TimeMachine()
