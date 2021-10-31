@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>527</x>
-      <y>172</y>
+      <y>162</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -46,6 +46,12 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
     <property name="maximum">
      <number>59</number>
     </property>
@@ -53,9 +59,9 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>515</x>
-      <y>202</y>
-      <width>71</width>
+      <x>517</x>
+      <y>190</y>
+      <width>70</width>
       <height>30</height>
      </rect>
     </property>
@@ -80,7 +86,7 @@
     <property name="geometry">
      <rect>
       <x>454</x>
-      <y>172</y>
+      <y>162</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -103,8 +109,8 @@
     <property name="geometry">
      <rect>
       <x>455</x>
-      <y>202</y>
-      <width>51</width>
+      <y>190</y>
+      <width>50</width>
       <height>30</height>
      </rect>
     </property>
@@ -177,7 +183,7 @@
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>160</y>
+      <y>150</y>
       <width>16</width>
       <height>51</height>
      </rect>
@@ -198,7 +204,7 @@
     <property name="geometry">
      <rect>
       <x>265</x>
-      <y>130</y>
+      <y>125</y>
       <width>95</width>
       <height>30</height>
      </rect>
@@ -228,7 +234,164 @@
        <height>466</height>
       </rect>
      </property>
+     <widget class="QWidget" name="layoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>11</y>
+        <width>201</width>
+        <height>164</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QCheckBox" name="check_desktop">
+         <property name="text">
+          <string>Desktop</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="check_downloads">
+         <property name="text">
+          <string>Downloads</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="check_documents">
+         <property name="text">
+          <string>Documents</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="check_music">
+         <property name="text">
+          <string>Music</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="check_pictures">
+         <property name="text">
+          <string>Pictures</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="check_videos">
+         <property name="text">
+          <string>Videos</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QToolButton" name="toolButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>430</y>
+        <width>33</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>430</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;COMING SOON!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
     </widget>
+   </widget>
+   <widget class="QLabel" name="label_next_backup_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>240</y>
+      <width>291</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;How much space &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Time Machine&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; may use?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>310</y>
+      <width>70</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;GB&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="label_hours_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>479</x>
+      <y>280</y>
+      <width>70</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="maximum">
+     <number>99</number>
+    </property>
+    <property name="stepType">
+     <enum>QAbstractSpinBox::DefaultStepType</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>260</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;COMING SOON!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

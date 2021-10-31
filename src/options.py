@@ -13,13 +13,14 @@ home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
-src_user_config = "src/user.ini"
-src_ui_options = "src/options.ui"
-src_restore_icon = "src/icons/restore_48.png"
+# src_user_config = "src/user.ini"
+# src_ui_options = "src/options.ui"
+# src_restore_icon = "src/icons/restore_48.png"
 
-#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-#dst_ui_options = "home_user+"/.local/share/timemachine/src/options.ui"
-#dst_restore_icon = "home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+#DST LOCATION
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
+src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -29,9 +30,70 @@ class Options(QMainWindow):
     def __init__(self):
         super(Options, self).__init__()
         loadUi(src_ui_options,self)
+        self.check_desktop.clicked.connect(self.on_check_desktop_checked)
+        self.check_downloads.clicked.connect(self.on_check_downloads_checked)
+        self.check_documents.clicked.connect(self.on_check_documents_checked)
+        self.check_music.clicked.connect(self.on_check_music_checked)
+        self.check_pictures.clicked.connect(self.on_check_pictures_checked)
+        self.check_videos.clicked.connect(self.on_check_videos_checked)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
         
+        #CHECK FOR FOLDERS:
+        read_desktop = config['FOLDER']['desktop']
+        read_downloads = config['FOLDER']['downloads']
+        read_documents = config['FOLDER']['documents']
+        read_music = config['FOLDER']['music']
+        read_pictures = config['FOLDER']['pictures']
+        read_videos = config['FOLDER']['videos']
+
+        if read_desktop == "true":
+            self.check_desktop.setChecked(True) 
+
+        if read_downloads == "true":
+            self.check_downloads.setChecked(True) 
+
+        if read_documents == "true":
+            self.check_documents.setChecked(True) 
+
+        if read_music == "true":
+            self.check_music.setChecked(True) 
+
+        if read_pictures == "true":
+            self.check_pictures.setChecked(True) 
+
+        if read_videos == "true":
+            self.check_videos.setChecked(True) 
+            
+        #CHECK FOR SCHEDULE:
+        sun = config['SCHEDULE']['sun']
+        if sun == "true":
+            self.check_sun.setChecked(True)
+
+        mon = config['SCHEDULE']['mon']
+        if mon == "true":
+            self.check_mon.setChecked(True) 
+
+        tue = config['SCHEDULE']['tue']
+        if tue == "true":
+            self.check_tue.setChecked(True) 
+
+        wed = config['SCHEDULE']['wed']
+        if wed == "true":
+            self.check_wed.setChecked(True) 
+
+        thu = config['SCHEDULE']['thu']
+        if thu == "true":
+            self.check_thu.setChecked(True) 
+
+        fri = config['SCHEDULE']['fri']
+        if fri == "true":
+            self.check_fri.setChecked(True) 
+            
+        sat = config['SCHEDULE']['sat']
+        if sat == "true":
+            self.check_sat.setChecked(True) 
+
         #SCHEDULE OPTIONS
         #HOURS        
         hrs = (config.get('SCHEDULE', 'hours'))
@@ -43,77 +105,72 @@ class Options(QMainWindow):
         min = int(min)
         self.label_minutes.setValue(min)   
 
-        #CHECK FOR:
-        sun = config['SCHEDULE']['sun']
-        if sun == "true":
-            self.check_sun.setChecked(True) 
-        mon = config['SCHEDULE']['mon']
-        if mon == "true":
-            self.check_mon.setChecked(True) 
-        tue = config['SCHEDULE']['tue']
-        if tue == "true":
-            self.check_tue.setChecked(True) 
-        wed = config['SCHEDULE']['wed']
-        if wed == "true":
-            self.check_wed.setChecked(True) 
-        thu = config['SCHEDULE']['thu']
-        if thu == "true":
-            self.check_thu.setChecked(True) 
-        fri = config['SCHEDULE']['fri']
-        if fri == "true":
-            self.check_fri.setChecked(True) 
-        sat = config['SCHEDULE']['sat']
-        if sat == "true":
-            self.check_sat.setChecked(True) 
+    #     #CALL UPDATE()
+    #     self.update()
 
-        #CALL UPDATE()
-        self.update()
+    # def update(self):
 
-    def update(self):
-        #ADD USER FOLDERS
-        vertical = 10
-        for self.folders in get_home_folders:
-            if not self.folders.startswith('.'):
-                self.folders_checkbox = QCheckBox(self.folders, self.folders_frame)
-                self.folders_checkbox.setFixedSize(310, 22)
-                self.folders_checkbox.move(10 ,vertical)
-                vertical = vertical + 25
-                text = self.folders_checkbox.text()
-                self.folders_checkbox.show()
-                if self.folders_checkbox.isChecked():
-                    self.folders_checkbox.clicked.connect(lambda ch, text=text : self.on_folders_checked(text))
-                    
-                # with open(src_user_config, 'w') as configfile:
-                #     self.folders_checkbox = str(self.folders_checkbox).replace(" ","_")
-                #     config.set('FOLDER', self.folders, 'false')
-                #     config.write(configfile)
+    def on_check_desktop_checked(self):
+        if self.check_desktop.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'desktop', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'desktop', 'false')
+                config.write(configfile) 
+    
+    def on_check_downloads_checked(self):
+        if self.check_downloads.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'downloads', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'downloads', 'false')
+                config.write(configfile) 
+    
+    def on_check_documents_checked(self):
+        if self.check_documents.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'documents', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'documents', 'false')
+                config.write(configfile) 
+    
+    def on_check_music_checked(self):
+        if self.check_music.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'music', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'music', 'false')
+                config.write(configfile) 
+    
+    def on_check_pictures_checked(self):
+        if self.check_pictures.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'pictures', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'pictures', 'false')
+                config.write(configfile) 
+    
+    def on_check_videos_checked(self):
+        if self.check_videos.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'videos', 'true')
+                config.write(configfile) 
+        else:
+            with open(src_user_config, 'w') as configfile:
+                config.set('FOLDER', 'videos', 'false')
+                config.write(configfile) 
 
-        with open(src_user_config, 'r') as configfile:
-            for key in config['FOLDER']:  
-                print(key)
-
-    def on_folders_checked(self,result):
-        print(result)
-        # if self.folders_checkbox == "true":
-        #     print("ACTIVATE")
-        with open(src_user_config, 'w') as configfile:
-            config.set('FOLDER', result, 'true')
-            config.write(configfile)
-
-        # else:
-        #     print("DEACTIVATE")
-            # with open(src_user_config, 'w') as configfile:
-            #     config.set('FOLDER', self.folders_checkbox, 'false')
-            #     config.write(configfile)
-        
-
-        # else:
-        # #----Remove (.desktop) if user wants to----#
-        #     cfgfile = open(src_user_config, 'w')
-        #     config.set('FOLDER', 'videos', 'false')
-        #     config.write(cfgfile)
-        #     cfgfile.close() 
-        
+    #SCHEDULE
     def on_check_sun_clicked(self):
         if self.check_sun.isChecked():
             with open(src_user_config, 'w') as configfile:
@@ -132,7 +189,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Mon")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'mon', 'false')
                 config.write(configfile) 
@@ -144,7 +200,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Tue")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'tue', 'false')
                 config.write(configfile) 
@@ -156,7 +211,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Wed")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'wed', 'false')
                 config.write(configfile) 
@@ -168,7 +222,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Thu")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'thu', 'false')
                 config.write(configfile) 
@@ -180,7 +233,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Fri")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'fri', 'false')
                 config.write(configfile) 
@@ -192,7 +244,6 @@ class Options(QMainWindow):
                 config.write(configfile) 
                 print("Sat")
         else:
-        #----Remove (.desktop) if user wants to----#
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'sat', 'false')
                 config.write(configfile) 
@@ -222,8 +273,8 @@ class Options(QMainWindow):
 
         if minutes in min_fix:
             with open(src_user_config, 'w') as configfile:
-                    config.set('SCHEDULE', 'minutes', '0'+minutes)
-                    config.write(configfile) 
+                config.set('SCHEDULE', 'minutes', '0'+minutes)
+                config.write(configfile) 
 
 # main
 app = QApplication(sys.argv)
