@@ -16,3 +16,6 @@ $python3 uninstall.py
 
 Application is NOT READY YET!
 Still missing features...
+
+Please, use KDE to test this app!
+Created using PYQT (KDE)
