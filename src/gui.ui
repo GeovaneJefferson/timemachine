@@ -82,12 +82,12 @@ border-radius:25px;
      <rect>
       <x>280</x>
       <y>210</y>
-      <width>340</width>
-      <height>108</height>
+      <width>350</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time Machine Keeps:&lt;/p&gt;&lt;p&gt;* Local snapshots as space permits&lt;/p&gt;&lt;p&gt;The oldest backups are deleted when disk becomes full.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time Machine Keeps:&lt;/p&gt;&lt;p&gt;* Local snapshots &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="Line" name="line">
