@@ -1,4 +1,4 @@
-TIME MACHINE(QT)
+TIME MACHINE
 
 To install:
 -Inside timemachine's folder, right click, "open terminal", write "python3" drag and drop "Install.py" to the terminal and press Enter.
