@@ -18,10 +18,10 @@ hour = str(hour)
 minute = date_time.strftime("%M")
 minute = str(minute)
 
-src_user_config = "src/user.ini"
+# src_user_config = "src/user.ini"
 
 #DST LOCATION
-# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
