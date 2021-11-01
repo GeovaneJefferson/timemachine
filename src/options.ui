@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>527</x>
-      <y>162</y>
+      <y>160</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -85,8 +85,8 @@
    <widget class="QSpinBox" name="label_hours">
     <property name="geometry">
      <rect>
-      <x>454</x>
-      <y>162</y>
+      <x>455</x>
+      <y>160</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -182,9 +182,9 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>150</y>
-      <width>16</width>
+      <x>512</x>
+      <y>145</y>
+      <width>10</width>
       <height>51</height>
      </rect>
     </property>
@@ -391,6 +391,19 @@
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;COMING SOON!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_save">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>360</y>
+      <width>110</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save and Close</string>
     </property>
    </widget>
   </widget>

@@ -11,12 +11,12 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION
-# src_user_config = "src/user.ini"
-# src_backup_now_py = "src/backup_now.py"
+src_user_config = "src/user.ini"
+src_backup_now_py = "src/backup_now.py"
 
 #DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
 
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
