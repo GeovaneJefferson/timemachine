@@ -98,6 +98,8 @@ class TimeMachine(QMainWindow):
         read_next_backup_thu = (config.get('SCHEDULE', 'thu'))
         read_next_backup_fri = (config.get('SCHEDULE', 'fri'))
         read_next_backup_sat= (config.get('SCHEDULE', 'sat'))
+        total_current_time = current_hour+current_minute
+        total_next_time = next_hour+next_minute
 
         #AUTO BACKUP
         if auto_backup == "true":
@@ -175,7 +177,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Sun"
 
         if day_name == "Mon":
-            if read_next_backup_mon == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_mon == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_tue == "true":
@@ -194,7 +196,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Mon"
 
         if day_name == "Tue":
-            if read_next_backup_tue == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_tue == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_wed == "true":
@@ -213,7 +215,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Tue"
 
         if day_name == "Wed":
-            if read_next_backup_wed == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_wed == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_thu == "true":
@@ -232,7 +234,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Wed"
 
         if day_name == "Thu":
-            if read_next_backup_thu == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_thu == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_fri == "true":
@@ -251,7 +253,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Thu"
 
         if day_name == "Fri":
-            if read_next_backup_fri == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_fri == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_sat == "true":
@@ -270,7 +272,7 @@ class TimeMachine(QMainWindow):
                     next_day = "Fri"
 
         if day_name == "Sat":
-            if read_next_backup_sat == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if read_next_backup_sat == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
                 if read_next_backup_sun == "true":
