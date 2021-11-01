@@ -17,10 +17,11 @@ date_year = (date_time.strftime("%y"))
 current_hour = date_time.strftime("%H")
 current_minute = date_time.strftime("%M")
 
-src_user_config = "src/user.ini"
+#SRC LOCATION
+# src_user_config = "src/user.ini"
 
 #DST LOCATION
-# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
