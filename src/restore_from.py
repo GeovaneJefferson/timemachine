@@ -21,9 +21,6 @@ src_ui_restore = "src/restore.ui"
 
 #dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
-get_folder = ()
-get_type = ()
-
 desktop_selected = False
 downloads_selected = False
 documents_selected = False
@@ -95,7 +92,7 @@ class Restore(QMainWindow):
 
         #WHEN CHECKBOXES  (SHOW FOLDERS OPTIONS)
         self.read_hd_name = config['EXTERNAL']['name']    
-        self.tmb_folder = "/media/"+user_name+"/"+self.read_hd_name+"/TMB"
+        self.tmb_folder = "/media/"+user_name+'/'+'USB'+"/TMB"
 
         vertical = 108
         for self.file in os.listdir(self.tmb_folder):  
