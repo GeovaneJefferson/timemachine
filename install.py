@@ -1,4 +1,5 @@
 import shutil
+import subprocess as sub
 import os
 import pathlib
 from pathlib import Path
@@ -13,6 +14,10 @@ dst_folder_timemachine = home_user+"/.local/share/timemachine"
 dst_timemachine_desktop = home_user+"/.local/share/applications/timemachine.desktop"
 dst_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
 create_autostart_folder = home_user+"/.config/autostart"
+
+#INSTALL LIBNOTIFY TO GET NOTIFICATION
+print("Please enter your password. Libnotify needs to be installed.")
+os.system("sudo apt install libnotify-bin -y")
 
 #----Create file if do not exist----#
 if os.path.exists(create_autostart_folder):
