@@ -15,16 +15,16 @@ home_user = str(Path.home())
 show_all_hd = os.listdir("/media/"+user_name+"/")
 
 #SRC LOCATION
-src_where_py = "src/where.py"
-src_user_config = "src/user.ini"
-src_ui_where = "src/where.ui"
-src_restore_small_icon = "src/icons/restore_small.png"
+# src_where_py = "src/where.py"
+# src_user_config = "src/user.ini"
+# src_ui_where = "src/where.ui"
+# src_restore_small_icon = "src/icons/restore_small.png"
 
 #DST LOCATION
-# src_where_py = home_user+"/.local/share/timemachine/src/where.py"
-# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-# src_ui_where = home_user+"/.local/share/timemachine/src/where.ui"
-# src_restore_small_icon = home_user+"/.local/share/timemachine/src/icons/restore_small.png"
+src_where_py = home_user+"/.local/share/timemachine/src/where.py"
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_ui_where = home_user+"/.local/share/timemachine/src/where.ui"
+src_restore_small_icon = home_user+"/.local/share/timemachine/src/icons/restore_small.png"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -59,12 +59,11 @@ class TimeMachine(QMainWindow):
 
     def on_button_clicked(self, choose):
         #----Read/Load user.config (backup automatically)----#
-        cfgfile = open(src_user_config, 'w')
-        config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+choose)
-        config.set('EXTERNAL', 'name', choose)
-        config.write(cfgfile)
-        cfgfile.close()
-        exit()
+        with open(src_user_config, 'w') as configfile:
+            config.set('EXTERNAL', 'hd', '/media/'+user_name+'/'+choose)
+            config.set('EXTERNAL', 'name', choose)
+            config.write(configfile) 
+            exit()
 
     def on_button_where_cancel_clicked(self):
         exit()

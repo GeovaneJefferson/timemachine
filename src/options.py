@@ -14,16 +14,17 @@ home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
-src_user_config = "src/user.ini"
-src_ui_options = "src/options.ui"
-src_restore_icon = "src/icons/restore_48.png"
-src_backup_py = "src/backup_check.py"
+#SRC LOCATION
+# src_user_config = "src/user.ini"
+# src_ui_options = "src/options.ui"
+# src_restore_icon = "src/icons/restore_48.png"
+# src_backup_py = "src/backup_check.py"
 
 #DST LOCATION
-# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-# src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
-# src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
-# src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
+src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
+src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -250,7 +251,7 @@ class Options(QMainWindow):
     def label_hours_changed(self):
         hours = self.label_hours.value()
         hours = str(hours)
-        print((str(hours)))
+        print(hours)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'hours', hours)
@@ -264,7 +265,7 @@ class Options(QMainWindow):
     def label_minutes_changed(self):
         minutes = self.label_minutes.value()
         minutes = str(minutes)
-        print((str(minutes)))
+        print(minutes)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'minutes', minutes)
