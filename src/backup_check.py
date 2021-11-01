@@ -2,21 +2,21 @@ import os
 import configparser
 import getpass
 import subprocess as sub
-import datetime
 import time
 from pathlib import Path
+from datetime import datetime
 
 t = 2
 home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION
-# src_user_config = "src/user.ini"
-# src_backup_now_py = "src/backup_now.py"
+src_user_config = "src/user.ini"
+src_backup_now_py = "src/backup_now.py"
 
 #DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
 
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
@@ -52,15 +52,12 @@ def checker():
         get_schedule_fri = (config.get('SCHEDULE', 'fri'))
         get_schedule_sat = (config.get('SCHEDULE', 'sat'))
 
-        get_schedule_hours = (config.get('SCHEDULE', 'hours'))
-        get_schedule_hours = int(get_schedule_hours)
-
-        get_schedule_minutes = (config.get('SCHEDULE', 'minutes'))
-        get_schedule_minutes = int(get_schedule_minutes)
+        next_hour = (config.get('SCHEDULE', 'hours'))
+        next_minute = (config.get('SCHEDULE', 'minutes'))
 
         #---Get date---#
-        day_name = datetime.datetime.now()
-        day_name = (day_name.strftime("%a"))
+        day_name = datetime.now()
+        day_name = day_name.strftime("%a")
         day_name = day_name.lower()
         print("Backup checker is running...")
 
@@ -89,28 +86,32 @@ def checker():
         exit()
 
     while True:
-        now = datetime.datetime.now()
-        hour = now.strftime("%H")
-        hour = int(hour)
-        minute = now.strftime("%M")
-        minute = int(minute)
+        now = datetime.now()
+        current_hour = now.strftime("%H")
+        current_minute = now.strftime("%M")
+
+        total_current_time = current_hour+current_minute
+        total_next_time = next_hour+next_minute
+        
+        print(total_current_time)
+        print(total_next_time)
+
         time.sleep(t)
 
-        if int(hour) > int(get_schedule_hours):
+        if total_current_time > total_next_time:
             print("Time to back up has passed")
             exit()
 
-        if int(hour) <= int(get_schedule_hours):
-            if int(minute) == int(get_schedule_minutes):
-                break
+        if total_current_time == total_next_time:
+            break
         else:
             print("Waiting for the right time to backup...")
             time.sleep(t)
 
-    cfgfile = open(src_user_config, 'w')
-    config.set('DEFAULT', 'backup_now', 'true')
-    config.write(cfgfile)
-    cfgfile.close() 
+    with open(src_user_config, 'w') as configfile:
+        config.set('DEFAULT', 'backup_now', 'true')
+        config.write(configfile)  
+
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
     sub.Popen("python3 "+src_backup_now_py,shell=True)
     exit()

@@ -2,11 +2,11 @@ import subprocess as sub
 import configparser
 import shutil
 import getpass
-import datetime
 import os
 import sys
 import images
 
+from datetime import datetime
 from pathlib import Path
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
@@ -17,41 +17,39 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION 
-# src_options_py = "src/options.py"
-# src_backup_py = "src/backup_check.py"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
-# src_user_config = "src/user.ini"
-# src_where_py  = "src/where.py"
-# src_backup_now = "src/backup_now.py"
-# src_folders_py = "src/options.py"
-# src_backup_icon = "src/icons/backup.png"
-# src_backup_check = "src/backup_check.desktop"
-# src_backup_check_py  = "src/backup_check.py"
-# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-# src_ui = "src/gui.ui"
+src_options_py = "src/options.py"
+src_backup_py = "src/backup_check.py"
+src_restore_icon = "src/icons/restore_48.png"
+src_backup_py = "src/backup_check.py"
+src_user_config = "src/user.ini"
+src_where_py  = "src/where.py"
+src_backup_now = "src/backup_now.py"
+src_folders_py = "src/options.py"
+src_backup_icon = "src/icons/backup.png"
+src_backup_check = "src/backup_check.desktop"
+src_backup_check_py  = "src/backup_check.py"
+src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+src_ui = "src/gui.ui"
 
 #DST LOCATION
-src_options_py = home_user+"/.local/share/timemachine/src/options.py"
-src_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
-src_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
-src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
-src_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
-src_where_py  = home_user+"/.local/share/timemachine/src/where.py"
-src_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
-src_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
-src_ui = home_user+"/.local/share/timemachine/src/gui.ui"
+# src_options_py = home_user+"/.local/share/timemachine/src/options.py"
+# src_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
+# src_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
+# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
+# src_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
+# src_where_py  = home_user+"/.local/share/timemachine/src/where.py"
+# src_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
+# src_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
+# src_ui = home_user+"/.local/share/timemachine/src/gui.ui"
 
 #GET HOUR, MINUTE
-now = datetime.datetime.now()
-day_name = (now.strftime("%a"))
+now = datetime.now()
+day_name = now.strftime("%a")
 current_hour = now.strftime("%H")
-current_hour = str(current_hour)
 current_minute = now.strftime("%M")
-current_minute = str(current_minute)
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -98,8 +96,12 @@ class TimeMachine(QMainWindow):
         read_next_backup_thu = (config.get('SCHEDULE', 'thu'))
         read_next_backup_fri = (config.get('SCHEDULE', 'fri'))
         read_next_backup_sat= (config.get('SCHEDULE', 'sat'))
+        
         total_current_time = current_hour+current_minute
         total_next_time = next_hour+next_minute
+        
+        print(total_current_time)
+        print(total_next_time)
 
         #AUTO BACKUP
         if auto_backup == "true":
