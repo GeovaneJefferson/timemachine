@@ -5,8 +5,9 @@ To install:
 To remove:
 -Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "uninstall.py" and press Enter.
 
-App is NOT READY!
+App is NOT STABLE YET!
 Still missing features!
+Feel free to install and try :D
 
 Created using PYQT (KDE)
 Please, use KDE to test this app! :D
