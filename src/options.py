@@ -14,16 +14,16 @@ home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
-# src_user_config = "src/user.ini"
-# src_ui_options = "src/options.ui"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
+src_user_config = "src/user.ini"
+src_ui_options = "src/options.ui"
+src_restore_icon = "src/icons/restore_48.png"
+src_backup_py = "src/backup_check.py"
 
 #DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
-src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
+# src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()

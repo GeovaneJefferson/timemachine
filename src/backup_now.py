@@ -2,26 +2,25 @@ import os
 import shutil
 import subprocess as sub
 import configparser
-import datetime
 from pathlib import Path
+from datetime import datetime
 
 home_user = str(Path.home())
 
 #GET HOUR, MINUTE
-date_time = datetime.datetime.now()
+date_time = datetime.now()
 day_name = (date_time.strftime("%a"))
 date_day = (date_time.strftime("%d"))
 date_month = (date_time.strftime("%m"))
 date_year = (date_time.strftime("%y"))
-hour = date_time.strftime("%H")
-hour = str(hour)
-minute = date_time.strftime("%M")
-minute = str(minute)
 
-# src_user_config = "src/user.ini"
+current_hour = date_time.strftime("%H")
+current_minute = date_time.strftime("%M")
+
+src_user_config = "src/user.ini"
 
 #DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -139,7 +138,7 @@ class Main():
                     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",shell=True)
                     with open(src_user_config, 'w') as configfile:
                         config.set('DEFAULT', 'backup_now', 'false')
-                        config.set('INFO', 'latest', day_name+', '+hour+':'+minute)
+                        config.set('INFO', 'latest', day_name+', '+current_hour+':'+current_minute)
                         config.write(configfile) 
                     exit()
 
