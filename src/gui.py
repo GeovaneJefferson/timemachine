@@ -17,33 +17,33 @@ home_user = str(Path.home())
 user_name = getpass.getuser()
 
 #SRC LOCATION 
-# src_options_py = "src/options.py"
-# src_backup_py = "src/backup_check.py"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
-# src_user_config = "src/user.ini"
-# src_where_py  = "src/where.py"
-# src_backup_now = "src/backup_now.py"
-# src_folders_py = "src/options.py"
-# src_backup_icon = "src/icons/backup.png"
-# src_backup_check = "src/backup_check.desktop"
-# src_backup_check_py  = "src/backup_check.py"
-# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-# src_ui = "src/gui.ui"
+src_options_py = "src/options.py"
+src_backup_py = "src/backup_check.py"
+src_restore_icon = "src/icons/restore_48.png"
+src_backup_py = "src/backup_check.py"
+src_user_config = "src/user.ini"
+src_where_py  = "src/where.py"
+src_backup_now = "src/backup_now.py"
+src_folders_py = "src/options.py"
+src_backup_icon = "src/icons/backup.png"
+src_backup_check = "src/backup_check.desktop"
+src_backup_check_py  = "src/backup_check.py"
+src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+src_ui = "src/gui.ui"
 
 #DST LOCATION
-src_options_py = home_user+"/.local/share/timemachine/src/options.py"
-src_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
-src_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
-src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
-src_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
-src_where_py  = home_user+"/.local/share/timemachine/src/where.py"
-src_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
-src_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
-src_ui = home_user+"/.local/share/timemachine/src/gui.ui"
+# src_options_py = home_user+"/.local/share/timemachine/src/options.py"
+# src_schedule_py = home_user+"/.local/share/timemachine/src/schedule.py"
+# src_backup_check_py  = home_user+"/.local/share/timemachine/src/backup_check.py"
+# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_icon = home_user+"/.local/share/timemachine/src/icons/backup.png"
+# src_folders_py = home_user+"/.local/share/timemachine/src/folders.py"
+# src_where_py  = home_user+"/.local/share/timemachine/src/where.py"
+# src_backup_now = home_user+"/.local/share/timemachine/src/backup_now.py" 
+# src_backup_check = home_user+"/.local/share/timemachine/src/backup_check.desktop"
+# src_ui = home_user+"/.local/share/timemachine/src/gui.ui"
 
 #GET HOUR, MINUTE
 now = datetime.datetime.now()
@@ -337,8 +337,8 @@ class TimeMachine(QMainWindow):
             config.set('DEFAULT', 'backup_now', 'true')
             config.write(configfile) 
 
-            #START BACKUP NOW
-            sub.Popen("python3 "+src_backup_now,shell=True)
+        #START BACKUP NOW
+        sub.Popen("python3 "+src_backup_now,shell=True)
 
     def on_button_donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff",shell=True)

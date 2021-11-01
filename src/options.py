@@ -1,5 +1,6 @@
 import configparser
 import sys
+import subprocess as sub
 import os
 
 from pathlib import Path
@@ -13,14 +14,16 @@ home_user = str(Path.home())
 get_home_folders = os.listdir(home_user)
 min_fix = ["0","1","2","3","4","5","6","7","8","9"]
 
-# src_user_config = "src/user.ini"
-# src_ui_options = "src/options.ui"
-# src_restore_icon = "src/icons/restore_48.png"
+src_user_config = "src/user.ini"
+src_ui_options = "src/options.ui"
+src_restore_icon = "src/icons/restore_48.png"
+src_backup_py = "src/backup_check.py"
 
 #DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
-src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
-src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+# src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# src_ui_options = home_user+"/.local/share/timemachine/src/options.ui"
+# src_restore_icon = home_user+"/.local/share/timemachine/src/icons/restore_48.png"
+#src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
 
 #CONFIGPARSER
 config = configparser.ConfigParser()
@@ -38,6 +41,7 @@ class Options(QMainWindow):
         self.check_videos.clicked.connect(self.on_check_videos_checked)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+        self.button_save.clicked.connect(self.on_buttons_save_clicked)
         
         #CHECK FOR FOLDERS:
         read_desktop = config['FOLDER']['desktop']
@@ -104,11 +108,6 @@ class Options(QMainWindow):
         min = (config.get('SCHEDULE', 'minutes'))
         min = int(min)
         self.label_minutes.setValue(min)   
-
-    #     #CALL UPDATE()
-    #     self.update()
-
-    # def update(self):
 
     def on_check_desktop_checked(self):
         if self.check_desktop.isChecked():
@@ -275,6 +274,10 @@ class Options(QMainWindow):
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'minutes', '0'+minutes)
                 config.write(configfile) 
+
+    def on_buttons_save_clicked(self):
+        sub.Popen("python3 "+src_backup_py,shell=True)
+        exit()
 
 # main
 app = QApplication(sys.argv)
