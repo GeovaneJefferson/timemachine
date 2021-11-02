@@ -5,7 +5,7 @@ import os
 
 from pathlib import Path
 from PyQt5.uic import loadUi
-from PyQt5.QtCore import QSize    
+from PyQt5 import QtWidgets, QtCore  
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import * 
 from PyQt5.QtGui import *
@@ -30,6 +30,9 @@ src_backup_py = home_user+"/.local/share/timemachine/src/backup_check.py"
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
+#TIMER
+timer = QtCore.QTimer()
+
 class Options(QMainWindow):
     def __init__(self):
         super(Options, self).__init__()
@@ -42,6 +45,9 @@ class Options(QMainWindow):
         self.check_videos.clicked.connect(self.on_check_videos_checked)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+        self.one_time_mode.clicked.connect(self.on_frequency_clicked)
+        self.more_time_mode.clicked.connect(self.on_frequency_clicked)
+        self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
         self.button_save.clicked.connect(self.on_buttons_save_clicked)
         
         #CHECK FOR FOLDERS:
@@ -72,33 +78,34 @@ class Options(QMainWindow):
             
         #CHECK FOR SCHEDULE:
         sun = config['SCHEDULE']['sun']
+        mon = config['SCHEDULE']['mon']
+        tue = config['SCHEDULE']['tue']
+        wed = config['SCHEDULE']['wed']
+        thu = config['SCHEDULE']['thu']
+        fri = config['SCHEDULE']['fri']
+        sat = config['SCHEDULE']['sat']
+
         if sun == "true":
             self.check_sun.setChecked(True)
 
-        mon = config['SCHEDULE']['mon']
         if mon == "true":
             self.check_mon.setChecked(True) 
 
-        tue = config['SCHEDULE']['tue']
         if tue == "true":
             self.check_tue.setChecked(True) 
 
-        wed = config['SCHEDULE']['wed']
         if wed == "true":
             self.check_wed.setChecked(True) 
 
-        thu = config['SCHEDULE']['thu']
         if thu == "true":
             self.check_thu.setChecked(True) 
 
-        fri = config['SCHEDULE']['fri']
         if fri == "true":
             self.check_fri.setChecked(True) 
             
-        sat = config['SCHEDULE']['sat']
         if sat == "true":
             self.check_sat.setChecked(True) 
-
+            
         #SCHEDULE OPTIONS
         #HOURS        
         hrs = (config.get('SCHEDULE', 'hours'))
@@ -108,7 +115,79 @@ class Options(QMainWindow):
         #MINUTES        
         min = (config.get('SCHEDULE', 'minutes'))
         min = int(min)
-        self.label_minutes.setValue(min)   
+        self.label_minutes.setValue(min)  
+
+        #EVERYTIME 
+        read_everytime = config['SCHEDULE']['everytime']
+        if read_everytime == "15":
+            self.every_combox.setCurrentIndex(0)
+
+        elif read_everytime == "30":
+            self.every_combox.setCurrentIndex(1)
+            
+        elif read_everytime == "60":
+            self.every_combox.setCurrentIndex(2)
+
+        elif read_everytime == "120":
+            self.every_combox.setCurrentIndex(3)
+
+        elif read_everytime == "240":
+            self.every_combox.setCurrentIndex(4)
+
+        #TIMER
+        timer.timeout.connect(self.updates)
+        timer.start(1000) # update every second
+        self.updates()
+
+    def updates(self):
+        #CONFIGPARSER
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        #FREQUENCY CHECK
+        one_time_mode = config['MODE']['one_time_mode']
+        more_time_mode = config['MODE']['more_time_mode']
+
+        if one_time_mode == "true":
+            self.every_combox.setEnabled(False)
+            self.label_hours.setEnabled(True)
+            self.label_minutes.setEnabled(True)
+            self.one_time_mode.setChecked(True)
+
+        if more_time_mode == "true":
+            self.label_hours.setEnabled(False)
+            self.label_minutes.setEnabled(False)
+            self.every_combox.setEnabled(True) 
+            self.more_time_mode.setChecked(True) 
+
+    def on_every_combox_changed(self):
+        choose_every_combox = self.every_combox.currentIndex()
+        print(choose_every_combox)
+
+        if choose_every_combox == 0:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'everytime', '15')
+                config.write(configfile) 
+
+        elif choose_every_combox == 1:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'everytime', '30')
+                config.write(configfile) 
+
+        elif choose_every_combox == 2:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'everytime', '60')
+                config.write(configfile) 
+
+        elif choose_every_combox == 3:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'everytime', '120')
+                config.write(configfile) 
+
+        elif choose_every_combox == 4:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'everytime', '240')
+                config.write(configfile) 
 
     def on_check_desktop_checked(self):
         if self.check_desktop.isChecked():
@@ -170,7 +249,8 @@ class Options(QMainWindow):
                 config.set('FOLDER', 'videos', 'false')
                 config.write(configfile) 
 
-    #SCHEDULE
+        #SCHEDULE
+    
     def on_check_sun_clicked(self):
         if self.check_sun.isChecked():
             with open(src_user_config, 'w') as configfile:
@@ -275,6 +355,31 @@ class Options(QMainWindow):
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'minutes', '0'+minutes)
                 config.write(configfile) 
+
+    def on_frequency_clicked(self):
+        if self.one_time_mode.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('MODE', 'one_time_mode', 'true')
+                config.write(configfile) 
+                print("One time mode selected")
+
+            #DISABLE MORE TIME MODE
+            with open(src_user_config, 'w') as configfile:
+                config.set('MODE', 'more_time_mode', 'false')
+                config.write(configfile) 
+                print("More time mode disabled")
+
+        elif self.more_time_mode.isChecked():
+            with open(src_user_config, 'w') as configfile:
+                config.set('MODE', 'more_time_mode', 'true')
+                config.write(configfile) 
+                print("Multiple time mode selected")
+
+            #DISABLE ONE TIME MODE
+            with open(src_user_config, 'w') as configfile:
+                config.set('MODE', 'one_time_mode', 'false')
+                config.write(configfile) 
+                print("One time mode disabled")
 
     def on_buttons_save_clicked(self):
         sub.Popen("python3 "+src_backup_py,shell=True)

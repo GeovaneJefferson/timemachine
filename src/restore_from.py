@@ -4,7 +4,6 @@ import getpass
 import datetime
 import os
 import sys
-import images
 
 from pathlib import Path
 from PyQt5.uic import loadUi
