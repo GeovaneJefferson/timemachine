@@ -69,7 +69,7 @@ class TimeMachine(QMainWindow):
 
         #BACKUP NOW BUTTON
         self.button_backup_now = QPushButton("Back Up Now",self)
-        self.button_backup_now.setGeometry(430, 150, 120, 30)
+        self.button_backup_now.setGeometry(452, 157, 120, 34)
         self.button_backup_now.clicked.connect(self.on_button_backup_now_clicked)
 
         #TIMER

@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 
-t = 2
+t = 5
 home_user = str(Path.home())
 user_name = getpass.getuser()
 
@@ -21,6 +21,14 @@ src_backup_now_py = home_user+"/.local/share/timemachine/src/backup_now.py"
 #GET FLATPAK
 r = os.popen('flatpak --app list --columns=application')
 flatpak_list = r.readlines()
+
+#VAR 
+time_mode_hours_60 = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+time_mode_hours_120 = ['00','02','04','06','08','10','12','14','16','18','20','22']
+time_mode_hours_240 = ['00','04','08','12','16','20']
+time_mode_minutes_15 = ['00','15','30','45']
+time_mode_minutes_30 = ['00','30']
+
 
 def checker(): 
     for i in range(3):
@@ -55,6 +63,9 @@ def checker():
         next_hour = (config.get('SCHEDULE', 'hours'))
         next_minute = (config.get('SCHEDULE', 'minutes'))
 
+        #FREQUENCY CHECK
+        one_time_mode = config['MODE']['one_time_mode']
+
         #---Get date---#
         day_name = datetime.now()
         day_name = day_name.strftime("%a")
@@ -85,35 +96,124 @@ def checker():
         print("No back up for today.")
         exit()
 
-    while True:
-        now = datetime.now()
-        current_hour = now.strftime("%H")
-        current_minute = now.strftime("%M")
+    if one_time_mode == "true":
+        while True:
+            now = datetime.now()
+            current_hour = now.strftime("%H")
+            current_minute = now.strftime("%M")
 
-        total_current_time = current_hour+current_minute
-        total_next_time = next_hour+next_minute
-        
-        print(total_current_time)
-        print(total_next_time)
+            total_current_time = current_hour+current_minute
+            total_next_time = next_hour+next_minute
+            
+            print(total_current_time)
+            print(total_next_time)
 
-        time.sleep(t)
-
-        if total_current_time > total_next_time:
-            print("Time to back up has passed")
-            exit()
-
-        if total_current_time == total_next_time:
-            break
-        else:
-            print("Waiting for the right time to backup...")
             time.sleep(t)
 
-    with open(src_user_config, 'w') as configfile:
-        config.set('DEFAULT', 'backup_now', 'true')
-        config.write(configfile)  
+            if total_current_time > total_next_time:
+                print("Time to back up has passed")
+                exit()
 
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
-    sub.Popen("python3 "+src_backup_now_py,shell=True)
-    exit()
+            if total_current_time == total_next_time:
+                break
+            else:
+                print("Waiting for the right time to backup...")
+                time.sleep(t)
+
+        with open(src_user_config, 'w') as configfile:
+            config.set('DEFAULT', 'backup_now', 'true')
+            config.write(configfile)  
+            
+            sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+            sub.Popen("python3 "+src_backup_now_py,shell=True)
+            exit()
+
+    else:
+        while True:
+            #----Read/Load user.config (backup automatically)----#
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            more_time_mode = config['MODE']['more_time_mode']
+            everytime = config['SCHEDULE']['everytime']
+
+            now = datetime.now()
+            current_hour = now.strftime("%H")
+            current_minute = now.strftime("%M")
+            print(current_minute)
+            time.sleep(t)
+
+            if everytime == '15':
+                print('evertime: '+everytime)
+                if current_minute in time_mode_minutes_15:
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('DEFAULT', 'backup_now', 'true')
+                        config.write(configfile) 
+
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+                    sub.call("python3 "+src_backup_now_py,shell=True)
+                    time.sleep(60)
+                else:
+                    print("Waiting for the right time to backup...")
+                    time.sleep(t)
+
+            if everytime == '30':
+                print('evertime: '+everytime)
+                if current_minute in time_mode_minutes_30:
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('DEFAULT', 'backup_now', 'true')
+                        config.write(configfile) 
+
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+                    sub.call("python3 "+src_backup_now_py,shell=True)
+                    time.sleep(60)
+                else:
+                    print("Waiting for the right time to backup...")
+                    time.sleep(t)
+
+            if everytime == '60':
+                print('evertime: '+everytime)
+                if current_hour in time_mode_hours_60:
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('DEFAULT', 'backup_now', 'true')
+                        config.write(configfile) 
+
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+                    sub.call("python3 "+src_backup_now_py,shell=True)
+                    time.sleep(60)
+                else:
+                    print("Waiting for the right time to backup...")
+                    time.sleep(t)
+
+            if everytime == '120':
+                print('evertime: '+everytime)
+                if current_hour in time_mode_hours_120:
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('DEFAULT', 'backup_now', 'true')
+                        config.write(configfile) 
+
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+                    sub.call("python3 "+src_backup_now_py,shell=True)
+                    time.sleep(60)
+                else:
+                    print("Waiting for the right time to backup...")
+                    time.sleep(t)
+
+            if everytime == '240':
+                print('evertime: '+everytime)
+                if current_hour in time_mode_hours_240:
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('DEFAULT', 'backup_now', 'true')
+                        config.write(configfile) 
+
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",shell=True)
+                    sub.call("python3 "+src_backup_now_py,shell=True)
+                    time.sleep(60)
+                else:
+                    print("Waiting for the right time to backup...")
+                    time.sleep(t)
+
+            if more_time_mode == "false":
+                break
+        checker()
 
 checker()
