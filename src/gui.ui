@@ -122,7 +122,7 @@ border-radius:25px;
      <item row="1" column="0">
       <widget class="QLabel" name="label_txt">
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time Machine Keeps:&lt;/p&gt;&lt;p&gt;* Local snapshots &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time Machine Keeps:&lt;/p&gt;&lt;p&gt;* Local snapshots one or multiple times per day&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>

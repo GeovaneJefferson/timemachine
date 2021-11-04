@@ -1,5 +1,4 @@
 import shutil
-import subprocess as sub
 import os
 import pathlib
 from pathlib import Path
@@ -27,11 +26,30 @@ else:
 
 #----Create/modify .desktop and timemachine.desktop to get username----#
 with open(src_backup_check, "w") as writer:
-    writer.write("[Desktop Entry]\nType=Application\nExec=/bin/python3 "+home_user+"/.local/share/timemachine/src/backup_check.py\nHidden=false\nNoDisplay=false\nName=Time Machine\nComment=Backup your files\nIcon="+dst_restore_icon)
+    writer.write("[Desktop Entry]\n",
+                "Type=Application\n",
+                "Exec=/bin/python3 '+home_user+'/.local/share/timemachine/src/backup_check.py\n",
+                "Hidden=false\n",
+                "NoDisplay=false\n",
+                "Name=Time Machine\n",
+                "Comment=Backup your files\n",
+                "Icon='+dst_restore_icon)",
+                )
 
 #.DESKTOP
 with open(src_timemachine_desktop, "w") as writer:
-    writer.write("[Desktop Entry]\nVersion=1.0\nType=Application\nName=Time Machine\nComment=Backup your files\nIcon="+home_user+"/.local/share/timemachine/src/icons/restore.png\nExec=python3 "+home_user+"/.local/share/timemachine/src/gui.py\nPath="+home_user+"/.local/share/timemachine/\nCategories=Settings\nStartupWMClass=Gui.py\nTerminal=false")
+    writer.write("[Desktop Entry]\n",
+                "Version=1.0\n",
+                "Type=Application\n",
+                "Name=Time Machine\n",
+                "Comment=Backup your files\n",
+                "Icon='+home_user+'/.local/share/timemachine/src/icons/restore.png\n",
+                "Exec=python3 '+home_user+'/.local/share/timemachine/src/gui.py\n",
+                "Path='+home_user+'/.local/share/timemachine/\n",
+                "Categories=Settings\n",
+                "StartupWMClass=Gui.py\n",
+                "Terminal=false",
+                )
 
 #---Set current folder location and copy to file---#
 shutil.copytree(src_current_location, dst_folder_timemachine)

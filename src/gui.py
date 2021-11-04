@@ -84,6 +84,8 @@ class TimeMachine(QMainWindow):
         read_hd_name = config['EXTERNAL']['name']     
         read_last_backup = config['INFO']['latest']
         read_next_backup = config['INFO']['next']
+        more_time_mode = config['MODE']['more_time_mode']
+        everytime = config['SCHEDULE']['everytime']
 
         #VAR       
         next_day = "None"
@@ -154,6 +156,27 @@ class TimeMachine(QMainWindow):
         else:
             self.label_next_backup.setText("Next Backup: "+read_next_backup)
             self.label_next_backup.setFont(QFont('Arial', 10))  
+
+        #NEXT BACKUP LABEL(EVERYTIME)
+        if more_time_mode == "true" and everytime == "15":
+            self.label_next_backup.setText("Next Backup: Every 15 minutes")
+            self.label_next_backup.setFont(QFont('Arial', 10))
+
+        if more_time_mode == "true" and everytime == "30":
+            self.label_next_backup.setText("Next Backup: Every 30 minutes")
+            self.label_next_backup.setFont(QFont('Arial', 10))
+
+        if more_time_mode == "true" and everytime == "60":
+            self.label_next_backup.setText("Next Backup: Every 1 hour")
+            self.label_next_backup.setFont(QFont('Arial', 10))
+
+        if more_time_mode == "true" and everytime == "120":
+            self.label_next_backup.setText("Next Backup: Every 2 hours")
+            self.label_next_backup.setFont(QFont('Arial', 10))
+
+        if more_time_mode == "true" and everytime == "240":
+            self.label_next_backup.setText("Next Backup: Every 4 hours")
+            self.label_next_backup.setFont(QFont('Arial', 10))
 
         #PRINT CURRENT TIME AND DAY
         print("Current time:"+current_hour+":"+current_minute)
