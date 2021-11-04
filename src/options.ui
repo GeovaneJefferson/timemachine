@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="button_save">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>460</y>
+      <x>680</x>
+      <y>490</y>
       <width>110</width>
       <height>34</height>
      </rect>
@@ -31,8 +31,8 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>110</y>
-      <width>416</width>
+      <y>120</y>
+      <width>451</width>
       <height>184</height>
      </rect>
     </property>
@@ -59,7 +59,55 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="one_time_mode">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>One time per day</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="every_combox">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="duplicatesEnabled">
+        <bool>false</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Every 15 minutes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Every 30 minutes</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Every 1 hour</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Every 2 hours</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Every 4 hours</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="2">
       <layout class="QGridLayout" name="gridLayout">
        <item row="1" column="3" colspan="2">
         <widget class="QLabel" name="label_5">
@@ -129,46 +177,18 @@
        </item>
       </layout>
      </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="0">
       <widget class="QRadioButton" name="more_time_mode">
        <property name="text">
         <string>Multiple times per day</string>
        </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="every_combox">
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <property name="duplicatesEnabled">
-        <bool>false</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>Every 15 minutes</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Every 30 minutes</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Every 1 hour</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Every 2 hours</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Every 4 hours</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="4" column="0">
@@ -178,23 +198,19 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QRadioButton" name="one_time_mode">
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_12">
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="text">
-        <string>One time per day</string>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="checked">
-        <bool>true</bool>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -397,8 +413,8 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>310</y>
+      <x>420</x>
+      <y>320</y>
       <width>163</width>
       <height>34</height>
      </rect>
@@ -411,9 +427,9 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>303</y>
+      <y>313</y>
       <width>523</width>
-      <height>51</height>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -439,6 +455,40 @@
      </item>
     </layout>
    </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>300</y>
+      <width>551</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>100</y>
+      <width>551</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <zorder>button_save</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>line</zorder>
+   <zorder>line_2</zorder>
+   <zorder>label_10</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

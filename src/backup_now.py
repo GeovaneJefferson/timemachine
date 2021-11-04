@@ -1,5 +1,4 @@
 import os
-import shutil
 import subprocess as sub
 import configparser
 from pathlib import Path
@@ -16,6 +15,44 @@ date_year = (date_time.strftime("%y"))
 
 current_hour = date_time.strftime("%H")
 current_minute = date_time.strftime("%M")
+exclude_list = ("/dev/*",
+"/proc/*",
+"/sys/*",
+"/media/*",
+"/mnt/*",
+"/tmp/*",
+"/run/*",
+"/var/run/*",
+"/var/lock/*",
+"/var/lib/docker/*",
+"/var/lib/schroot/*",
+"/lost+found",
+"/data/*",
+"/DATA/*",
+"/cdrom/*",
+"/sdcard/*",
+"/system/*",
+"/swapfile",
+"/snap/*",
+home_user+"/**",
+"/root/.thumbnails",
+"/root/.cache",
+"/root/.dbus",
+"/root/.gvfs",
+"/root/.local/share/[Tt]rash",
+"/root/.mozilla/firefox/*.default/Cache",
+"/root/.mozilla/firefox/*.default/OfflineCache"
+"/root/.opera/cache",
+"/root/.kde/share/apps/kio_http/cache",
+"/root/.kde/share/cache/http",
+"/var/cache/apt/archives/*",
+"/var/cache/pacman/pkg/*",
+"/var/cache/yum/*",
+"/var/cache/dnf/*",
+"/var/cache/xbps/*",
+"/var/cache/zypp/*",
+"/var/cache/edb/*",
+)
 
 #SRC LOCATION
 # src_user_config = "src/user.ini"
@@ -75,7 +112,7 @@ class Main():
                 try:
                     #DESKTOP
                     if read_desktop == "true":
-                        shutil.copytree(home_user+'/Desktop',self.dst_desktop)
+                        os.system("rsync -avzh "+home_user+'/Desktop/'+" "+self.dst_desktop)
                     else:
                         pass
                 except FileExistsError:
@@ -83,14 +120,14 @@ class Main():
 
                 try:
                     if read_downloads == "true":
-                        shutil.copytree(home_user+'/Downloads',self.dst_downloads)
+                        os.system("rsync -avzh "+home_user+'/Download/'+" "+self.dst_downloads)
                     else:
                         pass
                 except FileExistsError:
                         pass
                 try:
                     if read_documents == "true":
-                        shutil.copytree(home_user+'/Documents',self.dst_documents)
+                        os.system("rsync -avzh "+home_user+'/Documents/'+" "+self.dst_documents)
                     else:
                         pass
                 except FileExistsError:
@@ -98,7 +135,7 @@ class Main():
 
                 try:
                     if read_music == "true":
-                        shutil.copytree(home_user+'/Music',self.dst_music)
+                        os.system("rsync -avzh "+home_user+'/Music/'+" "+self.dst_music)
                     else:
                         pass
                 except FileExistsError:
@@ -106,7 +143,7 @@ class Main():
 
                 try:
                     if read_pictures == "true":
-                        shutil.copytree(home_user+'/Pictures',self.dst_pictures)
+                        os.system("rsync -avzh "+home_user+'/Pictures/'+" "+self.dst_pictures)
                     else:
                         pass
                 except FileExistsError:
@@ -114,11 +151,22 @@ class Main():
 
                 try:
                     if read_videos == "true":
-                        shutil.copytree(home_user+'/Videos',self.dst_videos)
+                        os.system("rsync -avzh "+home_user+'/Videos/'+" "+self.dst_videos)
                     else:
                         pass
                 except FileExistsError:
                     pass
+        
+                # try:
+                #     root_folder = os.listdir(os.path.join(os.path.dirname("/root")))
+
+                #     if root_folder != exclude_list:
+                #         os.system("sudo rsync -rltvz --no-o --no-g --no-perms /root/"+" "+self.dst_desktop)
+                #     else:
+                #         pass
+
+                # except FileExistsError:
+                #     pass
 
                 #FLATPAK FOLDER
                 if os.path.exists(self.dst_flatpak_folder):

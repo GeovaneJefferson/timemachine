@@ -29,7 +29,6 @@ time_mode_hours_240 = ['00','04','08','12','16','20']
 time_mode_minutes_15 = ['00','15','30','45']
 time_mode_minutes_30 = ['00','30']
 
-
 def checker(): 
     for i in range(3):
         #CONFIGPARSER
@@ -43,7 +42,7 @@ def checker():
             break
         except FileNotFoundError:
             #---If external HD is not available ---# 
-            sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Insert your external HD, mount it\n and we will do the rest for you.' 5",shell=True)
+            sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5",shell=True)
             print("No HD found...")
             time.sleep(10)
 
