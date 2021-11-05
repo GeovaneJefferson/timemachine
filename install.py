@@ -27,7 +27,7 @@ with open(src_backup_check, "w") as writer:
 
 #.DESKTOP
 with open(src_timemachine_desktop, "w") as writer:
-    writer.write("[Desktop Entry]\nVersion=1.0\nType=Application\nName=Time Machine\nIcon="+home_user+"/.local/share/timemachine/src/icons/restore.png\nExec=python3 "+home_user+"/.local/share/timemachine/gui.py\nPath="+home_user+"/.local/share/timemachine/\nCategories=Settings\nStartupWMClass=Gui.py\nTerminal=false")
+    writer.write("[Desktop Entry]\nVersion=1.0\nType=Application\nName=Time Machine\nIcon="+home_user+"/.local/share/timemachine/src/icons/restore.png\nExec=python3 "+home_user+"/.local/share/timemachine/src/gui.py\nPath="+home_user+"/.local/share/timemachine/\nCategories=Settings\nStartupWMClass=Gui.py\nTerminal=false")
 
 #---Set current folder location and copy to file---#
 shutil.copytree(src_current_location, dst_folder_timemachine)
