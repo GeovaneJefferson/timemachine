@@ -15,7 +15,7 @@ Feel free to install and try :D
 ## Supported Platforms
   * Linux
   * apt/KDE
-  * 
+
 ## Screenshots
 ![Screenshot_1](https://user-images.githubusercontent.com/66172718/140302598-00ff1059-3662-44e1-b212-84384a5ea5be.png)
 ![Screenshot_2](https://user-images.githubusercontent.com/66172718/139929074-a3650468-1194-466c-bf1c-e41472160811.png)
