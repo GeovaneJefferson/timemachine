@@ -24,7 +24,7 @@ else:
 #----Create/modify .desktop and timemachine.desktop to get username----#
 with open(src_backup_check, "w") as writer:
     writer.write("[Desktop Entry]\nType=Application\nExec=/bin/python3 "+home_user+"/.local/share/timemachine/src/backup_check.py\nHidden=false\nNoDisplay=false\nName=Time Machine\nComment=Backup your files\nIcon="+dst_restore_icon)
-
+    
 #.DESKTOP
 with open(src_timemachine_desktop, "w") as writer:
     writer.write("[Desktop Entry]\nVersion=1.0\nType=Application\nName=Time Machine\nIcon="+home_user+"/.local/share/timemachine/src/icons/restore.png\nExec=python3 "+home_user+"/.local/share/timemachine/src/gui.py\nPath="+home_user+"/.local/share/timemachine/\nCategories=Settings\nStartupWMClass=Gui.py\nTerminal=false")
