@@ -328,7 +328,7 @@
            <x>10</x>
            <y>11</y>
            <width>201</width>
-           <height>164</height>
+           <height>141</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -396,7 +396,7 @@
           <item>
            <widget class="QToolButton" name="toolButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>+</string>
@@ -404,6 +404,19 @@
            </widget>
           </item>
          </layout>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>150</y>
+           <width>251</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
         </widget>
        </widget>
       </widget>
