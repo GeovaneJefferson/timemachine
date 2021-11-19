@@ -30,6 +30,7 @@ time_mode_minutes_15 = ['00','15','30','45']
 time_mode_minutes_30 = ['00','30']
 
 def checker(): 
+    time.sleep(30)
     for i in range(3):
         #CONFIGPARSER
         config = configparser.ConfigParser()
