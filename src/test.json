@@ -1,0 +1,6 @@
+{
+"auto_backup": false,
+"backup_now": false,
+"folders_backup": ["Desktop", "Downloads", "Documents", "Music", "Videos", "Pictures"],
+"shedule": ["sun","mon","tue","wed","thu","fri","sat"]
+}
