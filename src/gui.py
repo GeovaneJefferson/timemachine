@@ -99,8 +99,8 @@ class TimeMachine(QMainWindow):
         read_next_backup_fri = (config.get('SCHEDULE', 'fri'))
         read_next_backup_sat= (config.get('SCHEDULE', 'sat'))
         
-        total_current_time = current_hour+current_minute
-        total_next_time = next_hour+next_minute
+        total_current_time = current_hour + current_minute
+        total_next_time = next_hour + next_minute
         
         print(total_current_time)
         print(total_next_time)
