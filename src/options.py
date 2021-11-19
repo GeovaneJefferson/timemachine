@@ -58,6 +58,7 @@ class Options(QMainWindow):
         read_pictures = config['FOLDER']['pictures']
         read_videos = config['FOLDER']['videos']
 
+        #READ FOLDERS
         if read_desktop == "true":
             self.check_desktop.setChecked(True) 
 
@@ -75,7 +76,27 @@ class Options(QMainWindow):
 
         if read_videos == "true":
             self.check_videos.setChecked(True) 
-            
+
+        vertical_checkbox = 210
+        vertical_label = 170
+        #MORE FOLDERS
+        for self.files in (get_home_folders):
+            if not self.files.startswith("."):
+                if  not self.files in ["Desktop", "Documents", "Downloads", "Music", "Videos", "Pictures"]:
+                    label_text = QLabel(self.files, self.folders_frame)
+                    label_text.setFixedSize(200, 22)
+                    label_text.move(35, vertical_label)
+                    vertical_label = vertical_label + 22 
+                     
+                    folders_checkbox = QCheckBox(self)
+                    folders_checkbox.setFixedSize(200, 22)
+                    folders_checkbox.move(32, vertical_checkbox)
+                    vertical_checkbox = vertical_checkbox + 22
+                    self.text = label_text.text()
+                    folders_checkbox.show()
+                    folders_checkbox.clicked.connect(lambda ch, text=self.text : print(text))
+                    folders_checkbox.clicked.connect(lambda ch, text=self.text : self.here(text))
+
         #CHECK FOR SCHEDULE:
         sun = config['SCHEDULE']['sun']
         mon = config['SCHEDULE']['mon']
@@ -139,6 +160,13 @@ class Options(QMainWindow):
         timer.start(1000) # update every second
         self.updates()
 
+    def here(self,h):
+        print(h)
+
+        with open("src/test.ini", 'w+') as configfile:
+            config.set('FOLDER', h, 'true')
+            config.write(configfile) 
+
     def updates(self):
         #CONFIGPARSER
         config = configparser.ConfigParser()
@@ -162,8 +190,6 @@ class Options(QMainWindow):
 
     def on_every_combox_changed(self):
         choose_every_combox = self.every_combox.currentIndex()
-        print(choose_every_combox)
-
         if choose_every_combox == 0:
             with open(src_user_config, 'w') as configfile:
                 config.set('SCHEDULE', 'everytime', '15')
@@ -331,7 +357,6 @@ class Options(QMainWindow):
     def label_hours_changed(self):
         hours = self.label_hours.value()
         hours = str(hours)
-        print(hours)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'hours', hours)
@@ -345,7 +370,6 @@ class Options(QMainWindow):
     def label_minutes_changed(self):
         minutes = self.label_minutes.value()
         minutes = str(minutes)
-        print(minutes)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'minutes', minutes)
