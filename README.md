@@ -1,6 +1,11 @@
 # Time Machine
 A backup application, created using PYQT (KDE).
 
+## Requeriments:
+* python3-pyqt5
+
+sudo apt install python3-pyqt5
+
 ## To install:
 -Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
 
