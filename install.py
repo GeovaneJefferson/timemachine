@@ -16,7 +16,7 @@ create_autostart_folder = home_user + "/.config/autostart"
 
 # INSTALL LIBNOTIFY TO GET NOTIFICATION
 print("Please, enter your password. Libnotify needs to be installed.")
-os.system("sudo apt install libnotify-bin -y")
+os.system("sudo zypper install libnotify-bin -y")
 
 # ----Create file if do not exist----#
 if os.path.exists(create_autostart_folder):
