@@ -405,19 +405,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="Line" name="line_3">
-         <property name="geometry">
-          <rect>
-           <x>-10</x>
-           <y>150</y>
-           <width>251</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
        </widget>
       </widget>
      </item>
