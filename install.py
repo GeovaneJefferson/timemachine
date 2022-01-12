@@ -15,7 +15,7 @@ dst_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.p
 create_autostart_folder = home_user + "/.config/autostart"
 
 # INSTALL LIBNOTIFY TO GET NOTIFICATION
-print("Please, enter your password. Libnotify needs to be installed.")
+print("Please, enter your password. \nLibnotify needs to be installed, so you can receive notifications from Time Machine.")
 os.system("sudo apt install libnotify-bin -y")
 
 # ----Create file if do not exist----#
