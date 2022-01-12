@@ -59,28 +59,28 @@ class Options(QMainWindow):
         read_videos = config['FOLDER']['videos']
 
         #  READ FOLDERS
-        if read_desktop == "true":
+        if read_desktop:
             self.check_desktop.setChecked(True)
 
-        if read_downloads == "true":
+        if read_downloads:
             self.check_downloads.setChecked(True)
 
-        if read_documents == "true":
+        if read_documents:
             self.check_documents.setChecked(True)
 
-        if read_music == "true":
+        if read_music:
             self.check_music.setChecked(True)
 
-        if read_pictures == "true":
+        if read_pictures:
             self.check_pictures.setChecked(True)
 
-        if read_videos == "true":
+        if read_videos:
             self.check_videos.setChecked(True)
 
-        vertical_checkbox = 210
-        vertical_label = 170
 
         # MORE FOLDERS
+        # vertical_checkbox = 210
+        # vertical_label = 170
         # for self.files in get_home_folders:
         #     if not self.files.startswith("."):
         #         if not self.files in ["Desktop", "Documents", "Downloads", "Music", "Videos", "Pictures"]:
@@ -107,28 +107,28 @@ class Options(QMainWindow):
         fri = config['SCHEDULE']['fri']
         sat = config['SCHEDULE']['sat']
 
-        if sun == "true":
+        if sun:
             self.check_sun.setChecked(True)
 
-        if mon == "true":
+        if mon:
             self.check_mon.setChecked(True)
 
-        if tue == "true":
+        if tue:
             self.check_tue.setChecked(True)
 
-        if wed == "true":
+        if wed:
             self.check_wed.setChecked(True)
 
-        if thu == "true":
+        if thu:
             self.check_thu.setChecked(True)
 
-        if fri == "true":
+        if fri:
             self.check_fri.setChecked(True)
 
-        if sat == "true":
+        if sat:
             self.check_sat.setChecked(True)
 
-            # SCHEDULE OPTIONS
+        # SCHEDULE OPTIONS
         # HOURS
         hrs = (config.get('SCHEDULE', 'hours'))
         hrs = int(hrs)
@@ -161,13 +161,6 @@ class Options(QMainWindow):
         timer.start(1000)  # update every second
         self.updates()
 
-    def here(self, h):
-        print(h)
-
-        with open("src/test.ini", 'w+') as configfile:
-            config.set('FOLDER', h, 'true')
-            config.write(configfile)
-
     def updates(self):
         # CONFIGPARSER
         config = configparser.ConfigParser()
@@ -177,13 +170,13 @@ class Options(QMainWindow):
         one_time_mode = config['MODE']['one_time_mode']
         more_time_mode = config['MODE']['more_time_mode']
 
-        if one_time_mode == "true":
+        if one_time_mode:
             self.every_combox.setEnabled(False)
             self.label_hours.setEnabled(True)
             self.label_minutes.setEnabled(True)
             self.one_time_mode.setChecked(True)
 
-        if more_time_mode == "true":
+        if more_time_mode:
             self.label_hours.setEnabled(False)
             self.label_minutes.setEnabled(False)
             self.every_combox.setEnabled(True)

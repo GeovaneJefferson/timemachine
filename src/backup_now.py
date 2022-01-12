@@ -6,7 +6,7 @@ from datetime import datetime
 
 home_user = str(Path.home())
 
-#GET HOUR, MINUTE
+# GET HOUR, MINUTE
 date_time = datetime.now()
 day_name = (date_time.strftime("%a"))
 date_day = (date_time.strftime("%d"))
@@ -15,78 +15,35 @@ date_year = (date_time.strftime("%y"))
 
 current_hour = date_time.strftime("%H")
 current_minute = date_time.strftime("%M")
-exclude_list = ("/dev/*",
-"/proc/*",
-"/sys/*",
-"/media/*",
-"/mnt/*",
-"/tmp/*",
-"/run/*",
-"/var/run/*",
-"/var/lock/*",
-"/var/lib/docker/*",
-"/var/lib/schroot/*",
-"/lost+found",
-"/data/*",
-"/DATA/*",
-"/cdrom/*",
-"/sdcard/*",
-"/system/*",
-"/swapfile",
-"/snap/*",
-home_user+"/**",
-"/root/.thumbnails",
-"/root/.cache",
-"/root/.dbus",
-"/root/.gvfs",
-"/root/.local/share/[Tt]rash",
-"/root/.mozilla/firefox/*.default/Cache",
-"/root/.mozilla/firefox/*.default/OfflineCache"
-"/root/.opera/cache",
-"/root/.kde/share/apps/kio_http/cache",
-"/root/.kde/share/cache/http",
-"/var/cache/apt/archives/*",
-"/var/cache/pacman/pkg/*",
-"/var/cache/yum/*",
-"/var/cache/dnf/*",
-"/var/cache/xbps/*",
-"/var/cache/zypp/*",
-"/var/cache/edb/*",
-)
 
-#SRC LOCATION
+# SRC LOCATION
 # src_user_config = "src/user.ini"
 
-#DST LOCATION
-src_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# DST LOCATION
+src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
 
-#CONFIGPARSER
+# CONFIGPARSER
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
-#GET FLATPAK
-r = os.popen('flatpak --app list --columns=application')
-flatpak_list = r.readlines()
 
-class Main():
+class Main:
     def backup_now_pressed(self):
-        read_hd_hd = config['EXTERNAL']['hd']
+        read_hd_name = config['EXTERNAL']['hd']
 
-        #CREATE TMB FOLDER
-        create_tmb = read_hd_hd+"/TMB"
-        date_folder = (create_tmb+"/"+date_day+"-"+date_month+"-"+date_year)
+        # CREATE TMB FOLDER
+        create_tmb = read_hd_name + "/TMB"
+        date_folder = (create_tmb + "/" + date_day + "-" + date_month + "-" + date_year)
 
-        #---Location to ---#
-        self.dst_desktop = date_folder+"/Desktop"
-        self.dst_downloads = date_folder+"/Downloads"
-        self.dst_documents = date_folder+"/Documents"
-        self.dst_music = date_folder+"/Music"
-        self.dst_pictures = date_folder+"/Pictures"
-        self.dst_videos = date_folder+"/Videos"
-        self.dst_flatpak_folder = date_folder+"/Flatpak"
-        self.dst_flatpak_txt = date_folder+"/Flatpak/Flatlist.txt"
-        
-        #READ INI FOLDERS:
+        # ---Location to ---#
+        dst_desktop = date_folder + "/Desktop"
+        dst_downloads = date_folder + "/Downloads"
+        dst_documents = date_folder + "/Documents"
+        dst_music = date_folder + "/Music"
+        dst_pictures = date_folder + "/Pictures"
+        dst_videos = date_folder + "/Videos"
+
+        # READ INI FOLDERS:
         read_desktop = config['FOLDER']['desktop']
         read_downloads = config['FOLDER']['downloads']
         read_documents = config['FOLDER']['documents']
@@ -94,107 +51,82 @@ class Main():
         read_pictures = config['FOLDER']['pictures']
         read_videos = config['FOLDER']['videos']
 
-        #BACKUP NOW TRUE
+        # BACKUP NOW TRUE
         backup_now_checker = config['DEFAULT']['backup_now']
-        if backup_now_checker == "true":
+        if backup_now_checker:
             try:
-                #TMB FOLDERS
+                # TMB FOLDERS
                 if os.path.exists(create_tmb):
                     pass
                 else:
-                    os.system("mkdir "+create_tmb)
-                #DATE FOLDER
+                    os.system("mkdir " + create_tmb)
+                # DATE FOLDER
                 if os.path.exists(date_folder):
                     pass
                 else:
-                    os.system("mkdir "+date_folder)
+                    os.system("mkdir " + date_folder)
 
                 try:
-                    #DESKTOP
-                    if read_desktop == "true":
-                        os.system("rsync -avzh "+home_user+'/Desktop/'+" "+self.dst_desktop)
+                    # DESKTOP
+                    if read_desktop:
+                        os.system("rsync -avzh " + home_user + '/Desktop/' + " " + dst_desktop)
                     else:
                         pass
                 except FileExistsError:
                     pass
 
                 try:
-                    if read_downloads == "true":
-                        os.system("rsync -avzh "+home_user+'/Download/'+" "+self.dst_downloads)
-                    else:
-                        pass
-                except FileExistsError:
-                        pass
-                try:
-                    if read_documents == "true":
-                        os.system("rsync -avzh "+home_user+'/Documents/'+" "+self.dst_documents)
+                    if read_downloads:
+                        os.system("rsync -avzh " + home_user + '/Download/' + " " + dst_downloads)
                     else:
                         pass
                 except FileExistsError:
                     pass
-
                 try:
-                    if read_music == "true":
-                        os.system("rsync -avzh "+home_user+'/Music/'+" "+self.dst_music)
+                    if read_documents:
+                        os.system("rsync -avzh " + home_user + '/Documents/' + " " + dst_documents)
                     else:
                         pass
                 except FileExistsError:
                     pass
 
                 try:
-                    if read_pictures == "true":
-                        os.system("rsync -avzh "+home_user+'/Pictures/'+" "+self.dst_pictures)
+                    if read_music:
+                        os.system("rsync -avzh " + home_user + '/Music/' + " " + dst_music)
                     else:
                         pass
                 except FileExistsError:
                     pass
 
                 try:
-                    if read_videos == "true":
-                        os.system("rsync -avzh "+home_user+'/Videos/'+" "+self.dst_videos)
+                    if read_pictures:
+                        os.system("rsync -avzh " + home_user + '/Pictures/' + " " + dst_pictures)
                     else:
                         pass
                 except FileExistsError:
                     pass
-        
-                # try:
-                #     root_folder = os.listdir(os.path.join(os.path.dirname("/root")))
 
-                #     if root_folder != exclude_list:
-                #         os.system("sudo rsync -rltvz --no-o --no-g --no-perms /root/"+" "+self.dst_desktop)
-                #     else:
-                #         pass
-
-                # except FileExistsError:
-                #     pass
-
-                #FLATPAK FOLDER
-                if os.path.exists(self.dst_flatpak_folder):
+                try:
+                    if read_videos:
+                        os.system("rsync -avzh " + home_user + '/Videos/' + " " + dst_videos)
+                    else:
+                        pass
+                except FileExistsError:
                     pass
-                else:
-                    #FLATPAK TXT
-                    os.system("mkdir "+date_folder+"/Flatpak")
-                    f = open(self.dst_flatpak_txt, "w")    
-                    f.close()
-                        
-                #FLATPAK
-                with open(self.dst_flatpak_txt, "w") as reader:
-                    for item in flatpak_list:
-                        reader.write("app/")
-                        reader.write(item.lower())
 
-                    #---After backup is done ---# 
-                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",shell=True)
+                    # After backup is done
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5", shell=True)
                     with open(src_user_config, 'w') as configfile:
                         config.set('DEFAULT', 'backup_now', 'false')
-                        config.set('INFO', 'latest', day_name+', '+current_hour+':'+current_minute)
-                        config.write(configfile) 
+                        config.set('INFO', 'latest', day_name + ', ' + current_hour + ':' + current_minute)
+                        config.write(configfile)
                     exit()
 
             except FileNotFoundError:
-                #---If external HD is not available ---# 
-                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!' 5",shell=True)
+                # ---If external HD is not available ---#
+                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!' 5", shell=True)
                 exit()
+
 
 Object = Main()
 Object.backup_now_pressed()
