@@ -17,7 +17,6 @@ user_name = getpass.getuser()
 src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
 src_backup_now_py = home_user + "/.local/share/timemachine/src/backup_now.py"
 
-
 # VAR
 time_mode_hours_60 = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15',
                       '16', '17', '18', '19', '20', '21', '22', '23']
@@ -36,19 +35,18 @@ class Checker:
             config.read(src_user_config)
             read_hd_name = config['EXTERNAL']['name']
 
-            try:
-                storage = os.listdir("/media/" + user_name + "/" + read_hd_name)
+            for storage in os.listdir("/media/" + user_name + "/" + read_hd_name):
+                print(storage)
+                print(read_hd_name)
 
-                if read_hd_name == storage:  # If user.ini has external hd name
+                if storage == read_hd_name:  # If user.ini has external hd name
                     print("HD found!")
                     break
                 else:
-                    pass
-            except:
-                # If external HD is not available
-                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
-                print("No HD found...")
-                time.sleep(10)
+                    # If external HD is not available
+                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
+                    print("No HD found...")
+                    time.sleep(10)
 
         while True:
             # Read/Load user.config (backup automatically)

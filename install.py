@@ -18,13 +18,13 @@ create_autostart_folder = home_user + "/.config/autostart"
 print("Please, enter your password. \nLibnotify needs to be installed, so you can receive notifications from Time Machine.")
 os.system("sudo apt install libnotify-bin -y")
 
-# ----Create file if do not exist----#
+# Create file if do not exist
 if os.path.exists(create_autostart_folder):
     pass
 else:
     os.system("mkdir " + create_autostart_folder)
 
-# ----Create/modify .desktop and timemachine.desktop to get username----#
+# Create/modify .desktop and timemachine.desktop to get username
 with open(src_backup_check, "w") as writer:
     writer.write("[Desktop Entry]\n Type=Application\n Exec=/bin/python3 " + home_user + "/.local/share/timemachine/src/backup_check.py\n Hidden=false\n NoDisplay=false\n Name=Time Machine\n Comment=Backup your files\n Icon=" + dst_restore_icon)
 
