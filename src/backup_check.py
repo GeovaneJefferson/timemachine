@@ -125,9 +125,7 @@ class Checker:
                 config.set('DEFAULT', 'backup_now', 'true')
                 config.write(configfile)
 
-                sub.Popen(
-                    "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                    shell=True)
+                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                 sub.Popen("python3 " + src_backup_now_py, shell=True)
                 exit()
 
@@ -152,9 +150,7 @@ class Checker:
                             config.set('DEFAULT', 'backup_now', 'true')
                             config.write(configfile)
 
-                        sub.Popen(
-                            "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                            shell=True)
+                        sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                         sub.call("python3 " + src_backup_now_py, shell=True)
                         time.sleep(60)
                     else:
@@ -168,9 +164,7 @@ class Checker:
                             config.set('DEFAULT', 'backup_now', 'true')
                             config.write(configfile)
 
-                        sub.Popen(
-                            "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                            shell=True)
+                        sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                         sub.call("python3 " + src_backup_now_py, shell=True)
                         time.sleep(60)
                     else:
@@ -184,9 +178,7 @@ class Checker:
                             config.set('DEFAULT', 'backup_now', 'true')
                             config.write(configfile)
 
-                        sub.Popen(
-                            "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                            shell=True)
+                        sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                         sub.call("python3 " + src_backup_now_py, shell=True)
                         time.sleep(60)
                     else:
@@ -200,9 +192,7 @@ class Checker:
                             config.set('DEFAULT', 'backup_now', 'true')
                             config.write(configfile)
 
-                        sub.Popen(
-                            "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                            shell=True)
+                        sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                         sub.call("python3 " + src_backup_now_py, shell=True)
                         time.sleep(60)
                     else:
@@ -216,9 +206,7 @@ class Checker:
                             config.set('DEFAULT', 'backup_now', 'true')
                             config.write(configfile)
 
-                        sub.Popen(
-                            "kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-                            shell=True)
+                        sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5", shell=True)
                         sub.call("python3 " + src_backup_now_py, shell=True)
                         time.sleep(60)
                     else:
