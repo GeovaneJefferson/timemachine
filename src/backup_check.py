@@ -35,18 +35,19 @@ class Checker:
             config.read(src_user_config)
             read_hd_name = config['EXTERNAL']['name']
 
-            for storage in os.listdir("/media/" + user_name + "/" + read_hd_name):
-                print(storage)
-                print(read_hd_name)
+            for storage in os.listdir("/media/" + user_name + "/"):
+                if not storage.startswith('.'):
+                    print("Local media        : ", storage)
+                    print("Saved external name: ", read_hd_name)
 
-                if storage == read_hd_name:  # If user.ini has external hd name
-                    print("HD found!")
-                    break
-                else:
-                    # If external HD is not available
-                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
-                    print("No HD found...")
-                    time.sleep(10)
+            if read_hd_name in storage:  # If user.ini has external hd name
+                print("HD found!")
+                break
+            else:
+                # If external HD is not available
+                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
+                print("No HD found...")
+                time.sleep(10)
 
         while True:
             # Read/Load user.config (backup automatically)
