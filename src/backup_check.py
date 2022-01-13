@@ -28,27 +28,31 @@ time_mode_minutes_30 = ['00', '30']
 
 class Checker:
     def __init__(self):
-        # time.sleep(30)
-        for _ in range(2):
-            # CONFIGPARSER
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            read_hd_name = config['EXTERNAL']['name']
+        print("Time Machine will look for the external hd in 30 seconds...")
+        time.sleep(30)
 
-            for storage in os.listdir("/media/" + user_name + "/"):
-                if not storage.startswith('.'):
-                    print("Local media        : ", storage)
-                    print("Saved external name: ", read_hd_name)
+        # CONFIGPARSER
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        read_hd_name = config['EXTERNAL']['name']
 
-            if read_hd_name in storage:  # If user.ini has external hd name
-                print("HD found!")
-                break
-            else:
-                # If external HD is not available
-                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
-                print("No HD found...")
-                time.sleep(10)
+        storage = []
+        for storage in os.listdir("/media/" + user_name + "/"):
+            if not storage.startswith('.'):
+                print("Local media        : ", storage)
+                print("Saved external name: ", read_hd_name)
 
+        if read_hd_name in storage:  # If user.ini has external hd name
+            print("HD found!")
+            self.begin_to_check()
+        else:
+            # If external HD is not available
+            sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!\n Please, insert your external HD...' 5", shell=True)
+            print("No HD found...")
+            print("Existing...")
+            exit()
+
+    def begin_to_check(self):
         while True:
             # Read/Load user.config (backup automatically)
             config = configparser.ConfigParser()
