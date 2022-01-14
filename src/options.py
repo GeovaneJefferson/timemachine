@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
@@ -14,16 +15,16 @@ get_home_folders = os.listdir(home_user)
 min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 # SRC LOCATION
-# src_user_config = "src/user.ini"
-# src_ui_options = "src/options.ui"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
+src_user_config = "/home/geovane/Downloads/timemachine/src/user.ini"
+src_ui_options = "/home/geovane/Downloads/timemachine/src/options.ui"
+src_restore_icon = "/home/geovane/Downloads/timemachine/src/icons/restore_48.png"
+src_backup_py = "/home/geovane/Downloads/timemachine/src/backup_check.py"
 
 # DST LOCATION
-src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-src_ui_options = home_user + "/.local/share/timemachine/src/options.ui"
-src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_py = home_user + "/.local/share/timemachine/src/backup_check.py"
+# src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
+# src_ui_options = home_user + "/.local/share/timemachine/src/options.ui"
+# src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_py = home_user + "/.local/share/timemachine/src/backup_check.py"
 
 # CONFIGPARSER
 config = configparser.ConfigParser()
@@ -50,7 +51,7 @@ class Options(QMainWindow):
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
         self.button_save.clicked.connect(self.on_buttons_save_clicked)
 
-        #  CHECK FOR FOLDERS:
+        # CHECK FOR FOLDERS:
         read_desktop = config['FOLDER']['desktop']
         read_downloads = config['FOLDER']['downloads']
         read_documents = config['FOLDER']['documents']
@@ -58,30 +59,29 @@ class Options(QMainWindow):
         read_pictures = config['FOLDER']['pictures']
         read_videos = config['FOLDER']['videos']
 
-        #  READ FOLDERS
-        if read_desktop:
+        # READ FOLDERS
+        if read_desktop == "true":
             self.check_desktop.setChecked(True)
 
-        if read_downloads:
+        if read_downloads == "true":
             self.check_downloads.setChecked(True)
 
-        if read_documents:
+        if read_documents == "true":
             self.check_documents.setChecked(True)
 
-        if read_music:
+        if read_music == "true":
             self.check_music.setChecked(True)
 
-        if read_pictures:
+        if read_pictures == "true":
             self.check_pictures.setChecked(True)
 
-        if read_videos:
+        if read_videos == "true":
             self.check_videos.setChecked(True)
 
-
-        # MORE FOLDERS
+        # # MORE FOLDERS
         # vertical_checkbox = 210
         # vertical_label = 170
-        # for self.files in get_home_folders:
+        # for self.files in (get_home_folders):
         #     if not self.files.startswith("."):
         #         if not self.files in ["Desktop", "Documents", "Downloads", "Music", "Videos", "Pictures"]:
         #             label_text = QLabel(self.files, self.folders_frame)
@@ -107,28 +107,28 @@ class Options(QMainWindow):
         fri = config['SCHEDULE']['fri']
         sat = config['SCHEDULE']['sat']
 
-        if sun:
+        if sun == "true":
             self.check_sun.setChecked(True)
 
-        if mon:
+        if mon == "true":
             self.check_mon.setChecked(True)
 
-        if tue:
+        if tue == "true":
             self.check_tue.setChecked(True)
 
-        if wed:
+        if wed == "true":
             self.check_wed.setChecked(True)
 
-        if thu:
+        if thu == "true":
             self.check_thu.setChecked(True)
 
-        if fri:
+        if fri == "true":
             self.check_fri.setChecked(True)
 
-        if sat:
+        if sat == "true":
             self.check_sat.setChecked(True)
 
-        # SCHEDULE OPTIONS
+            # SCHEDULE OPTIONS
         # HOURS
         hrs = (config.get('SCHEDULE', 'hours'))
         hrs = int(hrs)
@@ -170,13 +170,13 @@ class Options(QMainWindow):
         one_time_mode = config['MODE']['one_time_mode']
         more_time_mode = config['MODE']['more_time_mode']
 
-        if one_time_mode:
+        if one_time_mode == "true":
             self.every_combox.setEnabled(False)
             self.label_hours.setEnabled(True)
             self.label_minutes.setEnabled(True)
             self.one_time_mode.setChecked(True)
 
-        if more_time_mode:
+        if more_time_mode == "true":
             self.label_hours.setEnabled(False)
             self.label_minutes.setEnabled(False)
             self.every_combox.setEnabled(True)
