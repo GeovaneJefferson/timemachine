@@ -20,40 +20,35 @@ user_name = getpass.getuser()
 # src_options_py = "src/options.py"
 # src_backup_py = "src/backup_check.py"
 # src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
 # src_user_config = "src/user.ini"
-# src_where_py  = "src/where.py"
+# src_where_py = "src/where.py"
 # src_backup_now = "src/backup_now.py"
 # src_folders_py = "src/options.py"
 # src_backup_icon = "src/icons/backup.png"
 # src_backup_check = "src/backup_check.desktop"
-# src_backup_check_py  = "src/backup_check.py"
-# src_backup_check_desktop = home_user+"/.config/autostart/backup_check.desktop"
+# src_backup_check_py = "src/backup_check.py"
+# src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
 # src_ui = "src/gui.ui"
 
 # DST LOCATION
-src_options_py = home_user + "/.local/share/timemachine/src/options.py"
-src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
-src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
-src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
-src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
-src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
-src_where_py = home_user + "/.local/share/timemachine/src/where.py"
-src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
-src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
-src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
+# src_options_py = home_user + "/.local/share/timemachine/src/options.py"
+# src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
+# src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
+# src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
+# src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
+# src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
+# src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
+# src_where_py = home_user + "/.local/share/timemachine/src/where.py"
+# src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
+# src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
+# src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
 
 # GET HOUR, MINUTE
 now = datetime.now()
 day_name = now.strftime("%a")
 current_hour = now.strftime("%H")
 current_minute = now.strftime("%M")
-
-# CONFIGPARSER
-config = configparser.ConfigParser()
-config.read(src_user_config)
 
 # TIMER
 timer = QtCore.QTimer()
@@ -80,7 +75,9 @@ class TimeMachine(QMainWindow):
 
     def updates(self):
         # READ INI FILE
+        config = configparser.ConfigParser()
         config.read(src_user_config)
+
         auto_backup = config['DEFAULT']['auto_backup']
         read_hd_name = config['EXTERNAL']['name']
         read_last_backup = config['INFO']['latest']
@@ -103,9 +100,6 @@ class TimeMachine(QMainWindow):
         total_current_time = current_hour + current_minute
         total_next_time = next_hour + next_minute
 
-        print(total_current_time)
-        print(total_next_time)
-
         # AUTO BACKUP
         if auto_backup == "true":
             self.auto_checkbox.setChecked(True)
@@ -124,7 +118,7 @@ class TimeMachine(QMainWindow):
                 # SHOW BACKUP NOW BUTTON
                 self.button_backup_now.show()
                 # SET NAME AND COLOR
-                self.label_external_hd.setText("External HD: Conected")
+                self.label_external_hd.setText("External HD: Connected")
                 self.label_external_hd.setFont(QFont('Arial', 10))
                 palette = self.label_external_hd.palette()
                 color = QColor('Green')
@@ -136,7 +130,7 @@ class TimeMachine(QMainWindow):
             # HIDE BACKUP NOW BUTTON
             self.button_backup_now.hide()
             # SET NAME AND COLOR
-            self.label_external_hd.setText("External HD: Disconected")
+            self.label_external_hd.setText("External HD: Disconnected")
             palette = self.label_external_hd.palette()
             color = QColor('Red')
             palette.setColor(QPalette.Foreground, color)
