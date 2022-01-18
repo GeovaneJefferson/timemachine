@@ -78,25 +78,25 @@ class Checker:
             day_name = day_name.lower()
             print("Backup checker is running...")
 
-            if day_name == "sun" and get_schedule_sun:
+            if day_name == "sun" and get_schedule_sun == "true":
                 break
 
-            elif day_name == "mon" and get_schedule_mon:
+            elif day_name == "mon" and get_schedule_mon == "true":
                 break
 
-            elif day_name == "tue" and get_schedule_tue:
+            elif day_name == "tue" and get_schedule_tue == "true":
                 break
 
-            elif day_name == "wed" and get_schedule_wed:
+            elif day_name == "wed" and get_schedule_wed == "true":
                 break
 
-            elif day_name == "thu" and get_schedule_thu:
+            elif day_name == "thu" and get_schedule_thu == "true":
                 break
 
-            elif day_name == "fri" and get_schedule_fri:
+            elif day_name == "fri" and get_schedule_fri == "true":
                 break
 
-            elif day_name == "sat" and get_schedule_sat:
+            elif day_name == "sat" and get_schedule_sat == "true":
                 break
 
             print("No back up for today.")
