@@ -1,17 +1,16 @@
 # Time Machine
 A backup application, created using PYQT (KDE).
 
-## Requeriments:
+## Requirements:
 * python3-pyqt5
 
 sudo apt install python3-pyqt5
 
 ## To install:
--Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
+Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
 
 ## To remove:
-To remove:
--Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "uninstall.py" and press Enter.
+Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "uninstall.py" and press Enter.
 
 App is NOT STABLE YET!
 Still missing features!
