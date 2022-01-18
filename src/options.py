@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore
-from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
@@ -15,10 +14,10 @@ get_home_folders = os.listdir(home_user)
 min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 # SRC LOCATION
-# src_user_config = "src/user.ini"
-# src_ui_options = "src/options.ui"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
+# src_user_config = "/home/geovane/Downloads/timemachine/src/user.ini"
+# src_ui_options = "/home/geovane/Downloads/timemachine/src/options.ui"
+# src_restore_icon = "/home/geovane/Downloads/timemachine/src/icons/restore_48.png"
+# src_backup_py = "/home/geovane/Downloads/timemachine/src/backup_check.py"
 
 # DST LOCATION
 src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
@@ -38,14 +37,17 @@ class Options(QMainWindow):
     def __init__(self):
         super(Options, self).__init__()
         loadUi(src_ui_options, self)
+        # Folders
         self.check_desktop.clicked.connect(self.on_check_desktop_checked)
         self.check_downloads.clicked.connect(self.on_check_downloads_checked)
         self.check_documents.clicked.connect(self.on_check_documents_checked)
         self.check_music.clicked.connect(self.on_check_music_checked)
         self.check_pictures.clicked.connect(self.on_check_pictures_checked)
         self.check_videos.clicked.connect(self.on_check_videos_checked)
+        # Hours
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+        # Times
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
         self.more_time_mode.clicked.connect(self.on_frequency_clicked)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
@@ -107,6 +109,7 @@ class Options(QMainWindow):
         fri = config['SCHEDULE']['fri']
         sat = config['SCHEDULE']['sat']
 
+        # Read user.ini
         if sun == "true":
             self.check_sun.setChecked(True)
 
@@ -128,7 +131,7 @@ class Options(QMainWindow):
         if sat == "true":
             self.check_sat.setChecked(True)
 
-            # SCHEDULE OPTIONS
+        # SCHEDULE OPTIONS
         # HOURS
         hrs = (config.get('SCHEDULE', 'hours'))
         hrs = int(hrs)
@@ -184,167 +187,148 @@ class Options(QMainWindow):
 
     def on_every_combox_changed(self):
         choose_every_combox = self.every_combox.currentIndex()
-        if choose_every_combox == 0:
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if choose_every_combox == 0:
                 config.set('SCHEDULE', 'everytime', '15')
                 config.write(configfile)
 
-        elif choose_every_combox == 1:
-            with open(src_user_config, 'w') as configfile:
+            elif choose_every_combox == 1:
                 config.set('SCHEDULE', 'everytime', '30')
                 config.write(configfile)
 
-        elif choose_every_combox == 2:
-            with open(src_user_config, 'w') as configfile:
+            elif choose_every_combox == 2:
                 config.set('SCHEDULE', 'everytime', '60')
                 config.write(configfile)
 
-        elif choose_every_combox == 3:
-            with open(src_user_config, 'w') as configfile:
+            elif choose_every_combox == 3:
                 config.set('SCHEDULE', 'everytime', '120')
                 config.write(configfile)
 
-        elif choose_every_combox == 4:
-            with open(src_user_config, 'w') as configfile:
+            elif choose_every_combox == 4:
                 config.set('SCHEDULE', 'everytime', '240')
                 config.write(configfile)
 
     def on_check_desktop_checked(self):
-        if self.check_desktop.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_desktop.isChecked():
                 config.set('FOLDER', 'desktop', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('FOLDER', 'desktop', 'false')
-                config.write(configfile)
+
+            config.write(configfile)
 
     def on_check_downloads_checked(self):
-        if self.check_downloads.isChecked():
-            with open(src_user_config, 'w') as configfile:
-                config.set('FOLDER', 'downloads', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_downloads.isChecked():
+                    config.set('FOLDER', 'downloads', 'true')
+            else:
                 config.set('FOLDER', 'downloads', 'false')
-                config.write(configfile)
+
+            config.write(configfile)
 
     def on_check_documents_checked(self):
-        if self.check_documents.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_documents.isChecked():
                 config.set('FOLDER', 'documents', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('FOLDER', 'documents', 'false')
-                config.write(configfile)
+
+            config.write(configfile)
 
     def on_check_music_checked(self):
-        if self.check_music.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_music.isChecked():
                 config.set('FOLDER', 'music', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('FOLDER', 'music', 'false')
-                config.write(configfile)
+
+            config.write(configfile)
 
     def on_check_pictures_checked(self):
-        if self.check_pictures.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_pictures.isChecked():
                 config.set('FOLDER', 'pictures', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('FOLDER', 'pictures', 'false')
-                config.write(configfile)
+
+            config.write(configfile)
 
     def on_check_videos_checked(self):
-        if self.check_videos.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_videos.isChecked():
                 config.set('FOLDER', 'videos', 'true')
-                config.write(configfile)
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('FOLDER', 'videos', 'false')
-                config.write(configfile)
 
-                # SCHEDULE
+            config.write(configfile)
 
     def on_check_sun_clicked(self):
-        if self.check_sun.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_sun.isChecked():
                 config.set('SCHEDULE', 'sun', 'true')
                 config.write(configfile)
                 print("Sun")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'sun', 'false')
                 config.write(configfile)
 
     def on_check_mon_clicked(self):
-        if self.check_mon.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_mon.isChecked():
                 config.set('SCHEDULE', 'mon', 'true')
                 config.write(configfile)
                 print("Mon")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'mon', 'false')
                 config.write(configfile)
 
     def on_check_tue_clicked(self):
-        if self.check_tue.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_tue.isChecked():
                 config.set('SCHEDULE', 'tue', 'true')
                 config.write(configfile)
                 print("Tue")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'tue', 'false')
                 config.write(configfile)
 
     def on_check_wed_clicked(self):
-        if self.check_wed.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_wed.isChecked():
                 config.set('SCHEDULE', 'wed', 'true')
                 config.write(configfile)
                 print("Wed")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'wed', 'false')
                 config.write(configfile)
 
     def on_check_thu_clicked(self):
-        if self.check_thu.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_thu.isChecked():
                 config.set('SCHEDULE', 'thu', 'true')
                 config.write(configfile)
                 print("Thu")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'thu', 'false')
                 config.write(configfile)
 
     def on_check_fri_clicked(self):
-        if self.check_fri.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_fri.isChecked():
                 config.set('SCHEDULE', 'fri', 'true')
                 config.write(configfile)
                 print("Fri")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'fri', 'false')
                 config.write(configfile)
 
     def on_check_sat_clicked(self):
-        if self.check_sat.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.check_sat.isChecked():
                 config.set('SCHEDULE', 'sat', 'true')
                 config.write(configfile)
                 print("Sat")
-        else:
-            with open(src_user_config, 'w') as configfile:
+            else:
                 config.set('SCHEDULE', 'sat', 'false')
                 config.write(configfile)
 
@@ -354,12 +338,10 @@ class Options(QMainWindow):
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'hours', hours)
-            config.write(configfile)
-
-        if hours in min_fix:
-            with open(src_user_config, 'w') as configfile:
+            if hours in min_fix:
                 config.set('SCHEDULE', 'hours', '0' + hours)
-                config.write(configfile)
+
+            config.write(configfile)
 
     def label_minutes_changed(self):
         minutes = self.label_minutes.value()
@@ -367,37 +349,30 @@ class Options(QMainWindow):
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'minutes', minutes)
+            if minutes in min_fix:
+                config.set('SCHEDULE', 'minutes', '0' + minutes)
+
             config.write(configfile)
 
-        if minutes in min_fix:
-            with open(src_user_config, 'w') as configfile:
-                config.set('SCHEDULE', 'minutes', '0' + minutes)
-                config.write(configfile)
-
     def on_frequency_clicked(self):
-        if self.one_time_mode.isChecked():
-            with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:
+            if self.one_time_mode.isChecked():
                 config.set('MODE', 'one_time_mode', 'true')
-                config.write(configfile)
                 print("One time mode selected")
 
-            # DISABLE MORE TIME MODE
-            with open(src_user_config, 'w') as configfile:
+                # DISABLE MORE TIME MODE
                 config.set('MODE', 'more_time_mode', 'false')
-                config.write(configfile)
                 print("More time mode disabled")
-
-        elif self.more_time_mode.isChecked():
-            with open(src_user_config, 'w') as configfile:
-                config.set('MODE', 'more_time_mode', 'true')
                 config.write(configfile)
+
+            elif self.more_time_mode.isChecked():
+                config.set('MODE', 'more_time_mode', 'true')
                 print("Multiple time mode selected")
 
-            # DISABLE ONE TIME MODE
-            with open(src_user_config, 'w') as configfile:
+                # DISABLE ONE TIME MODE
                 config.set('MODE', 'one_time_mode', 'false')
-                config.write(configfile)
                 print("One time mode disabled")
+                config.write(configfile)
 
     def on_buttons_save_clicked(self):
         sub.Popen("python3 " + src_backup_py, shell=True)
