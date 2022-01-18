@@ -114,13 +114,13 @@ class Main:
                 except FileExistsError:
                     pass
 
-                    # After backup is done
-                    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5", shell=True)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('DEFAULT', 'backup_now', 'false')
-                        config.set('INFO', 'latest', day_name + ', ' + current_hour + ':' + current_minute)
-                        config.write(configfile)
-                    exit()
+                # After backup is done
+                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5", shell=True)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('DEFAULT', 'backup_now', 'false')
+                    config.set('INFO', 'latest', day_name + ', ' + current_hour + ':' + current_minute)
+                    config.write(configfile)
+                exit()
 
             except FileNotFoundError:
                 # ---If external HD is not available ---#
