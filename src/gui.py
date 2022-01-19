@@ -31,24 +31,28 @@ user_name = getpass.getuser()
 # src_ui = "src/gui.ui"
 
 # DST LOCATION
-# src_options_py = home_user + "/.local/share/timemachine/src/options.py"
-# src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
-# src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
-# src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
-# src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-# src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-# src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
-# src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
-# src_where_py = home_user + "/.local/share/timemachine/src/where.py"
-# src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
-# src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
-# src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
+src_options_py = home_user + "/.local/share/timemachine/src/options.py"
+src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
+src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
+src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
+src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
+src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
+src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
+src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
+src_where_py = home_user + "/.local/share/timemachine/src/where.py"
+src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
+src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
+src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
 
 # GET HOUR, MINUTE
 now = datetime.now()
 day_name = now.strftime("%a")
 current_hour = now.strftime("%H")
 current_minute = now.strftime("%M")
+
+# READ INI FILE
+config = configparser.ConfigParser()
+config.read(src_user_config)
 
 # TIMER
 timer = QtCore.QTimer()
@@ -66,7 +70,7 @@ class TimeMachine(QMainWindow):
         # BACKUP NOW BUTTON
         self.button_backup_now = QPushButton("Back Up Now", self)
         self.button_backup_now.setGeometry(452, 157, 120, 34)
-        self.button_backup_now.clicked.connect(self.on_button_backup_now_clicked)
+        self.button_backup_now.clicked.connect(self.on_backup_button_now_clicked)
 
         # TIMER
         timer.timeout.connect(self.updates)
@@ -353,7 +357,7 @@ class TimeMachine(QMainWindow):
         # CALL SCHEDULE
         sub.call("python3 " + src_options_py, shell=True)
 
-    def on_button_backup_now_clicked(self):
+    def on_backup_button_now_clicked(self):
         # SET BACKUP NOW TO TRUE
         with open(src_user_config, 'w') as configfile:
             config.set('DEFAULT', 'backup_now', 'true')
