@@ -4,14 +4,13 @@ import pathlib
 from pathlib import Path
 
 home_user = str(Path.home())
-# CURRENT FOLDER
+# Current folder
 src_current_location = pathlib.Path().resolve()
 src_timemachine_desktop = "src/timemachine.desktop"
 src_backup_check = "src/backup_check.desktop"
 
 dst_folder_timemachine = home_user + "/.local/share/timemachine"
 dst_timemachine_desktop = home_user + "/.local/share/applications/timemachine.desktop"
-dst_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
 create_autostart_folder = home_user + "/.config/autostart"
 
 # INSTALL LIBNOTIFY TO GET NOTIFICATION
