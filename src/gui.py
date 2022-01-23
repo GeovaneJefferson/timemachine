@@ -1,158 +1,122 @@
-import subprocess as sub
-import configparser
-import shutil
-import getpass
-import os
-import sys
-import images
-
+from setup import *
 from datetime import datetime
-from pathlib import Path
-from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 
-home_user = str(Path.home())
-user_name = getpass.getuser()
 
-# SRC LOCATION
-# src_options_py = "src/options.py"
-# src_backup_py = "src/backup_check.py"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_user_config = "src/user.ini"
-# src_where_py = "src/where.py"
-# src_backup_now = "src/backup_now.py"
-# src_folders_py = "src/options.py"
-# src_backup_icon = "src/icons/backup.png"
-# src_backup_check = "src/backup_check.desktop"
-# src_backup_check_py = "src/backup_check.py"
-# src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
-# src_ui = "src/gui.ui"
-
-# DST LOCATION
-# src_options_py = home_user + "/.local/share/timemachine/src/options.py"
-# src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
-# src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
-# src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
-# src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-# src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-# src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
-# src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
-# src_where_py = home_user + "/.local/share/timemachine/src/where.py"
-# src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
-# src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
-# src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
-
-# GET HOUR, MINUTE
+# Get current hour, minutes
 now = datetime.now()
 day_name = now.strftime("%a")
 current_hour = now.strftime("%H")
 current_minute = now.strftime("%M")
 
-# TIMER
+# Read ini file
+config = configparser.ConfigParser()
+config.read(src_user_config)
+
+# QTimer
 timer = QtCore.QTimer()
 
 
-class TimeMachine(QMainWindow):
+class UI(QMainWindow):
     def __init__(self):
-        super(TimeMachine, self).__init__()
+        super(UI, self).__init__()
         loadUi(src_ui, self)
-        self.auto_checkbox.clicked.connect(self.on_backup_automatically_toggled)
-        self.button_disk.clicked.connect(self.on_selected_backup_disk_clicked)
-        self.button_options.clicked.connect(self.on_options_clicked)
-        self.button_donate.clicked.connect(self.on_button_donate_clicked)
+        self.setWindowTitle(app_name)
+        appIcon = QIcon(src_restore_icon)
+        self.setWindowIcon(appIcon)
+        self.setFixedHeight(450)
+        self.setFixedWidth(700)
 
-        # BACKUP NOW BUTTON
-        self.button_backup_now = QPushButton("Back Up Now", self)
-        self.button_backup_now.setGeometry(452, 157, 120, 34)
-        self.button_backup_now.clicked.connect(self.on_button_backup_now_clicked)
+        # Connections
+        self.auto_checkbox.clicked.connect(self.automatically_backup)
+        self.btn_external.clicked.connect(self.external_clicked)
+        self.btn_options.clicked.connect(self.options_clicked)
+        self.btn_donate.clicked.connect(self.donate_clicked)
 
-        # TIMER
+        # Backup now btn
+        self.btn_backup_now = QPushButton("Back Up Now", self)
+        self.btn_backup_now.setGeometry(452, 157, 120, 34)
+        self.btn_backup_now.clicked.connect(self.backup_now_clicked)    # Connection
+
+        # Timer
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every second
+        timer.start(500)  # update every second
         self.updates()
 
     def updates(self):
-        # READ INI FILE
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        auto_backup = config['DEFAULT']['auto_backup']
-        read_hd_name = config['EXTERNAL']['name']
-        read_last_backup = config['INFO']['latest']
-        read_next_backup = config['INFO']['next']
+        # Get user.ini
+        get_auto_backup = config['DEFAULT']['auto_backup']
+        get_hd_name = config['EXTERNAL']['name']
+        get_last_backup = config['INFO']['latest']
+        get_next_backup = config['INFO']['next']
         more_time_mode = config['MODE']['more_time_mode']
         everytime = config['SCHEDULE']['everytime']
 
-        # VAR
         next_day = "None"
-        next_hour = (config.get('SCHEDULE', 'hours'))
-        next_minute = (config.get('SCHEDULE', 'minutes'))
-        read_next_backup_sun = (config.get('SCHEDULE', 'sun'))
-        read_next_backup_mon = (config.get('SCHEDULE', 'mon'))
-        read_next_backup_tue = (config.get('SCHEDULE', 'tue'))
-        read_next_backup_wed = (config.get('SCHEDULE', 'wed'))
-        read_next_backup_thu = (config.get('SCHEDULE', 'thu'))
-        read_next_backup_fri = (config.get('SCHEDULE', 'fri'))
-        read_next_backup_sat = (config.get('SCHEDULE', 'sat'))
+        get_next_hour = config['SCHEDULE']['hours']
+        get_next_minute = config['SCHEDULE']['minutes']
+        get_next_backup_sun = config['SCHEDULE']['sun']
+        get_next_backup_mon = config['SCHEDULE']['mon']
+        get_next_backup_tue = config['SCHEDULE']['tue']
+        get_next_backup_wed = config['SCHEDULE']['wed']
+        get_next_backup_thu = config['SCHEDULE']['thu']
+        get_next_backup_fri = config['SCHEDULE']['fri']
+        get_next_backup_sat = config['SCHEDULE']['sat']
 
         total_current_time = current_hour + current_minute
-        total_next_time = next_hour + next_minute
+        total_next_time = get_next_hour + get_next_minute
 
-        # AUTO BACKUP
-        if auto_backup == "true":
+        # Auto backup
+        if get_auto_backup == "true":
             self.auto_checkbox.setChecked(True)
 
-        # SET HD NAME TO LABEL
-        self.label_usb_name.setText(read_hd_name)
-        self.label_usb_name.setFont(QFont('Arial', 18))
+        # Set external name
+        self.set_external_name.setText(get_hd_name)
+        self.set_external_name.setFont(QFont('Arial', 18))
 
         try:
-            # CHECK IF EXTERNAL CAN BE FOUND
-            os.listdir("/media/" + user_name + "/" + read_hd_name)
-            # EXTERNAL NAME AND STATUS
-            if read_hd_name != "":
-                self.label_usb_name.setText(read_hd_name)
-                self.label_usb_name.setFont(QFont('Arial', 18))
-                # SHOW BACKUP NOW BUTTON
-                self.button_backup_now.show()
-                # SET NAME AND COLOR
-                self.label_external_hd.setText("External HD: Connected")
-                self.label_external_hd.setFont(QFont('Arial', 10))
-                palette = self.label_external_hd.palette()
-                color = QColor('Green')
-                palette.setColor(QPalette.Foreground, color)
-                self.label_external_hd.setPalette(palette)
-            else:
-                self.button_backup_now.hide()
-        except FileNotFoundError:
-            # HIDE BACKUP NOW BUTTON
-            self.button_backup_now.hide()
-            # SET NAME AND COLOR
-            self.label_external_hd.setText("External HD: Disconnected")
-            palette = self.label_external_hd.palette()
-            color = QColor('Red')
-            palette.setColor(QPalette.Foreground, color)
-            self.label_external_hd.setPalette(palette)
+            os.listdir("/media/" + user_name + "/" + get_hd_name)   # Check if external can be found
 
-            # LAST BACKUP LABEL
-        if read_last_backup == "":
+            if get_hd_name != "":   # External name and status
+                self.set_external_name.setText(get_hd_name)
+                self.set_external_name.setFont(QFont('Arial', 18))
+                self.btn_backup_now.show()  # Show backup button
+
+                # Set external name and status
+                self.status_external.setText("External HD: Connected")
+                self.status_external.setFont(QFont('Arial', 10))
+                self.status_external.setStyleSheet('Green')
+
+            else:
+                self.btn_backup_now.hide()  # Hide backup now button
+
+        except FileNotFoundError:
+            self.btn_backup_now.hide()  # Hide backup now button
+
+            # Set external name and status
+            self.status_external.setText("External HD: Disconnected")
+            self.status_external.setFont(QFont('Arial', 10))
+            self.status_external.setStyleSheet('red')
+
+        # Last backup label
+        if get_last_backup == "":
             self.label_last_backup.setText("Last Backup: None")
             self.label_last_backup.setFont(QFont('Arial', 10))
         else:
-            self.label_last_backup.setText("Last Backup: " + read_last_backup)
+            self.label_last_backup.setText("Last Backup: " + get_last_backup)
             self.label_last_backup.setFont(QFont('Arial', 10))
 
-        # NEXT BACKUP LABEL
-        if read_next_backup == "":
+        # Next backup label
+        if get_next_backup == "":
             self.label_next_backup.setText("Next Backup: None")
             self.label_next_backup.setFont(QFont('Arial', 10))
         else:
-            self.label_next_backup.setText("Next Backup: " + read_next_backup)
+            self.label_next_backup.setText("Next Backup: " + get_next_backup)
             self.label_next_backup.setFont(QFont('Arial', 10))
 
-            # NEXT BACKUP LABEL(EVERYTIME)
+        # Next backup label(everytime)
         if more_time_mode == "true" and everytime == "15":
             self.label_next_backup.setText("Next Backup: Every 15 minutes")
             self.label_next_backup.setFont(QFont('Arial', 10))
@@ -173,207 +137,204 @@ class TimeMachine(QMainWindow):
             self.label_next_backup.setText("Next Backup: Every 4 hours")
             self.label_next_backup.setFont(QFont('Arial', 10))
 
-        # PRINT CURRENT TIME AND DAY
+        # Print current time and day
         print("Current time:" + current_hour + ":" + current_minute)
         print("Day:" + day_name)
 
         if day_name == "Sun":
-            if read_next_backup_sun == "true" and current_hour <= next_hour and current_minute <= next_minute:
+            if get_next_backup_sun == "true" and current_hour <= get_next_hour and current_minute <= get_next_minute:
                 next_day = "Today"
             else:
-                if read_next_backup_mon == "true":
+                if get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
 
         if day_name == "Mon":
-            if read_next_backup_mon == "true" and total_current_time < total_next_time:
+            if get_next_backup_mon == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_tue == "true":
+                if get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
 
         if day_name == "Tue":
-            if read_next_backup_tue == "true" and total_current_time < total_next_time:
+            if get_next_backup_tue == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_wed == "true":
+                if get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
 
         if day_name == "Wed":
-            if read_next_backup_wed == "true" and total_current_time < total_next_time:
+            if get_next_backup_wed == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_thu == "true":
+                if get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
 
         if day_name == "Thu":
-            if read_next_backup_thu == "true" and total_current_time < total_next_time:
+            if get_next_backup_thu == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_fri == "true":
+                if get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
 
         if day_name == "Fri":
-            if read_next_backup_fri == "true" and total_current_time < total_next_time:
+            if get_next_backup_fri == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_sat == "true":
+                if get_next_backup_sat == "true":
                     next_day = "Sat"
-                elif read_next_backup_sun == "true":
+                elif get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
 
         if day_name == "Sat":
-            if read_next_backup_sat == "true" and total_current_time < total_next_time:
+            if get_next_backup_sat == "true" and total_current_time < total_next_time:
                 next_day = "Today"
             else:
-                if read_next_backup_sun == "true":
+                if get_next_backup_sun == "true":
                     next_day = "Sun"
-                elif read_next_backup_mon == "true":
+                elif get_next_backup_mon == "true":
                     next_day = "Mon"
-                elif read_next_backup_tue == "true":
+                elif get_next_backup_tue == "true":
                     next_day = "Tue"
-                elif read_next_backup_wed == "true":
+                elif get_next_backup_wed == "true":
                     next_day = "Wed"
-                elif read_next_backup_thu == "true":
+                elif get_next_backup_thu == "true":
                     next_day = "Thu"
-                elif read_next_backup_fri == "true":
+                elif get_next_backup_fri == "true":
                     next_day = "Fri"
-                elif read_next_backup_sat == "true":
+                elif get_next_backup_sat == "true":
                     next_day = "Sat"
 
-        # SAVE NEXT BACKUP TO INI FILE
+        # Save next backup to user.ini
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'next', next_day + ', ' + next_hour + ':' + next_minute)
+            config.set('INFO', 'next', next_day + ', ' + get_next_hour + ':' + get_next_minute)
             config.write(configfile)
 
-    def on_selected_backup_disk_clicked(self):
-        # CHOOSE EXTERNAL HD
-        sub.call("python3 " + src_where_py, shell=True)
-
-    def on_backup_automatically_toggled(self):
-        # AUTOMATICALLY BACKUP SELECTED
+    def automatically_backup(self):
+        # Automatically back up selected
         if self.auto_checkbox.isChecked():
             if os.path.exists(src_backup_check_desktop):
                 pass
             else:
-                # COPY SRC .DESKTOP TO DST .DESKTOP
-                shutil.copy(src_backup_check, src_backup_check_desktop)
-                # NOTIFICATION
+                shutil.copy(src_backup_check, src_backup_check_desktop)     # Copy src .desktop to dst .desktop
+                # Notification
                 sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was activated!' 5", shell=True)
-                print("Auto backup was successfully activated!")
 
-                # SET AUTO BACKUP TO TRUE
-                with open(src_user_config, 'w') as configfile:
+                with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                     config.set('DEFAULT', 'auto_backup', 'true')
                     config.write(configfile)
+
+                print("Auto backup was successfully activated!")
         else:
-            # REMOVE .DESKTOP FROM DST
+            # Remove .desktop from dst
             sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was deactivated!' 5", shell=True)
-            print("Auto backup was successfully deactivated!")
             sub.Popen("rm " + src_backup_check_desktop, shell=True)
 
-            # SET AUTO BACKUP TO FALSE
+            # Set auto backup to false
             with open(src_user_config, 'w') as configfile:
                 config.set('DEFAULT', 'auto_backup', 'false')
                 config.write(configfile)
 
-                # START BACKUP CHECK
+            print("Auto backup was successfully deactivated!")
+
+        # Call backup check py
         sub.Popen("python3 " + src_backup_check_py, shell=True)
 
-    def on_options_clicked(self):
-        # CALL SCHEDULE
-        sub.call("python3 " + src_options_py, shell=True)
+    @staticmethod
+    def external_clicked():
+        # CHOOSE EXTERNAL HD
+        sub.call("python3 " + src_where_py, shell=True)
 
-    def on_button_backup_now_clicked(self):
-        # SET BACKUP NOW TO TRUE
+    @staticmethod
+    def backup_now_clicked():
+        # Set backup now to true
         with open(src_user_config, 'w') as configfile:
             config.set('DEFAULT', 'backup_now', 'true')
             config.write(configfile)
 
-            # START BACKUP NOW
+        # Call backup now py
         sub.Popen("python3 " + src_backup_now, shell=True)
 
-    def on_button_donate_clicked(self):
+    @staticmethod
+    def options_clicked():
+        # CALL SCHEDULE
+        sub.call("python3 " + src_options_py, shell=True)
+
+    @staticmethod
+    def donate_clicked():
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
 
 
 app = QApplication(sys.argv)
-main_screen = TimeMachine()
-widget = QtWidgets.QStackedWidget()
-appIcon = QIcon(src_restore_icon)
-widget.setWindowIcon(appIcon)
-widget.addWidget(main_screen)
-widget.setFixedHeight(450)
-widget.setFixedWidth(700)
-widget.setWindowTitle("Time Machine")
-widget.show()
-app.exit(app.exec_())
+main = UI()
+main.show()
+app.exit(app.exec())

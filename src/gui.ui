@@ -67,7 +67,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="button_disk">
+      <widget class="QPushButton" name="btn_external">
        <property name="styleSheet">
         <string notr="true">QPushBUutton{
 border-radius:25px;
@@ -158,14 +158,14 @@ border-radius:25px;
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="button_donate">
+      <widget class="QPushButton" name="btn_donate">
        <property name="text">
         <string>Donate</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="button_options">
+      <widget class="QPushButton" name="btn_options">
        <property name="text">
         <string>Options</string>
        </property>
@@ -189,7 +189,7 @@ border-radius:25px;
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Last Backup  : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_usb_name">
+   <widget class="QLabel" name="set_external_name">
     <property name="geometry">
      <rect>
       <x>455</x>
@@ -221,7 +221,7 @@ border-radius:25px;
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next Backup : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_external_hd">
+   <widget class="QLabel" name="status_external">
     <property name="geometry">
      <rect>
       <x>455</x>
