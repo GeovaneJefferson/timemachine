@@ -1,59 +1,38 @@
-import configparser
-import sys
-import subprocess as sub
-import os
+from setup import *
 
-from pathlib import Path
-from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-
-home_user = str(Path.home())
-get_home_folders = os.listdir(home_user)
-min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-# SRC LOCATION
-# src_user_config = "src/user.ini"
-# src_ui_options = "src/options.ui"
-# src_restore_icon = "src/icons/restore_48.png"
-# src_backup_py = "src/backup_check.py"
-
-# DST LOCATION
-src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-src_ui_options = home_user + "/.local/share/timemachine/src/options.ui"
-src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_py = home_user + "/.local/share/timemachine/src/backup_check.py"
-
-# CONFIGPARSER
+# Configparser
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
-# TIMER
+# Timer
 timer = QtCore.QTimer()
 
 
-class Options(QMainWindow):
+class UI(QMainWindow):
     def __init__(self):
-        super(Options, self).__init__()
+        super(UI, self).__init__()
         loadUi(src_ui_options, self)
-        # Folders
+        self.setWindowTitle("Options Screen")
+        appIcon = QIcon(src_restore_icon)
+        self.setWindowIcon(appIcon)
+        self.setFixedHeight(550)
+        self.setFixedWidth(800)
+
+        # Connections
         self.check_desktop.clicked.connect(self.on_check_desktop_checked)
         self.check_downloads.clicked.connect(self.on_check_downloads_checked)
         self.check_documents.clicked.connect(self.on_check_documents_checked)
         self.check_music.clicked.connect(self.on_check_music_checked)
         self.check_pictures.clicked.connect(self.on_check_pictures_checked)
         self.check_videos.clicked.connect(self.on_check_videos_checked)
-        # Hours
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_minutes.valueChanged.connect(self.label_minutes_changed)
-        # Times
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
         self.more_time_mode.clicked.connect(self.on_frequency_clicked)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
         self.button_save.clicked.connect(self.on_buttons_save_clicked)
 
-        # CHECK FOR FOLDERS:
+        # Get user.ini
         read_desktop = config['FOLDER']['desktop']
         read_downloads = config['FOLDER']['downloads']
         read_documents = config['FOLDER']['documents']
@@ -61,7 +40,26 @@ class Options(QMainWindow):
         read_pictures = config['FOLDER']['pictures']
         read_videos = config['FOLDER']['videos']
 
-        # READ FOLDERS
+        sun = config['SCHEDULE']['sun']
+        mon = config['SCHEDULE']['mon']
+        tue = config['SCHEDULE']['tue']
+        wed = config['SCHEDULE']['wed']
+        thu = config['SCHEDULE']['thu']
+        fri = config['SCHEDULE']['fri']
+        sat = config['SCHEDULE']['sat']
+
+        get_everytime = config['SCHEDULE']['everytime']
+
+        # Schedule options
+        # Hours
+        hrs = int(config['SCHEDULE']['hours'])
+        self.label_hours.setValue(hrs)
+
+        # Minutes
+        min = int(config['SCHEDULE']['minutes'])
+        self.label_minutes.setValue(min)
+
+        # Read folders
         if read_desktop == "true":
             self.check_desktop.setChecked(True)
 
@@ -100,16 +98,6 @@ class Options(QMainWindow):
         #             folders_checkbox.clicked.connect(lambda ch, text=self.text: print(text))
         #             folders_checkbox.clicked.connect(lambda ch, text=self.text: self.here(text))
 
-        # CHECK FOR SCHEDULE:
-        sun = config['SCHEDULE']['sun']
-        mon = config['SCHEDULE']['mon']
-        tue = config['SCHEDULE']['tue']
-        wed = config['SCHEDULE']['wed']
-        thu = config['SCHEDULE']['thu']
-        fri = config['SCHEDULE']['fri']
-        sat = config['SCHEDULE']['sat']
-
-        # Read user.ini
         if sun == "true":
             self.check_sun.setChecked(True)
 
@@ -131,45 +119,33 @@ class Options(QMainWindow):
         if sat == "true":
             self.check_sat.setChecked(True)
 
-        # SCHEDULE OPTIONS
-        # HOURS
-        hrs = (config.get('SCHEDULE', 'hours'))
-        hrs = int(hrs)
-        self.label_hours.setValue(hrs)
-
-        # MINUTES
-        min = (config.get('SCHEDULE', 'minutes'))
-        min = int(min)
-        self.label_minutes.setValue(min)
-
-        # EVERYTIME
-        read_everytime = config['SCHEDULE']['everytime']
-        if read_everytime == "15":
+        # Everytime
+        if get_everytime == "15":
             self.every_combox.setCurrentIndex(0)
 
-        elif read_everytime == "30":
+        elif get_everytime == "30":
             self.every_combox.setCurrentIndex(1)
 
-        elif read_everytime == "60":
+        elif get_everytime == "60":
             self.every_combox.setCurrentIndex(2)
 
-        elif read_everytime == "120":
+        elif get_everytime == "120":
             self.every_combox.setCurrentIndex(3)
 
-        elif read_everytime == "240":
+        elif get_everytime == "240":
             self.every_combox.setCurrentIndex(4)
 
-        # TIMER
+        # Timer
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every second
+        timer.start(500)  # update every second
         self.updates()
 
     def updates(self):
-        # CONFIGPARSER
+        # Configparser
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        # FREQUENCY CHECK
+        # Frequency check
         one_time_mode = config['MODE']['one_time_mode']
         more_time_mode = config['MODE']['more_time_mode']
 
@@ -374,20 +350,13 @@ class Options(QMainWindow):
                 print("One time mode disabled")
                 config.write(configfile)
 
-    def on_buttons_save_clicked(self):
-        sub.Popen("python3 " + src_backup_py, shell=True)
+    @staticmethod
+    def on_buttons_save_clicked():
+        sub.Popen("python3 " + src_backup_py, shell=True)   # Call backup py
         exit()
 
 
-# main
 app = QApplication(sys.argv)
-widget = QtWidgets.QStackedWidget()
-appIcon = QIcon(src_restore_icon)
-widget.setWindowIcon(appIcon)
-main_window = Options()
-widget.addWidget(main_window)
-widget.setFixedHeight(550)
-widget.setFixedWidth(800)
-widget.setWindowTitle("Options")
-widget.show()
-sys.exit(app.exec_())
+main = UI()
+main.show()
+sys.exit(app.exec())

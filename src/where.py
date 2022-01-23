@@ -1,44 +1,25 @@
-import subprocess as sub
-import configparser
-import getpass
-import os
-import sys
+from setup import *
 
-from pathlib import Path
-from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-
-user_name = getpass.getuser()
-home_user = str(Path.home())
-local_media = os.listdir("/media/" + user_name + "/")
-
-# SRC LOCATION
-# src_where_py = "src/where.py"
-# src_user_config = "src/user.ini"
-# src_ui_where = "src/where.ui"
-# src_restore_small_icon = "src/icons/restore_small.png"
-
-# DST LOCATION
-src_where_py = home_user + "/.local/share/timemachine/src/where.py"
-src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-src_ui_where = home_user + "/.local/share/timemachine/src/where.ui"
-src_restore_small_icon = home_user + "/.local/share/timemachine/src/icons/restore_small.png"
-
-# CONFIGPARSER
+# Configparser
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
 
-class TimeMachine(QMainWindow):
+class UI(QMainWindow):
     def __init__(self):
-        super(TimeMachine, self).__init__()
+        super(UI, self).__init__()
         loadUi(src_ui_where, self)
-        self.button_where_cancel.clicked.connect(self.on_button_where_cancel_clicked)
-        self.button_where_refresh.clicked.connect(self.on_button_where_refresh_clicked)
+        self.setWindowTitle("External Screen")
+        appIcon = QIcon(src_restore_icon)
+        self.setWindowIcon(appIcon)
+        self.setFixedHeight(325)
+        self.setFixedWidth(400)
 
-        # ADD BUTTONS AND IMAGES FOR EACH HD
+        # Connections
+        self.button_where_cancel.clicked.connect(self.btn_cancel_clicked)
+        self.button_where_refresh.clicked.connect(self.btn_refresh_clicked)
+
+        # Add buttons and images for each external
         vertical = 20
         vertical_img = 32
         for self.storage in local_media:
@@ -58,7 +39,8 @@ class TimeMachine(QMainWindow):
             button.show()
             button.clicked.connect(lambda ch, text=text: self.on_button_clicked(text))
 
-    def on_button_clicked(self, choose):
+    @staticmethod
+    def on_button_clicked(choose):
         # Read/Load user.config (backup automatically)
         with open(src_user_config, 'w') as configfile:
             config.set('EXTERNAL', 'hd', '/media/' + user_name + '/' + choose)
@@ -66,23 +48,17 @@ class TimeMachine(QMainWindow):
             config.write(configfile)
             exit()
 
-    def on_button_where_cancel_clicked(self):
+    @staticmethod
+    def btn_cancel_clicked():
         exit()
 
-    def on_button_where_refresh_clicked(self):
-        sub.Popen("python3 " + src_where_py, shell=True)
+    @staticmethod
+    def btn_refresh_clicked():
+        sub.Popen("python3 " + src_where_py, shell=True)  # Call where py
         exit()
 
 
-# main
 app = QApplication(sys.argv)
-main_screen = TimeMachine()
-widget = QtWidgets.QStackedWidget()
-appIcon = QIcon("src/icons/restore.png")
-widget.setWindowIcon(appIcon)
-widget.addWidget(main_screen)
-widget.setFixedHeight(325)
-widget.setFixedWidth(400)
-widget.setWindowTitle("External HD")
-widget.show()
-sys.exit(app.exec_())
+main = UI()
+main.show()
+app.exit(app.exec())
