@@ -196,7 +196,7 @@ class UI(QMainWindow):
     def on_check_downloads_checked(self):
         with open(src_user_config, 'w') as configfile:
             if self.check_downloads.isChecked():
-                    config.set('FOLDER', 'downloads', 'true')
+                config.set('FOLDER', 'downloads', 'true')
             else:
                 config.set('FOLDER', 'downloads', 'false')
 
