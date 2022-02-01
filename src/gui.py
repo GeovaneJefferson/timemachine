@@ -1,6 +1,4 @@
 from setup import *
-from datetime import datetime
-
 
 # Get current hour, minutes
 now = datetime.now()
@@ -21,8 +19,8 @@ class UI(QMainWindow):
         super(UI, self).__init__()
         loadUi(src_ui, self)
         self.setWindowTitle(app_name)
-        appIcon = QIcon(src_restore_icon)
-        self.setWindowIcon(appIcon)
+        app_icon = QIcon(src_restore_icon)
+        self.setWindowIcon(app_icon)
         self.setFixedHeight(450)
         self.setFixedWidth(700)
 
@@ -34,8 +32,8 @@ class UI(QMainWindow):
 
         # Backup now btn
         self.btn_backup_now = QPushButton("Back Up Now", self)
-        self.btn_backup_now.setGeometry(452, 157, 120, 34)
-        self.btn_backup_now.clicked.connect(self.backup_now_clicked)    # Connection
+        self.btn_backup_now.setGeometry(452, 158, 120, 33)
+        self.btn_backup_now.clicked.connect(self.backup_now_clicked)
 
         # Timer
         timer.timeout.connect(self.updates)
@@ -47,10 +45,10 @@ class UI(QMainWindow):
         config.read(src_user_config)
 
         # Get user.ini
-        get_auto_backup = config['DEFAULT']['auto_backup']
-        get_hd_name = config['EXTERNAL']['name']
+        get_auto_backup = config['BACKUP']['auto_backup']
         get_last_backup = config['INFO']['latest']
         get_next_backup = config['INFO']['next']
+        get_hd_name = config['EXTERNAL']['name']
         more_time_mode = config['MODE']['more_time_mode']
         everytime = config['SCHEDULE']['everytime']
 
@@ -77,9 +75,9 @@ class UI(QMainWindow):
         self.set_external_name.setFont(QFont('Arial', 18))
 
         try:
-            os.listdir("/media/" + user_name + "/" + get_hd_name)   # Check if external can be found
+            os.listdir("/media/" + user_name + "/" + get_hd_name)  # Check if external can be found
 
-            if get_hd_name != "":   # External name and status
+            if get_hd_name != "":  # External name and status
                 self.set_external_name.setText(get_hd_name)
                 self.set_external_name.setFont(QFont('Arial', 18))
                 self.btn_backup_now.show()  # Show backup button
@@ -87,8 +85,7 @@ class UI(QMainWindow):
                 # Set external name and status
                 self.status_external.setText("External HD: Connected")
                 self.status_external.setFont(QFont('Arial', 10))
-                self.status_external.setStyleSheet('Green')
-
+                self.status_external.setStyleSheet('color: green')
             else:
                 self.btn_backup_now.hide()  # Hide backup now button
 
@@ -98,7 +95,7 @@ class UI(QMainWindow):
             # Set external name and status
             self.status_external.setText("External HD: Disconnected")
             self.status_external.setFont(QFont('Arial', 10))
-            self.status_external.setStyleSheet('red')
+            self.status_external.setStyleSheet('color: red')
 
         # Last backup label
         if get_last_backup == "":
@@ -285,23 +282,21 @@ class UI(QMainWindow):
             if os.path.exists(src_backup_check_desktop):
                 pass
             else:
-                shutil.copy(src_backup_check, src_backup_check_desktop)     # Copy src .desktop to dst .desktop
-                # Notification
-                sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was activated!' 5", shell=True)
+                shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy src .desktop to dst .desktop
+                auto_backup_notification()  # Call auto backup notification
 
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                    config.set('DEFAULT', 'auto_backup', 'true')
+                    config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
 
                 print("Auto backup was successfully activated!")
         else:
-            # Remove .desktop from dst
-            sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was deactivated!' 5", shell=True)
-            sub.Popen("rm " + src_backup_check_desktop, shell=True)
+            auto_backup_off_notification()  # Call auto backup off notification
+            sub.Popen("rm " + src_backup_check_desktop, shell=True)     # Remove .desktop from dst
 
             # Set auto backup to false
             with open(src_user_config, 'w') as configfile:
-                config.set('DEFAULT', 'auto_backup', 'false')
+                config.set('BACKUP', 'auto_backup', 'false')
                 config.write(configfile)
 
             print("Auto backup was successfully deactivated!")
@@ -311,14 +306,14 @@ class UI(QMainWindow):
 
     @staticmethod
     def external_clicked():
-        # CHOOSE EXTERNAL HD
+        # Choose external hd
         sub.call("python3 " + src_where_py, shell=True)
 
     @staticmethod
     def backup_now_clicked():
         # Set backup now to true
         with open(src_user_config, 'w') as configfile:
-            config.set('DEFAULT', 'backup_now', 'true')
+            config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
         # Call backup now py
@@ -326,7 +321,7 @@ class UI(QMainWindow):
 
     @staticmethod
     def options_clicked():
-        # CALL SCHEDULE
+        # Call schedule
         sub.call("python3 " + src_options_py, shell=True)
 
     @staticmethod
