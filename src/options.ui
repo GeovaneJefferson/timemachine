@@ -322,60 +322,6 @@
           <height>481</height>
          </rect>
         </property>
-        <widget class="QWidget" name="layoutWidget_2">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>11</y>
-           <width>201</width>
-           <height>164</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QCheckBox" name="check_desktop">
-            <property name="text">
-             <string>Desktop</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="check_downloads">
-            <property name="text">
-             <string>Downloads</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="check_documents">
-            <property name="text">
-             <string>Documents</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="check_music">
-            <property name="text">
-             <string>Music</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="check_pictures">
-            <property name="text">
-             <string>Pictures</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="check_videos">
-            <property name="text">
-             <string>Videos</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </widget>
      </item>

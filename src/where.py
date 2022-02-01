@@ -1,6 +1,6 @@
 from setup import *
 
-# Configparser
+# Read ini file
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
@@ -19,25 +19,40 @@ class UI(QMainWindow):
         self.button_where_cancel.clicked.connect(self.btn_cancel_clicked)
         self.button_where_refresh.clicked.connect(self.btn_refresh_clicked)
 
-        # Add buttons and images for each external
-        vertical = 20
-        vertical_img = 32
-        for self.storage in local_media:
-            print(self.storage)
-            label_image = QLabel(self)
-            pixmap = QPixmap(src_restore_small_icon)
-            label_image.setPixmap(pixmap)
-            label_image.setFixedSize(48, 48)
-            label_image.move(30, vertical_img)
-            vertical_img = vertical_img + 50
+        self.external()
 
-            button = QPushButton(self.storage, self.where_frame)
-            button.setFixedSize(280, 30)
-            button.move(60, vertical)
-            vertical = vertical + 50
-            text = button.text()
-            button.show()
-            button.clicked.connect(lambda ch, text=text: self.on_button_clicked(text))
+    def external(self):
+        try:
+            # Get local media
+            local_media = os.listdir("/media/" + user_name + "/")
+
+            # Add buttons and images for each external
+            vertical = 20
+            vertical_img = 32
+            for self.storage in local_media:
+                print(self.storage)
+                label_image = QLabel(self)
+                pixmap = QPixmap(src_restore_small_icon)
+                label_image.setPixmap(pixmap)
+                label_image.setFixedSize(48, 48)
+                label_image.move(30, vertical_img)
+                vertical_img = vertical_img + 50
+
+                button = QPushButton(self.storage, self.where_frame)
+                button.setFixedSize(280, 30)
+                button.move(60, vertical)
+                vertical = vertical + 50
+                text = button.text()
+                button.show()
+                button.clicked.connect(lambda ch, text=text: self.on_button_clicked(text))
+
+        except FileNotFoundError:
+            none_external = QLabel("No external devices mounted or available...", self.where_frame)
+            none_external.setGeometry(60, 80, 300, 100)
+            none_external.setFont(QFont('Arial', 10))
+            none_external.setStyleSheet('color: red')
+
+            print("No external devices mounted or available...")
 
     @staticmethod
     def on_button_clicked(choose):

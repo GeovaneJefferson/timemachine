@@ -59,7 +59,7 @@ def set_wallpaper():
     with open(path_flat, "r") as reader:
         for apps in reader:
             Read_The_File = reader.readline()
-            sub.call("flatpak install flathub -y --noninteractive  "+Read_The_File,shell=True)
+            sub.call("flatpak install flathub -y --noninteractive  " + Read_The_File, shell=True)
             
     print("flatpaks apps was restored successfully!")
     exit()
