@@ -1,10 +1,5 @@
 from setup import *
 
-# Get current hour, minutes
-now = datetime.now()
-day_name = now.strftime("%a")
-current_hour = now.strftime("%H")
-current_minute = now.strftime("%M")
 
 # Read ini file
 config = configparser.ConfigParser()
@@ -23,6 +18,7 @@ class UI(QMainWindow):
         self.setWindowIcon(app_icon)
         self.setFixedHeight(450)
         self.setFixedWidth(700)
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowSystemMenuHint)
 
         # Connections
         self.auto_checkbox.clicked.connect(self.automatically_backup)
@@ -37,12 +33,18 @@ class UI(QMainWindow):
 
         # Timer
         timer.timeout.connect(self.updates)
-        timer.start(500)  # update every second
+        timer.start(1000)  # update every second
         self.updates()
 
     def updates(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
+
+        # Get current hour, minutes
+        now = datetime.now()
+        day_name = now.strftime("%a")
+        current_hour = now.strftime("%H")
+        current_minute = now.strftime("%M")
 
         # Get user.ini
         get_auto_backup = config['BACKUP']['auto_backup']
@@ -316,8 +318,8 @@ class UI(QMainWindow):
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
-        # Call backup now py
-        sub.Popen("python3 " + src_backup_now, shell=True)
+            # Call backup now py
+            sub.Popen("python3 " + src_backup_now, shell=True)
 
     @staticmethod
     def options_clicked():

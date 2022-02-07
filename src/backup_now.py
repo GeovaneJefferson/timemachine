@@ -1,4 +1,3 @@
-from gui import *
 from setup import *
 
 # Read ini file
@@ -34,13 +33,15 @@ class CLI:
 
     def backup_now_pressed(self):
         # Backup now True
-        if self.backup_now_checker:  # Read user.ini (setup.py)
+        if self.backup_now_checker == "true":  # Read user.ini (setup.py)
             try:
                 # TMB folders
                 if os.path.exists(self.create_tmb):
+                    print("TMB folders inside external, already exist.")
                     pass
                 else:
                     os.system(self.create_cmd + self.create_tmb)
+                    print("TMB folders inside external, was created.")
             except:
                 print("Error trying to create TMB folder")
                 exit()
