@@ -313,6 +313,8 @@ class UI(QMainWindow):
 
     @staticmethod
     def backup_now_clicked():
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         # Set backup now to true
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'true')
