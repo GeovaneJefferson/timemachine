@@ -40,8 +40,9 @@ class CLI:
                     print("TMB folders inside external, already exist.")
                     pass
                 else:
+                    print("TMB folder inside external, was created.")
                     os.system(self.create_cmd + self.create_tmb)
-                    print("TMB folders inside external, was created.")
+
             except:
                 print("Error trying to create TMB folder")
                 exit()
