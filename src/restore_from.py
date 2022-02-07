@@ -1,24 +1,10 @@
-import subprocess as sub
-import configparser
-import getpass
-import datetime
-import os
-import sys
-
-from pathlib import Path
-from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import * 
-from PyQt5.QtGui import * 
-
-home_user = str(Path.home())
-user_name = getpass.getuser()
+from setup import *
 
 src_user_config = "src/user.ini"
 src_restore_icon = "src/icons/restore_48.png"
-src_ui_restore = "src/restore.ui"
+src_ui_restore = "restore.ui"
 
-#dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
+# dst_user_config = home_user+"/.local/share/timemachine/src/user.ini"
 
 desktop_selected = False
 downloads_selected = False
@@ -34,18 +20,18 @@ image_selected = False
 video_selected = False
 other_selected = False
 
-#CONFIGPARSER
+# CONFIGPARSER
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
-#TIMER
+# TIMER
 timer = QtCore.QTimer()
 
-class Restore(QMainWindow):
 
+class Restore(QMainWindow):
     def __init__(self):
         super(Restore, self).__init__()
-        loadUi(src_ui_restore,self)
+        loadUi(src_ui_restore, self)
         self.folder_desktop.toggled.connect(self.on_desktop_selected)
         self.folder_downloads.toggled.connect(self.on_desktop_selected)
         self.folder_documents.toggled.connect(self.on_documents_selected)
@@ -59,8 +45,8 @@ class Restore(QMainWindow):
         self.type_image.toggled.connect(self.on_image_selected)
         self.type_video.toggled.connect(self.on_video_selected)
         self.type_other.toggled.connect(self.on_other_selected)
-                
-        #RADIO FOLDER
+
+        # RADIO FOLDER
         if desktop_selected == True:
             print("Desktop")
             self.folder_desktop.setCheck(True)
@@ -78,7 +64,7 @@ class Restore(QMainWindow):
             self.folder_music.setCheck(True)
 
         if pictures_selected == "true":
-            print("Pictures")  
+            print("Pictures")
             self.folder_pictures.setCheck(True)
 
         if videos_selected == True:
@@ -87,14 +73,14 @@ class Restore(QMainWindow):
 
         if videos_selected == True:
             print("videos")
-            self.folder_videos.setCheck(True) 
+            self.folder_videos.setCheck(True)
 
-        #WHEN CHECKBOXES  (SHOW FOLDERS OPTIONS)
-        self.read_hd_name = config['EXTERNAL']['name']    
-        self.tmb_folder = "/media/"+user_name+'/'+'USB'+"/TMB"
+        # WHEN CHECKBOXES  (SHOW FOLDERS OPTIONS)
+        self.read_hd_name = config['EXTERNAL']['name']
+        self.tmb_folder = "/media/" + user_name + '/' + 'USB' + "/TMB"
 
         vertical = 108
-        for self.file in os.listdir(self.tmb_folder):  
+        for self.file in os.listdir(self.tmb_folder):
             if not self.file.startswith('.'):
                 self.when_checkbox = QRadioButton(self.file, self)
                 self.when_checkbox.autoExclusive
@@ -102,29 +88,28 @@ class Restore(QMainWindow):
                 self.when_checkbox.move(10, vertical)
                 vertical = vertical + 30
                 text = self.when_checkbox.text()
-                self.when_checkbox.show()   
-                self.when_checkbox.clicked.connect(lambda ch, text=text : self.test(text))
+                self.when_checkbox.show()
+                self.when_checkbox.clicked.connect(lambda ch, text=text: self.test(text))
 
-    def test(self,x):
+    def test(self, x):
         print(x)
         if self.folder_desktop.isChecked():
-            self.folder_loc = "/Desktop" 
+            self.folder_loc = "/Desktop"
 
         if self.folder_downloads.isChecked():
-            self.folder_loc = "/Downloads" 
+            self.folder_loc = "/Downloads"
 
         if self.folder_documents.isChecked():
-            self.folder_loc = "/Documents" 
+            self.folder_loc = "/Documents"
 
         if self.folder_music.isChecked():
-            self.folder_loc = "/Music" 
+            self.folder_loc = "/Music"
 
         if self.folder_pictures.isChecked():
-            self.folder_loc = "/Pictures" 
+            self.folder_loc = "/Pictures"
 
         if self.folder_videos.isChecked():
-            self.folder_loc = "/Videos" 
-
+            self.folder_loc = "/Videos"
 
     #     #TIMER
     #     timer.timeout.connect(self.updates)
@@ -134,13 +119,12 @@ class Restore(QMainWindow):
     # def updates(self):
     #     #GET FOLDERS
 
-
     def on_desktop_selected(self):
         if self.folder_desktop.isChecked():
-            self.folder_loc = "/Desktop" 
-            go_to = self.tmb_folder+"/27-10-21"+self.folder_loc
+            self.folder_loc = "/Desktop"
+            go_to = self.tmb_folder + "/27-10-21" + self.folder_loc
             when_vert_space = 310
-            for self.file in os.listdir(go_to):  
+            for self.file in os.listdir(go_to):
                 if not self.file.startswith('.'):
                     self.files_checkbox = QCheckBox(self.file, self)
                     self.files_checkbox.autoExclusive
@@ -148,14 +132,14 @@ class Restore(QMainWindow):
                     self.files_checkbox.move(280, when_vert_space)
                     when_vert_space = when_vert_space + 30
                     text = self.files_checkbox.text()
-                    self.files_checkbox.show()  
+                    self.files_checkbox.show()
 
     def on_documents_selected(self):
         if self.folder_documents.isChecked():
-            self.folder_loc = "/Documents" 
-            go_to = self.tmb_folder+"/27-10-21"+self.folder_loc
+            self.folder_loc = "/Documents"
+            go_to = self.tmb_folder + "/27-10-21" + self.folder_loc
             when_vert_space = 310
-            for self.file in os.listdir(go_to):  
+            for self.file in os.listdir(go_to):
                 if not self.file.startswith('.'):
                     self.files_checkbox = QCheckBox(self.file, self)
                     self.files_checkbox.autoExclusive
@@ -163,13 +147,13 @@ class Restore(QMainWindow):
                     self.files_checkbox.move(280, when_vert_space)
                     when_vert_space = when_vert_space + 30
                     text = self.files_checkbox.text()
-                    self.files_checkbox.show()  
+                    self.files_checkbox.show()
             # for root, directories, files in os.walk(loc):
             #     for file in files:
             #         if file.endswith(".txt"):
             #             show_file = (os.path.join(root, file))
             #             print(show_file)
-    
+
     def on_application_selected(self):
         if self.type_application.isChecked():
             print("You did choose application")
@@ -193,6 +177,7 @@ class Restore(QMainWindow):
     def on_other_selected(self):
         if self.type_other.isChecked():
             print("You did choose other")
+
 
 app = QApplication(sys.argv)
 main_screen = Restore()
