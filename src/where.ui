@@ -54,24 +54,11 @@
     <enum>QFrame::Raised</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="button_where_refresh">
-   <property name="geometry">
-    <rect>
-     <x>295</x>
-     <y>281</y>
-     <width>84</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Refresh</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="button_where_cancel">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>281</y>
+     <x>295</x>
+     <y>280</y>
      <width>84</width>
      <height>30</height>
     </rect>

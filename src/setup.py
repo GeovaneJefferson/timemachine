@@ -10,12 +10,12 @@ import images
 
 from pathlib import Path
 from datetime import datetime
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.uic import loadUi
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel, QCheckBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QPushButton, QLabel, QCheckBox
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 
-app_name = "Time Machine - Beta Version"
+app_name = "Time Machine - Alpha Version"
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)
@@ -38,7 +38,6 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_backup_py = "backup_check.py"
 # src_restore_icon = "icons/restore_48.png"
 # src_user_config = "user.ini"
-# src_where_py = "where.py"
 # src_backup_now = "backup_now.py"
 # src_ui_where = "where.ui"
 # src_restore_small_icon = "icons/restore_small.png"
@@ -52,7 +51,6 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_timemachine_desktop = "timemachine.desktop"
 # src_backup_check = "backup_check.desktop"
 
-
 # Home location
 src_options_py = home_user + "/.local/share/timemachine/src/options.py"
 src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
@@ -64,7 +62,6 @@ src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
 src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
 src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
 src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
-src_where_py = home_user + "/.local/share/timemachine/src/where.py"
 src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
 src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
 src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
@@ -73,13 +70,14 @@ src_restore_small_icon = home_user + "/.local/share/timemachine/src/icons/restor
 src_ui_options = home_user + "/.local/share/timemachine/src/options.ui"
 src_backup_py = home_user + "/.local/share/timemachine/src/backup_check.py"
 
+
 # Notifications
 def auto_backup_notification():
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was activated!' 5", shell=True)
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup is enable!' 5", shell=True)
 
 
 def auto_backup_off_notification():
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was deactivated!' 5", shell=True)
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup is disable!' 5", shell=True)
 
 
 def will_start_shortly_notification():

@@ -42,18 +42,22 @@ class CLI:
         # .Desktop
         with open(self.src_timemachine_desktop, "w") as writer:
             writer.write(
-                "[Desktop Entry]\n Version=1.0\n Type=Application\n Name=Time Machine\n Comment=Backup your files\n Icon=" + self.home_user + '/.local/share/timemachine/src/icons/restore.png\n Exec=python3 ' + self.home_user + '/.local/share/timemachine/src/gui.py\n Path=' + self.home_user + "/.local/share/timemachine/\n Categories=Settings\n StartupWMClass=Gui.py\n Terminal=false")
+                "[Desktop Entry]\n Version=1.0\n Type=Application\n Name=Time Machine\n Comment=Backup your files\n Icon=" + self.home_user + '/.local/share/timemachine/src/icons/restore.png\n Exec=python3 ' + self.home_user + '/.local/share/timemachine/src/gui.py\n Path=' + self.home_user + "/.local/share/timemachine/\n Categories=System\n StartupWMClass=Gui.py\n Terminal=false")
 
-        # Copy current Time Machine folder to user
-        shutil.copytree(self.get_current_location, self.dst_folder_timemachine)     # Copy current folder to destination folder
-        shutil.copy(self.src_timemachine_desktop, self.dst_timemachine_desktop)     # Copy .desktop and .timemachine.desktop to destination folder
+        try:
+            # Copy current Time Machine folder to user
+            shutil.copytree(self.get_current_location, self.dst_folder_timemachine)     # Copy current folder to destination folder
+            shutil.copy(self.src_timemachine_desktop, self.dst_timemachine_desktop)     # Copy .desktop and .timemachine.desktop to destination folder
 
-        # Remove env folder from user
-        os.system("rm -rf " + self.dst_env_loc)
+            # Remove env folder from user
+            os.system("rm -rf " + self.dst_env_loc)
 
-        print("Program was installed!")
-        # Install libnotify to get notification
-        print("Libnotify-bin needs to be installed, so you can receive notifications from Time Machine.")
+            print("Program was installed!")
+            # Install libnotify to get notification
+            print("Libnotify-bin needs to be installed, so you can receive notifications from Time Machine.")
+        
+        except FileExistsError:
+            print("Program is already installed!")
 
         exit()
 
