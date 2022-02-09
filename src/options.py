@@ -48,10 +48,14 @@ class UI(QMainWindow):
         # More folders
         vert_space_label = 10
         vert_space_checkbox = vert_space_label  # Same value as vertical space
-        for self.files in get_home_folders:
-            if not self.files.startswith("."):
+        for files in get_home_folders:
+            if not files.startswith("."):
+                # Get folder size
+                getSize = os.popen("du -hs " + home_user + "/" + files.replace(" ", "\ "))
+                print(files)
+
                 # Folders text
-                label_text = QLabel(self.files, self.folders_frame)
+                label_text = QLabel(files + "   " + str(getSize.read(4)), self.folders_frame)
                 label_text.setFixedSize(200, 22)
                 label_text.move(40, vert_space_label)
                 vert_space_label += 25  # Position
@@ -111,16 +115,6 @@ class UI(QMainWindow):
         timer.start(500)  # update every second
         self.updates()
 
-    def folders(get):
-        print(get)
-        with open(src_user_config, 'w+') as configfile:
-            if config.has_option('FOLDER', get):
-                config.remove_option('FOLDER', get)
-            else:
-                config.set('FOLDER', get, 'true')
-
-            config.write(configfile)
-
     def updates(self):
         # Configparser
         config = configparser.ConfigParser()
@@ -141,6 +135,15 @@ class UI(QMainWindow):
             self.label_minutes.setEnabled(False)
             self.every_combox.setEnabled(True)
             self.more_time_mode.setChecked(True)
+
+    def folders(get):
+        with open(src_user_config, 'w+') as configfile:
+            if config.has_option('FOLDER', get):
+                config.remove_option('FOLDER', get)
+            else:
+                config.set('FOLDER', get, 'true')
+
+            config.write(configfile)
 
     def on_every_combox_changed(self):
         choose_every_combox = self.every_combox.currentIndex()
