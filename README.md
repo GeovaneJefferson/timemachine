@@ -5,13 +5,13 @@ A backup application, created using PYQT.
 * python3-pyqt5
 
 ## To install:
-Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
+Inside Time Machine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
 
 Example:
 
     python3 install.py
 ## To remove:
-Inside timemachine folder, right click, "open terminal", write "python3", drag and drop "uninstall.py" and press Enter.
+Inside Time Machine folder, right click, "open terminal", write "python3", drag and drop "uninstall.py" and press Enter.
 
 Example:
 

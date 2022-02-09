@@ -63,7 +63,7 @@ class UI(QMainWindow):
                 vert_space_checkbox += 25
                 text = label_text.text().lower()  # Lowercase
                 self.folders_checkbox.show()
-                self.folders_checkbox.clicked.connect(lambda ch, text=text: self.folders(text))
+                self.folders_checkbox.clicked.connect(lambda ch: self.folders(text))
 
                 # Activate checkboxes in user.ini
                 if text in get_ini_folders:
@@ -111,14 +111,13 @@ class UI(QMainWindow):
         timer.start(500)  # update every second
         self.updates()
 
-    @staticmethod
-    def folders(x):
-        print(x)
+    def folders(get):
+        print(get)
         with open(src_user_config, 'w+') as configfile:
-            if config.has_option('FOLDER', x):
-                config.remove_option('FOLDER', x)
+            if config.has_option('FOLDER', get):
+                config.remove_option('FOLDER', get)
             else:
-                config.set('FOLDER', x, 'true')
+                config.set('FOLDER', get, 'true')
 
             config.write(configfile)
 
@@ -278,8 +277,7 @@ class UI(QMainWindow):
                 print("One time mode disabled")
                 config.write(configfile)
 
-    @staticmethod
-    def on_buttons_save_clicked():
+    def on_buttons_save_clicked(self):
         sub.Popen("python3 " + src_backup_py, shell=True)  # Call backup py
         exit()
 

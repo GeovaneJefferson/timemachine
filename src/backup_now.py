@@ -8,32 +8,32 @@ config.read(src_user_config)
 class CLI:
     def __init__(self):
         # Terminal commands
-        self.copy_cmd = "rsync -avzh "
-        self.create_cmd = "mkdir "
+        self.copyCmd = "rsync -avzh "
+        self.createCmd = "mkdir "
 
         # Get hour, minute
-        self.date_time = datetime.now()
-        self.day_name = (self.date_time.strftime("%a"))
-        self.date_day = (self.date_time.strftime("%d"))
-        self.date_month = (self.date_time.strftime("%m"))
-        self.date_year = (self.date_time.strftime("%y"))
-        self.current_hour = self.date_time.strftime("%H")
-        self.current_minute = self.date_time.strftime("%M")
+        self.dateTime = datetime.now()
+        self.dayName = self.dateTime.strftime("%a")
+        self.dateDay = self.dateTime.strftime("%d")
+        self.dateMonth = self.dateTime.strftime("%m")
+        self.dateYear = self.dateTime.strftime("%y")
+        self.currentHour = self.dateTime.strftime("%H")
+        self.currentMinute = self.dateTime.strftime("%M")
 
         # Get user.ini
-        self.get_ini_folders = config.options('FOLDER')
-        self.get_hd_loc = config['EXTERNAL']['hd']
-        self.backup_now_checker = config['BACKUP']['backup_now']
+        self.getIniFolders = config.options('FOLDER')
+        self.getExternalLocation = config['EXTERNAL']['hd']
+        self.backupNowChecker = config['BACKUP']['backup_now']
 
         # Create tmb folder
-        self.create_tmb = self.get_hd_loc + "/TMB"
-        self.date_folder = self.create_tmb + "/" + self.date_day + "-" + self.date_month + "-" + self.date_year
+        self.create_tmb = self.getExternalLocation + "/TMB"
+        self.date_folder = self.create_tmb + "/" + self.dateDay + "-" + self.dateMonth + "-" + self.dateYear
 
         self.backup_now_pressed()
 
     def backup_now_pressed(self):
         # Backup now True
-        if self.backup_now_checker == "true":  # Read user.ini (setup.py)
+        if self.backupNowChecker == "true":  # Read user.ini (setup.py)
             try:
                 # TMB folders
                 if os.path.exists(self.create_tmb):
@@ -41,8 +41,7 @@ class CLI:
                     pass
                 else:
                     print("TMB folder inside external, was created.")
-                    os.system(self.create_cmd + self.create_tmb)
-
+                    os.system(self.createCmd + self.create_tmb)
             except:
                 print("Error trying to create TMB folder")
                 exit()
@@ -52,18 +51,18 @@ class CLI:
                 if os.path.exists(self.date_folder):
                     pass
                 else:
-                    os.system(self.create_cmd + self.date_folder)
+                    os.system(self.createCmd + self.date_folder)
             except:
                 print("Error trying to create TMB folder with date")
                 exit()
 
             # Backup all (user.ini true folders)
             try:
-                for itens in self.get_ini_folders:
-                    output = itens.title()  # Capitalize self.get_ini_folders. ex: '/Desktop'
+                for itens in self.getIniFolders:
+                    output = itens.title()  # Capitalize self.getIniFolders. ex: '/Desktop'
                     dst_loc = self.date_folder + '/' + output
                     print(output)
-                    os.system(self.copy_cmd + home_user + '/' + output + '/ ' + dst_loc)
+                    os.system(self.copyCmd + home_user + '/' + output + '/ ' + dst_loc)
 
             except FileExistsError:
                 pass
@@ -73,7 +72,7 @@ class CLI:
 
             with open(src_user_config, 'w') as configfile:
                 config.set('BACKUP', 'backup_now', 'false')
-                config.set('INFO', 'latest', self.day_name + ', ' + self.current_hour + ':' + self.current_minute)
+                config.set('INFO', 'latest', self.dayName + ', ' + self.currentHour + ':' + self.currentMinute)
                 config.write(configfile)
                 exit()
 
@@ -81,5 +80,5 @@ class CLI:
             #     not_available_notification()
 
 
-app = CLI()
-app.__init__()
+main = CLI()
+main.__init__()
