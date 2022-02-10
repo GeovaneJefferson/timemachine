@@ -51,11 +51,13 @@ class UI(QMainWindow):
         for files in get_home_folders:
             if not files.startswith("."):
                 # Get folder size
-                getSize = os.popen("du -hs " + home_user + "/" + files.replace(" ", "\ "))
-                print(files)
+                size = sub.check_output(['du','-sh', home_user + "/" + files]).split()[0].decode('utf-8')
+                if size == "0":
+                    size = ""
+                print(files, size)
 
                 # Folders text
-                label_text = QLabel(files + "   " + str(getSize.read(4)), self.folders_frame)
+                label_text = QLabel(files + "   " + size, self.folders_frame)
                 label_text.setFixedSize(200, 22)
                 label_text.move(40, vert_space_label)
                 vert_space_label += 25  # Position
