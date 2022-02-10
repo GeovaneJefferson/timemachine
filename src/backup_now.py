@@ -59,7 +59,7 @@ class CLI:
             # Backup all (user.ini true folders)
             try:
                 for itens in self.getIniFolders:
-                    output = itens.title()  # Capitalize self.getIniFolders. ex: '/Desktop'
+                    output = itens.title()  # Capitalize first letter. ex: '/Desktop'
                     dst_loc = self.date_folder + '/' + output
                     print(output)
                     os.system(self.copyCmd + home_user + '/' + output + '/ ' + dst_loc)
