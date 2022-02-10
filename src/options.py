@@ -50,14 +50,15 @@ class UI(QMainWindow):
         vert_space_checkbox = vert_space_label  # Same value as vertical space
         for files in get_home_folders:
             if not files.startswith("."):
-                # Get folder size
-                size = sub.check_output(['du','-sh', home_user + "/" + files]).split()[0].decode('utf-8')
-                if size == "0":
-                    size = ""
-                print(files, size)
-
+                # # Get folder size
+                # size = sub.check_output(['du','-sh', home_user + "/" + files]).split()[0].decode('utf-8')
+                # if size == "0":
+                #     size = ""
+                #     print(size)
+                
+                print(files)
                 # Folders text
-                label_text = QLabel(files + "   " + size, self.folders_frame)
+                label_text = QLabel(files, self.folders_frame)
                 label_text.setFixedSize(200, 22)
                 label_text.move(40, vert_space_label)
                 vert_space_label += 25  # Position
@@ -69,7 +70,7 @@ class UI(QMainWindow):
                 vert_space_checkbox += 25
                 text = label_text.text().lower()  # Lowercase
                 self.folders_checkbox.show()
-                self.folders_checkbox.clicked.connect(lambda ch: self.folders(text))
+                self.folders_checkbox.clicked.connect(lambda ch, text=text: self.folders(text))
 
                 # Activate checkboxes in user.ini
                 if text in get_ini_folders:
@@ -138,7 +139,8 @@ class UI(QMainWindow):
             self.every_combox.setEnabled(True)
             self.more_time_mode.setChecked(True)
 
-    def folders(get):
+    def folders(self, get):
+        print("Getting", get)
         with open(src_user_config, 'w+') as configfile:
             if config.has_option('FOLDER', get):
                 config.remove_option('FOLDER', get)
@@ -288,6 +290,9 @@ class UI(QMainWindow):
 
 
 app = QApplication(sys.argv)
+tic = time.time()
 main = UI()
 main.show()
+toc = time.time()
+print('Done in {:.4f} seconds'.format(toc-tic))
 sys.exit(app.exec())
