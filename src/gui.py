@@ -452,6 +452,5 @@ class EXTERNAL(QWidget):
 app = QApplication(sys.argv)
 main = UI()
 externalMain = EXTERNAL()
-
 main.show()
 app.exit(app.exec())
