@@ -8,21 +8,21 @@ config.read(src_user_config)
 class CLI:
     def __init__(self):
         self.storage = []
-        self.get_hd_name = config['EXTERNAL']['name']
+        self.getHDName = config['EXTERNAL']['name']
         self.t = 5
 
-        print("Time Machine will look for the external hd in 30 seconds...")
-        time.sleep(30)
+        self.check_for_external()
 
+    def check_for_external(self):
         try:
             for self.storage in os.listdir("/media/" + user_name + "/"):
                 if not self.storage.startswith('.'):
                     print("Local media        : ", self.storage)
-                    print("Saved external name: ", self.get_hd_name)
+                    print("Saved external name: ", self.getHDName)
 
-            if self.get_hd_name in self.storage:  # If user.ini has external hd name
+            if self.getHDName in self.storage:  # If user.ini has external hd name
                 print("HD found!")
-                self.begin_to_check()
+                self.check_the_date()
             else:
                 not_available_notification()  # Call not available notification (setup.py)
 
@@ -30,25 +30,19 @@ class CLI:
             print("No external devices mounted or available...")
             exit()
 
-    def begin_to_check(self):
+    def check_the_date(self):
         while True:
             # Read/Load user.config (backup automatically)
             config = configparser.ConfigParser()
             config.read(src_user_config)
 
-            get_schedule_sun = (config.get('SCHEDULE', 'sun'))
-            get_schedule_mon = (config.get('SCHEDULE', 'mon'))
-            get_schedule_tue = (config.get('SCHEDULE', 'tue'))
-            get_schedule_wed = (config.get('SCHEDULE', 'wed'))
-            get_schedule_thu = (config.get('SCHEDULE', 'thu'))
-            get_schedule_fri = (config.get('SCHEDULE', 'fri'))
-            get_schedule_sat = (config.get('SCHEDULE', 'sat'))
-
-            next_hour = (config.get('SCHEDULE', 'hours'))
-            next_minute = (config.get('SCHEDULE', 'minutes'))
-
-            # Frequency check
-            one_time_mode = config['MODE']['one_time_mode']
+            get_schedule_sun = config['SCHEDULE']['sun']
+            get_schedule_mon = config['SCHEDULE']['mon']
+            get_schedule_tue = config['SCHEDULE']['tue']
+            get_schedule_wed = config['SCHEDULE']['wed']
+            get_schedule_thu = config['SCHEDULE']['thu']
+            get_schedule_fri = config['SCHEDULE']['fri']
+            get_schedule_sat = config['SCHEDULE']['sat']
 
             # Get date
             day_name = datetime.now()
@@ -80,7 +74,20 @@ class CLI:
             print("No back up for today.")
             exit()
 
-        if one_time_mode:
+        self.check_the_mode()
+
+    def check_the_mode(self):
+        # Read/Load user.config
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        next_hour = config['SCHEDULE']['hours']
+        next_minute = config['SCHEDULE']['minutes']
+
+        # Frequency check
+        one_time_mode = config['MODE']['one_time_mode']
+
+        if one_time_mode == "true":
             while True:
                 now = datetime.now()
                 current_hour = now.strftime("%H")
@@ -108,10 +115,9 @@ class CLI:
                 config.set('BACKUP', 'backup_now', 'true')
                 config.write(configfile)
 
-                will_start_shortly_notification()   # Call will start shortly notification (setup.py)
-
-                # Call backup checker
+                # Open backup checker
                 sub.Popen("python3 " + src_backup_now, shell=True)
+                exit()
 
         else:
             while True:
@@ -119,14 +125,16 @@ class CLI:
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
 
-                more_time_mode = config['MODE']['more_time_mode']
+                # User.ini
+                backupNowChecker = config['BACKUP']['backup_now']
+                moreTimeMode = config['MODE']['more_time_mode']
                 everytime = config['SCHEDULE']['everytime']
 
                 now = datetime.now()
                 current_hour = now.strftime("%H")
                 current_minute = now.strftime("%M")
 
-                print(current_minute)
+                print("Current time: " + current_hour + ":" + current_minute)
                 time.sleep(self.t)
 
                 if everytime == '15':
@@ -135,13 +143,7 @@ class CLI:
                         with open(src_user_config, 'w') as configfile:
                             config.set('BACKUP', 'backup_now', 'true')
                             config.write(configfile)
-
-                            will_start_shortly_notification()   # Call will start shortly notification (setup.py)
-
-                            # Call backup checker
-                            sub.call("python3 " + src_backup_now, shell=True)
-                            time.sleep(60)
-
+                            break
                     else:
                         print("Waiting for the right time to backup...")
                         time.sleep(self.t)
@@ -152,12 +154,7 @@ class CLI:
                         with open(src_user_config, 'w') as configfile:
                             config.set('BACKUP', 'backup_now', 'true')
                             config.write(configfile)
-
-                            will_start_shortly_notification()  # Call will start shortly notification (setup.py)
-
-                            sub.call("python3 " + src_backup_now, shell=True)
-                            time.sleep(60)
-
+                            break
                     else:
                         print("Waiting for the right time to backup...")
                         time.sleep(self.t)
@@ -168,11 +165,7 @@ class CLI:
                         with open(src_user_config, 'w') as configfile:
                             config.set('BACKUP', 'backup_now', 'true')
                             config.write(configfile)
-
-                            will_start_shortly_notification()  # Call will start shortly notification (setup.py)
-
-                            sub.call("python3 " + src_backup_now, shell=True)
-                            time.sleep(60)
+                            break
 
                     else:
                         print("Waiting for the right time to backup...")
@@ -184,11 +177,7 @@ class CLI:
                         with open(src_user_config, 'w') as configfile:
                             config.set('BACKUP', 'backup_now', 'true')
                             config.write(configfile)
-
-                            will_start_shortly_notification()  # Call will start shortly notification (setup.py)
-
-                            sub.call("python3 " + src_backup_now, shell=True)
-                            time.sleep(60)
+                            break
 
                     else:
                         print("Waiting for the right time to backup...")
@@ -200,19 +189,18 @@ class CLI:
                         with open(src_user_config, 'w') as configfile:
                             config.set('BACKUP', 'backup_now', 'true')
                             config.write(configfile)
-
-                            will_start_shortly_notification()  # Call will start shortly notification (setup.py)
-
-                            sub.call("python3 " + src_backup_now, shell=True)
-                            time.sleep(60)
+                            break
 
                     else:
                         print("Waiting for the right time to backup...")
                         time.sleep(self.t)
 
-                if not more_time_mode:
+                if moreTimeMode == "false":
                     break
+
+            # Call backup checker
+            sub.call("python3 " + src_backup_now, shell=True)
+            self.__init__()
 
 
 app = CLI()
-app.__init__()
