@@ -115,7 +115,7 @@ class UI(QMainWindow):
 
         # Timer
         timer.timeout.connect(self.updates)
-        timer.start(500)  # update every second
+        timer.start(1000)  # update every second
         self.updates()
 
     def updates(self):

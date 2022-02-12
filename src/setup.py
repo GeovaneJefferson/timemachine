@@ -80,12 +80,6 @@ def auto_backup_off_notification():
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup is disable!' 5", shell=True)
 
 
-def will_start_shortly_notification():
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'TimeMachine 'Your backup will start shortly...' 5",
-              shell=True)
-    exit()
-
-
 def done_backup_notification():
     # After backup is done
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",
@@ -94,8 +88,15 @@ def done_backup_notification():
 
 def not_available_notification():
     # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your external HD could not be found!' 5", shell=True)
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'No external devices mounted or available...' 5",
+              shell=True)
 
-    print("No HD found...")
-    print("Existing...")
-    exit()
+
+def error_backup():
+    # If error happens
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to back up folders...' 5", shell=True)
+
+
+def error_reading():
+    # If error happens
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to read user.ini...' 5", shell=True)
