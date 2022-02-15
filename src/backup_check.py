@@ -20,7 +20,7 @@ class CLI:
                         print("External found in /media")
                         self.check_the_date()
         except FileNotFoundError:  
-            self.check_for_external_run(self)
+            self.check_for_external_run()
 
     def check_for_external_run(self):
         try:
