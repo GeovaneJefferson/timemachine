@@ -11,61 +11,38 @@ class CLI:
         self.copyCmd = "rsync -avzh "
         self.createCmd = "mkdir "
 
-        self.count = 1
-        self.count_limit = 3
-
         self.create_folders()
 
     def create_folders(self):
-        while self.count < self.count_limit:
-            try:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-
-                # Get hour, minute
-                self.dateTime = datetime.now()
-                self.dayName = self.dateTime.strftime("%a")
-                self.dateDay = self.dateTime.strftime("%d")
-                self.dateMonth = self.dateTime.strftime("%m")
-                self.dateYear = self.dateTime.strftime("%y")
-                self.currentHour = self.dateTime.strftime("%H")
-                self.currentMinute = self.dateTime.strftime("%M")
-
-                # Get user.ini
-                self.getHDName = config['EXTERNAL']['name']
-                self.getIniFolders = config.options('FOLDER')
-                self.getExternalLocation = config['EXTERNAL']['hd']
-                self.backupNowChecker = config['BACKUP']['backup_now']
-
-                # Create tmb folder
-                self.createTMB = self.getExternalLocation + "/TMB"
-                self.dateFolder = self.createTMB + "/" + self.dateDay + "-" + self.dateMonth + "-" + self.dateYear
-                
-                self.start_backup_now()   # If everything goes well, continue
-            
-            except KeyError:
-                self.count += 1
-                print("Trying to read user.ini ", self.count + "/" + self.count_limit)
-                time.sleep(10)
-
-                if self.count == 3:
-                    print("Error trying to read user.ini!")
-                    error_reading()
-                    exit()
-
-    def start_backup_now(self):
         try:
-            os.listdir("/media/" + user_name + "/" + self.getHDName)  # Check if external can be found
-        except FileNotFoundError:
-            try:
-                os.listdir("/run/media/" + user_name + "/" + self.getHDName)  # Opensuse, external is inside "/run"
-            except FileNotFoundError:
-                print("No external devices mounted or available...")
-                not_available_notification()  # Call not available notification (setup.py)
-                exit()
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            
+            # Get hour, minute
+            self.dateTime = datetime.now()
+            self.dayName = self.dateTime.strftime("%a")
+            self.dateDay = self.dateTime.strftime("%d")
+            self.dateMonth = self.dateTime.strftime("%m")
+            self.dateYear = self.dateTime.strftime("%y")
+            self.currentHour = self.dateTime.strftime("%H")
+            self.currentMinute = self.dateTime.strftime("%M")
 
-            self.create_TMB()
-        self.create_TMB()
+            # Get user.ini
+            self.getExternalLocation = config['EXTERNAL']['hd']
+            self.getHDName = config['EXTERNAL']['name']
+            self.getIniFolders = config.options('FOLDER')
+            self.backupNowChecker = config['BACKUP']['backup_now']
+
+            # Create tmb folder
+            self.createTMB = self.getExternalLocation + "/TMB"
+            self.dateFolder = self.createTMB + "/" + self.dateDay + "-" + self.dateMonth + "-" + self.dateYear
+            
+            self.create_TMB()   # If everything goes well, continue
+        
+        except KeyError:
+            print("Error trying to read user.ini!")
+            error_reading()
+            exit()
 
     def create_TMB(self):
         # Backup now True
@@ -129,6 +106,8 @@ class CLI:
 
         # After backup is done
         done_backup_notification()  # Notification
+        time.sleep(60)    
+        sub.Popen("python3 " + src_backup_check_py, shell=True)    # Call backup checker
         exit()
 
 

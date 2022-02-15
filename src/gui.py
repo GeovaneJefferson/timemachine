@@ -27,6 +27,9 @@ class UI(QMainWindow):
         self.btn_options.clicked.connect(self.options_clicked)
         self.btn_donate.clicked.connect(self.donate_clicked)
 
+        # Show username on main screen
+        self.user_name_label.setText("Username : " + user_name)
+
         # Backup now btn
         self.btn_backup_now = QPushButton("Back Up Now", self)
         self.btn_backup_now.resize(120, 34)
@@ -48,25 +51,30 @@ class UI(QMainWindow):
         self.current_hour = now.strftime("%H")
         self.current_minute = now.strftime("%M")
 
-        # Get user.ini
-        self.get_backup_now = config['BACKUP']['backup_now']
-        self.get_auto_backup = config['BACKUP']['auto_backup']
-        self.get_last_backup = config['INFO']['latest']
-        self.get_next_backup = config['INFO']['next']
-        self.get_hd_name = config['EXTERNAL']['name']
-        self.more_time_mode = config['MODE']['more_time_mode']
-        self.everytime = config['SCHEDULE']['everytime']
+        try:
+            # Get user.ini
+            self.get_backup_now = config['BACKUP']['backup_now']
+            self.get_auto_backup = config['BACKUP']['auto_backup']
+            self.get_last_backup = config['INFO']['latest']
+            self.get_next_backup = config['INFO']['next']
+            self.get_hd_name = config['EXTERNAL']['name']
+            self.more_time_mode = config['MODE']['more_time_mode']
+            self.everytime = config['SCHEDULE']['everytime']
 
-        self.next_day = "None"
-        self.get_next_hour = config['SCHEDULE']['hours']
-        self.get_next_minute = config['SCHEDULE']['minutes']
-        self.get_next_backup_sun = config['SCHEDULE']['sun']
-        self.get_next_backup_mon = config['SCHEDULE']['mon']
-        self.get_next_backup_tue = config['SCHEDULE']['tue']
-        self.get_next_backup_wed = config['SCHEDULE']['wed']
-        self.get_next_backup_thu = config['SCHEDULE']['thu']
-        self.get_next_backup_fri = config['SCHEDULE']['fri']
-        self.get_next_backup_sat = config['SCHEDULE']['sat']
+            self.next_day = "None"
+            self.get_next_hour = config['SCHEDULE']['hours']
+            self.get_next_minute = config['SCHEDULE']['minutes']
+            self.get_next_backup_sun = config['SCHEDULE']['sun']
+            self.get_next_backup_mon = config['SCHEDULE']['mon']
+            self.get_next_backup_tue = config['SCHEDULE']['tue']
+            self.get_next_backup_wed = config['SCHEDULE']['wed']
+            self.get_next_backup_thu = config['SCHEDULE']['thu']
+            self.get_next_backup_fri = config['SCHEDULE']['fri']
+            self.get_next_backup_sat = config['SCHEDULE']['sat']
+
+        except KeyError:
+            print("Error trying to read user.ini!")
+            exit()
 
         self.total_current_time = self.current_hour + self.current_minute
         self.total_next_time = self.get_next_hour + self.get_next_minute
@@ -156,90 +164,90 @@ class UI(QMainWindow):
             self.label_next_backup.setFont(QFont('Arial', 10))
 
         if self.day_name == "Sun":
-            if self.self.get_next_backup_sun == "true" and self.current_hour <= self.get_next_hour and self.current_minute <= self.get_next_minute:
+            if self.get_next_backup_sun == "true" and self.current_hour <= self.get_next_hour and self.current_minute <= self.get_next_minute:
                 self.next_day = "Today"
             else:
-                if self.self.get_next_backup_mon == "true":
+                if self.get_next_backup_mon == "true":
                     self.next_day = "Mon"
-                elif self.self.get_next_backup_tue == "true":
+                elif self.get_next_backup_tue == "true":
                     self.next_day = "Tue"
-                elif self.self.get_next_backup_wed == "true":
+                elif self.get_next_backup_wed == "true":
                     self.next_day = "Wed"
-                elif self.self.get_next_backup_thu == "true":
+                elif self.get_next_backup_thu == "true":
                     self.next_day = "Thu"
-                elif self.self.get_next_backup_fri == "true":
+                elif self.get_next_backup_fri == "true":
                     self.next_day = "Fri"
-                elif self.self.get_next_backup_sat == "true":
+                elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
-                elif self.self.get_next_backup_sun == "true":
+                elif self.get_next_backup_sun == "true":
                     self.next_day = "Sun"
 
         if self.day_name == "Mon":
-            if self.self.get_next_backup_mon == "true" and self.total_current_time < self.total_next_time:
+            if self.get_next_backup_mon == "true" and self.total_current_time < self.total_next_time:
                 self.next_day = "Today"
             else:
-                if self.self.get_next_backup_tue == "true":
+                if self.get_next_backup_tue == "true":
                     self.next_day = "Tue"
-                elif self.self.get_next_backup_wed == "true":
+                elif self.get_next_backup_wed == "true":
                     self.next_day = "Wed"
-                elif self.self.get_next_backup_thu == "true":
+                elif self.get_next_backup_thu == "true":
                     self.next_day = "Thu"
-                elif self.self.get_next_backup_fri == "true":
+                elif self.get_next_backup_fri == "true":
                     self.next_day = "Fri"
-                elif self.self.get_next_backup_sat == "true":
+                elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
-                elif self.self.get_next_backup_sun == "true":
+                elif self.get_next_backup_sun == "true":
                     self.next_day = "Sun"
-                elif self.self.get_next_backup_mon == "true":
+                elif self.get_next_backup_mon == "true":
                     self.next_day = "Mon"
 
         if self.day_name == "Tue":
-            if self.self.get_next_backup_tue == "true" and self.total_current_time < self.total_next_time:
+            if self.get_next_backup_tue == "true" and self.total_current_time < self.total_next_time:
                 self.next_day = "Today"
             else:
-                if self.self.get_next_backup_wed == "true":
+                if self.get_next_backup_wed == "true":
                     self.next_day = "Wed"
-                elif self.self.get_next_backup_thu == "true":
+                elif self.get_next_backup_thu == "true":
                     self.next_day = "Thu"
-                elif self.self.get_next_backup_fri == "true":
+                elif self.get_next_backup_fri == "true":
                     self.next_day = "Fri"
-                elif self.self.get_next_backup_sat == "true":
+                elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
-                elif self.self.get_next_backup_sun == "true":
+                elif self.get_next_backup_sun == "true":
                     self.next_day = "Sun"
-                elif self.self.get_next_backup_mon == "true":
+                elif self.get_next_backup_mon == "true":
                     self.next_day = "Mon"
-                elif self.self.get_next_backup_tue == "true":
+                elif self.get_next_backup_tue == "true":
                     self.next_day = "Tue"
 
         if self.day_name == "Wed":
-            if self.self.get_next_backup_wed == "true" and self.total_current_time < self.total_next_time:
+            if self.get_next_backup_wed == "true" and self.total_current_time < self.total_next_time:
                 self.next_day = "Today"
             else:
-                if self.self.get_next_backup_thu == "true":
+                if self.get_next_backup_thu == "true":
                     self.next_day = "Thu"
-                elif self.self.get_next_backup_fri == "true":
+                elif self.get_next_backup_fri == "true":
                     self.next_day = "Fri"
-                elif self.self.get_next_backup_sat == "true":
+                elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
-                elif self.self.get_next_backup_sun == "true":
+                elif self.get_next_backup_sun == "true":
                     self.next_day = "Sun"
-                elif self.self.get_next_backup_mon == "true":
+                elif self.get_next_backup_mon == "true":
                     self.next_day = "Mon"
-                elif self.self.get_next_backup_tue == "true":
+                elif self.get_next_backup_tue == "true":
                     self.next_day = "Tue"
-                elif self.self.get_next_backup_wed == "true":
+                elif self.get_next_backup_wed == "true":
                     self.next_day = "Wed"
 
         if self.day_name == "Thu":
-            if self.self.get_next_backup_thu == "true" and self.total_current_time < self.total_next_time:
+            if self.get_next_backup_thu == "true" and self.total_current_time < self.total_next_time:
                 self.next_day = "Today"
             else:
-                if self.self.get_next_backup_fri == "true":
+                if self.get_next_backup_fri == "true":
                     self.next_day = "Fri"
-                elif self.self.get_next_backup_sat == "true":
+                elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
-                elif self.self.get_next_backup_sun == "true":
+                elif self.get_next_backup_sun == "true":
                     self.next_day = "Sun"
                 elif self.get_next_backup_mon == "true":
                     self.next_day = "Mon"
@@ -294,8 +302,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
         # Print current time and day
-        print("Current time:" + self.current_hour + ":" + self.current_minute)
-        print("Day:" + self.day_name)
+        print("Current time: " + self.current_hour + ":" + self.current_minute)
+        print("Today is: " + self.day_name)
 
     def automatically_clicked(self):
         config = configparser.ConfigParser()
@@ -348,7 +356,7 @@ class UI(QMainWindow):
 
     def options_clicked(self):
         # Call schedule
-        sub.run("python3 " + src_options_py, shell=True)
+        sub.call("python3 " + src_options_py, shell=True)
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
@@ -391,19 +399,15 @@ class EXTERNAL(QWidget):
             try:
                 # Get local media
                 local_media = os.listdir(self.media + user_name + "/")
-                print(local_media)
                 self.usedMedia = True
             except:
                 local_media = os.listdir(self.run + user_name + "/")  # Opensuse, external is inside "/run"
-                print(local_media)
                 self.usedRun = True
 
             # Add buttons and images for each external
             vertical = 20
             vertical_img = 32
             for self.storage in local_media:
-                print("Available external:")
-                print(self.storage)
                 label_image = QLabel(self)
                 pixmap = QPixmap(src_restore_small_icon)
                 label_image.setPixmap(pixmap)
@@ -452,7 +456,10 @@ class EXTERNAL(QWidget):
 
 
 app = QApplication(sys.argv)
+tic = time.time()
 main = UI()
 externalMain = EXTERNAL()
 main.show()
+toc = time.time()
+print(f'Time Machine {(toc-tic):.4f} seconds')
 app.exit(app.exec())
