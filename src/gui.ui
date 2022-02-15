@@ -189,7 +189,7 @@ border-radius:25px;
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>455</x>
@@ -202,16 +202,6 @@ border-radius:25px;
      <property name="spacing">
       <number>0</number>
      </property>
-     <item>
-      <widget class="QLabel" name="user_name_label">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Username : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QLabel" name="label_last_backup">
        <property name="autoFillBackground">

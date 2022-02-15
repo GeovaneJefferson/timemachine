@@ -27,9 +27,6 @@ class UI(QMainWindow):
         self.btn_options.clicked.connect(self.options_clicked)
         self.btn_donate.clicked.connect(self.donate_clicked)
 
-        # Show username on main screen
-        self.user_name_label.setText("Username : " + user_name)
-
         # Backup now btn
         self.btn_backup_now = QPushButton("Back Up Now", self)
         self.btn_backup_now.resize(120, 34)
