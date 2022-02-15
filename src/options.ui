@@ -49,8 +49,8 @@
      <property name="bottomMargin">
       <number>0</number>
      </property>
-     <property name="verticalSpacing">
-      <number>6</number>
+     <property name="spacing">
+      <number>0</number>
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
@@ -299,12 +299,12 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLabel" name="label_next_backup">
+      <widget class="QLabel" name="text">
        <property name="autoFillBackground">
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Which folders will be back up:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;This folders will be back up:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>

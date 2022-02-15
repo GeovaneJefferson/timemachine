@@ -33,7 +33,7 @@ class UI(QMainWindow):
         thu = config['SCHEDULE']['thu']
         fri = config['SCHEDULE']['fri']
         sat = config['SCHEDULE']['sat']
-        get_everytime = config['SCHEDULE']['everytime']
+        getEverytime = config['SCHEDULE']['everytime']
         get_ini_folders = config.options('FOLDER')
 
         # Schedule options
@@ -98,19 +98,19 @@ class UI(QMainWindow):
             self.check_sat.setChecked(True)
 
         # Everytime
-        if get_everytime == "15":
+        if getEverytime == "15":
             self.every_combox.setCurrentIndex(0)
 
-        elif get_everytime == "30":
+        elif getEverytime == "30":
             self.every_combox.setCurrentIndex(1)
 
-        elif get_everytime == "60":
+        elif getEverytime == "60":
             self.every_combox.setCurrentIndex(2)
 
-        elif get_everytime == "120":
+        elif getEverytime == "120":
             self.every_combox.setCurrentIndex(3)
 
-        elif get_everytime == "240":
+        elif getEverytime == "240":
             self.every_combox.setCurrentIndex(4)
 
         # Timer
@@ -124,23 +124,23 @@ class UI(QMainWindow):
         config.read(src_user_config)
 
         # Read user.ini
-        one_time_mode = config['MODE']['one_time_mode']
+        oneTimeMode = config['MODE']['one_time_mode']
         more_time_mode = config['MODE']['more_time_mode']
 
-        if one_time_mode == "true":
+        if oneTimeMode == "true":
             self.every_combox.setEnabled(False)
             self.label_hours.setEnabled(True)
             self.label_minutes.setEnabled(True)
             self.one_time_mode.setChecked(True)
 
-        if more_time_mode == "true":
+        elif more_time_mode == "true":
             self.label_hours.setEnabled(False)
             self.label_minutes.setEnabled(False)
             self.every_combox.setEnabled(True)
             self.more_time_mode.setChecked(True)
 
     def folders(self, get):
-        print("Getting", get)
+        print(get)
         with open(src_user_config, 'w+') as configfile:
             if config.has_option('FOLDER', get):
                 config.remove_option('FOLDER', get)
@@ -272,7 +272,6 @@ class UI(QMainWindow):
 
                 # DISABLE MORE TIME MODE
                 config.set('MODE', 'more_time_mode', 'false')
-                print("More time mode disabled")
                 config.write(configfile)
 
             elif self.more_time_mode.isChecked():
@@ -281,7 +280,6 @@ class UI(QMainWindow):
 
                 # DISABLE ONE TIME MODE
                 config.set('MODE', 'one_time_mode', 'false')
-                print("One time mode disabled")
                 config.write(configfile)
 
     def on_buttons_save_clicked(self):
@@ -294,5 +292,5 @@ tic = time.time()
 main = UI()
 main.show()
 toc = time.time()
-print('Done in {:.4f} seconds'.format(toc-tic))
+print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())

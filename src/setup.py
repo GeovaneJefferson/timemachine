@@ -15,7 +15,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QPushButton, QLabel, QCheckBox
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 
-app_name = "Time Machine - Alpha Version"
+app_name = "Time Machine - Beta Version"
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)

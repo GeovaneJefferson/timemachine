@@ -10,29 +10,32 @@ class CLI:
         self.getHDName = config['EXTERNAL']['name']
         self.time = 5
 
-        self.check_for_external()
+        self.check_for_external_media()
 
-    def check_for_external(self):
+    def check_for_external_media(self):
         try:
             for storage in os.listdir("/media/" + user_name):
                 if not storage.startswith('.'):
                     if self.getHDName in storage:  # If user.ini has external hd name
+                        print("External found in /media")
                         self.check_the_date()
+        except FileNotFoundError:  
+            self.check_for_external_run(self)
 
-        except FileNotFoundError:
+    def check_for_external_run(self):
+        try:
             for storage in os.listdir("/run/media/" + user_name):   # Try other folder (fx. Opensuse)
                 if not storage.startswith('.'):
                     if self.getHDName in storage:  # If user.ini has external hd name
+                        print("External found in /run/media")
                         self.check_the_date()
-
-        else:
+        except FileNotFoundError:
             print("No external devices mounted or available...")
             not_available_notification()  # Call not available notification
             exit()
 
     def check_the_date(self):
         print("Backup checker is running...")
-        print("HD found!")
 
         while True:
             # Read/Load user.config (backup automatically)
@@ -84,11 +87,12 @@ class CLI:
             # Read/Load user.config
             config = configparser.ConfigParser()
             config.read(src_user_config)
+
             now = datetime.now()
             currentHour = now.strftime("%H")
             currentMinute = now.strftime("%M")
 
-            # backupNowChecker = config['BACKUP']['backup_now']
+            backupNowChecker = config['BACKUP']['backup_now']
             oneTimeMode = config['MODE']['one_time_mode']
             # moreTimeMode = config['MODE']['more_time_mode']
             everytime = config['SCHEDULE']['everytime']
@@ -108,7 +112,7 @@ class CLI:
                         config.set('BACKUP', 'backup_now', 'true')
                         config.write(configfile)
 
-                        sub.run("python3 " + src_backup_now, shell=True)    # Open backup now
+                        sub.Popen("python3 " + src_backup_now, shell=True)    # Open backup now
                         exit()
                 else:
                     print("Waiting for the right time to backup...")
@@ -117,26 +121,32 @@ class CLI:
             else:   # More time mode
                 if everytime == '15':
                     if currentMinute in time_mode_minutes_15:
-                        break
+                        if backupNowChecker == "false":
+                            break
 
                 elif everytime == '30':
                     if currentMinute in time_mode_minutes_30:
-                        break
+                        if backupNowChecker == "false":
+                            break
 
                 elif everytime == '60':
                     if currentHour in time_mode_hours_60:
-                        break
+                        if backupNowChecker == "false":
+                            break
 
                 elif everytime == '120':
                     if currentHour in time_mode_hours_120:
-                        break
+                        if backupNowChecker == "false":
+                            break
 
                 elif everytime == '240':
                     if currentHour in time_mode_hours_240:
-                        break
+                        if backupNowChecker == "false":
+                            break
 
-                print("Current time: " + currentHour + ":" + currentMinute)
-                print("Backup time: " + nextHour + ":" + nextMinute)
+                print("Current time : " + currentHour + ":" + currentMinute)
+                print("Backup time  : " + nextHour + ":" + nextMinute + " One Time Mode")
+                print("Backup time every : " + everytime)
                 print("Waiting for the right time to backup...")
                 time.sleep(self.time)
 
@@ -150,7 +160,7 @@ class CLI:
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
             
-            sub.run("python3 " + src_backup_now, shell=True)    # Call backup checker
+            sub.Popen("python3 " + src_backup_now, shell=True)    # Call backup checker
 
 
 main = CLI()
