@@ -1,6 +1,10 @@
 # Time Machine
 A backup application, created using PYQT.
 
+## Features:
+* Local snapshots one or mutiple times per day
+* Rsync is used to back up your files
+
 ## Requirements:
 * python3-pyqt5
 
