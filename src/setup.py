@@ -11,8 +11,13 @@ import images
 from pathlib import Path
 from datetime import datetime
 from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtCore import QSize
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QPushButton, QLabel, QCheckBox
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QApplication,
+                            QPushButton, QLabel, QCheckBox, QLineEdit,
+                            QWidget, QFrame, QGridLayout, QHBoxLayout,
+                            QVBoxLayout, QMessageBox
+                            )
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 
 app_name = "Time Machine - Beta Version"
@@ -100,3 +105,9 @@ def error_backup():
 def error_reading():
     # If error happens
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to read user.ini...' 5", shell=True)
+
+
+def no_external_info():
+    # If external is not available
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Location is empty... \nSelect the external location first!' 5",
+              shell=True)

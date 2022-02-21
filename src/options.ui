@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="button_save">
+   <widget class="QPushButton" name="btn_save">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -59,21 +59,34 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QRadioButton" name="one_time_mode">
-       <property name="enabled">
-        <bool>true</bool>
+     <item row="3" column="4">
+      <widget class="QLabel" name="label_10">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Back up will be execute every x minutes/hours.&lt;/p&gt;&lt;p&gt;This will produce a time folder inside the chose external location.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Fx: 12-12-12/10-15&lt;/span&gt;&lt;/p&gt;&lt;p&gt;10-15, is the time of the back up. (10:15)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>One time per day</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/help.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="checked">
-        <bool>true</bool>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
      <item row="3" column="2">
       <widget class="QComboBox" name="every_combox">
+       <property name="toolTip">
+        <string/>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
@@ -177,8 +190,21 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="label_6">
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="one_time_mode">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>One time per day</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_9">
        <property name="text">
         <string/>
        </property>
@@ -188,13 +214,6 @@
       <widget class="QRadioButton" name="more_time_mode">
        <property name="text">
         <string>Multiple times per day</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>
@@ -211,6 +230,35 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLabel" name="label_11">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="label_13">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;One single back up will be excute every selected day(s) and time.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/newPrefix/help.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -237,6 +285,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QCheckBox" name="check_sun">
+         <property name="toolTip">
+          <string>Sunday</string>
+         </property>
          <property name="text">
           <string>Sun</string>
          </property>
@@ -244,6 +295,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_mon">
+         <property name="toolTip">
+          <string>Monday</string>
+         </property>
          <property name="text">
           <string>Mon</string>
          </property>
@@ -251,6 +305,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_tue">
+         <property name="toolTip">
+          <string>Tuesday</string>
+         </property>
          <property name="text">
           <string>Tue</string>
          </property>
@@ -258,6 +315,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_wed">
+         <property name="toolTip">
+          <string>Wednesday</string>
+         </property>
          <property name="text">
           <string>Wed</string>
          </property>
@@ -265,6 +325,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_thu">
+         <property name="toolTip">
+          <string>Thursday</string>
+         </property>
          <property name="text">
           <string>Thu</string>
          </property>
@@ -272,6 +335,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_fri">
+         <property name="toolTip">
+          <string>Friday</string>
+         </property>
          <property name="text">
           <string>Fri</string>
          </property>
@@ -279,6 +345,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="check_sat">
+         <property name="toolTip">
+          <string>Saturday</string>
+         </property>
          <property name="text">
           <string>Sat</string>
          </property>
@@ -353,9 +422,54 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QWidget" name="layoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>317</y>
+      <width>521</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>If something seems broken, click on &quot;Reset&quot;, to reset settings.</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="btn_fix">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>390</y>
+      <width>110</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons/timemachine.qrc"/>
+ </resources>
  <connections/>
 </ui>

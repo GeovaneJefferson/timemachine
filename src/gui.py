@@ -76,6 +76,51 @@ class UI(QMainWindow):
         self.total_current_time = self.current_hour + self.current_minute
         self.total_next_time = self.get_next_hour + self.get_next_minute
 
+        self.check_connection_media()
+
+    def check_connection_media(self):
+        # External availability
+        try:
+            os.listdir("/media/" + user_name + "/" + self.get_hd_name)  # Check if external can be found
+            self.connected()
+
+        except FileNotFoundError:
+            self.check_connection_run()
+
+    def check_connection_run(self):
+        try:
+            os.listdir("/run/media/" + user_name + "/" + self.get_hd_name)  # Opensuse, external is inside "/run"
+            self.connected()
+
+        except FileNotFoundError:
+            self.btn_backup_now.hide()  # Hide backup now button
+
+            # External status
+            self.status_external.setText("External HD: Disconnected")
+            self.status_external.setFont(QFont('Arial', 10))
+            self.status_external.setStyleSheet('color: red')
+        
+        self.ui_settings()
+
+    def connected(self):
+        # External status
+        self.status_external.setText("External HD: Connected")
+        self.status_external.setFont(QFont('Arial', 10))
+        self.status_external.setStyleSheet('color: green')
+
+        if self.get_hd_name != "":  # If location can be found
+            if self.get_backup_now == "false":   # If is not back up right now 
+                self.btn_backup_now.setText("Back Up Now")  # Show backup now button
+                self.btn_backup_now.setEnabled(True)  # Disable backup now button
+                self.btn_backup_now.resize(120, 34)  # Resize backup button
+                self.btn_backup_now.show()
+            else:
+                self.btn_backup_now.setText("Your files are being back up...")
+                self.btn_backup_now.setEnabled(False)  # Disable backup now button
+                self.btn_backup_now.resize(200, 34)  # Resize backup button
+        else:
+            self.btn_backup_now.hide()  # Hide backup now button
+        
         self.ui_settings()
 
     def ui_settings(self):
@@ -92,37 +137,6 @@ class UI(QMainWindow):
         if self.get_hd_name != "":  
             self.set_external_name.setText(self.get_hd_name)
             self.set_external_name.setFont(QFont('Arial', 18))
-
-        # External availability
-        try:
-            try:
-                os.listdir("/media/" + user_name + "/" + self.get_hd_name)  # Check if external can be found
-            except FileNotFoundError:
-                os.listdir("/run/media/" + user_name + "/" + self.get_hd_name)  # Opensuse, external is inside "/run"
-             
-            if self.get_backup_now == "false":
-                self.btn_backup_now.setText("Back Up Now")  # Show backup now button
-                self.btn_backup_now.setEnabled(True)  # Disable backup now button
-                self.btn_backup_now.resize(120, 34)  # Resize backup button
-                self.btn_backup_now.show()
-            else:
-                self.btn_backup_now.setText("Your files are being back up...")
-                self.btn_backup_now.setEnabled(False)  # Disable backup now button
-                self.btn_backup_now.resize(200, 34)  # Resize backup button
-
-            # External status
-            self.status_external.setText("External HD: Connected")
-            self.status_external.setFont(QFont('Arial', 10))
-            self.status_external.setStyleSheet('color: green')
-
-        except FileNotFoundError:
-            self.btn_backup_now.hide()  # Hide backup now button
-
-            # External status
-            self.status_external.setText("External HD: Disconnected")
-            self.status_external.setFont(QFont('Arial', 10))
-            self.status_external.setStyleSheet('color: red')
-
         # Last backup label
         if self.get_last_backup == "":
             self.label_last_backup.setText("Last Backup: ")
@@ -299,8 +313,10 @@ class UI(QMainWindow):
             config.write(configfile)
 
         # Print current time and day
+        print("")
         print("Current time: " + self.current_hour + ":" + self.current_minute)
         print("Today is: " + self.day_name)
+        print("")
 
     def automatically_clicked(self):
         config = configparser.ConfigParser()
@@ -454,9 +470,11 @@ class EXTERNAL(QWidget):
 
 app = QApplication(sys.argv)
 tic = time.time()
+
 main = UI()
 externalMain = EXTERNAL()
 main.show()
+
 toc = time.time()
 print(f'Time Machine {(toc-tic):.4f} seconds')
 app.exit(app.exec())
