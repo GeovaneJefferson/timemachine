@@ -7,26 +7,34 @@ config.read(src_user_config)
 
 class CLI:
     def __init__(self):
-        self.getHDName = config['EXTERNAL']['name']
         self.time = 5
+        self.getHDName = config['EXTERNAL']['name']
+        self.get_hd_name = config['EXTERNAL']['name']
 
-        self.check_for_external_media()
+        self.check_user_settings()
 
-    def check_for_external_media(self):
+    def check_user_settings(self):
+        if self.get_hd_name != "":
+            self.check_for_external_media()
+        else:
+            no_external_info()
+            exit()
+        
+    def check_for_external_media(self): # Check for external in media/
         try:
-            for storage in os.listdir("/media/" + user_name):
-                if not storage.startswith('.'):
-                    if self.getHDName in storage:  # If user.ini has external hd name
+            for output in os.listdir("/media/" + user_name):
+                if not output.startswith('.'):
+                    if self.getHDName in output:  # If user.ini has external hd name
                         print("External found in /media")
                         self.check_the_date()
         except FileNotFoundError:  
             self.check_for_external_run()
 
-    def check_for_external_run(self):
+    def check_for_external_run(self):   # Or check for external in run/
         try:
-            for storage in os.listdir("/run/media/" + user_name):   # Try other folder (fx. Opensuse)
-                if not storage.startswith('.'):
-                    if self.getHDName in storage:  # If user.ini has external hd name
+            for output in os.listdir("/run/media/" + user_name):   # Try other folder (fx. Opensuse)
+                if not output.startswith('.'):
+                    if self.getHDName in output:  # If user.ini has external hd name
                         print("External found in /run/media")
                         self.check_the_date()
         except FileNotFoundError:
@@ -42,38 +50,38 @@ class CLI:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             
-            get_schedule_sun = config['SCHEDULE']['sun']
-            get_schedule_mon = config['SCHEDULE']['mon']
-            get_schedule_tue = config['SCHEDULE']['tue']
-            get_schedule_wed = config['SCHEDULE']['wed']
-            get_schedule_thu = config['SCHEDULE']['thu']
-            get_schedule_fri = config['SCHEDULE']['fri']
-            get_schedule_sat = config['SCHEDULE']['sat']
+            getScheduleSun = config['SCHEDULE']['sun']
+            getScheduleMon = config['SCHEDULE']['mon']
+            getScheduleTue = config['SCHEDULE']['tue']
+            getScheduleWed = config['SCHEDULE']['wed']
+            getScheduleThu = config['SCHEDULE']['thu']
+            getScheduleFri = config['SCHEDULE']['fri']
+            getScheduleSat = config['SCHEDULE']['sat']
 
             # Get date
-            day_name = datetime.now()
-            day_name = day_name.strftime("%a")
-            day_name = day_name.lower()
+            dayName = datetime.now()
+            dayName = dayName.strftime("%a")
+            dayName = dayName.lower()
 
-            if day_name == "sun" and get_schedule_sun == "true":
+            if dayName == "sun" and getScheduleSun == "true":
                 break
 
-            elif day_name == "mon" and get_schedule_mon == "true":
+            elif dayName == "mon" and getScheduleMon == "true":
                 break
 
-            elif day_name == "tue" and get_schedule_tue == "true":
+            elif dayName == "tue" and getScheduleTue == "true":
                 break
 
-            elif day_name == "wed" and get_schedule_wed == "true":
+            elif dayName == "wed" and getScheduleWed == "true":
                 break
 
-            elif day_name == "thu" and get_schedule_thu == "true":
+            elif dayName == "thu" and getScheduleThu == "true":
                 break
 
-            elif day_name == "fri" and get_schedule_fri == "true":
+            elif dayName == "fri" and getScheduleFri == "true":
                 break
 
-            elif day_name == "sat" and get_schedule_sat == "true":
+            elif dayName == "sat" and getScheduleSat == "true":
                 break
             
             else:
@@ -83,6 +91,7 @@ class CLI:
         self.check_the_mode()
 
     def check_the_mode(self):
+        print("Checking the mode...")
         while True:
             # Read/Load user.config
             config = configparser.ConfigParser()
@@ -94,7 +103,6 @@ class CLI:
 
             backupNowChecker = config['BACKUP']['backup_now']
             oneTimeMode = config['MODE']['one_time_mode']
-            # moreTimeMode = config['MODE']['more_time_mode']
             everytime = config['SCHEDULE']['everytime']
             nextHour = config['SCHEDULE']['hours']
             nextMinute = config['SCHEDULE']['minutes']
@@ -108,12 +116,7 @@ class CLI:
                     exit()
 
                 elif totalCurrentTime == totalNextTime:
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('BACKUP', 'backup_now', 'true')
-                        config.write(configfile)
-
-                        sub.Popen("python3 " + src_backup_now, shell=True)    # Open backup now
-                        exit()
+                    break
                 else:
                     print("Waiting for the right time to backup...")
                     time.sleep(self.time)
@@ -143,11 +146,12 @@ class CLI:
                     if currentHour in time_mode_hours_240:
                         if backupNowChecker == "false":
                             break
-
-                print("Current time : " + currentHour + ":" + currentMinute)
+                        
+                print("")
                 print("Backup time  : " + nextHour + ":" + nextMinute + " One Time Mode")
                 print("Backup time every : " + everytime)
                 print("Waiting for the right time to backup...")
+                print("")
                 time.sleep(self.time)
 
         self.call_backup_now()

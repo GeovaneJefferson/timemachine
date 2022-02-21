@@ -2,11 +2,8 @@
   <qresource prefix="newPrefix">
     <file>txt.png</file>
     <file>backup.png</file>
-    <file>desktop.png</file>
-    <file>documents.png</file>
-    <file>music.png</file>
-    <file>pictures.png</file>
     <file>restore_48.png</file>
+    <file>help.png</file>
     <file>restore_small.png</file>
     <file>restore.png</file>
     <file>system_tray_icon.png</file>

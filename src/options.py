@@ -23,7 +23,8 @@ class UI(QMainWindow):
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
         self.more_time_mode.clicked.connect(self.on_frequency_clicked)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
-        self.button_save.clicked.connect(self.on_buttons_save_clicked)
+        self.btn_save.clicked.connect(self.on_buttons_save_clicked)
+        self.btn_fix.clicked.connect(self.on_button_fix_clicked)
 
         # Get user.ini
         sun = config['SCHEDULE']['sun']
@@ -281,6 +282,53 @@ class UI(QMainWindow):
                 # DISABLE ONE TIME MODE
                 config.set('MODE', 'one_time_mode', 'false')
                 config.write(configfile)
+
+    def on_button_fix_clicked(self, event):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        resetConfirmation = QMessageBox.question(self, 'Reset', 'Are you sure you want to reset settings?',
+        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if resetConfirmation == QMessageBox.Yes:
+            # Reset settings
+            with open(src_user_config, 'w') as configfile:
+                    # Backup section
+                    config.set('BACKUP', 'auto_backup', 'false')
+                    config.set('BACKUP', 'backup_now', 'false')
+
+                    # External section
+                    config.set('EXTERNAL', 'hd', 'None')
+                    config.set('EXTERNAL', 'name', 'None')
+
+                    # Mode section
+                    config.set('MODE', 'one_time_mode', 'true')
+                    config.set('MODE', 'more_time_mode', 'false')
+
+                    # Schedule section
+                    config.set('SCHEDULE', 'sun', 'false')
+                    config.set('SCHEDULE', 'mon', 'true')
+                    config.set('SCHEDULE', 'tue', 'true')
+                    config.set('SCHEDULE', 'wed', 'true')
+                    config.set('SCHEDULE', 'thu', 'true')
+                    config.set('SCHEDULE', 'fri', 'true')
+                    config.set('SCHEDULE', 'sat', 'false')
+                    config.set('SCHEDULE', 'hours', '10')
+                    config.set('SCHEDULE', 'minutes', '00')
+
+                    # Info section
+                    config.set('INFO', 'latest', 'None')
+                    config.set('INFO', 'next', 'None')
+
+                    # Folders section
+                    config.set('FOLDER', 'documents', 'true')
+                    config.set('FOLDER', 'music', 'true')
+                    config.set('FOLDER', 'videos', 'true')
+                    config.set('FOLDER', 'pictures', 'true')
+
+                    config.write(configfile)
+                    exit()
+        else:
+            QMessageBox.Close
 
     def on_buttons_save_clicked(self):
         sub.Popen("python3 " + src_backup_py, shell=True)  # Call backup py
