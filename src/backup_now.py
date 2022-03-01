@@ -8,7 +8,7 @@ config.read(src_user_config)
 class BACKUP:
     def __init__(self):
         # Terminal commands
-        self.copyCmd = "rsync -avruzh --link-dest "
+        self.copyCmd = "rsync -avruzh "
         self.createCmd = "mkdir "
 
         try:
@@ -32,9 +32,9 @@ class BACKUP:
             self.backupNowChecker = config['BACKUP']['backup_now']
             self.oneTimeMode = config['MODE']['one_time_mode']
 
-            self.createTMB = self.getExternalLocation + "/TMB/" 
-            self.dateFolder = self.createTMB + dateDay + "-" + dateMonth + "-" + dateYear  
-            self.timeFolder = self.createTMB + dateDay + "-" + dateMonth + "-" + dateYear + '/' + self.currentHour + "-" + self.currentMinute
+            self.createTMB = self.getExternalLocation + "/TMB" 
+            self.dateFolder = f"{self.createTMB}/{dateDay}-{dateMonth}-{dateYear}" 
+            self.timeFolder = f"{self.createTMB}/{dateDay}-{dateMonth}-{dateYear}/{self.currentHour}-{self.currentMinute}"
 
             self.create_TMB()   # If everything goes well, continue
         
@@ -76,6 +76,20 @@ class BACKUP:
             error_backup()  # Notification
             exit()
 
+        self.create_folder_time()
+
+    def create_folder_time(self):
+        try:
+            if os.path.exists(self.timeFolder): 
+                pass
+            else:
+                sub.run(self.createCmd + self.timeFolder, shell=True)   # Create folder with date
+
+        except FileNotFoundError:
+            print("Error trying to create date folder...")
+            error_backup()  # Notification
+            exit()
+
         self.start_backup()
 
     def start_backup(self):
@@ -85,19 +99,16 @@ class BACKUP:
                 
                 for output in self.getIniFolders:    # Backup all (user.ini true folders)
                     output = output.title()  # Capitalize first letter. ex: '/Desktop'
-                    dstLocation = self.dateFolder + '/' + output   #Ex: TMB/date/Desktop
-                    print("Back up: " + output)
-                    sub.run(self.copyCmd + home_user + '/' + output + '/ ' + dstLocation, shell=True)
+                    print(f"Back up: {output}")
+                    sub.run(f"{self.copyCmd}{home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/Desktop
             else:
                 print("More mode activated!")
                 sub.run(self.createCmd + self.timeFolder, shell=True) # Create folder with date and time
                 
                 for output in self.getIniFolders:    # Backup all (user.ini true folders)
                     output = output.title()  # Capitalize first letter. ex: '/Desktop'
-                    dstLocation = self.timeFolder + '/' + output   #Ex: TMB/date/time/Desktop
-                    print("Destination: ", dstLocation)
-                    print("Back up: " + output)
-                    sub.run(self.copyCmd + home_user + '/' + output + '/ ' + dstLocation, shell=True)
+                    print(f"Back up: {output}")
+                    sub.run(f"{self.copyCmd}{home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/time/Desktop
                     print("")
 
         except FileNotFoundError:
@@ -114,13 +125,13 @@ class BACKUP:
 
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'false')
-            config.set('INFO', 'latest', self.dayName + ', ' + self.currentHour + ':' + self.currentMinute)
+            config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
             config.write(configfile)
 
         # After backup is done
         done_backup_notification()  # Notification
         time.sleep(60)    
-        sub.Popen("python3 " + src_backup_check_py, shell=True)    # Call backup checker
+        sub.Popen(f"python3 {src_backup_check_py}", shell=True)    # Call backup checker
         exit()
 
 

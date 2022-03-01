@@ -11,13 +11,14 @@ import images
 from pathlib import Path
 from datetime import datetime
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, QRect
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QApplication,
-                            QPushButton, QLabel, QCheckBox, QLineEdit,
-                            QWidget, QFrame, QGridLayout, QHBoxLayout,
-                            QVBoxLayout, QMessageBox
-                            )
+                             QPushButton, QLabel, QCheckBox, QLineEdit,
+                             QWidget, QFrame, QGridLayout, QHBoxLayout,
+                             QVBoxLayout, QMessageBox, QRadioButton,
+                             QScrollArea, QSpacerItem, QSizePolicy
+                             )
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 
 app_name = "Time Machine - Beta Version"
@@ -55,25 +56,28 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_ui_options = "options.ui"
 # src_timemachine_desktop = "timemachine.desktop"
 # src_backup_check = "backup_check.desktop"
+# src_service = "service.desktop"
+
 
 # Home location
-src_options_py = home_user + "/.local/share/timemachine/src/options.py"
-src_schedule_py = home_user + "/.local/share/timemachine/src/schedule.py"
-src_backup_check_py = home_user + "/.local/share/timemachine/src/backup_check.py"
-src_backup_check_desktop = home_user + "/.config/autostart/backup_check.desktop"
-src_timemachine_desktop = home_user + "/.local/share/applications/timemachine.desktop"
-src_folder_timemachine = home_user + "/.local/share/timemachine"
-src_user_config = home_user + "/.local/share/timemachine/src/user.ini"
-src_restore_icon = home_user + "/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_icon = home_user + "/.local/share/timemachine/src/icons/backup.png"
-src_folders_py = home_user + "/.local/share/timemachine/src/folders.py"
-src_backup_now = home_user + "/.local/share/timemachine/src/backup_now.py"
-src_backup_check = home_user + "/.local/share/timemachine/src/backup_check.desktop"
-src_ui = home_user + "/.local/share/timemachine/src/gui.ui"
-src_ui_where = home_user + "/.local/share/timemachine/src/where.ui"
-src_restore_small_icon = home_user + "/.local/share/timemachine/src/icons/restore_small.png"
-src_ui_options = home_user + "/.local/share/timemachine/src/options.ui"
-src_backup_py = home_user + "/.local/share/timemachine/src/backup_check.py"
+src_options_py = f"{home_user}/.local/share/timemachine/src/options.py"
+src_schedule_py = f"{home_user}/.local/share/timemachine/src/schedule.py"
+src_backup_check_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
+src_backup_check_desktop = f"{home_user}/.config/autostart/backup_check.desktop"
+src_timemachine_desktop = f"{home_user}/.local/share/applications/timemachine.desktop"
+src_folder_timemachine = f"{home_user}/.local/share/timemachine"
+src_user_config = f"{home_user}/.local/share/timemachine/src/user.ini"
+src_restore_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_48.png"
+src_backup_icon = f"{home_user}/.local/share/timemachine/src/icons/backup.png"
+src_folders_py = f"{home_user}/.local/share/timemachine/src/folders.py"
+src_backup_now = f"{home_user}/.local/share/timemachine/src/backup_now.py"
+src_backup_check = f"{home_user}/.local/share/timemachine/src/backup_check.desktop"
+src_ui = f"{home_user}/.local/share/timemachine/src/gui.ui"
+src_ui_where = f"{home_user}/.local/share/timemachine/src/where.ui"
+src_restore_small_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_small.png"
+src_ui_options = f"{home_user}/.local/share/timemachine/src/options.ui"
+src_backup_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
+src_service = f"{home_user}/.local/share/timemachine/src/service.desktop"
 
 
 # Notifications
@@ -109,5 +113,17 @@ def error_reading():
 
 def no_external_info():
     # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Location is empty... \nSelect the external location first!' 5",
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Location is empty... \n Select the external location "
+              "first!' 5", shell=True)
+
+
+def complete_restore():
+    # If external is not available
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your files was successfully restored!' 5",
+              shell=True)
+
+
+def failed_restore():
+    # If external is not available
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to restore your files!' 5",
               shell=True)

@@ -11,8 +11,7 @@ class UI(QMainWindow):
         self.setWindowTitle(app_name)
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
-        self.setFixedHeight(450)
-        self.setFixedWidth(700)
+        self.setFixedSize(700, 450)
 
         # Center window
         frameGm = self.frameGeometry()
@@ -32,7 +31,8 @@ class UI(QMainWindow):
         self.btn_backup_now.resize(120, 34)
         self.btn_backup_now.move(452, 157)
         self.btn_backup_now.clicked.connect(self.backup_now_clicked)
-
+        self.verticalLayout_2.addWidget(self.btn_backup_now, 0, QtCore.Qt.AlignLeft)
+        
         # Timer
         timer.timeout.connect(self.updates)
         timer.start(1000)  # update every second
@@ -54,7 +54,7 @@ class UI(QMainWindow):
             self.get_auto_backup = config['BACKUP']['auto_backup']
             self.get_last_backup = config['INFO']['latest']
             self.get_next_backup = config['INFO']['next']
-            self.get_hd_name = config['EXTERNAL']['name']
+            self.getHDName = config['EXTERNAL']['name']
             self.more_time_mode = config['MODE']['more_time_mode']
             self.everytime = config['SCHEDULE']['everytime']
 
@@ -81,7 +81,7 @@ class UI(QMainWindow):
     def check_connection_media(self):
         # External availability
         try:
-            os.listdir("/media/" + user_name + "/" + self.get_hd_name)  # Check if external can be found
+            os.listdir(f"/media/{user_name}/{self.getHDName}")  # Check if external can be found
             self.connected()
 
         except FileNotFoundError:
@@ -89,7 +89,7 @@ class UI(QMainWindow):
 
     def check_connection_run(self):
         try:
-            os.listdir("/run/media/" + user_name + "/" + self.get_hd_name)  # Opensuse, external is inside "/run"
+            os.listdir(f"/run/media/{user_name}/{self.getHDName}")  # Opensuse, external is inside "/run"
             self.connected()
 
         except FileNotFoundError:
@@ -108,7 +108,7 @@ class UI(QMainWindow):
         self.status_external.setFont(QFont('Arial', 10))
         self.status_external.setStyleSheet('color: green')
 
-        if self.get_hd_name != "":  # If location can be found
+        if self.getHDName != "None":  # If location can be found
             if self.get_backup_now == "false":   # If is not back up right now 
                 self.btn_backup_now.setText("Back Up Now")  # Show backup now button
                 self.btn_backup_now.setEnabled(True)  # Disable backup now button
@@ -117,7 +117,7 @@ class UI(QMainWindow):
             else:
                 self.btn_backup_now.setText("Your files are being back up...")
                 self.btn_backup_now.setEnabled(False)  # Disable backup now button
-                self.btn_backup_now.resize(200, 34)  # Resize backup button
+                self.btn_backup_now.resize(120, 34)  # Resize backup button
         else:
             self.btn_backup_now.hide()  # Hide backup now button
         
@@ -130,19 +130,19 @@ class UI(QMainWindow):
         # Auto backup
         if self.get_auto_backup == "true":
             self.auto_checkbox.setChecked(True)
-            self.set_external_name.setText(self.get_hd_name)    # Set external name
+            self.set_external_name.setText(self.getHDName)    # Set external name
             self.set_external_name.setFont(QFont('Arial', 18))
         
         # External name
-        if self.get_hd_name != "":  
-            self.set_external_name.setText(self.get_hd_name)
+        if self.getHDName != "":  
+            self.set_external_name.setText(self.getHDName)
             self.set_external_name.setFont(QFont('Arial', 18))
         # Last backup label
         if self.get_last_backup == "":
             self.label_last_backup.setText("Last Backup: ")
             self.label_last_backup.setFont(QFont('Arial', 10))
         else:
-            self.label_last_backup.setText("Last Backup: " + self.get_last_backup)
+            self.label_last_backup.setText(f"Last Backup: {self.get_last_backup}")
             self.label_last_backup.setFont(QFont('Arial', 10))
 
         # Next backup label
@@ -150,7 +150,7 @@ class UI(QMainWindow):
             self.label_next_backup.setText("Next Backup: None")
             self.label_next_backup.setFont(QFont('Arial', 10))
         else:
-            self.label_next_backup.setText("Next Backup: " + self.get_next_backup)
+            self.label_next_backup.setText(f"Next Backup: {self.get_next_backup}")
             self.label_next_backup.setFont(QFont('Arial', 10))
 
         # Next backup label everytime
@@ -309,13 +309,13 @@ class UI(QMainWindow):
 
         # Save next backup to user.ini
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'next', self.next_day + ', ' + self.get_next_hour + ':' + self.get_next_minute)
+            config.set('INFO', 'next', f'{self.next_day}, {self.get_next_hour}:{self.get_next_minute}')
             config.write(configfile)
 
         # Print current time and day
         print("")
-        print("Current time: " + self.current_hour + ":" + self.current_minute)
-        print("Today is: " + self.day_name)
+        print(f"Current time: {self.current_hour}:{self.current_minute}")
+        print(f"Today is: {self.day_name}")
         print("")
 
     def automatically_clicked(self):
@@ -337,7 +337,7 @@ class UI(QMainWindow):
                 print("Auto backup was successfully activated!")
         else:
             auto_backup_off_notification()  # Call auto backup off notification
-            sub.Popen("rm " + src_backup_check_desktop, shell=True)  # Remove .desktop from dst
+            sub.Popen(f"rm {src_backup_check_desktop}", shell=True)  # Remove .desktop from dst
 
             # Set auto backup to false
             with open(src_user_config, 'w') as configfile:
@@ -347,7 +347,7 @@ class UI(QMainWindow):
             print("Auto backup was successfully deactivated!")
 
         # Call backup check py
-        sub.Popen("python3 " + src_backup_check_py, shell=True)
+        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
     def external_clicked(self):
         # Choose external hd
@@ -365,11 +365,11 @@ class UI(QMainWindow):
             config.write(configfile)
 
             # Call backup now py
-            sub.Popen("python3 " + src_backup_now, shell=True)
+            sub.Popen(f"python3 {src_backup_now}", shell=True)
 
     def options_clicked(self):
         # Call schedule
-        sub.call("python3 " + src_options_py, shell=True)
+        sub.call(f"python3 {src_options_py}", shell=True)
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
@@ -383,13 +383,9 @@ class EXTERNAL(QWidget):
         self.setWindowTitle("External Screen")
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
-        # self.baseHeight = 50
-        # self.extendedHeight = 325
-        self.setFixedHeight(325)
-        self.setFixedWidth(400)
+        self.setFixedSize(400, 325)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.currentHeight = self.height()
-
+        
         # Center widget
         frameGm = self.frameGeometry()
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -397,54 +393,78 @@ class EXTERNAL(QWidget):
         frameGm.moveCenter(centerPoint)
         self.move(frameGm.topLeft())
 
-        self.usedMedia = False
-        self.usedRun = False
-        self.media = "/media/"
-        self.run = "/run/media/"
+        self.foundInMedia = None
+        self.media = "/media"
+        self.run = "/run/media"
+
+        # Read ini
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.getHDName = config['EXTERNAL']['name']
 
         # Connections
         self.button_where_cancel.clicked.connect(self.btn_cancel_clicked)
 
-        self.external()
+        self.check_connection_media()
 
-    def external(self):
+    def check_connection_media(self):
         try:
-            try:
-                # Get local media
-                local_media = os.listdir(self.media + user_name + "/")
-                self.usedMedia = True
-            except:
-                local_media = os.listdir(self.run + user_name + "/")  # Opensuse, external is inside "/run"
-                self.usedRun = True
+            os.listdir(f'{self.media}/{user_name}')
+            self.foundInMedia = True
 
-            # Add buttons and images for each external
-            vertical = 20
-            vertical_img = 32
-            for self.storage in local_media:
+        except FileNotFoundError:
+            self.check_connection_run()
+
+        self.connected()
+
+    def check_connection_run(self):
+        try:
+            os.listdir(f'{self.run}{user_name}')  # Opensuse, external is inside "/run"
+            self.foundInMedia = False
+            self.connected()
+
+        except FileNotFoundError:
+            print("No external devices mounted or available...")
+
+    def connected(self):
+        # Add buttons and images for each external
+        vertical = 20
+        vertical_img = 32
+        if self.foundInMedia:
+            for output in os.listdir(f'{self.media}/{user_name}'):
                 label_image = QLabel(self)
                 pixmap = QPixmap(src_restore_small_icon)
                 label_image.setPixmap(pixmap)
                 label_image.setFixedSize(48, 48)
                 label_image.move(30, vertical_img)
-                vertical_img = vertical_img + 50
+                vertical_img += 50
 
                 # Button
-                button = QPushButton(self.storage, self.where_frame)
+                button = QPushButton(output, self.where_frame)
                 button.setFixedSize(280, 30)
                 button.move(60, vertical)
-                vertical = vertical + 50
+                vertical += 50
                 text = button.text()
                 button.show()
                 button.clicked.connect(lambda ch: self.on_button_clicked(text))
+        else:
+            # Add buttons and images for each external
+            for output in os.listdir(f'{self.run}/{user_name}'):
+                label_image = QLabel(self)
+                pixmap = QPixmap(src_restore_small_icon)
+                label_image.setPixmap(pixmap)
+                label_image.setFixedSize(48, 48)
+                label_image.move(30, vertical_img)
+                vertical_img += 50
 
-        except:
-            none_external = QLabel("No external devices mounted or available...", self.where_frame)
-            none_external.move(55, 100)
-            none_external.setFixedSize(300, 50)
-            none_external.setFont(QFont('Arial', 10))
-            none_external.setStyleSheet('color: red')
-
-            print("No external devices mounted or available...")
+                # Button
+                button = QPushButton(output, self.where_frame)
+                button.setFixedSize(280, 30)
+                button.move(60, vertical)
+                vertical += 50
+                text = button.text()
+                button.show()
+                button.clicked.connect(lambda ch: self.on_button_clicked(text))
 
     def on_button_clicked(self, get):
         config = configparser.ConfigParser()
@@ -452,10 +472,10 @@ class EXTERNAL(QWidget):
 
         # Read/Load user.config (backup automatically)
         with open(src_user_config, 'w') as configfile:
-            if self.usedMedia:
-                config.set('EXTERNAL', 'hd', self.media + user_name + '/' + get)
+            if self.foundInMedia:
+                config.set(f'EXTERNAL', 'hd', f'{self.media}/{user_name}/{get}')
             else:
-                config.set('EXTERNAL', 'hd', self.run + user_name + '/' + get)
+                config.set(f'EXTERNAL', 'hd', f'{self.run}/{user_name}/{get}')
 
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
@@ -472,8 +492,9 @@ app = QApplication(sys.argv)
 tic = time.time()
 
 main = UI()
-externalMain = EXTERNAL()
 main.show()
+
+externalMain = EXTERNAL()
 
 toc = time.time()
 print(f'Time Machine {(toc-tic):.4f} seconds')

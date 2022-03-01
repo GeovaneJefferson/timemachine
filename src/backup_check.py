@@ -9,12 +9,11 @@ class CLI:
     def __init__(self):
         self.time = 5
         self.getHDName = config['EXTERNAL']['name']
-        self.get_hd_name = config['EXTERNAL']['name']
 
         self.check_user_settings()
 
     def check_user_settings(self):
-        if self.get_hd_name != "":
+        if self.getHDName != "":
             self.check_for_external_media()
         else:
             no_external_info()

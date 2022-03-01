@@ -1,11 +1,15 @@
-import os
+import subprocess as sub
 from pathlib import Path
 
 home_user = str(Path.home())
 
-os.system("rm -rf " + home_user + "/.local/share/timemachine/")
-os.system("rm " + home_user + "/.local/share/applications/timemachine.desktop")
-os.system("rm " + home_user + "/.config/autostart/backup_check.desktop")
+try:
+    sub.run(f"rm -rf {home_user}/.local/share/timemachine/", shell=True)
+    sub.run(f"rm {home_user}/.local/share/applications/timemachine.desktop", shell=True)
+    sub.run(f"rm {home_user}/.config/autostart/backup_check.desktop", shell=True)
+    sub.run(f"rm {home_user}/.local/share/kservices5/ServiceMenus/service.desktop", shell=True)
+except:
+    print("Error trying to remove Time Machine!")
 
 print("Time Machine was removed!")
 exit()
