@@ -29,6 +29,6 @@ Feel free to install and try :D
   * apt/KDE
 
 ## Screenshots
-![screenshot1](https://user-images.githubusercontent.com/66172718/150104400-891416a0-518c-472a-87a5-5a7fd968b11a.png)
-![screenshot2](https://user-images.githubusercontent.com/66172718/149974110-90ee855b-0ad6-4e1e-a939-267f7ede7c13.png)
-![Screenshot_3](https://user-images.githubusercontent.com/66172718/139649230-23ee3017-ea2c-407f-a578-04d9ec1b9af9.png)
+![screenshot1](https://user-images.githubusercontent.com/66172718/156451989-41bd2d92-f1c3-4a77-8f5e-1a75c06a1bf1.png)
+![screenshot2](https://user-images.githubusercontent.com/66172718/156451992-249045dd-f199-4526-acaa-6cb15780bd7a.png)
+![screenshot3](https://user-images.githubusercontent.com/66172718/156451998-290aaebd-e1df-47d1-a4c4-e1227d3f5c8f.png)
