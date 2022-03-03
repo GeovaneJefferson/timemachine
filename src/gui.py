@@ -380,9 +380,9 @@ class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
         loadUi(src_ui_where, self)
-        self.setWindowTitle("External Screen")
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
+        self.setWindowTitle("External Screen")
         self.setFixedSize(400, 325)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         
@@ -393,6 +393,9 @@ class EXTERNAL(QWidget):
         frameGm.moveCenter(centerPoint)
         self.move(frameGm.topLeft())
 
+        ################################################################################
+        ## Media location
+        ################################################################################
         self.foundInMedia = None
         self.media = "/media"
         self.run = "/run/media"
@@ -402,12 +405,18 @@ class EXTERNAL(QWidget):
         config.read(src_user_config)
         self.getHDName = config['EXTERNAL']['name']
 
-        # Connections
-        self.button_where_cancel.clicked.connect(self.btn_cancel_clicked)
+
+        ################################################################################
+        ## Connections
+        ################################################################################
+        self.button_where_cancel.clicked.connect(self.on_button_cancel_clicked)
 
         self.check_connection_media()
 
     def check_connection_media(self):
+        ################################################################################
+        ## Search external inside media
+        ################################################################################
         try:
             os.listdir(f'{self.media}/{user_name}')
             self.foundInMedia = True
@@ -418,6 +427,9 @@ class EXTERNAL(QWidget):
         self.connected()
 
     def check_connection_run(self):
+        ################################################################################
+        ## Search external inside run/media
+        ################################################################################
         try:
             os.listdir(f'{self.run}{user_name}')  # Opensuse, external is inside "/run"
             self.foundInMedia = False
@@ -427,7 +439,9 @@ class EXTERNAL(QWidget):
             print("No external devices mounted or available...")
 
     def connected(self):
-        # Add buttons and images for each external
+        ################################################################################
+        ## Add buttons and images for each external
+        ################################################################################
         vertical = 20
         vertical_img = 32
         if self.foundInMedia:
@@ -474,16 +488,20 @@ class EXTERNAL(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.foundInMedia:
                 config.set(f'EXTERNAL', 'hd', f'{self.media}/{user_name}/{get}')
+                
             else:
                 config.set(f'EXTERNAL', 'hd', f'{self.run}/{user_name}/{get}')
 
+            ################################################################################
+            ## Write changes to ini
+            ################################################################################
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
 
             self.close()
             main.setEnabled(True)
 
-    def btn_cancel_clicked(self):
+    def on_button_cancel_clicked(self):
         externalMain.close()
         main.setEnabled(True)
 

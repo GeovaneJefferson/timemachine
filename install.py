@@ -16,9 +16,9 @@ class CLI:
 
         # Default
         # Current folder
-        self.src_backup_check = "src/backup_check.desktop"
-        self.src_timemachine_desktop = "src/timemachine.desktop"
-        self.src_service = "src/service.desktop"
+        self.src_backup_check = "src/desktop/backup_check.desktop"
+        self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
+        self.src_service = "src/desktop/service.desktop"
 
         # Destination folder
         self.dst_venv_loc = f"{self.home_user}/.local/share/timemachine/venv"
@@ -78,7 +78,7 @@ class CLI:
                 f"EnterTimeMachine]\n "
                 f"Icon={self.home_user}/.local/share/timemachine/src/icons/restore.png\n "
                 f"Name=Enter Time Machine\n "
-                f"Exec=sh {self.home_user}/.local/share/timemachine/src/getDir.sh")
+                f"Exec=sh {self.home_user}/.local/share/timemachine/src/scripts/getDir.sh")
 
         try:
             # Copy current Time Machine folder to user

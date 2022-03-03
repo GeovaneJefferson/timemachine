@@ -43,20 +43,21 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_options_py = "options.py"
 # src_backup_py = "backup_check.py"
 # src_restore_icon = "icons/restore_48.png"
-# src_user_config = "user.ini"
+# src_user_config = "ini/user.ini"
 # src_backup_now = "backup_now.py"
-# src_ui_where = "where.ui"
+# src_ui_where = "ui/where.ui"
 # src_restore_small_icon = "icons/restore_small.png"
 # src_folders_py = "options.py"
 # src_backup_icon = "icons/backup.png"
 # src_backup_check = "backup_check.desktop"
 # src_backup_check_py = "backup_check.py"
 # src_backup_check_desktop = ".config/autostart/backup_check.desktop"
-# src_ui = "gui.ui"
-# src_ui_options = "options.ui"
+# src_ui = "ui/gui.ui"
+# src_ui_options = "ui/options.ui"
 # src_timemachine_desktop = "timemachine.desktop"
 # src_backup_check = "backup_check.desktop"
 # src_service = "service.desktop"
+# src_restore_settings = "scripts/restore_settings.txt"
 
 
 # Home location
@@ -66,18 +67,19 @@ src_backup_check_py = f"{home_user}/.local/share/timemachine/src/backup_check.py
 src_backup_check_desktop = f"{home_user}/.config/autostart/backup_check.desktop"
 src_timemachine_desktop = f"{home_user}/.local/share/applications/timemachine.desktop"
 src_folder_timemachine = f"{home_user}/.local/share/timemachine"
-src_user_config = f"{home_user}/.local/share/timemachine/src/user.ini"
+src_user_config = f"{home_user}/.local/share/timemachine/src/ini/user.ini"
 src_restore_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_48.png"
 src_backup_icon = f"{home_user}/.local/share/timemachine/src/icons/backup.png"
 src_folders_py = f"{home_user}/.local/share/timemachine/src/folders.py"
 src_backup_now = f"{home_user}/.local/share/timemachine/src/backup_now.py"
 src_backup_check = f"{home_user}/.local/share/timemachine/src/backup_check.desktop"
-src_ui = f"{home_user}/.local/share/timemachine/src/gui.ui"
-src_ui_where = f"{home_user}/.local/share/timemachine/src/where.ui"
+src_ui = f"{home_user}/.local/share/timemachine/src/ui/gui.ui"
+src_ui_where = f"{home_user}/.local/share/timemachine/src/ui/where.ui"
 src_restore_small_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_small.png"
-src_ui_options = f"{home_user}/.local/share/timemachine/src/options.ui"
+src_ui_options = f"{home_user}/.local/share/timemachine/src/ui/options.ui"
 src_backup_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
 src_service = f"{home_user}/.local/share/timemachine/src/service.desktop"
+src_restore_settings = f"{home_user}/.local/share/timemachine/src/scripts/restore_settings.txt"
 
 
 # Notifications
@@ -117,9 +119,9 @@ def no_external_info():
               "first!' 5", shell=True)
 
 
-def complete_restore():
+def been_restored():
     # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your files was successfully restored!' 5",
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your files are been restored...' 5",
               shell=True)
 
 
