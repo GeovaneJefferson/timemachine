@@ -5,7 +5,7 @@ home_user = str(Path.home())
 
 try:
     sub.run(f"rm -rf {home_user}/.local/share/timemachine/", shell=True)
-    sub.run(f"rm {home_user}/.local/share/applications/timemachine.desktop", shell=True)
+    sub.run(f"rm {home_user}/.local/share/applications/desktop/timemachine.desktop", shell=True)
     sub.run(f"rm {home_user}/.config/autostart/backup_check.desktop", shell=True)
     sub.run(f"rm {home_user}/.local/share/kservices5/ServiceMenus/service.desktop", shell=True)
 except:
