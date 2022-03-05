@@ -29,7 +29,6 @@ class UI(QMainWindow):
         # Backup now btn
         self.btn_backup_now = QPushButton("Back Up Now", self)
         self.btn_backup_now.resize(120, 34)
-        self.btn_backup_now.move(452, 157)
         self.btn_backup_now.clicked.connect(self.backup_now_clicked)
         self.verticalLayout_2.addWidget(self.btn_backup_now, 0, QtCore.Qt.AlignLeft)
         

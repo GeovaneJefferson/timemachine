@@ -109,13 +109,13 @@
      <rect>
       <x>500</x>
       <y>380</y>
-      <width>188</width>
+      <width>190</width>
       <height>41</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>6</number>
+      <number>20</number>
      </property>
      <property name="leftMargin">
       <number>0</number>
