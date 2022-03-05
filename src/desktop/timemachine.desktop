@@ -1,11 +1,1 @@
-[Desktop Entry]
- Version=1.0
- Type=Application
- Name=Time Machine
- Comment=Backup your files
- Icon=/home/geovane/.local/share/timemachine/src/icons/restore.png
- Exec=python3 /home/geovane/.local/share/timemachine/src/gui.py
- Path=/home/geovane/.local/share/timemachine/
- Categories=System
- StartupWMClass=Gui.py
- Terminal=false
+
