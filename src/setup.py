@@ -55,7 +55,7 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_ui = "ui/gui.ui"
 # src_ui_options = "ui/options.ui"
 # src_timemachine_desktop = "timemachine.desktop"
-# src_backup_check = "backup_check.desktop"
+# src_backup_check = "desktop/backup_check.desktop"
 # src_service = "service.desktop"
 # src_restore_settings = "scripts/restore_settings.txt"
 
@@ -72,15 +72,14 @@ src_restore_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_48.p
 src_backup_icon = f"{home_user}/.local/share/timemachine/src/icons/backup.png"
 src_folders_py = f"{home_user}/.local/share/timemachine/src/folders.py"
 src_backup_now = f"{home_user}/.local/share/timemachine/src/backup_now.py"
-src_backup_check = f"{home_user}/.local/share/timemachine/src/backup_check.desktop"
+src_backup_check = f"{home_user}/.local/share/timemachine/src/desktop/backup_check.desktop"
 src_ui = f"{home_user}/.local/share/timemachine/src/ui/gui.ui"
 src_ui_where = f"{home_user}/.local/share/timemachine/src/ui/where.ui"
 src_restore_small_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_small.png"
 src_ui_options = f"{home_user}/.local/share/timemachine/src/ui/options.ui"
 src_backup_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
-src_service = f"{home_user}/.local/share/timemachine/src/service.desktop"
+src_service = f"{home_user}/.local/share/timemachine/src/desktop/service.desktop"
 src_restore_settings = f"{home_user}/.local/share/timemachine/src/scripts/restore_settings.txt"
-
 
 # Notifications
 def auto_backup_notification():

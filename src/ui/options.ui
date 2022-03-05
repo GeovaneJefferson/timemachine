@@ -469,7 +469,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="icons/timemachine.qrc"/>
+  <include location="../icons/timemachine.qrc"/>
  </resources>
  <connections/>
 </ui>

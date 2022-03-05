@@ -1,0 +1,14 @@
+[Desktop Entry]
+ Version=1.0
+ Type=Service
+ ServiceTypes=KonqPopupMenu/Plugin
+ MimeType=application/octet-stream;
+ Actions=EnterTimeMachine;
+ X-KDE-Priority=TopLevel
+ X-KDE-StartupNotify=false
+ Icon=/home/geovane/.local/share/timemachine/src/icons/restore.png
+
+ [Desktop Action EnterTimeMachine]
+ Icon=/home/geovane/.local/share/timemachine/src/icons/restore.png
+ Name=Enter Time Machine
+ Exec=sh /home/geovane/.local/share/timemachine/src/scripts/getDir.sh
