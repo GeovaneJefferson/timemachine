@@ -419,11 +419,10 @@ class EXTERNAL(QWidget):
         try:
             os.listdir(f'{self.media}/{user_name}')
             self.foundInMedia = True
+            self.connected()
 
         except FileNotFoundError:
             self.check_connection_run()
-
-        self.connected()
 
     def check_connection_run(self):
         ################################################################################
@@ -436,6 +435,7 @@ class EXTERNAL(QWidget):
 
         except FileNotFoundError:
             print("No external devices mounted or available...")
+            pass
 
     def connected(self):
         ################################################################################

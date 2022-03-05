@@ -27,16 +27,39 @@ class CLI:
         self.dst_kde_service = f"{self.home_user}/.local/share/kservices5/ServiceMenus/"
         self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
         self.create_autostart_folder = f"{self.home_user}/.config/autostart"
+        self.services_menu = f"{self.home_user}/.local/share/kservices5/ServiceMenus"
 
         self.begin_to_install()
 
     def begin_to_install(self):
-        # Create file if file do not exist
-        if os.path.exists(self.create_autostart_folder):
-            pass
-        else:
-            sub.run(self.createCmd + self.create_autostart_folder, shell=True)
+        ################################################################################
+        ## Create autostart folder
+        ################################################################################
+        try:
+            if os.path.exists(self.create_autostart_folder):
+                pass
+            else:
+                sub.run(self.createCmd + self.create_autostart_folder, shell=True)
 
+        except FileNotFoundError:
+            print("Error trying to create autostart folders insise users home!")
+
+        ################################################################################
+        ## Create KDE services folder
+        ################################################################################
+        try:
+            # Kdeservices extensions
+            if os.path.exists(self.services_menu):
+                pass
+            else:
+                sub.run(self.createCmd + self.services_menu, shell=True)
+        except FileNotFoundError:
+            print("Error trying to create KDE services folder! (Needs for the restore feature)")
+            pass
+
+        ################################################################################
+        ## Copy all .desktop 
+        ################################################################################
         with open(self.src_backup_check, "w") as writer:    # Modify backup_check.desktop and add username to it
             writer.write(
                 f"[Desktop Entry]\n "
