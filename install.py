@@ -24,10 +24,9 @@ class CLI:
         self.dst_venv_loc = f"{self.home_user}/.local/share/timemachine/venv"
         self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
         self.dst_timemachine_desktop = f"{self.home_user}/.local/share/applications/timemachine.desktop"
-        self.dst_kde_service = f"{self.home_user}/.local/share/kservices5/ServiceMenus/"
+        self.dst_kde_service = f"{self.home_user}/.local/share/kservices5/ServiceMenus"
         self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
         self.create_autostart_folder = f"{self.home_user}/.config/autostart"
-        self.services_menu = f"{self.home_user}/.local/share/kservices5/ServiceMenus"
 
         self.begin_to_install()
 
@@ -49,12 +48,37 @@ class CLI:
         ################################################################################
         try:
             # Kdeservices extensions
-            if os.path.exists(self.services_menu):
+            if os.path.exists(f"{self.home_user}/.local/share/kservices5/"):
                 pass
             else:
-                sub.run(self.createCmd + self.services_menu, shell=True)
+                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/", shell=True)
+        
         except FileNotFoundError:
             print("Error trying to create KDE services folder! (Needs for the restore feature)")
+            pass
+
+        try:
+            # ServicesMenus extensions
+            if os.path.exists(f"{self.home_user}/.local/share/kservices5/ServiceMenus/"):
+                pass
+            else:
+                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/ServiceMenus/", shell=True)
+        
+        except FileNotFoundError:
+            print("Error trying to create KDE services folder! (Needs for the restore feature)")
+            pass
+
+        ################################################################################
+        ## Create applications folder
+        ################################################################################
+        try:
+            # Kdeservices extensions
+            if os.path.exists(f"{self.home_user}/.local/share/applications/"):
+                pass
+            else:
+                sub.run(f"{self.createCmd} {self.home_user}/.local/share/applications/", shell=True)
+        except FileNotFoundError:
+            print("Error trying to create applications folder inside users home!")
             pass
 
         ################################################################################
