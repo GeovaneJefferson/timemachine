@@ -404,7 +404,6 @@ class EXTERNAL(QWidget):
         config.read(src_user_config)
         self.getHDName = config['EXTERNAL']['name']
 
-
         ################################################################################
         ## Connections
         ################################################################################
