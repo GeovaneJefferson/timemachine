@@ -44,10 +44,9 @@ class CLI:
             print("Error trying to create autostart folders insise users home!")
 
         ################################################################################
-        ## Create KDE services folder
+        ## Create Kservices folder
         ################################################################################
         try:
-            # Kdeservices extensions
             if os.path.exists(f"{self.home_user}/.local/share/kservices5/"):
                 pass
             else:
@@ -56,9 +55,10 @@ class CLI:
         except FileNotFoundError:
             print("Error trying to create KDE services folder! (Needs for the restore feature)")
             pass
-
+        ################################################################################
+        ## Create Services Menus folder
+        ################################################################################
         try:
-            # ServicesMenus extensions
             if os.path.exists(f"{self.home_user}/.local/share/kservices5/ServiceMenus/"):
                 pass
             else:
@@ -77,6 +77,7 @@ class CLI:
                 pass
             else:
                 sub.run(f"{self.createCmd} {self.home_user}/.local/share/applications/", shell=True)
+                
         except FileNotFoundError:
             print("Error trying to create applications folder inside users home!")
             pass
