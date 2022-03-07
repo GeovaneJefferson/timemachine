@@ -21,10 +21,21 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QApplication,
                              )
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 
+################################################################################
+# Home
+################################################################################
 app_name = "Time Machine - Beta Version"
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)
+
+################################################################################
+## Fonts
+################################################################################
+font1 = "DejaVu Sherif"
+font2 = "Arial Black"
+font3 = "Monospace"
+font4 = "Noto Sans Cond Blk"
 
 time_mode_hours_60 = ['00', '01', '02', '03', '04', '05', '06', '07',
                       '08', '09', '10', '11', '12', '13', '14', '15',
@@ -38,50 +49,55 @@ time_mode_minutes_15 = ['00', '15', '30', '45']
 time_mode_minutes_30 = ['00', '30']
 min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-# To edit locally
-# src_current_location = pathlib.Path().resolve()  # Current folder
-# src_options_py = "options.py"
-# src_backup_py = "backup_check.py"
-# src_restore_icon = "icons/restore_48.png"
-# src_user_config = "ini/user.ini"
-# src_backup_now = "backup_now.py"
-# src_ui_where = "ui/where.ui"
-# src_restore_small_icon = "icons/restore_small.png"
-# src_folders_py = "options.py"
-# src_backup_icon = "icons/backup.png"
-# src_backup_check = "backup_check.desktop"
-# src_backup_check_py = "backup_check.py"
-# src_backup_check_desktop = ".config/autostart/backup_check.desktop"
-# src_ui = "ui/gui.ui"
-# src_ui_options = "ui/options.ui"
-# src_timemachine_desktop = "timemachine.desktop"
-# src_backup_check = "desktop/backup_check.desktop"
-# src_service = "service.desktop"
-# src_restore_settings = "scripts/restore_settings.txt"
+################################################################################
+## Edit Mode
+#################################################################################src_current_location = pathlib.Path().resolve()  # Current folder
+src_options_py = "options.py"
+src_backup_py = "backup_check.py"
+src_restore_icon = "icons/restore_48.png"
+src_user_config = "ini/user.ini"
+src_backup_now = "backup_now.py"
+src_ui_where = "ui/where.ui"
+src_restore_small_icon = "icons/restore_small.png"
+src_folders_py = "options.py"
+src_backup_icon = "icons/backup.png"
+src_backup_check = "backup_check.desktop"
+src_backup_check_py = "backup_check.py"
+src_backup_check_desktop = ".config/autostart/backup_check.desktop"
+src_ui = "ui/gui.ui"
+src_ui_options = "ui/options.ui"
+src_timemachine_desktop = "timemachine.desktop"
+src_backup_check = "desktop/backup_check.desktop"
+src_service = "service.desktop"
+src_restore_settings = "scripts/restore_settings.txt"
 
 
-# Home location
-src_options_py = f"{home_user}/.local/share/timemachine/src/options.py"
-src_schedule_py = f"{home_user}/.local/share/timemachine/src/schedule.py"
-src_backup_check_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
-src_backup_check_desktop = f"{home_user}/.config/autostart/backup_check.desktop"
-src_timemachine_desktop = f"{home_user}/.local/share/applications/timemachine.desktop"
-src_folder_timemachine = f"{home_user}/.local/share/timemachine"
-src_user_config = f"{home_user}/.local/share/timemachine/src/ini/user.ini"
-src_restore_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_48.png"
-src_backup_icon = f"{home_user}/.local/share/timemachine/src/icons/backup.png"
-src_folders_py = f"{home_user}/.local/share/timemachine/src/folders.py"
-src_backup_now = f"{home_user}/.local/share/timemachine/src/backup_now.py"
-src_backup_check = f"{home_user}/.local/share/timemachine/src/desktop/backup_check.desktop"
-src_ui = f"{home_user}/.local/share/timemachine/src/ui/gui.ui"
-src_ui_where = f"{home_user}/.local/share/timemachine/src/ui/where.ui"
-src_restore_small_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_small.png"
-src_ui_options = f"{home_user}/.local/share/timemachine/src/ui/options.ui"
-src_backup_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
-src_service = f"{home_user}/.local/share/timemachine/src/desktop/service.desktop"
-src_restore_settings = f"{home_user}/.local/share/timemachine/src/scripts/restore_settings.txt"
+################################################################################
+## Default Mode
+#################################################################################
+# src_options_py = f"{home_user}/.local/share/timemachine/src/options.py"
+# src_schedule_py = f"{home_user}/.local/share/timemachine/src/schedule.py"
+# src_backup_check_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
+# src_backup_check_desktop = f"{home_user}/.config/autostart/backup_check.desktop"
+# src_timemachine_desktop = f"{home_user}/.local/share/applications/timemachine.desktop"
+# src_folder_timemachine = f"{home_user}/.local/share/timemachine"
+# src_user_config = f"{home_user}/.local/share/timemachine/src/ini/user.ini"
+# src_restore_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_48.png"
+# src_backup_icon = f"{home_user}/.local/share/timemachine/src/icons/backup.png"
+# src_folders_py = f"{home_user}/.local/share/timemachine/src/folders.py"
+# src_backup_now = f"{home_user}/.local/share/timemachine/src/backup_now.py"
+# src_backup_check = f"{home_user}/.local/share/timemachine/src/desktop/backup_check.desktop"
+# src_ui = f"{home_user}/.local/share/timemachine/src/ui/gui.ui"
+# src_ui_where = f"{home_user}/.local/share/timemachine/src/ui/where.ui"
+# src_restore_small_icon = f"{home_user}/.local/share/timemachine/src/icons/restore_small.png"
+# src_ui_options = f"{home_user}/.local/share/timemachine/src/ui/options.ui"
+# src_backup_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
+# src_service = f"{home_user}/.local/share/timemachine/src/desktop/service.desktop"
+# src_restore_settings = f"{home_user}/.local/share/timemachine/src/scripts/restore_settings.txt"
 
-# Notifications
+################################################################################
+## Notifications
+################################################################################
 def auto_backup_notification():
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup is enable!' 5", shell=True)
 
