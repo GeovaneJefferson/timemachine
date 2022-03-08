@@ -13,11 +13,6 @@ class UI(QWidget):
         # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.showFullScreen()
 
-        # getResolution = QtWidgets.QDesktopWidget().screenGeometry(0)
-        # self.screen_x = getResolution.width()  # Screen resolution x
-        # self.screen_y = getResolution.height()  # Screen resolution y
-        # self.screen_center = getResolution.center()
-
         ################################################################################
         ## Variables
         ################################################################################
@@ -83,20 +78,20 @@ class UI(QWidget):
         scroll.setWidgetResizable(True)
         scroll.setStyleSheet(
             "QScrollBar::handle"
-                "{"
-                    "background : rgb(58, 59, 60);"
-                "}"
+            "{"
+            "background : rgb(58, 59, 60);"
+            "}"
             "QScrollBar::handle::pressed"
-                "{"
-                    "background : rgb(68, 69, 70);"
-                "}"
-            )
+            "{"
+            "background : rgb(68, 69, 70);"
+            "}"
+        )
         scroll.setWidget(scrollWidget)
 
         ################################################################################
         ## Files vertical layout
         ################################################################################
-        self.filesGridLayout = QGridLayout(scrollWidget) # scrollWidget
+        self.filesGridLayout = QGridLayout(scrollWidget)  # scrollWidget
         self.filesGridLayout.setAlignment(QtCore.Qt.AlignHCenter)
         self.filesGridLayout.setContentsMargins(20, 20, 20, 20)
         self.filesGridLayout.setSpacing(20)
@@ -112,15 +107,15 @@ class UI(QWidget):
         self.cancelButton.clicked.connect(lambda x: exit())
         self.cancelButton.setStyleSheet(
             "QPushButton"
-                "{"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
-                "}"
+            "{"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
+            "}"
             "QPushButton::hover"
-                "{"
-                    "background-color: rgb(68, 69, 70);"
-                "}"
+            "{"
+            "background-color: rgb(68, 69, 70);"
+            "}"
         )
 
         ################################################################################
@@ -133,15 +128,15 @@ class UI(QWidget):
         self.restoreButton.setEnabled(False)
         self.restoreButton.setStyleSheet(
             "QPushButton"
-                "{"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
-                "}"
+            "{"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
+            "}"
             "QPushButton::hover"
-                "{"
-                    "background-color: rgb(68, 69, 70);"
-                "}"
+            "{"
+            "background-color: rgb(68, 69, 70);"
+            "}"
         )
 
         ################################################################################
@@ -154,16 +149,16 @@ class UI(QWidget):
         self.upButton.clicked.connect(lambda x: self.get_date(True))
         self.upButton.setStyleSheet(
             "QPushButton"
-                "{"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
-                "}"
+            "{"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
+            "}"
             "QPushButton::hover"
-                "{"
-                    "background-color: rgb(68, 69, 70);"
-                "}"
-            )
+            "{"
+            "background-color: rgb(68, 69, 70);"
+            "}"
+        )
 
         ################################################################################
         ## Down button
@@ -175,16 +170,16 @@ class UI(QWidget):
         self.downButton.clicked.connect(lambda x: self.get_date(False))
         self.downButton.setStyleSheet(
             "QPushButton"
-                "{"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
-                "}"
+            "{"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
+            "}"
             "QPushButton::hover"
-                "{"
-                    "background-color: rgb(68, 69, 70);"
-                "}"
-            )
+            "{"
+            "background-color: rgb(68, 69, 70);"
+            "}"
+        )
 
         ################################################################################
         ## Label date
@@ -238,7 +233,7 @@ class UI(QWidget):
             self.dateFolders = []
             for output in os.listdir(f"{self.getExternalLocation}/TMB/"):
                 self.dateFolders.append(output)
-                self.dateFolders.sort(reverse= True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+                self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         except FileNotFoundError:
             print("External not detected.")
@@ -294,7 +289,7 @@ class UI(QWidget):
             item = self.timeVLayout.itemAt(i)
             widget = item.widget()
             widget.deleteLater()
-            i -=1
+            i -= 1
 
         ################################################################################
         ## Get available times inside TMB
@@ -306,10 +301,10 @@ class UI(QWidget):
             ################################################################################
             ## Time button
             ################################################################################
-            getTime = getTime.replace("-", ":")   # Change - to :
+            getTime = getTime.replace("-", ":")  # Change - to :
             self.timeButton = QPushButton()
             self.timeButton.setText(getTime)
-            getTime = getTime.replace(":", "-")   # Change back : to -
+            getTime = getTime.replace(":", "-")  # Change back : to -
             self.timeButton.setFont(QFont(font2, 12))
             self.timeButton.setFixedSize(100, 34)
             self.timeButton.setCheckable(True)
@@ -317,20 +312,20 @@ class UI(QWidget):
             self.timeButton.clicked.connect(lambda x, getTime=getTime: self.show_on_screen(getDate, getTime))
             self.timeButton.setStyleSheet(
                 "QPushButton"
-                    "{"
-                        "background-color: rgb(58, 59, 60);"
-                        "border-radius: 5px;"
-                    "}"
+                "{"
+                "background-color: rgb(58, 59, 60);"
+                "border-radius: 5px;"
+                "}"
                 "QPushButton::hover"
-                    "{"
-                        "background-color: rgb(68, 69, 70);"
-                    "}"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}"
                 "QPushButton::checked"
-                    "{"
-                        "background-color: rgb(24, 25, 26);"
-                        "border: 1px solid white;"
-                    "}"
-                )
+                "{"
+                "background-color: rgb(24, 25, 26);"
+                "border: 1px solid white;"
+                "}"
+            )
             self.countTime += 1
 
             ################################################################################
@@ -339,7 +334,7 @@ class UI(QWidget):
             self.timeVLayout.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
 
         print("Time available: ", timeFolders)
-        self.timeButton.setChecked(True)    # Auto selected that lastest one
+        self.timeButton.setChecked(True)  # Auto selected that lastest one
 
         self.show_on_screen(getDate, getTime)
 
@@ -351,7 +346,7 @@ class UI(QWidget):
             item = self.filesGridLayout.itemAt(i)
             widget = item.widget()
             widget.deleteLater()
-            i -=1
+            i -= 1
 
         ################################################################################
         ## Show available files
@@ -363,29 +358,30 @@ class UI(QWidget):
                 if "." in output and not output.startswith("."):
                     print("Files: ", output)
 
-                    self.buttonFiles =  QPushButton(self)
+                    self.buttonFiles = QPushButton(self)
                     self.buttonFiles.setCheckable(True)
                     self.buttonFiles.setFixedSize(150, 150)
-                    scaledHTML = 'width:"100%" height="250"'
-                    self.buttonFiles.setToolTip(f"<img src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                    # scaledHTML = 'width:"100%" height="250"'
+                    # self.buttonFiles.setToolTip(f"<img src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
                     self.buttonFiles.setStyleSheet(
                         "QPushButton"
-                            "{"
-                                "background-color: rgb(36, 37, 38);"
-                                "border-top: 2px solid rgb(58, 59, 60);"
-                                "border-radius: 5px;"
-                            "}"
+                        "{"
+                        "background-color: rgb(36, 37, 38);"
+                        "border-top: 2px solid rgb(58, 59, 60);"
+                        "border-radius: 5px;"
+                        "}"
                         "QPushButton::hover"
-                            "{"
-                                "background-color: rgb(58, 59, 60);"
-                            "}"
+                        "{"
+                        "background-color: rgb(58, 59, 60);"
+                        "}"
                         "QPushButton::checked"
-                            "{"
-                                "background-color: rgb(24, 25, 26);"
-                                "border: 1px solid white;"
-                            "}"
+                        "{"
+                        "background-color: rgb(24, 25, 26);"
+                        "border: 1px solid white;"
+                        "}"
                     )
-                    self.buttonFiles.clicked.connect(lambda x, output=output: self.add_to_restore(output, getDate, getTime))
+                    self.buttonFiles.clicked.connect(
+                        lambda x, output=output: self.add_to_restore(output, getDate, getTime))
 
                     ################################################################################
                     ## Preview
@@ -395,11 +391,11 @@ class UI(QWidget):
                     # pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)
                     # image.setPixmap(pixmap)
 
-                    # Output preview
-                    image = QLabel(self.buttonFiles)
-                    scaledHTML = 'width:"100%" height="60"'
-                    image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
-                    image.move(20, 20)
+                    # # Output preview
+                    # image = QLabel(self.buttonFiles)
+                    # scaledHTML = 'width:"100%" height="60"'
+                    # image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                    # image.move(20, 20)
 
                     ################################################################################
                     ## Text
@@ -436,14 +432,14 @@ class UI(QWidget):
                 self.filesToRestore.append(output)  # Add output to the list files to restore
 
             else:
-                self.filesToRestore.remove(output) # Remove item if already in list
+                self.filesToRestore.remove(output)  # Remove item if already in list
 
         else:
             if not output in self.filesToRestoreWithSpace:  # Check if output is already inside list
                 self.filesToRestoreWithSpace.append(output)  # Add output to the list files to restore
 
             else:
-                self.filesToRestoreWithSpace.remove(output) # Remove item if already in list
+                self.filesToRestoreWithSpace.remove(output)  # Remove item if already in list
 
         print("")
         print("No spaces list   : ", self.filesToRestore)
@@ -457,23 +453,23 @@ class UI(QWidget):
             self.upButton.setEnabled(False)
             self.downButton.setEnabled(False)
 
-            for i in range(self.timeVLayout.count()):   # Hide times
+            for i in range(self.timeVLayout.count()):  # Hide times
                 item = self.timeVLayout.itemAt(i)
                 widget = item.widget()
                 widget.hide()
-                i -=1
+                i -= 1
         else:
             self.restoreButton.setEnabled(False)
-            for i in range(self.timeVLayout.count()):   # Show times
+            for i in range(self.timeVLayout.count()):  # Show times
                 item = self.timeVLayout.itemAt(i)
                 widget = item.widget()
                 widget.show()
-                i -=1
+                i -= 1
 
-            if self.index != 0:     # If is not last/top date
+            if self.index != 0:  # If is not last/top date
                 self.upButton.setEnabled(True)
 
-            if not (self.index + 1) == len(self.dateFolders):   # If is not last/bottom date
+            if not (self.index + 1) == len(self.dateFolders):  # If is not last/bottom date
                 self.downButton.setEnabled(True)
 
         ################################################################################
@@ -491,7 +487,9 @@ class UI(QWidget):
         try:
             count = 0
             for _ in self.filesToRestore:
-                sub.run(f"{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{self.filesToRestore[count]} {home_user}/{self.reader}/ &", shell=True)
+                sub.run(
+                    f"{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{self.filesToRestore[count]} {home_user}/{self.reader}/ &",
+                    shell=True)
                 count += 1
 
             ################################################################################
@@ -499,7 +497,9 @@ class UI(QWidget):
             ################################################################################
             count = 0
             for _ in self.filesToRestoreWithSpace:
-                sub.run(f'{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.reader}/ &', shell=True)
+                sub.run(
+                    f'{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.reader}/ &',
+                    shell=True)
                 count += 1
 
         except:
@@ -521,5 +521,5 @@ main = UI()
 main.show()
 
 toc = time.time()
-print(f'Time Machine {(toc-tic):.4f} seconds')
+print(f'Time Machine {(toc - tic):.4f} seconds')
 app.exit(app.exec())
