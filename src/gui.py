@@ -142,7 +142,7 @@ class UI(QMainWindow):
         ## Donate and Settings buttons
         ################################################################################
         self.donateAndSettingsWidget = QWidget(self)
-        self.donateAndSettingsWidget.setGeometry(480, 360, 200, 80)
+        self.donateAndSettingsWidget.setGeometry(480, 370, 200, 80)
         # self.donateAndSettingsWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
