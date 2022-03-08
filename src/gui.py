@@ -623,7 +623,7 @@ class EXTERNAL(QWidget):
         ## Search external inside run/media
         ################################################################################
         try:
-            os.listdir(f'{self.run}{user_name}')  # Opensuse, external is inside "/run"
+            os.listdir(f'{self.run}/{user_name}')  # Opensuse, external is inside "/run"
             self.foundInMedia = False
             self.connected()
 
