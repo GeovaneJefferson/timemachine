@@ -101,7 +101,7 @@ class UI(QWidget):
         ################################################################################
         self.cancelButton = QPushButton()
         self.cancelButton.setText("Cancel")
-        self.cancelButton.setFont(QFont(font4, 14))
+        self.cancelButton.setFont(QFont("Arial", 14))
         self.cancelButton.setFixedSize(120, 34)
         self.cancelButton.setEnabled(True)
         self.cancelButton.clicked.connect(lambda x: exit())
@@ -123,7 +123,7 @@ class UI(QWidget):
         ################################################################################
         self.restoreButton = QPushButton()
         self.restoreButton.setText("Restore")
-        self.restoreButton.setFont(QFont(font4, 14))
+        self.restoreButton.setFont(QFont("Arial", 14))
         self.restoreButton.setFixedSize(120, 34)
         self.restoreButton.setEnabled(False)
         self.restoreButton.setStyleSheet(
@@ -144,7 +144,7 @@ class UI(QWidget):
         ################################################################################
         self.upButton = QPushButton()
         self.upButton.setText("Up")
-        self.upButton.setFont(QFont(font4, 12))
+        self.upButton.setFont(QFont("Arial", 12))
         self.upButton.setFixedSize(50, 50)
         self.upButton.clicked.connect(lambda x: self.get_date(True))
         self.upButton.setStyleSheet(
@@ -165,7 +165,7 @@ class UI(QWidget):
         ################################################################################
         self.downButton = QPushButton()
         self.downButton.setText("Down")
-        self.downButton.setFont(QFont(font4, 12))
+        self.downButton.setFont(QFont("Arial", 12))
         self.downButton.setFixedSize(50, 50)
         self.downButton.clicked.connect(lambda x: self.get_date(False))
         self.downButton.setStyleSheet(
@@ -185,14 +185,14 @@ class UI(QWidget):
         ## Label date
         ################################################################################
         self.labelDate = QLabel()
-        self.labelDate.setFont(QFont(font2, 12))
+        self.labelDate.setFont(QFont("Arial", 12))
 
         ################################################################################
         ## Current lcoation
         ################################################################################
         self.currentLocation = QLabel()
         self.currentLocation.setText(self.reader)
-        self.currentLocation.setFont(QFont(font2, 28))
+        self.currentLocation.setFont(QFont("Arial", 28))
 
         ################################################################################
         ## Add widgets and Layouts
@@ -305,26 +305,26 @@ class UI(QWidget):
             self.timeButton = QPushButton()
             self.timeButton.setText(getTime)
             getTime = getTime.replace(":", "-")  # Change back : to -
-            self.timeButton.setFont(QFont(font2, 12))
+            self.timeButton.setFont(QFont("Arial", 12))
             self.timeButton.setFixedSize(100, 34)
             self.timeButton.setCheckable(True)
             self.timeButton.setAutoExclusive(True)
             self.timeButton.clicked.connect(lambda x, getTime=getTime: self.show_on_screen(getDate, getTime))
             self.timeButton.setStyleSheet(
                 "QPushButton"
-                "{"
-                "background-color: rgb(58, 59, 60);"
-                "border-radius: 5px;"
-                "}"
+                    "{"
+                        "background-color: rgb(58, 59, 60);"
+                        "border-radius: 5px;"
+                    "}"
                 "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}"
+                    "{"
+                        "background-color: rgb(68, 69, 70);"
+                    "}"
                 "QPushButton::checked"
-                "{"
-                "background-color: rgb(24, 25, 26);"
-                "border: 1px solid white;"
-                "}"
+                    "{"
+                        "background-color: rgb(24, 25, 26);"
+                        "border: 1px solid white;"
+                    "}"
             )
             self.countTime += 1
 
@@ -361,27 +361,26 @@ class UI(QWidget):
                     self.buttonFiles = QPushButton(self)
                     self.buttonFiles.setCheckable(True)
                     self.buttonFiles.setFixedSize(150, 150)
-                    # scaledHTML = 'width:"100%" height="250"'
-                    # self.buttonFiles.setToolTip(f"<img src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                    scaledHTML = 'width:"100%" height="250"'
+                    self.buttonFiles.setToolTip(f"<img src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
                     self.buttonFiles.setStyleSheet(
                         "QPushButton"
-                        "{"
-                        "background-color: rgb(36, 37, 38);"
-                        "border-top: 2px solid rgb(58, 59, 60);"
-                        "border-radius: 5px;"
-                        "}"
+                            "{"
+                                "background-color: rgb(36, 37, 38);"
+                                "border-top: 2px solid rgb(58, 59, 60);"
+                                "border-radius: 5px;"
+                            "}"
                         "QPushButton::hover"
-                        "{"
-                        "background-color: rgb(58, 59, 60);"
-                        "}"
+                            "{"
+                                "background-color: rgb(58, 59, 60);"
+                            "}"
                         "QPushButton::checked"
-                        "{"
-                        "background-color: rgb(24, 25, 26);"
-                        "border: 1px solid white;"
-                        "}"
+                            "{"
+                                "background-color: rgb(24, 25, 26);"
+                                "border: 1px solid white;"
+                            "}"
                     )
-                    self.buttonFiles.clicked.connect(
-                        lambda x, output=output: self.add_to_restore(output, getDate, getTime))
+                    self.buttonFiles.clicked.connect(lambda *args, output=output: self.add_to_restore(output, getDate, getTime))
 
                     ################################################################################
                     ## Preview
@@ -391,18 +390,18 @@ class UI(QWidget):
                     # pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)
                     # image.setPixmap(pixmap)
 
-                    # # Output preview
-                    # image = QLabel(self.buttonFiles)
-                    # scaledHTML = 'width:"100%" height="60"'
-                    # image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
-                    # image.move(20, 20)
+                    # Output preview
+                    image = QLabel(self.buttonFiles)
+                    scaledHTML = 'width:"100%" height="60"'
+                    image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                    image.move(20, 20)
 
                     ################################################################################
                     ## Text
                     ################################################################################
                     text = QLabel(self.buttonFiles)
                     text.setText(output.capitalize())
-                    text.setFont(QFont(font2, 10))
+                    text.setFont(QFont("Arial", 10))
                     text.move(20, 120)
                     text.setStyleSheet("""
                         color: white;
