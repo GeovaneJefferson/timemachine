@@ -10,21 +10,288 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        loadUi(src_ui_options, self)
         self.setWindowTitle("Options Screen")
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
         self.setFixedHeight(550)
         self.setFixedWidth(800)
+        self.widgets()
 
-        # Connections
-        self.label_hours.valueChanged.connect(self.label_hours_changed)
-        self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+    def widgets(self):
+        ################################################################################
+        ## Left Widget
+        ################################################################################
+        self.leftWidget = QWidget(self)
+        self.leftWidget.setGeometry(20, 20, 240, 500)
+        # self.leftWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+        # Left widget
+        self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
+        self.baseVLeftLayout.setSpacing(10)
+        self.baseVLeftLayout.setContentsMargins(20, 0, 20, 20)
+
+        # Label
+        self.label = QLabel()
+        self.label.setFont(QFont("Arial Black", 10))
+        self.label.setText("This folders will be back up:")
+        self.label.setFixedSize(200, 30)
+
+        # Frame
+        self.folders_frame = QFrame()
+        self.folders_frame.setFixedSize(200, 440)
+        # self.folders_frame.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        ################################################################################
+        ## Days to run widget
+        ################################################################################
+        self.daysToRunWidget = QWidget(self)
+        self.daysToRunWidget.setGeometry(280, 20, 500, 80)
+        # self.daysToRunWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # BaseH layout
+        self.baseVDaysToRunLayout = QVBoxLayout(self.daysToRunWidget)
+        self.baseVDaysToRunLayout.setSpacing(10)
+        # self.baseVDaysToRunLayout.setContentsMargins(20, 0, 20, 20)
+
+        # BaseV layout
+        self.baseHDaysToRunLayout = QHBoxLayout()
+        self.baseHDaysToRunLayout.setSpacing(10)
+        # self.baseVDaysToRunLayout.setContentsMargins(20, 0, 20, 20)
+
+        # Label
+        self.labelDaysToRun = QLabel()
+        self.labelDaysToRun.setFont(QFont("Arial Black", 10))
+        self.labelDaysToRun.setText("Days to run:")
+        self.labelDaysToRun.setFixedSize(200, 30)
+
+        # Checkboxes
+        self.check_sun = QCheckBox()
+        self.check_sun.setFont(QFont("Ubuntu", 10))
+        self.check_sun.setText("Sun")
+
+        self.check_mon = QCheckBox()
+        self.check_mon.setFont(QFont("Ubuntu", 10))
+        self.check_mon.setText("Mon")
+
+        self.check_tue = QCheckBox()
+        self.check_tue.setFont(QFont("Ubuntu", 10))
+        self.check_tue.setText("Tue")
+
+        self.check_wed = QCheckBox()
+        self.check_wed.setFont(QFont("Ubuntu", 10))
+        self.check_wed.setText("Wed")
+
+        self.check_thu = QCheckBox()
+        self.check_thu.setFont(QFont("Ubuntu", 10))
+        self.check_thu.setText("Thu")
+
+        self.check_fri = QCheckBox()
+        self.check_fri.setFont(QFont("Ubuntu", 10))
+        self.check_fri.setText("Fri")
+
+        self.check_sat = QCheckBox()
+        self.check_sat.setFont(QFont("Ubuntu", 10))
+        self.check_sat.setText("Sat")
+
+        ################################################################################
+        ## Time to run widget
+        ################################################################################
+        self.timeToRunWidget = QWidget(self)
+        self.timeToRunWidget.setGeometry(280, 100, 500, 200)
+        # self.timeToRunWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Label
+        self.labelTimeToRun = QLabel()
+        self.labelTimeToRun.setFont(QFont("Arial Black", 10))
+        self.labelTimeToRun.setText("Time to run:")
+        self.labelTimeToRun.setFixedSize(180, 30)
+
+        # BaseGrid layout
+        self.baseHTimeToRunLayout = QGridLayout(self.timeToRunWidget)
+
+        self.timesGrid = QGridLayout()
+
+        # Radio buttons
+        self.one_time_mode = QRadioButton()
+        self.one_time_mode.setFont(QFont("Ubuntu", 10))
+        self.one_time_mode.setText("One time per day")
+        self.one_time_mode.setToolTip("One single back up will be excute every selected day(s) and time.")
+        self.one_time_mode.setFixedSize(180, 30)
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
+
+        self.more_time_mode = QRadioButton()
+        self.more_time_mode.setFont(QFont("Ubuntu", 10))
+        self.more_time_mode.setToolTip(
+            "Back up will be execute every x minutes/hours.\n"
+            "This will produce a time folder inside the chose external location.\n"
+            "Fx: 12-12-12/10-15\n"
+            "10-15, is the time of the back up (10:15)."
+        )
+        self.more_time_mode.setText("Multiple times per day")
+        self.more_time_mode.setFixedSize(180, 30)
         self.more_time_mode.clicked.connect(self.on_frequency_clicked)
+
+        # Spinbox Hours
+        self.label_hours = QSpinBox()
+        self.label_hours.setFont(QFont("Ubuntu", 14))
+        self.label_hours.setFixedSize(60, 40)
+        self.label_hours.setFrame(True)
+        self.label_hours.setMinimum(0)
+        self.label_hours.setSingleStep(1)
+        self.label_hours.setMaximum(23)
+        self.label_hours.valueChanged.connect(self.label_hours_changed)
+
+        # Label
+        self.timeLabel = QLabel()
+        self.timeLabel.setFont(QFont("Ubuntu", 18))
+        self.timeLabel.setText(":")
+
+        # Label hours
+        self.hoursLabel = QLabel()
+        self.hoursLabel.setFont(QFont("Ubuntu", 12))
+        self.hoursLabel.setText("Hours")
+
+        # Label minutes
+        self.minutesLabel = QLabel()
+        self.minutesLabel.setFont(QFont("Ubuntu", 12))
+        self.minutesLabel.setText("Minutes")
+
+        # Spinbox Hours
+        self.label_minutes = QSpinBox()
+        self.label_minutes.setFont(QFont("Ubuntu", 14))
+        self.label_minutes.setFixedSize(60, 40)
+        self.label_minutes.setFrame(True)
+        self.label_minutes.setMinimum(0)
+        self.label_minutes.setSingleStep(1)
+        self.label_minutes.setMaximum(59)
+        self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+
+        # Combo box
+        self.every_combox = QComboBox()
+        self.every_combox.setFrame(True)
+        self.every_combox.setFixedSize(140, 34)
+        self.every_combox.setFont(QFont("Ubuntu", 10))
+        every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hour"]
+        self.every_combox.addItems(every_combox_list)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
-        self.btn_save.clicked.connect(self.on_buttons_save_clicked)
+
+        ################################################################################
+        ## Reset widget
+        ################################################################################
+        self.resetWidget = QWidget(self)
+        self.resetWidget.setGeometry(280, 300, 500, 160)
+        # self.resetWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # BaseV layout
+        self.baseVResetLayout = QVBoxLayout(self.resetWidget)
+        self.baseVResetLayout.setSpacing(5)
+        # self.baseVDaysToRunLayout.setContentsMargins(20, 0, 20, 20)
+
+        # Reset label
+        self.labelReset = QLabel()
+        self.labelReset.setFont(QFont("Arial Black", 10))
+        self.labelReset.setText("Reset:")
+        self.labelReset.setFixedSize(200, 30)   # If something seems broken, click on "Reset", to reset settings.
+
+        # Reset label text
+        self.labelResetText = QLabel()
+        self.labelResetText.setFont(QFont("Ubuntu", 10))
+        self.labelResetText.setText('If something seems broken, click on "Reset", to reset settings.')
+        self.labelResetText.setFixedSize(400, 30)
+
+        # Reset button
+        self.btn_fix = QPushButton()
+        self.btn_fix.setFont(QFont("Ubuntu", 10))
+        self.btn_fix.setText("Reset")
+        self.btn_fix.setFixedSize(80, 34)
         self.btn_fix.clicked.connect(self.on_button_fix_clicked)
+
+        ################################################################################
+        ## Save button
+        ################################################################################
+        self.saveWidget = QWidget(self)
+        self.saveWidget.setGeometry(620, 480, 180, 60)
+        # self.saveWidget.setStyleSheet("""
+        #      border: 1px solid red;
+        #  """)
+
+        # Save layout
+        self.saveLayout = QVBoxLayout(self.saveWidget)
+
+        # Save button
+        self.btn_save = QPushButton()
+        self.btn_save.setFixedSize(120, 34)
+        self.btn_save.setFont(QFont("Ubuntu", 10))
+        self.btn_save.setText("Save and Close")
+        self.btn_save.clicked.connect(self.on_buttons_save_clicked)
+
+        ################################################################################
+        ## Add widgets and Layouts
+        ################################################################################
+        # BaseVLeft layout
+        self.baseVLeftLayout.addWidget(self.label)
+        self.baseVLeftLayout.addWidget(self.folders_frame, 0, Qt.AlignHCenter | Qt.AlignTop)
+
+        # BaseVDaysToRun layout
+        self.baseVDaysToRunLayout.addWidget(self.labelDaysToRun, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseVDaysToRunLayout.addLayout(self.baseHDaysToRunLayout)
+
+        # BaseVDaysToRun layout
+        self.baseHDaysToRunLayout.addWidget(self.check_sun, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_mon, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_tue, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_wed, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_thu, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_fri, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.check_sat, 0, Qt.AlignVCenter | Qt.AlignLeft)
+
+        # BaseGridTimeToRun layout
+        self.baseHTimeToRunLayout.addWidget(self.labelTimeToRun, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.one_time_mode, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.more_time_mode, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.every_combox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addLayout(self.timesGrid, 1, 1, Qt.AlignVCenter | Qt.AlignLeft)
+
+        # TimeGrid
+        self.timesGrid.addWidget(self.label_hours, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timesGrid.addWidget(self.timeLabel, 0, 2, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.timesGrid.addWidget(self.label_minutes, 0, 3, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timesGrid.addWidget(self.hoursLabel, 1, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.timesGrid.addWidget(self.minutesLabel, 1, 3, Qt.AlignVCenter | Qt.AlignHCenter)
+
+        # Reset layout
+        self.baseVResetLayout.addWidget(self.labelReset, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVResetLayout.addWidget(self.labelResetText, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVResetLayout.addStretch()
+        self.baseVResetLayout.addWidget(self.btn_fix, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseVResetLayout.addStretch()
+
+        # Save layout
+        self.saveLayout.addWidget(self.btn_save, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+
+        self.setLayout(self.baseVLeftLayout)
+
+        self.get_folders()
+
+    def get_folders(self):
+    #     # Backup images
+    #     self.backupImage = QLabel()
+    #     self.backupImage.setFixedSize(128, 128)
+    #     self.backupImage.setStyleSheet(
+    #         "QLabel"
+    #         "{"
+    #             f"background-image: url({src_backup_icon});"
+    #         "}"
+    #     )
 
         # Get user.ini
         sun = config['SCHEDULE']['sun']
@@ -51,27 +318,23 @@ class UI(QMainWindow):
         vert_space_checkbox = vert_space_label  # Same value as vertical space
         for files in get_home_folders:
             if not files.startswith("."):
-                # # Get folder size
-                # size = sub.check_output(['du','-sh', home_user + "/" + files]).split()[0].decode('utf-8')
-                # if size == "0":
-                #     size = ""
-                #     print(size)
-                
                 print(files)
+
                 # Folders text
                 label_text = QLabel(files, self.folders_frame)
-                label_text.setFixedSize(200, 22)
-                label_text.move(40, vert_space_label)
+                label_text.setFont(QFont("Ubuntu", 10))
+                label_text.setFixedSize(150, 22)
+                label_text.move(30, vert_space_label)
                 vert_space_label += 25  # Position
 
                 # Checkboxes
                 self.folders_checkbox = QCheckBox(self.folders_frame)
-                self.folders_checkbox.setFixedSize(200, 22)
-                self.folders_checkbox.move(15, vert_space_checkbox)
+                self.folders_checkbox.setFixedSize(150, 22)
+                self.folders_checkbox.move(5, vert_space_checkbox)
                 vert_space_checkbox += 25
                 text = label_text.text().lower()  # Lowercase
                 self.folders_checkbox.show()
-                self.folders_checkbox.clicked.connect(lambda ch, text=text: self.folders(text))
+                self.folders_checkbox.clicked.connect(lambda *args, text=text: self.folders(text))
 
                 # Activate checkboxes in user.ini
                 if text in get_ini_folders:
@@ -264,7 +527,7 @@ class UI(QMainWindow):
                 config.set('SCHEDULE', 'minutes', '0' + minutes)
 
             config.write(configfile)
-
+    #
     def on_frequency_clicked(self):
         with open(src_user_config, 'w') as configfile:
             if self.one_time_mode.isChecked():

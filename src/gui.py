@@ -7,31 +7,201 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        loadUi(src_ui, self)
         self.setWindowTitle(app_name)
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
         self.setFixedSize(700, 450)
 
-        # Center window
-        frameGm = self.frameGeometry()
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        centerPoint = QApplication.desktop().screenGeometry(screen).center()
-        frameGm.moveCenter(centerPoint)
-        self.move(frameGm.topLeft())
+        self.widgets()
 
-        # Connections
+    def widgets(self):
+        ################################################################################
+        ## Left Widget
+        ################################################################################
+        self.leftWidget = QWidget(self)
+        self.leftWidget.setGeometry(20, 20, 200, 180)
+        # self.leftWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Left widget
+        self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
+        self.baseVLeftLayout.setSpacing(20)
+
+        # Backup images
+        self.backupImage = QLabel()
+        self.backupImage.setFixedSize(128, 128)
+        self.backupImage.setStyleSheet(
+            "QLabel"
+            "{"
+                f"background-image: url({src_backup_icon});"
+            "}"
+        )
+
+        # Auto checkbox
+        self.auto_checkbox = QCheckBox()
+        self.auto_checkbox.setFont(QFont("Ubuntu", 10))
+        self.auto_checkbox.setText("Back Up Automatically")
+        self.auto_checkbox.setFixedSize(160, 20)
         self.auto_checkbox.clicked.connect(self.automatically_clicked)
+
+        ################################################################################
+        ## Right Widget
+        ################################################################################
+        self.rightWidget = QWidget(self)
+        self.rightWidget.setGeometry(260, 40, 160, 154)
+        # self.rightWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Right widget
+        self.baseVRightLayout = QVBoxLayout(self.rightWidget)
+        self.baseVRightLayout.setSpacing(20)
+
+        # Restore images
+        self.restoreImage = QLabel()
+        self.restoreImage.setFixedSize(96, 96)
+        self.restoreImage.setStyleSheet(
+            "QLabel"
+            "{"
+                f"background-image: url({src_restore_icon});"
+                "background-repeat: no-repeat;"
+            "}"
+        )
+
+        # Select disk button
+        self.btn_external = QPushButton(self)
+        self.btn_external.setFont(QFont("Ubuntu", 10))
+        self.btn_external.setText("Select Backup Disk...")
+        self.btn_external.setFixedSize(140, 34)
         self.btn_external.clicked.connect(self.external_clicked)
-        self.btn_options.clicked.connect(self.options_clicked)
-        self.btn_donate.clicked.connect(self.donate_clicked)
+
+        ################################################################################
+        ## Far right Widget
+        ################################################################################
+        self.farRightWidget = QWidget(self)
+        self.farRightWidget.setContentsMargins(0, 0, 0, 0)
+        self.farRightWidget.setGeometry(425, 40, 250, 153)
+        # self.farRightWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Right widget
+        self.baseVFarRightLayout = QVBoxLayout(self.farRightWidget)
+        self.baseVFarRightLayout.setSpacing(0)
+
+        # Set external name
+        self.set_external_name = QLabel()
+
+        # Label last backup
+        self.label_last_backup = QLabel()
+        self.label_last_backup.setFont(QFont("Ubuntu", 10))
+        self.label_last_backup.setText("Last Backup:")
+        self.label_last_backup.setFixedSize(200, 18)
+
+        # Label last backup
+        self.label_next_backup = QLabel()
+        self.label_next_backup.setFont(QFont("Ubuntu", 10))
+        self.label_next_backup.setText("Next Backup:")
+        self.label_next_backup.setFixedSize(200, 18)
+
+        # Status external hd
+        self.status_external = QLabel()
+        self.status_external.setFont(QFont("Ubuntu", 10))
+        self.status_external.setText("External HD:")
+        self.status_external.setFixedSize(200, 18)
 
         # Backup now btn
         self.btn_backup_now = QPushButton("Back Up Now", self)
-        self.btn_backup_now.resize(120, 34)
+        self.btn_backup_now.setFixedSize(100, 34)
         self.btn_backup_now.clicked.connect(self.backup_now_clicked)
-        self.verticalLayout_2.addWidget(self.btn_backup_now, 0, QtCore.Qt.AlignLeft)
-        
+        self.btn_backup_now.hide()
+
+        ################################################################################
+        ## Ui description
+        ################################################################################
+        self.uiTextWidget = QWidget(self)
+        self.uiTextWidget.setGeometry(260, 200, 380, 120)
+        # self.uiTextWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # UiText widget
+        self.baseVUiTextLayout = QVBoxLayout(self.uiTextWidget)
+
+        self.uiText = QLabel()
+        self.uiText.setFont(QFont("Ubuntu", 10))
+        self.uiText.setFixedSize(320, 100)
+        self.uiText.setText(
+            "Time Machine Keeps:\n\n"
+            "* Local snapshots as space permits\n\n"
+            "* Schedule backups for the past 24 hours\n"
+        )
+
+        ################################################################################
+        ## Donate and Settings buttons
+        ################################################################################
+        self.donateAndSettingsWidget = QWidget(self)
+        self.donateAndSettingsWidget.setGeometry(480, 360, 200, 80)
+        # self.donateAndSettingsWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Donate and Settings widget
+        self.donateAndSettingsLayout = QHBoxLayout(self.donateAndSettingsWidget)
+        self.donateAndSettingsLayout.setSpacing(20)
+
+        # Donate buton
+        self.btn_donate = QPushButton()
+        self.btn_donate.setText("Donate")
+        self.btn_donate.setFont(QFont("Ubuntu", 10))
+        self.btn_donate.setFixedSize(80, 34)
+        self.btn_donate.clicked.connect(self.donate_clicked)
+
+        # Settings buton
+        self.btn_options = QPushButton()
+        self.btn_options.setText("Options")
+        self.btn_options.setFont(QFont("Ubuntu", 10))
+        self.btn_options.setFixedSize(80, 34)
+        self.btn_options.clicked.connect(self.options_clicked)
+
+        ################################################################################
+        ## Add widgets and Layouts
+        ################################################################################
+        # BaseVLeftlayout
+        self.baseVLeftLayout.addWidget(self.backupImage, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.baseVLeftLayout.addWidget(self.auto_checkbox, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+
+        #  baseVRight layout
+        self.baseVRightLayout.addWidget(self.restoreImage, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.baseVRightLayout.addWidget(self.btn_external, 1, Qt.AlignVCenter | Qt.AlignHCenter)
+
+        #  baseVFarRight layout
+        self.baseVFarRightLayout.addWidget(self.set_external_name, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addWidget(self.label_last_backup, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addWidget(self.label_next_backup, 2, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addWidget(self.status_external, 3, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addStretch(5)
+        self.baseVFarRightLayout.addWidget(self.btn_backup_now, 4, Qt.AlignLeft | Qt.AlignVCenter)
+
+        #  baseVUiText layout
+        self.baseVUiTextLayout.addWidget(self.uiText, 0, Qt.AlignVCenter | Qt.AlignLeft)
+
+        #  Donate and Settings layout
+        self.donateAndSettingsLayout.addWidget(self.btn_donate, 0, Qt.AlignHCenter | Qt.AlignVCenter)
+        self.donateAndSettingsLayout.addWidget(self.btn_options, 1, Qt.AlignHCenter | Qt.AlignVCenter)
+
+        self.setLayout(self.baseVLeftLayout)
+
+        # # Center window
+        # frameGm = self.frameGeometry()
+        # screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        # centerPoint = QApplication.desktop().screenGeometry(screen).center()
+        # frameGm.moveCenter(centerPoint)
+        # self.move(frameGm.topLeft())
+
+
+
         # Timer
         timer.timeout.connect(self.updates)
         timer.start(1000)  # update every second
@@ -96,30 +266,31 @@ class UI(QMainWindow):
 
             # External status
             self.status_external.setText("External HD: Disconnected")
-            self.status_external.setFont(QFont('Arial', 10))
+            self.status_external.setFont(QFont('Ubuntu', 10))
             self.status_external.setStyleSheet('color: red')
-        
+
         self.ui_settings()
 
     def connected(self):
-        # External status
-        self.status_external.setText("External HD: Connected")
-        self.status_external.setFont(QFont('Arial', 10))
-        self.status_external.setStyleSheet('color: green')
-
         if self.getHDName != "None":  # If location can be found
-            if self.get_backup_now == "false":   # If is not back up right now 
+            if self.get_backup_now == "false":   # If is not back up right now
+                # External status
+                self.status_external.setText("External HD: Connected")
+                self.status_external.setFont(QFont('Ubuntu', 10))
+                self.status_external.setStyleSheet('color: green')
+
                 self.btn_backup_now.setText("Back Up Now")  # Show backup now button
                 self.btn_backup_now.setEnabled(True)  # Disable backup now button
-                self.btn_backup_now.resize(120, 34)  # Resize backup button
+                self.btn_backup_now.setFixedSize(120, 34)  # Resize backup button
                 self.btn_backup_now.show()
+
             else:
                 self.btn_backup_now.setText("Your files are being back up...")
                 self.btn_backup_now.setEnabled(False)  # Disable backup now button
-                self.btn_backup_now.resize(120, 34)  # Resize backup button
+                self.btn_backup_now.setFixedSize(180, 34)  # Resize backup button
         else:
-            self.btn_backup_now.hide()  # Hide backup now button
-        
+            self.btn_backup_now.hide()
+
         self.ui_settings()
 
     def ui_settings(self):
@@ -130,48 +301,48 @@ class UI(QMainWindow):
         if self.get_auto_backup == "true":
             self.auto_checkbox.setChecked(True)
             self.set_external_name.setText(self.getHDName)    # Set external name
-            self.set_external_name.setFont(QFont('Arial', 18))
-        
+            self.set_external_name.setFont(QFont('Ubuntu', 18))
+
         # External name
-        if self.getHDName != "":  
+        if self.getHDName != "None":
             self.set_external_name.setText(self.getHDName)
-            self.set_external_name.setFont(QFont('Arial', 18))
+            self.set_external_name.setFont(QFont('Ubuntu', 18))
         # Last backup label
         if self.get_last_backup == "":
             self.label_last_backup.setText("Last Backup: ")
-            self.label_last_backup.setFont(QFont('Arial', 10))
+            self.label_last_backup.setFont(QFont('Ubuntu', 10))
         else:
             self.label_last_backup.setText(f"Last Backup: {self.get_last_backup}")
-            self.label_last_backup.setFont(QFont('Arial', 10))
+            self.label_last_backup.setFont(QFont('Ubuntu', 10))
 
         # Next backup label
         if self.get_next_backup == "":
             self.label_next_backup.setText("Next Backup: None")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
         else:
             self.label_next_backup.setText(f"Next Backup: {self.get_next_backup}")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         # Next backup label everytime
         if self.more_time_mode == "true" and self.everytime == "15":
             self.label_next_backup.setText("Next Backup: Every 15 minutes")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         if self.more_time_mode == "true" and self.everytime == "30":
             self.label_next_backup.setText("Next Backup: Every 30 minutes")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         if self.more_time_mode == "true" and self.everytime == "60":
             self.label_next_backup.setText("Next Backup: Every 1 hour")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         if self.more_time_mode == "true" and self.everytime == "120":
             self.label_next_backup.setText("Next Backup: Every 2 hours")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         if self.more_time_mode == "true" and self.everytime == "240":
             self.label_next_backup.setText("Next Backup: Every 4 hours")
-            self.label_next_backup.setFont(QFont('Arial', 10))
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
         if self.day_name == "Sun":
             if self.get_next_backup_sun == "true" and self.current_hour <= self.get_next_hour and self.current_minute <= self.get_next_minute:
@@ -351,7 +522,6 @@ class UI(QMainWindow):
     def external_clicked(self):
         # Choose external hd
         self.setEnabled(False)
-        EXTERNAL.__init__(externalMain)     # Call external screen
         externalMain.show()     # Show external screen
 
     def backup_now_clicked(self):
@@ -378,19 +548,11 @@ class UI(QMainWindow):
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
-        loadUi(src_ui_where, self)
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
         self.setWindowTitle("External Screen")
         self.setFixedSize(400, 325)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        
-        # Center widget
-        frameGm = self.frameGeometry()
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        centerPoint = QApplication.desktop().screenGeometry(screen).center()
-        frameGm.moveCenter(centerPoint)
-        self.move(frameGm.topLeft())
 
         ################################################################################
         ## Media location
@@ -404,10 +566,43 @@ class EXTERNAL(QWidget):
         config.read(src_user_config)
         self.getHDName = config['EXTERNAL']['name']
 
+        self.widgets()
+
+    def widgets(self):
         ################################################################################
-        ## Connections
+        ## Frame
         ################################################################################
+        self.where_frame = QFrame(self)
+        self.where_frame.setFixedSize(360, 250)
+        self.where_frame.move(20, 20)
+        # self.where_frame.setStyleSheet("""
+        #      border: 1px solid red;
+        # """)
+
+        ################################################################################
+        ## Cancel button
+        ################################################################################
+        self.widget = QWidget(self)
+        self.widget.setGeometry(290, 260, 150, 60)
+        # self.widget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Left widget
+        self.baseVCancelLayout = QVBoxLayout(self.widget)
+        self.baseVCancelLayout.setSpacing(20)
+
+        # Backup images
+        self.button_where_cancel = QPushButton()
+        self.button_where_cancel.setFont(QFont("Ubuntu", 10))
+        self.button_where_cancel.setText("Cancel")
+        self.button_where_cancel.setFixedSize(80, 34)
         self.button_where_cancel.clicked.connect(self.on_button_cancel_clicked)
+
+        ################################################################################
+        ## Add widgets and Layouts
+        ################################################################################
+        self.baseVCancelLayout.addWidget(self.button_where_cancel)
 
         self.check_connection_media()
 
@@ -486,7 +681,7 @@ class EXTERNAL(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.foundInMedia:
                 config.set(f'EXTERNAL', 'hd', f'{self.media}/{user_name}/{get}')
-                
+
             else:
                 config.set(f'EXTERNAL', 'hd', f'{self.run}/{user_name}/{get}')
 
@@ -513,5 +708,5 @@ main.show()
 externalMain = EXTERNAL()
 
 toc = time.time()
-print(f'Time Machine {(toc-tic):.4f} seconds')
+print(f'Time Machine {(toc - tic):.4f} seconds')
 app.exit(app.exec())
