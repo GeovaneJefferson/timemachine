@@ -4,6 +4,7 @@ A backup application, created using PYQT.
 ## Features:
 * Local snapshots one or mutiple times per day
 * Rsync incremental
+* Important: Time Machine doesn’t back up system files or apps installed.
 
 ## Requirements:
 * python3-pyqt5
