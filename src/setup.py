@@ -6,7 +6,6 @@ import configparser
 import shutil
 import time
 import sys
-import images
 import multiprocessing
 
 from pathlib import Path
