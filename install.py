@@ -12,7 +12,7 @@ class CLI:
         self.getCurrentLocation = pathlib.Path().resolve()  # Current folder
 
         # Terminal commands
-        self.createCmd = 'mkdir '
+        self.createCmd = "mkdir "
 
         # Default
         # Current folder
