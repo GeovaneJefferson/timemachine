@@ -603,5 +603,6 @@ tic = time.time()
 main = UI()
 main.show()
 toc = time.time()
+
 print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())

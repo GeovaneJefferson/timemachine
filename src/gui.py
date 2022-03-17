@@ -701,12 +701,9 @@ class EXTERNAL(QWidget):
 
 app = QApplication(sys.argv)
 tic = time.time()
-
 main = UI()
 main.show()
-
 externalMain = EXTERNAL()
-
 toc = time.time()
 print(f'Time Machine {(toc - tic):.4f} seconds')
 app.exit(app.exec())

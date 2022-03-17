@@ -515,10 +515,8 @@ class UI(QWidget):
 
 app = QApplication(sys.argv)
 tic = time.time()
-
 main = UI()
 main.show()
-
 toc = time.time()
 print(f'Time Machine {(toc - tic):.4f} seconds')
 app.exit(app.exec())
