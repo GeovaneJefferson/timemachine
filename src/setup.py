@@ -60,7 +60,6 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_service = "service.desktop"
 # src_restore_settings = "scripts/restore_settings.txt"
 
-
 # Home location
 src_options_py = f"{home_user}/.local/share/timemachine/src/options.py"
 src_schedule_py = f"{home_user}/.local/share/timemachine/src/schedule.py"
