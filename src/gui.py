@@ -131,12 +131,12 @@ class UI(QMainWindow):
 
         self.uiText = QLabel()
         self.uiText.setFont(QFont("Ubuntu", 10))
-        self.uiText.setFixedSize(320, 100)
+        self.uiText.setFixedSize(400, 120)
         self.uiText.setText(
-            "Time Machine Keeps:\n\n"
-            "* Local snapshots as space permits\n\n"
-            "* Schedule backups for the past 24 hours\n"
-        )
+            "Time Machine is able to:\n\n"
+            "* Keep local snapshots as space permits\n"
+            "* Schedule backups\n\n"
+            "Delete the oldest backups when your disk becomes full.\n")
 
         ################################################################################
         ## Donate and Settings buttons

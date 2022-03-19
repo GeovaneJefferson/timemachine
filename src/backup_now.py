@@ -203,7 +203,7 @@ class BACKUP:
 
         # Local variables
         free_space = int(output_maximum - used_space)
-        limit = int(output_maximum * 0.8)   # 20% limit space
+        limit = int(output_maximum * 0.99)   # 20% limit space
 
         print(f"USB used space:   ", used_space)
         print("USB maximum size:   ", output_maximum)
@@ -214,7 +214,7 @@ class BACKUP:
         ## Condition
         ################################################################################
         if used_space >= limit:
-            print("20% space limit reached!")
+            print("External is almost full!")
             print("Old files will be deleted, to make room for the new ones.")
             print("Please wait...")
 
@@ -237,8 +237,8 @@ class BACKUP:
                 self.create_folder_date()
 
             except FileNotFoundError:
-                print("External not detected.")
-                not_available_notification()
+                print("Error trying to delete old backups!")
+                error_delete()
                 exit()
 
             print("Date available: ", self.dateFolders)
