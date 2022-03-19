@@ -6,7 +6,6 @@ import configparser
 import shutil
 import time
 import sys
-import multiprocessing
 
 from pathlib import Path
 from datetime import datetime
@@ -18,8 +17,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
-                            QSpinBox, QComboBox
-                             )
+                            QSpinBox, QComboBox)
 
 app_name = "Time Machine - Beta Version"
 home_user = str(Path.home())
@@ -109,6 +107,11 @@ def error_backup():
 def error_reading():
     # If error happens
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to read user.ini...' 5", shell=True)
+
+
+def error_delete():
+    # If error happens
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to delete old backups!' 5", shell=True)
 
 
 def no_external_info():
