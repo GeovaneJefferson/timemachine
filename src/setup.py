@@ -19,7 +19,8 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox)
 
-app_name = "Time Machine - Beta Version"
+app_name = "Time Machine"
+folderName = "TMB"
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)
