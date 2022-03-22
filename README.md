@@ -7,7 +7,7 @@ A backup application, created using PYQT.
 * Important: Time Machine doesn’t back up system files or apps installed.
 
 ## Requirements:
-* python3-pyqt5
+* python3-pyside6
 
 ## To install:
 Inside Time Machine folder, right click, "open terminal", write "python3", drag and drop "Install.py" and press Enter.
