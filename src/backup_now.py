@@ -10,7 +10,6 @@ class BACKUP:
         ################################################################################
         ## Commands
         ################################################################################
-        self.copyCmd = "rsync -avruzh"
         self.createCmd = "mkdir"
         self.createFile = "touch"
 
@@ -79,110 +78,110 @@ class BACKUP:
             print("Nothing to do right now...")
             exit()
 
-    #     self.create_apt_file()
-    #
-    # def create_apt_file(self):
-    #     ################################################################################
-    #     ## Create file txt
-    #     ################################################################################
-    #     try:
-    #         if os.path.exists(self.apt_txt):
-    #             print("Apt file already exist.")
-    #         else:
-    #             print("Apt file was created.")
-    #             sub.run(f"{self.createFile} {self.apt_txt}", shell=True)    # Create tmb folder
-    #
-    #     except FileNotFoundError:
-    #         print("Error trying to create Apt file...")
-    #         error_backup()  # Notification
-    #         exit()
-    #
-    #     self.create_flatpak_file()
-    #
-    # def create_flatpak_file(self):
-    #     ################################################################################
-    #     ## Create file txt
-    #     ################################################################################
-    #     try:
-    #         # TMB folders
-    #         if os.path.exists(self.flatpak_txt):
-    #             print("Flatpak file already exist.")
-    #         else:
-    #             print("Flatpak file was created.")
-    #             sub.run(f"{self.createFile} {self.flatpak_txt}", shell=True)    # Create tmb folder
-    #
-    #     except FileNotFoundError:
-    #         print("Error trying to create Flatpak file...")
-    #         error_backup()  # Notification
-    #         exit()
-    #
-    #     self.save_apt_file()
-    #
-    # def save_apt_file(self):
-    #     ################################################################################
-    #     ## Commands
-    #     ################################################################################
-    #     x = os.popen("apt-mark showmanual")
-    #
-    #     ################################################################################
-    #     ## Save to file
-    #     ################################################################################
-    #     list = []
-    #     for _ in x:
-    #         list.append(x.readline())
-    #
-    #     try:
-    #         with open(f"{self.getExternalLocation}/{folderName}/apt.txt", "w") as write_file:
-    #             for i in list:
-    #                 if not i.startswith(exclude):
-    #                     write_file.write(i)
-    #
-    #         ################################################################################
-    #         ## Read to file
-    #         ################################################################################
-    #         with open(f"{self.getExternalLocation}/{folderName}/apt.txt", "r") as read_file:
-    #             try:
-    #                 for i in read_file:
-    #                     print(i.strip())
-    #             except:
-    #                 pass  # Add do error list to install
-    #     except:
-    #         print("Error tying to save apt list of apps to the file!")
-    #         exit()
-    #
-    #     self.save_flatpak_file()
-    #
-    # def save_flatpak_file(self):
-    #     ################################################################################
-    #     ## Commands
-    #     ################################################################################
-    #     x = os.popen("flatpak list -a --columns=application --app")
-    #
-    #     ################################################################################
-    #     ## Save to file
-    #     ################################################################################
-    #     list = []
-    #     for _ in x:
-    #         list.append(x.readline())
-    #
-    #     try:
-    #         with open(f"{self.getExternalLocation}/{folderName}/flatpak.txt", "w") as write_file:
-    #             for i in list:
-    #                 if not i.startswith(exclude):
-    #                     write_file.write(i)
-    #
-    #         ################################################################################
-    #         ## Read to file
-    #         ################################################################################
-    #         with open(f"{self.getExternalLocation}/{folderName}/flatpak.txt", "r") as read_file:
-    #             try:
-    #                 for i in read_file:
-    #                     print(i.strip())
-    #             except:
-    #                 pass  # Add do error list to install
-    #     except:
-    #         print("Error trying to save flatpak list of apps to the file!")
-    #         exit()
+        self.create_apt_file()
+
+    def create_apt_file(self):
+        ################################################################################
+        ## Create file txt
+        ################################################################################
+        try:
+            if os.path.exists(self.apt_txt):
+                print("Apt file already exist.")
+            else:
+                print("Apt file was created.")
+                sub.run(f"{self.createFile} {self.apt_txt}", shell=True)    # Create tmb folder
+
+        except FileNotFoundError:
+            print("Error trying to create Apt file...")
+            error_backup()  # Notification
+            exit()
+
+        self.create_flatpak_file()
+
+    def create_flatpak_file(self):
+        ################################################################################
+        ## Create file txt
+        ################################################################################
+        try:
+            # TMB folders
+            if os.path.exists(self.flatpak_txt):
+                print("Flatpak file already exist.")
+            else:
+                print("Flatpak file was created.")
+                sub.run(f"{self.createFile} {self.flatpak_txt}", shell=True)    # Create tmb folder
+
+        except FileNotFoundError:
+            print("Error trying to create Flatpak file...")
+            error_backup()  # Notification
+            exit()
+
+        self.save_apt_file()
+
+    def save_apt_file(self):
+        ################################################################################
+        ## Commands
+        ################################################################################
+        x = os.popen("apt-mark showmanual")
+
+        ################################################################################
+        ## Save to file
+        ################################################################################
+        list = []
+        for _ in x:
+            list.append(x.readline())
+
+        try:
+            with open(f"{self.getExternalLocation}/{folderName}/apt.txt", "w") as write_file:
+                for i in list:
+                    if not i.startswith(exclude):
+                        write_file.write(i)
+
+            ################################################################################
+            ## Read to file
+            ################################################################################
+            with open(f"{self.getExternalLocation}/{folderName}/apt.txt", "r") as read_file:
+                try:
+                    for i in read_file:
+                        print(i.strip())
+                except:
+                    pass  # Add do error list to install
+        except:
+            print("Error tying to save apt list of apps to the file!")
+            exit()
+
+        self.save_flatpak_file()
+
+    def save_flatpak_file(self):
+        ################################################################################
+        ## Commands
+        ################################################################################
+        x = os.popen("flatpak list -a --columns=application --app")
+
+        ################################################################################
+        ## Save to file
+        ################################################################################
+        list = []
+        for _ in x:
+            list.append(x.readline())
+
+        try:
+            with open(f"{self.getExternalLocation}/{folderName}/flatpak.txt", "w") as write_file:
+                for i in list:
+                    if not i.startswith(exclude):
+                        write_file.write(i)
+
+            ################################################################################
+            ## Read to file
+            ################################################################################
+            with open(f"{self.getExternalLocation}/{folderName}/flatpak.txt", "r") as read_file:
+                try:
+                    for i in read_file:
+                        print(i.strip())
+                except:
+                    pass  # Add do error list to install
+        except:
+            print("Error trying to save flatpak list of apps to the file!")
+            exit()
 
         self.check_size()
 
@@ -190,30 +189,30 @@ class BACKUP:
         ################################################################################
         ## Get current size
         ################################################################################
-        used_space = os.popen(f"du -s {self.getExternalLocation}")
-        used_space = used_space.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
-        used_space = int(used_space)
+        usedSpace = os.popen(f"du -s {self.getExternalLocation}")
+        usedSpace = usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
+        usedSpace = int(usedSpace)
 
         ################################################################################
         ## Get total size
         ################################################################################
-        output_maximum = os.popen(f"df --output=size {self.getExternalLocation}")
-        output_maximum = output_maximum.read().strip().replace("1K-blocks", "").replace(" ", "")
-        output_maximum = int(output_maximum)
+        outputMaximum = os.popen(f"df --output=size {self.getExternalLocation}")
+        outputMaximum = outputMaximum.read().strip().replace("1K-blocks", "").replace(" ", "")
+        outputMaximum = int(outputMaximum)
 
         # Local variables
-        free_space = int(output_maximum - used_space)
-        limit = int(output_maximum * 0.99)   # 20% limit space
+        freeSpace = int(outputMaximum - usedSpace)
+        limit = int(outputMaximum * 0.99)   # 20% limit space
 
-        print(f"USB used space:   ", used_space)
-        print("USB maximum size:   ", output_maximum)
-        print("USB free size:   ", free_space)
+        print(f"USB used space:   ", usedSpace)
+        print("USB maximum size:   ", outputMaximum)
+        print("USB free size:   ", freeSpace)
         print("USB limit space:   ", limit)
 
         ################################################################################
         ## Condition
         ################################################################################
-        if used_space >= limit:
+        if usedSpace >= limit:
             print("External is almost full!")
             print("Old files will be deleted, to make room for the new ones.")
             print("Please wait...")
@@ -290,7 +289,7 @@ class BACKUP:
                 for output in self.getIniFolders:    # Backup all (user.ini true folders)
                     output = output.title()  # Capitalize first letter. ex: '/Desktop'
                     print(f"Back up: {output}")
-                    sub.run(f"{self.copyCmd} {home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/Desktop
+                    sub.run(f"{copyCmd} {home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/Desktop
 
             else:
                 print("More mode activated!")
@@ -299,7 +298,7 @@ class BACKUP:
                 for output in self.getIniFolders:    # Backup all (user.ini true folders)
                     output = output.title()  # Capitalize first letter. ex: '/Desktop'
                     print(f"Back up: {output}")
-                    sub.run(f"{self.copyCmd} {home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/time/Desktop
+                    sub.run(f"{copyCmd} {home_user}/{output} {self.timeFolder}", shell=True) #Ex: TMB/date/time/Desktop
                     print("")
 
         except FileNotFoundError:

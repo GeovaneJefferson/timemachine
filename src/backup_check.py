@@ -15,6 +15,7 @@ class CLI:
     def check_user_settings(self):
         if self.getHDName != "":
             self.check_for_external_media()
+
         else:
             no_external_info()
             exit()
@@ -26,6 +27,7 @@ class CLI:
                     if self.getHDName in output:  # If user.ini has external hd name
                         print("External found in /media")
                         self.check_the_date()
+
         except FileNotFoundError:  
             self.check_for_external_run()
 
@@ -36,6 +38,7 @@ class CLI:
                     if self.getHDName in output:  # If user.ini has external hd name
                         print("External found in /run/media")
                         self.check_the_date()
+
         except FileNotFoundError:
             print("No external devices mounted or available...")
             not_available_notification()  # Call not available notification
