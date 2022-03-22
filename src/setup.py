@@ -19,8 +19,14 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox)
 
+################################################################################
+## Variables
+################################################################################
 app_name = "Time Machine"
 folderName = "TMB"
+exclude = ("linux", "mesa", "lib")
+copyCmd = "rsync -avruzh"
+
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)

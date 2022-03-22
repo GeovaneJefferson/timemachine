@@ -12,7 +12,7 @@ class CLI:
         self.getCurrentLocation = pathlib.Path().resolve()  # Current folder
 
         # Terminal commands
-        self.createCmd = "mkdir "
+        self.createCmd = "mkdir"
 
         # Default
         # Current folder
@@ -38,7 +38,7 @@ class CLI:
             if os.path.exists(self.create_autostart_folder):
                 pass
             else:
-                sub.run(self.createCmd + self.create_autostart_folder, shell=True)
+                sub.run(f"{self.createCmd} {self.create_autostart_folder}", shell=True)
 
         except FileNotFoundError:
             print("Error trying to create autostart folders insise users home!")

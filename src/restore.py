@@ -19,7 +19,6 @@ class UI(QWidget):
         self.filesToRestore = []
         self.filesToRestoreWithSpace = []
 
-        self.copyCmd = "rsync -avruzh"
         self.count = 0
         self.countTime = 0
 
@@ -488,7 +487,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{self.filesToRestore[count]} {home_user}/{self.reader}/ &",
+                    f"{copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{self.filesToRestore[count]} {home_user}/{self.reader}/ &",
                     shell=True)
                 count += 1
 
@@ -498,7 +497,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f'{self.copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.reader}/ &',
+                    f'{copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.reader}/ &',
                     shell=True)
                 count += 1
 
