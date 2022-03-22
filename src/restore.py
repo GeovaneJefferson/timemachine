@@ -232,8 +232,9 @@ class UI(QWidget):
         try:
             self.dateFolders = []
             for output in os.listdir(f"{self.getExternalLocation}/TMB/"):
-                self.dateFolders.append(output)
-                self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+                if not "." in output:
+                    self.dateFolders.append(output)
+                    self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         except FileNotFoundError:
             print("External not detected.")
