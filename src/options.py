@@ -34,7 +34,7 @@ class UI(QMainWindow):
         # Label
         self.label = QLabel()
         self.label.setFont(QFont("Arial Black", 10))
-        self.label.setText("This folders will be back up:")
+        self.label.setText("These folders will be back up:")
         self.label.setFixedSize(200, 30)
 
         # Frame
