@@ -127,6 +127,11 @@ def no_external_info():
               "first!' 5", shell=True)
 
 
+def no_restore_folder_found():
+    # If external is not available
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'We could not find this folder inside the external.' 5", shell=True)
+
+
 def been_restored():
     # If external is not available
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your files are been restored...' 5",
