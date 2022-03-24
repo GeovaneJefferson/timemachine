@@ -39,10 +39,12 @@ class UI(QMainWindow):
 
         # Frame
         self.folders_frame = QFrame()
-        self.folders_frame.setFixedSize(200, 440)
-        # self.folders_frame.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.folders_frame.setFixedSize(250, 500)
+        # self.folders_frame.setStyleSheet(
+        #     "QFrame"
+        #     "{"
+        #         "background-color: rgb(36, 37, 38);"
+        #     "}")
 
         ################################################################################
         ## Days to run widget
@@ -302,7 +304,7 @@ class UI(QMainWindow):
         fri = config['SCHEDULE']['fri']
         sat = config['SCHEDULE']['sat']
         getEverytime = config['SCHEDULE']['everytime']
-        get_ini_folders = config.options('FOLDER')
+        getIniFolders = config.options('FOLDER')
 
         # Schedule options
         # Hours
@@ -337,7 +339,7 @@ class UI(QMainWindow):
                 self.folders_checkbox.clicked.connect(lambda *args, text=text: self.folders(text))
 
                 # Activate checkboxes in user.ini
-                if text in get_ini_folders:
+                if text in getIniFolders:
                     self.folders_checkbox.setChecked(True)
 
         if sun == "true":
