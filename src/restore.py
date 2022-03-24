@@ -1,8 +1,5 @@
 from setup import *
 
-config = configparser.ConfigParser()
-config.read(src_user_config)
-
 
 class UI(QWidget):
     def __init__(self):
@@ -25,6 +22,9 @@ class UI(QWidget):
         ################################################################################
         ## Read ini
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         self.getHDName = config['EXTERNAL']['name']
         self.getExternalLocation = config['EXTERNAL']['hd']
 
@@ -36,7 +36,17 @@ class UI(QWidget):
             self.reader = self.reader.replace(':', '').strip()
             print(f"Search files from : {self.reader}")
 
-        self.widgets()
+            ################################################################################
+            ## Check if "self.reader" is available inside external
+            ################################################################################
+            getIniFolders = config.options('FOLDER')
+
+            if self.reader.lower() in getIniFolders:
+                self.widgets()
+            
+            else:
+                no_restore_folder_found()
+                exit()
 
     def widgets(self):
         ################################################################################
