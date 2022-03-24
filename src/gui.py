@@ -20,9 +20,6 @@ class UI(QMainWindow):
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 200, 180)
-        # self.leftWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
 
         # Left widget
         self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
@@ -66,8 +63,7 @@ class UI(QMainWindow):
             "{"
                 f"background-image: url({src_restore_icon});"
                 "background-repeat: no-repeat;"
-            "}"
-        )
+            "}")
 
         # Select disk button
         self.btn_external = QPushButton(self)
