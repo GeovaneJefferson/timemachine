@@ -103,7 +103,7 @@ class UI(QMainWindow):
         self.label_next_backup = QLabel()
         self.label_next_backup.setFont(QFont("Ubuntu", 10))
         self.label_next_backup.setText("Next Backup:")
-        self.label_next_backup.setFixedSize(200, 18)
+        self.label_next_backup.setFixedSize(250, 18)
 
         # Status external hd
         self.status_external = QLabel()
@@ -296,18 +296,24 @@ class UI(QMainWindow):
     def ui_settings(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
-        # Auto backup
+        ################################################################################
+        ## Auto backup
+        ################################################################################
         if self.get_auto_backup == "true":
             self.auto_checkbox.setChecked(True)
             self.set_external_name.setText(self.getHDName)    # Set external name
             self.set_external_name.setFont(QFont('Ubuntu', 18))
 
-        # External name
+        ################################################################################
+        ## External name
+        ################################################################################
         if self.getHDName != "None":
             self.set_external_name.setText(self.getHDName)
             self.set_external_name.setFont(QFont('Ubuntu', 18))
-        # Last backup label
+
+        ################################################################################
+        ## Last backup label
+        ################################################################################
         if self.get_last_backup == "":
             self.label_last_backup.setText("Last Backup: ")
             self.label_last_backup.setFont(QFont('Ubuntu', 10))
@@ -315,15 +321,24 @@ class UI(QMainWindow):
             self.label_last_backup.setText(f"Last Backup: {self.get_last_backup}")
             self.label_last_backup.setFont(QFont('Ubuntu', 10))
 
-        # Next backup label
+        ################################################################################
+        ## Next backup label
+        ################################################################################
         if self.get_next_backup == "":
             self.label_next_backup.setText("Next Backup: None")
             self.label_next_backup.setFont(QFont('Ubuntu', 10))
+
+        if not self.auto_checkbox.isChecked():
+            self.label_next_backup.setText("Next Backup: Automatic backups off")
+            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+
         else:
             self.label_next_backup.setText(f"Next Backup: {self.get_next_backup}")
             self.label_next_backup.setFont(QFont('Ubuntu', 10))
 
-        # Next backup label everytime
+        ################################################################################
+        ## Next backup label everytime
+        ################################################################################
         if self.more_time_mode == "true" and self.everytime == "15":
             self.label_next_backup.setText("Next Backup: Every 15 minutes")
             self.label_next_backup.setFont(QFont('Ubuntu', 10))
@@ -477,12 +492,16 @@ class UI(QMainWindow):
                 elif self.get_next_backup_sat == "true":
                     self.next_day = "Sat"
 
-        # Save next backup to user.ini
+        ################################################################################
+        ## Save next backup to user.ini
+        ################################################################################
         with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'next', f'{self.next_day}, {self.get_next_hour}:{self.get_next_minute}')
             config.write(configfile)
 
-        # Print current time and day
+        ################################################################################
+        ## Print current time and day
+        ################################################################################
         print("")
         print(f"Current time: {self.current_hour}:{self.current_minute}")
         print(f"Today is: {self.day_name}")
