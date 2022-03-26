@@ -56,6 +56,8 @@ class CLI:
         ################################################################################
         if self.ubuntu:
             try:
+                print("")
+                print("Python3 pip need to be installed.")
                 sub.run("pkexec apt install python3-pip libnotify-bin", shell=True)
                 print("Python3-pip was installed.")
 
@@ -68,6 +70,8 @@ class CLI:
         ################################################################################
         elif self.opensuse:
             try:
+                print("")
+                print("Python3 pip need to be installed.")
                 sub.run("pkexec zypper install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
@@ -80,8 +84,9 @@ class CLI:
         ################################################################################
         if self.ubuntu or self.opensuse:
             try:
+                print("")
+                print("PySide6 pip need to be installed.")
                 sub.run("pip install pyside6", shell=True)
-                print("PySide6 was installed.")
 
             except :
                 print("Error trying to install PySide6!")
