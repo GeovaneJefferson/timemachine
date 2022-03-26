@@ -11,6 +11,10 @@ class CLI:
         self.home_user = str(Path.home())
         self.getCurrentLocation = pathlib.Path().resolve()  # Current folder
 
+        # Compatible system
+        self.ubuntu = False
+        self.opensuse = False
+
         # Terminal commands
         self.createCmd = "mkdir"
 
@@ -27,6 +31,66 @@ class CLI:
         self.dst_kde_service = f"{self.home_user}/.local/share/kservices5/ServiceMenus"
         self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
         self.create_autostart_folder = f"{self.home_user}/.config/autostart"
+
+        self.check_system()
+
+    def check_system(self):
+        ################################################################################
+        ## Check system (Ubuntu, Opensuse etc.)
+        ################################################################################
+        sub.run("pkexec")
+        output = os.popen("cat /etc/os-release") # uname -v
+        output = output.read()
+
+        if "ubuntu" in output:
+            self.ubuntu = True
+
+        elif "opensuse" in output:
+            self.opensuse = True
+
+        self.requeriments()
+
+    def requeriments(self):
+        ################################################################################
+        ## Install pip (Python3)
+        ################################################################################
+        if self.ubuntu:
+            try:
+                sub.run("pkexec apt install python3-pip libnotify-bin", shell=True)
+                print("Python3-pip was installed.")
+
+            except :
+                print("Error trying to install python3-pip!")
+                exit()
+
+        ################################################################################
+        ## Install pip (Python3)
+        ################################################################################
+        elif self.opensuse:
+            try:
+                sub.run("pkexec zypper install python3-pip", shell=True)
+                print("Python3-pip was installed.")
+
+            except:
+                print("Error trying to install python3-pip!")
+                exit()
+
+        ################################################################################
+        ## Install PySide6
+        ################################################################################
+        if self.ubuntu or self.opensuse:
+            try:
+                sub.run("pip install pyside6", shell=True)
+                print("PySide6 was installed.")
+
+            except :
+                print("Error trying to install PySide6!")
+                exit()
+
+        else:
+            print("None compatible system found.")
+            print("Could not install python3-pip and PySide6.")
+            print("You have to install manually..")
 
         self.begin_to_install()
 
@@ -137,9 +201,7 @@ class CLI:
             sub.run(f"rm -rf {self.dst_venv_loc}", shell=True)        # Remove venv folder from user
 
             print("Program was installed!")
-            # Install libnotify to get notification
-            print("Libnotify-bin needs to be installed, so you can receive notifications from Time Machine.")
-        
+ 
         except FileExistsError:
             print("Program is already installed!")
 
