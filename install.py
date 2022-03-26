@@ -39,7 +39,7 @@ class CLI:
         ################################################################################
         ## Check system (Ubuntu, Opensuse etc.)
         ################################################################################
-        sub.run("pkexec")
+        sub.run("pkexec sudo", shell=True)
         output = os.popen("cat /etc/os-release") # uname -v
         output = output.read()
 
@@ -62,7 +62,7 @@ class CLI:
             try:
                 print("")
                 print("Python3 pip need to be installed.")
-                sub.run("pkexec apt install python3-pip libnotify-bin", shell=True)
+                sub.run("sudo apt install python3-pip libnotify-bin", shell=True)
                 print("Python3-pip was installed.")
 
             except :
@@ -76,7 +76,7 @@ class CLI:
             try:
                 print("")
                 print("Python3 pip need to be installed.")
-                sub.run("pkexec zypper install python3-pip", shell=True)
+                sub.run("sudo zypper install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
             except:
@@ -90,16 +90,17 @@ class CLI:
             try:
                 print("")
                 print("Python3 pip need to be installed.")
-                sub.run("pkexec dnf install python3-pip", shell=True)
+                sub.run("sudo dnf install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
             except:
                 print("Error trying to install python3-pip!")
                 exit()
+
         ################################################################################
         ## Install PySide6
         ################################################################################
-        if self.ubuntu or self.opensuse:
+        if self.ubuntu or self.opensuse or self.fedora:
             try:
                 print("")
                 print("PySide6 pip need to be installed.")
