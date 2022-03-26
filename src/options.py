@@ -134,8 +134,8 @@ class UI(QMainWindow):
             "Back up will be execute every x minutes/hours.\n"
             "This will produce a time folder inside the chose external location.\n"
             "Fx: 12-12-12/10-15\n"
-            "10-15, is the time of the back up (10:15)."
-        )
+            "10-15, is the time of the back up (10:15).")
+
         self.more_time_mode.setText("Multiple times per day")
         self.more_time_mode.setFixedSize(180, 30)
         self.more_time_mode.clicked.connect(self.on_frequency_clicked)
@@ -180,7 +180,7 @@ class UI(QMainWindow):
         self.every_combox.setFrame(True)
         self.every_combox.setFixedSize(140, 34)
         self.every_combox.setFont(QFont("Ubuntu", 10))
-        every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hour"]
+        every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]
         self.every_combox.addItems(every_combox_list)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
 
