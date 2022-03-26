@@ -27,6 +27,9 @@ folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
 copyCmd = "rsync -avruzh"
 
+################################################################################
+## Locations
+################################################################################
 home_user = str(Path.home())
 user_name = getpass.getuser()
 get_home_folders = os.listdir(home_user)
@@ -64,7 +67,7 @@ min_fix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 # src_service = "service.desktop"
 # src_restore_settings = "scripts/restore_settings.txt"
 
-# Home location
+# # Home location
 src_options_py = f"{home_user}/.local/share/timemachine/src/options.py"
 src_schedule_py = f"{home_user}/.local/share/timemachine/src/schedule.py"
 src_backup_check_py = f"{home_user}/.local/share/timemachine/src/backup_check.py"
