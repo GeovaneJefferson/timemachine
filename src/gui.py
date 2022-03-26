@@ -513,7 +513,7 @@ class UI(QMainWindow):
                 pass
             else:
                 shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy src .desktop to dst .desktop
-                auto_backup_notification()  # Call auto backup notification
+                # auto_backup_notification()  # Call auto backup notification
 
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                     config.set('BACKUP', 'auto_backup', 'true')
@@ -521,7 +521,7 @@ class UI(QMainWindow):
 
                 print("Auto backup was successfully activated!")
         else:
-            auto_backup_off_notification()  # Call auto backup off notification
+            # auto_backup_off_notification()  # Call auto backup off notification
             sub.Popen(f"rm {src_backup_check_desktop}", shell=True)  # Remove .desktop from dst
 
             # Set auto backup to false
