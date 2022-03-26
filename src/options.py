@@ -124,7 +124,7 @@ class UI(QMainWindow):
         self.one_time_mode = QRadioButton()
         self.one_time_mode.setFont(QFont("Ubuntu", 10))
         self.one_time_mode.setText("One time per day")
-        self.one_time_mode.setToolTip("One single back up will be excute every selected day(s) and time.")
+        self.one_time_mode.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.one_time_mode.setFixedSize(180, 30)
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
 
