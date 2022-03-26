@@ -14,6 +14,7 @@ class CLI:
         # Compatible system
         self.ubuntu = False
         self.opensuse = False
+        self.fedora = False
 
         # Terminal commands
         self.createCmd = "mkdir"
@@ -48,11 +49,14 @@ class CLI:
         elif "opensuse" in output:
             self.opensuse = True
 
+        elif "fedora" in output:
+            self.fedora = True
+
         self.requeriments()
 
     def requeriments(self):
         ################################################################################
-        ## Install pip (Python3)
+        ## Install pip (Ubuntu)
         ################################################################################
         if self.ubuntu:
             try:
@@ -66,7 +70,7 @@ class CLI:
                 exit()
 
         ################################################################################
-        ## Install pip (Python3)
+        ## Install pip (Opensuse)
         ################################################################################
         elif self.opensuse:
             try:
@@ -79,6 +83,19 @@ class CLI:
                 print("Error trying to install python3-pip!")
                 exit()
 
+        ################################################################################
+        ## Install pip (Fedora)
+        ################################################################################
+        elif self.fedora:
+            try:
+                print("")
+                print("Python3 pip need to be installed.")
+                sub.run("pkexec dnf install python3-pip", shell=True)
+                print("Python3-pip was installed.")
+
+            except:
+                print("Error trying to install python3-pip!")
+                exit()
         ################################################################################
         ## Install PySide6
         ################################################################################
