@@ -5,9 +5,12 @@ class UI(QWidget):
     def __init__(self):
         super().__init__()
         # self.setWindowTitle(app_name)
-        # self.setFixedSize(1000, 600)
+        # self.setFixedSize(1300, 900)
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        # self.setStyleSheet("""
+        #     background-color: rgba(80, 80, 255, 200);
+        # """)
         self.showFullScreen()
 
         ################################################################################
@@ -93,8 +96,7 @@ class UI(QWidget):
             "QScrollBar::handle::pressed"
             "{"
             "background : rgb(68, 69, 70);"
-            "}"
-        )
+            "}")
         scroll.setWidget(scrollWidget)
 
         ################################################################################
@@ -124,8 +126,7 @@ class UI(QWidget):
             "QPushButton::hover"
             "{"
             "background-color: rgb(68, 69, 70);"
-            "}"
-        )
+            "}")
 
         ################################################################################
         ## Restore button
@@ -145,8 +146,7 @@ class UI(QWidget):
             "QPushButton::hover"
             "{"
             "background-color: rgb(68, 69, 70);"
-            "}"
-        )
+            "}")
 
         ################################################################################
         ## Up button
@@ -166,8 +166,7 @@ class UI(QWidget):
             "QPushButton::hover"
             "{"
             "background-color: rgb(68, 69, 70);"
-            "}"
-        )
+            "}")
 
         ################################################################################
         ## Down button
@@ -187,8 +186,7 @@ class UI(QWidget):
             "QPushButton::hover"
             "{"
             "background-color: rgb(68, 69, 70);"
-            "}"
-        )
+            "}")
 
         ################################################################################
         ## Label date
@@ -201,7 +199,7 @@ class UI(QWidget):
         ################################################################################
         self.currentLocation = QLabel()
         self.currentLocation.setText(self.reader)
-        self.currentLocation.setFont(QFont("Arial", 28))
+        self.currentLocation.setFont(QFont("Arial", 34))
 
         ################################################################################
         ## Add widgets and Layouts
