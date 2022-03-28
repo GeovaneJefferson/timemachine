@@ -411,16 +411,16 @@ class UI(QWidget):
                     # image.setPixmap(pixmap)
 
                     # Output preview
-                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(".jpeg"):
+                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(".jpeg") or output.endswith(".webp") or output.endswith(".gif"):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="60"'
                         image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
-                        image.move(25, 20)
+                        image.move(20, 20)
 
                     elif output.endswith(".txt"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                             background-image: url(icons/txt.png);
                             background-color: transparent;
@@ -429,7 +429,7 @@ class UI(QWidget):
                     elif output.endswith(".pdf"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/pdf.png);
                              background-color: transparent;
@@ -438,7 +438,7 @@ class UI(QWidget):
                     elif output.endswith(".py"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/py.png);
                              background-color: transparent;
@@ -447,7 +447,7 @@ class UI(QWidget):
                     elif output.endswith(".cpp"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/c.png);
                              background-color: transparent;
@@ -456,7 +456,7 @@ class UI(QWidget):
                     elif output.endswith(".sh"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/bash.png);
                              background-color: transparent;
@@ -465,16 +465,16 @@ class UI(QWidget):
                     elif output.endswith(".blend"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
-                                 background-image: url(icons/blend.png);
-                                 background-color: transparent;
-                             """)
+                             background-image: url(icons/blend.png);
+                             background-color: transparent;
+                         """)
 
                     elif output.endswith(".excel"):
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/excel.png);
                              background-color: transparent;
@@ -483,7 +483,7 @@ class UI(QWidget):
                     else:
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
-                        image.move(25, 20)
+                        image.move(20, 20)
                         image.setStyleSheet("""
                              background-image: url(icons/none.png);
                              background-color: transparent;
