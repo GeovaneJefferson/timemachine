@@ -19,6 +19,8 @@ To access this feature, you have to:
 3. Then, right click on some file inside that folder.
 
 Wait a moment, and you will see all back-ups files for that selected folder.
+![screenshot5](https://user-images.githubusercontent.com/66172718/160674784-1aa274ca-19e4-4461-8bbe-24b51a13af97.png)
+![screenshot4](https://user-images.githubusercontent.com/66172718/160674231-05ca76ee-9c94-49c0-9e7b-ff18726120c3.png)
 
 ## Requirements:
 * pip-pyside6
