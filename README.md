@@ -24,6 +24,8 @@ Wait a moment, and you will see all back-ups files for that selected folder.
 * pip-pyside6
 
 ## Installation:
+You will be asked for your password! 
+
 The "install.py" will automatically install "python3-pip" and "pip-pyside6". (Dependencies)
 
 Inside Time Machine folder, right click, "open terminal", write "python3 install.py" and press Enter.
