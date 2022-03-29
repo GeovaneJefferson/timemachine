@@ -480,6 +480,14 @@ class UI(QWidget):
                              background-color: transparent;
                          """)
 
+                    elif output.endswith(".mp4"):
+                        image = QLabel(self.buttonFiles)
+                        image.setFixedSize(96, 96)
+                        image.move(20, 20)
+                        image.setStyleSheet("""
+                             background-image: url(icons/mp4.png);
+                             background-color: transparent;
+                         """)
                     else:
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
