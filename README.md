@@ -44,6 +44,6 @@ Example:
   * Fedora (KDE)
 
 ## Screenshots
-![screenshot1](https://user-images.githubusercontent.com/66172718/156451989-41bd2d92-f1c3-4a77-8f5e-1a75c06a1bf1.png)
-![screenshot2](https://user-images.githubusercontent.com/66172718/156451992-249045dd-f199-4526-acaa-6cb15780bd7a.png)
-![screenshot3](https://user-images.githubusercontent.com/66172718/156451998-290aaebd-e1df-47d1-a4c4-e1227d3f5c8f.png)
+![screenshot1](https://user-images.githubusercontent.com/66172718/160672425-e8111a80-062e-48d1-9161-1b3d6a4a9a22.png)
+![screenshot2](https://user-images.githubusercontent.com/66172718/160672460-28f5491f-eddb-4bff-b756-6a0708407e6f.png)
+![screenshot3](https://user-images.githubusercontent.com/66172718/160672472-4b1fa208-e69e-44ed-a372-e01286395f1a.png)
