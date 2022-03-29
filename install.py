@@ -39,7 +39,7 @@ class CLI:
         ################################################################################
         ## Check system (Ubuntu, Opensuse etc.)
         ################################################################################
-        sub.run("pkexec sudo", shell=True)
+        # sub.run("pkexec sudo", shell=True)
         output = os.popen("cat /etc/os-release") # uname -v
         output = output.read()
 
