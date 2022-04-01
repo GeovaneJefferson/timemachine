@@ -6,7 +6,7 @@ do
     user_name=$(whoami)
     f="$(basename -- $f)"
     echo "$f" > /home/$user_name/.local/share/timemachine/src/scripts/restore_settings.txt
-    cd /home/$user_name/.local/share/timemachine/src/
+    cd /home/$user_name/.local/share/timemachine/src/ || exit
     python3 restore.py
 done
 }
