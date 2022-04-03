@@ -15,6 +15,7 @@ class CLI:
         self.ubuntu = False
         self.opensuse = False
         self.fedora = False
+        self.arch = False
 
         # Terminal commands
         self.createCmd = "mkdir"
@@ -51,6 +52,9 @@ class CLI:
 
         elif "fedora" in output:
             self.fedora = True
+
+        elif "arch" in output:
+            self.arch = True
 
         self.requeriments()
 
@@ -97,10 +101,21 @@ class CLI:
                 print("Error trying to install python3-pip!")
                 exit()
 
+        elif self.arch:
+            try:
+                print("")
+                print("Python3 pip need to be installed.")
+                sub.run("sudo pacman -S python-pip", shell=True)
+                print("Python3-pip was installed.")
+
+            except:
+                print("Error trying to install python3-pip!")
+                exit()
+
         ################################################################################
         ## Install PySide6
         ################################################################################
-        if self.ubuntu or self.opensuse or self.fedora:
+        if self.ubuntu or self.opensuse or self.fedora or self.arch:
             try:
                 print("")
                 print("PySide6 pip need to be installed.")
@@ -213,7 +228,7 @@ class CLI:
                 f"EnterTimeMachine]\n "
                 f"Icon={self.home_user}/.local/share/timemachine/src/icons/restore.png\n "
                 f"Name=Enter Time Machine\n "
-                f"Exec=sh {self.home_user}/.local/share/timemachine/src/scripts/getDir.sh")
+                f"Exec=sh {self.home_user}/.local/share/timemachine/src/scripts/EnterTimeMachine.sh")
 
         try:
             # Copy current Time Machine folder to user
