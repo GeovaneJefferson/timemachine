@@ -105,7 +105,7 @@ class CLI:
             try:
                 print("")
                 print("Python3 pip need to be installed.")
-                sub.run("sudo pacman -S python-pip", shell=True)
+                sub.run("sudo pacman -Sy python-pip", shell=True)
                 print("Python3-pip was installed.")
 
             except:
