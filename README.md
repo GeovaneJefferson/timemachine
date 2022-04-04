@@ -49,5 +49,5 @@ Example:
 
 ## Screenshots
 ![screenshot1](https://user-images.githubusercontent.com/66172718/160672425-e8111a80-062e-48d1-9161-1b3d6a4a9a22.png)
-![image](https://user-images.githubusercontent.com/66172718/161592493-047eb731-a98d-4039-9c49-54bf5b181f17.png)!
+![image](https://user-images.githubusercontent.com/66172718/161592493-047eb731-a98d-4039-9c49-54bf5b181f17.png)
 ![screenshot3](https://user-images.githubusercontent.com/66172718/160672472-4b1fa208-e69e-44ed-a372-e01286395f1a.png)
