@@ -11,6 +11,7 @@ A backup application, created using PySide6.
 
 ## Enter Time Machine:
 Obs. Work still in progress...
+Enter Time Machine is only available for (KDE with dolphin) distros!
 
 Enter Time Machine can be used to restore files from the external device.
 To access this feature, you have to:
@@ -19,7 +20,7 @@ To access this feature, you have to:
 3. Then, right click on some file inside that folder.
 
 Wait a moment, and you will see all back-ups files for that selected folder.
-![screenshot5](https://user-images.githubusercontent.com/66172718/160674784-1aa274ca-19e4-4461-8bbe-24b51a13af97.png)
+![screenshot5](https://user-images.githubusercontent.com/66172718/161593649-de2dfd53-610b-427e-ad14-0f069c1c5c79.png)
 ![screenshot4](https://user-images.githubusercontent.com/66172718/160674231-05ca76ee-9c94-49c0-9e7b-ff18726120c3.png)
 
 ## Requirements:
@@ -42,10 +43,11 @@ Example:
 
     python3 uninstall.py
 
-## Supported Platforms
+## Tested Platforms
   * Ubuntu (KDE)
   * Opensuse (KDE)
   * Fedora (KDE)
+  * Manjaro (KDE)
 
 ## Screenshots
 ![screenshot1](https://user-images.githubusercontent.com/66172718/160672425-e8111a80-062e-48d1-9161-1b3d6a4a9a22.png)
