@@ -34,8 +34,8 @@ class UI(QMainWindow):
         # Label
         self.label = QLabel()
         self.label.setFont(QFont("Arial Black", 10))
-        self.label.setText("These folders will be back up:")
-        self.label.setFixedSize(250, 30)
+        self.label.setText("Choose which folders will be\nback up:")
+        self.label.setFixedSize(250, 35)
 
         # Frame
         self.folders_frame = QFrame()
@@ -73,31 +73,31 @@ class UI(QMainWindow):
 
         # Checkboxes
         self.check_sun = QCheckBox()
-        self.check_sun.setFont(QFont("Ubuntu", 10))
+        self.check_sun.setFont(QFont("DejaVu Sans", 9))
         self.check_sun.setText("Sun")
 
         self.check_mon = QCheckBox()
-        self.check_mon.setFont(QFont("Ubuntu", 10))
+        self.check_mon.setFont(QFont("DejaVu Sans", 9))
         self.check_mon.setText("Mon")
 
         self.check_tue = QCheckBox()
-        self.check_tue.setFont(QFont("Ubuntu", 10))
+        self.check_tue.setFont(QFont("DejaVu Sans", 9))
         self.check_tue.setText("Tue")
 
         self.check_wed = QCheckBox()
-        self.check_wed.setFont(QFont("Ubuntu", 10))
+        self.check_wed.setFont(QFont("DejaVu Sans", 9))
         self.check_wed.setText("Wed")
 
         self.check_thu = QCheckBox()
-        self.check_thu.setFont(QFont("Ubuntu", 10))
+        self.check_thu.setFont(QFont("DejaVu Sans", 9))
         self.check_thu.setText("Thu")
 
         self.check_fri = QCheckBox()
-        self.check_fri.setFont(QFont("Ubuntu", 10))
+        self.check_fri.setFont(QFont("DejaVu Sans", 9))
         self.check_fri.setText("Fri")
 
         self.check_sat = QCheckBox()
-        self.check_sat.setFont(QFont("Ubuntu", 10))
+        self.check_sat.setFont(QFont("DejaVu Sans", 9))
         self.check_sat.setText("Sat")
 
         ################################################################################
@@ -122,14 +122,14 @@ class UI(QMainWindow):
 
         # Radio buttons
         self.one_time_mode = QRadioButton()
-        self.one_time_mode.setFont(QFont("Ubuntu", 10))
+        self.one_time_mode.setFont(QFont("DejaVu Sans", 9))
         self.one_time_mode.setText("One time per day")
         self.one_time_mode.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.one_time_mode.setFixedSize(180, 30)
         self.one_time_mode.clicked.connect(self.on_frequency_clicked)
 
         self.more_time_mode = QRadioButton()
-        self.more_time_mode.setFont(QFont("Ubuntu", 10))
+        self.more_time_mode.setFont(QFont("DejaVu Sans", 9))
         self.more_time_mode.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
             "This will produce a time folder inside the chose external location.\n"
@@ -179,7 +179,7 @@ class UI(QMainWindow):
         self.every_combox = QComboBox()
         self.every_combox.setFrame(True)
         self.every_combox.setFixedSize(140, 34)
-        self.every_combox.setFont(QFont("Ubuntu", 10))
+        self.every_combox.setFont(QFont("DejaVu Sans", 9))
         every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]
         self.every_combox.addItems(every_combox_list)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
@@ -206,13 +206,13 @@ class UI(QMainWindow):
 
         # Reset label text
         self.labelResetText = QLabel()
-        self.labelResetText.setFont(QFont("Ubuntu", 10))
+        self.labelResetText.setFont(QFont("DejaVu Sans", 9))
         self.labelResetText.setText('If something seems broken, click on "Reset", to reset settings.')
         self.labelResetText.setFixedSize(400, 30)
 
         # Reset button
         self.btn_fix = QPushButton()
-        self.btn_fix.setFont(QFont("Ubuntu", 10))
+        self.btn_fix.setFont(QFont("DejaVu Sans", 9))
         self.btn_fix.setText("Reset")
         self.btn_fix.setFixedSize(80, 34)
         self.btn_fix.clicked.connect(self.on_button_fix_clicked)
@@ -232,7 +232,7 @@ class UI(QMainWindow):
         # Save button
         self.btn_save = QPushButton()
         self.btn_save.setFixedSize(120, 34)
-        self.btn_save.setFont(QFont("Ubuntu", 10))
+        self.btn_save.setFont(QFont("DejaVu Sans", 9))
         self.btn_save.setText("Save and Close")
         self.btn_save.clicked.connect(self.on_buttons_save_clicked)
 
@@ -324,7 +324,7 @@ class UI(QMainWindow):
 
                 # Folders text
                 label_text = QLabel(files, self.folders_frame)
-                label_text.setFont(QFont("Ubuntu", 10))
+                label_text.setFont(QFont("DejaVu Sans", 9))
                 label_text.setFixedSize(150, 22)
                 label_text.move(30, vert_space_label)
                 vert_space_label += 25  # Position
