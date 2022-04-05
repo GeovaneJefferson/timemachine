@@ -47,9 +47,9 @@ class UI(QMainWindow):
         ################################################################################
         self.rightWidget = QWidget(self)
         self.rightWidget.setGeometry(260, 40, 160, 154)
-        self.rightWidget.setStyleSheet("""
-            border: 1px solid red;
-        """)
+        # self.rightWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
 
         # Right widget
         self.baseVRightLayout = QVBoxLayout(self.rightWidget)
