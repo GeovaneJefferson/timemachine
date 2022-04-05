@@ -502,7 +502,7 @@ class UI(QWidget):
                     ################################################################################
                     text = QLabel(self.buttonFiles)
                     text.setText(output.capitalize())
-                    text.setFont(QFont("Arial", 10))
+                    text.setFont(QFont("DejaVu Sans", 9))
                     text.move(20, 120)
                     text.setStyleSheet("""
                         color: white;
