@@ -37,7 +37,7 @@ class UI(QMainWindow):
 
         # Auto checkbox
         self.auto_checkbox = QCheckBox()
-        self.auto_checkbox.setFont(QFont("Ubuntu", 10))
+        self.auto_checkbox.setFont(QFont("DejaVu Sans", 9))
         self.auto_checkbox.setText("Back Up Automatically")
         self.auto_checkbox.setFixedSize(160, 20)
         self.auto_checkbox.clicked.connect(self.automatically_clicked)
@@ -47,9 +47,9 @@ class UI(QMainWindow):
         ################################################################################
         self.rightWidget = QWidget(self)
         self.rightWidget.setGeometry(260, 40, 160, 154)
-        # self.rightWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.rightWidget.setStyleSheet("""
+            border: 1px solid red;
+        """)
 
         # Right widget
         self.baseVRightLayout = QVBoxLayout(self.rightWidget)
@@ -57,7 +57,7 @@ class UI(QMainWindow):
 
         # Restore images
         self.restoreImage = QLabel()
-        self.restoreImage.setFixedSize(96, 96)
+        self.restoreImage.setFixedSize(84, 84)
         self.restoreImage.setStyleSheet(
             "QLabel"
             "{"
@@ -67,7 +67,7 @@ class UI(QMainWindow):
 
         # Select disk button
         self.btn_external = QPushButton(self)
-        self.btn_external.setFont(QFont("Ubuntu", 10))
+        self.btn_external.setFont(QFont("DejaVu Sans", 9))
         self.btn_external.setText("Select Backup Disk...")
         self.btn_external.setFixedSize(140, 34)
         self.btn_external.clicked.connect(self.external_clicked)
@@ -91,19 +91,19 @@ class UI(QMainWindow):
 
         # Label last backup
         self.label_last_backup = QLabel()
-        self.label_last_backup.setFont(QFont("Ubuntu", 10))
+        self.label_last_backup.setFont(QFont("DejaVu Sans", 9))
         self.label_last_backup.setText("Last Backup:")
         self.label_last_backup.setFixedSize(200, 18)
 
         # Label last backup
         self.label_next_backup = QLabel()
-        self.label_next_backup.setFont(QFont("Ubuntu", 10))
+        self.label_next_backup.setFont(QFont("DejaVu Sans", 9))
         self.label_next_backup.setText("Next Backup:")
         self.label_next_backup.setFixedSize(250, 18)
 
         # Status external hd
         self.status_external = QLabel()
-        self.status_external.setFont(QFont("Ubuntu", 10))
+        self.status_external.setFont(QFont("DejaVu Sans", 9))
         self.status_external.setText("External HD:")
         self.status_external.setFixedSize(200, 18)
 
@@ -126,7 +126,7 @@ class UI(QMainWindow):
         self.baseVUiTextLayout = QVBoxLayout(self.uiTextWidget)
 
         self.uiText = QLabel()
-        self.uiText.setFont(QFont("Ubuntu", 10))
+        self.uiText.setFont(QFont("DejaVu Sans", 9))
         self.uiText.setFixedSize(400, 120)
         self.uiText.setText(
             "Time Machine is able to:\n\n"
@@ -150,14 +150,14 @@ class UI(QMainWindow):
         # Donate buton
         self.btn_donate = QPushButton()
         self.btn_donate.setText("Donate")
-        self.btn_donate.setFont(QFont("Ubuntu", 10))
+        self.btn_donate.setFont(QFont("DejaVu Sans", 9))
         self.btn_donate.setFixedSize(80, 34)
         self.btn_donate.clicked.connect(self.donate_clicked)
 
         # Settings buton
         self.btn_options = QPushButton()
         self.btn_options.setText("Options")
-        self.btn_options.setFont(QFont("Ubuntu", 10))
+        self.btn_options.setFont(QFont("DejaVu Sans", 9))
         self.btn_options.setFixedSize(80, 34)
         self.btn_options.clicked.connect(self.options_clicked)
 
@@ -262,7 +262,7 @@ class UI(QMainWindow):
 
             # External status
             self.status_external.setText("External HD: Disconnected")
-            self.status_external.setFont(QFont('Ubuntu', 10))
+            self.status_external.setFont(QFont('DejaVu Sans', 10))
             self.status_external.setStyleSheet('color: red')
 
         self.ui_settings()
@@ -272,7 +272,7 @@ class UI(QMainWindow):
             if self.get_backup_now == "false":   # If is not back up right now
                 # External status
                 self.status_external.setText("External HD: Connected")
-                self.status_external.setFont(QFont('Ubuntu', 10))
+                self.status_external.setFont(QFont('DejaVu Sans', 10))
                 self.status_external.setStyleSheet('color: green')
 
                 self.btn_backup_now.setText("Back Up Now")  # Show backup now button
@@ -298,62 +298,62 @@ class UI(QMainWindow):
         if self.get_auto_backup == "true":
             self.auto_checkbox.setChecked(True)
             self.set_external_name.setText(self.getHDName)    # Set external name
-            self.set_external_name.setFont(QFont('Ubuntu', 18))
+            self.set_external_name.setFont(QFont('DejaVu Sans', 18))
 
         ################################################################################
         ## External name
         ################################################################################
         if self.getHDName != "None":
             self.set_external_name.setText(self.getHDName)
-            self.set_external_name.setFont(QFont('Ubuntu', 18))
+            self.set_external_name.setFont(QFont('DejaVu Sans', 18))
 
         ################################################################################
         ## Last backup label
         ################################################################################
         if self.get_last_backup == "":
             self.label_last_backup.setText("Last Backup: ")
-            self.label_last_backup.setFont(QFont('Ubuntu', 10))
+            # self.label_last_backup.setFont(QFont('DejaVu Sans', 9))
         else:
             self.label_last_backup.setText(f"Last Backup: {self.get_last_backup}")
-            self.label_last_backup.setFont(QFont('Ubuntu', 10))
+            # self.label_last_backup.setFont(QFont('DejaVu Sans', 9))
 
         ################################################################################
         ## Next backup label
         ################################################################################
         if self.get_next_backup == "":
             self.label_next_backup.setText("Next Backup: None")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
 
         if not self.auto_checkbox.isChecked():
             self.label_next_backup.setText("Next Backup: Automatic backups off")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
 
         else:
             self.label_next_backup.setText(f"Next Backup: {self.get_next_backup}")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
 
         ################################################################################
         ## Next backup label everytime
         ################################################################################
         if self.more_time_mode == "true" and self.everytime == "15":
             self.label_next_backup.setText("Next Backup: Every 15 minutes")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "30":
             self.label_next_backup.setText("Next Backup: Every 30 minutes")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "60":
             self.label_next_backup.setText("Next Backup: Every 1 hour")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "120":
             self.label_next_backup.setText("Next Backup: Every 2 hours")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "240":
             self.label_next_backup.setText("Next Backup: Every 4 hours")
-            self.label_next_backup.setFont(QFont('Ubuntu', 10))
+            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
 
         if self.day_name == "Sun":
             if self.get_next_backup_sun == "true" and self.current_hour <= self.get_next_hour and self.current_minute <= self.get_next_minute:
@@ -609,7 +609,7 @@ class EXTERNAL(QWidget):
 
         # Backup images
         self.button_where_cancel = QPushButton()
-        self.button_where_cancel.setFont(QFont("Ubuntu", 10))
+        self.button_where_cancel.setFont(QFont("DejaVu Sans", 9))
         self.button_where_cancel.setText("Cancel")
         self.button_where_cancel.setFixedSize(80, 34)
         self.button_where_cancel.clicked.connect(self.on_button_cancel_clicked)
