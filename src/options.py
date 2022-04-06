@@ -23,9 +23,10 @@ class UI(QMainWindow):
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 240, 500)
-        # self.leftWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.leftWidget.setStyleSheet("""
+            border-right: 1px solid rgb(68, 69, 70);
+        """)
+
         # Left widget
         self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
         self.baseVLeftLayout.setSpacing(10)
@@ -51,9 +52,9 @@ class UI(QMainWindow):
         ################################################################################
         self.daysToRunWidget = QWidget(self)
         self.daysToRunWidget.setGeometry(280, 20, 500, 80)
-        # self.daysToRunWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.daysToRunWidget.setStyleSheet("""
+            border-top: 1px solid rgb(68, 69, 70);
+        """)
 
         # BaseH layout
         self.baseVDaysToRunLayout = QVBoxLayout(self.daysToRunWidget)
@@ -70,50 +71,78 @@ class UI(QMainWindow):
         self.labelDaysToRun.setFont(QFont("Arial Black", 10))
         self.labelDaysToRun.setText("Days to run:")
         self.labelDaysToRun.setFixedSize(200, 30)
+        self.labelDaysToRun.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         # Checkboxes
         self.check_sun = QCheckBox()
         self.check_sun.setFont(QFont("DejaVu Sans", 9))
         self.check_sun.setText("Sun")
+        self.check_sun.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_mon = QCheckBox()
         self.check_mon.setFont(QFont("DejaVu Sans", 9))
         self.check_mon.setText("Mon")
+        self.check_mon.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_tue = QCheckBox()
         self.check_tue.setFont(QFont("DejaVu Sans", 9))
         self.check_tue.setText("Tue")
+        self.check_tue.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_wed = QCheckBox()
         self.check_wed.setFont(QFont("DejaVu Sans", 9))
         self.check_wed.setText("Wed")
+        self.check_wed.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_thu = QCheckBox()
         self.check_thu.setFont(QFont("DejaVu Sans", 9))
         self.check_thu.setText("Thu")
+        self.check_thu.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_fri = QCheckBox()
         self.check_fri.setFont(QFont("DejaVu Sans", 9))
         self.check_fri.setText("Fri")
+        self.check_fri.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         self.check_sat = QCheckBox()
         self.check_sat.setFont(QFont("DejaVu Sans", 9))
         self.check_sat.setText("Sat")
+        self.check_sat.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         ################################################################################
         ## Time to run widget
         ################################################################################
         self.timeToRunWidget = QWidget(self)
-        self.timeToRunWidget.setGeometry(280, 100, 500, 200)
-        # self.timeToRunWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.timeToRunWidget.setGeometry(280, 100, 500, 180)
+        self.timeToRunWidget.setStyleSheet("""
+            border-top: 1px solid rgb(68, 69, 70);
+            border-bottom: 1px solid rgb(68, 69, 70);
+        """)
 
         # Label
-        self.labelTimeToRun = QLabel()
+        self.labelTimeToRun = QLabel(self.timeToRunWidget)
         self.labelTimeToRun.setFont(QFont("Arial Black", 10))
         self.labelTimeToRun.setText("Time to run:")
         self.labelTimeToRun.setFixedSize(180, 30)
+        self.labelTimeToRun.setStyleSheet("""
+            border: transparent;
+        """)
 
         # BaseGrid layout
         self.baseHTimeToRunLayout = QGridLayout(self.timeToRunWidget)
@@ -121,30 +150,40 @@ class UI(QMainWindow):
         self.timesGrid = QGridLayout()
 
         # Radio buttons
-        self.one_time_mode = QRadioButton()
-        self.one_time_mode.setFont(QFont("DejaVu Sans", 9))
-        self.one_time_mode.setText("One time per day")
-        self.one_time_mode.setToolTip("One single back up will be execute every selected day(s) and time.")
-        self.one_time_mode.setFixedSize(180, 30)
-        self.one_time_mode.clicked.connect(self.on_frequency_clicked)
+        self.oneTimeMode = QRadioButton()
+        self.oneTimeMode.setFont(QFont("DejaVu Sans", 9))
+        self.oneTimeMode.setText("One time per day")
+        self.oneTimeMode.setToolTip("One single back up will be execute every selected day(s) and time.")
+        self.oneTimeMode.setFixedSize(180, 30)
+        self.oneTimeMode.setStyleSheet("""
+            border-color: transparent;
+        """)
+        self.oneTimeMode.clicked.connect(self.on_frequency_clicked)
 
-        self.more_time_mode = QRadioButton()
-        self.more_time_mode.setFont(QFont("DejaVu Sans", 9))
-        self.more_time_mode.setToolTip(
+        self.moreTimeMode = QRadioButton()
+        self.moreTimeMode.setFont(QFont("DejaVu Sans", 9))
+        self.moreTimeMode.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
             "This will produce a time folder inside the chose external location.\n"
             "Fx: 12-12-12/10-15\n"
             "10-15, is the time of the back up (10:15).")
 
-        self.more_time_mode.setText("Multiple times per day")
-        self.more_time_mode.setFixedSize(180, 30)
-        self.more_time_mode.clicked.connect(self.on_frequency_clicked)
+        self.moreTimeMode.setText("Multiple times per day")
+        self.moreTimeMode.setFixedSize(180, 30)
+        self.moreTimeMode.setStyleSheet("""
+            border-color: transparent;
+        """)
+        self.moreTimeMode.clicked.connect(self.on_frequency_clicked)
 
         # Spinbox Hours
         self.label_hours = QSpinBox()
-        self.label_hours.setFont(QFont("Ubuntu", 14))
+        self.label_hours.setFont(QFont("DejaVu Sans", 14))
         self.label_hours.setFixedSize(60, 40)
         self.label_hours.setFrame(True)
+        self.label_hours.setStyleSheet("""
+            border-color: transparent;
+            border-radius: 5px;
+        """)
         self.label_hours.setMinimum(0)
         self.label_hours.setSingleStep(1)
         self.label_hours.setMaximum(23)
@@ -152,24 +191,41 @@ class UI(QMainWindow):
 
         # Label
         self.timeLabel = QLabel()
-        self.timeLabel.setFont(QFont("Ubuntu", 18))
+        self.timeLabel.setFont(QFont("DejaVu Sans", 18))
         self.timeLabel.setText(":")
+        self.timeLabel.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         # Label hours
         self.hoursLabel = QLabel()
-        self.hoursLabel.setFont(QFont("Ubuntu", 12))
+        self.hoursLabel.setFont(QFont("DejaVu Sans", 12))
         self.hoursLabel.setText("Hours")
+        self.hoursLabel.setStyleSheet("""
+            border-color: transparent;
+            border-radius: 5px;
+        """)
 
         # Label minutes
         self.minutesLabel = QLabel()
-        self.minutesLabel.setFont(QFont("Ubuntu", 12))
+        self.minutesLabel.setFont(QFont("DejaVu Sans", 12))
         self.minutesLabel.setText("Minutes")
+        self.minutesLabel.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         # Spinbox Hours
         self.label_minutes = QSpinBox()
-        self.label_minutes.setFont(QFont("Ubuntu", 14))
+        self.label_minutes.setFont(QFont("DejaVu Sans", 14))
         self.label_minutes.setFixedSize(60, 40)
         self.label_minutes.setFrame(True)
+        self.label_minutes.setStyleSheet(
+        "QSpinBox"
+            "{"
+                "border-color: transparent;"
+                "border-radius: 5px;"     
+            "}")
+
         self.label_minutes.setMinimum(0)
         self.label_minutes.setSingleStep(1)
         self.label_minutes.setMaximum(59)
@@ -178,8 +234,15 @@ class UI(QMainWindow):
         # Combo box
         self.every_combox = QComboBox()
         self.every_combox.setFrame(True)
-        self.every_combox.setFixedSize(140, 34)
+        self.every_combox.setFixedSize(140, 28)
         self.every_combox.setFont(QFont("DejaVu Sans", 9))
+        self.every_combox.setStyleSheet(
+        "QComboBox"
+        "{"
+            "border-color: transparent;"
+            "border-radius: 5px;"
+        "}")
+
         every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]
         self.every_combox.addItems(every_combox_list)
         self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
@@ -188,10 +251,7 @@ class UI(QMainWindow):
         ## Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 300, 500, 160)
-        # self.resetWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.resetWidget.setGeometry(280, 300, 500, 100)
 
         # BaseV layout
         self.baseVResetLayout = QVBoxLayout(self.resetWidget)
@@ -214,14 +274,14 @@ class UI(QMainWindow):
         self.btn_fix = QPushButton()
         self.btn_fix.setFont(QFont("DejaVu Sans", 9))
         self.btn_fix.setText("Reset")
-        self.btn_fix.setFixedSize(80, 34)
+        self.btn_fix.setFixedSize(80, 28)
         self.btn_fix.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
         ## Save button
         ################################################################################
         self.saveWidget = QWidget(self)
-        self.saveWidget.setGeometry(620, 480, 180, 60)
+        self.saveWidget.setGeometry(630, 485, 180, 60)
         # self.saveWidget.setStyleSheet("""
         #      border: 1px solid red;
         #  """)
@@ -231,7 +291,7 @@ class UI(QMainWindow):
 
         # Save button
         self.btn_save = QPushButton()
-        self.btn_save.setFixedSize(120, 34)
+        self.btn_save.setFixedSize(120, 28)
         self.btn_save.setFont(QFont("DejaVu Sans", 9))
         self.btn_save.setText("Save and Close")
         self.btn_save.clicked.connect(self.on_buttons_save_clicked)
@@ -258,8 +318,8 @@ class UI(QMainWindow):
 
         # BaseGridTimeToRun layout
         self.baseHTimeToRunLayout.addWidget(self.labelTimeToRun, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHTimeToRunLayout.addWidget(self.one_time_mode, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHTimeToRunLayout.addWidget(self.more_time_mode, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.oneTimeMode, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.moreTimeMode, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseHTimeToRunLayout.addWidget(self.every_combox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseHTimeToRunLayout.addLayout(self.timesGrid, 1, 1, Qt.AlignVCenter | Qt.AlignLeft)
 
@@ -273,9 +333,7 @@ class UI(QMainWindow):
         # Reset layout
         self.baseVResetLayout.addWidget(self.labelReset, 0, Qt.AlignLeft | Qt.AlignTop)
         self.baseVResetLayout.addWidget(self.labelResetText, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVResetLayout.addStretch()
         self.baseVResetLayout.addWidget(self.btn_fix, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseVResetLayout.addStretch()
 
         # Save layout
         self.saveLayout.addWidget(self.btn_save, 0, Qt.AlignVCenter | Qt.AlignHCenter)
@@ -330,17 +388,21 @@ class UI(QMainWindow):
                 vert_space_label += 25  # Position
 
                 # Checkboxes
-                self.folders_checkbox = QCheckBox(self.folders_frame)
-                self.folders_checkbox.setFixedSize(150, 22)
-                self.folders_checkbox.move(5, vert_space_checkbox)
+                self.foldersCheckbox = QCheckBox(self.folders_frame)
+                self.foldersCheckbox.setStyleSheet("""
+                    border-color: transparent;
+                """)
+
+                self.foldersCheckbox.setFixedSize(150, 22)
+                self.foldersCheckbox.move(5, vert_space_checkbox)
                 vert_space_checkbox += 25
                 text = label_text.text().lower()  # Lowercase
-                self.folders_checkbox.show()
-                self.folders_checkbox.clicked.connect(lambda *args, text=text: self.folders(text))
+                self.foldersCheckbox.show()
+                self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.folders(text))
 
                 # Activate checkboxes in user.ini
                 if text in getIniFolders:
-                    self.folders_checkbox.setChecked(True)
+                    self.foldersCheckbox.setChecked(True)
 
         if sun == "true":
             self.check_sun.setChecked(True)
@@ -397,13 +459,13 @@ class UI(QMainWindow):
             self.every_combox.setEnabled(False)
             self.label_hours.setEnabled(True)
             self.label_minutes.setEnabled(True)
-            self.one_time_mode.setChecked(True)
+            self.oneTimeMode.setChecked(True)
 
         elif more_time_mode == "true":
             self.label_hours.setEnabled(False)
             self.label_minutes.setEnabled(False)
             self.every_combox.setEnabled(True)
-            self.more_time_mode.setChecked(True)
+            self.moreTimeMode.setChecked(True)
 
     def folders(self, get):
         print(get)
@@ -532,7 +594,7 @@ class UI(QMainWindow):
     #
     def on_frequency_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.one_time_mode.isChecked():
+            if self.oneTimeMode.isChecked():
                 config.set('MODE', 'one_time_mode', 'true')
                 print("One time mode selected")
 
@@ -540,7 +602,7 @@ class UI(QMainWindow):
                 config.set('MODE', 'more_time_mode', 'false')
                 config.write(configfile)
 
-            elif self.more_time_mode.isChecked():
+            elif self.moreTimeMode.isChecked():
                 config.set('MODE', 'more_time_mode', 'true')
                 print("Multiple time mode selected")
 

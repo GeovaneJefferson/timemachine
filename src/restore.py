@@ -78,9 +78,12 @@ class UI(QWidget):
         ## ScrollArea
         ################################################################################
         scrollWidget = QWidget()
-        scrollWidget.setStyleSheet("""
-            background-color: rgb(24, 25, 26);
-        """)
+        scrollWidget.setStyleSheet(
+            "QWidget"
+                "{"
+                    "background-color: rgb(24, 25, 26);"
+                    "border-radius: 5px;"
+                "}")
 
         scroll = QScrollArea()
         scroll.setFixedSize(1000, 600)
@@ -90,11 +93,11 @@ class UI(QWidget):
         scroll.setStyleSheet(
             "QScrollBar::handle"
             "{"
-            "background : rgb(58, 59, 60);"
+                "background : rgb(58, 59, 60);"
             "}"
-            "QScrollBar::handle::pressed"
+                "QScrollBar::handle::pressed"
             "{"
-            "background : rgb(68, 69, 70);"
+                "background : rgb(68, 69, 70);"
             "}")
         scroll.setWidget(scrollWidget)
 
@@ -111,20 +114,21 @@ class UI(QWidget):
         ################################################################################
         self.cancelButton = QPushButton()
         self.cancelButton.setText("Cancel")
-        self.cancelButton.setFont(QFont("Arial", 14))
+        self.cancelButton.setFont(QFont("DejaVu Sans", 14))
         self.cancelButton.setFixedSize(120, 34)
         self.cancelButton.setEnabled(True)
         self.cancelButton.clicked.connect(lambda x: exit())
         self.cancelButton.setStyleSheet(
             "QPushButton"
             "{"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
             "}"
             "QPushButton::hover"
             "{"
-            "background-color: rgb(68, 69, 70);"
+                "background-color: rgb(68, 69, 70);"
             "}")
 
         ################################################################################
@@ -132,7 +136,7 @@ class UI(QWidget):
         ################################################################################
         self.restoreButton = QPushButton()
         self.restoreButton.setText("Restore")
-        self.restoreButton.setFont(QFont("Arial", 14))
+        self.restoreButton.setFont(QFont("DejaVu Sans", 14))
         self.restoreButton.setFixedSize(120, 34)
         self.restoreButton.setEnabled(False)
         self.restoreButton.setStyleSheet(
@@ -141,6 +145,7 @@ class UI(QWidget):
             "background-color: rgb(58, 59, 60);"
             "border: 0px;"
             "border-radius: 5px;"
+
             "}"
             "QPushButton::hover"
             "{"
@@ -152,7 +157,7 @@ class UI(QWidget):
         ################################################################################
         self.upButton = QPushButton()
         self.upButton.setText("Up")
-        self.upButton.setFont(QFont("Arial", 12))
+        self.upButton.setFont(QFont("DejaVu Sans", 11))
         self.upButton.setFixedSize(50, 50)
         self.upButton.clicked.connect(lambda x: self.get_date(True))
         self.upButton.setStyleSheet(
@@ -172,7 +177,7 @@ class UI(QWidget):
         ################################################################################
         self.downButton = QPushButton()
         self.downButton.setText("Down")
-        self.downButton.setFont(QFont("Arial", 12))
+        self.downButton.setFont(QFont("DejaVu Sans", 11))
         self.downButton.setFixedSize(50, 50)
         self.downButton.clicked.connect(lambda x: self.get_date(False))
         self.downButton.setStyleSheet(
@@ -191,7 +196,7 @@ class UI(QWidget):
         ## Label date
         ################################################################################
         self.labelDate = QLabel()
-        self.labelDate.setFont(QFont("Arial", 12))
+        self.labelDate.setFont(QFont("DejaVu Sans", 12))
         self.labelDate.setStyleSheet("""
             background-color: transparent;
         """)
@@ -201,7 +206,7 @@ class UI(QWidget):
         ################################################################################
         self.currentLocation = QLabel()
         self.currentLocation.setText(self.reader)
-        self.currentLocation.setFont(QFont("Arial", 34))
+        self.currentLocation.setFont(QFont("DejaVu Sans", 34))
         self.currentLocation.setStyleSheet("""
             background-color: transparent;
         """)
@@ -289,18 +294,64 @@ class UI(QWidget):
         ################################################################################
         if self.index == 0:
             self.upButton.setEnabled(False)
-
+            self.upButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: gray;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
         else:
             self.upButton.setEnabled(True)
-
+            self.upButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
         ################################################################################
         ## Disable down
         ################################################################################
         if (self.index + 1) == len(self.dateFolders):
             self.downButton.setEnabled(False)
+            self.downButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: gray;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
 
         else:
             self.downButton.setEnabled(True)
+            self.downButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
 
         ################################################################################
         ## Remove items
@@ -315,6 +366,7 @@ class UI(QWidget):
         ## Get available times inside TMB
         ################################################################################
         timeFolders = []
+
         for getTime in os.listdir(f"{self.getExternalLocation}/TMB/{getDate}/"):
             timeFolders.append(getTime)
 
@@ -325,14 +377,15 @@ class UI(QWidget):
             self.timeButton = QPushButton()
             self.timeButton.setText(getTime)
             getTime = getTime.replace(":", "-")  # Change back : to -
-            self.timeButton.setFont(QFont("Arial", 12))
+            self.timeButton.setFont(QFont("DejaVu Sans", 12))
             self.timeButton.setFixedSize(100, 34)
             self.timeButton.setCheckable(True)
             self.timeButton.setAutoExclusive(True)
-            self.timeButton.clicked.connect(lambda x, getTime=getTime: self.show_on_screen(getDate, getTime))
+            self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.show_on_screen(getDate, getTime))
             self.timeButton.setStyleSheet(
                 "QPushButton"
                     "{"
+                        "color: white;"
                         "background-color: rgb(58, 59, 60);"
                         "border-radius: 5px;"
                     "}"
@@ -344,8 +397,8 @@ class UI(QWidget):
                     "{"
                         "background-color: rgb(24, 25, 26);"
                         "border: 1px solid white;"
-                    "}"
-            )
+                    "}")
+
             self.countTime += 1
 
             ################################################################################
@@ -355,6 +408,23 @@ class UI(QWidget):
 
         print("Time available: ", timeFolders)
         self.timeButton.setChecked(True)  # Auto selected that lastest one
+        self.timeButton.setStyleSheet(
+            "QPushButton"
+            "{"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+            "}"
+            "QPushButton::hover"
+            "{"
+                "background-color: rgb(68, 69, 70);"
+            "}"
+            "QPushButton::checked"
+            "{"
+                "background-color: rgb(24, 25, 26);"
+                "border: 1px solid white;"
+            "}")
 
         self.show_on_screen(getDate, getTime)
 
@@ -410,7 +480,9 @@ class UI(QWidget):
                     # pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)
                     # image.setPixmap(pixmap)
 
-                    # Output preview
+                    ################################################################################
+                    ## Set icons
+                    ################################################################################
                     if output.endswith(".png") or output.endswith(".jpg") or output.endswith(".jpeg") or output.endswith(".webp") or output.endswith(".gif"):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="60"'
@@ -550,6 +622,19 @@ class UI(QWidget):
         ################################################################################
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
+            self.restoreButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
             self.upButton.setEnabled(False)
             self.downButton.setEnabled(False)
 
@@ -560,6 +645,15 @@ class UI(QWidget):
                 i -= 1
         else:
             self.restoreButton.setEnabled(False)
+            self.restoreButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: gray;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+                "}")
+
             for i in range(self.timeVLayout.count()):  # Show times
                 item = self.timeVLayout.itemAt(i)
                 widget = item.widget()
