@@ -624,8 +624,8 @@ class EXTERNAL(QWidget):
         self.local = QRadioButton(self)
         self.local.setFont(QFont("DejaVu Sans", 9))
         self.local.setText("Local storage")
-        self.local.setToolTip("Use this options if you plan to back up to a: USB/HD/SSD,\n"
-                              "that is directly connected to your pc")
+        # self.local.setToolTip("Use this options if you plan to back up to a: USB/HD/SSD,\n"
+        #                       "that is directly connected to your pc")
         self.local.setFixedSize(150, 24)
         self.local.move(20, 10)
         self.local.setEnabled(False)
@@ -640,7 +640,7 @@ class EXTERNAL(QWidget):
         self.network = QRadioButton(self)
         self.network.setFont(QFont("DejaVu Sans", 9))
         self.network.setText("Remote storage")
-        self.network.setToolTip("Use this options if you plan to back up via network (LAN)")
+        # self.network.setToolTip("Use this options if you plan to back up via network (LAN)")
         self.network.setFixedSize(150, 24)
         self.network.move(20, 305)
         self.network.setEnabled(False)
