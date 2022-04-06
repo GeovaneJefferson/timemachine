@@ -11,7 +11,7 @@ A backup application, created using PySide6.
 
 ## Enter Time Machine:
 Obs. Work still in progress...
-Enter Time Machine is only available for (KDE with dolphin) distros!
+Enter Time Machine is only available for (KDE with dolphin as file manager).
 
 Enter Time Machine can be used to restore files from the external device.
 To access this feature, you have to:
