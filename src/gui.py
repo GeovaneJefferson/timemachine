@@ -83,7 +83,7 @@ class UI(QMainWindow):
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(435, 40, 250, 100)
+        self.farRightWidget.setGeometry(435, 40, 250, 120)
         # self.farRightWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -92,20 +92,31 @@ class UI(QMainWindow):
         self.baseVFarRightLayout = QVBoxLayout(self.farRightWidget)
         self.baseVFarRightLayout.setSpacing(0)
 
-        # Set external name
+        ################################################################################
+        ## Set external name
+        ################################################################################
         self.setExternalName = QLabel()
 
-        # Label last backup
+        ################################################################################
+        ## Get external size
+        ################################################################################
+        self.showExternalSize = QLabel()
+        self.showExternalSize.setFont(QFont("DejaVu Sans", 9))
+        self.showExternalSize.setFixedSize(200, 18)
+
+        ################################################################################
+        ## Label last backup
+        ################################################################################
         self.lastBackupLabel = QLabel()
         self.lastBackupLabel.setFont(QFont("DejaVu Sans", 9))
         self.lastBackupLabel.setText("Last Backup:")
         self.lastBackupLabel.setFixedSize(200, 18)
 
         # Label last backup
-        self.label_next_backup = QLabel()
-        self.label_next_backup.setFont(QFont("DejaVu Sans", 9))
-        self.label_next_backup.setText("Next Backup:")
-        self.label_next_backup.setFixedSize(250, 18)
+        self.nextBackupLabel = QLabel()
+        self.nextBackupLabel.setFont(QFont("DejaVu Sans", 9))
+        self.nextBackupLabel.setText("Next Backup:")
+        self.nextBackupLabel.setFixedSize(250, 18)
 
         # Status external hd
         self.externalStatus = QLabel()
@@ -184,10 +195,10 @@ class UI(QMainWindow):
 
         #  baseVFarRight layout
         self.baseVFarRightLayout.addWidget(self.setExternalName, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addWidget(self.showExternalSize, 0, Qt.AlignLeft | Qt.AlignTop)
         self.baseVFarRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVFarRightLayout.addWidget(self.label_next_backup, 2, Qt.AlignLeft | Qt.AlignTop)
+        self.baseVFarRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
         self.baseVFarRightLayout.addWidget(self.externalStatus, 3, Qt.AlignLeft | Qt.AlignTop)
-        # self.baseVFarRightLayout.addWidget(self.backupNowButton, 3, Qt.AlignLeft | Qt.AlignVCenter)
 
         #  baseVUiText layout
         self.baseVUiTextLayout.addWidget(self.uiText, 0, Qt.AlignVCenter | Qt.AlignLeft)
@@ -197,13 +208,6 @@ class UI(QMainWindow):
         self.donateAndSettingsLayout.addWidget(self.optionsButton, 1, Qt.AlignHCenter | Qt.AlignVCenter)
 
         self.setLayout(self.baseVLeftLayout)
-
-        # # Center window
-        # frameGm = self.frameGeometry()
-        # screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        # centerPoint = QApplication.desktop().screenGeometry(screen).center()
-        # frameGm.moveCenter(centerPoint)
-        # self.move(frameGm.topLeft())
 
         # Timer
         timer.timeout.connect(self.updates)
@@ -222,6 +226,7 @@ class UI(QMainWindow):
 
         try:
             # Get user.ini
+            self.getExternalLocation = config['EXTERNAL']['hd']
             self.get_backup_now = config['BACKUP']['backup_now']
             self.get_auto_backup = config['BACKUP']['auto_backup']
             self.get_last_backup = config['INFO']['latest']
@@ -273,16 +278,43 @@ class UI(QMainWindow):
             self.externalStatus.setStyleSheet('color: red')
             self.externalStatus.setAlignment(QtCore.Qt.AlignTop)
 
+            ################################################################################
+            ## External size
+            ################################################################################
+            self.showExternalSize.setText("No information available")
+
         self.ui_settings()
 
     def connected(self):
         if self.getHDName != "None":  # If location can be found
             if self.get_backup_now == "false":   # If is not back up right now
-                # External status
+                ################################################################################
+                ## External status
+                ################################################################################
                 self.externalStatus.setText("External HD: Connected")
                 self.externalStatus.setFont(QFont('DejaVu Sans', 10))
                 self.externalStatus.setStyleSheet('color: green')
 
+                ################################################################################
+                ## Get external size values
+                ################################################################################
+                self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
+                self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
+                self.usedSpace = str(self.usedSpace)
+
+                ################################################################################
+                ## Get total size
+                ################################################################################
+                self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
+                self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(" ", "").strip()
+                self.externalMaxSize = str(self.externalMaxSize)
+
+                # Set size text
+                self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
+
+                ################################################################################
+                ## Backup Now
+                ################################################################################
                 self.backupNowButton.setText("Back Up Now")  # Show backup now button
                 self.backupNowButton.setEnabled(True)  # Disable backup now button
                 self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
@@ -329,39 +361,39 @@ class UI(QMainWindow):
         ## Next backup label
         ################################################################################
         if self.get_next_backup == "":
-            self.label_next_backup.setText("Next Backup: None")
-            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
+            self.nextBackupLabel.setText("Next Backup: None")
+            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         if not self.autoCheckbox.isChecked():
-            self.label_next_backup.setText("Next Backup: Automatic backups off")
-            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
+            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
+            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         else:
-            self.label_next_backup.setText(f"Next Backup: {self.get_next_backup}")
-            # self.label_next_backup.setFont(QFont('DejaVu Sans', 9))
+            self.nextBackupLabel.setText(f"Next Backup: {self.get_next_backup}")
+            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         ################################################################################
         ## Next backup label everytime
         ################################################################################
         if self.more_time_mode == "true" and self.everytime == "15":
-            self.label_next_backup.setText("Next Backup: Every 15 minutes")
-            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Every 15 minutes")
+            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "30":
-            self.label_next_backup.setText("Next Backup: Every 30 minutes")
-            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Every 30 minutes")
+            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "60":
-            self.label_next_backup.setText("Next Backup: Every 1 hour")
-            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Every 1 hour")
+            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "120":
-            self.label_next_backup.setText("Next Backup: Every 2 hours")
-            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Every 2 hours")
+            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
         if self.more_time_mode == "true" and self.everytime == "240":
-            self.label_next_backup.setText("Next Backup: Every 4 hours")
-            self.label_next_backup.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Every 4 hours")
+            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
         if self.day_name == "Sun":
             if self.get_next_backup_sun == "true" and self.current_hour <= self.get_next_hour and self.current_minute <= self.get_next_minute:
