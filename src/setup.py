@@ -89,14 +89,6 @@ src_service = f"{home_user}/.local/share/timemachine/src/desktop/service.desktop
 src_restore_settings = f"{home_user}/.local/share/timemachine/src/scripts/restore_settings.txt"
 
 # Notifications
-# def auto_backup_notification():
-#     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup is enabled!' 5", shell=True)
-#
-#
-# def auto_backup_off_notification():
-#     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Auto backup was disabled!' 5", shell=True)
-#
-
 def done_backup_notification():
     # After backup is done
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",
