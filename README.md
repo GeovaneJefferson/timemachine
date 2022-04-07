@@ -53,5 +53,5 @@ Example:
 
 ## Screenshots
 ![screenshot1](https://user-images.githubusercontent.com/66172718/162273998-2e440581-0fd5-419c-8b0d-df97a3e7528b.png)
-![image](https://user-images.githubusercontent.com/66172718/161592493-047eb731-a98d-4039-9c49-54bf5b181f17.png)
+![screenshot2](https://user-images.githubusercontent.com/66172718/162274359-ad7421ac-dac3-486c-b293-865304313d8f.png)
 ![screenshot3](https://user-images.githubusercontent.com/66172718/160672472-4b1fa208-e69e-44ed-a372-e01286395f1a.png)
