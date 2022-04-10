@@ -11,6 +11,16 @@ A backup application, created using PySide6.
 
 * Important: Time Machine does not back up system files!
 
+## Info:
+###The oldest backups are deleted when your backup disk is full.
+
+Time Machine will automatically delete the oldest backup until has enough space for the current backup, but will keep at least one backup left.
+
+####Still not enough space for a new backup?
+
+Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so Time Machine can proceed with the backup. 
+
+
 ## Enter Time Machine:
 Obs. Work still in progress...
 Enter Time Machine is only available for (KDE with dolphin as file manager).
