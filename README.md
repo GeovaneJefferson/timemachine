@@ -8,6 +8,7 @@ A backup application, created using PySide6.
 * Backup your installed apps APT and Flatpak. (Only the apps names). Obs. Work still in progress...
 * The oldest backups are deleted when your backup disk is full.
 
+
 * Important: Time Machine does not back up system files!
 
 ## Info:
