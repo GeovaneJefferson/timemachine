@@ -44,12 +44,12 @@ class BACKUP:
             ################################################################################
             ## Apt txt file
             ################################################################################
-            self.apt_txt = f"{self.getExternalLocation}/{folderName}/apt.txt"
+            # self.apt_txt = f"{self.getExternalLocation}/{folderName}/apt.txt"
 
             ################################################################################
             ## Flatpak txt file
             ################################################################################
-            self.flatpak_txt = f"{self.getExternalLocation}/{folderName}/flatpak.txt"
+            # self.flatpak_txt = f"{self.getExternalLocation}/{folderName}/flatpak.txt"
 
             self.create_TMB()
 
@@ -204,33 +204,31 @@ class BACKUP:
         print(checkSizeList)
 
         ################################################################################
-        ## Get external size values
+        ## Get external used space
         ################################################################################
         usedSpace = os.popen(f"du -s {self.getExternalLocation}")
         usedSpace = usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
         usedSpace = int(usedSpace)
 
         ################################################################################
-        ## Get total size
+        ## Get external maximum size
         ################################################################################
         externalMaxSize = os.popen(f"df --output=size {self.getExternalLocation}")
         externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace(" ", "")
         externalMaxSize = int(externalMaxSize)
 
         freeSpace = int(externalMaxSize - usedSpace)
-        # limit = int(externalMaxSize * 0.99)   # 20% limit space
         print(f"USB used space:   ", usedSpace)
         print("USB maximum size:   ", externalMaxSize)
         print("USB free size:   ", freeSpace)
         print("All folders size sum : ", totalFoldersSize)
-        # print("USB limit space:   ", limit)
 
         ################################################################################
         ## Condition
         ################################################################################
         if totalFoldersSize >= freeSpace:
-            print("External is almost full!")
-            print("Old files will be deleted, to make room for the new ones.")
+            print("Not enough space for new backup!")
+            print("Old files will be deleted, to make space for the new ones.")
             print("Please wait...")
 
             ################################################################################
@@ -242,24 +240,32 @@ class BACKUP:
                     if not "." in output:
                         dateFolders.append(output)
                         dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-                        print(dateFolders)
 
-                print(dateFolders)
-                ################################################################################
-                ## Delete old folders
-                ################################################################################
-                sub.run(f"rm -rf {self.getExternalLocation}/{folderName}/{dateFolders[-1]}", shell=True)
-                print(f"Deleting {self.getExternalLocation}/{folderName}/{dateFolders[-1]}...")
+                print(f"Date available: {dateFolders}")
 
-                if totalFoldersSize >= freeSpace:   # Return if free space is still not enough to continue
-                    self.check_size()
+                ################################################################################
+                ## Delete oldest folders
+                ################################################################################
+                if len(dateFolders) > 1:   # Only deletes if exist more than one date folder inside
+                    print(f"Deleting {self.getExternalLocation}/{folderName}/{dateFolders[-1]}...")
+                    sub.run(f"rm -rf {self.getExternalLocation}/{folderName}/{dateFolders[-1]}", shell=True)
+
+                    if totalFoldersSize >= freeSpace:   # Return if free space is still not enough to continue
+                        self.check_size()
+
+                    else:
+                        self.create_folder_date()
+
+                else:   # If has more than one date folder inside
+                    print("Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!")
+                    manual_free_space()
+                    exit()
 
             except FileNotFoundError:
                 print("Error trying to delete old backups!")
                 error_delete()
                 exit()
 
-            print("Date available: ", self.dateFolders)
         else:
             self.create_folder_date()
 

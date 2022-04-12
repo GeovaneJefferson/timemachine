@@ -52,7 +52,7 @@ class UI(QMainWindow):
         ## Right Widget
         ################################################################################
         self.rightWidget = QWidget(self)
-        self.rightWidget.setGeometry(260, 40, 170, 154)
+        self.rightWidget.setGeometry(240, 40, 170, 154)
         # self.rightWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -83,7 +83,7 @@ class UI(QMainWindow):
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(435, 40, 250, 120)
+        self.farRightWidget.setGeometry(412, 40, 250, 120)
         # self.farRightWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -127,7 +127,7 @@ class UI(QMainWindow):
         # Backup now btn
         self.backupNowButton = QPushButton("Back Up Now", self)
         self.backupNowButton.setFixedSize(100, 28)
-        self.backupNowButton.move(440, 155)
+        self.backupNowButton.move(420, 155)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.hide()
 
@@ -135,7 +135,7 @@ class UI(QMainWindow):
         ## Ui description
         ################################################################################
         self.uiTextWidget = QWidget(self)
-        self.uiTextWidget.setGeometry(260, 200, 400, 140)
+        self.uiTextWidget.setGeometry(240, 200, 440, 140)
         self.uiTextWidget.setStyleSheet("""
             border-top: 1px solid rgb(68, 69, 70);
         """)
@@ -577,7 +577,7 @@ class UI(QMainWindow):
     def external_clicked(self):
         # Choose external hd
         self.setEnabled(False)
-        externalMain.show()     # Show external screen
+        externalMain.show()     # Show Choose external:
 
     def backup_now_clicked(self):
         config = configparser.ConfigParser()
@@ -599,7 +599,7 @@ class UI(QMainWindow):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
 
 
-# External Screen
+# Choose external
 class EXTERNAL(QWidget):
     openDirectory = 2
 
@@ -607,8 +607,8 @@ class EXTERNAL(QWidget):
         super(EXTERNAL, self).__init__()
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
-        self.setWindowTitle("External Screen")
-        self.setFixedSize(500, 400)
+        self.setWindowTitle("Choose external:")
+        self.setFixedSize(500, 380)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
@@ -646,9 +646,9 @@ class EXTERNAL(QWidget):
         self.whereFrame = QFrame(self)
         self.whereFrame.setFixedSize(460, 250)
         self.whereFrame.move(20, 40)
-        # self.whereFrame.setStyleSheet("""
-        #      border: 1px solid red;
-        # """)
+        self.whereFrame.setStyleSheet("""
+            background-color: rgb(48, 49, 50);
+        """)
 
         # ################################################################################
         # ## Radio local
@@ -737,7 +737,7 @@ class EXTERNAL(QWidget):
         try:
             os.listdir(f'{self.media}/{user_name}')
             self.foundInMedia = True
-            self.connected()
+            self.show_one_screen()
 
         except FileNotFoundError:
             self.check_connection_run()
@@ -749,87 +749,75 @@ class EXTERNAL(QWidget):
         try:
             os.listdir(f'{self.run}/{user_name}')  # Opensuse, external is inside "/run"
             self.foundInMedia = False
-            self.connected()
+            self.show_one_screen()
 
         except FileNotFoundError:
             print("No external devices mounted or available...")
             pass
 
-    def connected(self):
+    def show_one_screen(self):
+        ################################################################################
+        ## Check source
+        ################################################################################
+        if self.foundInMedia:
+            self.foundWhere = self.media
+        else:
+            self.foundWhere = self.run
+        
         ################################################################################
         ## Add buttons and images for each external
         ################################################################################
         vertical = 20
         verticalImg = 52
-        if self.foundInMedia:
-            for output in os.listdir(f'{self.media}/{user_name}'):
-                image = QLabel(self)
-                pixmap = QPixmap(src_restore_small_icon)
-                image.setPixmap(pixmap)
-                image.setFixedSize(48, 48)
-                image.move(30, verticalImg)
-                verticalImg += 50
+        for output in os.listdir(f'{self.foundWhere}/{user_name}'):
+            image = QLabel(self)
+            pixmap = QPixmap(src_restore_small_icon)
+            image.setPixmap(pixmap)
+            image.setFixedSize(48, 48)
+            image.move(30, verticalImg)
+            verticalImg += 50
 
-                # Button
-                button = QPushButton(output, self.whereFrame)
-                button.setFixedSize(380, 30)
-                button.move(60, vertical)
-                vertical += 50
-                text = button.text()
-                button.show()
-                button.clicked.connect(lambda *args: self.on_button_clicked(text))
-        else:
-            # Add buttons and images for each external
-            for output in os.listdir(f'{self.run}/{user_name}'):
-                image = QLabel(self)
-                pixmap = QPixmap(src_restore_small_icon)
-                image.setPixmap(pixmap)
-                image.setFixedSize(48, 48)
-                image.move(30, verticalImg)
-                verticalImg += 50
+            # Button
+            button = QPushButton(output, self.whereFrame)
+            button.setFixedSize(380, 30)
+            button.move(60, vertical)
+            button.setFont(QFont("DejaVu Sans", 9))
+            text = button.text()
+            button.setStyleSheet("""
+                color: white;
+            """)
 
-                # Button
-                button = QPushButton(output, self.whereFrame)
-                button.setFixedSize(280, 30)
-                button.move(60, vertical)
-                vertical += 50
-                text = button.text()
-                button.show()
-                button.clicked.connect(lambda *args: self.on_button_clicked(text))
+            vertical += 50
+            button.show()
+            button.clicked.connect(lambda *args: self.on_button_clicked(text))
 
     def on_button_clicked(self, get):
+        ################################################################################
+        ## Write changes to ini
+        ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        # Read/Load user.config (backup automatically)
         with open(src_user_config, 'w') as configfile:
-            if self.foundInMedia:
-                config.set(f'EXTERNAL', 'hd', f'{self.media}/{user_name}/{get}')
-
-            else:
-                config.set(f'EXTERNAL', 'hd', f'{self.run}/{user_name}/{get}')
-
-            ################################################################################
-            ## Write changes to ini
-            ################################################################################
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{user_name}/{get}')
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
 
             self.close()
             main.setEnabled(True)
 
-    def on_choose_button_clicked(self):
-        self.filepaths = []
-        print("asdasd", self.dirpath)
+    # def on_choose_button_clicked(self):
+    #     self.filepaths = []
+    #     print("asdasd", self.dirpath)
 
-        self.filepaths.append(QFileDialog.getExistingDirectory(self, caption='Choose Directory',
-                                                               directory=self.dirpath))
-        if len(self.filepaths) == 0:
-            return
-        elif len(self.filepaths) == 1:
-            self.lineEdit.setText(self.filepaths[0])
-        else:
-            self.lineEdit.setText(",".join(self.filepaths))
+    #     self.filepaths.append(QFileDialog.getExistingDirectory(self, caption='Choose Directory',
+    #                                                            directory=self.dirpath))
+    #     if len(self.filepaths) == 0:
+    #         return
+    #     elif len(self.filepaths) == 1:
+    #         self.lineEdit.setText(self.filepaths[0])
+    #     else:
+    #         self.lineEdit.setText(",".join(self.filepaths))
 
     def on_button_cancel_clicked(self):
         externalMain.close()
@@ -841,5 +829,5 @@ main = UI()
 main.show()
 externalMain = EXTERNAL()
 toc = time.time()
-print(f'Time Machine {(toc - tic):.4f} seconds')
+print(f'{app_name} {(toc - tic):.4f} seconds')
 app.exit(app.exec())

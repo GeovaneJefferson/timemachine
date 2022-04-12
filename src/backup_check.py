@@ -19,8 +19,8 @@ class CLI:
         else:
             no_external_info()
             exit()
-        
-    def check_for_external_media(self): # Check for external in media/
+
+    def check_for_external_media(self):  # Check for external in media/
         try:
             for output in os.listdir("/media/" + user_name):
                 if not output.startswith('.'):
@@ -28,12 +28,12 @@ class CLI:
                         print("External found in /media")
                         self.check_the_date()
 
-        except FileNotFoundError:  
+        except FileNotFoundError:
             self.check_for_external_run()
 
-    def check_for_external_run(self):   # Or check for external in run/
+    def check_for_external_run(self):  # Or check for external in run/
         try:
-            for output in os.listdir("/run/media/" + user_name):   # Try other folder (fx. Opensuse)
+            for output in os.listdir("/run/media/" + user_name):  # Try other folder (fx. Opensuse)
                 if not output.startswith('.'):
                     if self.getHDName in output:  # If user.ini has external hd name
                         print("External found in /run/media")
@@ -51,7 +51,7 @@ class CLI:
             # Read/Load user.config (backup automatically)
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            
+
             getScheduleSun = config['SCHEDULE']['sun']
             getScheduleMon = config['SCHEDULE']['mon']
             getScheduleTue = config['SCHEDULE']['tue']
@@ -85,7 +85,7 @@ class CLI:
 
             elif dayName == "sat" and getScheduleSat == "true":
                 break
-            
+
             else:
                 print("No back up for today.")
                 exit()
@@ -112,7 +112,7 @@ class CLI:
             totalCurrentTime = currentHour + currentMinute
             totalNextTime = nextHour + nextMinute
 
-            if oneTimeMode == "true":   # one time mode
+            if oneTimeMode == "true":  # one time mode
                 if totalCurrentTime > totalNextTime:
                     print("Time to back up has passed")
                     exit()
@@ -123,7 +123,7 @@ class CLI:
                     print("Waiting for the right time to backup...")
                     time.sleep(self.time)
 
-            else:   # More time mode
+            else:  # More time mode
                 if everytime == '15':
                     if currentMinute in time_mode_minutes_15:
                         if backupNowChecker == "false":
@@ -148,7 +148,7 @@ class CLI:
                     if currentHour in time_mode_hours_240:
                         if backupNowChecker == "false":
                             break
-                        
+
                 print("")
                 print("Backup time  : " + nextHour + ":" + nextMinute + " One Time Mode")
                 print("Backup time every : " + everytime)
@@ -165,8 +165,8 @@ class CLI:
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
-            
-            sub.Popen("python3 " + src_backup_now, shell=True)    # Call backup checker
+
+            sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup checker
 
 
 main = CLI()

@@ -13,6 +13,7 @@ class CLI:
 
         # Compatible system
         self.ubuntu = False
+        self.debian = False
         self.opensuse = False
         self.fedora = False
         self.arch = False
@@ -47,6 +48,9 @@ class CLI:
         if "ubuntu" in output:
             self.ubuntu = True
 
+        elif "debian" in output:
+            self.debian = True
+
         elif "opensuse" in output:
             self.opensuse = True
 
@@ -62,7 +66,7 @@ class CLI:
         ################################################################################
         ## Install pip (Ubuntu)
         ################################################################################
-        if self.ubuntu:
+        if self.ubuntu or self.debian:
             try:
                 print("")
                 print("Python3 pip need to be installed.")
@@ -115,7 +119,7 @@ class CLI:
         ################################################################################
         ## Install PySide6
         ################################################################################
-        if self.ubuntu or self.opensuse or self.fedora or self.arch:
+        if self.ubuntu or self.opensuse or self.fedora or self.arch or self.debian:
             try:
                 print("")
                 print("PySide6 pip need to be installed.")

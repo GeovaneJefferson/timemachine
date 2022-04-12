@@ -1,16 +1,21 @@
 from setup import *
 
+config = configparser.ConfigParser()
+config.read(src_user_config)
+
 
 class UI(QWidget):
     def __init__(self):
         super().__init__()
-        # self.setWindowTitle(app_name)
-        # self.setFixedSize(1300, 900)
+        self.setWindowTitle("Enter Time Machine")
+        app_icon = QIcon(src_restore_icon)
+        self.setWindowIcon(app_icon)
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.setStyleSheet("""
             background-color: rgb(38, 39, 40);
         """)
+
         self.showFullScreen()
 
         ################################################################################
@@ -24,28 +29,23 @@ class UI(QWidget):
         ################################################################################
         ## Read ini
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        self.getHDName = config['EXTERNAL']['name']
         self.getExternalLocation = config['EXTERNAL']['hd']
+        getIniFolders = config.options('FOLDER')
 
         ################################################################################
         ## Read restore settings
         ################################################################################
-        with open(src_restore_settings, 'r') as self.reader:
-            self.reader = self.reader.readline()
-            self.reader = self.reader.replace(':', '').strip()
-            print(f"Search files from : {self.reader}")
+        with open(src_restore_settings, 'r') as self.requested:
+            self.requested = self.requested.readline()
+            self.requested = self.requested.replace(':', '').strip()
+            print(f"Search files from : {self.requested}")
 
             ################################################################################
-            ## Check if "self.reader" is available inside external
+            ## Check if "self.requested" is available inside external
             ################################################################################
-            getIniFolders = config.options('FOLDER')
-
-            if self.reader.lower() in getIniFolders:
+            if self.requested.lower() in getIniFolders:
                 self.widgets()
-            
+
             else:
                 no_restore_folder_found()
                 exit()
@@ -80,29 +80,29 @@ class UI(QWidget):
         scrollWidget = QWidget()
         scrollWidget.setStyleSheet(
             "QWidget"
-                "{"
-                    "background-color: rgb(24, 25, 26);"
-                    "border-radius: 5px;"
-                "}")
+            "{"
+            "background-color: rgb(24, 25, 26);"
+            "border-radius: 5px;"
+            "}")
 
         scroll = QScrollArea()
         scroll.setFixedSize(1000, 600)
-        # scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        # scroll.setVerticalicalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         # scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         scroll.setWidgetResizable(True)
         scroll.setStyleSheet(
             "QScrollBar::handle"
             "{"
-                "background : rgb(58, 59, 60);"
+            "background : rgb(58, 59, 60);"
             "}"
-                "QScrollBar::handle::pressed"
+            "QScrollBar::handle::pressed"
             "{"
-                "background : rgb(68, 69, 70);"
+            "background : rgb(68, 69, 70);"
             "}")
         scroll.setWidget(scrollWidget)
 
         ################################################################################
-        ## Files vertical layout
+        ## Files verticalical layout
         ################################################################################
         self.filesGridLayout = QGridLayout(scrollWidget)  # scrollWidget
         self.filesGridLayout.setAlignment(QtCore.Qt.AlignHCenter)
@@ -121,14 +121,14 @@ class UI(QWidget):
         self.cancelButton.setStyleSheet(
             "QPushButton"
             "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
+            "color: white;"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
             "}"
             "QPushButton::hover"
             "{"
-                "background-color: rgb(68, 69, 70);"
+            "background-color: rgb(68, 69, 70);"
             "}")
 
         ################################################################################
@@ -205,7 +205,7 @@ class UI(QWidget):
         ## Current lcoation
         ################################################################################
         self.currentLocation = QLabel()
-        self.currentLocation.setText(self.reader)
+        self.currentLocation.setText(self.requested)
         self.currentLocation.setFont(QFont("DejaVu Sans", 34))
         self.currentLocation.setStyleSheet("""
             background-color: transparent;
@@ -251,11 +251,11 @@ class UI(QWidget):
 
     def get_date(self, direction):
         ################################################################################
-        ## Get available dates inside TMB
+        ## Get available dates inside {folderName}
         ################################################################################
         try:
             self.dateFolders = []
-            for output in os.listdir(f"{self.getExternalLocation}/TMB/"):
+            for output in os.listdir(f"{self.getExternalLocation}/{folderName}/"):
                 if not "." in output:
                     self.dateFolders.append(output)
                     self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
@@ -306,6 +306,7 @@ class UI(QWidget):
                 "{"
                 "background-color: rgb(68, 69, 70);"
                 "}")
+
         else:
             self.upButton.setEnabled(True)
             self.upButton.setStyleSheet(
@@ -320,6 +321,7 @@ class UI(QWidget):
                 "{"
                 "background-color: rgb(68, 69, 70);"
                 "}")
+
         ################################################################################
         ## Disable down
         ################################################################################
@@ -363,11 +365,10 @@ class UI(QWidget):
             i -= 1
 
         ################################################################################
-        ## Get available times inside TMB
+        ## Get available times inside {folderName}
         ################################################################################
         timeFolders = []
-
-        for getTime in os.listdir(f"{self.getExternalLocation}/TMB/{getDate}/"):
+        for getTime in os.listdir(f"{self.getExternalLocation}/{folderName}/{getDate}/"):
             timeFolders.append(getTime)
 
             ################################################################################
@@ -384,20 +385,20 @@ class UI(QWidget):
             self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.show_on_screen(getDate, getTime))
             self.timeButton.setStyleSheet(
                 "QPushButton"
-                    "{"
-                        "color: white;"
-                        "background-color: rgb(58, 59, 60);"
-                        "border-radius: 5px;"
-                    "}"
+                "{"
+                "color: white;"
+                "background-color: rgb(58, 59, 60);"
+                "border-radius: 5px;"
+                "}"
                 "QPushButton::hover"
-                    "{"
-                        "background-color: rgb(68, 69, 70);"
-                    "}"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}"
                 "QPushButton::checked"
-                    "{"
-                        "background-color: rgb(24, 25, 26);"
-                        "border: 1px solid white;"
-                    "}")
+                "{"
+                "background-color: rgb(24, 25, 26);"
+                "border: 1px solid white;"
+                "}")
 
             self.countTime += 1
 
@@ -411,19 +412,19 @@ class UI(QWidget):
         self.timeButton.setStyleSheet(
             "QPushButton"
             "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
+            "color: white;"
+            "background-color: rgb(58, 59, 60);"
+            "border: 0px;"
+            "border-radius: 5px;"
             "}"
             "QPushButton::hover"
             "{"
-                "background-color: rgb(68, 69, 70);"
+            "background-color: rgb(68, 69, 70);"
             "}"
             "QPushButton::checked"
             "{"
-                "background-color: rgb(24, 25, 26);"
-                "border: 1px solid white;"
+            "background-color: rgb(24, 25, 26);"
+            "border: 1px solid white;"
             "}")
 
         self.show_on_screen(getDate, getTime)
@@ -442,9 +443,9 @@ class UI(QWidget):
         ## Show available files
         ################################################################################
         try:
-            count = 0
-            vert = 0
-            for output in os.listdir(f"{self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}"):
+            horizontal = 0
+            vertical = 0
+            for output in os.listdir(f"{self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}"):
                 if "." in output and not output.startswith("."):
                     print("Files: ", output)
 
@@ -452,41 +453,45 @@ class UI(QWidget):
                     self.buttonFiles.setCheckable(True)
                     self.buttonFiles.setFixedSize(150, 150)
                     scaledHTML = 'width:"100%" height="250"'
-                    self.buttonFiles.setToolTip(f"<img src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                    self.buttonFiles.setToolTip(
+                        f"<img src={self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/{output} {scaledHTML}/>")
                     self.buttonFiles.setStyleSheet(
                         "QPushButton"
-                            "{"
-                                "background-color: rgb(36, 37, 38);"
-                                "border-top: 2px solid rgb(58, 59, 60);"
-                                "border-radius: 5px;"
-                            "}"
+                        "{"
+                        "background-color: rgb(36, 37, 38);"
+                        "border-top: 2px solid rgb(58, 59, 60);"
+                        "border-radius: 5px;"
+                        "}"
                         "QPushButton::hover"
-                            "{"
-                                "background-color: rgb(58, 59, 60);"
-                            "}"
+                        "{"
+                        "background-color: rgb(58, 59, 60);"
+                        "}"
                         "QPushButton::checked"
-                            "{"
-                                "background-color: rgb(24, 25, 26);"
-                                "border: 1px solid white;"
-                            "}"
+                        "{"
+                        "background-color: rgb(24, 25, 26);"
+                        "border: 1px solid white;"
+                        "}"
                     )
-                    self.buttonFiles.clicked.connect(lambda *args, output=output: self.add_to_restore(output, getDate, getTime))
+                    self.buttonFiles.clicked.connect(
+                        lambda *args, output=output: self.add_to_restore(output, getDate, getTime))
 
                     ################################################################################
                     ## Preview
                     ################################################################################
                     # image = QLabel(self.buttonFiles)
-                    # pixmap = QPixmap(f"{self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output}")
+                    # pixmap = QPixmap(f"{self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/{output}")
                     # pixmap = pixmap.scaled(128, 128, QtCore.Qt.KeepAspectRatio)
                     # image.setPixmap(pixmap)
 
                     ################################################################################
                     ## Set icons
                     ################################################################################
-                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(".jpeg") or output.endswith(".webp") or output.endswith(".gif"):
+                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
+                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif"):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="60"'
-                        image.setText(f"<img  src={self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{output} {scaledHTML}/>")
+                        image.setText(
+                            f"<img  src={self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/{output} {scaledHTML}/>")
                         image.move(20, 20)
 
                     elif output.endswith(".txt"):
@@ -585,15 +590,15 @@ class UI(QWidget):
                     ################################################################################
                     ## Add layout and widgets
                     ################################################################################
-                    self.filesGridLayout.addWidget(self.buttonFiles, vert, count)
+                    self.filesGridLayout.addWidget(self.buttonFiles, vertical, horizontal)
 
-                    count += 1
-                    if count == 5:
-                        count = 0
-                        vert += 1
+                    horizontal += 1
+                    if horizontal == 5:
+                        horizontal = 0
+                        vertical += 1
 
         except FileNotFoundError:
-            print("Source files not found inside TMB.")
+            print(f"Source files not found inside {folderName}.")
 
     def add_to_restore(self, output, getDate, getTime):
         ################################################################################
@@ -635,8 +640,38 @@ class UI(QWidget):
                 "{"
                 "background-color: rgb(68, 69, 70);"
                 "}")
+
+            # Up
             self.upButton.setEnabled(False)
+            self.upButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: gray;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
+
+            # Down
             self.downButton.setEnabled(False)
+            self.downButton.setStyleSheet(
+                "QPushButton"
+                "{"
+                "color: gray;"
+                "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
+                "border-radius: 5px;"
+
+                "}"
+                "QPushButton::hover"
+                "{"
+                "background-color: rgb(68, 69, 70);"
+                "}")
 
             for i in range(self.timeVLayout.count()):  # Hide times
                 item = self.timeVLayout.itemAt(i)
@@ -654,17 +689,49 @@ class UI(QWidget):
                 "border-radius: 5px;"
                 "}")
 
-            for i in range(self.timeVLayout.count()):  # Show times
+            ################################################################################
+            ## Show hides times
+            ################################################################################
+            for i in range(self.timeVLayout.count()):
                 item = self.timeVLayout.itemAt(i)
                 widget = item.widget()
                 widget.show()
                 i -= 1
 
+            ################################################################################
+            ## Reactivate buttons
+            ################################################################################
             if self.index != 0:  # If is not last/top date
                 self.upButton.setEnabled(True)
+                self.upButton.setStyleSheet(
+                    "QPushButton"
+                    "{"
+                    "color: white;"
+                    "background-color: rgb(58, 59, 60);"
+                    "border: 0px;"
+                    "border-radius: 5px;"
+
+                    "}"
+                    "QPushButton::hover"
+                    "{"
+                    "background-color: rgb(68, 69, 70);"
+                    "}")
 
             if not (self.index + 1) == len(self.dateFolders):  # If is not last/bottom date
                 self.downButton.setEnabled(True)
+                self.downButton.setStyleSheet(
+                    "QPushButton"
+                    "{"
+                    "color: white;"
+                    "background-color: rgb(58, 59, 60);"
+                    "border: 0px;"
+                    "border-radius: 5px;"
+
+                    "}"
+                    "QPushButton::hover"
+                    "{"
+                    "background-color: rgb(68, 69, 70);"
+                    "}")
 
         ################################################################################
         ## Connection restore button
@@ -672,9 +739,8 @@ class UI(QWidget):
         self.restoreButton.clicked.connect(lambda x: self.start_restore(getDate, getTime))
 
     def start_restore(self, getDate, getTime):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
         ################################################################################
         ## Restore files without spaces
         ################################################################################
@@ -682,7 +748,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/{self.filesToRestore[count]} {home_user}/{self.reader}/ &",
+                    f"{copyCmd} {self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/{self.filesToRestore[count]} {home_user}/{self.requested}/ &",
                     shell=True)
                 count += 1
 
@@ -692,7 +758,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f'{copyCmd} {self.getExternalLocation}/TMB/{getDate}/{getTime}/{self.reader}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.reader}/ &',
+                    f'{copyCmd} {self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/"{self.filesToRestoreWithSpace[count]}" {home_user}/{self.requested}/ &',
                     shell=True)
                 count += 1
 
@@ -713,5 +779,5 @@ tic = time.time()
 main = UI()
 main.show()
 toc = time.time()
-print(f'Time Machine {(toc - tic):.4f} seconds')
+print(f'{app_name} {(toc - tic):.4f} seconds')
 app.exit(app.exec())
