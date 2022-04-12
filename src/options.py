@@ -13,19 +13,30 @@ class UI(QMainWindow):
         self.setWindowTitle("Options Screen")
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
-        self.setFixedHeight(550)
-        self.setFixedWidth(800)
+        self.setFixedSize(800, 550)
+
         self.widgets()
 
     def widgets(self):
+        ################################################################################
+        ## Apps version
+        ################################################################################
+        version = QLabel(self)
+        version.setFont(QFont("DejaVu Sans", 8))
+        version.setText(appVersion)
+        version.setFixedSize(80, 20)
+        version.move(270, 505)
+
         ################################################################################
         ## Left Widget
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 240, 500)
-        self.leftWidget.setStyleSheet("""
-            border-right: 1px solid rgb(68, 69, 70);
-        """)
+        self.leftWidget.setStyleSheet(
+        "QWidget"
+        "{"
+            "border-right: 1px solid rgb(68, 69, 70);"
+        "}")
 
         # Left widget
         self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
@@ -610,7 +621,7 @@ class UI(QMainWindow):
                 config.set('MODE', 'one_time_mode', 'false')
                 config.write(configfile)
 
-    def on_button_fix_clicked(self, event):
+    def on_button_fix_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
@@ -619,41 +630,41 @@ class UI(QMainWindow):
         if resetConfirmation == QMessageBox.Yes:
             # Reset settings
             with open(src_user_config, 'w') as configfile:
-                    # Backup section
-                    config.set('BACKUP', 'auto_backup', 'false')
-                    config.set('BACKUP', 'backup_now', 'false')
+                # Backup section
+                config.set('BACKUP', 'auto_backup', 'false')
+                config.set('BACKUP', 'backup_now', 'false')
 
-                    # External section
-                    config.set('EXTERNAL', 'hd', 'None')
-                    config.set('EXTERNAL', 'name', 'None')
+                # External section
+                config.set('EXTERNAL', 'hd', 'None')
+                config.set('EXTERNAL', 'name', 'None')
 
-                    # Mode section
-                    config.set('MODE', 'one_time_mode', 'true')
-                    config.set('MODE', 'more_time_mode', 'false')
+                # Mode section
+                config.set('MODE', 'one_time_mode', 'true')
+                config.set('MODE', 'more_time_mode', 'false')
 
-                    # Schedule section
-                    config.set('SCHEDULE', 'sun', 'false')
-                    config.set('SCHEDULE', 'mon', 'true')
-                    config.set('SCHEDULE', 'tue', 'true')
-                    config.set('SCHEDULE', 'wed', 'true')
-                    config.set('SCHEDULE', 'thu', 'true')
-                    config.set('SCHEDULE', 'fri', 'true')
-                    config.set('SCHEDULE', 'sat', 'false')
-                    config.set('SCHEDULE', 'hours', '10')
-                    config.set('SCHEDULE', 'minutes', '00')
+                # Schedule section
+                config.set('SCHEDULE', 'sun', 'false')
+                config.set('SCHEDULE', 'mon', 'true')
+                config.set('SCHEDULE', 'tue', 'true')
+                config.set('SCHEDULE', 'wed', 'true')
+                config.set('SCHEDULE', 'thu', 'true')
+                config.set('SCHEDULE', 'fri', 'true')
+                config.set('SCHEDULE', 'sat', 'false')
+                config.set('SCHEDULE', 'hours', '10')
+                config.set('SCHEDULE', 'minutes', '00')
 
-                    # Info section
-                    config.set('INFO', 'latest', 'None')
-                    config.set('INFO', 'next', 'None')
+                # Info section
+                config.set('INFO', 'latest', 'None')
+                config.set('INFO', 'next', 'None')
 
-                    # Folders section
-                    config.set('FOLDER', 'documents', 'true')
-                    config.set('FOLDER', 'music', 'true')
-                    config.set('FOLDER', 'videos', 'true')
-                    config.set('FOLDER', 'pictures', 'true')
+                # Folders section
+                config.set('FOLDER', 'documents', 'true')
+                config.set('FOLDER', 'music', 'true')
+                config.set('FOLDER', 'videos', 'true')
+                config.set('FOLDER', 'pictures', 'true')
 
-                    config.write(configfile)
-                    exit()
+                config.write(configfile)
+                exit()
         else:
             QMessageBox.Close
 

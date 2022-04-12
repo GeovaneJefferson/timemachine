@@ -9,6 +9,7 @@ import sys
 
 from pathlib import Path
 from datetime import datetime
+from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import Qt, QSize, QRect
 from PySide6.QtGui import QFont, QPixmap, QIcon
@@ -17,12 +18,14 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
-                            QSpinBox, QComboBox)
+                            QSpinBox, QComboBox, QGraphicsBlurEffect,
+                           QProgressBar)
 
 ################################################################################
 ## Variables
 ################################################################################
 app_name = "Time Machine"
+appVersion = "v1.0.3"
 folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
 copyCmd = "rsync -avruzh"
@@ -114,6 +117,11 @@ def error_reading():
 def error_delete():
     # If error happens
     sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to delete old backups!' 5", shell=True)
+
+
+def manual_free_space():
+    # If external is not available
+    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!' 5", shell=True)
 
 
 def no_external_info():
