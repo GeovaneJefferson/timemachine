@@ -104,6 +104,7 @@ class CLI:
             currentMinute = now.strftime("%M")
 
             backupNowChecker = config['BACKUP']['backup_now']
+            autoBackup = config['BACKUP']['auto_backup']
             oneTimeMode = config['MODE']['one_time_mode']
             everytime = config['SCHEDULE']['everytime']
             nextHour = config['SCHEDULE']['hours']
@@ -155,6 +156,12 @@ class CLI:
                 print("Waiting for the right time to backup...")
                 print("")
                 time.sleep(self.time)
+
+            ################################################################################
+            ## Exit program if auto_backup is false
+            ################################################################################
+            if autoBackup == "false":
+                exit()
 
         self.call_backup_now()
 

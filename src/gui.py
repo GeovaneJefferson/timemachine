@@ -34,8 +34,8 @@ class UI(QMainWindow):
         self.backupImage.setStyleSheet(
             "QLabel"
             "{"
-                f"background-image: url({src_backup_icon});"
-                "border-color: transparent;"
+            f"background-image: url({src_backup_icon});"
+            "border-color: transparent;"
             "}")
 
         # Auto checkbox
@@ -67,8 +67,8 @@ class UI(QMainWindow):
         self.restoreImage.setStyleSheet(
             "QLabel"
             "{"
-                f"background-image: url({src_restore_icon});"
-                "background-repeat: no-repeat;"
+            f"background-image: url({src_restore_icon});"
+            "background-repeat: no-repeat;"
             "}")
 
         # Select disk button
@@ -287,7 +287,7 @@ class UI(QMainWindow):
 
     def connected(self):
         if self.getHDName != "None":  # If location can be found
-            if self.get_backup_now == "false":   # If is not back up right now
+            if self.get_backup_now == "false":  # If is not back up right now
                 ################################################################################
                 ## External status
                 ################################################################################
@@ -299,14 +299,16 @@ class UI(QMainWindow):
                 ## Get external size values
                 ################################################################################
                 self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
-                self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
+                self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation,
+                                                                                       "").replace("\t", "")
                 self.usedSpace = str(self.usedSpace)
 
                 ################################################################################
                 ## Get total size
                 ################################################################################
                 self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
-                self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(" ", "").strip()
+                self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
+                    " ", "").strip()
                 self.externalMaxSize = str(self.externalMaxSize)
 
                 # Set size text
@@ -337,7 +339,7 @@ class UI(QMainWindow):
         ################################################################################
         if self.get_auto_backup == "true":
             self.autoCheckbox.setChecked(True)
-            self.setExternalName.setText(self.getHDName)    # Set external name
+            self.setExternalName.setText(self.getHDName)  # Set external name
             self.setExternalName.setFont(QFont('DejaVu Sans', 18))
 
         ################################################################################
@@ -547,22 +549,27 @@ class UI(QMainWindow):
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        # Automatically back up selected
+        ################################################################################
+        ## If automatically is selected
+        ################################################################################
         if self.autoCheckbox.isChecked():
             if os.path.exists(src_backup_check_desktop):
                 pass
-            else:
-                shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy src .desktop to dst .desktop
-                # auto_backup_notification()  # Call auto backup notification
 
+            else:
+                shutil.copy(src_backup_check, src_backup_check_desktop)     # Copy to /home/#USER/.config/autostart
+
+                ################################################################################
+                ## Set auto backup to true
+                ################################################################################
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                     config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
 
                 print("Auto backup was successfully activated!")
+
         else:
-            # auto_backup_off_notification()  # Call auto backup off notification
-            sub.Popen(f"rm {src_backup_check_desktop}", shell=True)  # Remove .desktop from dst
+            sub.Popen(f"rm {src_backup_check_desktop}", shell=True)  # Remove to /home/#USER/.config/autostart/xxx.desktop
 
             # Set auto backup to false
             with open(src_user_config, 'w') as configfile:
@@ -571,13 +578,15 @@ class UI(QMainWindow):
 
             print("Auto backup was successfully deactivated!")
 
-        # Call backup check py
+        ################################################################################
+        ## Call backup check py
+        ################################################################################
         sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
     def external_clicked(self):
         # Choose external hd
         self.setEnabled(False)
-        externalMain.show()     # Show Choose external:
+        externalMain.show()  # Show Choose external:
 
     def backup_now_clicked(self):
         config = configparser.ConfigParser()
@@ -763,7 +772,7 @@ class EXTERNAL(QWidget):
             self.foundWhere = self.media
         else:
             self.foundWhere = self.run
-        
+
         ################################################################################
         ## Add buttons and images for each external
         ################################################################################
@@ -822,6 +831,7 @@ class EXTERNAL(QWidget):
     def on_button_cancel_clicked(self):
         externalMain.close()
         main.setEnabled(True)
+
 
 app = QApplication(sys.argv)
 tic = time.time()
