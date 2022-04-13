@@ -669,7 +669,6 @@ class UI(QMainWindow):
             QMessageBox.Close
 
     def on_buttons_save_clicked(self):
-        sub.Popen("python3 " + src_backup_py, shell=True)  # Call backup py
         exit()
 
 
