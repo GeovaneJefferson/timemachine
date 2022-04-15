@@ -14,11 +14,11 @@ A backup application, created using PySide6.
 ## Info:
 ### The oldest backups are deleted when your backup disk is full.
 
-Time Machine will automatically delete the oldest backup until has enough space for the current backup, but will keep at least one backup left.
+Time Machine will automatically delete the oldest backup, until has enough space for the a new backup, but will keep at least one backup left.
 
 #### Still not enough space for a new backup?
 
-Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so Time Machine can proceed with the backup. 
+Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup. 
 
 
 ## Enter Time Machine:
@@ -28,10 +28,10 @@ Enter Time Machine is only available for (KDE with dolphin as file manager).
 Enter Time Machine can be used to restore files from the external device.
 To access this feature, you have to:
 1. Make a backup to an external device using Time Machine.
-2. For example, to recover a file you accidentally deleted from your Documents folder, open the Documents folder (Dolphin).
+2. For example, to recover a file that you accidentally deleted, open the Documents folder (Dolphin).
 3. Then, right click on some file inside that folder.
 
-Wait a moment, and you will see all back-ups files for that selected folder.
+Wait a moment, and you will Enter in Time Machine.
 ![screenshot5](https://user-images.githubusercontent.com/66172718/161593649-de2dfd53-610b-427e-ad14-0f069c1c5c79.png)
 ![screenshot4](https://user-images.githubusercontent.com/66172718/160674231-05ca76ee-9c94-49c0-9e7b-ff18726120c3.png)
 
@@ -40,6 +40,7 @@ Wait a moment, and you will see all back-ups files for that selected folder.
 
 ## Installation:
 You will be asked for your password! 
+Before begin with the installation, please, make sure that your system is updated :D
 
 The "install.py" will automatically install "python3-pip" and "pip-pyside6". (Dependencies)
 
@@ -48,6 +49,7 @@ Inside Time Machine folder, right click, "open terminal", write "python3 install
 Example:
 
     python3 install.py
+    
 ## Uninstall:
 Inside Time Machine folder, right click, "open terminal", write "python3 uninstall.py" and press Enter.
 
@@ -56,13 +58,14 @@ Example:
     python3 uninstall.py
 
 ## Tested Platforms
-  * Ubuntu (KDE)
+  * Ubuntu 
   * Elementary OS
-  * Regata OS 
+  * Regata OS (KDE)
   * MxLinux (KDE)
   * Opensuse (KDE)
-  * Fedora (KDE)
+  * Fedora 
   * Manjaro (KDE)
+  * EndeavourOS
 
 ## Screenshots
 ![screenshot1](https://user-images.githubusercontent.com/66172718/162273998-2e440581-0fd5-419c-8b0d-df97a3e7528b.png)
