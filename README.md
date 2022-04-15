@@ -20,7 +20,6 @@ Time Machine will automatically delete the oldest backup, until has enough space
 
 Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup. 
 
-
 ## Enter Time Machine:
 Obs. Work still in progress...
 Enter Time Machine is only available for (KDE with dolphin as file manager).
