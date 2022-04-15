@@ -166,9 +166,12 @@ class UI(QMainWindow):
         self.oneTimeMode.setText("One time per day")
         self.oneTimeMode.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimeMode.setFixedSize(180, 30)
-        self.oneTimeMode.setStyleSheet("""
-            border-color: transparent;
-        """)
+        self.oneTimeMode.setStyleSheet(
+        "QRadioButton"    
+           "{"
+            "border: 0px solid transparent;"
+            "border-radius: 5px;"
+           "}")
         self.oneTimeMode.clicked.connect(self.on_frequency_clicked)
 
         self.moreTimeMode = QRadioButton()
@@ -191,15 +194,17 @@ class UI(QMainWindow):
         self.label_hours.setFont(QFont("DejaVu Sans", 14))
         self.label_hours.setFixedSize(60, 40)
         self.label_hours.setFrame(True)
-        self.label_hours.setStyleSheet("""
-            border-color: transparent;
-            border-radius: 5px;
-        """)
         self.label_hours.setMinimum(0)
         self.label_hours.setSingleStep(1)
         self.label_hours.setMaximum(23)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
-
+        self.label_hours.setStyleSheet(
+        "QSpinBox"    
+           "{"
+            "border: 0px solid transparent;"
+            "border-radius: 5px;"
+           "}")
+           
         # Label
         self.timeLabel = QLabel()
         self.timeLabel.setFont(QFont("DejaVu Sans", 18))
@@ -231,11 +236,11 @@ class UI(QMainWindow):
         self.label_minutes.setFixedSize(60, 40)
         self.label_minutes.setFrame(True)
         self.label_minutes.setStyleSheet(
-        "QSpinBox"
+        "QSpinBox"    
             "{"
-                "border-color: transparent;"
-                "border-radius: 5px;"     
-            "}")
+                "border: 0px solid transparent;"
+                "border-radius: 5px;"
+           "}")
 
         self.label_minutes.setMinimum(0)
         self.label_minutes.setSingleStep(1)
@@ -248,11 +253,11 @@ class UI(QMainWindow):
         self.every_combox.setFixedSize(140, 28)
         self.every_combox.setFont(QFont("DejaVu Sans", 9))
         self.every_combox.setStyleSheet(
-        "QComboBox"
-        "{"
-            "border-color: transparent;"
-            "border-radius: 5px;"
-        "}")
+        "QComboBox"    
+            "{"
+                "border: 0px solid transparent;"
+                "border-radius: 5px;"
+            "}")
 
         every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]
         self.every_combox.addItems(every_combox_list)
@@ -388,9 +393,7 @@ class UI(QMainWindow):
         vert_space_label = 10
         vert_space_checkbox = vert_space_label  # Same value as vertical space
         for files in get_home_folders:
-            if not files.startswith("."):
-                print(files)
-
+            if not "." in files:
                 # Folders text
                 label_text = QLabel(files, self.folders_frame)
                 label_text.setFont(QFont("DejaVu Sans", 9))
