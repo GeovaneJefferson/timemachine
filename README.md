@@ -59,8 +59,7 @@ Example:
 ## Tested Platforms
   * Ubuntu 
   * Elementary OS
-  * Regata OS (KDE)
-  * MxLinux (KDE)
+  * MXLinux (KDE)
   * Opensuse (KDE)
   * Fedora 
   * Manjaro (KDE)
