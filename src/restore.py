@@ -487,7 +487,7 @@ class UI(QWidget):
                     ## Set icons
                     ################################################################################
                     if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
-                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif"):
+                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="60"'
                         image.setText(
@@ -565,6 +565,7 @@ class UI(QWidget):
                              background-image: url(icons/mp4.png);
                              background-color: transparent;
                          """)
+                         
                     else:
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
