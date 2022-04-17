@@ -12,6 +12,14 @@ class UI(QMainWindow):
         self.setWindowIcon(app_icon)
         self.setFixedSize(700, 450)
 
+        ################################################################################
+        ## Center window
+        ################################################################################
+        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        fg = self.frameGeometry()
+        fg.moveCenter(centerPoint)
+        self.move(fg.topLeft())
+
         self.widgets()
 
     def widgets(self):
@@ -619,6 +627,14 @@ class EXTERNAL(QWidget):
         self.setWindowTitle("Choose external:")
         self.setFixedSize(500, 380)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+
+        ################################################################################
+        ## Center window
+        ################################################################################
+        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        fg = self.frameGeometry()
+        fg.moveCenter(centerPoint)
+        self.move(fg.topLeft())
 
         ################################################################################
         ## Media location

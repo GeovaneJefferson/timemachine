@@ -15,6 +15,14 @@ class UI(QMainWindow):
         self.setWindowIcon(appIcon)
         self.setFixedSize(800, 550)
 
+        ################################################################################
+        ## Center window
+        ################################################################################
+        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        fg = self.frameGeometry()
+        fg.moveCenter(centerPoint)
+        self.move(fg.topLeft())
+
         self.widgets()
 
     def widgets(self):
