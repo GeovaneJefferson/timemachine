@@ -343,12 +343,16 @@ class UI(QMainWindow):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         ################################################################################
+        ## Set None if user has not choose a external device yet
+        ################################################################################
+        self.setExternalName.setText(self.getHDName)  # Set external name
+        self.setExternalName.setFont(QFont('DejaVu Sans', 18))
+
+        ################################################################################
         ## Auto backup
         ################################################################################
         if self.get_auto_backup == "true":
             self.autoCheckbox.setChecked(True)
-            self.setExternalName.setText(self.getHDName)  # Set external name
-            self.setExternalName.setFont(QFont('DejaVu Sans', 18))
 
         ################################################################################
         ## External name
