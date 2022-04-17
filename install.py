@@ -161,6 +161,7 @@ class CLI:
         except FileNotFoundError:
             print("Error trying to create KDE services folder! (Needs for the restore feature)")
             pass
+
         ################################################################################
         ## Create Services Menus folder
         ################################################################################
