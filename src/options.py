@@ -98,6 +98,7 @@ class UI(QMainWindow):
         self.check_sun = QCheckBox()
         self.check_sun.setFont(QFont("DejaVu Sans", 9))
         self.check_sun.setText("Sun")
+        self.check_sun.clicked.connect(self.on_check_sun_clicked)
         self.check_sun.setStyleSheet("""
             border-color: transparent;
         """)
@@ -105,6 +106,7 @@ class UI(QMainWindow):
         self.check_mon = QCheckBox()
         self.check_mon.setFont(QFont("DejaVu Sans", 9))
         self.check_mon.setText("Mon")
+        self.check_mon.clicked.connect(self.on_check_mon_clicked)
         self.check_mon.setStyleSheet("""
             border-color: transparent;
         """)
@@ -112,6 +114,7 @@ class UI(QMainWindow):
         self.check_tue = QCheckBox()
         self.check_tue.setFont(QFont("DejaVu Sans", 9))
         self.check_tue.setText("Tue")
+        self.check_tue.clicked.connect(self.on_check_tue_clicked)
         self.check_tue.setStyleSheet("""
             border-color: transparent;
         """)
@@ -119,6 +122,7 @@ class UI(QMainWindow):
         self.check_wed = QCheckBox()
         self.check_wed.setFont(QFont("DejaVu Sans", 9))
         self.check_wed.setText("Wed")
+        self.check_wed.clicked.connect(self.on_check_wed_clicked)
         self.check_wed.setStyleSheet("""
             border-color: transparent;
         """)
@@ -126,6 +130,7 @@ class UI(QMainWindow):
         self.check_thu = QCheckBox()
         self.check_thu.setFont(QFont("DejaVu Sans", 9))
         self.check_thu.setText("Thu")
+        self.check_thu.clicked.connect(self.on_check_thu_clicked)
         self.check_thu.setStyleSheet("""
             border-color: transparent;
         """)
@@ -133,6 +138,7 @@ class UI(QMainWindow):
         self.check_fri = QCheckBox()
         self.check_fri.setFont(QFont("DejaVu Sans", 9))
         self.check_fri.setText("Fri")
+        self.check_fri.clicked.connect(self.on_check_fri_clicked)
         self.check_fri.setStyleSheet("""
             border-color: transparent;
         """)
@@ -140,6 +146,7 @@ class UI(QMainWindow):
         self.check_sat = QCheckBox()
         self.check_sat.setFont(QFont("DejaVu Sans", 9))
         self.check_sat.setText("Sat")
+        self.check_sat.clicked.connect(self.on_check_sat_clicked)
         self.check_sat.setStyleSheet("""
             border-color: transparent;
         """)
@@ -175,7 +182,7 @@ class UI(QMainWindow):
         self.oneTimeMode.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimeMode.setFixedSize(180, 30)
         self.oneTimeMode.setStyleSheet(
-        "QRadioButton"    
+        "QRadioButton"
            "{"
             "border: 0px solid transparent;"
             "border-radius: 5px;"
@@ -207,12 +214,12 @@ class UI(QMainWindow):
         self.label_hours.setMaximum(23)
         self.label_hours.valueChanged.connect(self.label_hours_changed)
         self.label_hours.setStyleSheet(
-        "QSpinBox"    
+        "QSpinBox"
            "{"
             "border: 0px solid transparent;"
             "border-radius: 5px;"
            "}")
-           
+
         # Label
         self.timeLabel = QLabel()
         self.timeLabel.setFont(QFont("DejaVu Sans", 18))
@@ -244,7 +251,7 @@ class UI(QMainWindow):
         self.label_minutes.setFixedSize(60, 40)
         self.label_minutes.setFrame(True)
         self.label_minutes.setStyleSheet(
-        "QSpinBox"    
+        "QSpinBox"
             "{"
                 "border: 0px solid transparent;"
                 "border-radius: 5px;"
@@ -261,7 +268,7 @@ class UI(QMainWindow):
         self.every_combox.setFixedSize(140, 28)
         self.every_combox.setFont(QFont("DejaVu Sans", 9))
         self.every_combox.setStyleSheet(
-        "QComboBox"    
+        "QComboBox"
             "{"
                 "border: 0px solid transparent;"
                 "border-radius: 5px;"
@@ -525,9 +532,9 @@ class UI(QMainWindow):
     def on_check_sun_clicked(self):
         with open(src_user_config, 'w') as configfile:
             if self.check_sun.isChecked():
-                config.set('SCHEDULE', 'sun', 'true')
-                config.write(configfile)
-                print("Sun")
+                    config.set('SCHEDULE', 'sun', 'true')
+                    config.write(configfile)
+                    print("Sun")
             else:
                 config.set('SCHEDULE', 'sun', 'false')
                 config.write(configfile)
