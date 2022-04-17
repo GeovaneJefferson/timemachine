@@ -532,9 +532,9 @@ class UI(QMainWindow):
     def on_check_sun_clicked(self):
         with open(src_user_config, 'w') as configfile:
             if self.check_sun.isChecked():
-                    config.set('SCHEDULE', 'sun', 'true')
-                    config.write(configfile)
-                    print("Sun")
+                config.set('SCHEDULE', 'sun', 'true')
+                config.write(configfile)
+                print("Sun")
             else:
                 config.set('SCHEDULE', 'sun', 'false')
                 config.write(configfile)
