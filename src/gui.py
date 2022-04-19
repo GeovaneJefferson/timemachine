@@ -158,7 +158,7 @@ class UI(QMainWindow):
             border-color: transparent;
         """)
         self.uiText.setText(
-            "Time Machine is able to:\n\n"
+            f"{app_name} is able to:\n\n"
             "* Keep local snapshots as space permits\n"
             "* Schedule backups (Minutely, Hourly or Daily)\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
@@ -627,13 +627,13 @@ class UI(QMainWindow):
 
         if updateConfirmation == QMessageBox.Yes:
             self.updateButton.setText("Please, standby...")
-            output = sub.call(f"cd {home_user}/.local/share/timemachine/ && git stash && git pull", shell=True)
+            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull", shell=True)
             print(output)
 
             ################################################################################
             ## MessabeBox information
             ################################################################################
-            QMessageBox.information(self, "Time Machine", f"You are using the latest version of Time Machine.\n{appVersion}") 
+            QMessageBox.information(self, f"{app_name}", f"You are using the latest version of {app_name}.\nYou can check the version under Options.")
 
         else:
             QMessageBox.Close
