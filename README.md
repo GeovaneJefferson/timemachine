@@ -67,6 +67,6 @@ Example:
   * EndeavourOS
 
 ## Screenshots
-![screenshot1](https://user-images.githubusercontent.com/66172718/162273998-2e440581-0fd5-419c-8b0d-df97a3e7528b.png)
+![screenshot1](https://user-images.githubusercontent.com/66172718/163969230-8587fa36-4569-4fd2-a77d-ffcbfcd025ff.png)
 ![screenshot2](https://user-images.githubusercontent.com/66172718/162274359-ad7421ac-dac3-486c-b293-865304313d8f.png)
 ![screenshot3](https://user-images.githubusercontent.com/66172718/160672472-4b1fa208-e69e-44ed-a372-e01286395f1a.png)

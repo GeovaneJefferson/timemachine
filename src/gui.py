@@ -626,14 +626,13 @@ class UI(QMainWindow):
         QMessageBox.Yes | QMessageBox.No)
 
         if updateConfirmation == QMessageBox.Yes:
-            self.updateButton.setText("Please, standby...")
             output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull", shell=True)
             print(output)
 
             ################################################################################
             ## MessabeBox information
             ################################################################################
-            QMessageBox.information(self, f"{app_name}", f"You are using the latest version of {app_name}.\nYou can check the version under Options.")
+            QMessageBox.information(self, "Update Software", f"You are using the latest version of {app_name}.\nYou can check the version under Options.")
 
         else:
             QMessageBox.Close
@@ -648,9 +647,8 @@ class UI(QMainWindow):
 
 # Choose external
 class EXTERNAL(QWidget):
-    openDirectory = 2
 
-    def __init__(self, mode=openDirectory):
+    def __init__(self):
         super(EXTERNAL, self).__init__()
         appIcon = QIcon(src_restore_icon)
         self.setWindowIcon(appIcon)
@@ -676,9 +674,9 @@ class EXTERNAL(QWidget):
         ################################################################################
         ## Read ini
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.getHDName = config['EXTERNAL']['name']
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
+        # self.getHDName = config['EXTERNAL']['name']
         # self.getMode = config['EXTERNAL']['mode']
 
         ################################################################################
@@ -699,7 +697,7 @@ class EXTERNAL(QWidget):
         ## Frame
         ################################################################################
         self.whereFrame = QFrame(self)
-        self.whereFrame.setFixedSize(460, 250)
+        self.whereFrame.setFixedSize(460, 280)
         self.whereFrame.move(20, 40)
         self.whereFrame.setStyleSheet("""
             background-color: rgb(48, 49, 50);
@@ -708,15 +706,15 @@ class EXTERNAL(QWidget):
         # ################################################################################
         # ## Radio local
         # ################################################################################
-        self.local = QRadioButton(self)
-        self.local.setFont(QFont("DejaVu Sans", 9))
-        self.local.setText("Local storage")
+        # self.local = QRadioButton(self)
+        # self.local.setFont(QFont("DejaVu Sans", 9))
+        # self.local.setText("Local storage")
         # self.local.setToolTip("Use this options if you plan to back up to a: USB/HD/SSD,\n"
         #                       "that is directly connected to your pc")
-        self.local.setFixedSize(150, 24)
-        self.local.move(20, 10)
-        self.local.setEnabled(False)
-        self.local.autoExclusive()
+        # self.local.setFixedSize(150, 24)
+        # self.local.move(20, 10)
+        # self.local.setEnabled(False)
+        # self.local.autoExclusive()
         # self.local.setStyleSheet("""
         #      border: 1px solid red;
         # """)
@@ -724,14 +722,14 @@ class EXTERNAL(QWidget):
         ################################################################################
         ## Radio network
         ################################################################################
-        self.network = QRadioButton(self)
-        self.network.setFont(QFont("DejaVu Sans", 9))
-        self.network.setText("Remote storage")
+        # self.network = QRadioButton(self)
+        # self.network.setFont(QFont("DejaVu Sans", 9))
+        # self.network.setText("Remote storage")
         # self.network.setToolTip("Use this options if you plan to back up via network (LAN)")
-        self.network.setFixedSize(150, 24)
-        self.network.move(20, 305)
-        self.network.setEnabled(False)
-        self.network.autoExclusive()
+        # self.network.setFixedSize(150, 24)
+        # self.network.move(20, 305)
+        # self.network.setEnabled(False)
+        # self.network.autoExclusive()
         # self.network.setStyleSheet("""
         #      border: 1px solid red;
         # """)
@@ -739,32 +737,32 @@ class EXTERNAL(QWidget):
         ###############################################################################
         ## Radio network
         ################################################################################
-        self.lineEdit = QLineEdit(self)
-        self.lineEdit.setFont(QFont("DejaVu Sans", 9))
-        self.lineEdit.setPlaceholderText("Example: ssh USER@xx.xxx.xxx.xx")
-        self.lineEdit.setFixedWidth(210)
-        self.lineEdit.move(180, 305)
-        self.lineEdit.setEnabled(False)
-        self.lineEdit.setStyleSheet("""
-            color: gray;
-        """)
+        # self.lineEdit = QLineEdit(self)
+        # self.lineEdit.setFont(QFont("DejaVu Sans", 9))
+        # self.lineEdit.setPlaceholderText("Example: ssh USER@xx.xxx.xxx.xx")
+        # self.lineEdit.setFixedWidth(210)
+        # self.lineEdit.move(180, 305)
+        # self.lineEdit.setEnabled(False)
+        # self.lineEdit.setStyleSheet("""
+        #     color: gray;
+        # """)
 
         ################################################################################
         ## Choose button
         ################################################################################
-        self.connectTo = QPushButton(self)
-        self.connectTo.setFont(QFont("DejaVu Sans", 9))
-        self.connectTo.setText("Connect")
-        self.connectTo.setEnabled(False)
-        self.connectTo.setFixedSize(80, 28)
-        self.connectTo.move(400, 300)
-        self.connectTo.setStyleSheet(
-            "QPushButton::hover"
-            "{"
-            "background-color: red;"
-            "}")
-        # self.connectTo.clicked.connect(self.on_choose_button_clicked)
-        self.connectTo.clicked.connect(lambda *args: print("Clicked"))
+        # self.connectTo = QPushButton(self)
+        # self.connectTo.setFont(QFont("DejaVu Sans", 9))
+        # self.connectTo.setText("Connect")
+        # self.connectTo.setEnabled(False)
+        # self.connectTo.setFixedSize(80, 28)
+        # self.connectTo.move(400, 300)
+        # self.connectTo.setStyleSheet(
+        #     "QPushButton::hover"
+        #     "{"
+        #     "background-color: red;"
+        #     "}")
+        # # self.connectTo.clicked.connect(self.on_choose_button_clicked)
+        # self.connectTo.clicked.connect(lambda *args: print("Clicked"))
 
         ################################################################################
         ## Cancel button
