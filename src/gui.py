@@ -167,7 +167,7 @@ class UI(QMainWindow):
         ## Donate and Settings buttons
         ################################################################################
         self.donateAndSettingsWidget = QWidget(self)
-        self.donateAndSettingsWidget.setGeometry(500, 380, 200, 80)
+        self.donateAndSettingsWidget.setGeometry(350, 380, 350, 80)
         # self.donateAndSettingsWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -175,6 +175,13 @@ class UI(QMainWindow):
         # Donate and Settings widget
         self.donateAndSettingsLayout = QHBoxLayout(self.donateAndSettingsWidget)
         self.donateAndSettingsLayout.setSpacing(10)
+
+        # Update button (Git pull)
+        self.updateButton = QPushButton()
+        self.updateButton.setText("Check for updates")
+        self.updateButton.setFont(QFont("DejaVu Sans", 9))
+        self.updateButton.setFixedSize(140, 28)
+        self.updateButton.clicked.connect(self.check_for_updates)
 
         # Donate buton
         donateButton = QPushButton()
@@ -212,8 +219,9 @@ class UI(QMainWindow):
         self.baseVUiTextLayout.addWidget(self.uiText, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         #  Donate and Settings layout
+        self.donateAndSettingsLayout.addWidget(self.updateButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
         self.donateAndSettingsLayout.addWidget(donateButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
-        self.donateAndSettingsLayout.addWidget(self.optionsButton, 1, Qt.AlignHCenter | Qt.AlignVCenter)
+        self.donateAndSettingsLayout.addWidget(self.optionsButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
 
         self.setLayout(self.baseVLeftLayout)
 
@@ -311,7 +319,8 @@ class UI(QMainWindow):
         self.externalMaxSize = str(self.externalMaxSize)
 
         self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
-        self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
+        self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace(
+            "\t", "")
         self.usedSpace = str(self.usedSpace)
 
         self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
@@ -349,7 +358,6 @@ class UI(QMainWindow):
         ################################################################################
         self.setExternalName.setText(self.getHDName)  # Set external name
         self.setExternalName.setFont(QFont('DejaVu Sans', 18))
-
 
         ################################################################################
         ## External name
@@ -564,7 +572,7 @@ class UI(QMainWindow):
                 pass
 
             else:
-                shutil.copy(src_backup_check, src_backup_check_desktop)     # Copy to /home/#USER/.config/autostart
+                shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy to /home/#USER/.config/autostart
 
             ################################################################################
             ## Set auto backup to true
@@ -608,12 +616,34 @@ class UI(QMainWindow):
             # Call backup now py
             sub.Popen(f"python3 {src_backup_now}", shell=True)
 
-    def options_clicked(self):
-        # Call schedule
-        sub.call(f"python3 {src_options_py}", shell=True)
+    def check_for_updates(self):
+        ################################################################################
+        ## MessabeBox
+        ################################################################################
+        updateConfirmation = QMessageBox.question(self, 'Update Software',
+        f'You are about to grab the latest version of {app_name} from GitHub.'
+        '\nDo you want to continue?',
+        QMessageBox.Yes | QMessageBox.No)
+
+        if updateConfirmation == QMessageBox.Yes:
+            self.updateButton.setText("Please, standby...")
+            output = sub.call(f"cd {home_user}/.local/share/timemachine/ && git stash && git pull", shell=True)
+            print(output)
+
+            ################################################################################
+            ## MessabeBox information
+            ################################################################################
+            QMessageBox.information(self, "Time Machine", f"You are using the latest version of Time Machine.\n{appVersion}") 
+
+        else:
+            QMessageBox.Close
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
+
+    def options_clicked(self):
+        # Call schedule
+        sub.call(f"python3 {src_options_py}", shell=True)
 
 
 # Choose external
