@@ -647,7 +647,6 @@ class UI(QMainWindow):
 
 # Choose external
 class EXTERNAL(QWidget):
-
     def __init__(self):
         super(EXTERNAL, self).__init__()
         appIcon = QIcon(src_restore_icon)
