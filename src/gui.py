@@ -626,7 +626,6 @@ class UI(QMainWindow):
         QMessageBox.Yes | QMessageBox.No)
 
         if updateConfirmation == QMessageBox.Yes:
-            self.updateButton.setText("Please, standby...")
             output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull", shell=True)
             print(output)
 
