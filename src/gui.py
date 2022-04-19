@@ -626,13 +626,13 @@ class UI(QMainWindow):
         QMessageBox.Yes | QMessageBox.No)
 
         if updateConfirmation == QMessageBox.Yes:
-            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull", shell=True)
+            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull && git stash drop", shell=True)
             print(output)
 
             ################################################################################
             ## MessabeBox information
             ################################################################################
-            QMessageBox.information(self, "Update Software", f"You are using the latest version of {app_name}.\nYou can check the version under Options.")
+            QMessageBox.information(self, "Update Software", f"Now, you are using the latest version of {app_name}.\nYou can check the version under Options.")
 
         else:
             QMessageBox.Close
