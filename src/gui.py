@@ -275,6 +275,7 @@ class UI(QMainWindow):
     def check_connection_run(self):
         try:
             os.listdir(f"/run/media/{user_name}/{self.getHDName}")  # Opensuse, external is inside "/run"
+
             self.connected()
 
         except FileNotFoundError:
@@ -294,34 +295,32 @@ class UI(QMainWindow):
         self.ui_settings()
 
     def connected(self):
+        ################################################################################
+        ## External status
+        ################################################################################
+        self.externalStatus.setText("External HD: Connected")
+        self.externalStatus.setFont(QFont('DejaVu Sans', 10))
+        self.externalStatus.setStyleSheet('color: green')
+
+        ################################################################################
+        ## Get external size values
+        ################################################################################
+        self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
+        self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
+            " ", "").strip()
+        self.externalMaxSize = str(self.externalMaxSize)
+
+        self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
+        self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace("\t", "")
+        self.usedSpace = str(self.usedSpace)
+
+        self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
+
+        ################################################################################
+        ## Condition
+        ################################################################################
         if self.getHDName != "None":  # If location can be found
-            if self.get_backup_now == "false":  # If is not back up right now
-                ################################################################################
-                ## External status
-                ################################################################################
-                self.externalStatus.setText("External HD: Connected")
-                self.externalStatus.setFont(QFont('DejaVu Sans', 10))
-                self.externalStatus.setStyleSheet('color: green')
-
-                ################################################################################
-                ## Get external size values
-                ################################################################################
-                self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
-                self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation,
-                                                                                       "").replace("\t", "")
-                self.usedSpace = str(self.usedSpace)
-
-                ################################################################################
-                ## Get total size
-                ################################################################################
-                self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
-                self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
-                    " ", "").strip()
-                self.externalMaxSize = str(self.externalMaxSize)
-
-                # Set size text
-                self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
-
+            if self.get_backup_now == "false":  # If is not backing up right now
                 ################################################################################
                 ## Backup Now
                 ################################################################################
@@ -334,6 +333,8 @@ class UI(QMainWindow):
                 self.backupNowButton.setText("Your files are being back up...")
                 self.backupNowButton.setEnabled(False)  # Disable backup now button
                 self.backupNowButton.setFixedSize(180, 28)  # Resize backup button
+                self.backupNowButton.show()
+
         else:
             self.backupNowButton.hide()
 
@@ -342,17 +343,13 @@ class UI(QMainWindow):
     def ui_settings(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
+
         ################################################################################
         ## Set None if user has not choose a external device yet
         ################################################################################
         self.setExternalName.setText(self.getHDName)  # Set external name
         self.setExternalName.setFont(QFont('DejaVu Sans', 18))
 
-        ################################################################################
-        ## Auto backup
-        ################################################################################
-        if self.get_auto_backup == "true":
-            self.autoCheckbox.setChecked(True)
 
         ################################################################################
         ## External name
@@ -366,25 +363,26 @@ class UI(QMainWindow):
         ################################################################################
         if self.get_last_backup == "":
             self.lastBackupLabel.setText("Last Backup: ")
-            # self.lastBackupLabel.setFont(QFont('DejaVu Sans', 9))
         else:
             self.lastBackupLabel.setText(f"Last Backup: {self.get_last_backup}")
-            # self.lastBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         ################################################################################
         ## Next backup label
         ################################################################################
         if self.get_next_backup == "":
             self.nextBackupLabel.setText("Next Backup: None")
-            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
+
+        ################################################################################
+        ## Auto backup
+        ################################################################################
+        if self.get_auto_backup == "true":
+            self.autoCheckbox.setChecked(True)
 
         if not self.autoCheckbox.isChecked():
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
-            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         else:
             self.nextBackupLabel.setText(f"Next Backup: {self.get_next_backup}")
-            # self.nextBackupLabel.setFont(QFont('DejaVu Sans', 9))
 
         ################################################################################
         ## Next backup label everytime
@@ -558,9 +556,6 @@ class UI(QMainWindow):
         print("")
 
     def automatically_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         ################################################################################
         ## If automatically is selected
         ################################################################################
@@ -571,24 +566,25 @@ class UI(QMainWindow):
             else:
                 shutil.copy(src_backup_check, src_backup_check_desktop)     # Copy to /home/#USER/.config/autostart
 
-                ################################################################################
-                ## Set auto backup to true
-                ################################################################################
-                with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                    config.set('BACKUP', 'auto_backup', 'true')
-                    config.write(configfile)
+            ################################################################################
+            ## Set auto backup to true
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+                config.set('BACKUP', 'auto_backup', 'true')
+                config.write(configfile)
 
                 print("Auto backup was successfully activated!")
 
         else:
-            sub.Popen(f"rm {src_backup_check_desktop}", shell=True)  # Remove to /home/#USER/.config/autostart/xxx.desktop
-
-            # Set auto backup to false
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.write(configfile)
 
-            print("Auto backup was successfully deactivated!")
+                print("Auto backup was successfully deactivated!")
 
         ################################################################################
         ## Call backup check py
@@ -834,19 +830,6 @@ class EXTERNAL(QWidget):
 
             self.close()
             main.setEnabled(True)
-
-    # def on_choose_button_clicked(self):
-    #     self.filepaths = []
-    #     print("asdasd", self.dirpath)
-
-    #     self.filepaths.append(QFileDialog.getExistingDirectory(self, caption='Choose Directory',
-    #                                                            directory=self.dirpath))
-    #     if len(self.filepaths) == 0:
-    #         return
-    #     elif len(self.filepaths) == 1:
-    #         self.lineEdit.setText(self.filepaths[0])
-    #     else:
-    #         self.lineEdit.setText(",".join(self.filepaths))
 
     def on_button_cancel_clicked(self):
         externalMain.close()
