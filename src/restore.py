@@ -493,6 +493,9 @@ class UI(QWidget):
                         image.setText(
                             f"<img  src={self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{self.requested}/{output} {scaledHTML}/>")
                         image.move(20, 20)
+                        image.setStyleSheet("""
+                             background-color: transparent;
+                         """)
 
                     elif output.endswith(".txt"):
                         image = QLabel(self.buttonFiles)
