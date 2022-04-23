@@ -91,7 +91,7 @@ class UI(QMainWindow):
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(412, 40, 250, 120)
+        self.farRightWidget.setGeometry(412, 40, 280, 120)
         # self.farRightWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -104,6 +104,8 @@ class UI(QMainWindow):
         ## Set external name
         ################################################################################
         self.setExternalName = QLabel()
+        self.setExternalName.setFont(QFont('DejaVu Sans', 18))
+        self.setExternalName.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
         ## Get external size
@@ -313,17 +315,21 @@ class UI(QMainWindow):
         ################################################################################
         ## Get external size values
         ################################################################################
-        self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
-        self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
-            " ", "").strip()
-        self.externalMaxSize = str(self.externalMaxSize)
+        try:
+            self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
+            self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
+                " ", "").strip()
+            self.externalMaxSize = str(self.externalMaxSize)
 
-        self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
-        self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace(
-            "\t", "")
-        self.usedSpace = str(self.usedSpace)
+            self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
+            self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace(
+                "\t", "")
+            self.usedSpace = str(self.usedSpace)
 
-        self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
+            self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
+
+        except:
+            self.showExternalSize.setText("No information available")
 
         ################################################################################
         ## Condition
@@ -364,7 +370,6 @@ class UI(QMainWindow):
         ################################################################################
         if self.getHDName != "None":
             self.setExternalName.setText(self.getHDName)
-            self.setExternalName.setFont(QFont('DejaVu Sans', 18))
 
         ################################################################################
         ## Last backup label
@@ -626,7 +631,7 @@ class UI(QMainWindow):
         QMessageBox.Yes | QMessageBox.No)
 
         if updateConfirmation == QMessageBox.Yes:
-            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull --no-edit && git stash drop", shell=True)
+            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ git stash && git pull --no-edit && git stash drop", shell=True)
             print(output)
 
             ################################################################################
@@ -841,9 +846,21 @@ class EXTERNAL(QWidget):
 
             vertical += 50
             button.show()
-            button.clicked.connect(lambda *args: self.on_button_clicked(text))
+            button.clicked.connect(lambda *args, text=text: self.on_button_clicked(text))
+            print(text)
 
     def on_button_clicked(self, get):
+        ################################################################################
+        ## Check for spaces inside output and sort them
+        ################################################################################
+        if " " in get:
+            get = str(get)
+            get = get.replace(" ", "\ ")
+            print("Remove spaces: " + get)
+
+        else:
+            pass
+
         ################################################################################
         ## Write changes to ini
         ################################################################################
