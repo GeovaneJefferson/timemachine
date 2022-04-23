@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 ## Variables
 ################################################################################
 app_name = "Time Machine"
-appVersion = "v1.0.7"
+appVersion = "v1.0.8"
 folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
 copyCmd = "rsync -avruzh"
