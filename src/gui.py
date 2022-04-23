@@ -633,7 +633,6 @@ class UI(QMainWindow):
         if updateConfirmation == QMessageBox.Yes:
             output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull --no-edit && git stash drop", shell=True)
             print(output)
-
             ################################################################################
             ## MessabeBox information
             ################################################################################
