@@ -30,7 +30,7 @@ class UI(QMainWindow):
         ## Apps version
         ################################################################################
         version = QLabel(self)
-        version.setFont(QFont("DejaVu Sans", 8))
+        version.setFont(item)
         version.setText(appVersion)
         version.setFixedSize(80, 20)
         version.move(270, 505)
@@ -53,9 +53,9 @@ class UI(QMainWindow):
 
         # Label
         self.label = QLabel()
-        self.label.setFont(QFont("Arial Black", 10))
-        self.label.setText("Choose which folders will be\nback up:")
-        self.label.setFixedSize(250, 35)
+        self.label.setFont(topicTitle)
+        self.label.setText("Available folders to be\nback up:")
+        self.label.setFixedSize(250, 40)
 
         # Frame
         self.folders_frame = QFrame()
@@ -87,8 +87,9 @@ class UI(QMainWindow):
 
         # Label
         self.labelDaysToRun = QLabel()
-        self.labelDaysToRun.setFont(QFont("Arial Black", 10))
+        self.labelDaysToRun.setFont(topicTitle)
         self.labelDaysToRun.setText("Days to run:")
+        self.labelDaysToRun.setAlignment(QtCore.Qt.AlignLeft)
         self.labelDaysToRun.setFixedSize(200, 30)
         self.labelDaysToRun.setStyleSheet("""
             border-color: transparent;
@@ -96,7 +97,7 @@ class UI(QMainWindow):
 
         # Checkboxes
         self.check_sun = QCheckBox()
-        self.check_sun.setFont(QFont("DejaVu Sans", 9))
+        self.check_sun.setFont(item)
         self.check_sun.setText("Sun")
         self.check_sun.clicked.connect(self.on_check_sun_clicked)
         self.check_sun.setStyleSheet("""
@@ -104,7 +105,7 @@ class UI(QMainWindow):
         """)
 
         self.check_mon = QCheckBox()
-        self.check_mon.setFont(QFont("DejaVu Sans", 9))
+        self.check_mon.setFont(item)
         self.check_mon.setText("Mon")
         self.check_mon.clicked.connect(self.on_check_mon_clicked)
         self.check_mon.setStyleSheet("""
@@ -112,7 +113,7 @@ class UI(QMainWindow):
         """)
 
         self.check_tue = QCheckBox()
-        self.check_tue.setFont(QFont("DejaVu Sans", 9))
+        self.check_tue.setFont(item)
         self.check_tue.setText("Tue")
         self.check_tue.clicked.connect(self.on_check_tue_clicked)
         self.check_tue.setStyleSheet("""
@@ -120,7 +121,7 @@ class UI(QMainWindow):
         """)
 
         self.check_wed = QCheckBox()
-        self.check_wed.setFont(QFont("DejaVu Sans", 9))
+        self.check_wed.setFont(item)
         self.check_wed.setText("Wed")
         self.check_wed.clicked.connect(self.on_check_wed_clicked)
         self.check_wed.setStyleSheet("""
@@ -128,7 +129,7 @@ class UI(QMainWindow):
         """)
 
         self.check_thu = QCheckBox()
-        self.check_thu.setFont(QFont("DejaVu Sans", 9))
+        self.check_thu.setFont(item)
         self.check_thu.setText("Thu")
         self.check_thu.clicked.connect(self.on_check_thu_clicked)
         self.check_thu.setStyleSheet("""
@@ -136,7 +137,7 @@ class UI(QMainWindow):
         """)
 
         self.check_fri = QCheckBox()
-        self.check_fri.setFont(QFont("DejaVu Sans", 9))
+        self.check_fri.setFont(item)
         self.check_fri.setText("Fri")
         self.check_fri.clicked.connect(self.on_check_fri_clicked)
         self.check_fri.setStyleSheet("""
@@ -144,7 +145,7 @@ class UI(QMainWindow):
         """)
 
         self.check_sat = QCheckBox()
-        self.check_sat.setFont(QFont("DejaVu Sans", 9))
+        self.check_sat.setFont(item)
         self.check_sat.setText("Sat")
         self.check_sat.clicked.connect(self.on_check_sat_clicked)
         self.check_sat.setStyleSheet("""
@@ -163,8 +164,9 @@ class UI(QMainWindow):
 
         # Label
         self.labelTimeToRun = QLabel(self.timeToRunWidget)
-        self.labelTimeToRun.setFont(QFont("Arial Black", 10))
+        self.labelTimeToRun.setFont(topicTitle)
         self.labelTimeToRun.setText("Time to run:")
+        self.labelTimeToRun.setAlignment(QtCore.Qt.AlignLeft)
         self.labelTimeToRun.setFixedSize(180, 30)
         self.labelTimeToRun.setStyleSheet("""
             border: transparent;
@@ -177,7 +179,7 @@ class UI(QMainWindow):
 
         # Radio buttons
         self.oneTimeMode = QRadioButton()
-        self.oneTimeMode.setFont(QFont("DejaVu Sans", 9))
+        self.oneTimeMode.setFont(item)
         self.oneTimeMode.setText("One time per day")
         self.oneTimeMode.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimeMode.setFixedSize(180, 30)
@@ -190,7 +192,7 @@ class UI(QMainWindow):
         self.oneTimeMode.clicked.connect(self.on_frequency_clicked)
 
         self.moreTimeMode = QRadioButton()
-        self.moreTimeMode.setFont(QFont("DejaVu Sans", 9))
+        self.moreTimeMode.setFont(item)
         self.moreTimeMode.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
             "This will produce a time folder inside the chose external location.\n"
@@ -232,6 +234,7 @@ class UI(QMainWindow):
         self.hoursLabel = QLabel()
         self.hoursLabel.setFont(QFont("DejaVu Sans", 12))
         self.hoursLabel.setText("Hours")
+        self.hoursLabel.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursLabel.setStyleSheet("""
             border-color: transparent;
             border-radius: 5px;
@@ -241,6 +244,7 @@ class UI(QMainWindow):
         self.minutesLabel = QLabel()
         self.minutesLabel.setFont(QFont("DejaVu Sans", 12))
         self.minutesLabel.setText("Minutes")
+        self.minutesLabel.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesLabel.setStyleSheet("""
             border-color: transparent;
         """)
@@ -255,7 +259,7 @@ class UI(QMainWindow):
             "{"
                 "border: 0px solid transparent;"
                 "border-radius: 5px;"
-           "}")
+            "}")
 
         self.label_minutes.setMinimum(0)
         self.label_minutes.setSingleStep(1)
@@ -265,8 +269,8 @@ class UI(QMainWindow):
         # Combo box
         self.every_combox = QComboBox()
         self.every_combox.setFrame(True)
-        self.every_combox.setFixedSize(140, 28)
-        self.every_combox.setFont(QFont("DejaVu Sans", 9))
+        self.every_combox.setFixedSize(155, 28)
+        self.every_combox.setFont(item)
         self.every_combox.setStyleSheet(
         "QComboBox"
             "{"
@@ -282,7 +286,7 @@ class UI(QMainWindow):
         ## Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 300, 500, 100)
+        self.resetWidget.setGeometry(280, 280, 500, 100)
 
         # BaseV layout
         self.baseVResetLayout = QVBoxLayout(self.resetWidget)
@@ -291,41 +295,59 @@ class UI(QMainWindow):
 
         # Reset label
         self.labelReset = QLabel()
-        self.labelReset.setFont(QFont("Arial Black", 10))
+        self.labelReset.setFont(topicTitle)
         self.labelReset.setText("Reset:")
+        self.labelReset.setAlignment(QtCore.Qt.AlignLeft)
         self.labelReset.setFixedSize(200, 30)   # If something seems broken, click on "Reset", to reset settings.
 
         # Reset label text
         self.labelResetText = QLabel()
-        self.labelResetText.setFont(QFont("DejaVu Sans", 9))
+        self.labelResetText.setFont(item)
         self.labelResetText.setText('If something seems broken, click on "Reset", to reset settings.')
         self.labelResetText.setFixedSize(400, 30)
 
         # Reset button
-        self.btn_fix = QPushButton()
-        self.btn_fix.setFont(QFont("DejaVu Sans", 9))
-        self.btn_fix.setText("Reset")
-        self.btn_fix.setFixedSize(80, 28)
-        self.btn_fix.clicked.connect(self.on_button_fix_clicked)
+        fixButton = QPushButton()
+        fixButton.setFont(item)
+        fixButton.setText("Reset")
+        fixButton.setFixedSize(80, 28)
+        fixButton.clicked.connect(self.on_button_fix_clicked)
+
+        ################################################################################
+        ## Donate, Update and Save buttons
+        ################################################################################
+        self.donateAndSaveWidget = QWidget(self)
+        self.donateAndSaveWidget.setGeometry(390, 485, 400, 60)
+        # self.donateAndSaveWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        # """)
+
+        # Donate and Settings widget
+        self.donateAndSaveLayout = QHBoxLayout(self.donateAndSaveWidget)
+        self.donateAndSaveLayout.setSpacing(10)
+
+        # Donate buton
+        donateButton = QPushButton()
+        donateButton.setText("Donate")
+        donateButton.setFont(item)
+        donateButton.setFixedSize(80, 28)
+        donateButton.clicked.connect(self.donate_clicked)
+
+        # Update button (Git pull)
+        updateButton = QPushButton()
+        updateButton.setText("Check for updates")
+        updateButton.setFont(item)
+        updateButton.setFixedSize(140, 28)
+        updateButton.clicked.connect(self.check_for_updates)
 
         ################################################################################
         ## Save button
         ################################################################################
-        self.saveWidget = QWidget(self)
-        self.saveWidget.setGeometry(630, 485, 180, 60)
-        # self.saveWidget.setStyleSheet("""
-        #      border: 1px solid red;
-        #  """)
-
-        # Save layout
-        self.saveLayout = QVBoxLayout(self.saveWidget)
-
-        # Save button
-        self.btn_save = QPushButton()
-        self.btn_save.setFixedSize(120, 28)
-        self.btn_save.setFont(QFont("DejaVu Sans", 9))
-        self.btn_save.setText("Save and Close")
-        self.btn_save.clicked.connect(self.on_buttons_save_clicked)
+        saveButton = QPushButton()
+        saveButton.setFixedSize(120, 28)
+        saveButton.setFont(item)
+        saveButton.setText("Save and Close")
+        saveButton.clicked.connect(self.on_save_button_clicked)
 
         ################################################################################
         ## Add widgets and Layouts
@@ -364,10 +386,12 @@ class UI(QMainWindow):
         # Reset layout
         self.baseVResetLayout.addWidget(self.labelReset, 0, Qt.AlignLeft | Qt.AlignTop)
         self.baseVResetLayout.addWidget(self.labelResetText, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVResetLayout.addWidget(self.btn_fix, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseVResetLayout.addWidget(fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Save layout
-        self.saveLayout.addWidget(self.btn_save, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndSaveLayout.addWidget(updateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndSaveLayout.addWidget(donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndSaveLayout.addWidget(saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
 
         self.setLayout(self.baseVLeftLayout)
 
@@ -411,7 +435,7 @@ class UI(QMainWindow):
             if not "." in files:
                 # Folders text
                 label_text = QLabel(files, self.folders_frame)
-                label_text.setFont(QFont("DejaVu Sans", 9))
+                label_text.setFont(item)
                 label_text.setFixedSize(150, 22)
                 label_text.move(30, vert_space_label)
                 vert_space_label += 25  # Position
@@ -620,7 +644,7 @@ class UI(QMainWindow):
                 config.set('SCHEDULE', 'minutes', '0' + minutes)
 
             config.write(configfile)
-    #
+
     def on_frequency_clicked(self):
         with open(src_user_config, 'w') as configfile:
             if self.oneTimeMode.isChecked():
@@ -651,6 +675,7 @@ class UI(QMainWindow):
                 # Backup section
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
+                config.set('BACKUP', 'checker_running', 'false')
 
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
@@ -659,6 +684,9 @@ class UI(QMainWindow):
                 # Mode section
                 config.set('MODE', 'one_time_mode', 'true')
                 config.set('MODE', 'more_time_mode', 'false')
+
+                # System tray  section
+                config.set('SYSTEMTRAY', 'system_tray', 'false')
 
                 # Schedule section
                 config.set('SCHEDULE', 'sun', 'false')
@@ -686,13 +714,59 @@ class UI(QMainWindow):
         else:
             QMessageBox.Close
 
-    def on_buttons_save_clicked(self):
+    def check_for_updates(self):
         ################################################################################
-        ## Call backup check py
+        ## MessabeBox
         ################################################################################
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+        updateConfirmation = QMessageBox.question(self, 'Update Software',
+        f'You are about to grab the latest version of {app_name} from GitHub.'
+        '\nDo you want to continue?',
+        QMessageBox.Yes | QMessageBox.No)
 
-        exit()
+        if updateConfirmation == QMessageBox.Yes:
+            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull --no-edit && git stash drop", shell=True)
+            print(output)
+
+            ################################################################################
+            ## MessabeBox information
+            ################################################################################
+            QMessageBox.information(self, "Update Software", f"Now, you are using the latest version of {app_name}.\nYou can check the version under Options.")
+
+        else:
+            QMessageBox.Close
+
+    def donate_clicked(self):
+        sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
+
+    def on_save_button_clicked(self):
+        ################################################################################
+        ## Read INI file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.getAutoBackup = config['BACKUP']['auto_backup']
+        self.getCheckerRunning = config['BACKUP']['checker_running']
+
+        if self.getAutoBackup == "true" and self.getCheckerRunning == "true":
+            exit()
+
+        else:
+            ################################################################################
+            ## Call backup check py
+            ################################################################################
+            sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+
+            ################################################################################
+            ## After call backup checker, set checker_running to true
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+
+            with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+                config.set('BACKUP', 'checker_running', 'true')
+                config.write(configfile)
+
+            exit()
 
 
 app = QApplication(sys.argv)
