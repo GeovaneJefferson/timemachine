@@ -73,7 +73,6 @@ class CLI:
 
     def can_external_name_be_found(self):
         if self.getHDName != "":
-            print("External name found.")
             self.check_for_external_media()
 
         else:
