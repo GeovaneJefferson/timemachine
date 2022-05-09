@@ -1,6 +1,9 @@
 # Time Machine
 A backup application, created using PySide6.
 
+## TODO:
+* Create a flatpak of Time Machine (v1.1.0)
+
 ## Features:
 * Local snapshots one or multiple times per day
 * Rsync incremental
