@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 ## Variables
 ################################################################################
 app_name = "Time Machine"
+appNameClose = "timemachine"
 appVersion = "v1.0.9"
 folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
