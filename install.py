@@ -147,32 +147,6 @@ class CLI:
             print("Error trying to create autostart folders insise users home!")
 
         ################################################################################
-        ## Create Kservices folder
-        ################################################################################
-        try:
-            if os.path.exists(f"{self.home_user}/.local/share/kservices5/"):
-                pass
-            else:
-                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/", shell=True)
-        
-        except FileNotFoundError:
-            print("Error trying to create KDE services folder! (Needs for the restore feature)")
-            pass
-
-        ################################################################################
-        ## Create Services Menus folder
-        ################################################################################
-        try:
-            if os.path.exists(f"{self.home_user}/.local/share/kservices5/ServiceMenus/"):
-                pass
-            else:
-                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/ServiceMenus/", shell=True)
-        
-        except FileNotFoundError:
-            print("Error trying to create KDE services folder! (Needs for the restore feature)")
-            pass
-
-        ################################################################################
         ## Create applications folder
         ################################################################################
         try:
@@ -195,7 +169,7 @@ class CLI:
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Type=Application\n "
-                f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py; {self.home_user}/.local/share/timemachine/src/backup_check.py\n "
+                f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py\n"
                 f"Hidden=false\n "
                 f"NoDisplay=false\n "
                 f"Name=Time Machine\n "
