@@ -4,11 +4,11 @@ from setup import *
 timer = QtCore.QTimer()
 
 class APP:
-    def start(self):
+    def __init__(self):
         app = QApplication([])
         app.setQuitOnLastWindowClosed(False)
-        app.setApplicationDisplayName(app_name)
-        
+        app.setApplicationDisplayName(appName)
+
         # ################################################################################
         # ## Add icon
         # ################################################################################
@@ -16,40 +16,36 @@ class APP:
         self.tray.setIcon(QIcon(src_system_bar_icon))
         self.tray.setVisible(True)
 
+        # Creating the options
+        self.menu = QMenu()
+
         ################################################################################
         ## Add item on the menu bar
         ################################################################################
-        # Creating the options
-        menu = QMenu()
-
         self.iniInformation = QAction()
         self.iniInformation.setEnabled(False)
 
-        openSettings = QAction("Open Time Machine Preferences...")
-        openSettings.setFont(QFont(item))
-        openSettings.triggered.connect(lambda: sub.run(f"python3 {src_options_py}", shell=True))
+        self.backupNow = QAction("Back Up Now")
+        self.backupNow.setFont(QFont(item))
+        self.backupNow.triggered.connect(self.backup_now)
 
-        enterTimeMachine = QAction("'Enter Time Machine' Coming soon...")
-        enterTimeMachine.setFont(QFont(item))
-        enterTimeMachine.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
-        enterTimeMachine.setEnabled(False)
+        self.enterTimeMachine = QAction("Enter Time Machine (alpha)")
+        self.enterTimeMachine.setFont(QFont(item))
+        self.enterTimeMachine.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
+        # self.enterTimeMachine.setEnabled(False)
 
-        backupNow = QAction("Back Up Now")
-        backupNow.setFont(QFont(item))
-        backupNow.triggered.connect(self.backup_now)
+        self.openSettings = QAction("Open Time Machine Preferences...")
+        self.openSettings.setFont(QFont(item))
+        self.openSettings.triggered.connect(lambda: sub.run(f"python3 {src_options_py}", shell=True))
 
-        menu.addAction(self.iniInformation)
-        menu.addAction(openSettings)
-        menu.addAction(enterTimeMachine)
-        menu.addAction(backupNow)
 
-        # # To quit the app
-        # quit = QAction("Quit")
-        # quit.triggered.connect(app.quit)
-        # menu.addAction(quit)
+        self.menu.addAction(self.iniInformation)
+        self.menu.addAction(self.backupNow)
+        self.menu.addAction(self.enterTimeMachine)
+        self.menu.addAction(self.openSettings)
 
         # Adding options to the System Tray
-        self.tray.setContextMenu(menu)
+        self.tray.setContextMenu(self.menu)
 
         ################################################################################
         ## Check ini
@@ -61,15 +57,22 @@ class APP:
         app.exec()
 
     def updates(self):
-        ################################################################################
-        ## Read ini file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+        try:
+            ################################################################################
+            ## Read ini file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
 
-        getBackupNow = config['BACKUP']['backup_now']
-        getSystemTray = config['SYSTEMTRAY']['system_tray']
-        getLastBackup = config['INFO']['latest']
+            getBackupNow = config['BACKUP']['backup_now']
+            self.getHDName = config['EXTERNAL']['name']
+            getSystemTray = config['SYSTEMTRAY']['system_tray']
+            getLastBackup = config['INFO']['latest']
+
+
+        except:
+            error_reading() # Error trying to read INI file
+            exit()
 
         ################################################################################
         ## INI information
@@ -77,20 +80,28 @@ class APP:
         self.iniInformation.setText(f"Last backup: {getLastBackup}")
 
         ################################################################################
-        ## Add icon
+        ## No external found
+        ################################################################################
+        if self.getHDName == "None":
+            self.backupNow.setEnabled(False)
+
+        ################################################################################
+        ## Condition Backup Now and Icon
         ################################################################################
         if getBackupNow == "true":
             icon = QIcon(src_system_bar_run_icon)
+            self.backupNow.setEnabled(False)
         
-        elif getBackupNow == "false":
+        elif getBackupNow == "false" and self.getHDName != "None":
             icon = QIcon(src_system_bar_icon)
+            self.backupNow.setEnabled(True)
 
         else:
             icon = QIcon(src_system_bar_icon)
 
         self.tray.setIcon(icon)
 
-        print(f"{app_name} system tray is running...")
+        print(f"{appName} system tray is running...")
 
         ################################################################################
         ## System Tray
@@ -122,10 +133,8 @@ class APP:
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
-        sub.run(f"python3 {src_backup_now}", shell=True)
-
+        sub.Popen(f"python3 {src_backup_now}", shell=True)
         print("Menu bar was successfully enabled!")
 
 
 main = APP()
-main.start()

@@ -58,9 +58,9 @@ class UI(QMainWindow):
         self.label.setFixedSize(250, 40)
 
         # Frame
-        self.folders_frame = QFrame()
-        self.folders_frame.setFixedSize(250, 500)
-        # self.folders_frame.setStyleSheet(
+        self.foldersFrame = QFrame()
+        self.foldersFrame.setFixedSize(250, 500)
+        # self.foldersFrame.setStyleSheet(
         #     "QFrame"
         #     "{"
         #         "background-color: rgb(36, 37, 38);"
@@ -96,59 +96,59 @@ class UI(QMainWindow):
         """)
 
         # Checkboxes
-        self.check_sun = QCheckBox()
-        self.check_sun.setFont(item)
-        self.check_sun.setText("Sun")
-        self.check_sun.clicked.connect(self.on_check_sun_clicked)
-        self.check_sun.setStyleSheet("""
+        self.checkSun = QCheckBox()
+        self.checkSun.setFont(item)
+        self.checkSun.setText("Sun")
+        self.checkSun.clicked.connect(self.on_check_sun_clicked)
+        self.checkSun.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_mon = QCheckBox()
-        self.check_mon.setFont(item)
-        self.check_mon.setText("Mon")
-        self.check_mon.clicked.connect(self.on_check_mon_clicked)
-        self.check_mon.setStyleSheet("""
+        self.checkMon = QCheckBox()
+        self.checkMon.setFont(item)
+        self.checkMon.setText("Mon")
+        self.checkMon.clicked.connect(self.on_check_mon_clicked)
+        self.checkMon.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_tue = QCheckBox()
-        self.check_tue.setFont(item)
-        self.check_tue.setText("Tue")
-        self.check_tue.clicked.connect(self.on_check_tue_clicked)
-        self.check_tue.setStyleSheet("""
+        self.checkTue = QCheckBox()
+        self.checkTue.setFont(item)
+        self.checkTue.setText("Tue")
+        self.checkTue.clicked.connect(self.on_check_tue_clicked)
+        self.checkTue.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_wed = QCheckBox()
-        self.check_wed.setFont(item)
-        self.check_wed.setText("Wed")
-        self.check_wed.clicked.connect(self.on_check_wed_clicked)
-        self.check_wed.setStyleSheet("""
+        self.checkWed = QCheckBox()
+        self.checkWed.setFont(item)
+        self.checkWed.setText("Wed")
+        self.checkWed.clicked.connect(self.on_check_wed_clicked)
+        self.checkWed.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_thu = QCheckBox()
-        self.check_thu.setFont(item)
-        self.check_thu.setText("Thu")
-        self.check_thu.clicked.connect(self.on_check_thu_clicked)
-        self.check_thu.setStyleSheet("""
+        self.checkThu = QCheckBox()
+        self.checkThu.setFont(item)
+        self.checkThu.setText("Thu")
+        self.checkThu.clicked.connect(self.on_check_thu_clicked)
+        self.checkThu.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_fri = QCheckBox()
-        self.check_fri.setFont(item)
-        self.check_fri.setText("Fri")
-        self.check_fri.clicked.connect(self.on_check_fri_clicked)
-        self.check_fri.setStyleSheet("""
+        self.checkFri = QCheckBox()
+        self.checkFri.setFont(item)
+        self.checkFri.setText("Fri")
+        self.checkFri.clicked.connect(self.on_check_fri_clicked)
+        self.checkFri.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.check_sat = QCheckBox()
-        self.check_sat.setFont(item)
-        self.check_sat.setText("Sat")
-        self.check_sat.clicked.connect(self.on_check_sat_clicked)
-        self.check_sat.setStyleSheet("""
+        self.checkSat = QCheckBox()
+        self.checkSat.setFont(item)
+        self.checkSat.setText("Sat")
+        self.checkSat.clicked.connect(self.on_check_sat_clicked)
+        self.checkSat.setStyleSheet("""
             border-color: transparent;
         """)
 
@@ -207,15 +207,15 @@ class UI(QMainWindow):
         self.moreTimeMode.clicked.connect(self.on_frequency_clicked)
 
         # Spinbox Hours
-        self.label_hours = QSpinBox()
-        self.label_hours.setFont(QFont("DejaVu Sans", 14))
-        self.label_hours.setFixedSize(60, 40)
-        self.label_hours.setFrame(True)
-        self.label_hours.setMinimum(0)
-        self.label_hours.setSingleStep(1)
-        self.label_hours.setMaximum(23)
-        self.label_hours.valueChanged.connect(self.label_hours_changed)
-        self.label_hours.setStyleSheet(
+        self.labelHours = QSpinBox()
+        self.labelHours.setFont(QFont("DejaVu Sans", 14))
+        self.labelHours.setFixedSize(60, 40)
+        self.labelHours.setFrame(True)
+        self.labelHours.setMinimum(0)
+        self.labelHours.setSingleStep(1)
+        self.labelHours.setMaximum(23)
+        self.labelHours.valueChanged.connect(self.label_hours_changed)
+        self.labelHours.setStyleSheet(
         "QSpinBox"
            "{"
             "border: 0px solid transparent;"
@@ -250,37 +250,37 @@ class UI(QMainWindow):
         """)
 
         # Spinbox Hours
-        self.label_minutes = QSpinBox()
-        self.label_minutes.setFont(QFont("DejaVu Sans", 14))
-        self.label_minutes.setFixedSize(60, 40)
-        self.label_minutes.setFrame(True)
-        self.label_minutes.setStyleSheet(
+        self.labelMinutes = QSpinBox()
+        self.labelMinutes.setFont(QFont("DejaVu Sans", 14))
+        self.labelMinutes.setFixedSize(60, 40)
+        self.labelMinutes.setFrame(True)
+        self.labelMinutes.setStyleSheet(
         "QSpinBox"
             "{"
                 "border: 0px solid transparent;"
                 "border-radius: 5px;"
             "}")
 
-        self.label_minutes.setMinimum(0)
-        self.label_minutes.setSingleStep(1)
-        self.label_minutes.setMaximum(59)
-        self.label_minutes.valueChanged.connect(self.label_minutes_changed)
+        self.labelMinutes.setMinimum(0)
+        self.labelMinutes.setSingleStep(1)
+        self.labelMinutes.setMaximum(59)
+        self.labelMinutes.valueChanged.connect(self.label_minutes_changed)
 
         # Combo box
-        self.every_combox = QComboBox()
-        self.every_combox.setFrame(True)
-        self.every_combox.setFixedSize(155, 28)
-        self.every_combox.setFont(item)
-        self.every_combox.setStyleSheet(
+        self.everyCombox = QComboBox()
+        self.everyCombox.setFrame(True)
+        self.everyCombox.setFixedSize(155, 28)
+        self.everyCombox.setFont(item)
+        self.everyCombox.setStyleSheet(
         "QComboBox"
             "{"
                 "border: 0px solid transparent;"
                 "border-radius: 5px;"
             "}")
 
-        every_combox_list = ["Every 15 minutes", "Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]
-        self.every_combox.addItems(every_combox_list)
-        self.every_combox.currentIndexChanged.connect(self.on_every_combox_changed)
+        everyComboxList = ["Every 30 minutes", "Every 1 hour", "Every 2 hours", "Every 4 hours"]  # "Every 15 minutes"
+        self.everyCombox.addItems(everyComboxList)
+        self.everyCombox.currentIndexChanged.connect(self.on_every_combox_changed)
 
         ################################################################################
         ## Reset widget
@@ -317,7 +317,7 @@ class UI(QMainWindow):
         ## Donate, Update and Save buttons
         ################################################################################
         self.donateAndSaveWidget = QWidget(self)
-        self.donateAndSaveWidget.setGeometry(390, 485, 400, 60)
+        self.donateAndSaveWidget.setGeometry(550, 490, 240, 60)
         # self.donateAndSaveWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
@@ -334,11 +334,11 @@ class UI(QMainWindow):
         donateButton.clicked.connect(self.donate_clicked)
 
         # Update button (Git pull)
-        updateButton = QPushButton()
-        updateButton.setText("Check for updates")
-        updateButton.setFont(item)
-        updateButton.setFixedSize(140, 28)
-        updateButton.clicked.connect(self.check_for_updates)
+        # updateButton = QPushButton()
+        # updateButton.setText("Check for updates")
+        # updateButton.setFont(item)
+        # updateButton.setFixedSize(140, 28)
+        # updateButton.clicked.connect(self.check_for_updates)
 
         ################################################################################
         ## Save button
@@ -354,32 +354,32 @@ class UI(QMainWindow):
         ################################################################################
         # BaseVLeft layout
         self.baseVLeftLayout.addWidget(self.label)
-        self.baseVLeftLayout.addWidget(self.folders_frame, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.baseVLeftLayout.addWidget(self.foldersFrame, 0, Qt.AlignHCenter | Qt.AlignTop)
 
         # BaseVDaysToRun layout
         self.baseVDaysToRunLayout.addWidget(self.labelDaysToRun, 0, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseVDaysToRunLayout.addLayout(self.baseHDaysToRunLayout)
 
         # BaseVDaysToRun layout
-        self.baseHDaysToRunLayout.addWidget(self.check_sun, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_mon, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_tue, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_wed, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_thu, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_fri, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHDaysToRunLayout.addWidget(self.check_sat, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkSun, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkMon, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkTue, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkWed, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkThu, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkFri, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHDaysToRunLayout.addWidget(self.checkSat, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # BaseGridTimeToRun layout
         self.baseHTimeToRunLayout.addWidget(self.labelTimeToRun, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseHTimeToRunLayout.addWidget(self.oneTimeMode, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseHTimeToRunLayout.addWidget(self.moreTimeMode, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseHTimeToRunLayout.addWidget(self.every_combox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseHTimeToRunLayout.addWidget(self.everyCombox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
         self.baseHTimeToRunLayout.addLayout(self.timesGrid, 1, 1, Qt.AlignVCenter | Qt.AlignLeft)
 
         # TimeGrid
-        self.timesGrid.addWidget(self.label_hours, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timesGrid.addWidget(self.labelHours, 0, 0, Qt.AlignVCenter | Qt.AlignLeft)
         self.timesGrid.addWidget(self.timeLabel, 0, 2, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.timesGrid.addWidget(self.label_minutes, 0, 3, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timesGrid.addWidget(self.labelMinutes, 0, 3, Qt.AlignVCenter | Qt.AlignLeft)
         self.timesGrid.addWidget(self.hoursLabel, 1, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.timesGrid.addWidget(self.minutesLabel, 1, 3, Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -389,7 +389,7 @@ class UI(QMainWindow):
         self.baseVResetLayout.addWidget(fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Save layout
-        self.donateAndSaveLayout.addWidget(updateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        # self.donateAndSaveLayout.addWidget(updateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -398,16 +398,6 @@ class UI(QMainWindow):
         self.get_folders()
 
     def get_folders(self):
-    #     # Backup images
-    #     self.backupImage = QLabel()
-    #     self.backupImage.setFixedSize(128, 128)
-    #     self.backupImage.setStyleSheet(
-    #         "QLabel"
-    #         "{"
-    #             f"background-image: url({src_backup_icon});"
-    #         "}"
-    #     )
-
         # Get user.ini
         sun = config['SCHEDULE']['sun']
         mon = config['SCHEDULE']['mon']
@@ -422,33 +412,33 @@ class UI(QMainWindow):
         # Schedule options
         # Hours
         hrs = int(config['SCHEDULE']['hours'])
-        self.label_hours.setValue(hrs)
+        self.labelHours.setValue(hrs)
 
         # Minutes
         min = int(config['SCHEDULE']['minutes'])
-        self.label_minutes.setValue(min)
+        self.labelMinutes.setValue(min)
 
         # More folders
-        vert_space_label = 10
-        vert_space_checkbox = vert_space_label  # Same value as vertical space
-        for files in get_home_folders:
+        verticalSpaceLabel = 10
+        verticalSpaceCheckbox = verticalSpaceLabel  # Same value as vertical space
+        for files in getHomeFolders:
             if not "." in files:
                 # Folders text
-                label_text = QLabel(files, self.folders_frame)
+                label_text = QLabel(files, self.foldersFrame)
                 label_text.setFont(item)
                 label_text.setFixedSize(150, 22)
-                label_text.move(30, vert_space_label)
-                vert_space_label += 25  # Position
+                label_text.move(30, verticalSpaceLabel)
+                verticalSpaceLabel += 25  # Position
 
                 # Checkboxes
-                self.foldersCheckbox = QCheckBox(self.folders_frame)
+                self.foldersCheckbox = QCheckBox(self.foldersFrame)
                 self.foldersCheckbox.setStyleSheet("""
                     border-color: transparent;
                 """)
 
                 self.foldersCheckbox.setFixedSize(150, 22)
-                self.foldersCheckbox.move(5, vert_space_checkbox)
-                vert_space_checkbox += 25
+                self.foldersCheckbox.move(5, verticalSpaceCheckbox)
+                verticalSpaceCheckbox += 25
                 text = label_text.text().lower()  # Lowercase
                 self.foldersCheckbox.show()
                 self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.folders(text))
@@ -458,41 +448,41 @@ class UI(QMainWindow):
                     self.foldersCheckbox.setChecked(True)
 
         if sun == "true":
-            self.check_sun.setChecked(True)
+            self.checkSun.setChecked(True)
 
         if mon == "true":
-            self.check_mon.setChecked(True)
+            self.checkMon.setChecked(True)
 
         if tue == "true":
-            self.check_tue.setChecked(True)
+            self.checkTue.setChecked(True)
 
         if wed == "true":
-            self.check_wed.setChecked(True)
+            self.checkWed.setChecked(True)
 
         if thu == "true":
-            self.check_thu.setChecked(True)
+            self.checkThu.setChecked(True)
 
         if fri == "true":
-            self.check_fri.setChecked(True)
+            self.checkFri.setChecked(True)
 
         if sat == "true":
-            self.check_sat.setChecked(True)
+            self.checkSat.setChecked(True)
 
         # Everytime
-        if getEverytime == "15":
-            self.every_combox.setCurrentIndex(0)
+        # if getEverytime == "15":
+        #     self.everyCombox.setCurrentIndex(0)
 
-        elif getEverytime == "30":
-            self.every_combox.setCurrentIndex(1)
+        if getEverytime == "30":
+            self.everyCombox.setCurrentIndex(0)
 
         elif getEverytime == "60":
-            self.every_combox.setCurrentIndex(2)
+            self.everyCombox.setCurrentIndex(1)
 
         elif getEverytime == "120":
-            self.every_combox.setCurrentIndex(3)
+            self.everyCombox.setCurrentIndex(2)
 
         elif getEverytime == "240":
-            self.every_combox.setCurrentIndex(4)
+            self.everyCombox.setCurrentIndex(3)
 
         # Timer
         timer.timeout.connect(self.updates)
@@ -506,18 +496,18 @@ class UI(QMainWindow):
 
         # Read user.ini
         oneTimeMode = config['MODE']['one_time_mode']
-        more_time_mode = config['MODE']['more_time_mode']
+        moreTimeMode = config['MODE']['more_time_mode']
 
         if oneTimeMode == "true":
-            self.every_combox.setEnabled(False)
-            self.label_hours.setEnabled(True)
-            self.label_minutes.setEnabled(True)
+            self.everyCombox.setEnabled(False)
+            self.labelHours.setEnabled(True)
+            self.labelMinutes.setEnabled(True)
             self.oneTimeMode.setChecked(True)
 
-        elif more_time_mode == "true":
-            self.label_hours.setEnabled(False)
-            self.label_minutes.setEnabled(False)
-            self.every_combox.setEnabled(True)
+        elif moreTimeMode == "true":
+            self.labelHours.setEnabled(False)
+            self.labelMinutes.setEnabled(False)
+            self.everyCombox.setEnabled(True)
             self.moreTimeMode.setChecked(True)
 
     def folders(self, get):
@@ -531,31 +521,31 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_every_combox_changed(self):
-        choose_every_combox = self.every_combox.currentIndex()
+        chooseEveryCombox = self.everyCombox.currentIndex()
         with open(src_user_config, 'w') as configfile:
-            if choose_every_combox == 0:
+            if chooseEveryCombox == 0:
                 config.set('SCHEDULE', 'everytime', '15')
                 config.write(configfile)
 
-            elif choose_every_combox == 1:
+            elif chooseEveryCombox == 1:
                 config.set('SCHEDULE', 'everytime', '30')
                 config.write(configfile)
 
-            elif choose_every_combox == 2:
+            elif chooseEveryCombox == 2:
                 config.set('SCHEDULE', 'everytime', '60')
                 config.write(configfile)
 
-            elif choose_every_combox == 3:
+            elif chooseEveryCombox == 3:
                 config.set('SCHEDULE', 'everytime', '120')
                 config.write(configfile)
 
-            elif choose_every_combox == 4:
+            elif chooseEveryCombox == 4:
                 config.set('SCHEDULE', 'everytime', '240')
                 config.write(configfile)
 
     def on_check_sun_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_sun.isChecked():
+            if self.checkSun.isChecked():
                 config.set('SCHEDULE', 'sun', 'true')
                 config.write(configfile)
                 print("Sun")
@@ -565,7 +555,7 @@ class UI(QMainWindow):
 
     def on_check_mon_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_mon.isChecked():
+            if self.checkMon.isChecked():
                 config.set('SCHEDULE', 'mon', 'true')
                 config.write(configfile)
                 print("Mon")
@@ -575,7 +565,7 @@ class UI(QMainWindow):
 
     def on_check_tue_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_tue.isChecked():
+            if self.checkTue.isChecked():
                 config.set('SCHEDULE', 'tue', 'true')
                 config.write(configfile)
                 print("Tue")
@@ -585,7 +575,7 @@ class UI(QMainWindow):
 
     def on_check_wed_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_wed.isChecked():
+            if self.checkWed.isChecked():
                 config.set('SCHEDULE', 'wed', 'true')
                 config.write(configfile)
                 print("Wed")
@@ -595,7 +585,7 @@ class UI(QMainWindow):
 
     def on_check_thu_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_thu.isChecked():
+            if self.checkThu.isChecked():
                 config.set('SCHEDULE', 'thu', 'true')
                 config.write(configfile)
                 print("Thu")
@@ -605,7 +595,7 @@ class UI(QMainWindow):
 
     def on_check_fri_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_fri.isChecked():
+            if self.checkFri.isChecked():
                 config.set('SCHEDULE', 'fri', 'true')
                 config.write(configfile)
                 print("Fri")
@@ -615,7 +605,7 @@ class UI(QMainWindow):
 
     def on_check_sat_clicked(self):
         with open(src_user_config, 'w') as configfile:
-            if self.check_sat.isChecked():
+            if self.checkSat.isChecked():
                 config.set('SCHEDULE', 'sat', 'true')
                 config.write(configfile)
                 print("Sat")
@@ -624,23 +614,23 @@ class UI(QMainWindow):
                 config.write(configfile)
 
     def label_hours_changed(self):
-        hours = self.label_hours.value()
+        hours = self.labelHours.value()
         hours = str(hours)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'hours', hours)
-            if hours in min_fix:
+            if hours in minFix:
                 config.set('SCHEDULE', 'hours', '0' + hours)
 
             config.write(configfile)
 
     def label_minutes_changed(self):
-        minutes = self.label_minutes.value()
+        minutes = self.labelMinutes.value()
         minutes = str(minutes)
 
         with open(src_user_config, 'w') as configfile:
             config.set('SCHEDULE', 'minutes', minutes)
-            if minutes in min_fix:
+            if minutes in minFix:
                 config.set('SCHEDULE', 'minutes', '0' + minutes)
 
             config.write(configfile)
@@ -673,6 +663,7 @@ class UI(QMainWindow):
             # Reset settings
             with open(src_user_config, 'w') as configfile:
                 # Backup section
+                config.set('BACKUP', 'first_startup', 'false')
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
                 config.set('BACKUP', 'checker_running', 'false')
@@ -710,7 +701,10 @@ class UI(QMainWindow):
                 config.set('FOLDER', 'pictures', 'true')
 
                 config.write(configfile)
-                exit()
+            
+            print("All settings was reset!")
+            exit()
+
         else:
             QMessageBox.Close
 
@@ -719,18 +713,18 @@ class UI(QMainWindow):
         ## MessabeBox
         ################################################################################
         updateConfirmation = QMessageBox.question(self, 'Update Software',
-        f'You are about to grab the latest version of {app_name} from GitHub.'
+        f'You are about to grab the latest version of {appName} from GitHub.'
         '\nDo you want to continue?',
         QMessageBox.Yes | QMessageBox.No)
 
         if updateConfirmation == QMessageBox.Yes:
-            output = sub.call(f"cd {home_user}/.local/share/{appNameClose}/ && git stash && git reset --hard && git pull --no-edit && git stash drop", shell=True)
+            output = sub.call(f"cd {homeUser}/.local/share/{appNameClose}/ && git stash && git reset --hard && git pull --no-edit && git stash drop", shell=True)
             print(output)
 
             ################################################################################
             ## MessabeBox information
             ################################################################################
-            QMessageBox.information(self, "Update Software", f"Now, you are using the latest version of {app_name}.\nYou can check the version under Options.")
+            QMessageBox.information(self, "Update Software", f"Now, you are using the latest version of {appName}.\nYou can check the version under Options.")
 
         else:
             QMessageBox.Close

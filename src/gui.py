@@ -7,7 +7,7 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        self.setWindowTitle(app_name)
+        self.setWindowTitle(appName)
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
         self.setFixedSize(700, 450)
@@ -164,7 +164,7 @@ class UI(QMainWindow):
         ## Ui description
         ################################################################################
         self.uiTextWidget = QWidget(self)
-        self.uiTextWidget.setGeometry(240, 200, 440, 100)
+        self.uiTextWidget.setGeometry(240, 200, 440, 140)
         self.uiTextWidget.setStyleSheet("""
             border-top: 1px solid rgb(68, 69, 70);
         """)
@@ -174,26 +174,29 @@ class UI(QMainWindow):
 
         self.uiInfoTitle = QLabel()
         self.uiInfoTitle.setFont(topicTitle)
-        self.uiInfoTitle.setFixedSize(350, 80)
+        self.uiInfoTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.uiInfoTitle.setFixedSize(420, 24)
         self.uiInfoTitle.setStyleSheet("""
             border-color: transparent;
 
         """)
         self.uiInfoTitle.setText(
-            f"{app_name} is able to:\n\n")
+            f"{appName} is able to:\n\n")
 
         # uiInfoText
         self.uiInfoText = QLabel()
         self.uiInfoText.setFont(item)
-        self.uiInfoText.setFixedSize(350, 80)
+        self.uiInfoText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.uiInfoText.setFixedSize(420, 120)
         self.uiInfoText.setStyleSheet("""
             border-color: transparent;
-
         """)
         self.uiInfoText.setText(
             "* Keep local snapshots as space permits\n"
-            "* Schedule backups (Minutely, Hourly or Daily)\n\n"
+            "* Schedule backups (Minutely, Hourly or Daily)\n"
+            f"* Automatically back up at first PC boot, if backup time\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
+
         ################################################################################
         ## Donate and Settings buttons
         ################################################################################
@@ -217,8 +220,8 @@ class UI(QMainWindow):
         # Auto checkbox
         self.showInSystemTray = QCheckBox(self)
         self.showInSystemTray.setFont(item)
-        self.showInSystemTray.setText(f"Show {app_name} in system tray")
-        self.showInSystemTray.setFixedSize(250, 20)
+        self.showInSystemTray.setText(f"Show {appName} in system tray (alpha)")
+        self.showInSystemTray.setFixedSize(280, 20)
         self.showInSystemTray.move(240, 410)
         self.showInSystemTray.setStyleSheet("""
             border-color: transparent;
@@ -303,7 +306,7 @@ class UI(QMainWindow):
     def check_connection_media(self):
         # External availability
         try:
-            os.listdir(f"/media/{user_name}/{self.getHDName}")  # Check if external can be found
+            os.listdir(f"/media/{userName}/{self.getHDName}")  # Check if external can be found
             self.connected()
 
         except FileNotFoundError:
@@ -311,7 +314,7 @@ class UI(QMainWindow):
 
     def check_connection_run(self):
         try:
-            os.listdir(f"/run/media/{user_name}/{self.getHDName}")  # Opensuse, external is inside "/run"
+            os.listdir(f"/run/media/{userName}/{self.getHDName}")  # Opensuse, external is inside "/run"
 
             self.connected()
 
@@ -860,7 +863,7 @@ class EXTERNAL(QWidget):
         ## Search external inside media
         ################################################################################
         try:
-            os.listdir(f'{self.media}/{user_name}')
+            os.listdir(f'{self.media}/{userName}')
             self.foundInMedia = True
             self.show_one_screen()
 
@@ -872,7 +875,7 @@ class EXTERNAL(QWidget):
         ## Search external inside run/media
         ################################################################################
         try:
-            os.listdir(f'{self.run}/{user_name}')  # Opensuse, external is inside "/run"
+            os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
             self.foundInMedia = False
             self.show_one_screen()
 
@@ -897,7 +900,7 @@ class EXTERNAL(QWidget):
 
         vertical = 20
         verticalImg = 52
-        for output in os.listdir(f'{self.foundWhere}/{user_name}'):
+        for output in os.listdir(f'{self.foundWhere}/{userName}'):
             image = QLabel(self)
             pixmap = QPixmap(src_restore_small_icon)
             image.setPixmap(pixmap)
@@ -942,7 +945,7 @@ class EXTERNAL(QWidget):
         config.read(src_user_config)
 
         with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{user_name}/{get}')
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
 
@@ -960,5 +963,5 @@ main = UI()
 main.show()
 externalMain = EXTERNAL()
 toc = time.time()
-print(f'{app_name} {(toc - tic):.4f} seconds')
+print(f'{appName} {(toc - tic):.4f} seconds')
 app.exit(app.exec())
