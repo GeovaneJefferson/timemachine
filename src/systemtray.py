@@ -65,8 +65,10 @@ class APP:
             config.read(src_user_config)
 
             getBackupNow = config['BACKUP']['backup_now']
+            self.getHDName = config['EXTERNAL']['name']
             getSystemTray = config['SYSTEMTRAY']['system_tray']
             getLastBackup = config['INFO']['latest']
+
 
         except:
             error_reading() # Error trying to read INI file
@@ -78,13 +80,19 @@ class APP:
         self.iniInformation.setText(f"Last backup: {getLastBackup}")
 
         ################################################################################
-        ## Add icon
+        ## No external found
+        ################################################################################
+        if self.getHDName == "None":
+            self.backupNow.setEnabled(False)
+
+        ################################################################################
+        ## Condition Backup Now and Icon
         ################################################################################
         if getBackupNow == "true":
             icon = QIcon(src_system_bar_run_icon)
             self.backupNow.setEnabled(False)
         
-        elif getBackupNow == "false":
+        elif getBackupNow == "false" and self.getHDName != "None":
             icon = QIcon(src_system_bar_icon)
             self.backupNow.setEnabled(True)
 
