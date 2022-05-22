@@ -1,31 +1,87 @@
 from setup import *
 
-# Read/Load user.config
-config = configparser.ConfigParser()
-config.read(src_user_config)
-
 
 class CLI:
     def __init__(self):
-        self.time = 5
+        self.time = 2
+
+        ################################################################################
+        ## Variables
+        ################################################################################
+        self.systemTrayActivated = None
+
+        ################################################################################
+        ## Signal
+        ################################################################################
+        signal.signal(signal.SIGINT, self.signal_exit)
+        signal.signal(signal.SIGTERM, self.signal_exit)
+
+    def updates(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         self.getHDName = config['EXTERNAL']['name']
+        self.backupNowChecker = config['BACKUP']['backup_now']
+        self.getSystemTray = config['SYSTEMTRAY']['system_tray']
+        # self.getCheckerRunning = config['BACKUP']['checker_running']
 
-        self.check_user_settings()
+        # Dates
+        self.getScheduleSun = config['SCHEDULE']['sun']
+        self.getScheduleMon = config['SCHEDULE']['mon']
+        self.getScheduleTue = config['SCHEDULE']['tue']
+        self.getScheduleWed = config['SCHEDULE']['wed']
+        self.getScheduleThu = config['SCHEDULE']['thu']
+        self.getScheduleFri = config['SCHEDULE']['fri']
+        self.getScheduleSat = config['SCHEDULE']['sat']
 
-    def check_user_settings(self):
+        self.dayName = datetime.now()
+        self.dayName = self.dayName.strftime("%a")
+        self.dayName = self.dayName.lower()
+
+        # Time
+        now = datetime.now()
+        self.currentHour = now.strftime("%H")
+        self.currentMinute = now.strftime("%M")
+
+        # Read INI file
+        self.firstStartup = config['BACKUP']['first_startup']
+        self.backupNowChecker = config['BACKUP']['backup_now']
+        self.getAutoBackup = config['BACKUP']['auto_backup']
+        self.oneTimeMode = config['MODE']['one_time_mode']
+        self.everytime = config['SCHEDULE']['everytime']
+        self.nextHour = config['SCHEDULE']['hours']
+        self.nextMinute = config['SCHEDULE']['minutes']
+
+        self.totalCurrentTime = self.currentHour + self.currentMinute
+        self.totalNextTime = self.nextHour + self.nextMinute
+
+        self.is_system_tray_running()
+
+    def is_system_tray_running(self):
+        if self.getSystemTray == "true" and self.systemTrayActivated != None and self.firstStartup == "false":
+            self.systemTrayActivated = True
+
+            ################################################################################
+            ## Call system tray
+            ################################################################################
+            sub.Popen(f"python3 {src_system_tray}", shell=True)
+
+        self.can_external_name_be_found()
+
+    def can_external_name_be_found(self):
         if self.getHDName != "":
             self.check_for_external_media()
 
         else:
             no_external_info()
-            exit()
+            self.no_backup()
 
     def check_for_external_media(self):  # Check for external in media/
         try:
-            for output in os.listdir("/media/" + user_name):
+            for output in os.listdir("/media/" + userName):
                 if not output.startswith('.'):
                     if self.getHDName in output:  # If user.ini has external hd name
-                        print("External found in /media")
+                        print("External found in /media.")
                         self.check_the_date()
 
         except FileNotFoundError:
@@ -33,139 +89,125 @@ class CLI:
 
     def check_for_external_run(self):  # Or check for external in run/
         try:
-            for output in os.listdir("/run/media/" + user_name):  # Try other folder (fx. Opensuse)
+            for output in os.listdir("/run/media/" + userName):  # Try other folder (fx. Opensuse)
                 if not output.startswith('.'):
                     if self.getHDName in output:  # If user.ini has external hd name
-                        print("External found in /run/media")
+                        print("External found in /run/media.")
                         self.check_the_date()
 
         except FileNotFoundError:
             print("No external devices mounted or available...")
             not_available_notification()  # Call not available notification
-            exit()
+            self.no_backup()
 
     def check_the_date(self):
-        print("Backup checker is running...")
+        print("Checking dates...")
 
-        while True:
-            # Read/Load user.config (backup automatically)
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+        if self.dayName == "sun" and self.getScheduleSun == "true":
+            self.check_the_mode()
 
-            getScheduleSun = config['SCHEDULE']['sun']
-            getScheduleMon = config['SCHEDULE']['mon']
-            getScheduleTue = config['SCHEDULE']['tue']
-            getScheduleWed = config['SCHEDULE']['wed']
-            getScheduleThu = config['SCHEDULE']['thu']
-            getScheduleFri = config['SCHEDULE']['fri']
-            getScheduleSat = config['SCHEDULE']['sat']
+        elif self.dayName == "mon" and self.getScheduleMon == "true":
+            self.check_the_mode()
 
-            # Get date
-            dayName = datetime.now()
-            dayName = dayName.strftime("%a")
-            dayName = dayName.lower()
+        elif self.dayName == "tue" and self.getScheduleTue == "true":
+            self.check_the_mode()
 
-            if dayName == "sun" and getScheduleSun == "true":
-                break
+        elif self.dayName == "wed" and self.getScheduleWed == "true":
+            self.check_the_mode()
 
-            elif dayName == "mon" and getScheduleMon == "true":
-                break
+        elif self.dayName == "thu" and self.getScheduleThu == "true":
+            self.check_the_mode()
 
-            elif dayName == "tue" and getScheduleTue == "true":
-                break
+        elif self.dayName == "fri" and self.getScheduleFri == "true":
+            self.check_the_mode()
 
-            elif dayName == "wed" and getScheduleWed == "true":
-                break
+        elif self.dayName == "sat" and self.getScheduleSat == "true":
+            self.check_the_mode()
 
-            elif dayName == "thu" and getScheduleThu == "true":
-                break
-
-            elif dayName == "fri" and getScheduleFri == "true":
-                break
-
-            elif dayName == "sat" and getScheduleSat == "true":
-                break
-
-            else:
-                print("No back up for today.")
-                exit()
-
-        self.check_the_mode()
+        else:
+            print("No back up for today.")
+            self.no_backup()
 
     def check_the_mode(self):
-        print("Checking the mode...")
-        while True:
-            # Read/Load user.config
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+        print("Checking mode...")
 
-            now = datetime.now()
-            currentHour = now.strftime("%H")
-            currentMinute = now.strftime("%M")
+        if self.oneTimeMode == "true":  # one time mode
+            print("One Time Mode found")
+            if self.totalCurrentTime > self.totalNextTime:
+                ################################################################################
+                ## If Time Machine was unable to backup because PC was off, auto make a backup
+                ################################################################################
+                if self.firstStartup == "true": # Make auto backup if First startup == True and missed time to back up
+                    print(f"{appName} will automatically backup right now, because time to back up has passed.")
+                    ################################################################################
+                    ## Set startup to False and Continue to back up
+                    ################################################################################
+                    ################################################################################
+                    ## Write to  INI file
+                    ################################################################################
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
 
-            backupNowChecker = config['BACKUP']['backup_now']
-            autoBackup = config['BACKUP']['auto_backup']
-            oneTimeMode = config['MODE']['one_time_mode']
-            everytime = config['SCHEDULE']['everytime']
-            nextHour = config['SCHEDULE']['hours']
-            nextMinute = config['SCHEDULE']['minutes']
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('BACKUP', 'first_startup', 'false')
+                        config.write(configfile)
 
-            totalCurrentTime = currentHour + currentMinute
-            totalNextTime = nextHour + nextMinute
+                    self.call_backup_now()
 
-            if oneTimeMode == "true":  # one time mode
-                if totalCurrentTime > totalNextTime:
+                else:   # If not the first startup
                     print("Time to back up has passed")
-                    exit()
+                    self.no_backup()
 
-                elif totalCurrentTime == totalNextTime:
-                    break
-                else:
-                    print("Waiting for the right time to backup...")
-                    time.sleep(self.time)
+            elif self.totalCurrentTime == self.totalNextTime:
+                self.call_backup_now()
 
-            else:  # More time mode
-                if everytime == '15':
-                    if currentMinute in time_mode_minutes_15:
-                        if backupNowChecker == "false":
-                            break
-
-                elif everytime == '30':
-                    if currentMinute in time_mode_minutes_30:
-                        if backupNowChecker == "false":
-                            break
-
-                elif everytime == '60':
-                    if currentHour in time_mode_hours_60:
-                        if backupNowChecker == "false":
-                            break
-
-                elif everytime == '120':
-                    if currentHour in time_mode_hours_120:
-                        if backupNowChecker == "false":
-                            break
-
-                elif everytime == '240':
-                    if currentHour in time_mode_hours_240:
-                        if backupNowChecker == "false":
-                            break
-
-                print("")
-                print("Backup time  : " + nextHour + ":" + nextMinute + " One Time Mode")
-                print("Backup time every : " + everytime)
+            else:
                 print("Waiting for the right time to backup...")
-                print("")
-                time.sleep(self.time)
+                ################################################################################
+                ## Set startup to False, so wont backup twice after passed time :D
+                ################################################################################
+                ################################################################################
+                ## Write to  INI file
+                ################################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                
+                with open(src_user_config, 'w') as configfile:
+                    config.set('BACKUP', 'first_startup', 'false')
+                    config.write(configfile)
 
-            ################################################################################
-            ## Exit program if auto_backup is false
-            ################################################################################
-            if autoBackup == "false":
-                exit()
 
-        self.call_backup_now()
+        else:  # More time mode
+            print("More Time Mode found")
+
+            # if self.everytime == '15':
+            #     if self.currentMinute in time_mode_minutes_15:
+            #         if self.backupNowChecker == "false":
+            #             self.call_backup_now()
+
+            if self.everytime == '30':
+                if self.currentMinute in timeModeMinutes30:
+                    if self.backupNowChecker == "false":
+                        self.call_backup_now()
+
+            elif self.everytime == '60':
+                if self.currentHour in timeModeHours60:
+                    if self.backupNowChecker == "false":
+                        self.call_backup_now()
+
+            elif self.everytime == '120':
+                if self.currentHour in timeModeHours120:
+                    if self.backupNowChecker == "false":
+                        self.call_backup_now()
+
+            elif self.everytime == '240':
+                if self.currentHour in timeModeHours240:
+                    if self.backupNowChecker == "false":
+                        self.call_backup_now()
 
     def call_backup_now(self):
+        print("Starting back up...")
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
@@ -174,7 +216,43 @@ class CLI:
             config.write(configfile)
 
             sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup checker
+            exit()
 
+    def no_backup(self):
+        print("No backup... Updating INI file...")
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        with open(src_user_config, 'w') as configfile:
+            config.set('BACKUP', 'checker_running', 'false')
+            config.write(configfile)
+
+        exit()
+
+    def signal_exit(self, *args):
+        print("Change INI settings... Exiting...")
+        self.no_backup()
 
 main = CLI()
+while True:
+    main.updates()
+    ################################################################################
+    ## Exit program if auto_backup is false
+    ################################################################################
+    if main.backupNowChecker == "true":
+        print("Break backupchecker")
+        break
+
+    ################################################################################
+    ## Exit program if auto_backup is false
+    ################################################################################
+    if main.getAutoBackup == "false":
+        print("Break autobackup")
+        break
+
+    time.sleep(main.time)
+
+main.no_backup()
+
+
 

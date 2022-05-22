@@ -25,7 +25,6 @@ class CLI:
         # Current folder
         self.src_backup_check = "src/desktop/backup_check.desktop"
         self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
-        self.src_service = "src/desktop/service.desktop"
 
         # Destination folder
         self.dst_venv_loc = f"{self.home_user}/.local/share/timemachine/venv"
@@ -66,10 +65,11 @@ class CLI:
         ################################################################################
         ## Install pip (Ubuntu)
         ################################################################################
+        print("Python3 pip need to be installed.")
+
         if self.ubuntu or self.debian:
             try:
                 print("")
-                print("Python3 pip need to be installed.")
                 sub.run("sudo apt install python3-pip libnotify-bin", shell=True)
                 print("Python3-pip was installed.")
 
@@ -83,7 +83,6 @@ class CLI:
         elif self.opensuse:
             try:
                 print("")
-                print("Python3 pip need to be installed.")
                 sub.run("sudo zypper install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
@@ -97,7 +96,6 @@ class CLI:
         elif self.fedora:
             try:
                 print("")
-                print("Python3 pip need to be installed.")
                 sub.run("sudo dnf install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
@@ -108,7 +106,6 @@ class CLI:
         elif self.arch:
             try:
                 print("")
-                print("Python3 pip need to be installed.")
                 sub.run("sudo pacman -Sy python-pip", shell=True)
                 print("Python3-pip was installed.")
 
@@ -150,36 +147,9 @@ class CLI:
             print("Error trying to create autostart folders insise users home!")
 
         ################################################################################
-        ## Create Kservices folder
-        ################################################################################
-        try:
-            if os.path.exists(f"{self.home_user}/.local/share/kservices5/"):
-                pass
-            else:
-                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/", shell=True)
-        
-        except FileNotFoundError:
-            print("Error trying to create KDE services folder! (Needs for the restore feature)")
-            pass
-
-        ################################################################################
-        ## Create Services Menus folder
-        ################################################################################
-        try:
-            if os.path.exists(f"{self.home_user}/.local/share/kservices5/ServiceMenus/"):
-                pass
-            else:
-                sub.run(f"{self.createCmd} {self.home_user}/.local/share/kservices5/ServiceMenus/", shell=True)
-        
-        except FileNotFoundError:
-            print("Error trying to create KDE services folder! (Needs for the restore feature)")
-            pass
-
-        ################################################################################
         ## Create applications folder
         ################################################################################
         try:
-            # Kdeservices extensions
             if os.path.exists(f"{self.home_user}/.local/share/applications/"):
                 pass
             else:
@@ -192,17 +162,23 @@ class CLI:
         ################################################################################
         ## Copy all .desktop 
         ################################################################################
+        ################################################################################
+        ## Backup cheker .desktop
+        ################################################################################
         with open(self.src_backup_check, "w") as writer:    # Modify backup_check.desktop and add username to it
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Type=Application\n "
-                f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/backup_check.py\n "
+                f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py\n"
                 f"Hidden=false\n "
                 f"NoDisplay=false\n "
                 f"Name=Time Machine\n "
                 f"Comment=Backup your files\n "
                 f"Icon={self.restore_icon}")
 
+        ################################################################################
+        ## Time Machine entry .desktop
+        ################################################################################
         with open(self.src_timemachine_desktop, "w") as writer:     # Modify timemachine.desktop and add username to it
             writer.write(
                 f"[Desktop Entry]\n "
@@ -217,29 +193,10 @@ class CLI:
                 f"StartupWMClass=Gui.py\n "
                 f"Terminal=false")
         
-        with open(self.src_service, "w") as writer:     # Modify service.desktop and add username to it
-            writer.write(
-                f"[Desktop Entry]\n "
-                f"Version=1.0\n "
-                f"Type=Service\n "
-                f"ServiceTypes=KonqPopupMenu/Plugin\n "
-                f"MimeType=application/octet-stream;\n "
-                f"Actions=EnterTimeMachine;\n "
-                f"X-KDE-Priority=TopLevel\n "
-                f"X-KDE-StartupNotify=false\n "
-                f"Icon={self.home_user}/.local/share/timemachine/src/icons/restore.png\n\n "
-                
-                f"[Desktop Action "
-                f"EnterTimeMachine]\n "
-                f"Icon={self.home_user}/.local/share/timemachine/src/icons/restore.png\n "
-                f"Name=Enter Time Machine\n "
-                f"Exec=sh {self.home_user}/.local/share/timemachine/src/scripts/EnterTimeMachine.sh")
-
         try:
             # Copy current Time Machine folder to user
             shutil.copytree(self.getCurrentLocation, self.dst_folder_timemachine)       # Copy current folder to destination folder
             shutil.copy(self.src_timemachine_desktop, self.dst_timemachine_desktop)     # Copy .desktop and .timemachine.desktop to destination folder
-            shutil.copy(self.src_service, self.dst_kde_service)     # Copy service.desktop
 
             sub.run(f"rm -rf {self.dst_venv_loc}", shell=True)        # Remove venv folder from user
 

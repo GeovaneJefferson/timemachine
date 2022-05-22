@@ -1,11 +1,14 @@
 # Time Machine
 A backup application, created using PySide6.
 
+## TODO:
+* Create a flatpak of Time Machine (v1.1.1) delayed...
+
 ## Features:
 * Local snapshots one or multiple times per day
 * Rsync incremental
-* Enter Time Machine (Can be used to restore files)
-* Backup your installed apps APT and Flatpak. (Only the apps names). Obs. Work still in progress...
+* Enter Time Machine (Coming soon...)
+* Automatically back up at first PC boot, if backup time has passed.
 * The oldest backups are deleted when your backup disk is full.
 
 
@@ -15,25 +18,14 @@ A backup application, created using PySide6.
 ## Info:
 ### The oldest backups are deleted when your backup disk is full.
 
-Time Machine will automatically delete the oldest backup, until has enough space for the a new backup, but will keep at least one backup left.
+Time Machine will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left.
 
 #### Still not enough space for a new backup?
 
 Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup. 
 
-## Enter Time Machine:
-Obs. Work still in progress...
-Enter Time Machine is only available for (KDE with dolphin as file manager).
-
-Enter Time Machine can be used to restore files from the external device.
-To access this feature, you have to:
-1. Make a backup to an external device using Time Machine.
-2. For example, to recover a file that you accidentally deleted, open the Documents folder (Dolphin).
-3. Then, right click on some file inside that folder.
-
-Wait a moment, and you will Enter in Time Machine.
-![screenshot5](https://user-images.githubusercontent.com/66172718/161593649-de2dfd53-610b-427e-ad14-0f069c1c5c79.png)
-![screenshot4](https://user-images.githubusercontent.com/66172718/160674231-05ca76ee-9c94-49c0-9e7b-ff18726120c3.png)
+## Enter Time Machine (Alpha):
+Still in development...
 
 ## Requirements:
 * pip-pyside6
@@ -67,6 +59,6 @@ Example:
   * EndeavourOS
 
 ## Screenshots
-![screenshot1](https://user-images.githubusercontent.com/66172718/163969230-8587fa36-4569-4fd2-a77d-ffcbfcd025ff.png)
-![screenshot2](https://user-images.githubusercontent.com/66172718/162274359-ad7421ac-dac3-486c-b293-865304313d8f.png)
-![screenshot3](https://user-images.githubusercontent.com/66172718/160672472-4b1fa208-e69e-44ed-a372-e01286395f1a.png)
+![](src/screenshots/img.png)
+![](src/screenshots/img_2.png)
+![](src/screenshots/img_3.png)

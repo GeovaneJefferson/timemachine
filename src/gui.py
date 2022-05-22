@@ -7,7 +7,7 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        self.setWindowTitle(app_name)
+        self.setWindowTitle(appName)
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
         self.setFixedSize(700, 450)
@@ -48,7 +48,7 @@ class UI(QMainWindow):
 
         # Auto checkbox
         self.autoCheckbox = QCheckBox()
-        self.autoCheckbox.setFont(QFont("DejaVu Sans", 9))
+        self.autoCheckbox.setFont(item)
         self.autoCheckbox.setText("Back Up Automatically")
         self.autoCheckbox.setFixedSize(175, 20)
         self.autoCheckbox.setStyleSheet("""
@@ -81,7 +81,7 @@ class UI(QMainWindow):
 
         # Select disk button
         self.externalButton = QPushButton(self)
-        self.externalButton.setFont(QFont("DejaVu Sans", 9))
+        self.externalButton.setFont(item)
         self.externalButton.setText("Select Backup Disk...")
         self.externalButton.setFixedSize(150, 28)
         self.externalButton.clicked.connect(self.external_clicked)
@@ -104,37 +104,56 @@ class UI(QMainWindow):
         ## Set external name
         ################################################################################
         self.setExternalName = QLabel()
-        self.setExternalName.setFont(QFont('DejaVu Sans', 18))
+        self.setExternalName.setFont(bigTitle)
         self.setExternalName.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
         ## Get external size
         ################################################################################
         self.showExternalSize = QLabel()
-        self.showExternalSize.setFont(QFont("DejaVu Sans", 9))
+        self.showExternalSize.setFont(item)
         self.showExternalSize.setFixedSize(200, 18)
 
         ################################################################################
         ## Label last backup
         ################################################################################
         self.lastBackupLabel = QLabel()
-        self.lastBackupLabel.setFont(QFont("DejaVu Sans", 9))
+        self.lastBackupLabel.setFont(item)
         self.lastBackupLabel.setText("Last Backup:")
         self.lastBackupLabel.setFixedSize(200, 18)
 
         # Label last backup
         self.nextBackupLabel = QLabel()
-        self.nextBackupLabel.setFont(QFont("DejaVu Sans", 9))
+        self.nextBackupLabel.setFont(item)
         self.nextBackupLabel.setText("Next Backup:")
         self.nextBackupLabel.setFixedSize(250, 18)
 
         # Status external hd
         self.externalStatus = QLabel()
-        self.externalStatus.setFont(QFont("DejaVu Sans", 9))
+        self.externalStatus.setFont(item)
         self.externalStatus.setText("External HD:")
         self.externalStatus.setFixedSize(200, 18)
 
-        # Backup now btn
+        ################################################################################
+        ## Preparing backup
+        ################################################################################
+        self.gif = QLabel(self)
+        self.gif.move(420, 154)
+        self.gif.setStyleSheet(
+            "QLabel"
+            "{"
+            "background-color: transparent;"
+            "border: 0px;"
+            "}")
+
+        # set qmovie as gif
+        self.movie = QMovie(src_loadingGif)
+        self.movie.setScaledSize(QSize().scaled(22, 22, Qt.KeepAspectRatio))
+        self.gif.setMovie(self.movie)
+
+        ################################################################################
+        ## Backup now button
+        ################################################################################
         self.backupNowButton = QPushButton("Back Up Now", self)
         self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.move(420, 155)
@@ -150,54 +169,64 @@ class UI(QMainWindow):
             border-top: 1px solid rgb(68, 69, 70);
         """)
 
-        # UiText widget
+        # uiInfoTitle widget
         self.baseVUiTextLayout = QVBoxLayout(self.uiTextWidget)
 
-        self.uiText = QLabel()
-        self.uiText.setFont(QFont("DejaVu Sans", 9))
-        self.uiText.setFixedSize(350, 100)
-        self.uiText.setStyleSheet("""
+        self.uiInfoTitle = QLabel()
+        self.uiInfoTitle.setFont(topicTitle)
+        self.uiInfoTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.uiInfoTitle.setFixedSize(420, 24)
+        self.uiInfoTitle.setStyleSheet("""
+            border-color: transparent;
+
+        """)
+        self.uiInfoTitle.setText(
+            f"{appName} is able to:\n\n")
+
+        # uiInfoText
+        self.uiInfoText = QLabel()
+        self.uiInfoText.setFont(item)
+        self.uiInfoText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.uiInfoText.setFixedSize(420, 120)
+        self.uiInfoText.setStyleSheet("""
             border-color: transparent;
         """)
-        self.uiText.setText(
-            f"{app_name} is able to:\n\n"
+        self.uiInfoText.setText(
             "* Keep local snapshots as space permits\n"
-            "* Schedule backups (Minutely, Hourly or Daily)\n\n"
+            "* Schedule backups (Minutely, Hourly or Daily)\n"
+            f"* Automatically back up at first PC boot, if backup time\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
 
         ################################################################################
         ## Donate and Settings buttons
         ################################################################################
-        self.donateAndSettingsWidget = QWidget(self)
-        self.donateAndSettingsWidget.setGeometry(350, 380, 350, 80)
-        # self.donateAndSettingsWidget.setStyleSheet("""
+        self.optionsWidget = QWidget(self)
+        self.optionsWidget.setGeometry(340, 380, 350, 80)
+        # self.optionsWidget.setStyleSheet("""
         #     border: 1px solid red;
         # """)
 
-        # Donate and Settings widget
-        self.donateAndSettingsLayout = QHBoxLayout(self.donateAndSettingsWidget)
-        self.donateAndSettingsLayout.setSpacing(10)
-
-        # Update button (Git pull)
-        self.updateButton = QPushButton()
-        self.updateButton.setText("Check for updates")
-        self.updateButton.setFont(QFont("DejaVu Sans", 9))
-        self.updateButton.setFixedSize(140, 28)
-        self.updateButton.clicked.connect(self.check_for_updates)
-
-        # Donate buton
-        donateButton = QPushButton()
-        donateButton.setText("Donate")
-        donateButton.setFont(QFont("DejaVu Sans", 9))
-        donateButton.setFixedSize(80, 28)
-        donateButton.clicked.connect(self.donate_clicked)
+        # Options layout
+        self.optionsLayout = QHBoxLayout(self.optionsWidget)
+        self.optionsLayout.setSpacing(10)
 
         # Settings buton
         self.optionsButton = QPushButton()
-        self.optionsButton.setText("Options")
-        self.optionsButton.setFont(QFont("DejaVu Sans", 9))
+        self.optionsButton.setText("Options...")
+        self.optionsButton.setFont(item)
         self.optionsButton.setFixedSize(80, 28)
         self.optionsButton.clicked.connect(self.options_clicked)
+
+        # Auto checkbox
+        self.showInSystemTray = QCheckBox(self)
+        self.showInSystemTray.setFont(item)
+        self.showInSystemTray.setText(f"Show {appName} in system tray (alpha)")
+        self.showInSystemTray.setFixedSize(280, 20)
+        self.showInSystemTray.move(240, 410)
+        self.showInSystemTray.setStyleSheet("""
+            border-color: transparent;
+        """)
+        self.showInSystemTray.clicked.connect(self.menu_bar_clicked)
 
         ################################################################################
         ## Add widgets and Layouts
@@ -218,12 +247,11 @@ class UI(QMainWindow):
         self.baseVFarRightLayout.addWidget(self.externalStatus, 3, Qt.AlignLeft | Qt.AlignTop)
 
         #  baseVUiText layout
-        self.baseVUiTextLayout.addWidget(self.uiText, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseVUiTextLayout.addWidget(self.uiInfoTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.baseVUiTextLayout.addWidget(self.uiInfoText, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
-        #  Donate and Settings layout
-        self.donateAndSettingsLayout.addWidget(self.updateButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
-        self.donateAndSettingsLayout.addWidget(donateButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
-        self.donateAndSettingsLayout.addWidget(self.optionsButton, 0, Qt.AlignHCenter | Qt.AlignVCenter)
+        #  Options layout
+        self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
 
         self.setLayout(self.baseVLeftLayout)
 
@@ -246,7 +274,9 @@ class UI(QMainWindow):
             # Get user.ini
             self.getExternalLocation = config['EXTERNAL']['hd']
             self.get_backup_now = config['BACKUP']['backup_now']
-            self.get_auto_backup = config['BACKUP']['auto_backup']
+            self.getCheckerRunning = config['BACKUP']['checker_running']
+            self.getAutoBackup = config['BACKUP']['auto_backup']
+            self.getSystemTray = config['SYSTEMTRAY']['system_tray']
             self.get_last_backup = config['INFO']['latest']
             self.get_next_backup = config['INFO']['next']
             self.getHDName = config['EXTERNAL']['name']
@@ -276,7 +306,7 @@ class UI(QMainWindow):
     def check_connection_media(self):
         # External availability
         try:
-            os.listdir(f"/media/{user_name}/{self.getHDName}")  # Check if external can be found
+            os.listdir(f"/media/{userName}/{self.getHDName}")  # Check if external can be found
             self.connected()
 
         except FileNotFoundError:
@@ -284,7 +314,7 @@ class UI(QMainWindow):
 
     def check_connection_run(self):
         try:
-            os.listdir(f"/run/media/{user_name}/{self.getHDName}")  # Opensuse, external is inside "/run"
+            os.listdir(f"/run/media/{userName}/{self.getHDName}")  # Opensuse, external is inside "/run"
 
             self.connected()
 
@@ -316,17 +346,17 @@ class UI(QMainWindow):
         ## Get external size values
         ################################################################################
         try:
-            self.externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
-            self.externalMaxSize = self.externalMaxSize.read().replace("1K-blocks", "").replace("Size", "").replace(
-                " ", "").strip()
-            self.externalMaxSize = str(self.externalMaxSize)
+            externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
+            externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace("Size", "").replace(
+                "\n", "").replace(" ", "")
+            externalMaxSize = str(externalMaxSize)
 
-            self.usedSpace = os.popen(f"du -sh {self.getExternalLocation}")
-            self.usedSpace = self.usedSpace.read().strip("\t").strip("\n").replace(self.getExternalLocation, "").replace(
-                "\t", "")
-            self.usedSpace = str(self.usedSpace)
+            usedSpace = os.popen(f"df --output=used -h {self.getExternalLocation}")
+            usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace("Used", "").replace(
+                "\n", "").replace(" ", "")
+            usedSpace = str(usedSpace)
 
-            self.showExternalSize.setText(f"{self.usedSpace} of {self.externalMaxSize} available")
+            self.showExternalSize.setText(f"{usedSpace} of {externalMaxSize} available")
 
         except:
             self.showExternalSize.setText("No information available")
@@ -337,20 +367,32 @@ class UI(QMainWindow):
         if self.getHDName != "None":  # If location can be found
             if self.get_backup_now == "false":  # If is not backing up right now
                 ################################################################################
+                ## Hide loading gif
+                ################################################################################
+                self.movie.stop()
+
+                ################################################################################
                 ## Backup Now
                 ################################################################################
-                self.backupNowButton.setText("Back Up Now")  # Show backup now button
                 self.backupNowButton.setEnabled(True)  # Disable backup now button
                 self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
                 self.backupNowButton.show()
 
             else:
-                self.backupNowButton.setText("Your files are being back up...")
-                self.backupNowButton.setEnabled(False)  # Disable backup now button
-                self.backupNowButton.setFixedSize(180, 28)  # Resize backup button
-                self.backupNowButton.show()
+                ################################################################################
+                ## Show loading gif
+                ################################################################################
+                self.movie.start()
+
+                ################################################################################
+                ## Hide backup now button
+                ################################################################################
+                self.backupNowButton.hide()
 
         else:
+            ################################################################################
+            ## Hide backup now button
+            ################################################################################
             self.backupNowButton.hide()
 
         self.ui_settings()
@@ -388,14 +430,26 @@ class UI(QMainWindow):
         ################################################################################
         ## Auto backup
         ################################################################################
-        if self.get_auto_backup == "true":
+        if self.getAutoBackup == "true":
             self.autoCheckbox.setChecked(True)
+
+        else:
+            self.autoCheckbox.setChecked(False)
 
         if not self.autoCheckbox.isChecked():
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
         else:
             self.nextBackupLabel.setText(f"Next Backup: {self.get_next_backup}")
+
+        ################################################################################
+        ## System tray
+        ################################################################################
+        if self.getSystemTray == "true":
+            self.showInSystemTray.setChecked(True)
+
+        else:
+            self.showInSystemTray.setChecked(False)
 
         ################################################################################
         ## Next backup label everytime
@@ -584,8 +638,10 @@ class UI(QMainWindow):
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
+
             with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                 config.set('BACKUP', 'auto_backup', 'true')
+                config.set('BACKUP', 'checker_running', 'true')
                 config.write(configfile)
 
                 print("Auto backup was successfully activated!")
@@ -593,8 +649,10 @@ class UI(QMainWindow):
         else:
             config = configparser.ConfigParser()
             config.read(src_user_config)
+
             with open(src_user_config, 'w') as configfile:
                 config.set('BACKUP', 'auto_backup', 'false')
+                config.set('BACKUP', 'checker_running', 'false')
                 config.write(configfile)
 
                 print("Auto backup was successfully deactivated!")
@@ -603,6 +661,41 @@ class UI(QMainWindow):
         ## Call backup check py
         ################################################################################
         sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+
+    def menu_bar_clicked(self):
+        ################################################################################
+        ## Menu bar selected
+        ################################################################################
+        if self.showInSystemTray.isChecked():
+            ################################################################################
+            ## Write to ini file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+
+            with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+                config.set('SYSTEMTRAY', 'system_tray', 'true')
+                config.write(configfile)
+
+                print("System tray was successfully enabled!")
+
+        else:
+            ################################################################################
+            ## Write to ini file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+
+            with open(src_user_config, 'w') as configfile:
+                config.set('SYSTEMTRAY', 'system_tray', 'false')
+                config.write(configfile)
+
+                print("Menu bar was successfully disabled!")
+
+        ################################################################################
+        ## Call backup check py
+        ################################################################################
+        sub.Popen(f"python3 {src_system_tray}", shell=True)
 
     def external_clicked(self):
         # Choose external hd
@@ -621,36 +714,14 @@ class UI(QMainWindow):
             # Call backup now py
             sub.Popen(f"python3 {src_backup_now}", shell=True)
 
-    def check_for_updates(self):
-        ################################################################################
-        ## MessabeBox
-        ################################################################################
-        updateConfirmation = QMessageBox.question(self, 'Update Software',
-        f'You are about to grab the latest version of {app_name} from GitHub.'
-        '\nDo you want to continue?',
-        QMessageBox.Yes | QMessageBox.No)
-
-        if updateConfirmation == QMessageBox.Yes:
-            output = sub.call(f"cd {home_user}/.local/share/{app_name}/ && git stash && git pull --no-edit && git stash drop", shell=True)
-            print(output)
-
-            ################################################################################
-            ## MessabeBox information
-            ################################################################################
-            QMessageBox.information(self, "Update Software", f"Now, you are using the latest version of {app_name}.\nYou can check the version under Options.")
-
-        else:
-            QMessageBox.Close
-
-    def donate_clicked(self):
-        sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
-
     def options_clicked(self):
         # Call schedule
-        sub.call(f"python3 {src_options_py}", shell=True)
+        sub.run(f"python3 {src_options_py}", shell=True)
 
 
-# Choose external
+################################################################################
+## Show external option to back up
+################################################################################
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
@@ -711,7 +782,7 @@ class EXTERNAL(QWidget):
         # ## Radio local
         # ################################################################################
         # self.local = QRadioButton(self)
-        # self.local.setFont(QFont("DejaVu Sans", 9))
+        # self.local.setFont(item)
         # self.local.setText("Local storage")
         # self.local.setToolTip("Use this options if you plan to back up to a: USB/HD/SSD,\n"
         #                       "that is directly connected to your pc")
@@ -727,7 +798,7 @@ class EXTERNAL(QWidget):
         ## Radio network
         ################################################################################
         # self.network = QRadioButton(self)
-        # self.network.setFont(QFont("DejaVu Sans", 9))
+        # self.network.setFont(item)
         # self.network.setText("Remote storage")
         # self.network.setToolTip("Use this options if you plan to back up via network (LAN)")
         # self.network.setFixedSize(150, 24)
@@ -742,7 +813,7 @@ class EXTERNAL(QWidget):
         ## Radio network
         ################################################################################
         # self.lineEdit = QLineEdit(self)
-        # self.lineEdit.setFont(QFont("DejaVu Sans", 9))
+        # self.lineEdit.setFont(item)
         # self.lineEdit.setPlaceholderText("Example: ssh USER@xx.xxx.xxx.xx")
         # self.lineEdit.setFixedWidth(210)
         # self.lineEdit.move(180, 305)
@@ -755,7 +826,7 @@ class EXTERNAL(QWidget):
         ## Choose button
         ################################################################################
         # self.connectTo = QPushButton(self)
-        # self.connectTo.setFont(QFont("DejaVu Sans", 9))
+        # self.connectTo.setFont(item)
         # self.connectTo.setText("Connect")
         # self.connectTo.setEnabled(False)
         # self.connectTo.setFixedSize(80, 28)
@@ -779,7 +850,7 @@ class EXTERNAL(QWidget):
 
         # Backup images
         self.cancelButton = QPushButton(self)
-        self.cancelButton.setFont(QFont("DejaVu Sans", 9))
+        self.cancelButton.setFont(item)
         self.cancelButton.setText("Cancel")
         self.cancelButton.setFixedSize(80, 28)
         self.cancelButton.move(400, 340)
@@ -792,7 +863,7 @@ class EXTERNAL(QWidget):
         ## Search external inside media
         ################################################################################
         try:
-            os.listdir(f'{self.media}/{user_name}')
+            os.listdir(f'{self.media}/{userName}')
             self.foundInMedia = True
             self.show_one_screen()
 
@@ -804,7 +875,7 @@ class EXTERNAL(QWidget):
         ## Search external inside run/media
         ################################################################################
         try:
-            os.listdir(f'{self.run}/{user_name}')  # Opensuse, external is inside "/run"
+            os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
             self.foundInMedia = False
             self.show_one_screen()
 
@@ -824,9 +895,12 @@ class EXTERNAL(QWidget):
         ################################################################################
         ## Add buttons and images for each external
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         vertical = 20
         verticalImg = 52
-        for output in os.listdir(f'{self.foundWhere}/{user_name}'):
+        for output in os.listdir(f'{self.foundWhere}/{userName}'):
             image = QLabel(self)
             pixmap = QPixmap(src_restore_small_icon)
             image.setPixmap(pixmap)
@@ -838,16 +912,22 @@ class EXTERNAL(QWidget):
             button = QPushButton(output, self.whereFrame)
             button.setFixedSize(380, 30)
             button.move(60, vertical)
-            button.setFont(QFont("DejaVu Sans", 9))
+            button.setFont(item)
+            button.setCheckable(True)
             text = button.text()
             button.setStyleSheet("""
                 color: white;
             """)
 
+            ################################################################################
+            ## Auto checked this choosed external device
+            ################################################################################
+            if text == main.getHDName:
+                button.setChecked(True)
+
             vertical += 50
             button.show()
             button.clicked.connect(lambda *args, text=text: self.on_button_clicked(text))
-            print(text)
 
     def on_button_clicked(self, get):
         ################################################################################
@@ -858,9 +938,6 @@ class EXTERNAL(QWidget):
             get = get.replace(" ", "\ ")
             print("Remove spaces: " + get)
 
-        else:
-            pass
-
         ################################################################################
         ## Write changes to ini
         ################################################################################
@@ -868,7 +945,7 @@ class EXTERNAL(QWidget):
         config.read(src_user_config)
 
         with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{user_name}/{get}')
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
 
@@ -886,5 +963,5 @@ main = UI()
 main.show()
 externalMain = EXTERNAL()
 toc = time.time()
-print(f'{app_name} {(toc - tic):.4f} seconds')
+print(f'{appName} {(toc - tic):.4f} seconds')
 app.exit(app.exec())
