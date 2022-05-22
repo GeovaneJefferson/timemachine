@@ -186,6 +186,7 @@ class BACKUP:
         self.check_size()
 
     def check_size(self):
+        print("Checking size of folders...")
         ################################################################################
         ## Get folders size
         ################################################################################
@@ -201,8 +202,8 @@ class BACKUP:
             # print(getSize)
             # checkSizeList.append(getSize)  # Add to list
 
-            getSize = os.popen(f"du -s {home_user}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{home_user}/{output}", "").replace("\t", "")
+            getSize = os.popen(f"du -s {homeUser}/{output}")
+            getSize = getSize.read().strip("\t").strip("\n").replace(f"{homeUser}/{output}", "").replace("\t", "")
             print(getSize)
             getSize = int(getSize)
             checkSizeList.append(getSize)  # Add to list
@@ -281,6 +282,7 @@ class BACKUP:
             self.create_folder_date()
 
     def create_folder_date(self):
+        print("Creating folders with dates...")
         ################################################################################
         ## Create folder with date
         ################################################################################
@@ -298,6 +300,7 @@ class BACKUP:
         self.create_folder_time()
 
     def create_folder_time(self):
+        print("Creating folders with time...")
         ################################################################################
         ## Create folder with time
         ################################################################################
@@ -315,13 +318,11 @@ class BACKUP:
         self.start_backup()
 
     def start_backup(self):
+        print("Starting backup...")
         ################################################################################
         ## Start with the backup
-        ################################################################################
-        ################################################################################
         ## One Time Mode
         ################################################################################
-        print("Backing up...")
         try:
             if self.oneTimeMode == "true":
                 print("One mode activated!")
@@ -339,7 +340,7 @@ class BACKUP:
             for output in self.getIniFolders:  # Backup all (user.ini true folders)
                 output = output.title()  # Capitalize first letter. ex: '/Desktop'
                 print(f"Backing up: {output}")
-                sub.run(f"{copyCmd} {home_user}/{output} {self.timeFolder}", shell=True)  # Ex: TMB/date/time/Desktop
+                sub.run(f"{copyCmd} {homeUser}/{output} {self.timeFolder}", shell=True)  # Ex: TMB/date/time/Desktop
                 print("")
 
         except FileNotFoundError:
@@ -350,6 +351,7 @@ class BACKUP:
         self.end_backup()
 
     def end_backup(self):
+        print("Ending backup...")
         ################################################################################
         ## Update "last backup" and set backup_now to "false"
         ################################################################################
@@ -365,12 +367,12 @@ class BACKUP:
         done_backup_notification()
         print("All done!")
 
-        time.sleep(60)  # Wait 60, so after finish fast, won't repeat the backup :D
         print("Waiting 60 seconds...")
+        time.sleep(60)  # Wait 60, so if finish fast, won't repeat the backup :D
 
         sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
-        # exit()
+        exit()
 
 
 main = BACKUP()

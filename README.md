@@ -2,12 +2,13 @@
 A backup application, created using PySide6.
 
 ## TODO:
-* Create a flatpak of Time Machine (v1.1.0)
+* Create a flatpak of Time Machine (v1.1.1) delayed...
 
 ## Features:
 * Local snapshots one or multiple times per day
 * Rsync incremental
 * Enter Time Machine (Coming soon...)
+* Automatically back up at first PC boot, if backup time has passed.
 * The oldest backups are deleted when your backup disk is full.
 
 
@@ -23,8 +24,8 @@ Time Machine will automatically delete the oldest backup, until has enough space
 
 Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup. 
 
-## Enter Time Machine:
-Coming soon...
+## Enter Time Machine (Alpha):
+Still in development...
 
 ## Requirements:
 * pip-pyside6
@@ -58,5 +59,6 @@ Example:
   * EndeavourOS
 
 ## Screenshots
-![img.png](src/screenshots/img.png)
-![img_1.png](src/screenshots/img_1.png)
+![](src/screenshots/img.png)
+![](src/screenshots/img_2.png)
+![](src/screenshots/img_3.png)
