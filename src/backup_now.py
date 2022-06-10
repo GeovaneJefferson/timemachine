@@ -54,8 +54,16 @@ class BACKUP:
             self.create_TMB()
 
         except KeyError:
+            ################################################################################
+            ## Set notification_id to 5
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "5")
+                config.write(configfile)
+
             print("Error trying to read user.ini!")
-            error_reading()
+            sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
             exit()
 
     def create_TMB(self):
@@ -71,8 +79,16 @@ class BACKUP:
                     sub.run(f"{self.createCmd} {self.createTMB}", shell=True)
 
             except FileNotFoundError:
+                ################################################################################
+                ## Set notification_id to 4
+                ################################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'notification_id', "4")
+                    config.write(configfile)
+
                 print("Error trying to create TMB...")
-                error_backup()
+                sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
                 exit()
         else:
             print("Nothing to do right now...")
@@ -267,14 +283,29 @@ class BACKUP:
                         self.create_folder_date()
 
                 else:  # Only delete if one or more date folder is inside
-                    print(
-                        "Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!")
-                    manual_free_space()
+                    ################################################################################
+                    ## Set notification_id to 7
+                    ################################################################################
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('INFO', 'notification_id', "7")
+                        config.write(configfile)
+
+                    print("Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!")
+                    sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
+
                     exit()
 
             except FileNotFoundError:
+                ################################################################################
+                ## Set notification_id to 6
+                ################################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'notification_id', "6")
+                    config.write(configfile)
+
                 print("Error trying to delete old backups!")
-                error_delete()
+                sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
+
                 exit()
 
         else:
@@ -293,8 +324,16 @@ class BACKUP:
                 sub.run(f"{self.createCmd} {self.dateFolder}", shell=True)  # Create folder with date
 
         except FileNotFoundError:
-            print("Error trying to create date folder...")
-            error_backup()
+            ################################################################################
+            ## Set notification_id to 4
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "4")
+                config.write(configfile)
+
+            print("Error trying to create TMB...")
+            sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
             exit()
 
         self.create_folder_time()
@@ -311,8 +350,16 @@ class BACKUP:
                 sub.run(f"{self.createCmd} {self.timeFolder}", shell=True)
 
         except FileNotFoundError:
-            print("Error trying to create date folder...")
-            error_backup()  # Notification
+            ################################################################################
+            ## Set notification_id to 4
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "4")
+                config.write(configfile)
+
+            print("Error trying to create TMB...")
+            sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
             exit()
 
         self.start_backup()
@@ -344,8 +391,16 @@ class BACKUP:
                 print("")
 
         except FileNotFoundError:
+            ################################################################################
+            ## Set notification_id to 4
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "4")
+                config.write(configfile)
+
             print("Error trying to back up folders to external location...")
-            error_backup()
+            sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
             exit()
 
         self.end_backup()
@@ -353,19 +408,20 @@ class BACKUP:
     def end_backup(self):
         print("Ending backup...")
         ################################################################################
-        ## Update "last backup" and set backup_now to "false"
+        ## Set backup_now to "false", backup_running to "false" and Update "last backup"
         ################################################################################
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'false')
             config.set('BACKUP', 'checker_running', 'false')
             config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
+            config.set('INFO', 'notification_id', "2")
             config.write(configfile)
 
         ################################################################################
         ## After backup is done
         ################################################################################
-        done_backup_notification()
-        print("All done!")
+        sub.run(f"python3 {src_notification}", shell=True)
+        print("Backup is done!")
 
         print("Waiting 60 seconds...")
         time.sleep(60)  # Wait 60, so if finish fast, won't repeat the backup :D

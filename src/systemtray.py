@@ -71,8 +71,17 @@ class APP:
 
 
         except:
-            error_reading() # Error trying to read INI file
-            exit()
+            ################################################################################
+            ## Set notification_id to 5
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "5")
+                config.write(configfile)
+
+                print("Error trying to read user.ini!")
+                sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+
+                exit()
 
         ################################################################################
         ## INI information

@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime
 from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtCore import Qt, QSize, QRect
+from PySide6.QtCore import Qt, QSize, QRect, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import QFont, QPixmap, QIcon, QMovie, QAction
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 ################################################################################
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.0"
+appVersion = "v1.1.1"
 folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
 copyCmd = "rsync -avruzh"
@@ -49,7 +49,6 @@ getHomeFolders = os.listdir(homeUser)
 ################################################################################
 ## Times
 ################################################################################
-# time_mode_minutes_15 = ['00', '15', '30', '45']
 timeModeMinutes30 = ['00', '30']
 timeModeHours60 = ['00', '01', '02', '03', '04', '05', '06', '07',
                       '08', '09', '10', '11', '12', '13', '14', '15',
@@ -102,58 +101,4 @@ src_system_tray = f"{homeUser}/.local/share/timemachine/src/systemtray.py"
 src_loadingGif = f"{homeUser}/.local/share/timemachine/src/icons/loading.gif"
 src_system_bar_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayicon.png"
 src_system_bar_run_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconrun.png"
-
-# Notifications
-def done_backup_notification():
-    # After backup is done
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Time Machine is done backing up your files!' 5",
-              shell=True)
-
-
-def not_available_notification():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'No external devices mounted or available...' 5",
-              shell=True)
-
-
-def error_backup():
-    # If error happens
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to back up folders...' 5", shell=True)
-
-
-def error_reading():
-    # If error happens
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to read user.ini...' 5", shell=True)
-
-
-def error_delete():
-    # If error happens
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to delete old backups!' 5", shell=True)
-
-
-def manual_free_space():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!' 5", shell=True)
-
-
-def no_external_info():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Location is empty... \n Select the external location "
-              "first!' 5", shell=True)
-
-
-def no_restore_folder_found():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'We could not find this folder inside the external.' 5", shell=True)
-
-
-def been_restored():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Your files are been restored...' 5",
-              shell=True)
-
-
-def failed_restore():
-    # If external is not available
-    sub.Popen("kdialog --title 'Time Machine' --passivepopup 'Error trying to restore your files!' 5",
-              shell=True)
+src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"

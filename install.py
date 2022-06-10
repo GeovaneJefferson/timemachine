@@ -70,7 +70,7 @@ class CLI:
         if self.ubuntu or self.debian:
             try:
                 print("")
-                sub.run("sudo apt install python3-pip libnotify-bin", shell=True)
+                sub.run("sudo apt install python3-pip", shell=True)
                 print("Python3-pip was installed.")
 
             except :
