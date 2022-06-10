@@ -195,9 +195,9 @@ class UI(QMainWindow):
         self.moreTimeMode.setFont(item)
         self.moreTimeMode.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
-            "This will produce a time folder inside the chose external location.\n"
-            "Fx: 12-12-12/10-15\n"
-            "10-15, is the time of the back up (10:15).")
+            "This will produce a time folder inside the choose external location.\n"
+            "Fx: 12-12-12/10-30\n"
+            "10-30, is the time of the back up (10:30).")
 
         self.moreTimeMode.setText("Multiple times per day")
         self.moreTimeMode.setFixedSize(180, 30)
@@ -693,6 +693,7 @@ class UI(QMainWindow):
                 # Info section
                 config.set('INFO', 'latest', 'None')
                 config.set('INFO', 'next', 'None')
+                config.set('INFO', 'notification_id', '0')
 
                 # Folders section
                 config.set('FOLDER', 'documents', 'true')
@@ -703,6 +704,8 @@ class UI(QMainWindow):
                 config.write(configfile)
             
             print("All settings was reset!")
+            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
+
             exit()
 
         else:

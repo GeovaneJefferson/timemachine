@@ -320,8 +320,15 @@ class UI(QWidget):
                     self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         except FileNotFoundError:
-            print("External not detected.")
-            not_available_notification()
+            ################################################################################
+            ## Set notification_id to 3
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "3")
+                config.write(configfile)
+
+            print("External not mounted or available...")
+            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
             exit()
 
         ################################################################################
@@ -424,30 +431,59 @@ class UI(QWidget):
             i -= 1
 
         ################################################################################
-        ## Get available times inside {folderName}
+        ## If inside the external "date folders" has not "time folder", pass to avoid display error :D
         ################################################################################
-        timeFolders = []
-        for getTime in os.listdir(f"{self.getExternalLocation}/{folderName}/{getDate}/"):
-            timeFolders.append(getTime)
-            timeFolders.sort(reverse=True)
+        try:
+            ################################################################################
+            ## Get available times inside {folderName}
+            ################################################################################
+            timeFolders = []
+            for getTime in os.listdir(f"{self.getExternalLocation}/{folderName}/{getDate}/"):
+                timeFolders.append(getTime)
+                timeFolders.sort(reverse=True)
 
-            ################################################################################
-            ## Time button
-            ################################################################################
-            getTime = getTime.replace("-", ":")  # Change - to :
-            self.timeButton = QPushButton()
-            self.timeButton.setText(getTime)
-            getTime = getTime.replace(":", "-")  # Change back : to -
-            self.timeButton.setFont(QFont("DejaVu Sans", 12))
-            self.timeButton.setFixedSize(100, 34)
-            self.timeButton.setCheckable(True)
-            self.timeButton.setAutoExclusive(True)
-            self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.show_on_screen(getDate, getTime, getFolder))
+                ################################################################################
+                ## Time button
+                ################################################################################
+                getTime = getTime.replace("-", ":")  # Change - to :
+                self.timeButton = QPushButton()
+                self.timeButton.setText(getTime)
+                getTime = getTime.replace(":", "-")  # Change back : to -
+                self.timeButton.setFont(QFont("DejaVu Sans", 12))
+                self.timeButton.setFixedSize(100, 34)
+                self.timeButton.setCheckable(True)
+                self.timeButton.setAutoExclusive(True)
+                self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.show_on_screen(getDate, getTime, getFolder))
+                self.timeButton.setStyleSheet(
+                    "QPushButton"
+                    "{"
+                    "color: white;"
+                    "background-color: rgb(58, 59, 60);"
+                    "border-radius: 5px;"
+                    "}"
+                    "QPushButton::hover"
+                    "{"
+                    "background-color: rgb(68, 69, 70);"
+                    "}"
+                    "QPushButton::checked"
+                    "{"
+                    "background-color: rgb(24, 25, 26);"
+                    "border: 1px solid white;"
+                    "}")
+
+                ################################################################################
+                ## Set current folder date
+                ################################################################################
+                self.timeVLayout.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
+
+            print("Time available: ", timeFolders)
+            self.timeButton.setChecked(True)  # Auto selected that latest one
             self.timeButton.setStyleSheet(
                 "QPushButton"
                 "{"
                 "color: white;"
                 "background-color: rgb(58, 59, 60);"
+                "border: 0px;"
                 "border-radius: 5px;"
                 "}"
                 "QPushButton::hover"
@@ -460,30 +496,8 @@ class UI(QWidget):
                 "border: 1px solid white;"
                 "}")
 
-            ################################################################################
-            ## Set current folder date
-            ################################################################################
-            self.timeVLayout.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
-
-        print("Time available: ", timeFolders)
-        self.timeButton.setChecked(True)  # Auto selected that lastest one
-        self.timeButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "color: white;"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}"
-            "QPushButton::checked"
-            "{"
-            "background-color: rgb(24, 25, 26);"
-            "border: 1px solid white;"
-            "}")
+        except:
+            pass
 
         self.show_on_screen(getDate, getTime, getFolder)
 
@@ -494,14 +508,8 @@ class UI(QWidget):
         ################################################################################
         self.chooseFolder.append(getFolder)
 
-        # print(len(self.chooseFolder))
-        # print(self.chooseFolder)
-
         if len(self.chooseFolder) > 1: # 
             self.chooseFolder.remove(self.chooseFolder[0])
-
-        # print(len(self.chooseFolder))
-        # print(self.chooseFolder)
 
         ################################################################################
         ## Set current location text on screen
@@ -877,10 +885,25 @@ class UI(QWidget):
 
         except:
             print("Error trying to restore files from external device...")
-            failed_restore()  # Notification
+            ################################################################################
+            ## Set notification_id to 10
+            ################################################################################
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "10")
+                config.write(configfile)
+
+            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
             exit()
 
-        been_restored()  # Notification
+        ################################################################################
+        ## Set notification_id to 9
+        ################################################################################
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'notification_id', "9")
+            config.write(configfile)
+
+        print("Your files are been restored...")
+        sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
         exit()
 
     def keyPressEvent(self, event):
