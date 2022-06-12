@@ -2,7 +2,7 @@
 A backup application, created using PySide6.
 
 ## TODO:
-* Create a flatpak of Time Machine (v1.1.1) delayed...
+* Create a flatpak of Time Machine
 
 ## Features:
 * Local snapshots one or multiple times per day
