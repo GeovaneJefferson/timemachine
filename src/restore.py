@@ -8,16 +8,24 @@ config.read(src_user_config)
 class UI(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle(appName)
+        self.setWindowTitle(f"Enter {appName}")
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.setStyleSheet("""
             background-color: rgb(38, 39, 40);
         """)
 
-        self.showFullScreen()
+        ################################################################################
+        ## Window size
+        ################################################################################
+        self.setFixedSize(1400, 800)
+        
+        ################################################################################
+        ## Enable fullscreen
+        ################################################################################
+        # self.showFullScreen()
 
         ################################################################################
         ## Variables
@@ -503,7 +511,7 @@ class UI(QWidget):
         self.show_on_screen(getDate, getTime, getFolder)
 
     def show_on_screen(self, getDate, getTime, getFolder):
-        print(getFolder)
+        print(f"Choose folder: {getFolder}")
         ################################################################################
         ## Only allow one item inside chooseFolder list
         ################################################################################
@@ -541,7 +549,7 @@ class UI(QWidget):
 
                     self.buttonFiles = QPushButton(self)
                     self.buttonFiles.setCheckable(True)
-                    self.buttonFiles.setFixedSize(150, 150)
+                    self.buttonFiles.setFixedSize(350, 150)
                     self.buttonFiles.setStyleSheet(
                         "QPushButton"
                         "{"
@@ -579,8 +587,7 @@ class UI(QWidget):
                     ################################################################################
                     ## Set icons
                     ################################################################################
-                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
-                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
+                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="60"'
                         image.setText(
@@ -688,6 +695,7 @@ class UI(QWidget):
                             f"background-image: url({homeUser}/.local/share/timemachine/src/icons/iso.png);"
                             "background-color: transparent;"
                         "}")                         
+                    
                     else:
                         image = QLabel(self.buttonFiles)
                         image.setFixedSize(96, 96)
@@ -705,6 +713,7 @@ class UI(QWidget):
                     text = QLabel(self.buttonFiles)
                     text.setText(output.capitalize())
                     text.setFont(QFont("DejaVu Sans", 9))
+                    text.setAlignment(Qt.AlignTop|Qt.AlignLeft)
                     text.move(20, 120)
                     text.setStyleSheet("""
                         color: white;
@@ -721,7 +730,7 @@ class UI(QWidget):
                     ## Condition
                     ################################################################################
                     horizontal += 1
-                    if horizontal == 5:
+                    if horizontal == 2:
                         horizontal = 0
                         vertical += 1
 
@@ -907,9 +916,9 @@ class UI(QWidget):
         sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
         exit()
 
-    def keyPressEvent(self, event):
-        if event.key():  # == Qt.Key_Esc
-            exit()
+    # def keyPressEvent(self, event):
+    #     if event.key():  # == Qt.Key_Esc
+    #         exit()
 
 
 app = QApplication(sys.argv)
