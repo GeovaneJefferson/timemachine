@@ -15,10 +15,10 @@ class UI(QWidget):
         app_icon = QIcon(src_restore_icon)
         self.setWindowIcon(app_icon)
 
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-        self.showFullScreen()
-        self.setFixedSize(1400, 800)
+        # self.showFullScreen()
+        self.setMinimumSize(1400, 800)
         # Color settings
         self.setStyleSheet("""
                     background-color: rgb(38, 39, 40);
@@ -79,7 +79,7 @@ class UI(QWidget):
             "}")
 
         self.scroll = QScrollArea()
-        self.scroll.setFixedSize(1200, 800)
+        self.scroll.setFixedSize(900, 600)
         # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         # self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scroll.setWidgetResizable(True)
@@ -577,12 +577,12 @@ class UI(QWidget):
                         lambda *args, output=output: self.add_to_restore(output, getDate, getTime))
 
                     ################################################################################
-                    # Set icons
+                    # Set icons inside self.buttonFiles
                     ################################################################################
                     if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
                             ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
                         image = QLabel(self.buttonFiles)
-                        scaledHTML = 'width:"100%" height="60"'
+                        scaledHTML = 'width:"100%" height="85"'
                         image.setText(
                             f"<img  src={self.getExternalLocation}/{folderName}/{getDate}/{getTime}/{getFolder}/{output} "
                             f"{scaledHTML}/>")
@@ -771,7 +771,10 @@ class UI(QWidget):
                 "{"
                 "background-color: rgb(68, 69, 70);"
                 "}")
-
+            
+            # Set self.filesToRestore length
+            self.restoreButton.setText(f"Restore ({len(self.filesToRestore)})")
+            
             # Hide up function if 1 or more items is/are selected
             # Up
             self.upButton.setEnabled(False)
@@ -832,6 +835,9 @@ class UI(QWidget):
                 "border: 0px;"
                 "border-radius: 5px;"
                 "}")
+            
+            # Set self.filesToRestore length
+            self.restoreButton.setText("Restore")
 
             ################################################################################
             # Show hides times from TimeVLayout
