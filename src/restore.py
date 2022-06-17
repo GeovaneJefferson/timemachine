@@ -21,8 +21,8 @@ class UI(QWidget):
         self.setMinimumSize(1400, 800)
         # Color settings
         self.setStyleSheet("""
-                    background-color: rgb(38, 39, 40);
-                """)
+            background-color: rgb(38, 39, 40);
+            """)
 
         ################################################################################
         # Variables
@@ -773,7 +773,7 @@ class UI(QWidget):
                 "}")
             
             # Set self.filesToRestore length
-            self.restoreButton.setText(f"Restore ({len(self.filesToRestore)})")
+            self.restoreButton.setText(f"Restore({len(self.filesToRestore)})")
             
             # Hide up function if 1 or more items is/are selected
             # Up
@@ -929,7 +929,7 @@ class UI(QWidget):
             # Set notification_id to 10
             ################################################################################
             with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "10")
+                config.set('INFO', 'notification_id', "9")
                 config.write(configfile)
 
             sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
@@ -939,7 +939,7 @@ class UI(QWidget):
         # Set notification_id to 9
         ################################################################################
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "9")
+            config.set('INFO', 'notification_id', "8")
             config.write(configfile)
 
         print("Your files are been restored...")

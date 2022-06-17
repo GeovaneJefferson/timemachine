@@ -29,7 +29,7 @@ class APP:
         self.backupNow.setFont(QFont(item))
         self.backupNow.triggered.connect(self.backup_now)
 
-        self.enterTimeMachine = QAction("Enter Time Machine (alpha)")
+        self.enterTimeMachine = QAction("Enter Time Machine")
         self.enterTimeMachine.setFont(QFont(item))
         self.enterTimeMachine.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
         # self.enterTimeMachine.setEnabled(False)
@@ -69,7 +69,6 @@ class APP:
             getSystemTray = config['SYSTEMTRAY']['system_tray']
             getLastBackup = config['INFO']['latest']
 
-
         except:
             ################################################################################
             ## Set notification_id to 5
@@ -78,10 +77,10 @@ class APP:
                 config.set('INFO', 'notification_id', "5")
                 config.write(configfile)
 
-                print("Error trying to read user.ini!")
-                sub.run(f"python3 {src_notification}", shell=True)  # Call notification
+            print("Error trying to read user.ini!")
+            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
 
-                exit()
+            exit()
 
         ################################################################################
         ## INI information

@@ -223,7 +223,7 @@ class UI(QMainWindow):
         # Auto checkbox
         self.showInSystemTray = QCheckBox(self)
         self.showInSystemTray.setFont(item)
-        self.showInSystemTray.setText(f"Show {appName} in system tray (alpha)")
+        self.showInSystemTray.setText(f"Show {appName} in system tray")
         self.showInSystemTray.setFixedSize(280, 20)
         self.showInSystemTray.move(240, 410)
         self.showInSystemTray.setStyleSheet("""

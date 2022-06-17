@@ -5,12 +5,12 @@ from setup import *
 class CLI:
     def __init__(self):
         ################################################################################
-        ## Variables
+        # Variables
         ################################################################################
         self.systemTrayActivated = None
 
         ################################################################################
-        ## Signal
+        # Signal
         ################################################################################
         signal.signal(signal.SIGINT, self.signal_exit)
         signal.signal(signal.SIGTERM, self.signal_exit)
@@ -54,84 +54,71 @@ class CLI:
         self.totalCurrentTime = self.currentHour + self.currentMinute
         self.totalNextTime = self.nextHour + self.nextMinute
 
-        # self.is_system_tray_running()
-
     def is_system_tray_running(self):
         ################################################################################
-        ## Prevent multiples system tray App
+        # Prevent multiples system tray App
         ################################################################################
         if self.getSystemTray == "true" and self.systemTrayActivated != None and self.firstStartup == "false":
             self.systemTrayActivated = True
 
             ################################################################################
-            ## Call system tray
+            # Call system tray
             ################################################################################
             sub.Popen(f"python3 {src_system_tray}", shell=True)
 
-        # self.can_external_name_be_found()
-
-    def can_external_name_be_found(self):
-        if self.getHDName != "":
-            print("Device name found in INI file...")
-            self.check_for_external_media()
-
-        else:
-            ################################################################################
-            ## Set notification_id to 8
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "8")
-                config.write(configfile)
-
-            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
-
-            self.no_backup()
-
-    def check_for_external_media(self):  # Check for external in media/
-        print("Checking external under /media... ")
+    def check_for_external_media(self):  
+        ################################################################################
+        # Check for external in media/
+        ################################################################################
         try:
-            for output in os.listdir("/media/" + userName):
-                if not output.startswith('.'):
-                    if self.getHDName in output:  # If user.ini has external hd name
-                        print("External found in /media.")
-                        self.check_the_date()
-                    
-                    else:
-                        self.check_for_external_run()
+            print("Checking external under /media... ")
+            if self.getHDName in os.listdir(f"/media/{userName}"):
+                print("External found in /media.")
+                self.check_the_date()
+
+            else:
+                ################################################################################
+                # If device name can not be found inside /media, continue
+                ################################################################################
+                raise FileNotFoundError
+            
+            # else:
+            # ################################################################################
+            # # If /media is empty, continue
+            # ################################################################################
+            #     raise FileNotFoundError
 
         except FileNotFoundError:
+            ################################################################################
+            # If /media is empty, continue
+            ################################################################################
             self.check_for_external_run()
 
-    def check_for_external_run(self):  # Or check for external in run/
-        print("Checking external under /run/media... ")
+    def check_for_external_run(self): 
+        ################################################################################
+        # Check for external in run/media/
+        ################################################################################
         try:
-            for output in os.listdir("/run/media/" + userName):  # Try other folder (fx. Opensuse)
-                if not output.startswith('.'):
-                    if self.getHDName in output:  # If user.ini has external hd name
-                        print("External found in /run/media.")
-                        self.check_the_date()
+            print("Checking external under /run/media... ")
+            if self.getHDName in os.listdir(f"/run/media/{userName}"):  # If user.ini has external hd name
+                print("External found in /run/media.")
+                self.check_the_date()
 
-                    ################################################################################
-                    ## If external can not be found, exit the App.
-                    ################################################################################
-                    else:
-                        ################################################################################
-                        ## Set notification_id to 3
-                        ################################################################################
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', "3")
-                            config.write(configfile)
-
-                        print("External not mounted or available...")
-                        sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
+            else:
+                ################################################################################
+                # If device name can not be found inside /media, exit
+                ################################################################################
+                raise FileNotFoundError
+        
+            # ################################################################################
+            # # If run/media is empty, exit
+            # ################################################################################
+            # raise FileNotFoundError
 
         except FileNotFoundError:
             ################################################################################
-            ## Set notification_id to 3
+            # If run/media is empty, exit
+            # Set notification_id to 3
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -140,8 +127,8 @@ class CLI:
                 config.write(configfile)
 
             print("External not mounted or available...")
-            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
-            self.no_backup()
+            sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
+            exit()
 
     def check_the_date(self):
         print("Checking dates...")
@@ -174,21 +161,21 @@ class CLI:
     def check_the_mode(self):
         print("Checking mode...")
         ################################################################################
-        ## One Time Mode
+        # One Time Mode
         ################################################################################
         if self.oneTimeMode == "true":
             print("One Time Mode found")
             if self.totalCurrentTime > self.totalNextTime:
                 ################################################################################
-                ## ! Every time user turn off pc, firstStartup inside INI file is update to true
-                ## Only backup if:
-                ##  * App was unable to backup because PC was off
-                ##  * Make sure that App had not already made a backup today after time has passed
-                ## by check the latest backup date "self.getLatestDate" inside INI file.
+                # ! Every time user turn off pc, firstStartup inside INI file is update to true
+                # Only backup if:
+                #  * App was unable to backup because PC was off
+                #  * Make sure that App had not already made a backup today after time has passed
+                # by check the latest backup date "self.getLatestDate" inside INI file.
                 ################################################################################
                 if self.firstStartup == "true" and self.dayName not in self.getLatestDate: 
                     ################################################################################
-                    ## Set startup to False and Continue to back up
+                    # Set startup to False and Continue to back up
                     ################################################################################
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
@@ -209,10 +196,10 @@ class CLI:
             else:
                 print("Waiting for the right time to backup...")
                 ################################################################################
-                ## Set startup to False, so wont backup twice after passed time :D
+                # Set startup to False, so wont backup twice after passed time :D
                 ################################################################################
                 ################################################################################
-                ## Write to  INI file
+                # Write to  INI file
                 ################################################################################
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
@@ -247,13 +234,13 @@ class CLI:
         print("Back up will start shortly...")
 
         ################################################################################
-        ## Call notification and wait x seconds
+        # Call notification and wait x seconds
         ################################################################################
         sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
         time.sleep(5)
 
         ################################################################################
-        ## Set notification_id to 3
+        # Set notification_id to 3
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -275,6 +262,7 @@ class CLI:
             config.set('BACKUP', 'checker_running', 'false')
             config.write(configfile)
 
+        # sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
         exit()
 
     def signal_exit(self, *args):
@@ -285,22 +273,18 @@ main = CLI()
 while True:
     main.updates()
     main.is_system_tray_running()
-    main.can_external_name_be_found()
-    # main.check_for_external_media()
-    # main.check_for_external_run()
-    # main.check_the_date()
-
+    main.check_for_external_media()
 
     print("Updating...")
     ################################################################################
-    ## Exit program if auto_backup is false
+    # Exit program if auto_backup is false
     ################################################################################
     if main.backupNowChecker == "true":
         print("Break backupchecker")
         break
 
     ################################################################################
-    ## Exit program if auto_backup is false
+    # Exit program if auto_backup is false
     ################################################################################
     if main.getAutoBackup == "false":
         print("Break autobackup")
