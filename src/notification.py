@@ -106,12 +106,9 @@ class UI(QMainWindow):
             self.messageText.setText("Please, manual delete old backups!")
 
         elif messageID == "8":
-            self.messageText.setText("Please, choose an external device first!")
-
-        elif messageID == "9":
             self.messageText.setText("Your files are been restored...")
 
-        elif messageID == "10":
+        elif messageID == "9":
             self.messageText.setText("Error trying to restore your files!")
 
         else:
