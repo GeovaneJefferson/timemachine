@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 from setup import *
 
-
 # QTimer
 timer = QtCore.QTimer()
 
@@ -9,13 +8,17 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        self.setFixedSize(260, 260)
+        self.iniUI()
 
+    def iniUI(self):
+        # Window size
+        self.setFixedSize(260, 260)
+        # Window dimensions
         screen = app.primaryScreen()
         rect = screen.availableGeometry()
         self.x = (rect.width())
         self.y = (rect.height())
-
+        # Window manager dimensions
         self.move((self.x - 260), (self.y - 280))
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -28,9 +31,8 @@ class UI(QMainWindow):
         self.widget.setStyleSheet(
             "QWidget"
             "{"
-            "background-color: rgb(0, 0, 0);" # White color rgb(255, 255, 255) # Black color rgb(40, 40, 40)
-            "border-radius: 10px;"
-            "border: 1px solid rgb(40, 40, 40);" # 200,200,200
+            "background-color: rgb(40, 40, 40);" # White color rgb(255, 255, 255) # Black color rgb(40, 40, 40)
+            "border-radius: 15px;"
             "}")
 
         # creating a blur effect
@@ -38,6 +40,7 @@ class UI(QMainWindow):
         # self.blur_effect.setBlurRadius(5)
         # self.widget.setGraphicsEffect(self.blur_effect)
 
+        # Vertical layout
         self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setContentsMargins(0, 10, 0, 10)
@@ -45,24 +48,24 @@ class UI(QMainWindow):
         #################################################################
         ###  Title text
         #################################################################
-        titleText = QLabel()
-        titleText.setText(appName)
-        titleText.setFont(QFont("Ubuntu, Light", 14))
-        titleText.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        titleText.setFixedSize(120, 30)
-        titleText.setStyleSheet("""
+        self.titleLabel = QLabel()
+        self.titleLabel.setText(appName)
+        self.titleLabel.setFont(QFont("Ubuntu, Light", 14))
+        self.titleLabel.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titleLabel.setFixedSize(120, 30)
+        self.titleLabel.setStyleSheet("""
             color: rgb(255, 255, 255);
             background-color: transparent;
             border: transparent;
         """)    # 65,65,65
 
         #################################################################
-        ###  Main image
+        ###  Image inside the notification
         #################################################################
-        image = QLabel()
-        image.setFixedSize(130, 130)
-        image.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        image.setStyleSheet(f"""
+        self.image = QLabel()
+        self.image.setFixedSize(130, 130)
+        self.image.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.image.setStyleSheet(f"""
             background-image: url({src_backup_icon});
             background-repeat: no-repeat;
             border: 0px;
@@ -73,47 +76,11 @@ class UI(QMainWindow):
         ################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
+        # Read messageID from INI file
+        self.messageID = config['INFO']['notification_id']
 
-        # INI file
-        messageID = config['INFO']['notification_id']
-        
+        # Message label
         self.messageText = QLabel()
-        ################################################################
-        ##  Back up will start shortly
-        ################################################################
-        if messageID == "0":
-            self.messageText.setText("All settings was reset!") 
-        
-        elif messageID == "1":
-            self.messageText.setText("Back up will start shortly...")
-
-        elif messageID == "2":
-            self.messageText.setText("Backup is done!")
-
-        elif messageID == "3":
-            self.messageText.setText("External not mounted or available...")
-
-        elif messageID == "4":
-            self.messageText.setText("Error trying to back up!")
-
-        elif messageID == "5":
-            self.messageText.setText("Error trying to read INI file!")
-
-        elif messageID == "6":
-            self.messageText.setText("Error trying to delete old backups!")
-
-        elif messageID == "7":
-            self.messageText.setText("Please, manual delete old backups!")
-
-        elif messageID == "8":
-            self.messageText.setText("Your files are been restored...")
-
-        elif messageID == "9":
-            self.messageText.setText("Error trying to restore your files!")
-
-        else:
-            pass
-
         self.messageText.setFont(QFont("Ubuntu, Light", 9))
         self.messageText.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.messageText.setFixedSize(220, 30)
@@ -122,6 +89,45 @@ class UI(QMainWindow):
             background-color: transparent;
             border: transparent;
         """)    # 55,55,55
+
+        self.notification_id()
+
+    def notification_id(self):
+        ################################################################
+        ##  Back up will start shortly
+        ################################################################
+        if self.messageID == "0":
+            self.messageText.setText("All settings was reset!")
+
+        elif self.messageID == "1":
+            self.messageText.setText("Back up will start shortly...")
+
+        elif self.messageID == "2":
+            self.messageText.setText("Backup is done!")
+
+        elif self.messageID == "3":
+            self.messageText.setText("External not mounted or available...")
+
+        elif self.messageID == "4":
+            self.messageText.setText("Error trying to back up!")
+
+        elif self.messageID == "5":
+            self.messageText.setText("Error trying to read INI file!")
+
+        elif self.messageID == "6":
+            self.messageText.setText("Error trying to delete old backups!")
+
+        elif self.messageID == "7":
+            self.messageText.setText("Please, manual delete old backups!")
+
+        elif self.messageID == "8":
+            self.messageText.setText("Your files are been restored...")
+
+        elif self.messageID == "9":
+            self.messageText.setText("Error trying to restore your files!")
+
+        else:
+            pass
 
         #################################################################
         ###  Ok button
@@ -144,8 +150,11 @@ class UI(QMainWindow):
             "background-color: rgba(162, 167, 175, 1);"
             "}")
 
-        self.verticalLayout.addWidget(titleText, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.verticalLayout.addWidget(image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        ################################################################################
+        # Add widgets and Layouts
+        ################################################################################
+        self.verticalLayout.addWidget(self.titleLabel, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.verticalLayout.addWidget(self.image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayout.addWidget(self.messageText, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayout.addWidget(self.okButton, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
@@ -157,12 +166,12 @@ class UI(QMainWindow):
         #################################################################
         ###  Start animation
         #################################################################
-        self.anim = QPropertyAnimation(self.widget, b"geometry")
-        self.anim.setDuration(1000)
-        self.anim.setStartValue(QRect(self.x, 0, 0, 0))
-        self.anim.setEndValue(QRect(0, 0, 0, 0))
-        self.anim.setEasingCurve(QEasingCurve.OutCirc)
-        self.anim.start()
+        self.startAnimation = QPropertyAnimation(self.widget, b"geometry")
+        self.startAnimation.setDuration(1000)
+        self.startAnimation.setStartValue(QRect(self.x, 0, 0, 0))
+        self.startAnimation.setEndValue(QRect(0, 0, 0, 0))
+        self.startAnimation.setEasingCurve(QEasingCurve.OutCirc)
+        self.startAnimation.start()
 
         timer.timeout.connect(self.end_animation)
         timer.start(5000)

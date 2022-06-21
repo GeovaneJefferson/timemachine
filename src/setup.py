@@ -25,12 +25,16 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 ################################################################################
 ## Variables
 ################################################################################
+# Names
 appName = "Time Machine"
 appNameClose = "timemachine"
 appVersion = "v1.1.1"
 folderName = "TMB"
 exclude = ("linux", "mesa", "lib")
+# CMD commands
 copyCmd = "rsync -avruzh"
+createCMDFolder = "mkdir"
+createCMDFile = "touch"
 
 ################################################################################
 ## Fonts
@@ -58,29 +62,7 @@ timeModeHours120 = ['00', '02', '04', '06', '08', '10', '12', '14',
 timeModeHours240 = ['00', '04', '08', '12', '16', '20']
 
 # Fix time
-minFix = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-# To edit locally
-# src_current_location = pathlib.Path().resolve()  # Current folder
-# src_options_py = "options.py"
-# src_backup_py = "backup_check.py"
-# src_restore_icon = "icons/restore_48.png"
-# src_user_config = "ini/user.ini"
-# src_backup_now = "backup_now.py"
-# src_restore_small_icon = "icons/restore_small.png"
-# src_folders_py = "options.py"
-# src_backup_icon = "icons/backup.png"
-# src_backup_check = "backup_check.desktop"
-# src_backup_check_py = "backup_check.py"
-# src_backup_check_desktop = ".config/autostart/backup_check.desktop"
-# src_timemachine_desktop = "timemachine.desktop"
-# src_backup_check = "desktop/backup_check.desktop"
-# src_restore_py = "restore.py"
-# src_system_tray = "systemtray.py"
-# src_loadingGif = "icons/loading.gif"
-# src_system_bar_icon = "icons/systemtrayicon.png"
-# src_system_bar_run_icon = "icons/systemtrayiconrun.png"
-
+fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 # # Home location
 src_options_py = f"{homeUser}/.local/share/timemachine/src/options.py"

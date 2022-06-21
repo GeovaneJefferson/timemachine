@@ -5,73 +5,80 @@ timer = QtCore.QTimer()
 
 class APP:
     def __init__(self):
-        app = QApplication([])
-        app.setQuitOnLastWindowClosed(False)
-        app.setApplicationDisplayName(appName)
+        self.iniUI()
 
-        # ################################################################################
-        # ## Add icon
-        # ################################################################################
+    def iniUI(self):
+        self.app = QApplication([])
+        self.app.setQuitOnLastWindowClosed(False)
+        self.app.setApplicationDisplayName(appName)
+        self.app.setApplicationName(appName)
+
+        self.widget()
+
+    def widget(self):
+        ################################################################################
+        # Add icon
+        ################################################################################
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(src_system_bar_icon))
         self.tray.setVisible(True)
 
-        # Creating the options
+        ################################################################################
+        # Add item on the menu bar
+        ################################################################################
+        # Create a menu
         self.menu = QMenu()
-
-        ################################################################################
-        ## Add item on the menu bar
-        ################################################################################
-        self.iniInformation = QAction()
-        self.iniInformation.setEnabled(False)
-
-        self.backupNow = QAction("Back Up Now")
-        self.backupNow.setFont(QFont(item))
-        self.backupNow.triggered.connect(self.backup_now)
-
-        self.enterTimeMachine = QAction("Enter Time Machine")
-        self.enterTimeMachine.setFont(QFont(item))
-        self.enterTimeMachine.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
-        # self.enterTimeMachine.setEnabled(False)
-
-        self.openSettings = QAction("Open Time Machine Preferences...")
-        self.openSettings.setFont(QFont(item))
-        self.openSettings.triggered.connect(lambda: sub.run(f"python3 {src_options_py}", shell=True))
-
-
-        self.menu.addAction(self.iniInformation)
-        self.menu.addAction(self.backupNow)
-        self.menu.addAction(self.enterTimeMachine)
-        self.menu.addAction(self.openSettings)
-
+        # Ini last backup information       
+        self.iniLastBackupInformation = QAction()
+        self.iniLastBackupInformation.setEnabled(False)
+        # Backup now button
+        self.backupNowButton = QAction("Back Up Now")
+        self.backupNowButton.setFont(QFont(item))
+        self.backupNowButton.triggered.connect(self.backup_now)
+        # Enter time machine button
+        self.enterTimeMachineButton = QAction("Enter Time Machine")
+        self.enterTimeMachineButton.setFont(QFont(item))
+        self.enterTimeMachineButton.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
+        # Open settings button
+        self.openSettingsButton = QAction("Open Time Machine Preferences...")
+        self.openSettingsButton.setFont(QFont(item))
+        self.openSettingsButton.triggered.connect(lambda: sub.run(f"python3 {src_options_py}", shell=True))
+        # Add all to menu
+        self.menu.addAction(self.iniLastBackupInformation)
+        self.menu.addAction(self.backupNowButton)
+        self.menu.addAction(self.enterTimeMachineButton)
+        self.menu.addAction(self.openSettingsButton)
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
 
         ################################################################################
-        ## Check ini
+        # Check ini
         ################################################################################
         timer.timeout.connect(self.updates)
         timer.start(1000)  # update every second
         self.updates()
 
-        app.exec()
+        self.app.exec()
 
     def updates(self):
         try:
             ################################################################################
-            ## Read ini file
+            # Read ini file
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
-
-            getBackupNow = config['BACKUP']['backup_now']
-            self.getHDName = config['EXTERNAL']['name']
-            getSystemTray = config['SYSTEMTRAY']['system_tray']
-            getLastBackup = config['INFO']['latest']
+            # INI backup now
+            self.iniBackupNow = config['BACKUP']['backup_now']
+            # INI HD Name
+            self.iniHDName = config['EXTERNAL']['name']
+            # INI system tray
+            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+            # INI last backup
+            self.iniLastBackup = config['INFO']['latest']
 
         except:
             ################################################################################
-            ## Set notification_id to 5
+            # Set notification_id to 5
             ################################################################################
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'notification_id', "5")
@@ -79,64 +86,55 @@ class APP:
 
             print("Error trying to read user.ini!")
             sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
-
             exit()
 
-        ################################################################################
-        ## INI information
-        ################################################################################
-        self.iniInformation.setText(f"Last backup: {getLastBackup}")
+        self.condition()
 
-        ################################################################################
-        ## No external found
-        ################################################################################
-        if self.getHDName == "None":
-            self.backupNow.setEnabled(False)
-
-        ################################################################################
-        ## Condition Backup Now and Icon
-        ################################################################################
-        if getBackupNow == "true":
+    def condition(self):
+        # INI information
+        self.iniLastBackupInformation.setText(f"Last backup: {self.iniLastBackup}")
+        # No external found
+        if self.iniHDName == "None":
+            self.backupNowButton.setEnabled(False)
+        # Condition Backup Now and Icon
+        if self.iniBackupNow == "true":
             icon = QIcon(src_system_bar_run_icon)
-            self.backupNow.setEnabled(False)
+            self.backupNowButton.setEnabled(False)
         
-        elif getBackupNow == "false" and self.getHDName != "None":
+        elif self.iniBackupNow == "false" and self.iniHDName != "None":
             icon = QIcon(src_system_bar_icon)
-            self.backupNow.setEnabled(True)
-
+            self.backupNowButton.setEnabled(True)
+        
         else:
             icon = QIcon(src_system_bar_icon)
-
+        
+        # Tray        
         self.tray.setIcon(icon)
-
         print(f"{appName} system tray is running...")
 
         ################################################################################
-        ## System Tray
+        # System Tray
         ################################################################################
-        if getSystemTray == "false":
+        if self.iniSystemTray == "false":
             print("Exit system tray...")
             ################################################################################
-            ## Write ini file
+            # Write ini file
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
-
             with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                 config.set('SYSTEMTRAY', 'system_tray', 'false')
                 config.write(configfile)
-
                 exit()
 
         time.sleep(1)
 
     def backup_now(self):
         ################################################################################
-        ## Write to ini file
+        # Write to ini file
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
         with open(src_user_config, 'w') as configfile:  # Set auto backup to true
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
