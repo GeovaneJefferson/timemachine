@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-from zoneinfo import available_timezones
 from setup import *
 
 # QTimer
