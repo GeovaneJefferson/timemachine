@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from zoneinfo import available_timezones
 from setup import *
 
 # QTimer
@@ -8,13 +9,15 @@ timer = QtCore.QTimer()
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
+        self.iniUI()
+
+    def iniUI(self):
         self.setWindowTitle(appName)
-        app_icon = QIcon(src_restore_icon)
-        self.setWindowIcon(app_icon)
+        self.setWindowIcon(QIcon(src_restore_icon))
         self.setFixedSize(700, 450)
 
         ################################################################################
-        ## Center window
+        # Center window
         ################################################################################
         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
         fg = self.frameGeometry()
@@ -25,7 +28,7 @@ class UI(QMainWindow):
 
     def widgets(self):
         ################################################################################
-        ## Left Widget
+        # Left Widget
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 200, 410)
@@ -34,31 +37,31 @@ class UI(QMainWindow):
         """)
 
         # Left widget
-        self.baseVLeftLayout = QVBoxLayout(self.leftWidget)
-        self.baseVLeftLayout.setSpacing(20)
+        self.leftLayout = QVBoxLayout(self.leftWidget)
+        self.leftLayout.setSpacing(20)
 
         # Backup images
-        self.backupImage = QLabel()
-        self.backupImage.setFixedSize(128, 128)
-        self.backupImage.setStyleSheet(
+        self.backupImageLabel = QLabel()
+        self.backupImageLabel.setFixedSize(128, 128)
+        self.backupImageLabel.setStyleSheet(
             "QLabel"
             "{"
             f"background-image: url({src_backup_icon});"
             "border-color: transparent;"
             "}")
 
-        # Auto checkbox
-        self.autoCheckbox = QCheckBox()
-        self.autoCheckbox.setFont(item)
-        self.autoCheckbox.setText("Back Up Automatically")
-        self.autoCheckbox.setFixedSize(175, 20)
-        self.autoCheckbox.setStyleSheet("""
+        # Automatically checkbox
+        self.automaticallyCheckBox = QCheckBox()
+        self.automaticallyCheckBox.setFont(item)
+        self.automaticallyCheckBox.setText("Back Up Automatically")
+        self.automaticallyCheckBox.setFixedSize(175, 20)
+        self.automaticallyCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
-        self.autoCheckbox.clicked.connect(self.automatically_clicked)
+        self.automaticallyCheckBox.clicked.connect(self.automatically_clicked)
 
         ################################################################################
-        ## Right Widget
+        # Right Widget
         ################################################################################
         self.rightWidget = QWidget(self)
         self.rightWidget.setGeometry(240, 40, 170, 154)
@@ -67,13 +70,13 @@ class UI(QMainWindow):
         # """)
 
         # Right widget
-        self.baseVRightLayout = QVBoxLayout(self.rightWidget)
-        self.baseVRightLayout.setSpacing(20)
+        self.rightLayout = QVBoxLayout(self.rightWidget)
+        self.rightLayout.setSpacing(20)
 
         # Restore images
-        self.restoreImage = QLabel()
-        self.restoreImage.setFixedSize(84, 84)
-        self.restoreImage.setStyleSheet(
+        self.restoreImageLabel = QLabel()
+        self.restoreImageLabel.setFixedSize(84, 84)
+        self.restoreImageLabel.setStyleSheet(
             "QLabel"
             "{"
             f"background-image: url({src_restore_icon});"
@@ -81,14 +84,14 @@ class UI(QMainWindow):
             "}")
 
         # Select disk button
-        self.externalButton = QPushButton(self)
-        self.externalButton.setFont(item)
-        self.externalButton.setText("Select Backup Disk...")
-        self.externalButton.setFixedSize(150, 28)
-        self.externalButton.clicked.connect(self.external_clicked)
+        self.selectDiskButton = QPushButton(self)
+        self.selectDiskButton.setFont(item)
+        self.selectDiskButton.setText("Select Backup Disk...")
+        self.selectDiskButton.setFixedSize(150, 28)
+        self.selectDiskButton.clicked.connect(self.select_external_clicked)
 
         ################################################################################
-        ## Far right Widget
+        # Far right Widget
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
@@ -98,45 +101,46 @@ class UI(QMainWindow):
         # """)
 
         # Right widget
-        self.baseVFarRightLayout = QVBoxLayout(self.farRightWidget)
-        self.baseVFarRightLayout.setSpacing(0)
+        self.farRightLayout = QVBoxLayout(self.farRightWidget)
+        self.farRightLayout.setSpacing(0)
 
         ################################################################################
-        ## Set external name
+        # Set external name
         ################################################################################
-        self.setExternalName = QLabel()
-        self.setExternalName.setFont(bigTitle)
-        self.setExternalName.setAlignment(QtCore.Qt.AlignLeft)
+        self.externalNameLabel = QLabel()
+        self.externalNameLabel.setFont(bigTitle)
+        self.externalNameLabel.setFixedSize(350, 80)
+        self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
-        ## Get external size
+        # Get external size
         ################################################################################
-        self.showExternalSize = QLabel()
-        self.showExternalSize.setFont(item)
-        self.showExternalSize.setFixedSize(200, 18)
+        self.externalSizeLabel = QLabel()
+        self.externalSizeLabel.setFont(item)
+        self.externalSizeLabel.setFixedSize(200, 18)
 
         ################################################################################
-        ## Label last backup
+        # Label last backup
         ################################################################################
         self.lastBackupLabel = QLabel()
         self.lastBackupLabel.setFont(item)
-        self.lastBackupLabel.setText("Last Backup:")
+        self.lastBackupLabel.setText("Last Backup: None")
         self.lastBackupLabel.setFixedSize(200, 18)
 
         # Label last backup
         self.nextBackupLabel = QLabel()
         self.nextBackupLabel.setFont(item)
-        self.nextBackupLabel.setText("Next Backup:")
+        self.nextBackupLabel.setText("Next Backup: None")
         self.nextBackupLabel.setFixedSize(250, 18)
 
         # Status external hd
-        self.externalStatus = QLabel()
-        self.externalStatus.setFont(item)
-        self.externalStatus.setText("External HD:")
-        self.externalStatus.setFixedSize(200, 18)
+        self.externalStatusLabel = QLabel()
+        self.externalStatusLabel.setFont(QFont('DejaVu Sans', 10))
+        self.externalStatusLabel.setText("External HD:")
+        self.externalStatusLabel.setFixedSize(200, 18)
 
         ################################################################################
-        ## Preparing backup
+        # Gif for preparing backup
         ################################################################################
         self.gif = QLabel(self)
         self.gif.move(420, 154)
@@ -147,61 +151,59 @@ class UI(QMainWindow):
             "border: 0px;"
             "}")
 
-        ################################################################################
-        ## Set qmovie as gif
-        ################################################################################
+        # Set qmovie as gif
         self.movie = QMovie(src_loadingGif)
         self.movie.setScaledSize(QSize().scaled(22, 22, Qt.KeepAspectRatio))
         self.gif.setMovie(self.movie)
 
         ################################################################################
-        ## Backup now button
+        # Backup now button
         ################################################################################
-        self.backupNowButton = QPushButton("Back Up Now", self)
+        self.backupNowButton = QPushButton(self)
+        self.backupNowButton.setText("Back Up Now")
         self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.move(420, 155)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.hide()
 
         ################################################################################
-        ## Ui description
+        # Description
         ################################################################################
-        self.uiTextWidget = QWidget(self)
-        self.uiTextWidget.setGeometry(240, 200, 440, 140)
-        self.uiTextWidget.setStyleSheet("""
+        self.descriptionWidget = QWidget(self)
+        self.descriptionWidget.setGeometry(240, 200, 440, 140)
+        self.descriptionWidget.setStyleSheet("""
             border-top: 1px solid rgb(68, 69, 70);
         """)
 
-        # uiInfoTitle widget
-        self.baseVUiTextLayout = QVBoxLayout(self.uiTextWidget)
+        # Description Layout
+        self.descriptionLayout = QVBoxLayout(self.descriptionWidget)
 
-        self.uiInfoTitle = QLabel()
-        self.uiInfoTitle.setFont(topicTitle)
-        self.uiInfoTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
-        self.uiInfoTitle.setFixedSize(420, 24)
-        self.uiInfoTitle.setStyleSheet("""
-            border-color: transparent;
-
-        """)
-        self.uiInfoTitle.setText(
-            f"{appName} is able to:\n\n")
-
-        # uiInfoText
-        self.uiInfoText = QLabel()
-        self.uiInfoText.setFont(item)
-        self.uiInfoText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
-        self.uiInfoText.setFixedSize(420, 120)
-        self.uiInfoText.setStyleSheet("""
+        # Description Title
+        self.descriptionTitle = QLabel()
+        self.descriptionTitle.setFont(topicTitle)
+        self.descriptionTitle.setText(f"{appName} is able to:\n\n")
+        self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.descriptionTitle.setFixedSize(420, 24)
+        self.descriptionTitle.setStyleSheet("""
             border-color: transparent;
         """)
-        self.uiInfoText.setText(
+
+        # Description Text
+        self.descriptionText = QLabel()
+        self.descriptionText.setFont(item)
+        self.descriptionText.setText(
             "* Keep local snapshots as space permits\n"
             "* Schedule backups (Minutely, Hourly or Daily)\n"
             f"* Automatically back up at first PC boot, if backup time\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
+        self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.descriptionText.setFixedSize(420, 120)
+        self.descriptionText.setStyleSheet("""
+            border-color: transparent;
+        """)
 
         ################################################################################
-        ## Donate and Settings buttons
+        # Donate and Settings buttons
         ################################################################################
         self.optionsWidget = QWidget(self)
         self.optionsWidget.setGeometry(340, 380, 350, 80)
@@ -209,457 +211,464 @@ class UI(QMainWindow):
         #     border: 1px solid red;
         # """)
 
-        # Options layout
+        # Options Layout
         self.optionsLayout = QHBoxLayout(self.optionsWidget)
         self.optionsLayout.setSpacing(10)
 
-        # Settings buton
+        # Options button
         self.optionsButton = QPushButton()
         self.optionsButton.setText("Options...")
         self.optionsButton.setFont(item)
         self.optionsButton.setFixedSize(80, 28)
         self.optionsButton.clicked.connect(self.options_clicked)
 
-        # Auto checkbox
-        self.showInSystemTray = QCheckBox(self)
-        self.showInSystemTray.setFont(item)
-        self.showInSystemTray.setText(f"Show {appName} in system tray")
-        self.showInSystemTray.setFixedSize(280, 20)
-        self.showInSystemTray.move(240, 410)
-        self.showInSystemTray.setStyleSheet("""
+        # Show system tray
+        self.showInSystemTrayCheckBox = QCheckBox(self)
+        self.showInSystemTrayCheckBox.setFont(item)
+        self.showInSystemTrayCheckBox.setText(f"Show {appName} in system tray")
+        self.showInSystemTrayCheckBox.setFixedSize(280, 20)
+        self.showInSystemTrayCheckBox.move(240, 410)
+        self.showInSystemTrayCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
-        self.showInSystemTray.clicked.connect(self.menu_bar_clicked)
+        self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
 
         ################################################################################
-        ## Add widgets and Layouts
+        # Add widgets and Layouts
         ################################################################################
-        # BaseVLeftlayout
-        self.baseVLeftLayout.addWidget(self.backupImage, 0, Qt.AlignHCenter | Qt.AlignTop)
-        self.baseVLeftLayout.addWidget(self.autoCheckbox, 1, Qt.AlignHCenter | Qt.AlignTop)
+        # Left Layout
+        self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
-        #  baseVRight layout
-        self.baseVRightLayout.addWidget(self.restoreImage, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.baseVRightLayout.addWidget(self.externalButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
+        #  Right Layout
+        self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.rightLayout.addWidget(self.selectDiskButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
 
-        #  baseVFarRight layout
-        self.baseVFarRightLayout.addWidget(self.setExternalName, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVFarRightLayout.addWidget(self.showExternalSize, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVFarRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVFarRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
-        self.baseVFarRightLayout.addWidget(self.externalStatus, 3, Qt.AlignLeft | Qt.AlignTop)
+        #  Far Right Layout
+        self.farRightLayout.addWidget(self.externalNameLabel, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.externalSizeLabel, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
 
-        #  baseVUiText layout
-        self.baseVUiTextLayout.addWidget(self.uiInfoTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.baseVUiTextLayout.addWidget(self.uiInfoText, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        # Description Layout
+        self.descriptionLayout.addWidget(self.descriptionTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.descriptionLayout.addWidget(self.descriptionText, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         #  Options layout
         self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
 
-        self.setLayout(self.baseVLeftLayout)
+        # Set Layouts
+        self.setLayout(self.leftLayout)
 
-        # Timer
-        timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every x second
-        self.updates()
+        # Update
+        timer.timeout.connect(self.read_ini_file)
+        timer.start(1000)
+        self.read_ini_file()
 
-    def updates(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        # Get current hour, minutes
-        now = datetime.now()
-        self.dayName = now.strftime("%a")
-        self.currentHour = now.strftime("%H")
-        self.currentMinute = now.strftime("%M")
-
+    def read_ini_file(self):
         try:
+            ################################################################################
+            # Read INI file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+
+            # Get current hour, minutes
+            now = datetime.now()
+            self.dayName = now.strftime("%a")
+            self.currentHour = now.strftime("%H")
+            self.currentMinute = now.strftime("%M")
+
             # INI file
-            self.getExternalLocation = config['EXTERNAL']['hd']
-            self.getBackupNow = config['BACKUP']['backup_now']
-            self.getCheckerRunning = config['BACKUP']['checker_running']
-            self.getAutoBackup = config['BACKUP']['auto_backup']
-            self.getSystemTray = config['SYSTEMTRAY']['system_tray']
-            self.getLastBackup = config['INFO']['latest']
-            self.getNextBackup = config['INFO']['next']
-            self.getHDName = config['EXTERNAL']['name']
+            self.iniHDName = config['EXTERNAL']['name']
+            self.iniExternalLocation = config['EXTERNAL']['hd']
+            self.iniBackupNow = config['BACKUP']['backup_now']
+            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
+            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+            self.iniLastBackup = config['INFO']['latest']
+            self.iniNextBackup = config['INFO']['next']
+            self.iniNotification = config['INFO']['notification']
             self.moreTimeMode = config['MODE']['more_time_mode']
+
+            # Dates
+            self.nextDay = "None"
+            self.iniNextHour = config['SCHEDULE']['hours']
+            self.iniNextMinute = config['SCHEDULE']['minutes']
+            self.iniNextBackupSun = config['SCHEDULE']['sun']
+            self.iniNextBackupMon = config['SCHEDULE']['mon']
+            self.iniNextBackupTue = config['SCHEDULE']['tue']
+            self.iniNextBackupWed = config['SCHEDULE']['wed']
+            self.iniNextBackupThu = config['SCHEDULE']['thu']
+            self.iniNextBackupFri = config['SCHEDULE']['fri']
+            self.iniNextBackupSat = config['SCHEDULE']['sat']
             self.everytime = config['SCHEDULE']['everytime']
 
-            self.nextDay = "None"
-            self.getNextHour = config['SCHEDULE']['hours']
-            self.getNextMinute = config['SCHEDULE']['minutes']
-            self.getNextBackupSun = config['SCHEDULE']['sun']
-            self.getNextBackupMon = config['SCHEDULE']['mon']
-            self.getNextBackupTue = config['SCHEDULE']['tue']
-            self.getNextBackupWed = config['SCHEDULE']['wed']
-            self.getNextBackupThu = config['SCHEDULE']['thu']
-            self.getNextBackupFri = config['SCHEDULE']['fri']
-            self.getNextBackupSat = config['SCHEDULE']['sat']
+            self.currentTime = self.currentHour + self.currentMinute
+            self.backupTime = self.iniNextHour + self.iniNextMinute
 
         except KeyError:
             print("Error trying to read user.ini!")
             exit()
 
-        self.total_current_time = self.currentHour + self.currentMinute
-        self.total_next_time = self.getNextHour + self.getNextMinute
-
         self.check_connection_media()
 
     def check_connection_media(self):
+        ################################################################################
         # External availability
+        ################################################################################
         try:
-            os.listdir(f"/media/{userName}/{self.getHDName}")  # Check if external can be found
-            self.connected()
+            os.listdir(f"/media/{userName}/{self.iniHDName}")  # Check if external can be found
+            self.set_external_status()
 
         except FileNotFoundError:
             self.check_connection_run()
 
     def check_connection_run(self):
+        ################################################################################
+        # External availability
+        ################################################################################
         try:
-            os.listdir(f"/run/media/{userName}/{self.getHDName}")  # Opensuse, external is inside "/run"
-
-            self.connected()
+            os.listdir(f"/run/media/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
+            self.set_external_status()
 
         except FileNotFoundError:
-            self.backupNowButton.hide()  # Hide backup now button
-
+            # Hide backup now button
+            self.backupNowButton.hide()
             # External status
-            self.externalStatus.setText("External HD: Disconnected")
-            self.externalStatus.setFont(QFont('DejaVu Sans', 10))
-            self.externalStatus.setStyleSheet('color: red')
-            self.externalStatus.setAlignment(QtCore.Qt.AlignTop)
+            self.externalStatusLabel.setText("External HD: Disconnected")
+            self.externalStatusLabel.setStyleSheet('color: red')
+            self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
+            # External size
+            self.externalSizeLabel.setText("No information available")
 
-            ################################################################################
-            ## External size
-            ################################################################################
-            self.showExternalSize.setText("No information available")
+        self.set_external_name()
 
-        self.ui_settings()
-
-    def connected(self):
+    def set_external_status(self):
         ################################################################################
-        ## External status
+        # External status
         ################################################################################
-        self.externalStatus.setText("External HD: Connected")
-        self.externalStatus.setFont(QFont('DejaVu Sans', 10))
-        self.externalStatus.setStyleSheet('color: green')
+        self.externalStatusLabel.setText("External HD: Connected")
+        self.externalStatusLabel.setStyleSheet('color: green')
 
+        self.get_size_informations()
+
+    def get_size_informations(self):
         ################################################################################
-        ## Get external size values
+        # Get external size values
         ################################################################################
         try:
-            externalMaxSize = os.popen(f"df --output=size -h {self.getExternalLocation}")
+            # Get external max size
+            externalMaxSize = os.popen(f"df --output=size -h {self.iniExternalLocation}")
             externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace("Size", "").replace(
                 "\n", "").replace(" ", "")
             externalMaxSize = str(externalMaxSize)
 
-            usedSpace = os.popen(f"df --output=used -h {self.getExternalLocation}")
+            # Get external usded size
+            usedSpace = os.popen(f"df --output=used -h {self.iniExternalLocation}")
             usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace("Used", "").replace(
                 "\n", "").replace(" ", "")
             usedSpace = str(usedSpace)
 
-            self.showExternalSize.setText(f"{usedSpace} of {externalMaxSize} available")
+            self.externalSizeLabel.setText(f"{usedSpace} of {externalMaxSize} available")
 
         except:
-            self.showExternalSize.setText("No information available")
+            self.externalSizeLabel.setText("No information available")
 
+        self.condition()
+
+    def condition(self):
         ################################################################################
-        ## Condition
+        # Set external name label from INI file if != "None"
         ################################################################################
-        if self.getHDName != "None":  # If location can be found
-            if self.getBackupNow == "false":  # If is not backing up right now
-                ################################################################################
-                ## Hide loading gif
-                ################################################################################
+        if self.iniHDName != "None":  # If location can be found
+            ################################################################################
+            # If is not backing up right now
+            ################################################################################
+            if self.iniBackupNow == "false":
+                # Hide loading gif
                 self.movie.stop()
-
-                ################################################################################
-                ## Backup Now
-                ################################################################################
+                # Backup Now
                 self.backupNowButton.setEnabled(True)  # Disable backup now button
                 self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
                 self.backupNowButton.show()
 
             else:
-                ################################################################################
-                ## Show loading gif
-                ################################################################################
+                # Show loading gif
                 self.movie.start()
-
-                ################################################################################
-                ## Hide backup now button
-                ################################################################################
+                # Hide backup now button
                 self.backupNowButton.hide()
 
         else:
-            ################################################################################
-            ## Hide backup now button
-            ################################################################################
+            # Set external name
+            self.externalNameLabel.setText("None")
+            # Hide backup now button
             self.backupNowButton.hide()
 
-        self.ui_settings()
+        self.set_external_name()
 
-    def ui_settings(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+    def set_external_name(self):
+        self.externalNameLabel.setText(self.iniHDName)
 
-        ################################################################################
-        ## Set None if user has not choose a external device yet
-        ################################################################################
-        self.setExternalName.setText(self.getHDName)  # Set external name
-        self.setExternalName.setFont(QFont('DejaVu Sans', 18))
+        self.set_external_last_backup()
 
+    def set_external_last_backup(self):
         ################################################################################
-        ## External name
+        # Last backup label
         ################################################################################
-        if self.getHDName != "None":
-            self.setExternalName.setText(self.getHDName)
+        if self.iniLastBackup != "":
+            self.lastBackupLabel.setText(f"Last Backup: {self.iniLastBackup}")
 
-        ################################################################################
-        ## Last backup label
-        ################################################################################
-        if self.getLastBackup == "":
-            self.lastBackupLabel.setText("Last Backup: ")
-        else:
-            self.lastBackupLabel.setText(f"Last Backup: {self.getLastBackup}")
+        self.set_external_next_backup()
 
+    def set_external_next_backup(self):
         ################################################################################
-        ## Next backup label
+        # Next backup label
         ################################################################################
-        if self.getNextBackup == "":
-            self.nextBackupLabel.setText("Next Backup: None")
+        if self.iniNextBackup != "":
+            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
 
-        ################################################################################
-        ## Auto backup
-        ################################################################################
-        if self.getAutoBackup == "true":
-            self.autoCheckbox.setChecked(True)
-
-        else:
-            self.autoCheckbox.setChecked(False)
-
-        if not self.autoCheckbox.isChecked():
+        # If automaticallyCheckBox is unchecked == AUtomatic backups off
+        if not self.automaticallyCheckBox.isChecked():
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
         else:
-            self.nextBackupLabel.setText(f"Next Backup: {self.getNextBackup}")
+            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
 
         ################################################################################
-        ## System tray
+        # Next backup multiple times per day
         ################################################################################
-        if self.getSystemTray == "true":
-            self.showInSystemTray.setChecked(True)
-
-        else:
-            self.showInSystemTray.setChecked(False)
-
-        ################################################################################
-        ## Next backup label everytime
-        ################################################################################
-        if self.moreTimeMode == "true" and self.everytime == "15":
-            self.nextBackupLabel.setText("Next Backup: Every 15 minutes")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
         if self.moreTimeMode == "true" and self.everytime == "30":
             self.nextBackupLabel.setText("Next Backup: Every 30 minutes")
             self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-        if self.moreTimeMode == "true" and self.everytime == "60":
+        elif self.moreTimeMode == "true" and self.everytime == "60":
             self.nextBackupLabel.setText("Next Backup: Every 1 hour")
             self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-        if self.moreTimeMode == "true" and self.everytime == "120":
+        elif self.moreTimeMode == "true" and self.everytime == "120":
             self.nextBackupLabel.setText("Next Backup: Every 2 hours")
             self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-        if self.moreTimeMode == "true" and self.everytime == "240":
+        elif self.moreTimeMode == "true" and self.everytime == "240":
             self.nextBackupLabel.setText("Next Backup: Every 4 hours")
             self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
+        ################################################################################
+        # Days to run
+        ################################################################################
         if self.dayName == "Sun":
-            if self.getNextBackupSun == "true" and self.currentHour <= self.getNextHour and self.currentMinute <= self.getNextMinute:
+            if self.iniNextBackupSun == "true" and self.currentHour <= self.iniNextHour and self.currentMinute <= self.iniNextMinute:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupMon == "true":
+                if self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
 
         if self.dayName == "Mon":
-            if self.getNextBackupMon == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupMon == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupTue == "true":
+                if self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
 
         if self.dayName == "Tue":
-            if self.getNextBackupTue == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupTue == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupWed == "true":
+                if self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
 
         if self.dayName == "Wed":
-            if self.getNextBackupWed == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupWed == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupThu == "true":
+                if self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
 
         if self.dayName == "Thu":
-            if self.getNextBackupThu == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupThu == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupFri == "true":
+                if self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
 
         if self.dayName == "Fri":
-            if self.getNextBackupFri == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupFri == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupSat == "true":
+                if self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-                elif self.getNextBackupSun == "true":
+                elif self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
 
         if self.dayName == "Sat":
-            if self.getNextBackupSat == "true" and self.total_current_time < self.total_next_time:
+            if self.iniNextBackupSat == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
-                if self.getNextBackupSun == "true":
+                if self.iniNextBackupSun == "true":
                     self.nextDay = "Sun"
-                elif self.getNextBackupMon == "true":
+                elif self.iniNextBackupMon == "true":
                     self.nextDay = "Mon"
-                elif self.getNextBackupTue == "true":
+                elif self.iniNextBackupTue == "true":
                     self.nextDay = "Tue"
-                elif self.getNextBackupWed == "true":
+                elif self.iniNextBackupWed == "true":
                     self.nextDay = "Wed"
-                elif self.getNextBackupThu == "true":
+                elif self.iniNextBackupThu == "true":
                     self.nextDay = "Thu"
-                elif self.getNextBackupFri == "true":
+                elif self.iniNextBackupFri == "true":
                     self.nextDay = "Fri"
-                elif self.getNextBackupSat == "true":
+                elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
 
         ################################################################################
-        ## Save next backup to user.ini
+        # Save next backup to user.ini
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'next', f'{self.nextDay}, {self.getNextHour}:{self.getNextMinute}')
+            config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
             config.write(configfile)
 
         ################################################################################
-        ## Print current time and day
+        # Print current time and day
         ################################################################################
         print("")
         print(f"Current time: {self.currentHour}:{self.currentMinute}")
         print(f"Today is: {self.dayName}")
         print("")
 
+        self.is_auto_backup_enabled()
+
+    def is_auto_backup_enabled(self):
+        ################################################################################
+        # Auto backup
+        ################################################################################
+        if self.iniAutomaticallyBackup == "true":
+            self.automaticallyCheckBox.setChecked(True)
+
+        else:
+            self.automaticallyCheckBox.setChecked(False)
+
+        self.system_tray()
+
+    def system_tray(self):
+        ################################################################################
+        # System tray
+        ################################################################################
+        if self.iniSystemTray == "true":
+            self.showInSystemTrayCheckBox.setChecked(True)
+
+        else:
+            self.showInSystemTrayCheckBox.setChecked(False)
+
     def automatically_clicked(self):
         ################################################################################
-        ## Copy .desktop to user folder (Autostart .desktop)
+        # Copy .desktop to user folder (Autostart .desktop)
         ################################################################################
-        if self.autoCheckbox.isChecked():
-            if os.path.exists(src_backup_check_desktop):
-                pass
-
-            else:
+        if self.automaticallyCheckBox.isChecked():
+            # If .desktop has not already been copied
+            if not os.path.exists(src_backup_check_desktop):
                 shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy to /home/#USER/.config/autostart
-
+            
             ################################################################################
-            ## Set auto backup to true if external has choosen already
+            # Set auto backup to true if external has choosen already
             ################################################################################
-            if self.getHDName != "None":
+            if self.iniHDName != "None":
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                     config.set('BACKUP', 'auto_backup', 'true')
-                    config.set('BACKUP', 'checker_running', 'true')
                     config.write(configfile)
 
+                ################################################################################
+                # Call backup check if self.iniName != "None"
+                ################################################################################
                 print("Auto backup was successfully activated!")
+                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
             else:
                 ################################################################################
-                ## Set notification_id to 8
+                # Set notification_id to 3
                 ################################################################################
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                    config.set('INFO', 'notification_id', '8')
+                    config.set('INFO', 'notification_id', '3')
                     config.write(configfile)
 
-                sub.Popen(f"python3 {src_notification}", shell=True)
+                # If user has allow app to send notifications
+                if self.iniNotification == "true":
+                    sub.Popen(f"python3 {src_notification}", shell=True)
 
         else:
             config = configparser.ConfigParser()
@@ -669,49 +678,36 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'checker_running', 'false')
                 config.write(configfile)
 
-                print("Auto backup was successfully deactivated!")
+            print("Auto backup was successfully deactivated!")
 
-        ################################################################################
-        ## Call backup check py
-        ################################################################################
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
-    def menu_bar_clicked(self):
+    def system_tray_clicked(self):
         ################################################################################
-        ## Menu bar selected
+        # System tray enabled
         ################################################################################
-        if self.showInSystemTray.isChecked():
-            ################################################################################
-            ## Write to ini file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-
-            with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+        ################################################################################
+        # Write to ini file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+            if self.showInSystemTrayCheckBox.isChecked():
                 config.set('SYSTEMTRAY', 'system_tray', 'true')
                 config.write(configfile)
-
                 print("System tray was successfully enabled!")
 
-        else:
-            ################################################################################
-            ## Write to ini file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+            else:
 
-            with open(src_user_config, 'w') as configfile:
                 config.set('SYSTEMTRAY', 'system_tray', 'false')
                 config.write(configfile)
-
-                print("Menu bar was successfully disabled!")
+                print("System tray was successfully disabled!")
 
         ################################################################################
-        ## Call backup check py
+        # Call backup check py
         ################################################################################
         sub.Popen(f"python3 {src_system_tray}", shell=True)
 
-    def external_clicked(self):
+    def select_external_clicked(self):
         # Choose external hd
         self.setEnabled(False)
         externalMain.show()  # Show Choose external:
@@ -719,9 +715,7 @@ class UI(QMainWindow):
     def backup_now_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
-        # Set backup now to true
-        with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile: # Set backup now to true
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
@@ -734,37 +728,37 @@ class UI(QMainWindow):
 
 
 ################################################################################
-## Show external option to back up
+# Show external option to back up
 ################################################################################
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
-        appIcon = QIcon(src_restore_icon)
-        self.setWindowIcon(appIcon)
+        # Media location
+        self.foundInMedia = None
+        self.media = "/media"
+        self.run = "/run/media"
+
+        self.iniUI()
+
+    def iniUI(self):
+        self.setWindowIcon(QIcon(src_restore_icon))
         self.setWindowTitle("Choose external:")
         self.setFixedSize(500, 380)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
-        ## Center window
+        # Center window
         ################################################################################
         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
         fg = self.frameGeometry()
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
 
-        ################################################################################
-        ## Media location
-        ################################################################################
-        self.foundInMedia = None
-        self.media = "/media"
-        self.run = "/run/media"
-
         self.widgets()
 
     def widgets(self):
         ################################################################################
-        ## Frame
+        # Frame
         ################################################################################
         self.whereFrame = QFrame(self)
         self.whereFrame.setFixedSize(460, 280)
@@ -772,76 +766,6 @@ class EXTERNAL(QWidget):
         self.whereFrame.setStyleSheet("""
             background-color: rgb(48, 49, 50);
         """)
-
-        # ################################################################################
-        # ## Radio local
-        # ################################################################################
-        # self.local = QRadioButton(self)
-        # self.local.setFont(item)
-        # self.local.setText("Local storage")
-        # self.local.setToolTip("Use this options if you plan to back up to a: USB/HD/SSD,\n"
-        #                       "that is directly connected to your pc")
-        # self.local.setFixedSize(150, 24)
-        # self.local.move(20, 10)
-        # self.local.setEnabled(False)
-        # self.local.autoExclusive()
-        # self.local.setStyleSheet("""
-        #      border: 1px solid red;
-        # """)
-
-        ################################################################################
-        ## Radio network
-        ################################################################################
-        # self.network = QRadioButton(self)
-        # self.network.setFont(item)
-        # self.network.setText("Remote storage")
-        # self.network.setToolTip("Use this options if you plan to back up via network (LAN)")
-        # self.network.setFixedSize(150, 24)
-        # self.network.move(20, 305)
-        # self.network.setEnabled(False)
-        # self.network.autoExclusive()
-        # self.network.setStyleSheet("""
-        #      border: 1px solid red;
-        # """)
-
-        ###############################################################################
-        ## Radio network
-        ################################################################################
-        # self.lineEdit = QLineEdit(self)
-        # self.lineEdit.setFont(item)
-        # self.lineEdit.setPlaceholderText("Example: ssh USER@xx.xxx.xxx.xx")
-        # self.lineEdit.setFixedWidth(210)
-        # self.lineEdit.move(180, 305)
-        # self.lineEdit.setEnabled(False)
-        # self.lineEdit.setStyleSheet("""
-        #     color: gray;
-        # """)
-
-        ################################################################################
-        ## Choose button
-        ################################################################################
-        # self.connectTo = QPushButton(self)
-        # self.connectTo.setFont(item)
-        # self.connectTo.setText("Connect")
-        # self.connectTo.setEnabled(False)
-        # self.connectTo.setFixedSize(80, 28)
-        # self.connectTo.move(400, 300)
-        # self.connectTo.setStyleSheet(
-        #     "QPushButton::hover"
-        #     "{"
-        #     "background-color: red;"
-        #     "}")
-        # # self.connectTo.clicked.connect(self.on_choose_button_clicked)
-        # self.connectTo.clicked.connect(lambda *args: print("Clicked"))
-
-        ################################################################################
-        ## Cancel button
-        ################################################################################
-        # self.widget = QWidget(self)
-        # self.widget.setGeometry(290, 260, 150, 110)
-        # self.widget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
 
         # Backup images
         self.cancelButton = QPushButton(self)
@@ -855,7 +779,7 @@ class EXTERNAL(QWidget):
 
     def check_connection_media(self):
         ################################################################################
-        ## Search external inside media
+        # Search external inside media
         ################################################################################
         try:
             os.listdir(f'{self.media}/{userName}')
@@ -867,7 +791,7 @@ class EXTERNAL(QWidget):
 
     def check_connection_run(self):
         ################################################################################
-        ## Search external inside run/media
+        # Search external inside run/media
         ################################################################################
         try:
             os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
@@ -880,7 +804,7 @@ class EXTERNAL(QWidget):
 
     def show_one_screen(self):
         ################################################################################
-        ## Check source
+        # Check source
         ################################################################################
         if self.foundInMedia:
             self.foundWhere = self.media
@@ -888,7 +812,7 @@ class EXTERNAL(QWidget):
             self.foundWhere = self.run
 
         ################################################################################
-        ## Add buttons and images for each external
+        # Add buttons and images for each external
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -903,49 +827,46 @@ class EXTERNAL(QWidget):
             image.move(30, verticalImg)
             verticalImg += 50
 
-            # Button
-            button = QPushButton(output, self.whereFrame)
-            button.setFixedSize(380, 30)
-            button.move(60, vertical)
-            button.setFont(item)
-            button.setCheckable(True)
-            text = button.text()
-            button.setStyleSheet("""
+            # Avaliables external devices
+            availableDevices = QPushButton(output, self.whereFrame)
+            availableDevices.setFixedSize(380, 30)
+            availableDevices.move(60, vertical)
+            availableDevices.setFont(item)
+            availableDevices.setCheckable(True)
+            text = availableDevices.text()
+            availableDevices.setStyleSheet("""
                 color: white;
             """)
 
             ################################################################################
-            ## Auto checked this choosed external device
+            # Auto checked this choosed external device
             ################################################################################
-            if text == main.getHDName:
-                button.setChecked(True)
+            if text == main.iniHDName:
+                availableDevices.setChecked(True)
 
             vertical += 50
-            button.show()
-            button.clicked.connect(lambda *args, text=text: self.on_button_clicked(text))
+            availableDevices.show()
+            availableDevices.clicked.connect(lambda *args, text=text: self.on_button_clicked(text))
 
     def on_button_clicked(self, get):
         ################################################################################
-        ## Check for spaces inside output and sort them
+        # Adapt external name is it has space in the name
         ################################################################################
         if " " in get:
-            get = str(get)
-            get = get.replace(" ", "\ ")
-            print("Remove spaces: " + get)
+            get = str(get.replace(" ", "\ "))
 
         ################################################################################
-        ## Write changes to ini
+        # Write changes to ini
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
         with open(src_user_config, 'w') as configfile:
             config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
             config.set('EXTERNAL', 'name', get)
             config.write(configfile)
 
-            self.close()
-            main.setEnabled(True)
+        self.close()
+        main.setEnabled(True)
 
     def on_button_cancel_clicked(self):
         externalMain.close()
