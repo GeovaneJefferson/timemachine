@@ -708,8 +708,8 @@ class UI(QMainWindow):
 
     def select_external_clicked(self):
         # Choose external hd
-        self.setEnabled(False)
-        externalMain.show()  # Show Choose external:
+        # self.setEnabled(False)
+        sub.run(f"python3 {src_search_for_devices}", shell=True)
 
     def backup_now_clicked(self):
         config = configparser.ConfigParser()
@@ -729,154 +729,154 @@ class UI(QMainWindow):
 ################################################################################
 # Show external option to back up
 ################################################################################
-class EXTERNAL(QWidget):
-    def __init__(self):
-        super(EXTERNAL, self).__init__()
-        # Media location
-        self.foundInMedia = None
-        self.media = "/media"
-        self.run = "/run/media"
+# class EXTERNAL(QWidget):
+#     def __init__(self):
+#         super(EXTERNAL, self).__init__()
+#         # Media location
+#         self.foundInMedia = None
+#         self.media = "/media"
+#         self.run = "/run/media"
 
-        self.iniUI()
+#         self.iniUI()
 
-    def iniUI(self):
-        self.setWindowIcon(QIcon(src_restore_icon))
-        self.setWindowTitle("Choose external:")
-        self.setFixedSize(500, 380)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+#     def iniUI(self):
+#         self.setWindowIcon(QIcon(src_restore_icon))
+#         self.setWindowTitle("Choose external:")
+#         self.setFixedSize(500, 380)
+#         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
 
-        ################################################################################
-        # Center window
-        ################################################################################
-        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-        fg = self.frameGeometry()
-        fg.moveCenter(centerPoint)
-        self.move(fg.topLeft())
+#         ################################################################################
+#         # Center window
+#         ################################################################################
+#         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+#         fg = self.frameGeometry()
+#         fg.moveCenter(centerPoint)
+#         self.move(fg.topLeft())
 
-        self.widgets()
+#         self.widgets()
 
-    def widgets(self):
-        ################################################################################
-        # Frame
-        ################################################################################
-        self.whereFrame = QFrame(self)
-        self.whereFrame.setFixedSize(460, 280)
-        self.whereFrame.move(20, 40)
-        self.whereFrame.setStyleSheet("""
-            background-color: rgb(48, 49, 50);
-        """)
+#     def widgets(self):
+#         ################################################################################
+#         # Frame
+#         ################################################################################
+#         self.whereFrame = QFrame(self)
+#         self.whereFrame.setFixedSize(460, 280)
+#         self.whereFrame.move(20, 40)
+#         self.whereFrame.setStyleSheet("""
+#             background-color: rgb(48, 49, 50);
+#         """)
 
-        # Backup images
-        self.cancelButton = QPushButton(self)
-        self.cancelButton.setFont(item)
-        self.cancelButton.setText("Cancel")
-        self.cancelButton.setFixedSize(80, 28)
-        self.cancelButton.move(400, 340)
-        self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
+#         # Backup images
+#         self.cancelButton = QPushButton(self)
+#         self.cancelButton.setFont(item)
+#         self.cancelButton.setText("Cancel")
+#         self.cancelButton.setFixedSize(80, 28)
+#         self.cancelButton.move(400, 340)
+#         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
-        self.check_connection_media()
+#         self.check_connection_media()
 
-    def check_connection_media(self):
-        ################################################################################
-        # Search external inside media
-        ################################################################################
-        try:
-            os.listdir(f'{self.media}/{userName}')
-            self.foundInMedia = True
-            self.show_one_screen()
+#     def check_connection_media(self):
+#         print("Searching for external devices under media...")
+#         ################################################################################
+#         # Search external inside media
+#         ################################################################################
+#         try:
+#             os.listdir(f'{self.media}/{userName}')
+#             self.foundInMedia = True
+#             self.show_one_screen()
 
-        except FileNotFoundError:
-            self.check_connection_run()
+#         except FileNotFoundError:
+#             self.check_connection_run()
 
-    def check_connection_run(self):
-        ################################################################################
-        # Search external inside run/media
-        ################################################################################
-        try:
-            os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
-            self.foundInMedia = False
-            self.show_one_screen()
+#     def check_connection_run(self):
+#         print("Searching for external devices under run...")
+#         ################################################################################
+#         # Search external inside run/media
+#         ################################################################################
+#         try:
+#             os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
+#             self.foundInMedia = False
+#             self.show_one_screen()
 
-        except FileNotFoundError:
-            print("No external devices mounted or available...")
-            pass
+#         except FileNotFoundError:
+#             print("No external devices mounted or available...")
+#             pass
 
-    def show_one_screen(self):
-        ################################################################################
-        # Check source
-        ################################################################################
-        if self.foundInMedia:
-            self.foundWhere = self.media
-        else:
-            self.foundWhere = self.run
+#     def show_one_screen(self):
+#         ################################################################################
+#         # Check source
+#         ################################################################################
+#         if self.foundInMedia:
+#             self.foundWhere = self.media
+#         else:
+#             self.foundWhere = self.run
 
-        ################################################################################
-        # Add buttons and images for each external
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+#         ################################################################################
+#         # Add buttons and images for each external
+#         ################################################################################
+#         config = configparser.ConfigParser()
+#         config.read(src_user_config)
 
-        vertical = 20
-        verticalImg = 52
-        for output in os.listdir(f'{self.foundWhere}/{userName}'):
-            image = QLabel(self)
-            pixmap = QPixmap(src_restore_small_icon)
-            image.setPixmap(pixmap)
-            image.setFixedSize(48, 48)
-            image.move(30, verticalImg)
-            verticalImg += 50
+#         vertical = 20
+#         verticalImg = 52
+#         for output in os.listdir(f'{self.foundWhere}/{userName}'):
+#             image = QLabel(self)
+#             pixmap = QPixmap(src_restore_small_icon)
+#             image.setPixmap(pixmap)
+#             image.setFixedSize(48, 48)
+#             image.move(30, verticalImg)
+#             verticalImg += 50
 
-            # Avaliables external devices
-            availableDevices = QPushButton(output, self.whereFrame)
-            availableDevices.setFixedSize(380, 30)
-            availableDevices.move(60, vertical)
-            availableDevices.setFont(item)
-            availableDevices.setCheckable(True)
-            text = availableDevices.text()
-            availableDevices.setStyleSheet("""
-                color: white;
-            """)
+#             # Avaliables external devices
+#             availableDevices = QPushButton(output, self.whereFrame)
+#             availableDevices.setFixedSize(380, 30)
+#             availableDevices.move(60, vertical)
+#             availableDevices.setFont(item)
+#             availableDevices.setCheckable(True)
+#             text = availableDevices.text()
+#             availableDevices.setStyleSheet("""
+#                 color: white;
+#             """)
 
-            ################################################################################
-            # Auto checked this choosed external device
-            ################################################################################
-            if text == main.iniHDName:
-                availableDevices.setChecked(True)
+#             ################################################################################
+#             # Auto checked this choosed external device
+#             ################################################################################
+#             if text == main.iniHDName:
+#                 availableDevices.setChecked(True)
 
-            vertical += 50
-            availableDevices.show()
-            availableDevices.clicked.connect(lambda *args, text=text: self.on_button_clicked(text))
+#             vertical += 50
+#             availableDevices.show()
+#             availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
 
-    def on_button_clicked(self, get):
-        ################################################################################
-        # Adapt external name is it has space in the name
-        ################################################################################
-        if " " in get:
-            get = str(get.replace(" ", "\ "))
+#     def on_device_clicked(self, get):
+#         ################################################################################
+#         # Adapt external name is it has space in the name
+#         ################################################################################
+#         if " " in get:
+#             get = str(get.replace(" ", "\ "))
 
-        ################################################################################
-        # Write changes to ini
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
-            config.set('EXTERNAL', 'name', get)
-            config.write(configfile)
+#         ################################################################################
+#         # Write changes to ini
+#         ################################################################################
+#         config = configparser.ConfigParser()
+#         config.read(src_user_config)
+#         with open(src_user_config, 'w') as configfile:
+#             config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
+#             config.set('EXTERNAL', 'name', get)
+#             config.write(configfile)
 
-        self.close()
-        main.setEnabled(True)
+#         self.close()
+#         main.setEnabled(True)
 
-    def on_button_cancel_clicked(self):
-        externalMain.close()
-        main.setEnabled(True)
-
+#     def on_button_cancel_clicked(self):
+#         externalMain.close()
+#         main.setEnabled(True)
+        
 
 app = QApplication(sys.argv)
-tic = time.time()
 main = UI()
 main.show()
-externalMain = EXTERNAL()
-toc = time.time()
-print(f'{appName} {(toc - tic):.4f} seconds')
+# externalMain = EXTERNAL()
 app.exit(app.exec())
+

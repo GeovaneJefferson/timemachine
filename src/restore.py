@@ -41,6 +41,9 @@ class UI(QWidget):
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
 
+        self.widgets()
+
+    def widgets(self):  
         ################################################################################
         # Base layouts
         ################################################################################
@@ -340,8 +343,7 @@ class UI(QWidget):
                 config.write(configfile)
 
             print("External not mounted or available...")
-            sub.Popen(f"python3 {src_notification}",
-                      shell=True)  # Call notification_available_notification()  # Call not available notification
+            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification_available_notification()  # Call not available notification
             exit()
 
         ################################################################################
