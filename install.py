@@ -7,16 +7,13 @@ from pathlib import Path
 
 class CLI:
     def __init__(self):
+        # Install command
+        self.installDependencies = "python3-pip qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools"
+        self.installPipPackages = "pyside6"
+
         # Folders
         self.home_user = str(Path.home())
         self.getCurrentLocation = pathlib.Path().resolve()  # Current folder
-
-        # Compatible system
-        self.ubuntu = False
-        self.debian = False
-        self.opensuse = False
-        self.fedora = False
-        self.arch = False
 
         # Terminal commands
         self.createCmd = "mkdir"
@@ -37,135 +34,90 @@ class CLI:
         self.check_system()
 
     def check_system(self):
-        ################################################################################
-        ## Check system (Ubuntu, Opensuse etc.)
-        ################################################################################
-        # sub.run("pkexec sudo", shell=True)
-        output = os.popen("cat /etc/os-release") # uname -v
+        # Check User system (Ubuntu, Opensuse etc.)
+        output = os.popen("cat /etc/os-release")  # uname -v
         output = output.read()
-
+        # Types of systems
         if "ubuntu" in output:
-            self.ubuntu = True
+            self.requirements("ubuntu")
 
         elif "debian" in output:
-            self.debian = True
+            self.requirements("debian")
 
         elif "opensuse" in output:
-            self.opensuse = True
+            self.requirements("opensuse")
 
         elif "fedora" in output:
-            self.fedora = True
+            self.requirements("fedora")
 
         elif "arch" in output:
-            self.arch = True
-
-        self.requeriments()
-
-    def requeriments(self):
-        ################################################################################
-        ## Install pip (Ubuntu)
-        ################################################################################
-        print("Python3 pip need to be installed.")
-
-        if self.ubuntu or self.debian:
-            try:
-                print("")
-                sub.run("sudo apt install python3-pip", shell=True)
-                print("Python3-pip was installed.")
-
-            except :
-                print("Error trying to install python3-pip!")
-                exit()
-
-        ################################################################################
-        ## Install pip (Opensuse)
-        ################################################################################
-        elif self.opensuse:
-            try:
-                print("")
-                sub.run("sudo zypper install python3-pip", shell=True)
-                print("Python3-pip was installed.")
-
-            except:
-                print("Error trying to install python3-pip!")
-                exit()
-
-        ################################################################################
-        ## Install pip (Fedora)
-        ################################################################################
-        elif self.fedora:
-            try:
-                print("")
-                sub.run("sudo dnf install python3-pip", shell=True)
-                print("Python3-pip was installed.")
-
-            except:
-                print("Error trying to install python3-pip!")
-                exit()
-
-        elif self.arch:
-            try:
-                print("")
-                sub.run("sudo pacman -Sy python-pip", shell=True)
-                print("Python3-pip was installed.")
-
-            except:
-                print("Error trying to install python3-pip!")
-                exit()
-
-        ################################################################################
-        ## Install PySide6
-        ################################################################################
-        if self.ubuntu or self.opensuse or self.fedora or self.arch or self.debian:
-            try:
-                print("")
-                print("PySide6 pip need to be installed.")
-                sub.run("pip install pyside6", shell=True)
-
-            except :
-                print("Error trying to install PySide6!")
-                exit()
-
+            self.requirements("arch")
         else:
-            print("None compatible system found.")
-            print("Could not install python3-pip and PySide6.")
-            print("You have to install manually..")
+            print("No support OS found!")
+            print("Contact the developer :D")
+            exit()
+
+        self.requirements(__eq__)
+
+    def requirements(self, user_os):
+        print(f"Users OS: {(user_os.capitalize())}")
+        ################################################################################
+        # Install pip (Ubuntu)
+        ################################################################################
+        print("Installing all the dependencies...")
+        try:
+            # Ubuntu or Debian
+            if user_os == "ubuntu" or "debian":
+                print("")
+                sub.run(f"sudo apt install {self.installDependencies}", shell=True)
+
+            # Opensuse
+            elif user_os == "opensuse":
+                print("")
+                sub.run(f"sudo zypper install {self.installDependencies}", shell=True)
+
+            # Fedora
+            elif user_os == "fedora":
+                print("")
+                sub.run(f"sudo dnf install {self.installDependencies}", shell=True)
+
+            # Arch
+            elif user_os == "arch":
+                print("")
+                sub.run(f"sudo pacman -Sy {self.installDependencies}", shell=True)
+
+            ################################################################################
+            # Install PySide6
+            ################################################################################
+            print("")
+            print("PySide6 pip need to be installed.")
+            sub.run(f"pip install {self.installPipPackages}", shell=True)
+
+        except:
+            print("Error trying to install dependencies!")
+            exit()
 
         self.begin_to_install()
 
     def begin_to_install(self):
-        ################################################################################
-        ## Create autostart folder
-        ################################################################################
         try:
-            if os.path.exists(self.create_autostart_folder):
-                pass
-            else:
+            # Create autostart folder if necessary
+            if not os.path.exists(self.create_autostart_folder):
                 sub.run(f"{self.createCmd} {self.create_autostart_folder}", shell=True)
 
-        except FileNotFoundError:
-            print("Error trying to create autostart folders insise users home!")
-
-        ################################################################################
-        ## Create applications folder
-        ################################################################################
-        try:
-            if os.path.exists(f"{self.home_user}/.local/share/applications/"):
-                pass
-            else:
+            # Create applications folder
+            if not os.path.exists(f"{self.home_user}/.local/share/applications/"):
                 sub.run(f"{self.createCmd} {self.home_user}/.local/share/applications/", shell=True)
-                
+
         except FileNotFoundError:
-            print("Error trying to create applications folder inside users home!")
-            pass
+            print("Error trying to create application´s folder inside users home!")
+            exit()
 
         ################################################################################
-        ## Copy all .desktop 
+        # Copy all .desktop
+        # Backup checker .desktop
         ################################################################################
-        ################################################################################
-        ## Backup cheker .desktop
-        ################################################################################
-        with open(self.src_backup_check, "w") as writer:    # Modify backup_check.desktop and add username to it
+        with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Type=Application\n "
@@ -177,9 +129,9 @@ class CLI:
                 f"Icon={self.restore_icon}")
 
         ################################################################################
-        ## Time Machine entry .desktop
+        # Time Machine entry .desktop
         ################################################################################
-        with open(self.src_timemachine_desktop, "w") as writer:     # Modify timemachine.desktop and add username to it
+        with open(self.src_timemachine_desktop, "w") as writer:  # Modify timemachine.desktop and add username to it
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Version=1.0\n "
@@ -192,16 +144,22 @@ class CLI:
                 f"Categories=System\n "
                 f"StartupWMClass=Gui.py\n "
                 f"Terminal=false")
-        
+
         try:
             # Copy current Time Machine folder to user
-            shutil.copytree(self.getCurrentLocation, self.dst_folder_timemachine)       # Copy current folder to destination folder
-            shutil.copy(self.src_timemachine_desktop, self.dst_timemachine_desktop)     # Copy .desktop and .timemachine.desktop to destination folder
+            # Copy current folder to destination folder
+            shutil.copytree(self.getCurrentLocation,
+                            self.dst_folder_timemachine)
 
-            sub.run(f"rm -rf {self.dst_venv_loc}", shell=True)        # Remove venv folder from user
+            # Copy .desktop and .timemachine.desktop to destination folder
+            shutil.copy(self.src_timemachine_desktop,
+                        self.dst_timemachine_desktop)
+
+            # Remove venv folder from user is necessary
+            sub.run(f"rm -rf {self.dst_venv_loc}", shell=True)
 
             print("Program was installed!")
- 
+
         except FileExistsError:
             print("Program is already installed!")
 
