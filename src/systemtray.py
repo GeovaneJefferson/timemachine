@@ -50,6 +50,9 @@ class APP:
         self.menu.addAction(self.openSettingsButton)
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
+        # Tray
+        icon = QIcon(src_system_bar_icon)
+        self.tray.setIcon(icon)
 
         ################################################################################
         # Check ini
@@ -61,6 +64,7 @@ class APP:
         self.app.exec()
 
     def updates(self):
+        print(f"{appName} system tray is running...")
         try:
             ################################################################################
             # Read ini file
@@ -105,11 +109,6 @@ class APP:
         elif self.iniBackupNow == "false" and self.iniHDName != "None":
             icon = QIcon(src_system_bar_icon)
             self.backupNowButton.setEnabled(True)
-
-        # Tray
-        icon = QIcon(src_system_bar_icon)
-        self.tray.setIcon(icon)
-        print(f"{appName} system tray is running...")
 
         ################################################################################
         # System Tray
