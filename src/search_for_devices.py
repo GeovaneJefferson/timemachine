@@ -44,7 +44,7 @@ class EXTERNAL(QWidget):
         self.whereFrame.setFixedSize(440, 280)
         self.whereFrame.move(20, 40)
         self.whereFrame.setStyleSheet("""
-            background-color: rgb(48, 49, 50);
+            background-color: rgb(38, 39, 40);
         """)
 
         # Scroll
@@ -67,7 +67,7 @@ class EXTERNAL(QWidget):
         # Vertical layout V
         self.verticalLayout = QVBoxLayout(self.whereFrame)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(20)
+        self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
         # Refresh button
@@ -136,15 +136,15 @@ class EXTERNAL(QWidget):
         for output in os.listdir(f'{location}/{userName}'):
             # Avaliables external devices
             availableDevices = QPushButton(self.whereFrame)
-            availableDevices.setFont(QFont('DejaVu Sans', 12))
+            availableDevices.setFont(QFont('DejaVu Sans', 11))
             availableDevices.setText(output)
             availableDevices.setFixedSize(440, 60)
             availableDevices.setCheckable(True)
             text = availableDevices.text()
             availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
             availableDevices.setStyleSheet(
-            "QPushButton"
-            "{"
+                "QPushButton"
+                "{"
                 "background-color: rgb(58, 59, 60);"
                 f"background-image: url({src_restore_small_icon});"
                 "background-repeat: no-repeat;"
@@ -152,11 +152,11 @@ class EXTERNAL(QWidget):
                 "border-radius: 2px;"
                 "border: 1px solid gray;"
                 "color: white;"
-            "}"
-            "QPushButton::hover"
-            "{"
+                "}"
+                "QPushButton::hover"
+                "{"
                 "background-color: rgb(68, 69, 70);"
-            "}")
+                "}")
 
             ################################################################################
             # Auto checked this choosed external device

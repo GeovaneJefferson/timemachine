@@ -18,8 +18,9 @@ class UI(QMainWindow):
         rect = screen.availableGeometry()
         self.x = (rect.width())
         self.y = (rect.height())
+
         # Window manager dimensions
-        self.move((self.x - 260), (self.y - 280))
+        self.move((self.x - 260), (40))
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -31,7 +32,7 @@ class UI(QMainWindow):
         self.widget.setStyleSheet(
             "QWidget"
             "{"
-            "background-color: rgb(40, 40, 40);" # White color rgb(255, 255, 255) # Black color rgb(40, 40, 40)
+            "background-color: rgb(250, 250, 250);" # White color rgb(255, 255, 255) # Black color rgb(40, 40, 40)
             "border-radius: 15px;"
             "}")
 
@@ -54,7 +55,7 @@ class UI(QMainWindow):
         self.titleLabel.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titleLabel.setFixedSize(120, 30)
         self.titleLabel.setStyleSheet("""
-            color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
             background-color: transparent;
             border: transparent;
         """)    # 65,65,65
@@ -85,7 +86,7 @@ class UI(QMainWindow):
         self.messageText.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.messageText.setFixedSize(220, 30)
         self.messageText.setStyleSheet("""
-            color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
             background-color: transparent;
             border: transparent;
         """)    # 55,55,55
@@ -169,7 +170,8 @@ class UI(QMainWindow):
         self.startAnimation = QPropertyAnimation(self.widget, b"geometry")
         self.startAnimation.setDuration(1000)
         self.startAnimation.setStartValue(QRect(self.x, 0, 0, 0))
-        self.startAnimation.setEndValue(QRect(0, 0, 0, 0))
+        # How far the widget will go from "outside to inside"
+        self.startAnimation.setEndValue(QRect(10, 0, 0, 0))
         self.startAnimation.setEasingCurve(QEasingCurve.OutCirc)
         self.startAnimation.start()
 
@@ -177,13 +179,14 @@ class UI(QMainWindow):
         timer.start(5000)
 
     def end_animation(self):
-        self.move(self.x, (self.y - 280))
+        self.move(self.x, (40))
 
         #################################################################
         ###  End animation
         #################################################################
         self.endAnimation = QPropertyAnimation(self.widget, b"geometry")
         self.endAnimation.setDuration(1000)
+        # Push widget to the righ, far from the screen
         self.endAnimation.setEndValue(QRect(260, 0, 0, 0))
         self.endAnimation.setEasingCurve(QEasingCurve.OutCirc)
         self.endAnimation.start()
