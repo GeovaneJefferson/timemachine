@@ -317,7 +317,7 @@ class UI(QMainWindow):
         # External availability
         ################################################################################
         try:
-            os.listdir(f"/media/{userName}/{self.iniHDName}")  # Check if external can be found
+            os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Check if external can be found
             self.set_external_status()
 
         except FileNotFoundError:
@@ -328,7 +328,7 @@ class UI(QMainWindow):
         # External availability
         ################################################################################
         try:
-            os.listdir(f"/run/media/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
+            os.listdir(f"{run}/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
             self.set_external_status()
 
         except FileNotFoundError:
@@ -353,6 +353,7 @@ class UI(QMainWindow):
         self.get_size_informations()
 
     def get_size_informations(self):
+        print("Gettings external size informations...")
         ################################################################################
         # Get external size values
         ################################################################################
