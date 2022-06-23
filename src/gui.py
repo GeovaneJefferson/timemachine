@@ -192,9 +192,9 @@ class UI(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-            "* Keep local snapshots as space permits\n"
+            "* Keep local snapshots of your personal files as space permits\n"
             "* Schedule backups (Minutely, Hourly or Daily)\n"
-            f"* Automatically back up at first PC boot, if backup time\n   has passed.\n\n"
+            f"* Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.setFixedSize(420, 120)
@@ -728,156 +728,7 @@ class UI(QMainWindow):
         sub.run(f"python3 {src_options_py}", shell=True)
 
 
-################################################################################
-# Show external option to back up
-################################################################################
-# class EXTERNAL(QWidget):
-#     def __init__(self):
-#         super(EXTERNAL, self).__init__()
-#         # Media location
-#         self.foundInMedia = None
-#         self.media = "/media"
-#         self.run = "/run/media"
-
-#         self.iniUI()
-
-#     def iniUI(self):
-#         self.setWindowIcon(QIcon(src_restore_icon))
-#         self.setWindowTitle("Choose external:")
-#         self.setFixedSize(500, 380)
-#         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-
-#         ################################################################################
-#         # Center window
-#         ################################################################################
-#         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-#         fg = self.frameGeometry()
-#         fg.moveCenter(centerPoint)
-#         self.move(fg.topLeft())
-
-#         self.widgets()
-
-#     def widgets(self):
-#         ################################################################################
-#         # Frame
-#         ################################################################################
-#         self.whereFrame = QFrame(self)
-#         self.whereFrame.setFixedSize(460, 280)
-#         self.whereFrame.move(20, 40)
-#         self.whereFrame.setStyleSheet("""
-#             background-color: rgb(48, 49, 50);
-#         """)
-
-#         # Backup images
-#         self.cancelButton = QPushButton(self)
-#         self.cancelButton.setFont(item)
-#         self.cancelButton.setText("Cancel")
-#         self.cancelButton.setFixedSize(80, 28)
-#         self.cancelButton.move(400, 340)
-#         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
-
-#         self.check_connection_media()
-
-#     def check_connection_media(self):
-#         print("Searching for external devices under media...")
-#         ################################################################################
-#         # Search external inside media
-#         ################################################################################
-#         try:
-#             os.listdir(f'{self.media}/{userName}')
-#             self.foundInMedia = True
-#             self.show_one_screen()
-
-#         except FileNotFoundError:
-#             self.check_connection_run()
-
-#     def check_connection_run(self):
-#         print("Searching for external devices under run...")
-#         ################################################################################
-#         # Search external inside run/media
-#         ################################################################################
-#         try:
-#             os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
-#             self.foundInMedia = False
-#             self.show_one_screen()
-
-#         except FileNotFoundError:
-#             print("No external devices mounted or available...")
-#             pass
-
-#     def show_one_screen(self):
-#         ################################################################################
-#         # Check source
-#         ################################################################################
-#         if self.foundInMedia:
-#             self.foundWhere = self.media
-#         else:
-#             self.foundWhere = self.run
-
-#         ################################################################################
-#         # Add buttons and images for each external
-#         ################################################################################
-#         config = configparser.ConfigParser()
-#         config.read(src_user_config)
-
-#         vertical = 20
-#         verticalImg = 52
-#         for output in os.listdir(f'{self.foundWhere}/{userName}'):
-#             image = QLabel(self)
-#             pixmap = QPixmap(src_restore_small_icon)
-#             image.setPixmap(pixmap)
-#             image.setFixedSize(48, 48)
-#             image.move(30, verticalImg)
-#             verticalImg += 50
-
-#             # Avaliables external devices
-#             availableDevices = QPushButton(output, self.whereFrame)
-#             availableDevices.setFixedSize(380, 30)
-#             availableDevices.move(60, vertical)
-#             availableDevices.setFont(item)
-#             availableDevices.setCheckable(True)
-#             text = availableDevices.text()
-#             availableDevices.setStyleSheet("""
-#                 color: white;
-#             """)
-
-#             ################################################################################
-#             # Auto checked this choosed external device
-#             ################################################################################
-#             if text == main.iniHDName:
-#                 availableDevices.setChecked(True)
-
-#             vertical += 50
-#             availableDevices.show()
-#             availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-
-#     def on_device_clicked(self, get):
-#         ################################################################################
-#         # Adapt external name is it has space in the name
-#         ################################################################################
-#         if " " in get:
-#             get = str(get.replace(" ", "\ "))
-
-#         ################################################################################
-#         # Write changes to ini
-#         ################################################################################
-#         config = configparser.ConfigParser()
-#         config.read(src_user_config)
-#         with open(src_user_config, 'w') as configfile:
-#             config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
-#             config.set('EXTERNAL', 'name', get)
-#             config.write(configfile)
-
-#         self.close()
-#         main.setEnabled(True)
-
-#     def on_button_cancel_clicked(self):
-#         externalMain.close()
-#         main.setEnabled(True)
-
-
 app = QApplication(sys.argv)
 main = UI()
 main.show()
-# externalMain = EXTERNAL()
 app.exit(app.exec())
