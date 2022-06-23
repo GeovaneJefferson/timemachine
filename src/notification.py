@@ -20,7 +20,7 @@ class UI(QMainWindow):
         self.y = (rect.height())
 
         # Window manager dimensions
-        self.move((self.x - 260), (40))
+        self.move((self.x - 260), (self.y - 270))
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -179,7 +179,7 @@ class UI(QMainWindow):
         timer.start(5000)
 
     def end_animation(self):
-        self.move(self.x, (40))
+        self.move(self.x, (self.y - 270))
 
         #################################################################
         ###  End animation
