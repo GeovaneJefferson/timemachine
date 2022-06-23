@@ -13,7 +13,7 @@ class EXTERNAL(QWidget):
         self.setFixedSize(500, 380)
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
- 
+
         ################################################################################
         # Center window
         ################################################################################
@@ -30,7 +30,7 @@ class EXTERNAL(QWidget):
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        
+
         # INI file
         self.iniHDName = config['EXTERNAL']['name']
 
@@ -66,11 +66,11 @@ class EXTERNAL(QWidget):
 
         # Vertical layout V
         self.verticalLayout = QVBoxLayout(self.whereFrame)
-        self.verticalLayout.setContentsMargins(0, 10, 0, 0)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(20)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        
-        # Refresh button 
+
+        # Refresh button
         self.refreshButton = QPushButton(self)
         self.refreshButton.setFont(item)
         self.refreshButton.setText("Refresh")
@@ -136,7 +136,7 @@ class EXTERNAL(QWidget):
         for output in os.listdir(f'{location}/{userName}'):
             # Avaliables external devices
             availableDevices = QPushButton(self.whereFrame)
-            availableDevices.setFont(item)
+            availableDevices.setFont(QFont('DejaVu Sans', 12))
             availableDevices.setText(output)
             availableDevices.setFixedSize(440, 60)
             availableDevices.setCheckable(True)
@@ -151,6 +151,7 @@ class EXTERNAL(QWidget):
                 "background-position: left;"
                 "border-radius: 2px;"
                 "border: 1px solid gray;"
+                "color: white;"
             "}"
             "QPushButton::hover"
             "{"
@@ -194,7 +195,7 @@ class EXTERNAL(QWidget):
     def on_button_refresh_clicked(self):
         sub.Popen(f"python3 {src_search_for_devices}", shell=True)
         exit()
-        
+
     def on_button_cancel_clicked(self):
         exit()
 

@@ -160,6 +160,7 @@ class UI(QMainWindow):
         ################################################################################
         self.backupNowButton = QPushButton(self)
         self.backupNowButton.setText("Back Up Now")
+        self.backupNowButton.setFont(item)
         self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.move(420, 155)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
@@ -639,7 +640,7 @@ class UI(QMainWindow):
             # If .desktop has not already been copied
             if not os.path.exists(src_backup_check_desktop):
                 shutil.copy(src_backup_check, src_backup_check_desktop)  # Copy to /home/#USER/.config/autostart
-            
+
             ################################################################################
             # Set auto backup to true if external has choosen already
             ################################################################################
@@ -873,11 +874,10 @@ class UI(QMainWindow):
 #     def on_button_cancel_clicked(self):
 #         externalMain.close()
 #         main.setEnabled(True)
-        
+
 
 app = QApplication(sys.argv)
 main = UI()
 main.show()
 # externalMain = EXTERNAL()
 app.exit(app.exec())
-
