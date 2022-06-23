@@ -96,6 +96,7 @@ class APP:
         # No external found
         if self.iniHDName == "None":
             self.backupNowButton.setEnabled(False)
+
         # Condition Backup Now and Icon
         if self.iniBackupNow == "true":
             icon = QIcon(src_system_bar_run_icon)
@@ -104,10 +105,7 @@ class APP:
         elif self.iniBackupNow == "false" and self.iniHDName != "None":
             icon = QIcon(src_system_bar_icon)
             self.backupNowButton.setEnabled(True)
-        
-        else:
-            icon = QIcon(src_system_bar_icon)
-        
+
         # Tray        
         self.tray.setIcon(icon)
         print(f"{appName} system tray is running...")
