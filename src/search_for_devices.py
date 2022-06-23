@@ -4,8 +4,6 @@ from setup import *
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
-        self.media = "/media"
-        self.run = "/run/media"
         self.foundInMedia = None
         self.iniUI()
 
@@ -99,12 +97,13 @@ class EXTERNAL(QWidget):
         # Search external inside media
         ################################################################################
         try:
-            print((f'{self.media}/{userName}'))
-            os.listdir(f'{self.media}/{userName}')
-            self.show_one_screen(self.media)
+            print((f'{media}/{userName}'))
+            os.listdir(f'{media}/{userName}')
+            self.foundInMedia = True
+            self.show_one_screen(media)
 
         except FileNotFoundError:
-            self.check_connection_run(self.run)
+            self.check_connection_run(run)
 
     def check_connection_run(self):
         print("Searching for external devices under run...")
@@ -112,9 +111,10 @@ class EXTERNAL(QWidget):
         # Search external inside run/media
         ################################################################################
         try:
-            print((f'{self.run}/{userName}'))
-            os.listdir(f'{self.run}/{userName}')  # Opensuse, external is inside "/run"
-            self.show_one_screen(self.run)
+            print((f'{run}/{userName}'))
+            os.listdir(f'{run}/{userName}')  # Opensuse, external is inside "/run"
+            self.foundInMedia = False
+            self.show_one_screen(run)
 
         except FileNotFoundError:
             print("No external devices mounted or available...")
@@ -126,9 +126,9 @@ class EXTERNAL(QWidget):
         # Check source
         ################################################################################
         if self.foundInMedia:
-            self.foundWhere = self.media
+            self.foundWhere = media
         else:
-            self.foundWhere = self.run
+            self.foundWhere = run
 
         ################################################################################
         # Add buttons and images for each external
@@ -176,6 +176,9 @@ class EXTERNAL(QWidget):
         if " " in get:
             get = str(get.replace(" ", "\ "))
 
+        print(get)
+        print(self.foundWhere)
+
         ################################################################################
         # Write changes to ini
         ################################################################################
@@ -187,7 +190,6 @@ class EXTERNAL(QWidget):
             config.write(configfile)
 
         self.close()
-        main.setEnabled(True)
 
     def on_button_refresh_clicked(self):
         sub.Popen(f"python3 {src_search_for_devices}", shell=True)

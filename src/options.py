@@ -834,6 +834,7 @@ class UI(QMainWindow):
         ################################################################################
         # Call backup checker or not?
         ################################################################################
+        # TODO
         if self.iniAutomaticallyBackup == "true" and self.iniCheckerRunning == "true":
             pass
 
