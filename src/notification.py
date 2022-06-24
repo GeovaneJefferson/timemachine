@@ -136,7 +136,7 @@ class UI(QMainWindow):
         self.okButton = QPushButton()
         self.okButton.setText("Close")
         self.okButton.setFont(QFont("Ubuntu", 9))
-        self.okButton.setFixedSize(200, 32)
+        self.okButton.setFixedSize(200, 34)
         self.okButton.clicked.connect(self.end_animation)
         self.okButton.setStyleSheet(
             "QPushButton"

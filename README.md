@@ -4,6 +4,7 @@
 
 # Time Machine
 Use Time Machine to automatically back up your personal data. 
+
 Having a backup allows you to recover files that you later delete or can't access.
 using "Enter Time Machine" mode.
 
@@ -25,8 +26,10 @@ using "Enter Time Machine" mode.
 
 ## Enter Time Machine
 First, open Time Machine and allow to show in the system tray.
+
 Then, click on Time Machine in system tray and select "Enter Time Machine"
 (Remember, will only work if Time Machine has made at least one backup already.)
+
 Still in development...
 
 ## Requirements
@@ -34,12 +37,12 @@ Still in development...
 
 ## Installation:
 You will be asked for your password.
-* First, make sure that your system is updated.
-* Inside Time Machines folder, right click, "open terminal", write "python3 install.py" and press Enter.
+* Copy and paste this command bellow to the terminal.
 
 Example:
 
-    python3 install.py
+    git clone https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
+
 
 ## Uninstall:
 Inside Time Machine folder, right click, "open terminal", write "python3 uninstall.py" and press Enter.
