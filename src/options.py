@@ -29,9 +29,15 @@ class UI(QMainWindow):
         self.widgets()
 
     def widgets(self):
-        ################################################################################
+        # Read version.txt file, for version numbers
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+            config.write(configfile)
+
         # Apps version
-        ################################################################################
         version = QLabel(self)
         version.setFont(item)
         version.setText(appVersion)

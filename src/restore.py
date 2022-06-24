@@ -21,8 +21,7 @@ class UI(QWidget):
         # Window manager
         ################################################################################
         self.setWindowTitle(f"Enter {appName}")
-        app_icon = QIcon(src_restore_icon)
-        self.setWindowIcon(app_icon)
+        self.setWindowIcon(QIcon(src_restore_icon))
 
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.showFullScreen()
@@ -43,7 +42,7 @@ class UI(QWidget):
 
         self.widgets()
 
-    def widgets(self):  
+    def widgets(self):
         ################################################################################
         # Base layouts
         ################################################################################
@@ -320,7 +319,7 @@ class UI(QWidget):
             "background-color: rgb(24, 25, 26);"
             "border: 1px solid white;"
             "}")
-            
+
         self.get_date(None, output)
 
     def get_date(self, dateDirection, getFolder):
@@ -781,10 +780,10 @@ class UI(QWidget):
                 "{"
                 "background-color: rgb(68, 69, 70);"
                 "}")
-            
+
             # Set self.filesToRestore length
             self.restoreButton.setText(f"Restore({len(self.filesToRestore)})")
-            
+
             # Hide up function if 1 or more items is/are selected
             # Up
             self.upButton.setEnabled(False)
@@ -845,7 +844,7 @@ class UI(QWidget):
                 "border: 0px;"
                 "border-radius: 5px;"
                 "}")
-            
+
             # Set self.filesToRestore length
             self.restoreButton.setText("Restore")
 
