@@ -258,7 +258,7 @@ while True:
         print("Break backupchecker")
         break
     # Exit program if auto_backup is false
-    if main.getAutoBackup == "false":
+    if main.iniAutoBackup == "false":
         print("Break autobackup")
         break
 
