@@ -135,7 +135,7 @@ class UI(QMainWindow):
         #################################################################
         self.okButton = QPushButton()
         self.okButton.setText("Close")
-        self.okButton.setFont(QFont("Ubuntu", 9))
+        self.okButton.setFont(QFont("Ubuntu", 11))
         self.okButton.setFixedSize(200, 34)
         self.okButton.clicked.connect(self.end_animation)
         self.okButton.setStyleSheet(
@@ -143,7 +143,7 @@ class UI(QMainWindow):
             "{"
             "color: white;"
             "background-color: rgba(20, 110, 255, 1);"
-            "border-radius: 5px;"
+            "border-radius: 10px;"
             "border: 0px"
             "}"
             "QPushButton:hover"
