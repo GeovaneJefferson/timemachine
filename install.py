@@ -69,22 +69,25 @@ class CLI:
             # Ubuntu or Debian
             if user_os == "ubuntu" or "debian":
                 print("")
-                sub.run(f"sudo apt install {self.installDependencies}", shell=True)
+                sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
 
             # Opensuse
             elif user_os == "opensuse":
                 print("")
-                sub.run(f"sudo zypper install {self.installDependencies}", shell=True)
+                sub.run(f"sudo zypper -y update", shell=True)
+                sub.run(f"sudo zypper -yinstall {self.installDependencies}", shell=True)
 
             # Fedora
             elif user_os == "fedora":
                 print("")
-                sub.run(f"sudo dnf install {self.installDependencies}", shell=True)
+                sub.run(f"sudo dnf -y udpate", shell=True)
+                sub.run(f"sudo dnf -y install {self.installDependencies}", shell=True)
 
             # Arch
             elif user_os == "arch":
                 print("")
-                sub.run(f"sudo pacman -Sy {self.installDependencies}", shell=True)
+                sub.run(f"sudo pacman -Syu {self.installDependencies}", shell=True)
 
             ################################################################################
             # Install PySide6
