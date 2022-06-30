@@ -38,7 +38,7 @@ localFolderName = "share"
 flatpakTxt = "flatpak.txt"
 
 # CMD commands
-copyCmd = "rsync -avruh --exclude={'cache','.cache'}" 
+copyCmd = "rsync -avrh --exclude={'cache','.cache'}" 
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 
