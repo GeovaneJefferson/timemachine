@@ -81,7 +81,7 @@ class CLI:
             # Fedora
             elif user_os == "fedora":
                 print("")
-                sub.run(f"sudo dnf -y udpate", shell=True)
+                sub.run(f"sudo dnf -y update", shell=True)
                 sub.run(f"sudo dnf -y install {self.installDependencies}", shell=True)
 
             # Arch
