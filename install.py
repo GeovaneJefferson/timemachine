@@ -74,7 +74,7 @@ class CLI:
             elif user_os == "opensuse":
                 print("")
                 sub.run(f"sudo zypper -y update", shell=True)
-                sub.run(f"sudo zypper -yinstall {self.installDependencies}", shell=True)
+                sub.run(f"sudo zypper -y install {self.installDependencies}", shell=True)
 
             # Fedora
             elif user_os == "fedora":
