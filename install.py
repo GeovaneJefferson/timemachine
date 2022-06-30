@@ -80,7 +80,7 @@ class CLI:
             elif user_os == "fedora":
                 print("")
                 sub.run(f"sudo dnf -y update", shell=True)
-                sub.run(f"sudo dnf -y install {self.installDependencies}", shell=True)
+                sub.run(f"sudo dnf -y install {self.installDependencies} qt5-qtbase-devel", shell=True)
 
             # Arch
             elif user_os == "arch":
