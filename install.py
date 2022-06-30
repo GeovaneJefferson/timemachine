@@ -8,7 +8,7 @@ from pathlib import Path
 class CLI:
     def __init__(self):
         # Install command
-        self.installDependencies = "python3-pip qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools"
+        self.installDependencies = "python3-pip"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
 
         # Folders
@@ -56,8 +56,6 @@ class CLI:
             print("No support OS found!")
             print("Contact the developer :D")
             exit()
-
-        self.requirements(__eq__)
 
     def requirements(self, user_os):
         print(f"Users OS: {(user_os.capitalize())}")
