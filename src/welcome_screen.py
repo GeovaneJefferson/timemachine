@@ -87,7 +87,6 @@ class WELCOME(QWidget):
 class START(QWidget):
     def __init__(self):
         super().__init__()
-        sub.run(f"python3 {src_search_for_devices}", shell=True)
         self.initUI()
 
     def initUI(self):

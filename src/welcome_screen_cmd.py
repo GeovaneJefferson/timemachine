@@ -79,7 +79,8 @@ class RESTORE:
                 print(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
 
-                sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/", shell=True)
+                sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
 
         self.restore_flatpak_apps()
 
@@ -93,8 +94,8 @@ class RESTORE:
 
                     for output in read_file:
                         output = output.strip()
-                        print(f"flatpak install -y --noninteractive {output}")
-                        sub.run(f"flatpak install -y --noninteractive {output}", shell=True)
+                        print(f"flatpak install -y --user --noninteractive {output}")
+                        sub.run(f"flatpak install -y --user --noninteractive {output}", shell=True)
             except:
                 pass
 
@@ -121,7 +122,7 @@ class RESTORE:
                 # Restore flatpak data (var) folders from external device
                 ################################################################################
                 print(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/ {src_flatpak_var_location}")
-                sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/ {src_flatpak_var_location}", shell=True)
+                # sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/ {src_flatpak_var_location}", shell=True)
                 
                 ################################################################################
                 # Restore flatpak data (.local/share) folders from external device
