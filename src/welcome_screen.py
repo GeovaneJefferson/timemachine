@@ -1,4 +1,4 @@
-from multiprocessing import dummy
+#! /usr/bin/python3
 from setup import *
 
 ################################################################
