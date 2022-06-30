@@ -121,7 +121,7 @@ class EXTERNAL(QWidget):
             pass
 
     def show_one_screen(self, location):
-        print("Showing on screen...")
+        print("Showing devices...")
         ################################################################################
         # Check source
         ################################################################################

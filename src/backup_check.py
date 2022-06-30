@@ -162,6 +162,7 @@ class CLI:
                     with open(src_user_config, 'w') as configfile:
                         config.set('BACKUP', 'first_startup', 'false')
                         config.write(configfile)
+                        
                     # Call backup now
                     self.call_backup_now()
 

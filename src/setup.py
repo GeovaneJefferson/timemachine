@@ -20,7 +20,8 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
-                            QProgressBar, QSystemTrayIcon, QMenu)
+                            QProgressBar, QSystemTrayIcon, QMenu,
+                            QStackedWidget)
 
 ################################################################################
 ## Variables
@@ -29,12 +30,19 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 appName = "Time Machine"
 appNameClose = "timemachine"
 appVersion = "v1.1.1"
-folderName = "TMB"
-exclude = ("linux", "mesa", "lib")
+baseFolderName = "TMB"
+backupFolderName = "backups"
+applicationFolderName = "applications"
+varFolderName = "var"
+localFolderName = "share"
+flatpakTxt = "flatpak.txt"
+
 # CMD commands
-copyCmd = "rsync -avruzh"
+copyCmd = "rsync -avruh --exclude={'cache','.cache'}" 
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
+
+
 # Locations
 media = "/media"
 run = "/run/media"
@@ -68,6 +76,8 @@ timeModeHours240 = ['00', '04', '08', '12', '16', '20']
 fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 # # Home location
+src_flatpak_var_location = f"{homeUser}/.var/app"
+src_flatpak_local_location = f"{homeUser}/.local/share/flatpak"
 src_options_py = f"{homeUser}/.local/share/timemachine/src/options.py"
 src_schedule_py = f"{homeUser}/.local/share/timemachine/src/schedule.py"
 src_backup_check_py = f"{homeUser}/.local/share/timemachine/src/backup_check.py"
@@ -81,9 +91,8 @@ src_backup_now = f"{homeUser}/.local/share/timemachine/src/backup_now.py"
 src_backup_check = f"{homeUser}/.local/share/timemachine/src/desktop/backup_check.desktop"
 src_restore_small_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_small.png"
 src_backup_py = f"{homeUser}/.local/share/timemachine/src/backup_check.py"
-src_restore_py = f"{homeUser}/.local/share/timemachine/src/restore.py"
+src_enter_time_machine_py = f"{homeUser}/.local/share/timemachine/src/enter_time_machine.py"
 src_system_tray = f"{homeUser}/.local/share/timemachine/src/systemtray.py"
-src_loadingGif = f"{homeUser}/.local/share/timemachine/src/icons/loading.gif"
 src_system_bar_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayicon.png"
 src_system_bar_run_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconrun.png"
 src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"

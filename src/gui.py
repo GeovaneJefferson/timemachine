@@ -132,29 +132,38 @@ class UI(QMainWindow):
         self.nextBackupLabel.setText("Next Backup: None")
         self.nextBackupLabel.setFixedSize(250, 18)
 
-        # Status external hd
+        # Status Status
         self.externalStatusLabel = QLabel()
         self.externalStatusLabel.setFont(QFont('DejaVu Sans', 10))
-        self.externalStatusLabel.setText("External HD:")
+        self.externalStatusLabel.setText("Status:")
         self.externalStatusLabel.setFixedSize(200, 18)
 
         ################################################################################
-        # Gif for preparing backup
+        # Process bar 
         ################################################################################
-        self.gif = QLabel(self)
-        self.gif.move(420, 154)
-        self.gif.setStyleSheet(
-            "QLabel"
+        self.processBar = QProgressBar(self)
+        self.processBar.setFixedSize(220, 14)
+        self.processBar.move(420, 162)
+        self.processBar.setStyleSheet(
+            "QProgressBar"
             "{"
-            "background-color: transparent;"
-            "border: 0px;"
+            "text-align: center;"
+            "color: white;"
+            "}"
+
+            "QProgressBar::chunk"
+            "{"
+            "background-color: rgb(20, 110, 255);"
+            "border-radius: 10px;"
             "}")
+        self.processBar.hide()
 
-        # Set qmovie as gif
-        self.movie = QMovie(src_loadingGif)
-        self.movie.setScaledSize(QSize().scaled(22, 22, Qt.KeepAspectRatio))
-        self.gif.setMovie(self.movie)
-
+        ################################################################################
+        # Current backup label information
+        ################################################################################
+        self.currentBackUpLabel = QLabel(self)
+        self.currentBackUpLabel.setFont(item)
+        
         ################################################################################
         # Backup now button
         ################################################################################
@@ -307,7 +316,14 @@ class UI(QMainWindow):
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
 
-        except KeyError:
+            # Current backup information
+            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
+            
+            # Current backup information
+            self.iniCurrentPercentBackup = config['INFO']['current_percent']
+
+        except KeyError as keyError:
+            print(keyError)
             print("Error trying to read user.ini!")
             exit()
 
@@ -336,7 +352,7 @@ class UI(QMainWindow):
             # Hide backup now button
             self.backupNowButton.hide()
             # External status
-            self.externalStatusLabel.setText("External HD: Disconnected")
+            self.externalStatusLabel.setText("Status: Disconnected")
             self.externalStatusLabel.setStyleSheet('color: red')
             self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
             # External size
@@ -348,7 +364,7 @@ class UI(QMainWindow):
         ################################################################################
         # External status
         ################################################################################
-        self.externalStatusLabel.setText("External HD: Connected")
+        self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
 
         self.get_size_informations()
@@ -387,16 +403,16 @@ class UI(QMainWindow):
             # If is not backing up right now
             ################################################################################
             if self.iniBackupNow == "false":
-                # Hide loading gif
-                self.movie.stop()
+                # Hide process bar
+                self.processBar.hide()
                 # Backup Now
                 self.backupNowButton.setEnabled(True)  # Disable backup now button
                 self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
                 self.backupNowButton.show()
 
             else:
-                # Show loading gif
-                self.movie.start()
+                # Show process bar
+                self.processBar.show()
                 # Hide backup now button
                 self.backupNowButton.hide()
 
@@ -608,6 +624,20 @@ class UI(QMainWindow):
         print(f"Today is: {self.dayName}")
         print("")
 
+        self.show_current_backup_folder()
+
+    def show_current_backup_folder(self):
+        # Current backup folder been backup
+        self.currentBackUpLabel.setText(self.iniCurrentBackupInfo)
+        # Auto adjustSize for current backup folder
+        self.currentBackUpLabel.adjustSize()
+
+        self.show_process_bar()
+
+    def show_process_bar(self):
+        # Process bar
+        self.processBar.setValue(int(self.iniCurrentPercentBackup))
+
         self.is_auto_backup_enabled()
 
     def is_auto_backup_enabled(self):
@@ -709,7 +739,7 @@ class UI(QMainWindow):
         sub.Popen(f"python3 {src_system_tray}", shell=True)
 
     def select_external_clicked(self):
-        # Choose external hd
+        # Choose Status
         # self.setEnabled(False)
         sub.run(f"python3 {src_search_for_devices}", shell=True)
 

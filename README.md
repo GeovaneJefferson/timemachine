@@ -19,6 +19,17 @@ using "Enter Time Machine" mode.
 #### Still not enough space for a new backup?
   Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 
+## Behind the "scenes":
+On the main Time Machine's window, will show base information about your backup HD/SSD device.
+Such as: 
+* Backup HD/SSD Name
+* Free space of the backup HD/SSD
+* When last backup was made
+* When the next backup will occur
+* Device connectivity
+
+Before a backup is made, Time Machine will analize and calculate your backup HD/SSD full size, free space and space needed for Time Machine to make a backup.
+
 ## Create a Time Machine backup
 1. Connect an external storage device, such as a USB or HD/SSD.
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.

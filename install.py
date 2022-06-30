@@ -161,7 +161,7 @@ class CLI:
             print("Program was installed!")
 
         except FileExistsError:
-            print("Program is already installed!")
+            print("App is already installed!")
 
         exit()
 

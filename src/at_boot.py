@@ -2,6 +2,13 @@
 from setup import *
 
 
+########################################################################
+# Read ini file
+########################################################################
+config = configparser.ConfigParser()
+config.read(src_user_config)
+
+
 class BOOT:
     def __init__(self):
         # Delay startup for x seconds
@@ -9,12 +16,6 @@ class BOOT:
         self.read_ini_file()
 
     def read_ini_file(self):
-        ########################################################################
-        # Read ini file
-        ########################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         # INI file
         self.iniHDName = config['EXTERNAL']['name']
         self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
@@ -22,8 +23,6 @@ class BOOT:
 
     def system_tray(self):
         # Set startup to True
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'first_startup', 'true')
             config.write(configfile)

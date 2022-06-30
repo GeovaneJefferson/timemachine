@@ -38,7 +38,8 @@ class APP:
         # Enter time machine button
         self.enterTimeMachineButton = QAction("Enter Time Machine")
         self.enterTimeMachineButton.setFont(QFont(item))
-        self.enterTimeMachineButton.triggered.connect(lambda: sub.run(f"python3 {src_restore_py}", shell=True))
+        self.enterTimeMachineButton.setEnabled(False)
+        self.enterTimeMachineButton.triggered.connect(lambda: sub.run(f"python3 {src_enter_time_machine_py}", shell=True))
         # Open settings button
         self.openSettingsButton = QAction("Open Time Machine Preferences...")
         self.openSettingsButton.setFont(QFont(item))
@@ -80,6 +81,9 @@ class APP:
             # INI last backup
             self.iniLastBackup = config['INFO']['latest']
 
+            # TEST
+            self.iniFolders = config.options('FOLDER')
+
         except:
             ################################################################################
             # Set notification_id to 5
@@ -97,19 +101,39 @@ class APP:
     def condition(self):
         # INI information
         self.iniLastBackupInformation.setText(f"Last backup: {self.iniLastBackup}")
+
+        if self.iniHDName != "None":
+            # Condition Backup Now and Icon
+            if self.iniBackupNow == "true":
+                icon = QIcon(src_system_bar_run_icon)
+                self.backupNowButton.setEnabled(False)
+            
+            elif self.iniBackupNow == "false":
+                icon = QIcon(src_system_bar_icon)
+                self.backupNowButton.setEnabled(True)
+
+            # Add the icon modifications to system tray icon
+            self.tray.setIcon(icon)
+
+            ################################################################################
+            # External availability
+            ################################################################################
+            try:
+                os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
+
+            except FileNotFoundError:
+                try:
+                    os.listdir(f"{run}/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
+
+                except FileNotFoundError:
+                    # Hide backup now button
+                    self.backupNowButton.setEnabled(False)
+
         # No external found
-        if self.iniHDName == "None":
+        else:
             self.backupNowButton.setEnabled(False)
 
-        # Condition Backup Now and Icon
-        if self.iniBackupNow == "true" and self.iniHDName != "None":
-            icon = QIcon(src_system_bar_run_icon)
-            self.backupNowButton.setEnabled(False)
-        
-        elif self.iniBackupNow == "false" and self.iniHDName != "None":
-            icon = QIcon(src_system_bar_icon)
-            self.backupNowButton.setEnabled(True)
-
+  
         ################################################################################
         # System Tray
         ################################################################################
