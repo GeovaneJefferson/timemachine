@@ -328,7 +328,7 @@ class UI(QWidget):
         ################################################################################
         try:
             self.dateFolders = []
-            for output in os.listdir(f"{self.iniExternalLocation}/{folderName}/"):
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/backups"):
                 if "." not in output:
                     self.dateFolders.append(output)
                     self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
@@ -452,7 +452,7 @@ class UI(QWidget):
             # Get available times inside {folderName}
             ################################################################################
             timeFolders = []
-            for getTime in os.listdir(f"{self.iniExternalLocation}/{folderName}/{getDate}/"):
+            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/backups/{getDate}/"):
                 timeFolders.append(getTime)
                 timeFolders.sort(reverse=True)
 
@@ -549,7 +549,7 @@ class UI(QWidget):
         try:
             horizontal = 0
             vertical = 0
-            for output in os.listdir(f"{self.iniExternalLocation}/{folderName}/{getDate}/{getTime}/{getFolder}"):
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}"):
                 if "." in output and not output.startswith("."):
                     print("     Files: ", output)
                     self.buttonFiles = QPushButton(self)
@@ -579,7 +579,7 @@ class UI(QWidget):
                             ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
                         scaledHTML = 'width:"100%" height="250"'
                         self.buttonFiles.setToolTip(
-                            f"<img src={self.iniExternalLocation}/{folderName}/{getDate}/{getTime}/{getFolder}/{output} "
+                            f"<img src={self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}/{output} "
                             f"{scaledHTML}/>")
 
                     self.buttonFiles.clicked.connect(
@@ -593,7 +593,7 @@ class UI(QWidget):
                         image = QLabel(self.buttonFiles)
                         scaledHTML = 'width:"100%" height="85"'
                         image.setText(
-                            f"<img  src={self.iniExternalLocation}/{folderName}/{getDate}/{getTime}/{getFolder}/{output} "
+                            f"<img  src={self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}/{output} "
                             f"{scaledHTML}/>")
                         image.move(20, 20)
                         image.setStyleSheet("""
@@ -738,7 +738,7 @@ class UI(QWidget):
                         vertical += 1
 
         except FileNotFoundError:
-            print(f"Source files not found inside {folderName}.")
+            print(f"Source files not found inside {baseFolderName}.")
 
     def add_to_restore(self, output, getDate, getTime):
         ################################################################################
@@ -916,7 +916,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{copyCmd} {self.iniExternalLocation}/{folderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"
+                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"
                     f"{self.filesToRestore[count]} {homeUser}/{self.chooseFolder[0]}/ &",
                     shell=True)
                 count += 1
@@ -927,7 +927,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f'{copyCmd} {self.iniExternalLocation}/{folderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"'
+                    f'{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"'
                     f'{self.filesToRestoreWithSpace[count]}" {homeUser}/{self.chooseFolder[0]}/ &',
                     shell=True)
                 count += 1

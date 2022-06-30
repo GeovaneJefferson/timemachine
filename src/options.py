@@ -159,7 +159,7 @@ class UI(QMainWindow):
         # Time to run widget
         ################################################################################
         self.timeToRunWidget = QWidget(self)
-        self.timeToRunWidget.setGeometry(280, 100, 500, 180)
+        self.timeToRunWidget.setGeometry(280, 100, 500, 160)
         self.timeToRunWidget.setStyleSheet("""
             border-top: 1px solid rgb(68, 69, 70);
             border-bottom: 1px solid rgb(68, 69, 70);
@@ -199,7 +199,7 @@ class UI(QMainWindow):
         self.moreTimePerDayRadio.setFont(item)
         self.moreTimePerDayRadio.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
-            "This will produce a time folder inside the choose external location.\n"
+            "This will produce a time folder inside your backup device.\n"
             "Fx: 12-12-12/10-30\n"
             "10-30, is the time of the back up (10:30).")
 
@@ -294,7 +294,7 @@ class UI(QMainWindow):
         # Notification settings
         ################################################################################
         self.notificationWidget = QWidget(self)
-        self.notificationWidget.setGeometry(280, 280, 500, 80)
+        self.notificationWidget.setGeometry(280, 260, 500, 60)
         self.notificationWidget.setStyleSheet(
         "QWidget"
         "{"
@@ -309,7 +309,7 @@ class UI(QMainWindow):
         self.notificationTitle = QLabel()
         self.notificationTitle.setFont(topicTitle)
         self.notificationTitle.setText("Notification:")
-        self.notificationTitle.setAlignment(QtCore.Qt.AlignLeft)
+        self.notificationTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.notificationTitle.setFixedSize(200, 30)
         self.notificationTitle.setStyleSheet("""
             border: transparent;
@@ -325,22 +325,72 @@ class UI(QMainWindow):
         self.notificationCheckBox.clicked.connect(self.on_allow__notifications_clicked)
 
         ################################################################################
+        # Flatpak settings
+        ################################################################################
+        self.flatpakWidget = QWidget(self)
+        self.flatpakWidget.setGeometry(280, 320, 500, 80)
+        self.flatpakWidget.setStyleSheet(
+        "QWidget"
+        "{"
+        "border-bottom: 1px solid rgb(68, 69, 70);"
+        "}")
+
+        # Notification layout
+        self.flatpakLayout = QVBoxLayout(self.flatpakWidget)
+        self.flatpakLayout.setSpacing(5)
+
+        # Notification title
+        self.flatpakTitle = QLabel()
+        self.flatpakTitle.setFont(topicTitle)
+        self.flatpakTitle.setText("Flatpak Settings:")
+        self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.flatpakTitle.setFixedSize(200, 30)
+        self.flatpakTitle.setStyleSheet("""
+            border: transparent;
+        """)
+
+        # Flatpak Name checkbox
+        self.allowFlatpakNamesCheckBox = QCheckBox()
+        self.allowFlatpakNamesCheckBox.setFont(item)
+        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks apps names")
+        self.allowFlatpakNamesCheckBox.adjustSize()
+        self.allowFlatpakNamesCheckBox.setStyleSheet("""
+            border: transparent;
+        """)
+        self.allowFlatpakNamesCheckBox.clicked.connect(self.on_allow__flatpak_names_clicked)
+        
+        # Flatpak Data checkbox
+        self.allowFlatpakDataCheckBox = QCheckBox()
+        self.allowFlatpakDataCheckBox.setFont(item)
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
+            "(Back up flatpak names is necessary)")
+        self.allowFlatpakDataCheckBox.adjustSize()
+        self.allowFlatpakDataCheckBox.setStyleSheet("""
+            border: transparent;
+        """)
+        self.allowFlatpakDataCheckBox.clicked.connect(self.on_allow__flatpak_data_clicked)
+
+        ################################################################################
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 360, 500, 100)
+        self.resetWidget.setGeometry(280, 400, 500, 90)
+        # self.resetWidget.setStyleSheet(
+        # "QWidget"
+        # "{"
+        # "border: 1px solid red;"
+        # "}")
 
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
-        self.resetLayout.setSpacing(5)
-        # self.daysToRunLayoutV.setContentsMargins(20, 0, 20, 20)
+        self.resetLayout.setSpacing(0)
 
         # Reset title
         self.resetTitle = QLabel()
         self.resetTitle.setFont(topicTitle)
         self.resetTitle.setText("Reset:")
+        self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
-        self.resetTitle.setFixedSize(200, 30)   # If something seems broken, click on "Reset", to reset settings.
 
         # Reset label text
         self.resetText = QLabel()
@@ -423,6 +473,11 @@ class UI(QMainWindow):
         # Notifications layout
         self.notificationLayout.addWidget(self.notificationTitle, 0, Qt.AlignLeft | Qt.AlignTop)
         self.notificationLayout.addWidget(self.notificationCheckBox, 0, Qt.AlignLeft | Qt.AlignTop)
+       
+        # Flaptak settings
+        self.flatpakLayout.addWidget(self.flatpakTitle)
+        self.flatpakLayout.addWidget(self.allowFlatpakNamesCheckBox)
+        self.flatpakLayout.addWidget(self.allowFlatpakDataCheckBox)
 
         # Reset layout
         self.resetLayout.addWidget(self.resetTitle, 0, Qt.AlignLeft | Qt.AlignTop)
@@ -592,6 +647,28 @@ class UI(QMainWindow):
         ################################################################################
         if self.iniNotification == "true":
             self.notificationCheckBox.setChecked(True)
+
+        self.flatpak_settings()
+
+    def flatpak_settings(self):
+        ################################################################################
+        # Read INI file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
+        self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
+
+        ################################################################################
+        # Flatpak settings
+        ################################################################################
+        # Flatpak names
+        if self.iniAllowFlatpakNames == "true":
+            self.allowFlatpakNamesCheckBox.setChecked(True)
+
+        # Flatpak data
+        if self.iniAllowFlatpakData == "true":
+            self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, get):
         with open(src_user_config, 'w+') as configfile:
@@ -764,6 +841,39 @@ class UI(QMainWindow):
             print("Notifications enabled")
             config.write(configfile)
 
+    def on_allow__flatpak_names_clicked(self):
+        with open(src_user_config, 'w') as configfile:
+            if self.allowFlatpakNamesCheckBox.isChecked():
+                config.set('BACKUP', 'allow_flatpak_names', 'true')
+                print("Allow flatpaks installed names")
+            else:
+                config.set('BACKUP', 'allow_flatpak_names', 'false')
+                config.set('BACKUP', 'allow_flatpak_data', 'false')
+                self.allowFlatpakDataCheckBox.setChecked(False)
+
+            # Write to INI file
+            config.write(configfile)
+
+    def on_allow__flatpak_data_clicked(self):
+        # If user allow app to back up data, auto activate
+        # backup flatpaks name too.
+        with open(src_user_config, 'w') as configfile:
+            if self.allowFlatpakDataCheckBox.isChecked():
+                config.set('BACKUP', 'allow_flatpak_names', 'true')
+                config.set('BACKUP', 'allow_flatpak_data', 'true')
+                config.set('BACKUP', 'allow_flatpak_data', 'true')
+                print("Allow flatpaks installed names + data")
+
+                # Activate data checkbox
+                self.allowFlatpakNamesCheckBox.setChecked(True)
+
+            else:
+                config.set('BACKUP', 'allow_flatpak_data', 'false')
+
+            # Write to INI file
+            config.write(configfile)
+
+
     def on_button_fix_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -778,6 +888,8 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
                 config.set('BACKUP', 'checker_running', 'false')
+                config.set('BACKUP', 'allow_flatpak_names', 'false')
+                config.set('BACKUP', 'allow_flatpak_data', 'false')
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
                 config.set('EXTERNAL', 'name', 'None')
@@ -801,11 +913,13 @@ class UI(QMainWindow):
                 config.set('INFO', 'next', 'None')
                 config.set('INFO', 'notification', 'true')
                 config.set('INFO', 'notification_id', '0')
-                # Folders section
-                config.set('FOLDER', 'documents', 'true')
-                config.set('FOLDER', 'music', 'true')
-                config.set('FOLDER', 'videos', 'true')
-                config.set('FOLDER', 'pictures', 'true')
+                config.set('INFO', 'feedback_status', '')
+                config.set('INFO', 'current_percent', '0')
+               # Restore section
+                config.set('RESTORE', 'applications_name', 'false')
+                config.set('RESTORE', 'application_data', 'false')
+                config.set('RESTORE', 'files_and_folders', 'false')
+
                 # Write to INI file
                 config.write(configfile)
 

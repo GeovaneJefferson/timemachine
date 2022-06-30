@@ -3,11 +3,20 @@ from setup import *
 
 # QTimer
 timer = QtCore.QTimer()
+# Read ini file
+config = configparser.ConfigParser()
+config.read(src_user_config)
 
 
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
+        self.read_ini_file()
+
+    def read_ini_file(self):
+        # Read INI file
+        self.iniNotificationAddInfo = config['INFO']['notification_add_info']
+
         self.iniUI()
 
     def iniUI(self):
@@ -20,7 +29,7 @@ class UI(QMainWindow):
         self.y = (rect.height())
 
         # Window manager dimensions
-        self.move((self.x - 260), (self.y - 270))
+        self.move((self.x - 240), (self.y - 270))
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -126,6 +135,10 @@ class UI(QMainWindow):
 
         elif self.messageID == "9":
             self.messageText.setText("Error trying to restore your files!")
+        
+        elif self.messageID == "10":
+            self.messageText.setText("Not enough space to backup!\n"
+                f"{self.iniNotificationAddInfo}")
 
         else:
             pass
