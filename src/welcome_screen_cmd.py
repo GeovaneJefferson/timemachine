@@ -1,6 +1,5 @@
-from this import s
+#! /usr/bin/python3
 from setup import *
-
 
 # Read ini file
 config = configparser.ConfigParser()
