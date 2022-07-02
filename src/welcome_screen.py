@@ -154,15 +154,17 @@ class CHOOSEDEVICE(QWidget):
                 print(f"Devices found inside {media}")
                 self.foundInMedia = True
                 self.show_on_screen(media)
-
-            elif not len(os.listdir(f'{run}/{userName}')) == 0:
-                print(f"Devices found inside {run}")
-                self.foundInMedia = False
-                self.show_on_screen(run)
-
+                
         except FileNotFoundError:
-            print("No device found...")
-            pass
+            try:
+                if not len(os.listdir(f'{run}/{userName}')) == 0:
+                    print(f"Devices found inside {run}")
+                    self.foundInMedia = False
+                    self.show_on_screen(run)
+
+            except FileNotFoundError:
+                print("No device found...")
+                pass
 
         self.show_on_screen(None)
 
@@ -965,6 +967,8 @@ class BACKUPSCREEN(QWidget):
 
         if self.iniNotificationID == "2":
             time.sleep(2)
+            sub.Popen("gsettings set org.gnome.desktop.background picture-uri 'file:///media/geovanejefferson/myusb/TMB/wallpaper.jpg'", shell=True)
+            
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'notification_id', '0')
                 config.write(configfile)
