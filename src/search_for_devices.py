@@ -136,15 +136,13 @@ class EXTERNAL(QWidget):
 
             # Image
             image = QLabel(self.availableDevices)
-            image.setFixedSize(96, 96)
-            image.move(2, -15)
+            image.setFixedSize(46, 46)
+            image.move(6, 6)
             image.setStyleSheet(
                 "QLabel"
                 "{"
                 f"background-image: url({src_restore_small_icon});"
                 "background-repeat: no-repeat;"
-                "background-color: transparent;"
-
                 "}")
 
             ################################################################################
