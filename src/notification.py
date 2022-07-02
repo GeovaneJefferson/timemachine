@@ -3,6 +3,7 @@ from setup import *
 
 # QTimer
 timer = QtCore.QTimer()
+
 # Read ini file
 config = configparser.ConfigParser()
 config.read(src_user_config)
@@ -28,8 +29,18 @@ class UI(QMainWindow):
         self.x = (rect.width())
         self.y = (rect.height())
 
+        # Window position TOP
+        self.windowXPosition = self.x - 240
+        self.windowYPosition = 40
+
+        # Window position Bottom
+        # self.windowXPosition = self.x - 240
+        # self.windowYPosition = self.y - 270
+
         # Window manager dimensions
-        self.move((self.x - 240), (self.y - 270))
+        self.move(self.windowXPosition, self.windowYPosition)
+
+        # Other settings
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -155,7 +166,7 @@ class UI(QMainWindow):
             "QPushButton"
             "{"
             "color: white;"
-            "background-color: rgba(20, 110, 255, 1);"
+            "background-color: rgba(41, 147, 247, 1);"
             "border-radius: 10px;"
             "border: 0px"
             "}"
@@ -192,7 +203,7 @@ class UI(QMainWindow):
         timer.start(5000)
 
     def end_animation(self):
-        self.move(self.x, (self.y - 270))
+        self.move(self.x, self.windowYPosition)
 
         #################################################################
         ###  End animation

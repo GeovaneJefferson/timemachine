@@ -38,6 +38,7 @@ class UI(QMainWindow):
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(20)
+        self.leftLayout.setContentsMargins(0, 0, 10, 0)
 
         # Backup images
         self.backupImageLabel = QLabel()
@@ -47,13 +48,14 @@ class UI(QMainWindow):
             "{"
             f"background-image: url({src_backup_icon});"
             "border-color: transparent;"
+            "background-repeat: no-repeat;"
             "}")
 
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
         self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
         self.automaticallyCheckBox.setText("Back Up Automatically")
-        self.automaticallyCheckBox.setFixedSize(175, 20)
+        self.automaticallyCheckBox.adjustSize()
         self.automaticallyCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
@@ -161,7 +163,7 @@ class UI(QMainWindow):
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         # self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 156)
+        self.backupNowButton.move(420, 157)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.hide()
 
