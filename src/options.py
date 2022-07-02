@@ -516,9 +516,9 @@ class UI(QMainWindow):
                 verticalSpaceCheckbox += 25
                 text = label_text.text()
                 self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.on_folder_clicked(text))
-
+                
                 # Activate checkboxes in user.ini
-                if text in getIniFolders:
+                if text.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
 
         self.dates()
@@ -950,4 +950,5 @@ main.show()
 toc = time.time()
 print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())
+
 
