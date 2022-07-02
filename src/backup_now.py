@@ -4,6 +4,7 @@ from setup import *
 # Read ini file
 config = configparser.ConfigParser()
 config.read(src_user_config)
+config.optionxform = str
 
 # Error fuction
 def error_trying_to_backup(error):
@@ -114,7 +115,14 @@ class BACKUP:
         self.homeFolderToBackupSizeList=[]
         self.homeFolderToBeBackup=[]
         for output in self.iniFolders:  # Get folders size before back up to external
-            output = output.title()  # Capitalize first letter. ex: '/Desktop'
+            # Capitalize first letter
+            output = output.capitalize() 
+            # Can output be found inside Users Home?
+            try:
+                os.listdir(f"{homeUser}/{output}")
+            except:
+                # Lower output first letter
+                output = output.lower() # Lower output first letter
             # Get folder size
             getSize = os.popen(f"du -s {homeUser}/{output}")
             getSize = getSize.read().strip("\t").strip("\n").replace(f"{homeUser}/{output}", "").replace("\t", "")
