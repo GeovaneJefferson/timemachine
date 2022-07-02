@@ -542,7 +542,7 @@ class PREBACKUP(QWidget):
         self.continueButton.adjustSize()
         self.continueButton.move(800, 550)
         self.continueButton.setEnabled(False)
-        self.continueButton.clicked.connect(self.on_continue_clicked)
+        self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
 
         ################################################################################
         # Add layouts and widgets
@@ -632,10 +632,6 @@ class PREBACKUP(QWidget):
     #     except FileNotFoundError:
     #         print("No flatpak file found")
     #         pass
-
-    def on_continue_clicked(self):
-        # Go to next window
-        widget.setCurrentIndex(widget.currentIndex()+1)
 
     def on_application_names_clicked(self):
         # If user allow app to back up data, auto activate
@@ -943,7 +939,8 @@ class BACKUPSCREEN(QWidget):
         self.iniCurrentBackupInfo = config['INFO']['feedback_status']
         # Current backup information
         self.iniCurrentPercentBackup = config['INFO']['current_percent']
-        # Update externalDeviceName
+        # Get current notification ID
+        self.iniNotificationID = config['INFO']['notification_id']
         try:
             self.externalDeviceName.setText(self.iniExternalName)
         except:
@@ -955,84 +952,37 @@ class BACKUPSCREEN(QWidget):
         # Process bar
         self.processBar.setValue(int(self.iniCurrentPercentBackup))
 
-        if self.clickedOnRestore:
-            # if restoring is running
-            if self.iniIsRestoreRunning == "true":
-                # Show restoring description
-                self.whileRestoringDescription.setText(f'Transferring {self.iniCurrentBackupInfo} for the user {userName}...') 
-                # Hide more description
-                self.moreDescription.hide()
-                # Show restoring description
-                self.whileRestoringDescription.show()
-                # Show processbar
-                self.processBar.show()
+        # if restoring is running
+        if self.iniIsRestoreRunning == "true":
+            # Show restoring description
+            self.whileRestoringDescription.setText(f'Transferring {self.iniCurrentBackupInfo} for the user {userName}...') 
+            # Hide more description
+            self.moreDescription.hide()
+            # Show restoring description
+            self.whileRestoringDescription.show()
+            # Show processbar
+            self.processBar.show()
 
-            else:
-                # Jump to last class
-                widget.setCurrentWidget(main6)
-
+        if self.iniNotificationID == "2":
+            time.sleep(2)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', '0')
+                config.write(configfile)
+            
+            # Exit app
+            exit()
+        
     def start_restoring(self):
        # Call restore python
         sub.Popen(f"python3 {homeUser}/.local/share/timemachine/src/restore_cmd.py", shell=True)
-        self.clickedOnRestore = True
 
-
-class DONESCREEN(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        self.widgets()
-
-    def widgets(self):
-        # Title layout
-        self.titlelLayout = QVBoxLayout()
-        self.titlelLayout.setSpacing(20)
-        self.titlelLayout.setContentsMargins(20, 20, 20, 20)
-
-        # Title
-        self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 34))
-        self.title.setText("Restore is Complete")
-        self.title.setAlignment(QtCore.Qt.AlignHCenter)
-        
-        # Image      
-        image = QLabel()
-        image.setFixedSize(128, 128)
-        image.setStyleSheet(
-            "QLabel"
-            "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/restore.png);"
-            "background-repeat: no-repeat;"
-            "background-color: transparent;"
-            "}")
-        ################################################################################
-        # Buttons
-        ################################################################################
-        # Exit button
-        self.exitButton = QPushButton(self)
-        self.exitButton.setText("Exit")
-        self.exitButton.setFont(QFont("Ubuntu", 11))
-        self.exitButton.adjustSize()
-        self.exitButton.move(800, 550)
-        self.exitButton.clicked.connect(lambda: exit())
-
-        ###########################################################################
-        # Add layouts and widgets
-        ################################################################################
-        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        
-        self.setLayout(self.titlelLayout)
 
 app = QApplication(sys.argv)
-main = WELCOMESCREEN()
+main = BACKUPSCREEN()
 main2 = CHOOSEDEVICE()
 main3 = OPTIONS()
 main4 = PREBACKUP()
 main5 = BACKUPSCREEN()
-main6 = DONESCREEN()
 
 widget = QStackedWidget()
 widget.addWidget(main)   
@@ -1040,7 +990,6 @@ widget.addWidget(main2)
 widget.addWidget(main3) 
 widget.addWidget(main4) 
 widget.addWidget(main5) 
-widget.addWidget(main6) 
 widget.setCurrentWidget(main)   
 
 # Window settings

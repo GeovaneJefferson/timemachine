@@ -338,7 +338,7 @@ class RESTORE:
         with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'notification_id', "2")
             config.set('INFO', 'notification_add_info', "")
-            config.set('INFO', 'feedback_status', "0")
+            config.set('INFO', 'feedback_status', "")
             config.set('INFO', 'current_percent', "0")
             # Restore
             config.set('RESTORE', 'is_restore_running', "false")
