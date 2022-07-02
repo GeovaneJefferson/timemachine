@@ -488,9 +488,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         # Folders to backup
         getIniFolders = config.options('FOLDER')
 
@@ -508,15 +505,16 @@ class UI(QMainWindow):
 
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
-                self.foldersCheckbox.setStyleSheet("""
-                    border-color: transparent;
-                """)
+                self.foldersCheckbox.setStyleSheet(
+                    "QCheckBox"
+                    "{"
+                    "border-color: transparent;"
+                    "}")
 
                 self.foldersCheckbox.setFixedSize(150, 22)
                 self.foldersCheckbox.move(5, verticalSpaceCheckbox)
                 verticalSpaceCheckbox += 25
-                text = label_text.text().lower()  # Lowercase
-                self.foldersCheckbox.show()
+                text = label_text.text()
                 self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.on_folder_clicked(text))
 
                 # Activate checkboxes in user.ini
@@ -529,8 +527,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
 
         sun = config['SCHEDULE']['sun']
         mon = config['SCHEDULE']['mon']
@@ -571,8 +567,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         # Time
         iniEverytime = config['SCHEDULE']['everytime']
         # Mode
@@ -628,8 +622,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         # Notification
         self.iniNotification = config['INFO']['notification']
 
@@ -645,8 +637,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
         self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
 
@@ -661,12 +651,14 @@ class UI(QMainWindow):
         if self.iniAllowFlatpakData == "true":
             self.allowFlatpakDataCheckBox.setChecked(True)
 
-    def on_folder_clicked(self, get):
-        with open(src_user_config, 'w+') as configfile:
-            if config.has_option('FOLDER', get):
-                config.remove_option('FOLDER', get)
+    def on_folder_clicked(self, output):
+        print(f"Clicked on {output}")
+
+        with open(src_user_config, 'w') as configfile:
+            if config.has_option('FOLDER', output):
+                config.remove_option('FOLDER', output)
             else:
-                config.set('FOLDER', get, 'true')
+                config.set('FOLDER', output, 'true')
 
             # Write to INI file
             config.write(configfile)
@@ -863,11 +855,7 @@ class UI(QMainWindow):
             # Write to INI file
             config.write(configfile)
 
-
     def on_button_fix_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         resetConfirmation = QMessageBox.question(self, 'Reset', 'Are you sure you want to reset settings?',
         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
@@ -929,8 +917,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
         self.iniCheckerRunning = config['BACKUP']['checker_running']
 
@@ -950,8 +936,6 @@ class UI(QMainWindow):
             ################################################################################
             # After call backup checker, set checker_running to true
             ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                 config.set('BACKUP', 'checker_running', 'true')
                 config.write(configfile)
@@ -966,3 +950,4 @@ main.show()
 toc = time.time()
 print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())
+
