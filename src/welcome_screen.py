@@ -978,7 +978,7 @@ class BACKUPSCREEN(QWidget):
 
 
 app = QApplication(sys.argv)
-main = BACKUPSCREEN()
+main = WELCOMESCREEN()
 main2 = CHOOSEDEVICE()
 main3 = OPTIONS()
 main4 = PREBACKUP()
