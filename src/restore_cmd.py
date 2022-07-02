@@ -88,19 +88,20 @@ class RESTORE:
         self.homeFolderToBeRestore=[]
         for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
             f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):  # Get folders size before back up to external
-            
-            output = output.title()  # Capitalize first letter. ex: '/Desktop'
-
+             # Capitalize first letter
+            output = output.capitalize() 
+            # Can output be found inside Users Home?
+            try:
+                os.listdir(f"{homeUser}/{output}")
+            except:
+                # Lower output first letter
+                output = output.lower() # Lower output first letter
             # Get folder size
             getSize = os.popen(f"du -s {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/")
-
             getSize = getSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/", "").replace("\t", "")
-
             getSize = int(getSize)
-            print(output)
-            print(getSize)
 
             # Add to list
             self.homeFolderToRestoreSizeList.append(getSize)
@@ -161,8 +162,6 @@ class RESTORE:
         else:
             # If allow flatpak names is true; flatpak data is also true
             self.restore_flatpak_apps(countForRuleOf3=1)
-
-        self.restore_home()
 
     def restore_home(self, countForRuleOf3=1):
         try:
