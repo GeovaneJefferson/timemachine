@@ -5,13 +5,11 @@ homeUser = str(Path.home())
 
 try:
     sub.run(f"rm -rf {homeUser}/.local/share/timemachine/", shell=True)
-    sub.run(f"rm {homeUser}/.local/share/applications/desktop/timemachine.desktop", shell=True)
+    sub.run(f"rm {homeUser}/.local/share/applications/timemachine.desktop", shell=True)
     sub.run(f"rm {homeUser}/.config/autostart/backup_check.desktop", shell=True)
-    sub.run(f"rm {homeUser}/.local/share/kservices5/ServiceMenus/service.desktop", shell=True)
-
 except:
     print("Error trying to remove Time Machine!")
-
+    exit()
 
 sub.run(f"clear", shell=True)
 print("App was successfully removed.")
