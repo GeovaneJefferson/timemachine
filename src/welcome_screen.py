@@ -966,9 +966,8 @@ class BACKUPSCREEN(QWidget):
             self.processBar.show()
 
         if self.iniNotificationID == "2":
-            time.sleep(2)
-            sub.Popen("gsettings set org.gnome.desktop.background picture-uri 'file:///media/geovanejefferson/myusb/TMB/wallpaper.jpg'", shell=True)
-            
+            # Wait 2 seconds, to avoid notification_id conflict between (0 and 2)
+            time.sleep(2)            
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'notification_id', '0')
                 config.write(configfile)
@@ -977,7 +976,11 @@ class BACKUPSCREEN(QWidget):
             exit()
         
     def start_restoring(self):
-       # Call restore python
+        # Disable back button
+        self.backButton.setEnabled(False)
+        # Disable restore button
+        self.startRestoreButton.setEnabled(False)
+        # Call restore python
         sub.Popen(f"python3 {homeUser}/.local/share/timemachine/src/restore_cmd.py", shell=True)
 
 
