@@ -40,7 +40,9 @@ class RESTORE:
         try:
             self.latestDateFolder = []
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
+                print(output)
                 if not "." in output:
+                    print(output)
                     self.latestDateFolder.append(output)
                     self.latestDateFolder.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
