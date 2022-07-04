@@ -6,14 +6,15 @@ class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
         self.foundInMedia = None
+        self.outputBox = ()
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowIcon(QIcon(src_restore_icon))
+        self.setWindowIcon(QIcon(src_backup_icon))
         self.setWindowTitle("Choose device:")
         self.setFixedSize(500, 380)
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
         # Center window
@@ -32,7 +33,7 @@ class EXTERNAL(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        # INI file
+        # Read INI file
         self.iniHDName = config['EXTERNAL']['name']
 
         self.widgets()
@@ -44,9 +45,9 @@ class EXTERNAL(QWidget):
         self.whereFrame = QFrame()
         self.whereFrame.setFixedSize(440, 280)
         self.whereFrame.move(20, 40)
-        self.whereFrame.setStyleSheet("""
-            background-color: rgb(38, 39, 40);
-        """)
+        # self.whereFrame.setStyleSheet("""
+        #    background-color: rgb(38, 39, 40);
+        # """)
 
         # Scroll
         self.scroll = QScrollArea(self)
@@ -54,15 +55,6 @@ class EXTERNAL(QWidget):
         self.scroll.move(20, 40)
         self.scroll.setWidgetResizable(True)
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setStyleSheet(
-            "QScrollBar::handle"
-            "{"
-            "background : rgb(58, 59, 60);"
-            "}"
-            "QScrollBar::handle::pressed"
-            "{"
-            "background : rgb(68, 69, 70);"
-            "}")
         self.scroll.setWidget(self.whereFrame)
 
         # Vertical layout V
@@ -70,12 +62,22 @@ class EXTERNAL(QWidget):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        
+        # Use this device
+        self.useDiskButton = QPushButton(self)
+        self.useDiskButton.setFont(item)
+        self.useDiskButton.setText("Use Disk")
+        self.useDiskButton.adjustSize()
+        # self.useDiskButton.setFixedSize(80, 28)
+        self.useDiskButton.move(400, 340)
+        self.useDiskButton.setEnabled(False)
+        self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
 
         # Refresh button
         self.refreshButton = QPushButton(self)
         self.refreshButton.setFont(item)
         self.refreshButton.setText("Refresh")
-        self.refreshButton.setFixedSize(80, 28)
+        self.refreshButton.adjustSize()
         self.refreshButton.move(300, 340)
         self.refreshButton.clicked.connect(self.on_button_refresh_clicked)
 
@@ -83,46 +85,34 @@ class EXTERNAL(QWidget):
         self.cancelButton = QPushButton(self)
         self.cancelButton.setFont(item)
         self.cancelButton.setText("Cancel")
-        self.cancelButton.setFixedSize(80, 28)
-        self.cancelButton.move(400, 340)
+        self.cancelButton.adjustSize()
+        self.cancelButton.move(200, 340)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
-        # # Update
-        # timer.timeout.connect(self.check_connection_media)
-        # timer.start(1000)
-        self.check_connection_media()
+        self.check_connection()
 
-    def check_connection_media(self):
-        print("Searching for external devices under media...")
+    def check_connection(self):
         ################################################################################
         # Search external inside media
         ################################################################################
         try:
-            print((f'{media}/{userName}'))
-            os.listdir(f'{media}/{userName}')
-            self.foundInMedia = True
-            self.show_one_screen(media)
+            print("Searching for external devices under media...")
+            if not len(os.listdir(f'{media}/{userName}')) == 0:
+                print(f"{media} is Empty")
+                self.foundInMedia = True
+                self.show_on_screen(media)
+
+                print("Searching for external devices under run...")
+            elif not len(os.listdir(f'{run}/{userName}')) == 0:
+                self.foundInMedia = False
+                self.show_on_screen(run)
 
         except FileNotFoundError:
-            self.check_connection_run(run)
-
-    def check_connection_run(self):
-        print("Searching for external devices under run...")
-        ############################################################################# ###
-        # Search external inside run/media
-        ################################################################################
-        try:
-            print((f'{run}/{userName}'))
-            os.listdir(f'{run}/{userName}')  # Opensuse, external is inside "/run"
-            self.foundInMedia = False
-            self.show_one_screen(run)
-
-        except FileNotFoundError:
-            print("No external devices mounted or available...")
+            print("No device found...")
             pass
 
-    def show_one_screen(self, location):
-        print("Showing devices...")
+    def show_on_screen(self, location):
+        print("Showing available devices")
         ################################################################################
         # Check source
         ################################################################################
@@ -136,62 +126,65 @@ class EXTERNAL(QWidget):
         ################################################################################
         for output in os.listdir(f'{location}/{userName}'):
             # Avaliables external devices
-            availableDevices = QPushButton(self.whereFrame)
-            availableDevices.setFont(QFont('DejaVu Sans', 11))
-            availableDevices.setText(output)
-            availableDevices.setFixedSize(440, 60)
-            availableDevices.setCheckable(True)
-            text = availableDevices.text()
-            availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-            availableDevices.setStyleSheet(
-                "QPushButton"
+            self.availableDevices = QPushButton(self.whereFrame)
+            self.availableDevices.setFont(QFont('Ubuntu', 12))
+            self.availableDevices.setText(output)
+            self.availableDevices.setFixedSize(444, 60)
+            self.availableDevices.setCheckable(True)
+            text = self.availableDevices.text()
+            self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+
+            # Image
+            image = QLabel(self.availableDevices)
+            image.setFixedSize(46, 46)
+            image.move(6, 6)
+            image.setStyleSheet(
+                "QLabel"
                 "{"
-                "background-color: rgb(58, 59, 60);"
                 f"background-image: url({src_restore_small_icon});"
                 "background-repeat: no-repeat;"
-                "background-position: left;"
-                "border-radius: 2px;"
-                "border: 1px solid gray;"
-                "color: white;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
                 "}")
 
             ################################################################################
             # Auto checked this choosed external device
             ################################################################################
             if text == self.iniHDName:
-                availableDevices.setChecked(True)
+                self.availableDevices.setChecked(True)
 
             ################################################################################
             # Add widgets and Layouts
             ################################################################################
             # Vertical layout
-            self.verticalLayout.addWidget(availableDevices, 0, QtCore.Qt.AlignHCenter)
+            self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
 
-    def on_device_clicked(self, get):
+    def on_use_disk_clicked(self):
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
-        if " " in get:
-            get = str(get.replace(" ", "\ "))
-
-        print(get)
-        print(self.foundWhere)
+        if " " in self.outputBox:
+            self.outputBox = str(self.outputBox.replace(" ", "\ "))
 
         ################################################################################
-        # Write changes to ini
+        # Update INI file
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{get}')
-            config.set('EXTERNAL', 'name', get)
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.outputBox}')
+            config.set('EXTERNAL', 'name', f'{self.outputBox}')
             config.write(configfile)
 
         self.close()
+
+    def on_device_clicked(self, output):
+        if self.availableDevices.isChecked():
+            self.outputBox = output
+            # Enable use disk
+            self.useDiskButton.setEnabled(True)
+        else:
+            self.outputBox = ""
+            # Disable use disk
+            self.useDiskButton.setEnabled(False)
 
     def on_button_refresh_clicked(self):
         sub.Popen(f"python3 {src_search_for_devices}", shell=True)

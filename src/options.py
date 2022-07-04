@@ -14,8 +14,8 @@ class UI(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowTitle("Options Screen")
-        self.setWindowIcon(QIcon(src_restore_icon))
+        self.setWindowTitle(appName)
+        self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(800, 550)
 
         ################################################################################
@@ -31,7 +31,7 @@ class UI(QMainWindow):
     def widgets(self):
         # Apps version
         version = QLabel(self)
-        version.setFont(item)
+        version.setFont(QFont("Ubuntu", 10))
         version.setText(appVersion)
         version.setFixedSize(80, 20)
         version.move(270, 505)
@@ -50,17 +50,17 @@ class UI(QMainWindow):
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(10)
-        self.leftLayout.setContentsMargins(20, 0, 20, 20)
+        self.leftLayout.setContentsMargins(20, 20, 20, 20)
 
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(topicTitle)
+        self.leftTitle.setFont(QFont("Ubuntu", 11))
         self.leftTitle.setText("Available folders to be\nback up:")
-        self.leftTitle.setFixedSize(250, 40)
+        self.leftTitle.adjustSize()
 
         # Frame
         self.leftFrame = QFrame()
-        self.leftFrame.setFixedSize(250, 500)
+        self.leftFrame.adjustSize()
         # self.leftFrame.setStyleSheet(
         #     "QFrame"
         #     "{"
@@ -88,7 +88,7 @@ class UI(QMainWindow):
 
         # Days to run title
         self.daysToRunTitle = QLabel()
-        self.daysToRunTitle.setFont(topicTitle)
+        self.daysToRunTitle.setFont(QFont("Ubuntu", 11))
         self.daysToRunTitle.setText("Days to run:")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.daysToRunTitle.setFixedSize(200, 30)
@@ -100,7 +100,7 @@ class UI(QMainWindow):
         # Checkboxes
         ################################################################################
         self.sunCheckBox = QCheckBox()
-        self.sunCheckBox.setFont(item)
+        self.sunCheckBox.setFont(QFont("Ubuntu", 10))
         self.sunCheckBox.setText("Sun")
         self.sunCheckBox.clicked.connect(self.on_check_sun_clicked)
         self.sunCheckBox.setStyleSheet("""
@@ -108,7 +108,7 @@ class UI(QMainWindow):
         """)
 
         self.monCheckBox = QCheckBox()
-        self.monCheckBox.setFont(item)
+        self.monCheckBox.setFont(QFont("Ubuntu", 10))
         self.monCheckBox.setText("Mon")
         self.monCheckBox.clicked.connect(self.on_check_mon_clicked)
         self.monCheckBox.setStyleSheet("""
@@ -116,7 +116,7 @@ class UI(QMainWindow):
         """)
 
         self.tueCheckBox = QCheckBox()
-        self.tueCheckBox.setFont(item)
+        self.tueCheckBox.setFont(QFont("Ubuntu", 10))
         self.tueCheckBox.setText("Tue")
         self.tueCheckBox.clicked.connect(self.on_check_tue_clicked)
         self.tueCheckBox.setStyleSheet("""
@@ -124,7 +124,7 @@ class UI(QMainWindow):
         """)
 
         self.wedCheckBox = QCheckBox()
-        self.wedCheckBox.setFont(item)
+        self.wedCheckBox.setFont(QFont("Ubuntu", 10))
         self.wedCheckBox.setText("Wed")
         self.wedCheckBox.clicked.connect(self.on_check_wed_clicked)
         self.wedCheckBox.setStyleSheet("""
@@ -132,7 +132,7 @@ class UI(QMainWindow):
         """)
 
         self.thuCheckBox = QCheckBox()
-        self.thuCheckBox.setFont(item)
+        self.thuCheckBox.setFont(QFont("Ubuntu", 10))
         self.thuCheckBox.setText("Thu")
         self.thuCheckBox.clicked.connect(self.on_check_thu_clicked)
         self.thuCheckBox.setStyleSheet("""
@@ -140,7 +140,7 @@ class UI(QMainWindow):
         """)
 
         self.friCheckBox = QCheckBox()
-        self.friCheckBox.setFont(item)
+        self.friCheckBox.setFont(QFont("Ubuntu", 10))
         self.friCheckBox.setText("Fri")
         self.friCheckBox.clicked.connect(self.on_check_fri_clicked)
         self.friCheckBox.setStyleSheet("""
@@ -148,7 +148,7 @@ class UI(QMainWindow):
         """)
 
         self.satCheckBox = QCheckBox()
-        self.satCheckBox.setFont(item)
+        self.satCheckBox.setFont(QFont("Ubuntu", 10))
         self.satCheckBox.setText("Sat")
         self.satCheckBox.clicked.connect(self.on_check_sat_clicked)
         self.satCheckBox.setStyleSheet("""
@@ -167,7 +167,7 @@ class UI(QMainWindow):
 
         # Time to run title
         self.timeToRunTitle = QLabel(self.timeToRunWidget)
-        self.timeToRunTitle.setFont(topicTitle)
+        self.timeToRunTitle.setFont(QFont("Ubuntu", 11))
         self.timeToRunTitle.setText("Time to run:")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.timeToRunTitle.setFixedSize(180, 30)
@@ -183,7 +183,7 @@ class UI(QMainWindow):
 
         # Radio buttons
         self.oneTimePerDayRadio = QRadioButton()
-        self.oneTimePerDayRadio.setFont(item)
+        self.oneTimePerDayRadio.setFont(QFont("Ubuntu", 10))
         self.oneTimePerDayRadio.setText("One time per day")
         self.oneTimePerDayRadio.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimePerDayRadio.setFixedSize(180, 30)
@@ -196,7 +196,7 @@ class UI(QMainWindow):
         self.oneTimePerDayRadio.clicked.connect(self.on_frequency_clicked)
 
         self.moreTimePerDayRadio = QRadioButton()
-        self.moreTimePerDayRadio.setFont(item)
+        self.moreTimePerDayRadio.setFont(QFont("Ubuntu", 10))
         self.moreTimePerDayRadio.setToolTip(
             "Back up will be execute every x minutes/hours.\n"
             "This will produce a time folder inside your backup device.\n"
@@ -212,23 +212,20 @@ class UI(QMainWindow):
 
         # Spinbox Hours
         self.hoursSpinBox = QSpinBox()
-        self.hoursSpinBox.setFont(QFont("DejaVu Sans", 14))
+        self.hoursSpinBox.setFont(QFont("Ubuntu", 14))
         self.hoursSpinBox.setFixedSize(60, 40)
         self.hoursSpinBox.setFrame(True)
         self.hoursSpinBox.setMinimum(0)
         self.hoursSpinBox.setSingleStep(1)
         self.hoursSpinBox.setMaximum(23)
         self.hoursSpinBox.valueChanged.connect(self.label_hours_changed)
-        self.hoursSpinBox.setStyleSheet(
-        "QSpinBox"
-           "{"
-            "border: 0px solid transparent;"
-            "border-radius: 5px;"
-           "}")
+        self.hoursSpinBox.setStyleSheet("""
+            border-color: transparent;
+            """)
 
         # : between hours and minutes
         self.betweenHoursAndMinutesLabel = QLabel()
-        self.betweenHoursAndMinutesLabel.setFont(QFont("DejaVu Sans", 18))
+        self.betweenHoursAndMinutesLabel.setFont(QFont("Ubuntu", 18))
         self.betweenHoursAndMinutesLabel.setText(":")
         self.betweenHoursAndMinutesLabel.setStyleSheet("""
             border-color: transparent;
@@ -236,7 +233,7 @@ class UI(QMainWindow):
 
         # Hours title
         self.hoursTitle = QLabel()
-        self.hoursTitle.setFont(QFont("DejaVu Sans", 12))
+        self.hoursTitle.setFont(QFont("Ubuntu", 11))
         self.hoursTitle.setText("Hours")
         self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
@@ -246,7 +243,7 @@ class UI(QMainWindow):
 
         # Minutes title
         self.minutesTitle = QLabel()
-        self.minutesTitle.setFont(QFont("DejaVu Sans", 12))
+        self.minutesTitle.setFont(QFont("Ubuntu", 11))
         self.minutesTitle.setText("Minutes")
         self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
@@ -262,7 +259,6 @@ class UI(QMainWindow):
         "QSpinBox"
             "{"
                 "border: 0px solid transparent;"
-                "border-radius: 5px;"
             "}")
 
         self.minutesSpinBox.setMinimum(0)
@@ -274,12 +270,11 @@ class UI(QMainWindow):
         self.multipleTimePerDayComboBox = QComboBox()
         self.multipleTimePerDayComboBox.setFrame(True)
         self.multipleTimePerDayComboBox.setFixedSize(155, 28)
-        self.multipleTimePerDayComboBox.setFont(item)
+        self.multipleTimePerDayComboBox.setFont(QFont("Ubuntu", 10))
         self.multipleTimePerDayComboBox.setStyleSheet(
         "QComboBox"
             "{"
                 "border: 0px solid transparent;"
-                "border-radius: 5px;"
             "}")
 
         multipleTimerPerDayComboBoxList = [
@@ -307,7 +302,7 @@ class UI(QMainWindow):
 
         # Notification title
         self.notificationTitle = QLabel()
-        self.notificationTitle.setFont(topicTitle)
+        self.notificationTitle.setFont(QFont("Ubuntu", 11))
         self.notificationTitle.setText("Notification:")
         self.notificationTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.notificationTitle.setFixedSize(200, 30)
@@ -317,7 +312,7 @@ class UI(QMainWindow):
 
         # Notification checkbox
         self.notificationCheckBox = QCheckBox(self.notificationWidget)
-        self.notificationCheckBox.setFont(item)
+        self.notificationCheckBox.setFont(QFont("Ubuntu", 10))
         self.notificationCheckBox.setText(f"Allow {appName} to send notifications ")
         self.notificationCheckBox.setStyleSheet("""
             border: transparent;
@@ -341,7 +336,7 @@ class UI(QMainWindow):
 
         # Notification title
         self.flatpakTitle = QLabel()
-        self.flatpakTitle.setFont(topicTitle)
+        self.flatpakTitle.setFont(QFont("Ubuntu", 11))
         self.flatpakTitle.setText("Flatpak Settings:")
         self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
@@ -351,7 +346,7 @@ class UI(QMainWindow):
 
         # Flatpak Name checkbox
         self.allowFlatpakNamesCheckBox = QCheckBox()
-        self.allowFlatpakNamesCheckBox.setFont(item)
+        self.allowFlatpakNamesCheckBox.setFont(QFont("Ubuntu", 10))
         self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks apps names")
         self.allowFlatpakNamesCheckBox.adjustSize()
         self.allowFlatpakNamesCheckBox.setStyleSheet("""
@@ -361,7 +356,7 @@ class UI(QMainWindow):
         
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
-        self.allowFlatpakDataCheckBox.setFont(item)
+        self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
         self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
             "(Back up flatpak names is necessary)")
         self.allowFlatpakDataCheckBox.adjustSize()
@@ -375,46 +370,39 @@ class UI(QMainWindow):
         ################################################################################
         self.resetWidget = QWidget(self)
         self.resetWidget.setGeometry(280, 400, 500, 90)
-        # self.resetWidget.setStyleSheet(
-        # "QWidget"
-        # "{"
-        # "border: 1px solid red;"
-        # "}")
-
+ 
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
         self.resetLayout.setSpacing(0)
 
         # Reset title
         self.resetTitle = QLabel()
-        self.resetTitle.setFont(topicTitle)
+        self.resetTitle.setFont(QFont("Ubuntu", 11))
         self.resetTitle.setText("Reset:")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
         # Reset label text
         self.resetText = QLabel()
-        self.resetText.setFont(item)
+        self.resetText.setFont(QFont("Ubuntu", 10))
         self.resetText.setText('If something seems broken, click on "Reset", to reset settings.')
-        self.resetText.setFixedSize(400, 30)
+        self.resetText.adjustSize()
 
         ################################################################################
         # Fix button
         ################################################################################
         self.fixButton = QPushButton()
-        self.fixButton.setFont(item)
+        self.fixButton.setFont(QFont("Ubuntu", 10))
         self.fixButton.setText("Reset")
-        self.fixButton.setFixedSize(80, 28)
+        # self.fixButton.setFixedSize(80, 28)
+        self.fixButton.adjustSize()
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
         # Donate, Update and Save buttons
         ################################################################################
         self.donateAndSaveWidget = QWidget(self)
-        self.donateAndSaveWidget.setGeometry(550, 490, 240, 60)
-        # self.donateAndSaveWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
+        self.donateAndSaveWidget.setGeometry(565, 490, 220, 60)
 
         # Donate and Settings widget
         self.donateAndSaveLayout = QHBoxLayout(self.donateAndSaveWidget)
@@ -423,16 +411,16 @@ class UI(QMainWindow):
         # Donate buton
         self.donateButton = QPushButton()
         self.donateButton.setText("Donate")
-        self.donateButton.setFont(item)
-        self.donateButton.setFixedSize(80, 28)
+        self.donateButton.setFont(QFont("Ubuntu", 10))
+        self.donateButton.adjustSize()
         self.donateButton.clicked.connect(self.donate_clicked)
 
         ################################################################################
         # Save button
         ################################################################################
         self.saveButton = QPushButton()
-        self.saveButton.setFixedSize(120, 28)
-        self.saveButton.setFont(item)
+        self.saveButton.adjustSize()
+        self.saveButton.setFont(QFont("Ubuntu", 10))
         self.saveButton.setText("Save and Close")
         self.saveButton.clicked.connect(self.on_save_button_clicked)
 
@@ -440,8 +428,8 @@ class UI(QMainWindow):
         # Add widgets and Layouts
         ################################################################################
         # Left layout
-        self.leftLayout.addWidget(self.leftTitle)
-        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.leftTitle, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignLeft | Qt.AlignTop)
 
         # Days to run layout V
         self.daysToRunLayoutV.addWidget(self.daysToRunTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
@@ -485,7 +473,6 @@ class UI(QMainWindow):
         self.resetLayout.addWidget(self.fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Save layout
-        # self.donateAndSaveLayout.addWidget(updateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -497,40 +484,31 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         # Folders to backup
         getIniFolders = config.options('FOLDER')
 
-        # More folders
-        verticalSpaceLabel = 10
-        verticalSpaceCheckbox = verticalSpaceLabel  # Same value as vertical space
-        for files in getHomeFolders:
-            if not "." in files:    # Do not show hidden folders/files
-                # Folders text
-                label_text = QLabel(files, self.leftFrame)
-                label_text.setFont(item)
-                label_text.setFixedSize(150, 22)
-                label_text.move(30, verticalSpaceLabel)
-                verticalSpaceLabel += 25  # Position
-
+        # Get USER home folders
+        for folder in getHomeFolders:
+            # Hide hidden folder
+            if not "." in folder:    
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
-                self.foldersCheckbox.setStyleSheet("""
-                    border-color: transparent;
-                """)
-
-                self.foldersCheckbox.setFixedSize(150, 22)
-                self.foldersCheckbox.move(5, verticalSpaceCheckbox)
-                verticalSpaceCheckbox += 25
-                text = label_text.text().lower()  # Lowercase
-                self.foldersCheckbox.show()
-                self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.on_folder_clicked(text))
-
+                self.foldersCheckbox.setText(folder)
+                self.foldersCheckbox.adjustSize()
+                self.foldersCheckbox.setStyleSheet(
+                    "QCheckBox"
+                    "{"
+                    "border-color: transparent;"
+                    "}")
+                # self.foldersCheckbox.setFixedSize(150, 22)
+                self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
+                
                 # Activate checkboxes in user.ini
-                if text in getIniFolders:
+                if folder.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
+
+                # Add to layout self.leftLayout
+                self.leftLayout.addWidget(self.foldersCheckbox, 0, QtCore.Qt.AlignTop)
 
         self.dates()
 
@@ -538,9 +516,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         sun = config['SCHEDULE']['sun']
         mon = config['SCHEDULE']['mon']
         tue = config['SCHEDULE']['tue']
@@ -580,8 +555,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         # Time
         iniEverytime = config['SCHEDULE']['everytime']
         # Mode
@@ -637,8 +610,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         # Notification
         self.iniNotification = config['INFO']['notification']
 
@@ -654,8 +625,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
         self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
 
@@ -670,12 +639,14 @@ class UI(QMainWindow):
         if self.iniAllowFlatpakData == "true":
             self.allowFlatpakDataCheckBox.setChecked(True)
 
-    def on_folder_clicked(self, get):
-        with open(src_user_config, 'w+') as configfile:
-            if config.has_option('FOLDER', get):
-                config.remove_option('FOLDER', get)
+    def on_folder_clicked(self, output):
+        print(f"Clicked on {output}")
+
+        with open(src_user_config, 'w') as configfile:
+            if config.has_option('FOLDER', output):
+                config.remove_option('FOLDER', output)
             else:
-                config.set('FOLDER', get, 'true')
+                config.set('FOLDER', output, 'true')
 
             # Write to INI file
             config.write(configfile)
@@ -861,10 +832,9 @@ class UI(QMainWindow):
             if self.allowFlatpakDataCheckBox.isChecked():
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'true')
-                config.set('BACKUP', 'allow_flatpak_data', 'true')
                 print("Allow flatpaks installed names + data")
 
-                # Activate data checkbox
+                # Activate names checkbox
                 self.allowFlatpakNamesCheckBox.setChecked(True)
 
             else:
@@ -873,11 +843,7 @@ class UI(QMainWindow):
             # Write to INI file
             config.write(configfile)
 
-
     def on_button_fix_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
         resetConfirmation = QMessageBox.question(self, 'Reset', 'Are you sure you want to reset settings?',
         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
@@ -915,7 +881,8 @@ class UI(QMainWindow):
                 config.set('INFO', 'notification_id', '0')
                 config.set('INFO', 'feedback_status', '')
                 config.set('INFO', 'current_percent', '0')
-               # Restore section
+                # Restore section
+                config.set('RESTORE', 'is_restore_running', 'false')
                 config.set('RESTORE', 'applications_name', 'false')
                 config.set('RESTORE', 'application_data', 'false')
                 config.set('RESTORE', 'files_and_folders', 'false')
@@ -938,8 +905,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
         self.iniCheckerRunning = config['BACKUP']['checker_running']
 
@@ -959,8 +924,6 @@ class UI(QMainWindow):
             ################################################################################
             # After call backup checker, set checker_running to true
             ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                 config.set('BACKUP', 'checker_running', 'true')
                 config.write(configfile)
@@ -975,3 +938,5 @@ main.show()
 toc = time.time()
 print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())
+
+

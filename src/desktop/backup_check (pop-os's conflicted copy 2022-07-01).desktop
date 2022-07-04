@@ -1,0 +1,8 @@
+[Desktop Entry]
+ Type=Application
+ Exec=/bin/python3 /home/macbook/.local/share/timemachine/src/at_boot.py
+Hidden=false
+ NoDisplay=false
+ Name=Time Machine
+ Comment=Backup your files
+ Icon=/home/macbook/.local/share/timemachine/src/icons/restore_48.png

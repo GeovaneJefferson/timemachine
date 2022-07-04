@@ -114,7 +114,14 @@ class BACKUP:
         self.homeFolderToBackupSizeList=[]
         self.homeFolderToBeBackup=[]
         for output in self.iniFolders:  # Get folders size before back up to external
-            output = output.title()  # Capitalize first letter. ex: '/Desktop'
+            # Capitalize first letter
+            output = output.capitalize() 
+            # Can output be found inside Users Home?
+            try:
+                os.listdir(f"{homeUser}/{output}")
+            except:
+                # Lower output first letter
+                output = output.lower() # Lower output first letter
             # Get folder size
             getSize = os.popen(f"du -s {homeUser}/{output}")
             getSize = getSize.read().strip("\t").strip("\n").replace(f"{homeUser}/{output}", "").replace("\t", "")
@@ -233,8 +240,8 @@ class BACKUP:
             # Home conditions to continue with the backup
             ################################################################################
             if self.totalHomeFoldersToBackupSize >= self.freeSpace:
-                print("Not enough space for new backup!")
-                print("Old files will be deleted, to make space for the new ones.")
+                print("Not enough space for new backup")
+                print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
 
                 ################################################################################
@@ -242,8 +249,9 @@ class BACKUP:
                 ################################################################################
                 try:
                     dateFolders = []
-                    for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}"):
+                    for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
                         if not "." in output:
+                            print(output)
                             dateFolders.append(output)
                             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
@@ -254,9 +262,8 @@ class BACKUP:
                     # Only deletes if exist more than one date folder inside
                     # Will return to the top, if free space is not enought, so app can delete more old folders
                     if len(dateFolders) > 1:
-                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{dateFolders[-1]}...")
-                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{dateFolders[-1]}", shell=True)
-                        # If Total size >= free space inside external device
+                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
+                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
 
                     else:
                         ################################################################################
@@ -376,10 +383,13 @@ class BACKUP:
                 # Create inside external Local Folder
                 if not os.path.exists(self.applicationLocalFolder):
                     sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  # Create folder with date
-            
-                if not os.path.exists(self.flatpakTxtFile):
-                    print("Flatpak file was created.")
-                    sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)    # Create tmb folder
+                
+            ################################################################################
+            # Create application folder
+            ################################################################################
+            if not os.path.exists(self.flatpakTxtFile):
+                print("Flatpak file was created.")
+                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)    # Create tmb folder
 
         except FileNotFoundError as error:
             # Call error function (id 4)

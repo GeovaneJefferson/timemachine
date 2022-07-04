@@ -267,7 +267,14 @@ class UI(QWidget):
         # Get available folders from INI file
         ################################################################################
         for output in self.iniFolder:
-            output = output.capitalize()
+            # Capitalize first letter
+            output = output.capitalize() 
+            # Can output be found inside Users Home?
+            try:
+                os.listdir(f"{homeUser}/{output}")
+            except:
+                # Lower output first letter
+                output = output.lower() # Lower output first letter
             ################################################################################
             # Create buttons for it
             ################################################################################
