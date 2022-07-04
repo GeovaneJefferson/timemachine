@@ -3,6 +3,7 @@ from setup import *
 
 # QTimer
 timer = QtCore.QTimer()
+
 # Read ini file
 config = configparser.ConfigParser()
 config.read(src_user_config)
@@ -28,8 +29,18 @@ class UI(QMainWindow):
         self.x = (rect.width())
         self.y = (rect.height())
 
+        # Window position TOP
+        self.windowXPosition = self.x - 240
+        self.windowYPosition = 40
+
+        # Window position Bottom
+        # self.windowXPosition = self.x - 240
+        # self.windowYPosition = self.y - 270
+
         # Window manager dimensions
-        self.move((self.x - 240), (self.y - 270))
+        self.move(self.windowXPosition, self.windowYPosition)
+
+        # Other settings
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -53,7 +64,6 @@ class UI(QMainWindow):
         # Vertical layout
         self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setContentsMargins(0, 10, 0, 10)
 
         #################################################################
         ###  Title text
@@ -73,7 +83,7 @@ class UI(QMainWindow):
         ###  Image inside the notification
         #################################################################
         self.image = QLabel()
-        self.image.setFixedSize(130, 130)
+        self.image.setFixedSize(128, 128)
         self.image.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.image.setStyleSheet(f"""
             background-image: url({src_backup_icon});
@@ -91,9 +101,9 @@ class UI(QMainWindow):
 
         # Message label
         self.messageText = QLabel()
-        self.messageText.setFont(QFont("Ubuntu, Light", 9))
+        self.messageText.setFont(QFont("Ubuntu", 10))
         self.messageText.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.messageText.setFixedSize(220, 30)
+        self.messageText.adjustSize()
         self.messageText.setStyleSheet("""
             color: rgb(0, 0, 0);
             background-color: transparent;
@@ -108,38 +118,39 @@ class UI(QMainWindow):
         ################################################################
         if self.messageID == "0":
             self.messageText.setText("All settings was reset!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "1":
             self.messageText.setText("Back up will start shortly...")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "2":
             self.messageText.setText("Backup is done!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "3":
             self.messageText.setText("External not mounted or available...")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "4":
             self.messageText.setText("Error trying to back up!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "5":
             self.messageText.setText("Error trying to read INI file!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "6":
             self.messageText.setText("Error trying to delete old backups!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "7":
             self.messageText.setText("Please, manual delete old backups!")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "8":
             self.messageText.setText("Your files are been restored...")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "9":
             self.messageText.setText("Error trying to restore your files!")
-        
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
         elif self.messageID == "10":
             self.messageText.setText("Not enough space to backup!\n"
                 f"{self.iniNotificationAddInfo}")
-
+            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
+            
         else:
             pass
 
@@ -155,7 +166,7 @@ class UI(QMainWindow):
             "QPushButton"
             "{"
             "color: white;"
-            "background-color: rgba(20, 110, 255, 1);"
+            "background-color: rgba(41, 147, 247, 1);"
             "border-radius: 10px;"
             "border: 0px"
             "}"
@@ -170,7 +181,7 @@ class UI(QMainWindow):
         self.verticalLayout.addWidget(self.titleLabel, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayout.addWidget(self.image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayout.addWidget(self.messageText, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.verticalLayout.addWidget(self.okButton, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.verticalLayout.addWidget(self.okButton, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
         self.setLayout(self.verticalLayout)
 
@@ -192,7 +203,7 @@ class UI(QMainWindow):
         timer.start(5000)
 
     def end_animation(self):
-        self.move(self.x, (self.y - 270))
+        self.move(self.x, self.windowYPosition)
 
         #################################################################
         ###  End animation

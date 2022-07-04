@@ -33,12 +33,13 @@ appVersion = "v1.1.1"
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
+wallpaperFolderName = "wallpaper"
 varFolderName = "var"
 localFolderName = "share"
 flatpakTxt = "flatpak.txt"
 
 # CMD commands
-copyCmd = "rsync -avruh --exclude={'cache','.cache'}" 
+copyCmd = "rsync -avrh --exclude={'cache','.cache'}" 
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 
@@ -52,7 +53,7 @@ run = "/run/media"
 ################################################################################
 bigTitle = QFont("DeJaVu Sans", 18)
 topicTitle = QFont("DeJaVu Sans", 10.5)
-item = QFont("DeJaVu Sans", 9)
+item = QFont("Ubuntu", 10)
 
 ################################################################################
 ## Locations
@@ -97,4 +98,6 @@ src_system_bar_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtray
 src_system_bar_run_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconrun.png"
 src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"
 src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_devices.py"
+src_welcome_screen = f"{homeUser}/.local/share/timemachine/src/welcome_screen.py"
+src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
 

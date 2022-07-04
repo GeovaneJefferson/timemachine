@@ -12,7 +12,7 @@ class UI(QMainWindow):
 
     def iniUI(self):
         self.setWindowTitle(appName)
-        self.setWindowIcon(QIcon(src_restore_icon))
+        self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(700, 450)
 
         ################################################################################
@@ -35,9 +35,10 @@ class UI(QMainWindow):
             border-right: 1px solid rgb(68, 69, 70);
         """)
 
-        # Left widget
+        # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(20)
+        self.leftLayout.setContentsMargins(0, 0, 10, 0)
 
         # Backup images
         self.backupImageLabel = QLabel()
@@ -47,13 +48,14 @@ class UI(QMainWindow):
             "{"
             f"background-image: url({src_backup_icon});"
             "border-color: transparent;"
+            "background-repeat: no-repeat;"
             "}")
 
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
-        self.automaticallyCheckBox.setFont(item)
+        self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
         self.automaticallyCheckBox.setText("Back Up Automatically")
-        self.automaticallyCheckBox.setFixedSize(175, 20)
+        self.automaticallyCheckBox.adjustSize()
         self.automaticallyCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
@@ -68,7 +70,7 @@ class UI(QMainWindow):
         #     border: 1px solid red;
         # """)
 
-        # Right widget
+        # Right layout
         self.rightLayout = QVBoxLayout(self.rightWidget)
         self.rightLayout.setSpacing(20)
 
@@ -84,9 +86,9 @@ class UI(QMainWindow):
 
         # Select disk button
         self.selectDiskButton = QPushButton(self)
-        self.selectDiskButton.setFont(item)
+        self.selectDiskButton.setFont(QFont("Ubuntu", 10))
         self.selectDiskButton.setText("Select Backup Disk...")
-        self.selectDiskButton.setFixedSize(150, 28)
+        self.selectDiskButton.adjustSize()
         self.selectDiskButton.clicked.connect(self.select_external_clicked)
 
         ################################################################################
@@ -144,18 +146,7 @@ class UI(QMainWindow):
         self.processBar = QProgressBar(self)
         self.processBar.setFixedSize(220, 14)
         self.processBar.move(420, 162)
-        self.processBar.setStyleSheet(
-            "QProgressBar"
-            "{"
-            "text-align: center;"
-            "color: white;"
-            "}"
-
-            "QProgressBar::chunk"
-            "{"
-            "background-color: rgb(20, 110, 255);"
-            "border-radius: 10px;"
-            "}")
+        # Hide process bar
         self.processBar.hide()
 
         ################################################################################
@@ -169,9 +160,10 @@ class UI(QMainWindow):
         ################################################################################
         self.backupNowButton = QPushButton(self)
         self.backupNowButton.setText("Back Up Now")
-        self.backupNowButton.setFont(item)
-        self.backupNowButton.setFixedSize(100, 28)
-        self.backupNowButton.move(420, 155)
+        self.backupNowButton.setFont(QFont("Ubuntu", 10))
+        # self.backupNowButton.setFixedSize(100, 28)
+        self.backupNowButton.adjustSize()
+        self.backupNowButton.move(420, 157)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.hide()
 
@@ -179,7 +171,7 @@ class UI(QMainWindow):
         # Description
         ################################################################################
         self.descriptionWidget = QWidget(self)
-        self.descriptionWidget.setGeometry(240, 200, 440, 140)
+        self.descriptionWidget.setGeometry(240, 200, 440, 160)
         self.descriptionWidget.setStyleSheet("""
             border-top: 1px solid rgb(68, 69, 70);
         """)
@@ -202,8 +194,9 @@ class UI(QMainWindow):
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
             "* Keep local snapshots of your personal files as space permits\n"
+            "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
             "* Schedule backups (Minutely, Hourly or Daily)\n"
-            f"* Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
+            "* Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.setFixedSize(420, 120)
@@ -216,9 +209,6 @@ class UI(QMainWindow):
         ################################################################################
         self.optionsWidget = QWidget(self)
         self.optionsWidget.setGeometry(340, 380, 350, 80)
-        # self.optionsWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
 
         # Options Layout
         self.optionsLayout = QHBoxLayout(self.optionsWidget)
@@ -227,8 +217,9 @@ class UI(QMainWindow):
         # Options button
         self.optionsButton = QPushButton()
         self.optionsButton.setText("Options...")
-        self.optionsButton.setFont(item)
-        self.optionsButton.setFixedSize(80, 28)
+        self.optionsButton.setFont(QFont("Ubuntu", 10))
+        # self.optionsButton.setFixedSize(80, 28)
+        self.optionsButton.adjustSize()
         self.optionsButton.clicked.connect(self.options_clicked)
 
         # Show system tray
@@ -407,7 +398,7 @@ class UI(QMainWindow):
                 self.processBar.hide()
                 # Backup Now
                 self.backupNowButton.setEnabled(True)  # Disable backup now button
-                self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
+                # self.backupNowButton.setFixedSize(120, 28)  # Resize backup button
                 self.backupNowButton.show()
 
             else:

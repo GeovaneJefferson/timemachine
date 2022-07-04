@@ -1,0 +1,14 @@
+<<<<<<< HEAD
+=======
+[Desktop Entry]
+ Version=1.0
+ Type=Application
+ Name=Time Machine
+ Comment=Backup your files
+ Icon=/home/geovanejefferson/.local/share/timemachine/src/icons/backup.png
+ Exec=python3 /home/geovanejefferson/.local/share/timemachine/src/gui.py
+ Path=/home/geovanejefferson/.local/share/timemachine/
+ Categories=System
+ StartupWMClass=Time Machine
+ Terminal=false
+>>>>>>> e3332960cc775ddbf36385f11d73c032b4aa1e24

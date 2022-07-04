@@ -8,7 +8,7 @@ from pathlib import Path
 class CLI:
     def __init__(self):
         # Install command
-        self.installDependencies = "python3-pip"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+        self.installDependencies = "python3-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
 
         # Folders
@@ -62,8 +62,8 @@ class CLI:
         ################################################################################
         # Install pip (Ubuntu)
         ################################################################################
-        print("Installing all the dependencies...")
         try:
+            print("Installing all the dependencies...")
             # Ubuntu or Debian
             if user_os == "ubuntu" or "debian":
                 print("")
@@ -139,11 +139,12 @@ class CLI:
                 f"Type=Application\n "
                 f"Name=Time Machine\n "
                 f"Comment=Backup your files\n "
-                f"Icon={self.home_user}/.local/share/timemachine/src/icons/restore.png\n "
+                f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup.png\n "
                 f"Exec=python3 {self.home_user}/.local/share/timemachine/src/gui.py\n "
                 f"Path={self.home_user}/.local/share/timemachine/\n "
                 f"Categories=System\n "
-                f"StartupWMClass=Gui.py\n "
+                f"StartupWMClass=Time Machine\n "
+                f"WM_CLASS(STRING) = 'gui.py', 'gui.py'\n "
                 f"Terminal=false")
 
         try:

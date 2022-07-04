@@ -10,6 +10,7 @@ using "Enter Time Machine" mode.
 
 ## Features:
 * Local snapshots of your personal files, one or multiple times per day.
+* Snapshots of your installed Flatpaks name and Data, so you can easily restore them.
 * "Enter Time Machine" Still in development...
 * Will automatically back up at first boot, if time to do so has passed.
 * Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
@@ -28,7 +29,7 @@ Such as:
 * When the next backup will occur
 * Device connectivity
 
-Before a backup is made, Time Machine will analize and calculate your backup HD/SSD full size, free space and space needed for Time Machine to make a backup.
+Before a backup is made, Time Machine will analize and calculate your backup HD/SSD full size, free space and space needed for Time Machine's next backup.
 
 ## Create a Time Machine backup
 1. Connect an external storage device, such as a USB or HD/SSD.
@@ -43,6 +44,16 @@ Then, click on Time Machine in system tray and select "Enter Time Machine"
 
 Still in development...
 
+## Migration Assistant
+A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your files/folders and apps, after a fresh install.
+
+#### Welcome Screen
+* Will ask you to select a Time Machine HD/SSD that already has a backup inside.
+* Will ask if you want to "Restore" or "Set Up as New".
+* Will ask you to choose which information you'd like to restore.
+
+After Welcome Screen is done, all your recent files, folders and Flatpaks are automatically restore and installed.
+
 ## Requirements
 * pyside6
 
@@ -52,7 +63,7 @@ You will be asked for your password.
 
 Example:
 
-    git clone https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
+    git clone -b main https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
 
 
 ## Uninstall:
