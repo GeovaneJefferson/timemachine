@@ -13,8 +13,8 @@ class EXTERNAL(QWidget):
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setWindowTitle("Choose device:")
         self.setFixedSize(500, 380)
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
         # Center window
