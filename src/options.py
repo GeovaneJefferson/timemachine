@@ -50,17 +50,17 @@ class UI(QMainWindow):
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(10)
-        self.leftLayout.setContentsMargins(20, 0, 20, 20)
+        self.leftLayout.setContentsMargins(20, 20, 20, 20)
 
         # Left title
         self.leftTitle = QLabel()
         self.leftTitle.setFont(QFont("Ubuntu", 11))
         self.leftTitle.setText("Available folders to be\nback up:")
-        self.leftTitle.setFixedSize(250, 40)
+        self.leftTitle.adjustSize()
 
         # Frame
         self.leftFrame = QFrame()
-        self.leftFrame.setFixedSize(250, 500)
+        self.leftFrame.adjustSize()
         # self.leftFrame.setStyleSheet(
         #     "QFrame"
         #     "{"
@@ -386,7 +386,6 @@ class UI(QMainWindow):
         self.resetText = QLabel()
         self.resetText.setFont(QFont("Ubuntu", 10))
         self.resetText.setText('If something seems broken, click on "Reset", to reset settings.')
-        # self.resetText.setFixedSize(400, 30)
         self.resetText.adjustSize()
 
         ################################################################################
@@ -413,7 +412,6 @@ class UI(QMainWindow):
         self.donateButton = QPushButton()
         self.donateButton.setText("Donate")
         self.donateButton.setFont(QFont("Ubuntu", 10))
-        # self.donateButton.setFixedSize(80, 28)
         self.donateButton.adjustSize()
         self.donateButton.clicked.connect(self.donate_clicked)
 
@@ -421,7 +419,6 @@ class UI(QMainWindow):
         # Save button
         ################################################################################
         self.saveButton = QPushButton()
-        # self.saveButton.setFixedSize(120, 28)
         self.saveButton.adjustSize()
         self.saveButton.setFont(QFont("Ubuntu", 10))
         self.saveButton.setText("Save and Close")
@@ -431,8 +428,8 @@ class UI(QMainWindow):
         # Add widgets and Layouts
         ################################################################################
         # Left layout
-        self.leftLayout.addWidget(self.leftTitle)
-        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.leftTitle, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignLeft | Qt.AlignTop)
 
         # Days to run layout V
         self.daysToRunLayoutV.addWidget(self.daysToRunTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
@@ -476,7 +473,6 @@ class UI(QMainWindow):
         self.resetLayout.addWidget(self.fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Save layout
-        # self.donateAndSaveLayout.addWidget(updateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndSaveLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
 
@@ -491,35 +487,28 @@ class UI(QMainWindow):
         # Folders to backup
         getIniFolders = config.options('FOLDER')
 
-        # More folders
-        verticalSpaceLabel = 10
-        verticalSpaceCheckbox = verticalSpaceLabel  # Same value as vertical space
-        for files in getHomeFolders:
-            if not "." in files:    # Do not show hidden folders/files
-                # Folders text
-                label_text = QLabel(files, self.leftFrame)
-                label_text.setFont(QFont("Ubuntu", 10))
-                label_text.setFixedSize(150, 22)
-                label_text.move(30, verticalSpaceLabel)
-                verticalSpaceLabel += 25  # Position
-
+        # Get USER home folders
+        for folder in getHomeFolders:
+            # Hide hidden folder
+            if not "." in folder:    
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
+                self.foldersCheckbox.setText(folder)
+                self.foldersCheckbox.adjustSize()
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"
                     "border-color: transparent;"
                     "}")
-
-                self.foldersCheckbox.setFixedSize(150, 22)
-                self.foldersCheckbox.move(5, verticalSpaceCheckbox)
-                verticalSpaceCheckbox += 25
-                text = label_text.text()
-                self.foldersCheckbox.clicked.connect(lambda *args, text=text: self.on_folder_clicked(text))
+                # self.foldersCheckbox.setFixedSize(150, 22)
+                self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
                 
                 # Activate checkboxes in user.ini
-                if text.lower() in getIniFolders:
+                if folder.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
+
+                # Add to layout self.leftLayout
+                self.leftLayout.addWidget(self.foldersCheckbox, 0, QtCore.Qt.AlignTop)
 
         self.dates()
 
@@ -527,7 +516,6 @@ class UI(QMainWindow):
         ################################################################################
         # Read INI file
         ################################################################################
-
         sun = config['SCHEDULE']['sun']
         mon = config['SCHEDULE']['mon']
         tue = config['SCHEDULE']['tue']

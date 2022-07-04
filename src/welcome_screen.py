@@ -43,7 +43,7 @@ class WELCOMESCREEN(QWidget):
         self.continueButton.setText("Continue")
         self.continueButton.setFont(QFont("Ubuntu", 11))
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 550)
+        self.continueButton.move(800, 555)
         self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
 
         ###########################################################################
@@ -122,7 +122,7 @@ class CHOOSEDEVICE(QWidget):
         self.backButton.setText("Back")
         self.backButton.setFont(QFont("Ubuntu", 11))
         self.backButton.adjustSize()
-        self.backButton.move(700, 550)
+        self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
         
         # Continue button
@@ -130,7 +130,7 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setText("Continue")
         self.continueButton.setFont(QFont("Ubuntu", 11))
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 550)
+        self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_clicked)
 
@@ -139,7 +139,7 @@ class CHOOSEDEVICE(QWidget):
         self.refreshButton.setFont(QFont("Ubuntu", 11))
         self.refreshButton.setText("Refresh")
         self.refreshButton.adjustSize()
-        self.refreshButton.move(600, 550)
+        self.refreshButton.move(600, 555)
         self.refreshButton.clicked.connect(self.on_button_refresh_clicked)
 
         self.check_connection()
@@ -332,7 +332,7 @@ class OPTIONS(QWidget):
         self.backButton.setText("Back")
         self.backButton.setFont(QFont("Ubuntu", 11))
         self.backButton.adjustSize()
-        self.backButton.move(700, 550)
+        self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button
@@ -340,7 +340,7 @@ class OPTIONS(QWidget):
         self.continueButton.setText("Continue")
         self.continueButton.setFont(QFont("Ubuntu", 11))
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 550)
+        self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_clicked)
 
@@ -433,7 +433,7 @@ class PREBACKUP(QWidget):
         # Application checkbox (Installed names)
         ################################################################################
         self.applicationNamesCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationNamesCheckBox.setText(" Applications (Flatpak names)")
+        self.applicationNamesCheckBox.setText(" Applications")
         self.applicationNamesCheckBox.setFont(QFont("Ubuntu", 11))
         self.applicationNamesCheckBox.move(20, 10)
         self.applicationNamesCheckBox.clicked.connect(self.on_application_names_clicked)
@@ -457,7 +457,7 @@ class PREBACKUP(QWidget):
         # Application checkbox (DATA)
         ################################################################################
         self.applicationDataCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationDataCheckBox.setText(" Applications (Flatpak Data)")
+        self.applicationDataCheckBox.setText(" Applications (Data)")
         self.applicationDataCheckBox.setFont(QFont("Ubuntu", 11))
         self.applicationDataCheckBox.move(20, 40)
         self.applicationDataCheckBox.clicked.connect(self.on_application_data_clicked)
@@ -534,7 +534,7 @@ class PREBACKUP(QWidget):
         self.backButton.setText("Back")
         self.backButton.setFont(QFont("Ubuntu", 11))
         self.backButton.adjustSize()
-        self.backButton.move(700, 550)
+        self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button
@@ -542,7 +542,7 @@ class PREBACKUP(QWidget):
         self.continueButton.setText("Continue")
         self.continueButton.setFont(QFont("Ubuntu", 11))
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 550)
+        self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
 
@@ -887,7 +887,7 @@ class BACKUPSCREEN(QWidget):
         self.backButton.setText("Back")
         self.backButton.setFont(QFont("Ubuntu", 11))
         self.backButton.adjustSize()
-        self.backButton.move(700, 550)
+        self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button
@@ -981,7 +981,7 @@ class BACKUPSCREEN(QWidget):
         # Disable restore button
         self.startRestoreButton.setEnabled(False)
         # Call restore python
-        sub.Popen(f"python3 {homeUser}/.local/share/timemachine/src/restore_cmd.py", shell=True)
+        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
 
 
 app = QApplication(sys.argv)

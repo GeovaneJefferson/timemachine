@@ -4,7 +4,6 @@ from setup import *
 # Read ini file
 config = configparser.ConfigParser()
 config.read(src_user_config)
-config.optionxform = str
 
 # Error fuction
 def error_trying_to_backup(error):
@@ -384,10 +383,13 @@ class BACKUP:
                 # Create inside external Local Folder
                 if not os.path.exists(self.applicationLocalFolder):
                     sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  # Create folder with date
-            
-                if not os.path.exists(self.flatpakTxtFile):
-                    print("Flatpak file was created.")
-                    sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)    # Create tmb folder
+                
+            ################################################################################
+            # Create application folder
+            ################################################################################
+            if not os.path.exists(self.flatpakTxtFile):
+                print("Flatpak file was created.")
+                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)    # Create tmb folder
 
         except FileNotFoundError as error:
             # Call error function (id 4)
