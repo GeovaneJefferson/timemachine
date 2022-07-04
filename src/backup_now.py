@@ -241,8 +241,8 @@ class BACKUP:
             # Home conditions to continue with the backup
             ################################################################################
             if self.totalHomeFoldersToBackupSize >= self.freeSpace:
-                print("Not enough space for new backup!")
-                print("Old files will be deleted, to make space for the new ones.")
+                print("Not enough space for new backup")
+                print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
 
                 ################################################################################
@@ -250,8 +250,9 @@ class BACKUP:
                 ################################################################################
                 try:
                     dateFolders = []
-                    for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}"):
+                    for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
                         if not "." in output:
+                            print(output)
                             dateFolders.append(output)
                             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
@@ -262,9 +263,8 @@ class BACKUP:
                     # Only deletes if exist more than one date folder inside
                     # Will return to the top, if free space is not enought, so app can delete more old folders
                     if len(dateFolders) > 1:
-                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{dateFolders[-1]}...")
-                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{dateFolders[-1]}", shell=True)
-                        # If Total size >= free space inside external device
+                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
+                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
 
                     else:
                         ################################################################################
