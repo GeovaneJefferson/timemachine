@@ -9,6 +9,7 @@ class CLI:
     def __init__(self):
         # Install command
         self.installDependencies = "python3-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+        self.installDependenciesArch = "python-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
 
         # Folders
@@ -92,7 +93,7 @@ class CLI:
             # Arch
             elif user_os == "arch":
                 print("")
-                sub.run(f"sudo pacman -Syu {self.installDependencies}", shell=True)
+                sub.run(f"sudo pacman -Syu {self.installDependenciesArch}", shell=True)
 
             ################################################################################
             # Install PySide6
@@ -105,7 +106,6 @@ class CLI:
             print("Error trying to install dependencies!")
             exit()
 
-        exit()
         self.begin_to_install()
 
     def begin_to_install(self):
