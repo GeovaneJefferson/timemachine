@@ -9,6 +9,7 @@ class CLI:
     def __init__(self):
         # Install command
         self.installDependencies = "python3-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+        self.installDependenciesArch = "python-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
 
         # Folders
@@ -37,6 +38,7 @@ class CLI:
         # Check User system (Ubuntu, Opensuse etc.)
         output = os.popen("cat /etc/os-release")  # uname -v
         output = output.read()
+
         # Types of systems
         if "ubuntu" in output:
             self.requirements("ubuntu")
@@ -64,8 +66,14 @@ class CLI:
         ################################################################################
         try:
             print("Installing all the dependencies...")
-            # Ubuntu or Debian
-            if user_os == "ubuntu" or "debian":
+            # Ubuntu
+            if user_os == "ubuntu":
+                print("")
+                sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
+            
+            # Debian
+            elif user_os == "debian":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
@@ -85,7 +93,7 @@ class CLI:
             # Arch
             elif user_os == "arch":
                 print("")
-                sub.run(f"sudo pacman -Syu {self.installDependencies}", shell=True)
+                sub.run(f"sudo pacman -Syu {self.installDependenciesArch}", shell=True)
 
             ################################################################################
             # Install PySide6
@@ -143,8 +151,8 @@ class CLI:
                 f"Exec=python3 {self.home_user}/.local/share/timemachine/src/gui.py\n "
                 f"Path={self.home_user}/.local/share/timemachine/\n "
                 f"Categories=System\n "
-                f"StartupWMClass=Time Machine\n "
-                f"WM_CLASS(STRING) = 'gui.py', 'gui.py'\n "
+                f"StartupWMClass=gui.py\n "
+                f"WM_CLASS(STRING)='gui.py', 'gui.py'\n "
                 f"Terminal=false")
 
         try:
