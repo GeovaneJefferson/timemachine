@@ -11,8 +11,18 @@ class UI(QWidget):
         # Variables
         self.filesToRestore = []
         self.filesToRestoreWithSpace = []
-        self.dateIndex = 0
+        # Folders
         self.chooseFolder = []
+        self.currentFolder = str()
+        self.currentFolderIndex = 0
+        # Times
+        self.timeFolders = []
+        self.countForTime = 0
+        # Dates
+        self.dateFolders = []
+        self.changeForDate = 0
+        self.dateIndex = 0
+        self.countForDate = 0
 
         self.iniUI()
 
@@ -26,10 +36,6 @@ class UI(QWidget):
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.showFullScreen()
         self.setMinimumSize(1400, 800)
-        # Color settings
-        self.setStyleSheet("""
-            background-color: rgb(38, 39, 40);
-            """)
 
         self.read_ini_file()
 
@@ -46,17 +52,17 @@ class UI(QWidget):
         ################################################################################
         # Base layouts
         ################################################################################
-        self.layoutV = QVBoxLayout()
-        self.layoutV.setAlignment(QtCore.Qt.AlignVCenter)
-        self.layoutV.setContentsMargins(20, 20, 20, 20)
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setAlignment(QtCore.Qt.AlignVCenter)
+        self.verticalLayout.setContentsMargins(20, 20, 20, 20)
 
-        self.layoutH = QHBoxLayout()
-        self.layoutH.setAlignment(QtCore.Qt.AlignHCenter)
-        self.layoutH.setSpacing(20)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setAlignment(QtCore.Qt.AlignHCenter)
+        self.horizontalLayout.setSpacing(20)
 
-        self.buttonLayoutH = QHBoxLayout()
-        self.buttonLayoutH.setSpacing(20)
-        self.buttonLayoutH.setContentsMargins(20, 20, 20, 20)
+        self.cancelRestoreLayout = QHBoxLayout()
+        self.cancelRestoreLayout.setSpacing(20)
+        self.cancelRestoreLayout.setContentsMargins(20, 20, 20, 20)
 
         self.updownLayoutV = QVBoxLayout()
         self.updownLayoutV.setContentsMargins(0, 0, 0, 0)
@@ -66,10 +72,10 @@ class UI(QWidget):
         self.timeLayoutV.setSpacing(20)
         self.timeLayoutV.setContentsMargins(20, 0, 20, 0)
 
-        self.foldersLayoutV = QVBoxLayout()
-        self.foldersLayoutV.setAlignment(QtCore.Qt.AlignVCenter)
-        self.foldersLayoutV.setSpacing(20)
-        self.foldersLayoutV.setContentsMargins(20, 0, 0, 0)
+        self.foldersLayout = QVBoxLayout()
+        self.foldersLayout.setAlignment(QtCore.Qt.AlignVCenter)
+        self.foldersLayout.setSpacing(20)
+        self.foldersLayout.setContentsMargins(20, 0, 0, 0)
 
         ################################################################################
         # Search box
@@ -90,132 +96,60 @@ class UI(QWidget):
         # Place to show all available files from external
         ################################################################################
         self.scrollWidget = QWidget()
-        self.scrollWidget.setStyleSheet(
-            "QWidget"
-            "{"
-            "background-color: rgb(24, 25, 26);"
-            "border-radius: 5px;"
-            "}")
 
         self.scroll = QScrollArea()
         self.scroll.setFixedSize(900, 600)
         # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         # self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setStyleSheet(
-            "QScrollBar::handle"
-            "{"
-            "background : rgb(58, 59, 60);"
-            "}"
-            "QScrollBar::handle::pressed"
-            "{"
-            "background : rgb(68, 69, 70);"
-            "}")
         self.scroll.setWidget(self.scrollWidget)
-
-        ################################################################################
         # Files vertical layout
-        ################################################################################
         self.filesGridLayout = QGridLayout(self.scrollWidget)
         self.filesGridLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.filesGridLayout.setContentsMargins(20, 20, 20, 20)
         self.filesGridLayout.setSpacing(20)
-
+        
+        ################################################################################
+        # Buttons
         ################################################################################
         # Cancel button
-        ################################################################################
         self.cancelButton = QPushButton()
         self.cancelButton.setText("Cancel")
         self.cancelButton.setFont(QFont("DejaVu Sans", 14))
         self.cancelButton.setFixedSize(120, 34)
         self.cancelButton.setEnabled(True)
         self.cancelButton.clicked.connect(lambda x: exit())
-        self.cancelButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "color: white;"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}")
 
-        ################################################################################
         # Restore button
-        ################################################################################
         self.restoreButton = QPushButton()
         self.restoreButton.setText("Restore")
         self.restoreButton.setFont(QFont("DejaVu Sans", 14))
         self.restoreButton.setFixedSize(120, 34)
         self.restoreButton.setEnabled(False)
-        self.restoreButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
 
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}")
-
-        ################################################################################
         # Up button
-        ################################################################################
         self.upButton = QPushButton()
         self.upButton.setText("Up")
         self.upButton.setFont(QFont("DejaVu Sans", 11))
         self.upButton.setFixedSize(50, 50)
-        self.upButton.clicked.connect(lambda x: self.get_date(True, self.chooseFolder[0]))
-        self.upButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}")
+        self.upButton.clicked.connect(self.change_date_up)
 
-        ################################################################################
         # Down button
-        ################################################################################
         self.downButton = QPushButton()
         self.downButton.setText("Down")
         self.downButton.setFont(QFont("DejaVu Sans", 11))
         self.downButton.setFixedSize(50, 50)
-        self.downButton.clicked.connect(lambda x: self.get_date(False, self.chooseFolder[0]))
-        self.downButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}")
+        self.downButton.clicked.connect(self.change_date_down)
 
         ################################################################################
-        # Label date
+        # Labels
         ################################################################################
         self.dateLabel = QLabel()
         self.dateLabel.setFont(QFont("DejaVu Sans", 12))
         self.dateLabel.setStyleSheet("""
                     background-color: transparent;
                 """)
-
-        ################################################################################
         # Current location
-        ################################################################################
         self.currentLocation = QLabel()
         self.currentLocation.setFont(QFont("DejaVu Sans", 34))
         self.currentLocation.setStyleSheet("""
@@ -225,47 +159,42 @@ class UI(QWidget):
         ################################################################################
         # Add widgets and Layouts
         ################################################################################
-        # BaseHLayout
-        self.layoutH.addLayout(self.foldersLayoutV, 0)
-        self.layoutH.addWidget(self.scroll, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.layoutH.addLayout(self.updownLayoutV, 0)
-        self.layoutH.addLayout(self.timeLayoutV, 0)
+        self.horizontalLayout.addLayout(self.foldersLayout, 0)
+        self.horizontalLayout.addWidget(self.scroll, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.horizontalLayout.addLayout(self.updownLayoutV, 0)
+        self.horizontalLayout.addLayout(self.timeLayoutV, 0)
 
-        # ButtonLayout
         self.updownLayoutV.addStretch()
         self.updownLayoutV.addWidget(self.upButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.updownLayoutV.addWidget(self.dateLabel, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.updownLayoutV.addWidget(self.downButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.updownLayoutV.addStretch()
 
-        # ButtonHLayout
-        self.buttonLayoutH.addWidget(self.cancelButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
-        self.buttonLayoutH.addWidget(self.restoreButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+        self.cancelRestoreLayout.addWidget(self.cancelButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+        self.cancelRestoreLayout.addWidget(self.restoreButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
 
-        # layoutV
-        self.layoutV.addWidget(self.currentLocation, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
-        self.layoutV.addStretch()
-        self.layoutV.addLayout(self.layoutH, 0)
-        self.layoutV.addLayout(self.buttonLayoutH, 0)
-        self.layoutV.addStretch()
+        self.verticalLayout.addWidget(self.currentLocation, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.verticalLayout.addStretch()
+        self.verticalLayout.addLayout(self.horizontalLayout, 0)
+        self.verticalLayout.addLayout(self.cancelRestoreLayout, 0)
+        self.verticalLayout.addStretch()
 
-        self.setLayout(self.layoutV)
+        self.setLayout(self.verticalLayout)
 
         self.get_folders()
 
     def get_folders(self):
-        ################################################################################
-        # Update screen files by remover items before show the new ones
-        ################################################################################
-        for i in range(self.foldersLayoutV.count()):
-            item = self.foldersLayoutV.itemAt(i)
-            widget = item.widget()
-            widget.deleteLater()
-            i -= 1
+        try:
+            # Clean screen
+            for _ in range(1):
+                self.clean_stuff_on_screen("foldersLayout")
+        except:
+            pass
 
         ################################################################################
         # Get available folders from INI file
         ################################################################################
+        # TODO
         for output in self.iniFolder:
             # Capitalize first letter
             output = output.capitalize() 
@@ -275,75 +204,45 @@ class UI(QWidget):
             except:
                 # Lower output first letter
                 output = output.lower() # Lower output first letter
-            ################################################################################
-            # Create buttons for it
-            ################################################################################
-            self.foldersButton = QPushButton()
-            self.foldersButton.setText(output)
-            self.foldersButton.setFont(QFont("DejaVu Sans", 12))
-            self.foldersButton.setFixedSize(140, 34)
-            self.foldersButton.setCheckable(True)
-            self.foldersButton.setAutoExclusive(True)
-            self.foldersButton.clicked.connect(lambda *args, output=output: self.get_date(None, output))
-            self.foldersButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}"
-                "QPushButton::checked"
-                "{"
-                "background-color: rgb(24, 25, 26);"
-                "border: 1px solid white;"
-                "}")
 
-            # Set current folder date
-            self.foldersLayoutV.addWidget(self.foldersButton, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            ################################################################################
+            # Create folders buttons
+            ################################################################################
+            self.foldersOnScreen = QPushButton()
+            self.foldersOnScreen.setText(output)
+            self.foldersOnScreen.setFont(QFont("DejaVu Sans", 12))
+            self.foldersOnScreen.setFixedSize(140, 34)
+            self.foldersOnScreen.setCheckable(True)
+            self.foldersOnScreen.setAutoExclusive(True)
+            self.foldersOnScreen.clicked.connect(lambda *args, folder=output: self.change_folder(folder))
 
-        ################################################################################
+            self.foldersLayout.addWidget(self.foldersOnScreen, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+
+        # Can not auto check, because other times it is in the same layout :C
         # Auto check latest folder and time button
-        ################################################################################
-        self.foldersButton.setChecked(True)
-        self.foldersButton.setStyleSheet(
-            "QPushButton"
-            "{"
-            "color: white;"
-            "background-color: rgb(58, 59, 60);"
-            "border: 0px;"
-            "border-radius: 5px;"
-            "}"
-            "QPushButton::hover"
-            "{"
-            "background-color: rgb(68, 69, 70);"
-            "}"
-            "QPushButton::checked"
-            "{"
-            "background-color: rgb(24, 25, 26);"
-            "border: 1px solid white;"
-            "}")
+        # self.foldersOnScreen.setChecked(True)
+        # Add output to self.currentFolder
+        self.currentFolder = output
 
-        self.get_date(None, output)
+        self.get_date()
 
-    def get_date(self, dateDirection, getFolder):
-        ################################################################################
-        # Get available dates inside {folderName}
-        ################################################################################
+    def get_date(self):
         try:
-            self.dateFolders = []
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/backups"):
+            for _ in range(1):
+                self.clean_stuff_on_screen("filesGridLayout")
+
+        except:
+            pass
+
+        try:
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
+                # Hide hidden outputs
                 if "." not in output:
                     self.dateFolders.append(output)
                     self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         except FileNotFoundError:
-            ################################################################################
             # Set notification_id to 3
-            ################################################################################
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'notification_id', "3")
                 config.write(configfile)
@@ -352,104 +251,17 @@ class UI(QWidget):
             sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification_available_notification()  # Call not available notification
             exit()
 
-        ################################################################################
-        # Dates up or down
-        ################################################################################
         print("Date available: ", self.dateFolders)
-        if dateDirection is None:
-            self.dateIndex = 0
+        self.get_time()       
 
-        elif not dateDirection:
-            self.dateIndex += 1
+    def get_time(self):
+        try:
+            # Clean screen
+            for _ in range(1):
+                self.clean_stuff_on_screen("timeLayoutV")
 
-        else:
-            self.dateIndex -= 1
-
-        getDate = self.dateFolders[self.dateIndex]
-        ################################################################################
-        # Set current folder date
-        ################################################################################
-        self.dateLabel.setText(getDate)
-
-        self.get_time(getDate, getFolder)
-
-    def get_time(self, getDate, getFolder):
-        self.index = self.dateFolders.index(getDate)
-
-        ################################################################################
-        # Disable up
-        ################################################################################
-        if self.index == 0:
-            self.upButton.setEnabled(False)
-            self.upButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: gray;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
-
-        else:
-            self.upButton.setEnabled(True)
-            self.upButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
-
-        ################################################################################
-        # Disable down
-        ################################################################################
-        if (self.index + 1) == len(self.dateFolders):
-            self.downButton.setEnabled(False)
-            self.downButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: gray;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
-
-        else:
-            self.downButton.setEnabled(True)
-            self.downButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
-
-        ################################################################################
-        # Remove items
-        ################################################################################
-        for i in range(self.timeLayoutV.count()):
-            item = self.timeLayoutV.itemAt(i)
-            widget = item.widget()
-            widget.deleteLater()
-            i -= 1
+        except:
+            pass
 
         ################################################################################
         # If inside the external "date folders" has not "time folder", pass to avoid display error :D
@@ -458,10 +270,9 @@ class UI(QWidget):
             ################################################################################
             # Get available times inside {folderName}
             ################################################################################
-            timeFolders = []
-            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/backups/{getDate}/"):
-                timeFolders.append(getTime)
-                timeFolders.sort(reverse=True)
+            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.dateFolders[(self.dateIndex)]}/"):
+                self.timeFolders.append(getTime)
+                self.timeFolders.sort(reverse=True)
 
                 ################################################################################
                 # Time button
@@ -474,143 +285,90 @@ class UI(QWidget):
                 self.timeButton.setFixedSize(100, 34)
                 self.timeButton.setCheckable(True)
                 self.timeButton.setAutoExclusive(True)
-                self.timeButton.clicked.connect(
-                    lambda *args, getTime=getTime: self.show_on_screen(getDate, getTime, getFolder))
-                self.timeButton.setStyleSheet(
-                    "QPushButton"
-                    "{"
-                    "color: white;"
-                    "background-color: rgb(58, 59, 60);"
-                    "border-radius: 5px;"
-                    "}"
-                    "QPushButton::hover"
-                    "{"
-                    "background-color: rgb(68, 69, 70);"
-                    "}"
-                    "QPushButton::checked"
-                    "{"
-                    "background-color: rgb(24, 25, 26);"
-                    "border: 1px solid white;"
-                    "}")
+                self.timeButton.clicked.connect(self.change_time)
 
                 ################################################################################
                 # Set current folder date
                 ################################################################################
                 self.timeLayoutV.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
 
-            print("Time available: ", timeFolders)
+            print("Time available: ", self.timeFolders)
             self.timeButton.setChecked(True)  # Auto selected that latest one
-            self.timeButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}"
-                "QPushButton::checked"
-                "{"
-                "background-color: rgb(24, 25, 26);"
-                "border: 1px solid white;"
-                "}")
+
+        except:
+            # Reset countForTime
+            self.countForTime = 0
+            # Add to countForDate
+            self.countForDate += 1 
+            # Return to Date
+            self.get_date()
+
+        # Current folder that user is on
+        print(f"Choose folder: {self.currentFolder}")
+        self.show_on_screen()
+
+    def show_on_screen(self):
+        try:
+            # Clean screen
+            for _ in range(1):
+                self.clean_stuff_on_screen("filesGridLayout")
 
         except:
             pass
 
-        self.show_on_screen(getDate, getTime, getFolder)
-
-    def show_on_screen(self, getDate, getTime, getFolder):
-        print(f"Choose folder: {getFolder}")
-        ################################################################################
         # Only allow one item inside chooseFolder list
-        ################################################################################
-        self.chooseFolder.append(getFolder)
-
-        if len(self.chooseFolder) > 1:  #
+        self.chooseFolder.append(self.currentFolder)
+        if len(self.chooseFolder) > 1:
             self.chooseFolder.remove(self.chooseFolder[0])
 
-        ################################################################################
-        # Set current location text on screen
-        ################################################################################
-        try:
-            self.currentLocation.setText(getFolder)
-        except:
-            self.currentLocation.setText("")
+        # Update current folder (label)
+        self.currentLocation.setText(self.currentFolder)
 
-        ################################################################################
-        # Remove items from files result
-        ################################################################################
-        for i in range(self.filesGridLayout.count()):
-            item = self.filesGridLayout.itemAt(i)
-            widget = item.widget()
-            widget.deleteLater()
-            i -= 1
-
-        ################################################################################
         # Show available files
-        ################################################################################
         try:
             horizontal = 0
             vertical = 0
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}"):
+            imagePrefix = ((".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"))
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                f"/{self.dateFolders[0]}/{self.timeFolders[0]}/{self.currentFolder}"):
+                # Only show files and hide hidden outputs
                 if "." in output and not output.startswith("."):
                     print("     Files: ", output)
-                    self.buttonFiles = QPushButton(self)
-                    self.buttonFiles.setCheckable(True)
-                    self.buttonFiles.setFixedSize(415, 150)
-                    self.buttonFiles.setStyleSheet(
-                        "QPushButton"
-                        "{"
-                        "background-color: rgb(36, 37, 38);"
-                        "border-top: 2px solid rgb(58, 59, 60);"
-                        "border-radius: 5px;"
-                        "}"
-                        "QPushButton::hover"
-                        "{"
-                        "background-color: rgb(58, 59, 60);"
-                        "}"
-                        "QPushButton::checked"
-                        "{"
-                        "background-color: rgb(24, 25, 26);"
-                        "border: 1px solid white;"
-                        "}")
 
-                    ################################################################################
-                    # Preview only if is a image
-                    ################################################################################
-                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
-                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
+                    # Buttons for output
+                    self.searchResult = QPushButton(self)
+                    self.searchResult.setCheckable(True)
+                    self.searchResult.setFixedSize(415, 150)
+
+                    # Show bigger preview if mouse hover 
+                    if output.endswith(imagePrefix):
                         scaledHTML = 'width:"100%" height="250"'
-                        self.buttonFiles.setToolTip(
-                            f"<img src={self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}/{output} "
-                            f"{scaledHTML}/>")
+                        self.searchResult.setToolTip(
+                            f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                            f"/{self.dateFolders[0]}/{self.timeFolders[0]}/{self.currentFolder}/{output} {scaledHTML}/>")
 
-                    self.buttonFiles.clicked.connect(
-                        lambda *args, output=output: self.add_to_restore(output, getDate, getTime))
+                    self.searchResult.clicked.connect(
+                        lambda *args, output=output: self.add_to_restore(output, self.dateFolders[0], self.timeFolders[0]))
 
                     ################################################################################
-                    # Set icons inside self.buttonFiles
+                    # Preview of files that are not in imagePrefix
                     ################################################################################
-                    if output.endswith(".png") or output.endswith(".jpg") or output.endswith(
-                            ".jpeg") or output.endswith(".webp") or output.endswith(".gif") or output.endswith(".svg"):
-                        image = QLabel(self.buttonFiles)
+                    # Image label
+                    image = QLabel(self.searchResult)
+                    image.setFixedSize(96, 96)
+                    image.move(20, 20)
+
+                    if output.endswith(imagePrefix):
+                        # image = QLabel(self.searchResult)
                         scaledHTML = 'width:"100%" height="85"'
                         image.setText(
-                            f"<img  src={self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{getFolder}/{output} "
-                            f"{scaledHTML}/>")
-                        image.move(20, 20)
+                            f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                            f"{self.dateFolders[0]}/{self.timeFolders[0]}/{self.currentFolder}/{output} {scaledHTML}/>")
                         image.setStyleSheet("""
                              background-color: transparent;
                          """)
 
                     elif output.endswith(".txt"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -619,9 +377,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".pdf"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -630,9 +385,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".py"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -641,9 +393,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".cpp"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -652,9 +401,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".sh"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -663,9 +409,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".blend"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -674,9 +417,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".excel"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -685,9 +425,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".mp4"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -696,9 +433,6 @@ class UI(QWidget):
                             "}")
 
                     elif output.endswith(".iso"):
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -707,9 +441,6 @@ class UI(QWidget):
                             "}")
 
                     else:
-                        image = QLabel(self.buttonFiles)
-                        image.setFixedSize(96, 96)
-                        image.move(20, 20)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -720,32 +451,110 @@ class UI(QWidget):
                     ################################################################################
                     # Text
                     ################################################################################
-                    text = QLabel(self.buttonFiles)
+                    text = QLabel(self.searchResult)
                     text.setText(output.capitalize())
-                    text.setFont(QFont("DejaVu Sans", 9))
+                    text.setFont(QFont("Ubuntu", 11))
                     text.setAlignment(Qt.AlignTop | Qt.AlignLeft)
                     text.move(20, 120)
                     text.setStyleSheet("""
-                        color: white;
-                        border: 0px;
                         background-color: transparent;
                     """)
 
-                    ################################################################################
                     # Add layout and widgets
-                    ################################################################################
-                    self.filesGridLayout.addWidget(self.buttonFiles, vertical, horizontal)
+                    self.filesGridLayout.addWidget(self.searchResult, vertical, horizontal)
 
                     ################################################################################
                     # Condition
                     ################################################################################
                     horizontal += 1
+                    # Only allow x number of item in the row
                     if horizontal == 2:
                         horizontal = 0
                         vertical += 1
 
         except FileNotFoundError:
-            print(f"Source files not found inside {baseFolderName}.")
+            self.countForTime += 1
+            print("")
+            print(f"Current info {self.currentFolder}/{self.dateFolders[0]}/{self.timeFolders[0]}")
+            print("Change time...")
+
+            try:
+                self.timeFolders[0] = self.timeFolders[self.countForTime]
+                print(self.timeFolders[0])
+
+            except IndexError:
+                if self.countForTime == len(self.timeFolders):
+                    # Reset count
+                    self.changeForDate += 1
+                    self.countForTime = 0
+                    print("Changing dates...")
+                    print(f"Changing to: {self.currentFolder}/{self.dateFolders[0]}/{self.timeFolders[0]}")
+
+                    # After changes times, now, change the Date and try to find files 
+                    # inside the choose folder
+                    self.dateFolders[0] = self.dateFolders[self.changeForDate]
+            
+                    # Update current folder index
+                    self.currentFolderIndex = self.dateFolders.index(self.dateFolders[0])
+
+                    # Update current date on the screen
+                    self.dateLabel.setText(self.dateFolders[(self.currentFolderIndex)])
+
+                    # If dates changes, go back to get_time, to get new time based on the new date
+                    self.get_time(self.dateFolders[0], self.currentFolder)
+        
+            print(f"Changing to: {self.currentFolder}/{self.dateFolders[0]}/{self.timeFolders[0]}")
+
+            # If dates changes, go back to get_time, to get new time based on the new date
+            self.show_on_screen()
+
+        self.up_down(None)
+
+    def up_down(self, dateDirection):
+        try:
+            print("INDEX:",self.dateFolders.index(self.currentFolder))
+            print("LENGHT", len(self.dateFolders))
+            print("DATE", self.currentFolder)
+
+            ################################################################################
+            # Up settings
+            # If clicked on up, go back in time
+            ################################################################################
+            if self.dateFolders.index(self.currentFolder) == 0: # 0 = The latest date available
+                self.downButton.setEnabled(False)
+            else:
+                self.downButton.setEnabled(True)
+
+            ################################################################################
+            # Down settings
+            # If clicked on down, go forward in time
+            ################################################################################
+            if self.dateFolders.index(self.currentFolder) + 1  == len(self.dateFolders):
+                self.upButton.setEnabled(False)
+
+            else:
+                self.upButton.setEnabled(True)
+
+            # Update date label on the screen
+            self.dateLabel.setText(self.currentFolder)
+
+            if dateDirection is None:
+                self.dateIndex = 0
+
+            elif not dateDirection:
+                self.dateIndex += 1
+
+            else:
+                self.dateIndex -= 1
+
+            # Clean screen
+            for _ in range(1):
+                print("Cleanning")
+                self.clean_stuff_on_screen("timeLayoutV")
+
+        except Exception as error:
+            print(error)
+            pass
 
     def add_to_restore(self, output, getDate, getTime):
         ################################################################################
@@ -774,19 +583,6 @@ class UI(QWidget):
         ################################################################################
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
-            self.restoreButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: white;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
 
             # Set self.filesToRestore length
             self.restoreButton.setText(f"Restore({len(self.filesToRestore)})")
@@ -794,36 +590,10 @@ class UI(QWidget):
             # Hide up function if 1 or more items is/are selected
             # Up
             self.upButton.setEnabled(False)
-            self.upButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: gray;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
 
             # Hide down function if 1 or more items is/are selected
             # Down
             self.downButton.setEnabled(False)
-            self.downButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: gray;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-
-                "}"
-                "QPushButton::hover"
-                "{"
-                "background-color: rgb(68, 69, 70);"
-                "}")
 
             # Hide time functions from TimeVLayout if 1 or more items is/are selected
             for i in range(self.timeLayoutV.count()):
@@ -834,8 +604,8 @@ class UI(QWidget):
                 i -= 1
 
             # Hide folders functions from foldersVLayout if 1 or more items is/are selected
-            for i in range(self.foldersLayoutV.count()):
-                item = self.foldersLayoutV.itemAt(i)
+            for i in range(self.foldersLayout.count()):
+                item = self.foldersLayout.itemAt(i)
                 widget = item.widget()
                 # widget.hide()   # Hide times
                 widget.setEnabled(False)  # Disable function
@@ -843,14 +613,6 @@ class UI(QWidget):
 
         else:
             self.restoreButton.setEnabled(False)
-            self.restoreButton.setStyleSheet(
-                "QPushButton"
-                "{"
-                "color: gray;"
-                "background-color: rgb(58, 59, 60);"
-                "border: 0px;"
-                "border-radius: 5px;"
-                "}")
 
             # Set self.filesToRestore length
             self.restoreButton.setText("Restore")
@@ -868,8 +630,8 @@ class UI(QWidget):
             ################################################################################
             # Show hides times from FoldersVLayout
             ################################################################################
-            for i in range(self.foldersLayoutV.count()):
-                item = self.foldersLayoutV.itemAt(i)
+            for i in range(self.foldersLayout.count()):
+                item = self.foldersLayout.itemAt(i)
                 widget = item.widget()
                 # widget.show()
                 widget.setEnabled(True)  # Enable function
@@ -878,37 +640,11 @@ class UI(QWidget):
             ################################################################################
             # Reactivate buttons
             ################################################################################
-            if self.index != 0:  # If is not last/top date
+            if self.dateIndex != 0:  # If is not last/top date
                 self.upButton.setEnabled(True)
-                self.upButton.setStyleSheet(
-                    "QPushButton"
-                    "{"
-                    "color: white;"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
 
-                    "}"
-                    "QPushButton::hover"
-                    "{"
-                    "background-color: rgb(68, 69, 70);"
-                    "}")
-
-            if not (self.index + 1) == len(self.dateFolders):  # If is not last/bottom date
+            if not (self.dateIndex + 1) == len(self.dateFolders):  # If is not last/bottom date
                 self.downButton.setEnabled(True)
-                self.downButton.setStyleSheet(
-                    "QPushButton"
-                    "{"
-                    "color: white;"
-                    "background-color: rgb(58, 59, 60);"
-                    "border: 0px;"
-                    "border-radius: 5px;"
-
-                    "}"
-                    "QPushButton::hover"
-                    "{"
-                    "background-color: rgb(68, 69, 70);"
-                    "}")
 
         ################################################################################
         # Connection restore button
@@ -923,9 +659,11 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"
-                    f"{self.filesToRestore[count]} {homeUser}/{self.chooseFolder[0]}/ &",
+                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/"
+                    f"{self.chooseFolder[0]}/{self.filesToRestore[count]} {homeUser}/{self.chooseFolder[0]}/ &",
                     shell=True)
+                
+                # Add to count
                 count += 1
 
             ################################################################################
@@ -934,9 +672,11 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f'{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/{self.chooseFolder[0]}/"'
-                    f'{self.filesToRestoreWithSpace[count]}" {homeUser}/{self.chooseFolder[0]}/ &',
-                    shell=True)
+                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{getDate}/{getTime}/"
+                    f"{self.chooseFolder[0]}/{self.filesToRestoreWithSpace[count]} {homeUser}/"
+                    f"{self.chooseFolder[0]}/ &", shell=True)
+                
+                # Add to count
                 count += 1
 
         except:
@@ -962,10 +702,56 @@ class UI(QWidget):
         sub.Popen(f"python3 {src_notification}",
                   shell=True)  # Call notification_available_notification()  # Call not available notification
         exit()
+    
+    def change_date_up(self):
+        # Add to countForDate
+        self.countForDate += 1
+        # Return to getDate
+        self.get_date()
 
-    # def keyPressEvent(self, event):
-    #     if event.key():  # == Qt.Key_Esc
-    #         exit()
+    def change_date_down(self):
+        # Add to countForDate
+        self.countForDate -= 1
+        # Return to getDate
+        self.get_date()
+
+    def change_time(self):
+        # Add to countForTime
+        self.countForTime += 1
+        # Return to getDate
+        self.get_date()
+
+    def change_folder(self, folder):
+        # Update self.currentFolder
+        self.currentFolder = folder
+        # Return to getDate
+        self.get_date()
+
+    @staticmethod
+    def clean_stuff_on_screen(self, exec):
+        ################################################################################
+        # Update screen files by removing items before show the new ones
+        ################################################################################
+        if exec == "foldersLayout":
+            for i in range(self.foldersLayout.count()):
+                item = self.foldersLayout.itemAt(i)
+                widget = item.widget()
+                widget.deleteLater()
+                i -= 1
+
+        if exec == "timeLayoutV":
+            for i in range(self.timeLayoutV.count()):
+                item = self.timeLayoutV.itemAt(i)
+                widget = item.widget()
+                widget.deleteLater()
+                i -= 1
+
+        if exec == "filesGridLayout":
+            for i in range(self.filesGridLayout.count()):
+                item = self.filesGridLayout.itemAt(i)
+                widget = item.widget()
+                widget.deleteLater()
+                i -= 1
 
 
 app = QApplication(sys.argv)
