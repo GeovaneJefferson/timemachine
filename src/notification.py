@@ -30,11 +30,11 @@ class UI(QMainWindow):
         self.y = (rect.height())
 
         # Window position TOP
-        self.windowXPosition = self.x - 240
+        self.windowXPosition = self.x - 140
         self.windowYPosition = 40
 
         # Window position Bottom
-        # self.windowXPosition = self.x - 240
+        # self.windowXPosition = self.x - 140
         # self.windowYPosition = self.y - 270
 
         # Window manager dimensions
