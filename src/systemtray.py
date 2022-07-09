@@ -39,7 +39,6 @@ class APP:
         # Enter time machine button
         self.enterTimeMachineButton = QAction("Enter Time Machine")
         self.enterTimeMachineButton.setFont(QFont(item))
-        self.enterTimeMachineButton.setEnabled(False)
         self.enterTimeMachineButton.triggered.connect(lambda: sub.run(f"python3 {src_enter_time_machine_py}", shell=True))
         # Open settings button
         self.openSettingsButton = QAction("Open Time Machine Preferences...")
