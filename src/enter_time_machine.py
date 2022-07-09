@@ -242,14 +242,14 @@ class UI(QWidget):
                         self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
                         self.alreadyGotList = True
 
-        except FileNotFoundError:
-            # Set notification_id to 3
+        except FileNotFoundError as error:
+            # Set notification_id to 2
             with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "3")
+                config.set('INFO', 'notification_id', "2")
+                config.set('INFO', 'notification_add_info', f"{error}")
                 config.write(configfile)
 
             print("External not mounted or available...")
-            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification_available_notification()  # Call not available notification
             exit()
 
         print("Date available: ", self.dateFolders)
@@ -617,20 +617,30 @@ class UI(QWidget):
             ################################################################################
             # Show hides times from TimeVLayout
             ################################################################################
-            for i in range(self.timeLayoutV.count()):
-                item = self.timeLayoutV.itemAt(i)
-                widget = item.widget()
-                widget.setEnabled(True)  # Enable function
-                i -= 1
+            # for i in range(self.timeLayoutV.count()):
+            #     item = self.timeLayoutV.itemAt(i)
+            #     widget = item.widget()
+            #     widget.setEnabled(True)  # Enable function
+            #     i -= 1
+
+            # Clean screen
+            for _ in range(1):
+                print("Cleaning")
+                self.clean_stuff_on_screen("timeLayoutV")
+
+            # Clean screen
+            for _ in range(1):
+                print("Cleaning")
+                self.clean_stuff_on_screen("foldersLayout")
 
             ################################################################################
             # Show hides times from FoldersVLayout
             ################################################################################
-            for i in range(self.foldersLayout.count()):
-                item = self.foldersLayout.itemAt(i)
-                widget = item.widget()
-                widget.setEnabled(True)  # Enable function
-                i -= 1
+            # for i in range(self.foldersLayout.count()):
+            #     item = self.foldersLayout.itemAt(i)
+            #     widget = item.widget()
+            #     widget.setEnabled(True)  # Enable function
+            #     i -= 1
 
             ################################################################################
             # Reactivate buttons
@@ -686,22 +696,13 @@ class UI(QWidget):
             sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
             exit()
 
-        ################################################################################
-        # Set notification_id to 9
-        ################################################################################
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "8")
-            config.write(configfile)
-
         print("Your files are been restored...")
-        # Call notification
-        sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
         exit()
     
     def change_date_up(self):
         # Clean screen
         for _ in range(1):
-            print("Cleanning")
+            print("Cleaning")
             self.clean_stuff_on_screen("timeLayoutV")
 
         self.countForTime = 0
@@ -712,7 +713,7 @@ class UI(QWidget):
     def change_date_down(self):
         # Clean screen
         for _ in range(1):
-            print("Cleanning")
+            print("Cleaning")
             self.clean_stuff_on_screen("timeLayoutV")
         
         self.countForTime = 0
@@ -723,7 +724,7 @@ class UI(QWidget):
     def change_time(self, getTime):
         # Clean screen
         for _ in range(1):
-            print("Cleanning")
+            print("Cleaning")
             self.clean_stuff_on_screen("filesGridLayout")
 
         print(getTime)

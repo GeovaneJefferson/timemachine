@@ -150,6 +150,12 @@ class UI(QMainWindow):
         self.processBar.hide()
 
         ################################################################################
+        # Extra information about an error
+        ################################################################################
+        self.extraInformationLabel = QLabel(self)
+        self.extraInformationLabel.setFont(item)
+        
+        ################################################################################
         # Current backup label information
         ################################################################################
         self.currentBackUpLabel = QLabel(self)
@@ -288,7 +294,6 @@ class UI(QMainWindow):
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
-            self.iniNotification = config['INFO']['notification']
             self.moreTimeMode = config['MODE']['more_time_mode']
 
             # Dates
@@ -307,6 +312,9 @@ class UI(QMainWindow):
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
 
+            # Current information about an error
+            self.iniExtraInformation = config['INFO']['notification_add_info']
+            
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
             
@@ -357,6 +365,13 @@ class UI(QMainWindow):
         ################################################################################
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
+        # Write to INI file
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+            config.set('INFO', 'notification_add_info', '')
+            config.set('INFO', 'notification_id', '0')
+            config.write(configfile)
 
         self.get_size_informations()
 
@@ -623,6 +638,20 @@ class UI(QMainWindow):
         # Auto adjustSize for current backup folder
         self.currentBackUpLabel.adjustSize()
 
+        self.extra_info()
+
+    def extra_info(self):
+        print(self.iniExtraInformation)
+        if self.iniExtraInformation != "":
+            # Information about an error message
+            self.extraInformationLabel.setText(self.iniExtraInformation)
+            # Auto adjustSize label
+            self.extraInformationLabel.adjustSize()
+            # Show label
+            self.extraInformationLabel.setEnabled(True)
+        else:
+            self.extraInformationLabel.setEnabled(False)
+
         self.show_process_bar()
 
     def show_process_bar(self):
@@ -687,10 +716,6 @@ class UI(QMainWindow):
                 with open(src_user_config, 'w') as configfile:  # Set auto backup to true
                     config.set('INFO', 'notification_id', '3')
                     config.write(configfile)
-
-                # If user has allow app to send notifications
-                if self.iniNotification == "true":
-                    sub.Popen(f"python3 {src_notification}", shell=True)
 
         else:
             config = configparser.ConfigParser()

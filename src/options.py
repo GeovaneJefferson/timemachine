@@ -286,44 +286,10 @@ class UI(QMainWindow):
         self.multipleTimePerDayComboBox.currentIndexChanged.connect(self.on_every_combox_changed)
 
         ################################################################################
-        # Notification settings
-        ################################################################################
-        self.notificationWidget = QWidget(self)
-        self.notificationWidget.setGeometry(280, 260, 500, 60)
-        self.notificationWidget.setStyleSheet(
-        "QWidget"
-        "{"
-        "border-bottom: 1px solid rgb(68, 69, 70);"
-        "}")
-
-        # Notification layout
-        self.notificationLayout = QVBoxLayout(self.notificationWidget)
-        self.notificationLayout.setSpacing(5)
-
-        # Notification title
-        self.notificationTitle = QLabel()
-        self.notificationTitle.setFont(QFont("Ubuntu", 11))
-        self.notificationTitle.setText("Notification:")
-        self.notificationTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.notificationTitle.setFixedSize(200, 30)
-        self.notificationTitle.setStyleSheet("""
-            border: transparent;
-        """)
-
-        # Notification checkbox
-        self.notificationCheckBox = QCheckBox(self.notificationWidget)
-        self.notificationCheckBox.setFont(QFont("Ubuntu", 10))
-        self.notificationCheckBox.setText(f"Allow {appName} to send notifications ")
-        self.notificationCheckBox.setStyleSheet("""
-            border: transparent;
-        """)
-        self.notificationCheckBox.clicked.connect(self.on_allow__notifications_clicked)
-
-        ################################################################################
         # Flatpak settings
         ################################################################################
         self.flatpakWidget = QWidget(self)
-        self.flatpakWidget.setGeometry(280, 320, 500, 80)
+        self.flatpakWidget.setGeometry(280, 260, 500, 80)
         self.flatpakWidget.setStyleSheet(
         "QWidget"
         "{"
@@ -369,7 +335,7 @@ class UI(QMainWindow):
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 400, 500, 90)
+        self.resetWidget.setGeometry(280, 340, 500, 90)
  
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
@@ -458,10 +424,6 @@ class UI(QMainWindow):
         self.timesGridLayout.addWidget(self.hoursTitle, 1, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.timesGridLayout.addWidget(self.minutesTitle, 1, 3, Qt.AlignVCenter | Qt.AlignHCenter)
 
-        # Notifications layout
-        self.notificationLayout.addWidget(self.notificationTitle, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.notificationLayout.addWidget(self.notificationCheckBox, 0, Qt.AlignLeft | Qt.AlignTop)
-       
         # Flaptak settings
         self.flatpakLayout.addWidget(self.flatpakTitle)
         self.flatpakLayout.addWidget(self.allowFlatpakNamesCheckBox)
@@ -603,21 +565,6 @@ class UI(QMainWindow):
 
         elif iniEverytime == "240":
             self.multipleTimePerDayComboBox.setCurrentIndex(3)
-
-        self.notification()
-
-    def notification(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
-        # Notification
-        self.iniNotification = config['INFO']['notification']
-
-        ################################################################################
-        # Notifications
-        ################################################################################
-        if self.iniNotification == "true":
-            self.notificationCheckBox.setChecked(True)
 
         self.flatpak_settings()
 
@@ -797,21 +744,6 @@ class UI(QMainWindow):
             # Write to INI file
             config.write(configfile)
 
-    def on_allow__notifications_clicked(self):
-        ################################################################################
-        # Allow app to send notifications
-        ################################################################################
-        with open(src_user_config, 'w') as configfile:
-            if self.notificationCheckBox.isChecked():
-                config.set('INFO', 'notification', 'true')
-
-            else:
-                config.set('INFO', 'notification', 'false')
-
-            # Write to INI file
-            print("Notifications enabled")
-            config.write(configfile)
-
     def on_allow__flatpak_names_clicked(self):
         with open(src_user_config, 'w') as configfile:
             if self.allowFlatpakNamesCheckBox.isChecked():
@@ -854,7 +786,7 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
                 config.set('BACKUP', 'checker_running', 'false')
-                config.set('BACKUP', 'allow_flatpak_names', 'false')
+                config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'false')
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
@@ -877,10 +809,15 @@ class UI(QMainWindow):
                 # Info section
                 config.set('INFO', 'latest', 'None')
                 config.set('INFO', 'next', 'None')
-                config.set('INFO', 'notification', 'true')
                 config.set('INFO', 'notification_id', '0')
                 config.set('INFO', 'feedback_status', '')
                 config.set('INFO', 'current_percent', '0')
+                # Folders section
+                config.set('FOLDER', 'pictures', 'true')
+                config.set('FOLDER', 'documents', 'true')
+                config.set('FOLDER', 'music', 'true')
+                config.set('FOLDER', 'videos', 'true')
+                config.set('FOLDER', 'desktop', 'true')
                 # Restore section
                 config.set('RESTORE', 'is_restore_running', 'false')
                 config.set('RESTORE', 'applications_name', 'false')
