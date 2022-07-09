@@ -7,13 +7,13 @@ config.read(src_user_config)
 
 # Error fuction
 def error_trying_to_backup(error):
-    # Set notification_id to 4
+    # Set notification_id to 2
     with open(src_user_config, 'w') as configfile:
-        config.set('INFO', 'notification_id', "4")
+        config.set('INFO', 'notification_id', "2")
+        config.set('INFO', 'notification_add_info', f"{error}")
         config.write(configfile)
 
     print(error)
-    sub.run(f"python3 {src_notification}", shell=True)  # Call notification
     exit()
 
 def signal_exit(*args):
@@ -71,18 +71,15 @@ class BACKUP:
             self.create_TMB()
 
         except KeyError as error:
-            ################################################################################
-            # Set notification_id to 5
-            ################################################################################
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "5")
-                config.write(configfile)
-
             print(error)
-            sub.run(f"python3 {src_notification}", shell=True)  # Call notification
             exit()
 
     def create_TMB(self):
+        # Change system tray icon to blue
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'notification_id', "1")
+            config.write(configfile)
+
         ################################################################################
         # Create TMB
         ################################################################################
@@ -107,7 +104,7 @@ class BACKUP:
         self.get_home_folders_size()
 
     def get_home_folders_size(self):
-        print("Checking size of folders...")
+        print("Checking size of Home folders...")
         ################################################################################
         # Get folders size
         ################################################################################
@@ -126,8 +123,6 @@ class BACKUP:
             getSize = os.popen(f"du -s {homeUser}/{output}")
             getSize = getSize.read().strip("\t").strip("\n").replace(f"{homeUser}/{output}", "").replace("\t", "")
             getSize = int(getSize)
-            print(output)
-            print(getSize)
 
             # Add to list
             self.homeFolderToBackupSizeList.append(getSize)
@@ -137,7 +132,7 @@ class BACKUP:
         self.calculate_home_folders()
 
     def calculate_home_folders(self):
-        print("Calculating home folders...")
+        print("Calculating Home folders...")
         ################################################################################
         # Get external maximum size
         ################################################################################
@@ -175,10 +170,6 @@ class BACKUP:
         else:
           self.calculate_flatpak_folders()
 
- 
-    ################################################################################
-    # Flatpak
-    ################################################################################
     def calculate_flatpak_folders(self, sizeLimit=500000):
         print("Checking size of folders (Flatpak)...")
         try:
@@ -213,8 +204,6 @@ class BACKUP:
             ################################################################################
             for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
                 # Get size of flatpak folder inside var/app/
-                print(f"du -s {src_flatpak_local_location}/{output}")
-
                 getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
                 getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
                 getSize = int(getSize)
@@ -267,27 +256,18 @@ class BACKUP:
 
                     else:
                         ################################################################################
-                        # Set notification_id to 7
+                        # Set notification_id to 3
                         ################################################################################
                         with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', "7")
+                            config.set('INFO', 'notification_id', "3")
                             config.write(configfile)
 
                         print("Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!")
-                        sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
                         exit()
 
                 except FileNotFoundError as error:
-                    ################################################################################
-                    # Set notification_id to 6
-                    ################################################################################
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'notification_id', "6")
-                        config.write(configfile)
-
                     print("Error trying to delete old backups!")
                     print(error)
-                    sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
                     exit()
 
             else:
@@ -330,12 +310,10 @@ class BACKUP:
                             
                         # Send notification to user telling the error
                         with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', "10")
+                            config.set('INFO', 'notification_id', "2")
                             config.set('INFO', 'notification_add_info', f"Space needed: {addToNotificationInfo}")
                             config.write(configfile)
 
-                        # Call notification
-                        sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
                         # Set "backup_now" to false and eixt()
                         signal_exit()
 
@@ -488,7 +466,6 @@ class BACKUP:
                 countForRuleOf3 += 1
 
         except FileNotFoundError as error:
-            # Call error function (id 4)
             error_trying_to_backup(error)
 
         if self.iniAllowFlatpakData == "true":
@@ -603,7 +580,7 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'false')
             config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
-            config.set('INFO', 'notification_id', "2")
+            config.set('INFO', 'notification_id', "0")
             config.set('INFO', 'notification_add_info', "")
             config.set('INFO', 'feedback_status', "")
             config.set('INFO', 'current_percent', "0")
@@ -612,9 +589,8 @@ class BACKUP:
         ################################################################################
         # After backup is done
         ################################################################################
-        sub.Popen(f"python3 {src_notification}", shell=True)
         print("Backup is done!")
-        print("Sleeping 60 seconds...")
+        print("Sleeping for 60 seconds...")
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
         sub.Popen(f"python3 {src_backup_check_py}", shell=True)
         exit()

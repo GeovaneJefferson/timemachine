@@ -21,7 +21,6 @@ class CLI:
         self.iniBackupNowChecker = config['BACKUP']['backup_now']
         self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
         self.iniLatestDate = config['INFO']['latest']
-        self.iniNotification = config['INFO']['notification']
         # Dates
         self.iniScheduleSun = config['SCHEDULE']['sun']
         self.iniScheduleMon = config['SCHEDULE']['mon']
@@ -90,7 +89,8 @@ class CLI:
                 # If device name can not be found inside /media, exit
                 raise FileNotFoundError
         
-        except FileNotFoundError:
+        except FileNotFoundError as error:
+            print(error)
             ################################################################################
             # If run/media is empty, exit
             # Set notification_id to 3
@@ -99,13 +99,9 @@ class CLI:
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'notification_id', "3")
+                config.set('INFO', 'notification_add_info', f"{error}")
                 config.write(configfile)
 
-            # If user has allow app to send notifications
-            if self.iniNotification == "true":
-                print("External not mounted or available...")
-                sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
-            
             exit()
 
     def check_the_date(self):

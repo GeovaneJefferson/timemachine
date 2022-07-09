@@ -93,9 +93,13 @@ src_backup_check = f"{homeUser}/.local/share/timemachine/src/desktop/backup_chec
 src_restore_small_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_small.png"
 src_backup_py = f"{homeUser}/.local/share/timemachine/src/backup_check.py"
 src_enter_time_machine_py = f"{homeUser}/.local/share/timemachine/src/enter_time_machine.py"
+
 src_system_tray = f"{homeUser}/.local/share/timemachine/src/systemtray.py"
 src_system_bar_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayicon.png"
 src_system_bar_run_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconrun.png"
+src_system_bar_error_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconerror.png"
+src_system_bar_restore_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayiconrestore.png"
+
 src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"
 src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_devices.py"
 src_welcome_screen = f"{homeUser}/.local/share/timemachine/src/welcome_screen.py"
