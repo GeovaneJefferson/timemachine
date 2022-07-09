@@ -708,14 +708,8 @@ class UI(QMainWindow):
                 sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
             else:
-                ################################################################################
-                # Set notification_id to 3
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                    config.set('INFO', 'notification_id', '3')
-                    config.write(configfile)
+                # User must select an external device first before, auto_backup can be enabled
+                sub.Popen(f"python3 {src_search_for_devices}", shell=True)
 
         else:
             config = configparser.ConfigParser()
