@@ -64,6 +64,7 @@ class CLI:
         try:
             print("Checking external under /media... ")
             if self.iniHDName in os.listdir(f"/media/{userName}"):
+             
                 print("External found in /media.")
                 self.check_the_date()
 
@@ -102,7 +103,9 @@ class CLI:
                 config.set('INFO', 'notification_add_info', f"{error}")
                 config.write(configfile)
 
-            exit()
+            print("No external device found.")
+            print(f"Please, connect the external device, so next time, {appName} will be able to backup.")
+            pass
 
     def check_the_date(self):
         print("Checking dates...")
@@ -184,27 +187,26 @@ class CLI:
                     config.set('BACKUP', 'first_startup', 'false')
                     config.write(configfile)
 
-        elif self.iniMultipleTimePerDay == "true": 
-            print("Multiple time per day found")
-            if self.iniEverytime == '30':
-                if self.currentMinute in timeModeMinutes30:
-                    if self.iniBackupNowChecker == "false":
-                        self.call_backup_now()
+        else: 
+            print("Multiple time per day")
+            print(self.totalCurrentTime)
+            print(self.currentHour)
+            print(self.currentMinute)
+            print(self.iniEverytime)
+            if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
+                if self.iniBackupNowChecker == "false":
+                    self.call_backup_now()
 
-            elif self.iniEverytime == '60':
-                if self.currentHour in timeModeHours60:
-                    if self.iniBackupNowChecker == "false":
-                        self.call_backup_now()
+            elif self.iniEverytime == '120' and self.totalCurrentTime in timeModeHours120:
+                if self.iniBackupNowChecker == "false":
+                    self.call_backup_now()
 
-            elif self.iniEverytime == '120':
-                if self.currentHour in timeModeHours120:
-                    if self.iniBackupNowChecker == "false":
-                        self.call_backup_now()
+            elif self.iniEverytime == '240' and self.totalCurrentTime in timeModeHours240:
+                if self.iniBackupNowChecker == "false":
+                    self.call_backup_now()
 
-            elif self.iniEverytime == '240':
-                if self.currentHour in timeModeHours240:
-                    if self.iniBackupNowChecker == "false":
-                        self.call_backup_now()
+            else:
+                print("Waiting for the right time to backup...")
 
     def call_backup_now(self):
         print("Back up will start shortly...")
@@ -217,15 +219,9 @@ class CLI:
             config.set('BACKUP', 'backup_now', 'true')
             config.set('INFO', 'notification_id', '1')  # Backup will start shortly...
             config.write(configfile)
-        
-        # Call notification and wait x seconds
-        sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
-        time.sleep(5)
 
-        # If user has allow app to send notifications
-        if self.iniNotification == "true":
-            sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
-        
+        # Call backup now
+        sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
         exit()
 
     def no_backup(self):
@@ -236,7 +232,6 @@ class CLI:
             config.set('BACKUP', 'checker_running', 'false')
             config.write(configfile)
 
-        # sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
         exit()
 
     def signal_exit(self, *args):
@@ -262,6 +257,7 @@ while True:
     time.sleep(2)
 
 main.no_backup()
+
 
 
 

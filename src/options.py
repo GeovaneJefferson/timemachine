@@ -14,7 +14,7 @@ class UI(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowTitle(appName)
+        self.setWindowTitle("Options Screen")
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(800, 550)
 
@@ -198,10 +198,10 @@ class UI(QMainWindow):
         self.moreTimePerDayRadio = QRadioButton()
         self.moreTimePerDayRadio.setFont(QFont("Ubuntu", 10))
         self.moreTimePerDayRadio.setToolTip(
-            "Back up will be execute every x minutes/hours.\n"
+            "Back up will be execute every x hours.\n"
             "This will produce a time folder inside your backup device.\n"
-            "Fx: 12-12-12/10-30\n"
-            "10-30, is the time of the back up (10:30).")
+            "Fx: 12-12-12/10-00\n"
+            "10-00, is the time of the back up (10:00).")
 
         self.moreTimePerDayRadio.setText("Multiple times per day")
         self.moreTimePerDayRadio.setFixedSize(180, 30)
@@ -278,7 +278,6 @@ class UI(QMainWindow):
             "}")
 
         multipleTimerPerDayComboBoxList = [
-            "Every 30 minutes",
             "Every 1 hour",
             "Every 2 hours",
             "Every 4 hours"]
@@ -368,7 +367,7 @@ class UI(QMainWindow):
         # Donate, Update and Save buttons
         ################################################################################
         self.donateAndSaveWidget = QWidget(self)
-        self.donateAndSaveWidget.setGeometry(565, 490, 220, 60)
+        self.donateAndSaveWidget.setGeometry(568, 490, 220, 60)
 
         # Donate and Settings widget
         self.donateAndSaveLayout = QHBoxLayout(self.donateAndSaveWidget)
@@ -543,28 +542,43 @@ class UI(QMainWindow):
             self.hoursSpinBox.setEnabled(True)
             self.minutesSpinBox.setEnabled(True)
             self.oneTimePerDayRadio.setChecked(True)
-
+            
+            # Enable all days
+            self.sunCheckBox.setEnabled(True)
+            self.monCheckBox.setEnabled(True)
+            self.tueCheckBox.setEnabled(True)
+            self.wedCheckBox.setEnabled(True)
+            self.thuCheckBox.setEnabled(True)
+            self.friCheckBox.setEnabled(True)
+            self.satCheckBox.setEnabled(True)
+        
         # Multiple time per day
         elif iniMultipleTimePerDay == "true":
             self.hoursSpinBox.setEnabled(False)
             self.minutesSpinBox.setEnabled(False)
             self.multipleTimePerDayComboBox.setEnabled(True)
             self.moreTimePerDayRadio.setChecked(True)
+        
+            # Disable all days
+            self.sunCheckBox.setEnabled(False)
+            self.monCheckBox.setEnabled(False)
+            self.tueCheckBox.setEnabled(False)
+            self.wedCheckBox.setEnabled(False)
+            self.thuCheckBox.setEnabled(False)
+            self.friCheckBox.setEnabled(False)
+            self.satCheckBox.setEnabled(False)
 
         ################################################################################
         # Multiple time per day
         ################################################################################
-        if iniEverytime == "30":
+        if iniEverytime == "60":
             self.multipleTimePerDayComboBox.setCurrentIndex(0)
 
-        elif iniEverytime == "60":
+        elif iniEverytime == "120":
             self.multipleTimePerDayComboBox.setCurrentIndex(1)
 
-        elif iniEverytime == "120":
-            self.multipleTimePerDayComboBox.setCurrentIndex(2)
-
         elif iniEverytime == "240":
-            self.multipleTimePerDayComboBox.setCurrentIndex(3)
+            self.multipleTimePerDayComboBox.setCurrentIndex(2)
 
         self.flatpak_settings()
 
@@ -602,15 +616,12 @@ class UI(QMainWindow):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
         with open(src_user_config, 'w') as configfile:
             if chooseMultipleTimePerDayCombox == 0:
-                config.set('SCHEDULE', 'everytime', '30')
-
-            elif chooseMultipleTimePerDayCombox == 1:
                 config.set('SCHEDULE', 'everytime', '60')
 
-            elif chooseMultipleTimePerDayCombox == 2:
+            elif chooseMultipleTimePerDayCombox == 1:
                 config.set('SCHEDULE', 'everytime', '120')
 
-            elif chooseMultipleTimePerDayCombox == 3:
+            elif chooseMultipleTimePerDayCombox == 2:
                 config.set('SCHEDULE', 'everytime', '240')
 
             # Write to INI file
@@ -729,6 +740,15 @@ class UI(QMainWindow):
                 self.hoursSpinBox.setEnabled(True)
                 self.minutesSpinBox.setEnabled(True)
                 self.oneTimePerDayRadio.setChecked(True)
+                
+                # Enable all days
+                self.sunCheckBox.setEnabled(True)
+                self.monCheckBox.setEnabled(True)
+                self.tueCheckBox.setEnabled(True)
+                self.wedCheckBox.setEnabled(True)
+                self.thuCheckBox.setEnabled(True)
+                self.friCheckBox.setEnabled(True)
+                self.satCheckBox.setEnabled(True)
 
             elif self.moreTimePerDayRadio.isChecked():
                 config.set('MODE', 'more_time_mode', 'true')
@@ -740,6 +760,15 @@ class UI(QMainWindow):
                 self.minutesSpinBox.setEnabled(False)
                 self.multipleTimePerDayComboBox.setEnabled(True)
                 self.moreTimePerDayRadio.setChecked(True)
+        
+                # Disable all days
+                self.sunCheckBox.setEnabled(False)
+                self.monCheckBox.setEnabled(False)
+                self.tueCheckBox.setEnabled(False)
+                self.wedCheckBox.setEnabled(False)
+                self.thuCheckBox.setEnabled(False)
+                self.friCheckBox.setEnabled(False)
+                self.satCheckBox.setEnabled(False)
 
             # Write to INI file
             config.write(configfile)
@@ -828,8 +857,6 @@ class UI(QMainWindow):
                 config.write(configfile)
 
             print("All settings was reset!")
-            # Call notification
-            sub.Popen(f"python3 {src_notification}", shell=True)
             exit()
 
         else:

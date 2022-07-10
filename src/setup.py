@@ -39,7 +39,7 @@ localFolderName = "share"
 flatpakTxt = "flatpak.txt"
 
 # CMD commands
-copyCmd = "rsync -avrh --exclude={'cache','.cache'}" 
+copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}" 
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 
@@ -47,6 +47,7 @@ createCMDFile = "touch"
 # Locations
 media = "/media"
 run = "/run/media"
+
 
 ################################################################################
 ## Fonts
@@ -65,13 +66,12 @@ getHomeFolders = os.listdir(homeUser)
 ################################################################################
 ## Times
 ################################################################################
-timeModeMinutes30 = ['00', '30']
-timeModeHours60 = ['00', '01', '02', '03', '04', '05', '06', '07',
-                      '08', '09', '10', '11', '12', '13', '14', '15',
-                      '16', '17', '18', '19', '20', '21', '22', '23']
-timeModeHours120 = ['00', '02', '04', '06', '08', '10', '12', '14',
-                       '16', '18', '20', '22']
-timeModeHours240 = ['00', '04', '08', '12', '16', '20']
+timeModeHours60 = ['0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
+                      '0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500',
+                      '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300']
+timeModeHours120 = ['0000', '0200', '0400', '0600', '0800', '1000', '1200', '1400',
+                       '1600', '1800', '2000', '2200']
+timeModeHours240 = ['0000', '0400', '0800', '1200', '1600', '2000']
 
 # Fix time
 fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -104,4 +104,5 @@ src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"
 src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_devices.py"
 src_welcome_screen = f"{homeUser}/.local/share/timemachine/src/welcome_screen.py"
 src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
+
 

@@ -664,7 +664,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
+                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
                     f"{self.currentFolder}/{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/ &",
                     shell=True)
                 
@@ -677,7 +677,7 @@ class UI(QWidget):
             count = 0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
+                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
                     f"{self.currentFolder}/{self.filesToRestoreWithSpace[count]} {homeUser}/"
                     f"{self.currentFolder}/ &", shell=True)
                 
