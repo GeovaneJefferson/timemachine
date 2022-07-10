@@ -41,7 +41,7 @@ class WELCOMESCREEN(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
@@ -120,7 +120,7 @@ class CHOOSEDEVICE(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -128,7 +128,7 @@ class CHOOSEDEVICE(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -136,7 +136,7 @@ class CHOOSEDEVICE(QWidget):
 
         # Refresh button
         self.refreshButton = QPushButton(self)
-        self.refreshButton.setFont(QFont("Ubuntu", 11))
+        self.refreshButton.setFont(QFont("Ubuntu", 10))
         self.refreshButton.setText("Refresh")
         self.refreshButton.adjustSize()
         self.refreshButton.move(600, 555)
@@ -330,7 +330,7 @@ class OPTIONS(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -338,7 +338,7 @@ class OPTIONS(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -537,7 +537,7 @@ class PREBACKUP(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -545,7 +545,7 @@ class PREBACKUP(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -840,7 +840,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetDeviceName = QWidget(self)
         widgetDeviceName.setFixedSize(180, 40)
-        widgetDeviceName.move(232, 280)
+        widgetDeviceName.move(232, 285)
         # widgetDeviceName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -862,7 +862,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetThisPCName = QWidget(self)
         widgetThisPCName.setFixedSize(180, 40)
-        widgetThisPCName.move(485, 280)
+        widgetThisPCName.move(485, 285)
         # widgetThisPCName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -890,7 +890,7 @@ class BACKUPSCREEN(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -898,7 +898,7 @@ class BACKUPSCREEN(QWidget):
         # Continue button
         self.startRestoreButton = QPushButton(self)
         self.startRestoreButton.setText("Restore")
-        self.startRestoreButton.setFont(QFont("Ubuntu", 11))
+        self.startRestoreButton.setFont(QFont("Ubuntu", 10))
         self.startRestoreButton.adjustSize()
         self.startRestoreButton.move(800, 555)
         self.startRestoreButton.setEnabled(True)
@@ -982,7 +982,7 @@ class BACKUPSCREEN(QWidget):
 
 
 app = QApplication(sys.argv)
-main = PREBACKUP()
+main = WELCOMESCREEN()
 main2 = CHOOSEDEVICE()
 main3 = OPTIONS()
 main4 = PREBACKUP()

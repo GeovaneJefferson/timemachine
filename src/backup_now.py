@@ -441,12 +441,12 @@ class BACKUP:
                 with open(src_user_config, 'w') as configfile:
                     config.set('INFO', 'feedback_status', f"Backing up: {output}")
                     config.write(configfile)
-
+                
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
-                print(f"{copyCmd} {homeUser}/{output} {self.timeFolder}")
-                sub.run(f"{copyCmd} {homeUser}/{output} {self.timeFolder}", shell=True)  # Ex: TMB/date/time/Desktop
+                print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
+                sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)  # Ex: TMB/date/time/Desktop
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
@@ -495,8 +495,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyCmd} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyCmd} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
@@ -537,8 +537,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyCmd} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
-                sub.run(f"{copyCmd} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}", shell=True)
+                print(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
+                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}", shell=True)
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
