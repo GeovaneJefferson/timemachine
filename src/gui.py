@@ -294,7 +294,8 @@ class UI(QMainWindow):
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
-            self.moreTimeMode = config['MODE']['more_time_mode']
+            # Mode
+            self.oneTimeMode = config['MODE']['one_time_mode']
 
             # Dates
             self.nextDay = "None"
@@ -446,36 +447,27 @@ class UI(QMainWindow):
 
     def set_external_next_backup(self):
         ################################################################################
-        # Next backup label
+        # Status for automaticallyCheckBox
         ################################################################################
-        if self.iniNextBackup != "":
-            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+        # if self.iniNextBackup != "":
+        #     self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+        if self.automaticallyCheckBox.isChecked():
+            if self.oneTimeMode == "true":
+                self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+            else:
+                if self.everytime == "60":
+                    self.nextBackupLabel.setText("Next Backup: Every 1 hour")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-        # If automaticallyCheckBox is unchecked == AUtomatic backups off
-        if not self.automaticallyCheckBox.isChecked():
-            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
+                elif self.everytime == "120":
+                    self.nextBackupLabel.setText("Next Backup: Every 2 hours")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
+                elif self.everytime == "240":
+                    self.nextBackupLabel.setText("Next Backup: Every 4 hours")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
         else:
-            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
-
-        ################################################################################
-        # Next backup multiple times per day
-        ################################################################################
-        if self.moreTimeMode == "true" and self.everytime == "30":
-            self.nextBackupLabel.setText("Next Backup: Every 30 minutes")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "60":
-            self.nextBackupLabel.setText("Next Backup: Every 1 hour")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "120":
-            self.nextBackupLabel.setText("Next Backup: Every 2 hours")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "240":
-            self.nextBackupLabel.setText("Next Backup: Every 4 hours")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
         ################################################################################
         # Days to run

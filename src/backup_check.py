@@ -189,10 +189,6 @@ class CLI:
 
         else: 
             print("Multiple time per day")
-            print(self.totalCurrentTime)
-            print(self.currentHour)
-            print(self.currentMinute)
-            print(self.iniEverytime)
             if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
                 if self.iniBackupNowChecker == "false":
                     self.call_backup_now()
@@ -245,13 +241,14 @@ while True:
     main.check_for_external_media()
 
     print("Updating...")
-    # Exit program if auto_backup is false
+    # Exit program if automatically backup is false
     if main.iniBackupNowChecker == "true":
-        print("Break backupchecker")
+        print("Exiting backup checker...")
         break
+
     # Exit program if auto_backup is false
     if main.iniAutoBackup == "false":
-        print("Break autobackup")
+        print("Exiting backup checker...")
         break
 
     time.sleep(2)

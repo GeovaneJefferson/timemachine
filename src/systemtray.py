@@ -100,10 +100,11 @@ class APP:
 
         if self.iniHDName != "None":
             # If iniNotification is 1 (backing up...)
+            # 0, white color
             if self.iniNotification == "0":
                 icon = QIcon(src_system_bar_icon)
                 self.backupNowButton.setEnabled(True)
-            # 0, white color
+            # 1, Blue color
             elif self.iniNotification == "1":
                 icon = QIcon(src_system_bar_run_icon)
                 self.backupNowButton.setEnabled(False)
