@@ -11,6 +11,5 @@ except:
     print("Error trying to remove Time Machine!")
     exit()
 
-sub.run(f"clear", shell=True)
 print("App was successfully removed.")
 exit()

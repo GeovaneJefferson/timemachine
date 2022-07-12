@@ -1,6 +1,7 @@
 # Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
+* Make sure that your clock method is "24 hour clock", not "12 hour clock" AM/PM.
 
 # Time Machine
 Use Time Machine to automatically back up your personal data. 

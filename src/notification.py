@@ -15,9 +15,6 @@ class UI(QMainWindow):
         self.read_ini_file()
 
     def read_ini_file(self):
-        # Read INI file
-        self.iniNotificationAddInfo = config['INFO']['notification_add_info']
-
         self.iniUI()
 
     def iniUI(self):
@@ -114,45 +111,36 @@ class UI(QMainWindow):
 
     def notification_id(self):
         ################################################################
-        ##  Back up will start shortly
+        ##  Type of notification
         ################################################################
+        # Nothing
+        # White color
         if self.messageID == "0":
-            self.messageText.setText("All settings was reset!")
+            self.messageText.setText("Nothing")
             self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
+
+        # Backing up...
+        # Blue color
         elif self.messageID == "1":
-            self.messageText.setText("Back up will start shortly...")
+            self.messageText.setText("backing up...")
             self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
+
+        # Error
+        # Red color
         elif self.messageID == "2":
-            self.messageText.setText("Backup is done!")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "3":
-            self.messageText.setText("External not mounted or available...")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "4":
             self.messageText.setText("Error trying to back up!")
             self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "5":
-            self.messageText.setText("Error trying to read INI file!")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "6":
-            self.messageText.setText("Error trying to delete old backups!")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "7":
+        
+        # Error/Beware
+        # Red color
+        elif self.messageID == "3":
             self.messageText.setText("Please, manual delete old backups!")
             self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "8":
-            self.messageText.setText("Your files are been restored...")
+
+        # Yellow color
+        elif self.messageID == "4":
+            self.messageText.setText("Restoring files/folders...")
             self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "9":
-            self.messageText.setText("Error trying to restore your files!")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-        elif self.messageID == "10":
-            self.messageText.setText("Not enough space to backup!\n"
-                f"{self.iniNotificationAddInfo}")
-            self.messageText.setAlignment(QtCore.Qt.AlignHCenter)
-            
-        else:
-            pass
 
         #################################################################
         ###  Ok button
