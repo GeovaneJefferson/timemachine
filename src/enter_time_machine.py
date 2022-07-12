@@ -8,15 +8,18 @@ config.read(src_user_config)
 class UI(QWidget):
     def __init__(self):
         super().__init__()
+
         # Variables
         self.filesToRestore = []
         self.filesToRestoreWithSpace = []
+
         # Folders
         self.currentFolder = str()
         # Times
         self.timeFolders = []
         self.countForTime = 0
         self.excludeTimeList = []
+
         # Dates
         self.dateFolders = []
         self.dateIndex = 0
@@ -173,6 +176,7 @@ class UI(QWidget):
         ################################################################################
         # Get available folders from INI file
         ################################################################################
+        # TODO
         for output in self.iniFolder:
             # Capitalize first letter
             output = output.capitalize() 
@@ -246,12 +250,13 @@ class UI(QWidget):
         try:
             # Clear list
             self.timeFolders.clear()
-            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                f"/{self.dateFolders[(self.countForDate)]}/"):
+            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                f"{self.dateFolders[(self.countForDate)]}/"):
+
                 self.timeFolders.append(getTime)
                 self.timeFolders.sort(reverse=True)
 
-                # Only show time button that self.currentFolder can be found inside
+                # Only add time button if self.currentFolder can be found inside current date and time
                 if os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.dateFolders[(self.countForDate)]}/{getTime}/{self.currentFolder}"):
                     
@@ -283,16 +288,19 @@ class UI(QWidget):
             # Return to Date
             self.get_date()
 
-        # Current folder that user is on
-
-        print("")
-        print("Date available: ", self.dateFolders)
-        print("Time available: ", self.timeFolders)
-        print("Current date: ", self.dateFolders[self.countForDate])
-        print("Current time: ", self.timeFolders[self.countForTime])
-        print("Current folder:", self.currentFolder)
-        print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/{self.currentFolder}")
+        try:
+            # Current folder that user is on
+            print("")
+            print("Date available: ", self.dateFolders)
+            print("Time available: ", self.timeFolders)
+            print("Current date: ", self.dateFolders[self.countForDate])
+            print("Current time: ", self.timeFolders[self.countForTime])
+            print("Current folder:", self.currentFolder)
+            print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                    f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+                    f"{self.currentFolder}")
+        except:
+            pass
 
         self.show_on_screen()
 
@@ -325,10 +333,12 @@ class UI(QWidget):
                         scaledHTML = 'width:"100%" height="250"'
                         self.searchResult.setToolTip(
                             f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                            f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/{self.currentFolder}/{output} {scaledHTML}/>")
+                            f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+                            f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     self.searchResult.clicked.connect(
-                        lambda *args, output=output: self.add_to_restore(output, self.dateFolders[self.countForDate], self.timeFolders[self.countForTime]))
+                        lambda *args, output=output: self.add_to_restore(output, self.dateFolders[self.countForDate], 
+                        self.timeFolders[self.countForTime]))
 
                     ################################################################################
                     # Preview of files that are not in imagePrefix
@@ -483,8 +493,6 @@ class UI(QWidget):
         self.up_down()
 
     def up_down(self):
-        # print("DATE INDEX:", self.dateFolders.index(self.dateFolders[self.countForDate]))
-        # print("DATE LENGTH:", len(self.dateFolders))
         try:
             ################################################################################
             # Up settings
@@ -656,7 +664,7 @@ class UI(QWidget):
                 print("Cleaning")
                 self.clean_stuff_on_screen("timeLayoutV")
         except:
-            pass    
+            pass
         
         self.countForTime = 0
         self.countForDate -= 1
@@ -669,7 +677,6 @@ class UI(QWidget):
             for _ in range(1):
                 print("Cleaning")
                 self.clean_stuff_on_screen("filesGridLayout")
-
         except:
             pass
 
