@@ -150,6 +150,12 @@ class UI(QMainWindow):
         self.processBar.hide()
 
         ################################################################################
+        # Extra information about an error
+        ################################################################################
+        self.extraInformationLabel = QLabel(self)
+        self.extraInformationLabel.setFont(item)
+        
+        ################################################################################
         # Current backup label information
         ################################################################################
         self.currentBackUpLabel = QLabel(self)
@@ -196,10 +202,10 @@ class UI(QMainWindow):
             "* Keep local snapshots of your personal files as space permits\n"
             "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
             "* Schedule backups (Minutely, Hourly or Daily)\n"
-            "* Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
+            "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
-        self.descriptionText.setFixedSize(420, 120)
+        self.descriptionText.adjustSize()
         self.descriptionText.setStyleSheet("""
             border-color: transparent;
         """)
@@ -288,8 +294,8 @@ class UI(QMainWindow):
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
-            self.iniNotification = config['INFO']['notification']
-            self.moreTimeMode = config['MODE']['more_time_mode']
+            # Mode
+            self.oneTimeMode = config['MODE']['one_time_mode']
 
             # Dates
             self.nextDay = "None"
@@ -307,6 +313,9 @@ class UI(QMainWindow):
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
 
+            # Current information about an error
+            self.iniExtraInformation = config['INFO']['notification_add_info']
+            
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
             
@@ -357,6 +366,13 @@ class UI(QMainWindow):
         ################################################################################
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
+        # Write to INI file
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+            config.set('INFO', 'notification_add_info', '')
+            config.set('INFO', 'notification_id', '0')
+            config.write(configfile)
 
         self.get_size_informations()
 
@@ -431,36 +447,27 @@ class UI(QMainWindow):
 
     def set_external_next_backup(self):
         ################################################################################
-        # Next backup label
+        # Status for automaticallyCheckBox
         ################################################################################
-        if self.iniNextBackup != "":
-            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+        # if self.iniNextBackup != "":
+        #     self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+        if self.automaticallyCheckBox.isChecked():
+            if self.oneTimeMode == "true":
+                self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+            else:
+                if self.everytime == "60":
+                    self.nextBackupLabel.setText("Next Backup: Every 1 hour")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-        # If automaticallyCheckBox is unchecked == AUtomatic backups off
-        if not self.automaticallyCheckBox.isChecked():
-            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
+                elif self.everytime == "120":
+                    self.nextBackupLabel.setText("Next Backup: Every 2 hours")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
+                elif self.everytime == "240":
+                    self.nextBackupLabel.setText("Next Backup: Every 4 hours")
+                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
         else:
-            self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
-
-        ################################################################################
-        # Next backup multiple times per day
-        ################################################################################
-        if self.moreTimeMode == "true" and self.everytime == "30":
-            self.nextBackupLabel.setText("Next Backup: Every 30 minutes")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "60":
-            self.nextBackupLabel.setText("Next Backup: Every 1 hour")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "120":
-            self.nextBackupLabel.setText("Next Backup: Every 2 hours")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
-
-        elif self.moreTimeMode == "true" and self.everytime == "240":
-            self.nextBackupLabel.setText("Next Backup: Every 4 hours")
-            self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
+            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
         ################################################################################
         # Days to run
@@ -623,6 +630,20 @@ class UI(QMainWindow):
         # Auto adjustSize for current backup folder
         self.currentBackUpLabel.adjustSize()
 
+        self.extra_info()
+
+    def extra_info(self):
+        print(self.iniExtraInformation)
+        if self.iniExtraInformation != "":
+            # Information about an error message
+            self.extraInformationLabel.setText(self.iniExtraInformation)
+            # Auto adjustSize label
+            self.extraInformationLabel.adjustSize()
+            # Show label
+            self.extraInformationLabel.setEnabled(True)
+        else:
+            self.extraInformationLabel.setEnabled(False)
+
         self.show_process_bar()
 
     def show_process_bar(self):
@@ -679,19 +700,9 @@ class UI(QMainWindow):
                 sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
             else:
-                ################################################################################
-                # Set notification_id to 3
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                    config.set('INFO', 'notification_id', '3')
-                    config.write(configfile)
-
-                # If user has allow app to send notifications
-                if self.iniNotification == "true":
-                    sub.Popen(f"python3 {src_notification}", shell=True)
-
+                # User must select an external device first before, auto_backup can be enabled
+                sub.Popen(f"python3 {src_search_for_devices}", shell=True)
+ 
         else:
             config = configparser.ConfigParser()
             config.read(src_user_config)

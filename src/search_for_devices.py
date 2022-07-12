@@ -11,7 +11,7 @@ class EXTERNAL(QWidget):
 
     def iniUI(self):
         self.setWindowIcon(QIcon(src_backup_icon))
-        self.setWindowTitle("Choose device:")
+        self.setWindowTitle("External devices:")
         self.setFixedSize(500, 380)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
@@ -102,14 +102,16 @@ class EXTERNAL(QWidget):
                 self.foundInMedia = True
                 self.show_on_screen(media)
 
-                print("Searching for external devices under run...")
-            elif not len(os.listdir(f'{run}/{userName}')) == 0:
-                self.foundInMedia = False
-                self.show_on_screen(run)
-
         except FileNotFoundError:
-            print("No device found...")
-            pass
+            print("No device found inside Media")
+            try:
+                if not len(os.listdir(f'{run}/{userName}')) == 0:
+                    self.foundInMedia = False
+                    self.show_on_screen(run)
+
+            except FileNotFoundError:
+                print("No device found inside Run...")
+                pass
 
     def show_on_screen(self, location):
         print("Showing available devices")

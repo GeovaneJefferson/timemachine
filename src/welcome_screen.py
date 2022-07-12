@@ -41,7 +41,7 @@ class WELCOMESCREEN(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
@@ -120,7 +120,7 @@ class CHOOSEDEVICE(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -128,7 +128,7 @@ class CHOOSEDEVICE(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -136,7 +136,7 @@ class CHOOSEDEVICE(QWidget):
 
         # Refresh button
         self.refreshButton = QPushButton(self)
-        self.refreshButton.setFont(QFont("Ubuntu", 11))
+        self.refreshButton.setFont(QFont("Ubuntu", 10))
         self.refreshButton.setText("Refresh")
         self.refreshButton.adjustSize()
         self.refreshButton.move(600, 555)
@@ -330,7 +330,7 @@ class OPTIONS(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -338,7 +338,7 @@ class OPTIONS(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -433,11 +433,11 @@ class PREBACKUP(QWidget):
         # Application checkbox (Installed names)
         ################################################################################
         self.applicationNamesCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationNamesCheckBox.setText(" Applications")
+        self.applicationNamesCheckBox.setText(" Application (Flatpaks)")
         self.applicationNamesCheckBox.setFont(QFont("Ubuntu", 11))
         self.applicationNamesCheckBox.move(20, 10)
         self.applicationNamesCheckBox.clicked.connect(self.on_application_names_clicked)
-
+        
         # Get folder size
         self.applicationNamesSize = os.popen(f"du -hs {self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}")
         self.applicationNamesSize = self.applicationNamesSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "").replace("\t", "")
@@ -451,13 +451,14 @@ class PREBACKUP(QWidget):
             self.applicationSizeInformation.setText(f"{self.applicationNamesSize}")
         self.applicationSizeInformation.setFont(QFont("Ubuntu", 10))
         self.applicationSizeInformation.adjustSize()
+        self.applicationSizeInformation.setAlignment(QtCore.Qt.AlignRight)
         self.applicationSizeInformation.move(320, 12)
 
         ################################################################################
         # Application checkbox (DATA)
         ################################################################################
         self.applicationDataCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationDataCheckBox.setText(" Applications (Data)")
+        self.applicationDataCheckBox.setText(" Application (Flatpaks Data)")
         self.applicationDataCheckBox.setFont(QFont("Ubuntu", 11))
         self.applicationDataCheckBox.move(20, 40)
         self.applicationDataCheckBox.clicked.connect(self.on_application_data_clicked)
@@ -465,7 +466,7 @@ class PREBACKUP(QWidget):
         # Get folder size
         self.applicationDataSize = os.popen(f"du -hs {self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}")
         self.applicationDataSize = self.applicationDataSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}", "").replace("\t", "")
- 
+    
         # Application size information
         self.applicationSizeInformation = QLabel(self.restorekWidget)
         # If M inside self.applicationsSizeInformation, add B = MB
@@ -490,16 +491,17 @@ class PREBACKUP(QWidget):
         self.fileAndFoldersFolderSize = os.popen(f"du -hs {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/")
         self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/", "").replace("\t", "")
         
-        self.fileAndFoldersFolder = QLabel(self.restorekWidget)
+        self.fileAndFoldersFolderInformation = QLabel(self.restorekWidget)
         # If K inside self.applicationsSizeInformation, add K = KB
         if "K" in self.fileAndFoldersFolderSize:
-            self.fileAndFoldersFolder.setText(f"{self.fileAndFoldersFolderSize}B")
+            self.fileAndFoldersFolderInformation.setText(f"{self.fileAndFoldersFolderSize}B")
         else:
-            self.fileAndFoldersFolder.setText(f"{self.fileAndFoldersFolderSize}")
+            self.fileAndFoldersFolderInformation.setText(f"{self.fileAndFoldersFolderSize}")
             
-        self.fileAndFoldersFolder.setFont(QFont("Ubuntu", 10))
-        self.fileAndFoldersFolder.adjustSize()
-        self.fileAndFoldersFolder.move(320, 72)
+        self.fileAndFoldersFolderInformation.setFont(QFont("Ubuntu", 10))
+        self.fileAndFoldersFolderInformation.adjustSize()
+        self.fileAndFoldersFolderInformation.setAlignment(QtCore.Qt.AlignRight)
+        self.fileAndFoldersFolderInformation.move(320, 72)
 
         ################################################################################
         # User information
@@ -507,6 +509,7 @@ class PREBACKUP(QWidget):
         self.userSizeInformation = QLabel(self.restorekWidget)
         self.userSizeInformation.setFont(QFont("Ubuntu", 10))
         self.userSizeInformation.adjustSize()
+        self.userSizeInformation.setAlignment(QtCore.Qt.AlignRight)
         self.userSizeInformation.move(320, 102)
 
         ################################################################################
@@ -517,6 +520,7 @@ class PREBACKUP(QWidget):
         self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
         self.wallpaperCheckBox.move(20, 100)
         self.wallpaperCheckBox.setEnabled(False)
+        self.wallpaperCheckBox.setVisible(False)
 
         # Application size information
         self.wallpaperSizeInformation = QLabel(self.restorekWidget)
@@ -525,6 +529,7 @@ class PREBACKUP(QWidget):
         self.wallpaperSizeInformation.adjustSize()
         self.wallpaperSizeInformation.move(320, 102)
         self.wallpaperSizeInformation.setEnabled(False)
+        self.wallpaperSizeInformation.setVisible(False)
 
         ################################################################################
         # Buttons
@@ -532,7 +537,7 @@ class PREBACKUP(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -540,7 +545,7 @@ class PREBACKUP(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 11))
+        self.continueButton.setFont(QFont("Ubuntu", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -835,7 +840,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetDeviceName = QWidget(self)
         widgetDeviceName.setFixedSize(180, 40)
-        widgetDeviceName.move(232, 280)
+        widgetDeviceName.move(232, 285)
         # widgetDeviceName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -857,7 +862,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetThisPCName = QWidget(self)
         widgetThisPCName.setFixedSize(180, 40)
-        widgetThisPCName.move(485, 280)
+        widgetThisPCName.move(485, 285)
         # widgetThisPCName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -885,7 +890,7 @@ class BACKUPSCREEN(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 11))
+        self.backButton.setFont(QFont("Ubuntu", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -893,9 +898,9 @@ class BACKUPSCREEN(QWidget):
         # Continue button
         self.startRestoreButton = QPushButton(self)
         self.startRestoreButton.setText("Restore")
-        self.startRestoreButton.setFont(QFont("Ubuntu", 11))
+        self.startRestoreButton.setFont(QFont("Ubuntu", 10))
         self.startRestoreButton.adjustSize()
-        self.startRestoreButton.move(800, 550)
+        self.startRestoreButton.move(800, 555)
         self.startRestoreButton.setEnabled(True)
         self.startRestoreButton.clicked.connect(self.start_restoring)
 
@@ -925,28 +930,30 @@ class BACKUPSCREEN(QWidget):
 
     def read_ini_file(self):
         print("Reading INI files...")
-        ################################################################################
-        # Read file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        self.iniExternalName = config['EXTERNAL']['name']
-        # Restore
-        self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-        self.iniApplicationNames = config['RESTORE']['applications_name']
-        self.iniApplicationData = config['RESTORE']['application_data']
-        self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-        # Current backup information
-        self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-        # Current backup information
-        self.iniCurrentPercentBackup = config['INFO']['current_percent']
-        # Get current notification ID
-        self.iniNotificationID = config['INFO']['notification_id']
         try:
-            self.externalDeviceName.setText(self.iniExternalName)
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+
+            self.iniExternalName = config['EXTERNAL']['name']
+            # Restore
+            self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
+            self.iniApplicationNames = config['RESTORE']['applications_name']
+            self.iniApplicationData = config['RESTORE']['application_data']
+            self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
+            # Current backup information
+            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
+            # Current backup information
+            self.iniCurrentPercentBackup = config['INFO']['current_percent']
+            # Get current notification ID
+            self.iniNotificationID = config['INFO']['notification_id']
+
         except:
             pass
+        # Add externalDeviceName text
+        self.externalDeviceName.setText(self.iniExternalName)
 
         ################################################################################
         # Update widgets
@@ -964,16 +971,6 @@ class BACKUPSCREEN(QWidget):
             self.whileRestoringDescription.show()
             # Show processbar
             self.processBar.show()
-
-        if self.iniNotificationID == "2":
-            # Wait 2 seconds, to avoid notification_id conflict between (0 and 2)
-            time.sleep(2)            
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', '0')
-                config.write(configfile)
-            
-            # Exit app
-            exit()
         
     def start_restoring(self):
         # Disable back button

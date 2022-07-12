@@ -47,16 +47,8 @@ class RESTORE:
                     self.latestDateFolder.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         except FileNotFoundError as error:
-                ################################################################################
-                # Set notification_id to 6
-                ################################################################################
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'notification_id', "6")
-                    config.write(configfile)
-
                 print("Error trying to delete old backups!")
                 print(error)
-                sub.run(f"python3 {src_notification}", shell=True)  # Call notificationnot_available_notification()  # Call not available notification
                 exit()
 
         self.get_latest_time_date_home()
@@ -166,6 +158,11 @@ class RESTORE:
             self.restore_flatpak_apps(countForRuleOf3=1)
 
     def restore_home(self, countForRuleOf3=1):
+        # Change system tray icon to yellow
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'notification_id', "4")
+            config.write(configfile)
+                    
         try:
             if self.iniFilesAndsFolders == "true":
                 ################################################################################
@@ -195,8 +192,8 @@ class RESTORE:
                     
                     ###############################################################################
                     # Restore Home folders
-                    print(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
-                    sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
+                    print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
+                    sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
                     ###############################################################################
                     
                     # Calculate percent of the process ("rule of 3")
@@ -271,8 +268,8 @@ class RESTORE:
                     ################################################################################
                     # Restore flatpak data (var) folders from external device
                     ################################################################################
-                    print(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
-                    sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
+                    print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
+                    sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
                     
                     ###############################################################################
                     # Calculate percent of the process ("rule of 3")
@@ -309,8 +306,8 @@ class RESTORE:
                 ################################################################################
                 # Restore flatpak data (var) folders from external device
                 ################################################################################
-                print(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
-                sub.run(f"{copyCmd} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
                 ###############################################################################
                 # Calculate percent of the process ("rule of 3")
                 calculateRuleOf3 = ((self.percent100 - countForRuleOf3) * 100 / self.percent100)
@@ -338,7 +335,7 @@ class RESTORE:
         # After all done, feedback_status = "" and set current_percent = 0
         ###############################################################################
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "2")
+            config.set('INFO', 'notification_id', "0")
             config.set('INFO', 'notification_add_info', "")
             config.set('INFO', 'feedback_status', "")
             config.set('INFO', 'current_percent', "0")
@@ -349,7 +346,6 @@ class RESTORE:
         ################################################################################
         # After backup is done
         ################################################################################
-        sub.Popen(f"python3 {src_notification}", shell=True)
         print("Restoring is done!")
         exit()
 

@@ -14,7 +14,7 @@ class UI(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowTitle(appName)
+        self.setWindowTitle("Options Screen")
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(800, 550)
 
@@ -198,10 +198,10 @@ class UI(QMainWindow):
         self.moreTimePerDayRadio = QRadioButton()
         self.moreTimePerDayRadio.setFont(QFont("Ubuntu", 10))
         self.moreTimePerDayRadio.setToolTip(
-            "Back up will be execute every x minutes/hours.\n"
+            "Back up will be execute every x hours.\n"
             "This will produce a time folder inside your backup device.\n"
-            "Fx: 12-12-12/10-30\n"
-            "10-30, is the time of the back up (10:30).")
+            "Fx: 12-12-12/10-00\n"
+            "10-00, is the time of the back up (10:00).")
 
         self.moreTimePerDayRadio.setText("Multiple times per day")
         self.moreTimePerDayRadio.setFixedSize(180, 30)
@@ -278,7 +278,6 @@ class UI(QMainWindow):
             "}")
 
         multipleTimerPerDayComboBoxList = [
-            "Every 30 minutes",
             "Every 1 hour",
             "Every 2 hours",
             "Every 4 hours"]
@@ -286,44 +285,10 @@ class UI(QMainWindow):
         self.multipleTimePerDayComboBox.currentIndexChanged.connect(self.on_every_combox_changed)
 
         ################################################################################
-        # Notification settings
-        ################################################################################
-        self.notificationWidget = QWidget(self)
-        self.notificationWidget.setGeometry(280, 260, 500, 60)
-        self.notificationWidget.setStyleSheet(
-        "QWidget"
-        "{"
-        "border-bottom: 1px solid rgb(68, 69, 70);"
-        "}")
-
-        # Notification layout
-        self.notificationLayout = QVBoxLayout(self.notificationWidget)
-        self.notificationLayout.setSpacing(5)
-
-        # Notification title
-        self.notificationTitle = QLabel()
-        self.notificationTitle.setFont(QFont("Ubuntu", 11))
-        self.notificationTitle.setText("Notification:")
-        self.notificationTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.notificationTitle.setFixedSize(200, 30)
-        self.notificationTitle.setStyleSheet("""
-            border: transparent;
-        """)
-
-        # Notification checkbox
-        self.notificationCheckBox = QCheckBox(self.notificationWidget)
-        self.notificationCheckBox.setFont(QFont("Ubuntu", 10))
-        self.notificationCheckBox.setText(f"Allow {appName} to send notifications ")
-        self.notificationCheckBox.setStyleSheet("""
-            border: transparent;
-        """)
-        self.notificationCheckBox.clicked.connect(self.on_allow__notifications_clicked)
-
-        ################################################################################
         # Flatpak settings
         ################################################################################
         self.flatpakWidget = QWidget(self)
-        self.flatpakWidget.setGeometry(280, 320, 500, 80)
+        self.flatpakWidget.setGeometry(280, 260, 500, 80)
         self.flatpakWidget.setStyleSheet(
         "QWidget"
         "{"
@@ -369,7 +334,7 @@ class UI(QMainWindow):
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 400, 500, 90)
+        self.resetWidget.setGeometry(280, 340, 500, 90)
  
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
@@ -402,7 +367,7 @@ class UI(QMainWindow):
         # Donate, Update and Save buttons
         ################################################################################
         self.donateAndSaveWidget = QWidget(self)
-        self.donateAndSaveWidget.setGeometry(565, 490, 220, 60)
+        self.donateAndSaveWidget.setGeometry(568, 490, 220, 60)
 
         # Donate and Settings widget
         self.donateAndSaveLayout = QHBoxLayout(self.donateAndSaveWidget)
@@ -458,10 +423,6 @@ class UI(QMainWindow):
         self.timesGridLayout.addWidget(self.hoursTitle, 1, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.timesGridLayout.addWidget(self.minutesTitle, 1, 3, Qt.AlignVCenter | Qt.AlignHCenter)
 
-        # Notifications layout
-        self.notificationLayout.addWidget(self.notificationTitle, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.notificationLayout.addWidget(self.notificationCheckBox, 0, Qt.AlignLeft | Qt.AlignTop)
-       
         # Flaptak settings
         self.flatpakLayout.addWidget(self.flatpakTitle)
         self.flatpakLayout.addWidget(self.allowFlatpakNamesCheckBox)
@@ -581,43 +542,43 @@ class UI(QMainWindow):
             self.hoursSpinBox.setEnabled(True)
             self.minutesSpinBox.setEnabled(True)
             self.oneTimePerDayRadio.setChecked(True)
-
+            
+            # Enable all days
+            self.sunCheckBox.setEnabled(True)
+            self.monCheckBox.setEnabled(True)
+            self.tueCheckBox.setEnabled(True)
+            self.wedCheckBox.setEnabled(True)
+            self.thuCheckBox.setEnabled(True)
+            self.friCheckBox.setEnabled(True)
+            self.satCheckBox.setEnabled(True)
+        
         # Multiple time per day
         elif iniMultipleTimePerDay == "true":
             self.hoursSpinBox.setEnabled(False)
             self.minutesSpinBox.setEnabled(False)
             self.multipleTimePerDayComboBox.setEnabled(True)
             self.moreTimePerDayRadio.setChecked(True)
+        
+            # Disable all days
+            self.sunCheckBox.setEnabled(False)
+            self.monCheckBox.setEnabled(False)
+            self.tueCheckBox.setEnabled(False)
+            self.wedCheckBox.setEnabled(False)
+            self.thuCheckBox.setEnabled(False)
+            self.friCheckBox.setEnabled(False)
+            self.satCheckBox.setEnabled(False)
 
         ################################################################################
         # Multiple time per day
         ################################################################################
-        if iniEverytime == "30":
+        if iniEverytime == "60":
             self.multipleTimePerDayComboBox.setCurrentIndex(0)
 
-        elif iniEverytime == "60":
+        elif iniEverytime == "120":
             self.multipleTimePerDayComboBox.setCurrentIndex(1)
 
-        elif iniEverytime == "120":
-            self.multipleTimePerDayComboBox.setCurrentIndex(2)
-
         elif iniEverytime == "240":
-            self.multipleTimePerDayComboBox.setCurrentIndex(3)
-
-        self.notification()
-
-    def notification(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
-        # Notification
-        self.iniNotification = config['INFO']['notification']
-
-        ################################################################################
-        # Notifications
-        ################################################################################
-        if self.iniNotification == "true":
-            self.notificationCheckBox.setChecked(True)
+            self.multipleTimePerDayComboBox.setCurrentIndex(2)
 
         self.flatpak_settings()
 
@@ -655,15 +616,12 @@ class UI(QMainWindow):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
         with open(src_user_config, 'w') as configfile:
             if chooseMultipleTimePerDayCombox == 0:
-                config.set('SCHEDULE', 'everytime', '30')
-
-            elif chooseMultipleTimePerDayCombox == 1:
                 config.set('SCHEDULE', 'everytime', '60')
 
-            elif chooseMultipleTimePerDayCombox == 2:
+            elif chooseMultipleTimePerDayCombox == 1:
                 config.set('SCHEDULE', 'everytime', '120')
 
-            elif chooseMultipleTimePerDayCombox == 3:
+            elif chooseMultipleTimePerDayCombox == 2:
                 config.set('SCHEDULE', 'everytime', '240')
 
             # Write to INI file
@@ -782,6 +740,15 @@ class UI(QMainWindow):
                 self.hoursSpinBox.setEnabled(True)
                 self.minutesSpinBox.setEnabled(True)
                 self.oneTimePerDayRadio.setChecked(True)
+                
+                # Enable all days
+                self.sunCheckBox.setEnabled(True)
+                self.monCheckBox.setEnabled(True)
+                self.tueCheckBox.setEnabled(True)
+                self.wedCheckBox.setEnabled(True)
+                self.thuCheckBox.setEnabled(True)
+                self.friCheckBox.setEnabled(True)
+                self.satCheckBox.setEnabled(True)
 
             elif self.moreTimePerDayRadio.isChecked():
                 config.set('MODE', 'more_time_mode', 'true')
@@ -793,23 +760,17 @@ class UI(QMainWindow):
                 self.minutesSpinBox.setEnabled(False)
                 self.multipleTimePerDayComboBox.setEnabled(True)
                 self.moreTimePerDayRadio.setChecked(True)
+        
+                # Disable all days
+                self.sunCheckBox.setEnabled(False)
+                self.monCheckBox.setEnabled(False)
+                self.tueCheckBox.setEnabled(False)
+                self.wedCheckBox.setEnabled(False)
+                self.thuCheckBox.setEnabled(False)
+                self.friCheckBox.setEnabled(False)
+                self.satCheckBox.setEnabled(False)
 
             # Write to INI file
-            config.write(configfile)
-
-    def on_allow__notifications_clicked(self):
-        ################################################################################
-        # Allow app to send notifications
-        ################################################################################
-        with open(src_user_config, 'w') as configfile:
-            if self.notificationCheckBox.isChecked():
-                config.set('INFO', 'notification', 'true')
-
-            else:
-                config.set('INFO', 'notification', 'false')
-
-            # Write to INI file
-            print("Notifications enabled")
             config.write(configfile)
 
     def on_allow__flatpak_names_clicked(self):
@@ -854,7 +815,7 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
                 config.set('BACKUP', 'checker_running', 'false')
-                config.set('BACKUP', 'allow_flatpak_names', 'false')
+                config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'false')
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
@@ -877,10 +838,15 @@ class UI(QMainWindow):
                 # Info section
                 config.set('INFO', 'latest', 'None')
                 config.set('INFO', 'next', 'None')
-                config.set('INFO', 'notification', 'true')
                 config.set('INFO', 'notification_id', '0')
                 config.set('INFO', 'feedback_status', '')
                 config.set('INFO', 'current_percent', '0')
+                # Folders section
+                config.set('FOLDER', 'pictures', 'true')
+                config.set('FOLDER', 'documents', 'true')
+                config.set('FOLDER', 'music', 'true')
+                config.set('FOLDER', 'videos', 'true')
+                config.set('FOLDER', 'desktop', 'true')
                 # Restore section
                 config.set('RESTORE', 'is_restore_running', 'false')
                 config.set('RESTORE', 'applications_name', 'false')
@@ -891,8 +857,6 @@ class UI(QMainWindow):
                 config.write(configfile)
 
             print("All settings was reset!")
-            # Call notification
-            sub.Popen(f"python3 {src_notification}", shell=True)
             exit()
 
         else:
