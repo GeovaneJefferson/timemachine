@@ -713,7 +713,6 @@ class UI(QMainWindow):
 
             print("Auto backup was successfully deactivated!")
 
-
     def system_tray_clicked(self):
         ################################################################################
         # System tray enabled

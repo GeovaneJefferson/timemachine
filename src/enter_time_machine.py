@@ -4,9 +4,6 @@ from setup import *
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
-# TODO
-# Fix when only date folder available, still show down button
-# If a time button is hide, auto checked the next one
 
 class UI(QWidget):
     def __init__(self):
@@ -24,9 +21,7 @@ class UI(QWidget):
         self.dateFolders = []
         self.dateIndex = 0
         self.countForDate = 0
-
-        self.alreadyGotList = False
-        self.alreadyGotListTime = False
+        self.alreadyGotDateList = False
 
         self.iniUI()
 
@@ -36,10 +31,8 @@ class UI(QWidget):
         ################################################################################
         self.setWindowTitle(f"Enter {appName}")
         self.setWindowIcon(QIcon(src_restore_icon))
-
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        # self.showFullScreen()
-        self.setMinimumSize(1400, 800)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        self.showFullScreen()
 
         self.read_ini_file()
 
@@ -80,20 +73,6 @@ class UI(QWidget):
         self.foldersLayout.setAlignment(QtCore.Qt.AlignVCenter)
         self.foldersLayout.setSpacing(20)
         self.foldersLayout.setContentsMargins(20, 0, 0, 0)
-
-        ################################################################################
-        # Search box
-        # Search for files inside Enter Time Machine
-        ################################################################################
-        # self.searchBox = QLineEdit(self)
-        # self.searchBox.move(500, 30)
-        # self.searchBox.setMinimumSize(350, 25)
-        # self.searchBox.setPlaceholderText("Search for files...")
-        # self.searchBox.setStyleSheet(
-        # "QLineEdit"
-        # "{"
-        # "color: white;"
-        # "}")
 
         ################################################################################
         # ScrollArea
@@ -187,12 +166,9 @@ class UI(QWidget):
         self.get_folders()
 
     def get_folders(self):
-        try:
-            # Clean screen
-            for _ in range(1):
-                self.clean_stuff_on_screen("foldersLayout")
-        except:
-            pass
+        # Clean screen
+        for _ in range(1):
+            self.clean_stuff_on_screen("foldersLayout")
 
         ################################################################################
         # Get available folders from INI file
@@ -234,13 +210,13 @@ class UI(QWidget):
             self.clean_stuff_on_screen("filesGridLayout")
 
         try:
-            if not self.alreadyGotList:
+            if not self.alreadyGotDateList:
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
                     # Hide hidden outputs
                     if "." not in output:
                         self.dateFolders.append(output)
                         self.dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-                        self.alreadyGotList = True
+                        self.alreadyGotDateList = True
 
         except FileNotFoundError as error:
             # Set notification_id to 2
@@ -260,45 +236,44 @@ class UI(QWidget):
         self.get_time()       
 
     def get_time(self):
-        try:
-            # Clean screen
-            for _ in range(1):
-                self.clean_stuff_on_screen("timeLayoutV")
-
-        except:
-            pass
+        # Clean screen
+        for _ in range(1):
+            self.clean_stuff_on_screen("timeLayoutV")
 
         ################################################################################
         # If inside the external "date folders" has not "time folder", pass to avoid display error :D
         ################################################################################
         try:
-            # if not self.alreadyGotListTime:
-            # Get available times inside {folderName}
             # Clear list
             self.timeFolders.clear()
-            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.dateFolders[(self.countForDate)]}/"):
+            for getTime in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                f"/{self.dateFolders[(self.countForDate)]}/"):
                 self.timeFolders.append(getTime)
                 self.timeFolders.sort(reverse=True)
 
-                ################################################################################
-                # Time button
-                ################################################################################
-                getTime = getTime.replace("-", ":")  # Change - to :
-                self.timeButton = QPushButton()
-                self.timeButton.setText(getTime)
-                getTime = getTime.replace(":", "-")  # Change back : to -
-                self.timeButton.setFont(QFont("DejaVu Sans", 12))
-                self.timeButton.setFixedSize(100, 34)
-                self.timeButton.setCheckable(True)
-                self.timeButton.setAutoExclusive(True)
-                self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.change_time(getTime))
+                # Only show time button that self.currentFolder can be found inside
+                if os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{self.dateFolders[(self.countForDate)]}/{getTime}/{self.currentFolder}"):
+                    
+                    ################################################################################
+                    # Time button
+                    ################################################################################
+                    getTime = getTime.replace("-", ":")  # Change - to :
+                    self.timeButton = QPushButton()
+                    self.timeButton.setText(getTime)
+                    getTime = getTime.replace(":", "-")  # Change back : to -
+                    self.timeButton.setFont(QFont("DejaVu Sans", 12))
+                    self.timeButton.setFixedSize(100, 34)
+                    self.timeButton.setCheckable(True)
+                    self.timeButton.setAutoExclusive(True)
+                    self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.change_time(getTime))
 
-                ################################################################################
-                # Set current folder date
-                ################################################################################
-                self.timeLayoutV.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
-            
-            self.timeButton.setChecked(True)  # Auto selected that latest one
+                    ################################################################################
+                    # Set current folder date
+                    ################################################################################
+                    self.timeLayoutV.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
+                
+                # self.timeButton.setChecked(True)  # Auto selected that latest one
 
         except:
             # Reset self.countForDate
@@ -491,12 +466,8 @@ class UI(QWidget):
             # Change time if inside the timeList has more then 1 item
             # and is not at the end of the time list
             if len(self.timeFolders) > 1 and not len(self.timeFolders) == self.timeFolders.index(self.timeFolders[self.countForTime]) + 1: 
-                # Remove empty time from timeList
-                # self.timeFolders.remove(self.timeFolders[self.countForTime])
-
                 # Add to
                 self.countForTime += 1
-                
                 # Go back to get_time
                 self.get_time()
         
@@ -508,8 +479,6 @@ class UI(QWidget):
 
                 # Go back to get_date
                 self.get_date()
-
-            self.timeButton.setEnabled(False)
 
         self.up_down()
 
@@ -535,21 +504,6 @@ class UI(QWidget):
 
             else:
                 self.upButton.setEnabled(True)
-
-            # try:
-            #     print("RIght here!")
-            #     for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            #         f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/{self.currentFolder}"):
-            #         if "." in output and not output.startswith("."):
-            #             print(output)
-            #             if not output in self.dateFolders[self.countForDate - 1]:
-            #                 self.downButton.setEnabled(False)
-
-            #             elif output in self.dateFolders[self.countForDate]:
-            #                 self.downButton.setEnabled(True)
-        
-            # except FileNotFoundError:
-            #     self.downButton.setEnabled(False)
 
         except Exception(" error") as error:
             print(error)
@@ -614,15 +568,6 @@ class UI(QWidget):
             # Set self.filesToRestore length
             self.restoreButton.setText("Restore")
 
-            ################################################################################
-            # Show hides times from TimeVLayout
-            ################################################################################
-            # for i in range(self.timeLayoutV.count()):
-            #     item = self.timeLayoutV.itemAt(i)
-            #     widget = item.widget()
-            #     widget.setEnabled(True)  # Enable function
-            #     i -= 1
-
             # Clean screen
             for _ in range(1):
                 print("Cleaning")
@@ -632,15 +577,6 @@ class UI(QWidget):
             for _ in range(1):
                 print("Cleaning")
                 self.clean_stuff_on_screen("foldersLayout")
-
-            ################################################################################
-            # Show hides times from FoldersVLayout
-            ################################################################################
-            # for i in range(self.foldersLayout.count()):
-            #     item = self.foldersLayout.itemAt(i)
-            #     widget = item.widget()
-            #     widget.setEnabled(True)  # Enable function
-            #     i -= 1
 
             ################################################################################
             # Reactivate buttons
@@ -700,10 +636,13 @@ class UI(QWidget):
         exit()
     
     def change_date_up(self):
-        # Clean screen
-        for _ in range(1):
-            print("Cleaning")
-            self.clean_stuff_on_screen("timeLayoutV")
+        try:
+            # Clean screen
+            for _ in range(1):
+                print("Cleaning")
+                self.clean_stuff_on_screen("timeLayoutV")
+        except:
+            pass
 
         self.countForTime = 0
         self.countForDate += 1
@@ -711,10 +650,13 @@ class UI(QWidget):
         self.get_date()
 
     def change_date_down(self):
-        # Clean screen
-        for _ in range(1):
-            print("Cleaning")
-            self.clean_stuff_on_screen("timeLayoutV")
+        try:
+            # Clean screen
+            for _ in range(1):
+                print("Cleaning")
+                self.clean_stuff_on_screen("timeLayoutV")
+        except:
+            pass    
         
         self.countForTime = 0
         self.countForDate -= 1
@@ -722,15 +664,17 @@ class UI(QWidget):
         self.get_date()
 
     def change_time(self, getTime):
-        # Clean screen
-        for _ in range(1):
-            print("Cleaning")
-            self.clean_stuff_on_screen("filesGridLayout")
+        try:
+            # Clean screen
+            for _ in range(1):
+                print("Cleaning")
+                self.clean_stuff_on_screen("filesGridLayout")
 
-        print(getTime)
+        except:
+            pass
+
         # Index of the getTime
         index = self.timeFolders.index(getTime)
-        print("Here:", index)
         # Add to
         self.countForTime = index  
         # Return to getDate
