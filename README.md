@@ -64,7 +64,7 @@ You will be asked for your password.
 
 Example:
 
-    git clone -b main https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
+    git clone -b dev https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
 
 
 ## Uninstall:
