@@ -6,7 +6,7 @@
 # Time Machine
 Use Time Machine to automatically back up your personal data. 
 
-Having a backup allows you to recover files that you later delete or can't access.
+Having a backup allows you to recover files that you later delete or can't access,
 using "Enter Time Machine" mode.
 
 ## Features:
@@ -19,10 +19,10 @@ using "Enter Time Machine" mode.
 * Important: Time Machine does not back up system files!
 
 #### Still not enough space for a new backup?
-  Time Machine will send you a notification, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
+  Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 
 ## Behind the "scenes":
-On the main Time Machine's window, will show base information about your backup HD/SSD device.
+On the main Time Machine's window, will show base information about your backup device.
 Such as: 
 * Backup HD/SSD Name
 * Free space of the backup HD/SSD
@@ -30,7 +30,7 @@ Such as:
 * When the next backup will occur
 * Device connectivity
 
-Before a backup is made, Time Machine will analize and calculate your backup HD/SSD full size, free space and space needed for Time Machine's next backup.
+Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
 
 ## Create a Time Machine backup
 1. Connect an external storage device, such as a USB or HD/SSD.
@@ -38,7 +38,7 @@ Before a backup is made, Time Machine will analize and calculate your backup HD/
 3. Then, click on "Back Up Now".
 
 ## Enter Time Machine
-First, open Time Machine and allow to show in the system tray.
+First, open Time Machine and allow to "show in the system tray".
 
 Then, click on Time Machine in system tray and select "Enter Time Machine"
 (Remember, will only work if Time Machine has made at least one backup already.)
