@@ -201,7 +201,7 @@ class UI(QMainWindow):
         self.descriptionText.setText(
             "* Keep local snapshots of your personal files as space permits\n"
             "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
-            "* Schedule backups (Minutely, Hourly or Daily)\n"
+            "* Schedule backups Hourly or Daily\n"
             "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)

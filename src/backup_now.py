@@ -260,9 +260,12 @@ class BACKUP:
                         ################################################################################
                         with open(src_user_config, 'w') as configfile:
                             config.set('INFO', 'notification_id', "3")
+                            config.set('INFO', 'notification_add_info', "Please, manual delete file(s)/folder(s) inside "
+                                "your backup device, to make space for Time Machine's backup!")
                             config.write(configfile)
 
-                        print("Please, manual delete file(s)/folder(s) inside your external HD/SSD, to make space for Time Machine's backup!")
+                        print("Please, manual delete file(s)/folder(s) inside your backup device, to make space for Time "
+                        "Machine's backup!")
                         exit()
 
                 except FileNotFoundError as error:
