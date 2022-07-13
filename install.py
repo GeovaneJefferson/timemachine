@@ -25,10 +25,8 @@ class CLI:
         self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
 
         # Destination folder
-        self.dst_venv_loc = f"{self.home_user}/.local/share/timemachine/venv"
         self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
         self.dst_timemachine_desktop = f"{self.home_user}/.local/share/applications/timemachine.desktop"
-        self.dst_kde_service = f"{self.home_user}/.local/share/kservices5/ServiceMenus"
         self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
         self.create_autostart_folder = f"{self.home_user}/.config/autostart"
 
@@ -147,7 +145,7 @@ class CLI:
                 f"Type=Application\n "
                 f"Name=Time Machine\n "
                 f"Comment=Backup your files\n "
-                f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup.png\n "
+                f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
                 f"Exec=python3 {self.home_user}/.local/share/timemachine/src/gui.py\n "
                 f"Path={self.home_user}/.local/share/timemachine/\n "
                 f"Categories=System\n "
@@ -164,9 +162,6 @@ class CLI:
             # Copy .desktop and .timemachine.desktop to destination folder
             shutil.copy(self.src_timemachine_desktop,
                         self.dst_timemachine_desktop)
-
-            # Remove venv folder from user is necessary
-            sub.run(f"rm -rf {self.dst_venv_loc}", shell=True)
 
             print("Program was installed!")
 
