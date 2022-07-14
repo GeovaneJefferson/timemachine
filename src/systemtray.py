@@ -133,19 +133,34 @@ class APP:
             ################################################################################
             try:
                 os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
+                
+                # If usb is connected, change notification id to 0 (White color)
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+                    config.set('INFO', 'notification_add_info', '')
+                    config.set('INFO', 'notification_id', '0')
+                    config.write(configfile)
 
             except FileNotFoundError:
                 try:
                     os.listdir(f"{run}/{userName}/{self.iniHDName}")  # Opensuse, external is inside "/run"
-
+                   
+                    # If usb is connected, change notification id to 0 (White color)
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:  # Set auto backup to true
+                        config.set('INFO', 'notification_add_info', '')
+                        config.set('INFO', 'notification_id', '0')
+                        config.write(configfile)
+                
                 except FileNotFoundError:
                     # Hide backup now button
                     self.backupNowButton.setEnabled(False)
                     # Hide Enter In Time Machine
                     self.enterTimeMachineButton.setEnabled(False)
-
-        # No external found
         else:
+            # No external found
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
             # Disable enter in time machine button
