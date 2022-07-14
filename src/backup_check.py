@@ -57,55 +57,42 @@ class CLI:
             # Call system tray
             sub.Popen(f"python3 {src_system_tray}", shell=True)
 
-    def check_for_external_media(self):  
+    def check_connection(self):  
         ################################################################################
         # Check for external in media/
         ################################################################################
         try:
-            print("Checking external under /media... ")
-            if self.iniHDName in os.listdir(f"/media/{userName}"):
-             
-                print("External found in /media.")
-                self.check_the_date()
+            # Check for user backup device inside Media
+            os.listdir(f'{media}/{userName}/{self.iniHDName}')
+            print(f'Devices found inside {media}/{self.iniHDName}')
+            self.check_the_date()
 
-            else:
-                # If device name can not be found inside /media, continue
-                raise FileNotFoundError
-            
         except FileNotFoundError:
-            # If /media is empty, continue
-            self.check_for_external_run()
-
-    def check_for_external_run(self): 
-        ################################################################################
-        # Check for external in run/media/
-        ################################################################################
-        try:
-            print("Checking external under /run/media... ")
-            if self.iniHDName in os.listdir(f"/run/media/{userName}"):  # If user.ini has external hd name
-                print("External found in /run/media.")
+            ################################################################################
+            # Check for external in run/
+            ################################################################################
+            try:
+                # Check for user backup device inside Run
+                os.listdir(f'{run}/{userName}/{self.iniHDName}')
+                print(f"Devices found inside {run}")
                 self.check_the_date()
 
-            else:
-                # If device name can not be found inside /media, exit
-                raise FileNotFoundError
-        
-        except FileNotFoundError as error:
-            print(error)
-            ################################################################################
-            # If run/media is empty, exit
-            # Set notification_id to 3
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "3")
-                config.set('INFO', 'notification_add_info', f"{error}")
-                config.write(configfile)
+            except FileNotFoundError as error:
+                print(error)
+                ################################################################################
+                # No saved backup device was found inside Media or Run
+                # Write error to INI File
+                ################################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'notification_id', "3")
+                    config.set('INFO', 'notification_add_info', f"{error}")
+                    config.write(configfile)
 
-            print("No external device found.")
-            print(f"Please, connect the external device, so next time, {appName} will be able to backup.")
-            pass
+                print("No external device found.")
+                print(f"Please, connect the external device, so next time, {appName} will be able to backup.")
+                pass
 
     def check_the_date(self):
         print("Checking dates...")
@@ -238,7 +225,7 @@ main = CLI()
 while True:
     main.updates()
     main.is_system_tray_running()
-    main.check_for_external_media()
+    main.check_connection()
 
     print("Updating...")
     # Exit program if automatically backup is false
