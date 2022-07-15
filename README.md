@@ -1,4 +1,4 @@
-![](src/icons/backup_350px.png)
+!!!!![](src/icons/backup_250px.png)
 # Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
