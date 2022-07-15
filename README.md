@@ -1,17 +1,16 @@
 <p align="center">
   <img width="150" height="150" src="src/icons/backup_150px.png">
+ <h1 align="center">Time Machine</h1>
 </p>
+Use Time Machine to automatically back up your personal data. 
+
+Having a backup allows you to recover files that you later delete or can't access,
+using "Enter Time Machine" mode.
 
 # Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
 * Make sure that your clock method is "24 hour clock", not "12 hour clock" AM/PM.
-
-# Time Machine
-Use Time Machine to automatically back up your personal data. 
-
-Having a backup allows you to recover files that you later delete or can't access,
-using "Enter Time Machine" mode.
 
 ## Features:
 * Local snapshots of your personal files, one or multiple times per day.
