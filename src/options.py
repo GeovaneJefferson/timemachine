@@ -1,12 +1,6 @@
 #! /usr/bin/python3
 from setup import *
 
-config = configparser.ConfigParser()
-config.read(src_user_config)
-
-# QTimer
-timer = QtCore.QTimer()
-
 
 class UI(QMainWindow):
     def __init__(self):
@@ -442,10 +436,8 @@ class UI(QMainWindow):
         self.get_folders()
 
     def get_folders(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
-        # Folders to backup
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         getIniFolders = config.options('FOLDER')
 
         # Get USER home folders
@@ -474,6 +466,8 @@ class UI(QMainWindow):
         self.dates()
 
     def dates(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         ################################################################################
         # Read INI file
         ################################################################################
@@ -513,9 +507,8 @@ class UI(QMainWindow):
         self.time_to_run()
 
     def time_to_run(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         # Time
         iniEverytime = config['SCHEDULE']['everytime']
         # Mode
@@ -583,9 +576,8 @@ class UI(QMainWindow):
         self.flatpak_settings()
 
     def flatpak_settings(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
         self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
 
@@ -601,8 +593,8 @@ class UI(QMainWindow):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        print(f"Clicked on {output}")
-
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if config.has_option('FOLDER', output):
                 config.remove_option('FOLDER', output)
@@ -614,6 +606,9 @@ class UI(QMainWindow):
 
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
+        
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if chooseMultipleTimePerDayCombox == 0:
                 config.set('SCHEDULE', 'everytime', '60')
@@ -628,6 +623,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_sun_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.sunCheckBox.isChecked():
                 config.set('SCHEDULE', 'sun', 'true')
@@ -639,6 +636,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_mon_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.monCheckBox.isChecked():
                 config.set('SCHEDULE', 'mon', 'true')
@@ -650,6 +649,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_tue_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.tueCheckBox.isChecked():
                 config.set('SCHEDULE', 'tue', 'true')
@@ -661,6 +662,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_wed_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.wedCheckBox.isChecked():
                 config.set('SCHEDULE', 'wed', 'true')
@@ -672,6 +675,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_thu_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.thuCheckBox.isChecked():
                 config.set('SCHEDULE', 'thu', 'true')
@@ -683,6 +688,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_fri_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.friCheckBox.isChecked():
                 config.set('SCHEDULE', 'fri', 'true')
@@ -694,6 +701,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_check_sat_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.satCheckBox.isChecked():
                 config.set('SCHEDULE', 'sat', 'true')
@@ -708,6 +717,8 @@ class UI(QMainWindow):
         hours = str(self.hoursSpinBox.value())
 
         # Save hours
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w+') as configfile:
             config.set('SCHEDULE', 'hours', hours)
             if hours in fixMinutes:
@@ -720,6 +731,8 @@ class UI(QMainWindow):
         minutes = str(self.minutesSpinBox.value())
 
         # Save minutes
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w+') as configfile:
             config.set('SCHEDULE', 'minutes', minutes)
             if minutes in fixMinutes:
@@ -729,6 +742,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_frequency_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w+') as configfile:
             if self.oneTimePerDayRadio.isChecked():
                 config.set('MODE', 'one_time_mode', 'true')
@@ -774,6 +789,8 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_allow__flatpak_names_clicked(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.allowFlatpakNamesCheckBox.isChecked():
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
@@ -789,6 +806,8 @@ class UI(QMainWindow):
     def on_allow__flatpak_data_clicked(self):
         # If user allow app to back up data, auto activate
         # backup flatpaks name too.
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.allowFlatpakDataCheckBox.isChecked():
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
@@ -805,24 +824,26 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_button_fix_clicked(self):
-        resetConfirmation = QMessageBox.question(self, 'Reset', 'Are you sure you want to reset settings?',
-        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        resetConfirmation = QMessageBox.question(self, 'Reset', 
+            'Are you sure you want to reset settings?',
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
             # Reset settings
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 # Backup section
                 config.set('BACKUP', 'first_startup', 'false')
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
-                config.set('BACKUP', 'checker_running', 'false')
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'false')
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
                 config.set('EXTERNAL', 'name', 'None')
                 # Mode section
-                config.set('MODE', 'one_time_mode', 'true')
-                config.set('MODE', 'more_time_mode', 'false')
+                config.set('MODE', 'one_time_mode', 'false')
+                config.set('MODE', 'more_time_mode', 'true')
                 # System tray  section
                 config.set('SYSTEMTRAY', 'system_tray', 'false')
                 # Schedule section
@@ -840,7 +861,6 @@ class UI(QMainWindow):
                 config.set('INFO', 'next', 'None')
                 config.set('INFO', 'notification_id', '0')
                 config.set('INFO', 'feedback_status', '')
-                config.set('INFO', 'current_percent', '0')
                 # Folders section
                 config.set('FOLDER', 'pictures', 'true')
                 config.set('FOLDER', 'documents', 'true')
@@ -866,31 +886,15 @@ class UI(QMainWindow):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
 
     def on_save_button_clicked(self):
-        ################################################################################
-        # Read INI file
-        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-        self.iniCheckerRunning = config['BACKUP']['checker_running']
 
-        ################################################################################
         # Call backup checker or not?
-        ################################################################################
         # TODO
-        if self.iniAutomaticallyBackup == "true" and self.iniCheckerRunning == "true":
-            pass
-
-        else:
-            ################################################################################
+        if self.iniAutomaticallyBackup == "false":
             # Call backup check py
-            ################################################################################
             sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-
-            ################################################################################
-            # After call backup checker, set checker_running to true
-            ################################################################################
-            with open(src_user_config, 'w') as configfile:  # Set auto backup to true
-                config.set('BACKUP', 'checker_running', 'true')
-                config.write(configfile)
 
         exit()
 

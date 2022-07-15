@@ -27,13 +27,9 @@ class EXTERNAL(QWidget):
         self.read_ini_file()
 
     def read_ini_file(self):
-        ################################################################################
         # Read INI file
-        ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
-        # Read INI file
         self.iniHDName = config['EXTERNAL']['name']
 
         self.widgets()
@@ -145,6 +141,7 @@ class EXTERNAL(QWidget):
                 "{"
                 f"background-image: url({src_restore_small_icon});"
                 "background-repeat: no-repeat;"
+                "background-position: center;"
                 "}")
 
             ################################################################################
