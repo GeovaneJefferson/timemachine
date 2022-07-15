@@ -90,6 +90,8 @@ class APP:
             config.read(src_user_config)
             # Backup now
             self.iniBackupNow = config['BACKUP']['backup_now']
+            # Automatically backup
+            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
             # INI notification
             self.iniNotification = config['INFO']['notification_id']
             # INI HD Name
@@ -104,11 +106,12 @@ class APP:
             print("System Tray KeyError!")
             exit()
 
-        self.load_system_tray()
+        self.system_tray_manager()
     
-    def load_system_tray(self):
+    def system_tray_manager(self):
         if self.iniSystemTray == "false":
             print("Exiting system tray...")
+
             # Write ini file
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -128,13 +131,32 @@ class APP:
         if self.iniHDName != "None":
             # TODO
             if self.iniBackupNow == "false":
-                # White color
-                self.icon = QIcon(src_system_bar_icon)
-                # Enable backup now button
-                self.backupNowButton.setEnabled(True)
-                # Enable enter in time machine button
-                self.enterTimeMachineButton.setEnabled(True)
-
+                if self.iniNotification == "0":
+                    # White color
+                    self.icon = QIcon(src_system_bar_icon)
+                    # Enable backup now button
+                    self.backupNowButton.setEnabled(True)
+                    # Enable enter in time machine button
+                    self.enterTimeMachineButton.setEnabled(True)
+                
+                elif self.iniNotification == "2":
+                    if self.iniAutomaticallyBackup == "true":
+                        # Only changes color if user has automatically backup enabled
+                        # Red color
+                        self.icon = QIcon(src_system_bar_error_icon)
+                        # Disable backup now button
+                        self.backupNowButton.setEnabled(False)
+                        # Enable enter in time machine button
+                        self.enterTimeMachineButton.setEnabled(True)
+                    
+                    else:
+                        # White color
+                        self.icon = QIcon(src_system_bar_icon)
+                        # Disable backup now button
+                        self.backupNowButton.setEnabled(False)
+                        # Enable enter in time machine button
+                        self.enterTimeMachineButton.setEnabled(True)
+                    
             else:
                 # Blue color
                 self.icon = QIcon(src_system_bar_run_icon)
@@ -142,7 +164,6 @@ class APP:
 
             # Add the icon modifications to system tray
             self.tray.setIcon(self.icon)
-            # TODO
 
         else:
             # Disable backup now button
