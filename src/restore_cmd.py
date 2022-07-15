@@ -160,7 +160,7 @@ class RESTORE:
     def restore_home(self, countForRuleOf3=1):
         # Change system tray icon to yellow
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "4")
+            config.set('INFO', 'notification_id', "3")
             config.write(configfile)
                     
         try:
