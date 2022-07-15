@@ -185,6 +185,7 @@ class UI(QMainWindow):
         self.descriptionTitle.setFixedSize(420, 24)
         self.descriptionTitle.setStyleSheet("""
             border-color: transparent;
+            color: gray;
         """)
 
         # Description Text
@@ -200,6 +201,7 @@ class UI(QMainWindow):
         self.descriptionText.adjustSize()
         self.descriptionText.setStyleSheet("""
             border-color: transparent;
+            color: gray;
         """)
 
         ################################################################################
