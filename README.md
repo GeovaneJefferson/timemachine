@@ -55,6 +55,13 @@ A Welcome Screen is in development, something similar to Apple's "Migration Assi
 
 After Welcome Screen is done, all your recent files, folders and Flatpaks are automatically restore and installed.
 
+#### System Tray 
+You will notice that your system tray will from time to time change its color to White, Blue or Red.
+* White = Normal color, automatically backup is ON and your backup device is connected and mounted.
+* Blue = Time Machine is current backing your files, after is done, it will changes to White color.
+* If automatically backup is ON but your backup device is disconnected or not mounted, you will see a Red system tray icon.
+  - Red system tray icon can also means that Time Machine had some problem to back up. Open Time Machine and read the report about it.
+
 ## Requirements
 * pyside6
 
