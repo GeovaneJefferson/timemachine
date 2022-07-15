@@ -1,4 +1,3 @@
-![](src/icons/backup_250px.png)
 <p align="center">
   <img width="250" height="250" src="src/icons/backup_250px.png">
 </p>
