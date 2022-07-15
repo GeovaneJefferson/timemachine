@@ -48,18 +48,18 @@ Still in development...
 ## Migration Assistant
 A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your files/folders and apps, after a fresh install.
 
-#### Welcome Screen
+## Welcome Screen
 * Will ask you to select a Time Machine HD/SSD that already has a backup inside.
 * Will ask if you want to "Restore" or "Set Up as New".
 * Will ask you to choose which information you'd like to restore.
 
 After Welcome Screen is done, all your recent files, folders and Flatpaks are automatically restore and installed.
 
-#### System Tray 
+## System Tray 
 You will notice that your system tray will from time to time change its color to White, Blue or Red.
 * White = Normal color, automatically backup is ON and your backup device is connected and mounted.
 * Blue = Time Machine is current backing your files, after is done, it will changes to White color.
-* If automatically backup is ON but your backup device is disconnected or not mounted, you will see a Red system tray icon.
+* Red = If automatically backup is ON but your backup device is disconnected or not mounted, you will see a Red system tray icon.
   - Red system tray icon can also means that Time Machine had some problem to back up. Open Time Machine and read the report about it.
 
 ## Requirements
