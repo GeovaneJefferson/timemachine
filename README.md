@@ -1,4 +1,8 @@
-!!!!![](src/icons/backup_250px.png)
+![](src/icons/backup_250px.png)
+<p align="center">
+  <img width="460" height="300" src="src/icons/backup_250px.png">
+</p>
+
 # Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
