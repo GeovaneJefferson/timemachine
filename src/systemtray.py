@@ -34,6 +34,16 @@ class APP:
         # Ini last backup information
         self.iniLastBackupInformation = QAction()
         self.iniLastBackupInformation.setEnabled(False)
+        
+        # Line
+        self.dummyLine = QAction("---------------------------------------")
+        self.dummyLine.setFont(QFont(item))
+        self.dummyLine.setEnabled(False)
+        
+        # Line2
+        self.dummyLine2 = QAction("--------------------------------------")
+        self.dummyLine2.setFont(QFont(item))
+        self.dummyLine2.setEnabled(False)
 
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
@@ -52,8 +62,10 @@ class APP:
 
         # Add all to menu
         self.menu.addAction(self.iniLastBackupInformation)
-        self.menu.addAction(self.backupNowButton)
+        self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.enterTimeMachineButton)
+        self.menu.addAction(self.backupNowButton)
+        self.menu.addAction(self.dummyLine2)
         self.menu.addAction(self.openSettingsButton)
 
         # Adding options to the System Tray
@@ -110,7 +122,8 @@ class APP:
 
     def conditions(self):
         # INI information
-        self.iniLastBackupInformation.setText(f"Last backup: {self.iniLastBackup}")
+        self.iniLastBackupInformation.setText(f'Latest Backup to: "{(self.iniHDName)}":\n'
+            f'{self.iniLastBackup}')
 
         if self.iniHDName != "None":
             # TODO
