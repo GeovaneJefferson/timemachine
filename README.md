@@ -1,6 +1,6 @@
 ![](src/icons/backup_250px.png)
 <p align="center">
-  <img width="460" height="300" src="src/icons/backup_250px.png">
+  <img width="250" height="250" src="src/icons/backup_250px.png">
 </p>
 
 # Attention!
