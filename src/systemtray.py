@@ -129,7 +129,6 @@ class APP:
             f'{self.iniLastBackup}')
 
         if self.iniHDName != "None":
-            # TODO
             if self.iniBackupNow == "false":
                 if self.iniNotification == "0":
                     # White color
@@ -154,8 +153,12 @@ class APP:
                         self.icon = QIcon(src_system_bar_icon)
                         # Disable backup now button
                         self.backupNowButton.setEnabled(False)
-                        # Enable enter in time machine button
-                        self.enterTimeMachineButton.setEnabled(True)
+                        # Clean notification add info, because auto backup is not enabled
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile: 
+                            config.set('INFO', 'notification_add_info', '')
+                            config.write(configfile)
                     
             else:
                 # Blue color
