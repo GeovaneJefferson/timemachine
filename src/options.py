@@ -891,7 +891,6 @@ class UI(QMainWindow):
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
 
         # Call backup checker or not?
-        # TODO
         if self.iniAutomaticallyBackup == "false":
             # Call backup check py
             sub.Popen(f"python3 {src_backup_check_py}", shell=True)

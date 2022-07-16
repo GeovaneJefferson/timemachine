@@ -202,26 +202,35 @@ class APP:
                         config.write(configfile)
 
                 except FileNotFoundError:
-                    # Hide backup now button
-                    self.backupNowButton.setEnabled(False)
-                    # Hide Enter In Time Machine
-                    self.enterTimeMachineButton.setEnabled(False)
+                    try:
+                        # Hide backup now button
+                        self.backupNowButton.setEnabled(False)
+                        # Hide Enter In Time Machine
+                        self.enterTimeMachineButton.setEnabled(False)
 
-                    # Change system tray color to red, because not backup device was found or mounted
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile: 
-                        config.set('INFO', 'notification_id', '2')
-                        config.write(configfile)
+                        # Change system tray color to red, because not backup device was found or mounted
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile: 
+                            config.set('INFO', 'notification_id', '2')
+                            config.write(configfile)
+                    
+                    except Exception as error:
+                        print(error)
+                        exit()
 
     def backup_now(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:  
-            config.set('BACKUP', 'backup_now', 'true')
-            config.write(configfile)
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:  
+                config.set('BACKUP', 'backup_now', 'true')
+                config.write(configfile)
 
-        sub.Popen(f"python3 {src_backup_now}", shell=True)
-
+            sub.Popen(f"python3 {src_backup_now}", shell=True)
+            
+        except Exception as error:
+            print(error)
+            exit()
 
 main = APP()
