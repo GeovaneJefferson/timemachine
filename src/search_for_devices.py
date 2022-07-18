@@ -1,12 +1,18 @@
 #! /usr/bin/python3
 from setup import *
 
+# QTimer
+timer = QtCore.QTimer()
+
 
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
         self.foundInMedia = None
         self.outputBox = ()
+
+        self.captureDevices = []
+
         self.iniUI()
 
     def iniUI(self):
@@ -69,22 +75,17 @@ class EXTERNAL(QWidget):
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
 
-        # Refresh button
-        self.refreshButton = QPushButton(self)
-        self.refreshButton.setFont(item)
-        self.refreshButton.setText("Refresh")
-        self.refreshButton.adjustSize()
-        self.refreshButton.move(300, 340)
-        self.refreshButton.clicked.connect(self.on_button_refresh_clicked)
-
         # Cancel button
         self.cancelButton = QPushButton(self)
         self.cancelButton.setFont(item)
         self.cancelButton.setText("Cancel")
         self.cancelButton.adjustSize()
-        self.cancelButton.move(200, 340)
+        self.cancelButton.move(300, 340)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
+        # Update
+        timer.timeout.connect(self.check_connection)
+        timer.start(2000) # Update every x seconds
         self.check_connection()
 
     def check_connection(self):
@@ -93,68 +94,100 @@ class EXTERNAL(QWidget):
         ################################################################################
         try:
             print("Searching for external devices under media...")
-            if not len(os.listdir(f'{media}/{userName}')) == 0:
+            if len(os.listdir(f'{media}/{userName}')) != 0:
                 print(f"{media} is Empty")
                 self.foundInMedia = True
-                self.show_on_screen(media)
+                self.where(media)
+            else:
+                for i in range(len(self.captureDevices)):
+                    item = self.verticalLayout.itemAt(i)
+                    widget = item.widget()
+                    widget.deleteLater()
+                    i -= 1
 
         except FileNotFoundError:
             print("No device found inside Media")
             try:
-                if not len(os.listdir(f'{run}/{userName}')) == 0:
+                if len(os.listdir(f'{run}/{userName}')) != 0:
                     self.foundInMedia = False
-                    self.show_on_screen(run)
+                    self.where(run)
+                else:
+                    for i in range(len(self.captureDevices)):
+                        item = self.verticalLayout.itemAt(i)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        i -= 1
 
-            except FileNotFoundError:
+            except Exception:
                 print("No device found inside Run...")
                 pass
 
-    def show_on_screen(self, location):
-        print("Showing available devices")
-        ################################################################################
-        # Check source
-        ################################################################################
+    def where(self, location):
+        # Gettíng devices locations
         if self.foundInMedia:
             self.foundWhere = media
         else:
             self.foundWhere = run
 
+        self.show_on_screen(location)
+
+    def show_on_screen(self, location):
+        print("Showing available devices")
+
         ################################################################################
         # Add buttons and images for each external
         ################################################################################
+        # If not already in list, add
         for output in os.listdir(f'{location}/{userName}'):
-            # Avaliables external devices
-            self.availableDevices = QPushButton(self.whereFrame)
-            self.availableDevices.setFont(QFont('Ubuntu', 12))
-            self.availableDevices.setText(output)
-            self.availableDevices.setFixedSize(444, 60)
-            self.availableDevices.setCheckable(True)
-            text = self.availableDevices.text()
-            self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+            if output not in self.captureDevices:
+                # If device is in list, display to user just on time per device
+                self.captureDevices.append(output)
 
-            # Image
-            image = QLabel(self.availableDevices)
-            image.setFixedSize(46, 46)
-            image.move(6, 6)
-            image.setStyleSheet(
-                "QLabel"
-                "{"
-                f"background-image: url({src_restore_small_icon});"
-                "background-repeat: no-repeat;"
-                "background-position: center;"
-                "}")
+                # Avaliables external  devices
+                self.availableDevices = QPushButton(self.whereFrame)
+                self.availableDevices.setFont(QFont('Ubuntu', 12))
+                self.availableDevices.setText(output)
+                self.availableDevices.setFixedSize(444, 60)
+                self.availableDevices.setCheckable(True)
+                text = self.availableDevices.text()
+                self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
 
-            ################################################################################
-            # Auto checked this choosed external device
-            ################################################################################
-            if text == self.iniHDName:
-                self.availableDevices.setChecked(True)
+                # Image
+                image = QLabel(self.availableDevices)
+                image.setFixedSize(46, 46)
+                image.move(6, 6)
+                image.setStyleSheet(
+                    "QLabel"
+                    "{"
+                    f"background-image: url({src_restore_small_icon});"
+                    "background-repeat: no-repeat;"
+                    "background-position: center;"
+                    "}")
 
-            ################################################################################
-            # Add widgets and Layouts
-            ################################################################################
-            # Vertical layout
-            self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+                ################################################################################
+                # Auto checked this choosed external device
+                ################################################################################
+                if text == self.iniHDName:
+                    self.availableDevices.setChecked(True)
+
+                ################################################################################
+                # Add widgets and Layouts
+                ################################################################################
+                # Vertical layout
+                self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+
+            # If x device is removed or unmounted, remove from screen
+            for output in self.captureDevices:
+                if output not in os.listdir(f'{location}/{userName}'):
+                    # Current output index
+                    index = self.captureDevices.index(output)
+                    # Remove from list
+                    self.captureDevices.remove(output)             
+                    # Delete from screen
+                    item = self.verticalLayout.itemAt(index)
+                    widget = item.widget()
+                    widget.deleteLater()
+                    index -= 1
 
     def on_use_disk_clicked(self):
         ################################################################################
@@ -184,10 +217,6 @@ class EXTERNAL(QWidget):
             self.outputBox = ""
             # Disable use disk
             self.useDiskButton.setEnabled(False)
-
-    def on_button_refresh_clicked(self):
-        sub.Popen(f"python3 {src_search_for_devices}", shell=True)
-        exit()
 
     def on_button_cancel_clicked(self):
         exit()
