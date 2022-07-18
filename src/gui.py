@@ -76,13 +76,13 @@ class UI(QMainWindow):
 
         # Restore images
         self.restoreImageLabel = QLabel()
-        self.restoreImageLabel.setFixedSize(84, 84)
+        self.restoreImageLabel.setFixedSize(128, 128)
         self.restoreImageLabel.setStyleSheet(
             "QLabel"
             "{"
             f"background-image: url({src_restore_icon});"
             "background-repeat: no-repeat;"
-            "background-position: center;"
+            "background-position: top;"
             "}")
 
         # Select disk button
@@ -146,13 +146,13 @@ class UI(QMainWindow):
         ################################################################################
         self.extraInformationLabel = QLabel(self)
         self.extraInformationLabel.setFont(item)
-        
+
         ################################################################################
         # Current backup label information
         ################################################################################
         self.currentBackUpLabel = QLabel(self)
         self.currentBackUpLabel.setFont(item)
-        
+
         ################################################################################
         # Backup now button
         ################################################################################
@@ -161,9 +161,9 @@ class UI(QMainWindow):
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         # self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 157)
+        self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
-        self.backupNowButton.setEnabled(False)        
+        self.backupNowButton.setEnabled(False)
 
         ################################################################################
         # Description
@@ -311,10 +311,10 @@ class UI(QMainWindow):
 
             # Current information about an error
             self.iniExtraInformation = config['INFO']['notification_add_info']
-            
+
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-            
+
         except KeyError as keyError:
             print(keyError)
             print("Main window KeyError!")
@@ -332,13 +332,13 @@ class UI(QMainWindow):
 
         except FileNotFoundError:
             try:
-                os.listdir(f"{run}/{userName}/{self.iniHDName}") 
+                os.listdir(f"{run}/{userName}/{self.iniHDName}")
                 self.connected_connection()
 
             except FileNotFoundError:
                 # Disable backup now button
-                self.backupNowButton.setEnabled(False)    
-                # Disconnected     
+                self.backupNowButton.setEnabled(False)
+                # Disconnected
                 self.externalStatusLabel.setText("Status: Disconnected")
                 self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
@@ -352,13 +352,19 @@ class UI(QMainWindow):
         ################################################################################
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
-        
-        # Clean notification info
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:  
-            config.set('INFO', 'notification_add_info', '')
-            config.write(configfile)
+
+        try:
+            # Clean notification info
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_add_info', ' ')
+                config.write(configfile)
+
+        except Exception as error:
+            print(Exception)
+            print("Main Window error!")
+            exit()
 
         self.get_size_informations()
 
@@ -388,7 +394,7 @@ class UI(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None":  
+        if self.iniHDName != "None":
             # Show backup button if no back up is been made
             if self.iniBackupNow == "false":
                 # Enable backup now button
@@ -625,7 +631,7 @@ class UI(QMainWindow):
             self.automaticallyCheckBox.setChecked(True)
         else:
             self.automaticallyCheckBox.setChecked(False)
-        
+
         self.load_system_tray()
 
     def load_system_tray(self):
@@ -641,11 +647,11 @@ class UI(QMainWindow):
     def automatically_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:  
+        with open(src_user_config, 'w') as configfile:
             if self.automaticallyCheckBox.isChecked():
                 if not os.path.exists(src_backup_check_desktop):
                     # Copy .desktop to user folder (Autostart .desktop)
-                    shutil.copy(src_backup_check, src_backup_check_desktop)  
+                    shutil.copy(src_backup_check, src_backup_check_desktop)
 
                 config.set('BACKUP', 'auto_backup', 'true')
                 config.write(configfile)
@@ -653,10 +659,10 @@ class UI(QMainWindow):
                 # Backup checker
                 sub.Popen(f"python3 {src_backup_check_py}", shell=True)
                 print("Auto backup was successfully activated!")
-     
+
             else:
                 config.set('BACKUP', 'auto_backup', 'false')
-                config.write(configfile)    
+                config.write(configfile)
 
                 print("Auto backup was successfully deactivated!")
 

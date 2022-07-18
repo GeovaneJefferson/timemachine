@@ -312,11 +312,11 @@ class UI(QMainWindow):
             border: transparent;
         """)
         self.allowFlatpakNamesCheckBox.clicked.connect(self.on_allow__flatpak_names_clicked)
-        
+
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
         self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data "
             "(Back up flatpak names is necessary)")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
@@ -329,7 +329,7 @@ class UI(QMainWindow):
         ################################################################################
         self.resetWidget = QWidget(self)
         self.resetWidget.setGeometry(280, 340, 500, 90)
- 
+
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
         self.resetLayout.setSpacing(0)
@@ -443,7 +443,7 @@ class UI(QMainWindow):
         # Get USER home folders
         for folder in getHomeFolders:
             # Hide hidden folder
-            if not "." in folder:    
+            if not "." in folder:
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
@@ -455,7 +455,7 @@ class UI(QMainWindow):
                     "}")
                 # self.foldersCheckbox.setFixedSize(150, 22)
                 self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
-                
+
                 # Activate checkboxes in user.ini
                 if folder.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
@@ -535,7 +535,7 @@ class UI(QMainWindow):
             self.hoursSpinBox.setEnabled(True)
             self.minutesSpinBox.setEnabled(True)
             self.oneTimePerDayRadio.setChecked(True)
-            
+
             # Enable all days
             self.sunCheckBox.setEnabled(True)
             self.monCheckBox.setEnabled(True)
@@ -544,14 +544,14 @@ class UI(QMainWindow):
             self.thuCheckBox.setEnabled(True)
             self.friCheckBox.setEnabled(True)
             self.satCheckBox.setEnabled(True)
-        
+
         # Multiple time per day
         elif iniMultipleTimePerDay == "true":
             self.hoursSpinBox.setEnabled(False)
             self.minutesSpinBox.setEnabled(False)
             self.multipleTimePerDayComboBox.setEnabled(True)
             self.moreTimePerDayRadio.setChecked(True)
-        
+
             # Disable all days
             self.sunCheckBox.setEnabled(False)
             self.monCheckBox.setEnabled(False)
@@ -606,7 +606,7 @@ class UI(QMainWindow):
 
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
-        
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
@@ -755,7 +755,7 @@ class UI(QMainWindow):
                 self.hoursSpinBox.setEnabled(True)
                 self.minutesSpinBox.setEnabled(True)
                 self.oneTimePerDayRadio.setChecked(True)
-                
+
                 # Enable all days
                 self.sunCheckBox.setEnabled(True)
                 self.monCheckBox.setEnabled(True)
@@ -775,7 +775,7 @@ class UI(QMainWindow):
                 self.minutesSpinBox.setEnabled(False)
                 self.multipleTimePerDayComboBox.setEnabled(True)
                 self.moreTimePerDayRadio.setChecked(True)
-        
+
                 # Disable all days
                 self.sunCheckBox.setEnabled(False)
                 self.monCheckBox.setEnabled(False)
@@ -824,7 +824,7 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_button_fix_clicked(self):
-        resetConfirmation = QMessageBox.question(self, 'Reset', 
+        resetConfirmation = QMessageBox.question(self, 'Reset',
             'Are you sure you want to reset settings?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
@@ -838,14 +838,18 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'backup_now', 'false')
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'false')
+
                 # External section
                 config.set('EXTERNAL', 'hd', 'None')
                 config.set('EXTERNAL', 'name', 'None')
+
                 # Mode section
                 config.set('MODE', 'one_time_mode', 'false')
                 config.set('MODE', 'more_time_mode', 'true')
+
                 # System tray  section
                 config.set('SYSTEMTRAY', 'system_tray', 'false')
+
                 # Schedule section
                 config.set('SCHEDULE', 'sun', 'false')
                 config.set('SCHEDULE', 'mon', 'true')
@@ -856,17 +860,21 @@ class UI(QMainWindow):
                 config.set('SCHEDULE', 'sat', 'false')
                 config.set('SCHEDULE', 'hours', '10')
                 config.set('SCHEDULE', 'minutes', '00')
+                config.set('SCHEDULE', 'everytime', '60')
+
                 # Info section
                 config.set('INFO', 'latest', 'None')
                 config.set('INFO', 'next', 'None')
                 config.set('INFO', 'notification_id', '0')
-                config.set('INFO', 'feedback_status', '')
+                config.set('INFO', 'feedback_status', ' ')
+
                 # Folders section
                 config.set('FOLDER', 'pictures', 'true')
                 config.set('FOLDER', 'documents', 'true')
                 config.set('FOLDER', 'music', 'true')
                 config.set('FOLDER', 'videos', 'true')
                 config.set('FOLDER', 'desktop', 'true')
+
                 # Restore section
                 config.set('RESTORE', 'is_restore_running', 'false')
                 config.set('RESTORE', 'applications_name', 'false')
