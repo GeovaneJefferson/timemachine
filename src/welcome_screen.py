@@ -27,13 +27,31 @@ class WELCOMESCREEN(QWidget):
         self.titlelLayout = QVBoxLayout()
         self.titlelLayout.setSpacing(20)
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
-
+        
+        # Image       
+        image = QLabel()
+        image.setFixedSize(128, 128)
+        image.setStyleSheet(
+            "QLabel"
+            "{"
+            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/backup_128px.svg);"
+            "background-repeat: no-repeat;"
+            "background-color: transparent;"
+            "background-position: center;"
+            "}")
+        
         # Welcome
         self.title = QLabel()
         self.title.setFont(QFont("Ubuntu", 34))
-        self.title.setText("Welcome to your\n"
-            f"Personal OS")
+        self.title.setText("Migration Assistant")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+
+       # More description
+        self.moreDescription = QLabel()
+        self.moreDescription.setFont(QFont("Ubuntu", 11))
+        self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.moreDescription.setText("Use Migration Assistant to transfer information "
+            "(Apps, Data, Files and Folders to this PC.") 
 
         ################################################################################
         # Buttons
@@ -50,6 +68,8 @@ class WELCOMESCREEN(QWidget):
         # Add layouts and widgets
         ################################################################################
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(self.moreDescription, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.setLayout(self.titlelLayout)
 
 
@@ -807,9 +827,10 @@ class BACKUPSCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/restore.png);"
+            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/restore_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
+            "background-position: center;"
             "}")
 
         # Image 2       
@@ -830,9 +851,10 @@ class BACKUPSCREEN(QWidget):
         image3.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/pc.png);"
+            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/pc_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
+            "background-position: center;"
             "}")
 
         ################################################################################
@@ -840,7 +862,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetDeviceName = QWidget(self)
         widgetDeviceName.setFixedSize(180, 40)
-        widgetDeviceName.move(232, 285)
+        widgetDeviceName.move(232, 265)
         # widgetDeviceName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -862,7 +884,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         widgetThisPCName = QWidget(self)
         widgetThisPCName.setFixedSize(180, 40)
-        widgetThisPCName.move(485, 285)
+        widgetThisPCName.move(485, 265)
         # widgetThisPCName.setStyleSheet("""
         #     border: 1px solid black;
         #     """)
@@ -875,14 +897,6 @@ class BACKUPSCREEN(QWidget):
         self.thisPCName.setText(f"{userName}") # 
         self.thisPCName.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.thisPCName.adjustSize()
-
-        ################################################################################
-        # Process bar 
-        ################################################################################
-        self.processBar = QProgressBar(self)
-        self.processBar.setFixedSize(400, 14)
-        self.processBar.move(250, 370)
-        self.processBar.hide()
 
         ################################################################################
         # Buttons
@@ -958,9 +972,6 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         # Update widgets
         ################################################################################
-        # Process bar
-        self.processBar.setValue(int(self.iniCurrentPercentBackup))
-
         # if restoring is running
         if self.iniIsRestoreRunning == "true":
             # Show restoring description

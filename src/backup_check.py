@@ -11,45 +11,51 @@ class CLI:
         signal.signal(signal.SIGTERM, self.signal_exit)
 
     def updates(self):
-        print("Updating...")
+        try:
+            print("Updating...")
 
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
 
-        # INI file
-        self.iniHDName = config['EXTERNAL']['name']
-        self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-        self.iniLatestDate = config['INFO']['latest']
+            # INI file
+            self.iniHDName = config['EXTERNAL']['name']
+            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+            self.iniLatestDate = config['INFO']['latest']
 
-        # Dates
-        self.iniScheduleSun = config['SCHEDULE']['sun']
-        self.iniScheduleMon = config['SCHEDULE']['mon']
-        self.iniScheduleTue = config['SCHEDULE']['tue']
-        self.iniScheduleWed = config['SCHEDULE']['wed']
-        self.iniScheduleThu = config['SCHEDULE']['thu']
-        self.iniScheduleFri = config['SCHEDULE']['fri']
-        self.iniScheduleSat = config['SCHEDULE']['sat']
+            # Dates
+            self.iniScheduleSun = config['SCHEDULE']['sun']
+            self.iniScheduleMon = config['SCHEDULE']['mon']
+            self.iniScheduleTue = config['SCHEDULE']['tue']
+            self.iniScheduleWed = config['SCHEDULE']['wed']
+            self.iniScheduleThu = config['SCHEDULE']['thu']
+            self.iniScheduleFri = config['SCHEDULE']['fri']
+            self.iniScheduleSat = config['SCHEDULE']['sat']
 
-        self.iniFirstStartup = config['BACKUP']['first_startup']
-        self.iniBackupNow = config['BACKUP']['backup_now']
-        self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-        self.iniOneTimePerDay = config['MODE']['one_time_mode']
-        self.iniMultipleTimePerDay = config['MODE']['more_time_mode']
-        self.iniEverytime = config['SCHEDULE']['everytime']
-        self.iniNextHour = config['SCHEDULE']['hours']
-        self.ininextMinute = config['SCHEDULE']['minutes']
+            self.iniFirstStartup = config['BACKUP']['first_startup']
+            self.iniBackupNow = config['BACKUP']['backup_now']
+            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
+            self.iniOneTimePerDay = config['MODE']['one_time_mode']
+            self.iniMultipleTimePerDay = config['MODE']['more_time_mode']
+            self.iniEverytime = config['SCHEDULE']['everytime']
+            self.iniNextHour = config['SCHEDULE']['hours']
+            self.ininextMinute = config['SCHEDULE']['minutes']
 
-        # Day
-        self.dayName = datetime.now()
-        self.dayName = self.dayName.strftime("%a")
+            # Day
+            self.dayName = datetime.now()
+            self.dayName = self.dayName.strftime("%a")
 
-        # Time
-        now = datetime.now()
-        self.currentHour = now.strftime("%H")
-        self.currentMinute = now.strftime("%M")
-        self.totalCurrentTime = self.currentHour + self.currentMinute
-        self.totalNextTime = self.iniNextHour + self.ininextMinute
+            # Time
+            now = datetime.now()
+            self.currentHour = now.strftime("%H")
+            self.currentMinute = now.strftime("%M")
+            self.totalCurrentTime = self.currentHour + self.currentMinute
+            self.totalNextTime = self.iniNextHour + self.ininextMinute
 
+        except KeyError as error:
+            print(keyError)
+            print("Backup checker KeyError!")
+            exit()
+            
         self.is_system_tray_running()
 
     def is_system_tray_running(self):

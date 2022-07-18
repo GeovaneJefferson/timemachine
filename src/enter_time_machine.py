@@ -34,8 +34,8 @@ class UI(QWidget):
         ################################################################################
         self.setWindowTitle(f"Enter {appName}")
         self.setWindowIcon(QIcon(src_restore_icon))
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.showFullScreen()
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.showFullScreen()
 
         self.read_ini_file()
 
@@ -93,7 +93,7 @@ class UI(QWidget):
         self.filesGridLayout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.filesGridLayout.setContentsMargins(20, 20, 20, 20)
         self.filesGridLayout.setSpacing(20)
-        
+
         ################################################################################
         # Buttons
         ################################################################################
@@ -179,7 +179,7 @@ class UI(QWidget):
         # TODO
         for output in self.iniFolder:
             # Capitalize first letter
-            output = output.capitalize() 
+            output = output.capitalize()
             # Can output be found inside Users Home?
             try:
                 os.listdir(f"{homeUser}/{output}")
@@ -235,9 +235,9 @@ class UI(QWidget):
         print("Date available: ", self.dateFolders)
         print("Current date: ", self.dateFolders[self.countForDate])
         print("")
-        # Update dateLabel 
+        # Update dateLabel
         self.dateLabel.setText(f"{self.dateFolders[(self.countForDate)]}")
-        self.get_time()       
+        self.get_time()
 
     def get_time(self):
         # Clean screen
@@ -259,7 +259,7 @@ class UI(QWidget):
                 # Only add time button if self.currentFolder can be found inside current date and time
                 if os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.dateFolders[(self.countForDate)]}/{getTime}/{self.currentFolder}"):
-                    
+
                     ################################################################################
                     # Time button
                     ################################################################################
@@ -277,14 +277,14 @@ class UI(QWidget):
                     # Set current folder date
                     ################################################################################
                     self.timeLayoutV.addWidget(self.timeButton, 1, QtCore.Qt.AlignRight)
-                
+
                 # self.timeButton.setChecked(True)  # Auto selected that latest one
 
         except:
             # Reset self.countForDate
             self.countForDate = 0
             # Add to self.countForDate
-            self.countForDate += 1 
+            self.countForDate += 1
             # Return to Date
             self.get_date()
 
@@ -320,7 +320,7 @@ class UI(QWidget):
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
                 f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/{self.currentFolder}"):
                 # Only show files and hide hidden outputs
-                if "." in output and not output.startswith("."):
+                if not output.startswith("."):
                     print("     Files: ", output)
 
                     # Buttons for output
@@ -328,7 +328,7 @@ class UI(QWidget):
                     self.searchResult.setCheckable(True)
                     self.searchResult.setFixedSize(415, 150)
 
-                    # Show bigger preview if mouse hover 
+                    # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
                         scaledHTML = 'width:"100%" height="250"'
                         self.searchResult.setToolTip(
@@ -337,7 +337,7 @@ class UI(QWidget):
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     self.searchResult.clicked.connect(
-                        lambda *args, output=output: self.add_to_restore(output, self.dateFolders[self.countForDate], 
+                        lambda *args, output=output: self.add_to_restore(output, self.dateFolders[self.countForDate],
                         self.timeFolders[self.countForTime]))
 
                     ################################################################################
@@ -345,8 +345,13 @@ class UI(QWidget):
                     ################################################################################
                     # Image label
                     image = QLabel(self.searchResult)
-                    image.setFixedSize(96, 96)
+                    image.setMinimumSize(96, 96)
                     image.move(20, 20)
+                    image.setStyleSheet(
+                        "QLabel"
+                        "{"
+                        "background-repeat: no-repeat;"
+                        "}")
 
                     if output.endswith(imagePrefix):
                         # image = QLabel(self.searchResult)
@@ -431,10 +436,12 @@ class UI(QWidget):
                             "}")
 
                     else:
+                        image.setFixedSize(64, 64)
+                        image.move(30, 40)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
-                            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/none.png);"
+                            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/folder.png);"
                             "background-color: transparent;"
                             "}")
 
@@ -475,12 +482,12 @@ class UI(QWidget):
 
             # Change time if inside the timeList has more then 1 item
             # and is not at the end of the time list
-            if len(self.timeFolders) > 1 and not len(self.timeFolders) == self.timeFolders.index(self.timeFolders[self.countForTime]) + 1: 
+            if len(self.timeFolders) > 1 and not len(self.timeFolders) == self.timeFolders.index(self.timeFolders[self.countForTime]) + 1:
                 # Add to
                 self.countForTime += 1
                 # Go back to get_time
                 self.get_time()
-        
+
             else:
                 print("No more times to change...")
                 print("Change dates...")
@@ -576,16 +583,29 @@ class UI(QWidget):
             # Set self.filesToRestore length
             self.restoreButton.setText("Restore")
 
-            # Clean screen
-            for _ in range(1):
-                print("Cleaning")
-                self.clean_stuff_on_screen("timeLayoutV")
+            # # Clean screen
+            # for _ in range(1):
+            #     print("Cleaning")
+            #     self.clean_stuff_on_screen("timeLayoutV")
 
-            # Clean screen
-            for _ in range(1):
-                print("Cleaning")
-                self.clean_stuff_on_screen("foldersLayout")
+            # # Clean screen
+            # for _ in range(1):
+            #     print("Cleaning")
+            #     self.clean_stuff_on_screen("foldersLayout")
 
+            # Show time functions from TimeVLayout if 1 or more items is/are selected
+            for i in range(self.timeLayoutV.count()):
+                item = self.timeLayoutV.itemAt(i)
+                widget = item.widget()
+                widget.setEnabled(True)  # Enable function
+                i -= 1
+
+            # Show folders functions from foldersVLayout if 1 or more items is/are selected
+            for i in range(self.foldersLayout.count()):
+                item = self.foldersLayout.itemAt(i)
+                widget = item.widget()
+                widget.setEnabled(True)  # Enable function
+                i -= 1
             ################################################################################
             # Reactivate buttons
             ################################################################################
@@ -611,7 +631,7 @@ class UI(QWidget):
                     f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
                     f"{self.currentFolder}/{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/ &",
                     shell=True)
-                
+
                 # Add to count
                 count += 1
 
@@ -624,7 +644,7 @@ class UI(QWidget):
                     f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{getDate}/{getTime}/"
                     f"{self.currentFolder}/{self.filesToRestoreWithSpace[count]} {homeUser}/"
                     f"{self.currentFolder}/ &", shell=True)
-                
+
                 # Add to count
                 count += 1
 
@@ -642,7 +662,7 @@ class UI(QWidget):
 
         print("Your files are been restored...")
         exit()
-    
+
     def change_date_up(self):
         try:
             # Clean screen
@@ -665,7 +685,7 @@ class UI(QWidget):
                 self.clean_stuff_on_screen("timeLayoutV")
         except:
             pass
-        
+
         self.countForTime = 0
         self.countForDate -= 1
         # Return to get_date
@@ -683,7 +703,7 @@ class UI(QWidget):
         # Index of the getTime
         index = self.timeFolders.index(getTime)
         # Add to
-        self.countForTime = index  
+        self.countForTime = index
         # Return to getDate
         self.show_on_screen()
 
