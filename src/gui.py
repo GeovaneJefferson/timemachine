@@ -263,7 +263,7 @@ class UI(QMainWindow):
 
         # Update
         timer.timeout.connect(self.read_ini_file)
-        timer.start(1000) # Update every x seconds
+        timer.start(2000) # Update every x seconds
         self.read_ini_file()
 
     def read_ini_file(self):

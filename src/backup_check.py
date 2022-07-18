@@ -161,12 +161,19 @@ class CLI:
                     ################################################################################
                     # Set startup to False and Continue to back up
                     ################################################################################
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('BACKUP', 'first_startup', 'false')
-                        config.write(configfile)
-                        
+                    try:
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('BACKUP', 'first_startup', 'false')
+                            config.write(configfile)
+                    
+                    except Exception as error: 
+                        print(error)
+                        print("Backup checker error!")
+                        print("Check modes.")
+                        exit()
+
                     # Call backup now
                     self.call_backup_now()
 
@@ -184,11 +191,17 @@ class CLI:
                 # Set startup to False, so wont backup twice after passed time :D
                 # Write to  INI file
                 ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('BACKUP', 'first_startup', 'false')
-                    config.write(configfile)
+                try:
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('BACKUP', 'first_startup', 'false')
+                        config.write(configfile)
+
+                except Exception as error:
+                    print(error)
+                    print("Error waiting for the right time...")
+                    exit()
 
         else: 
             print("Multiple time per day")
@@ -209,11 +222,17 @@ class CLI:
 
     def call_backup_now(self):
         print("Back up will start shortly...")
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', 'true')
-            config.write(configfile)
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('BACKUP', 'backup_now', 'true')
+                config.write(configfile)
+
+        except Exception as error:
+            print(error)
+            print("Start shortly...")
+            exit()
 
         # Call backup now
         sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
@@ -236,6 +255,6 @@ while True:
         print("Exiting backup checker...")
         break
 
-    time.sleep(1)
+    time.sleep(2)
 
 exit()

@@ -1,6 +1,9 @@
 #! /usr/bin/python3
 from setup import *
 
+# QTimer
+timer = QtCore.QTimer()
+
 ################################################################
 # Window management
 ################################################################
@@ -50,8 +53,8 @@ class WELCOMESCREEN(QWidget):
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Ubuntu", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText("Use Migration Assistant to transfer information "
-            "(Apps, Data, Files and Folders to this PC.") 
+        self.moreDescription.setText("Use Migration Assistant to transfer information such as "
+            "(Apps, Data, Files and Folders) to this PC.") 
 
         ################################################################################
         # Buttons
@@ -78,6 +81,7 @@ class CHOOSEDEVICE(QWidget):
         super().__init__()
         self.foundInMedia = None
         self.outputBox = ()
+        self.captureDevices = []
 
         self.read_ini_file()
 
@@ -123,7 +127,7 @@ class CHOOSEDEVICE(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText(f"Make sure that your External device " 
-            f"with a {appName} backup is already connected to this PC.")
+            f"with a {appName} backup is connected to this PC.")
 
         ################################################################################
         # Devices Area
@@ -153,15 +157,10 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_clicked)
-
-        # Refresh button
-        self.refreshButton = QPushButton(self)
-        self.refreshButton.setFont(QFont("Ubuntu", 10))
-        self.refreshButton.setText("Refresh")
-        self.refreshButton.adjustSize()
-        self.refreshButton.move(600, 555)
-        self.refreshButton.clicked.connect(self.on_button_refresh_clicked)
-
+        
+        # Update
+        timer.timeout.connect(self.check_connection)
+        timer.start(1000) # Update every x seconds
         self.check_connection()
 
     def check_connection(self):
@@ -170,19 +169,31 @@ class CHOOSEDEVICE(QWidget):
         # Search external inside media
         ################################################################################
         try:
-            if not len(os.listdir(f'{media}/{userName}')) == 0:
-                print(f"Devices found inside {media}")
+            if len(os.listdir(f'{media}/{userName}')) != 0:
                 self.foundInMedia = True
                 self.show_on_screen(media)
+
+            else:
+                for i in range(len(self.captureDevices)):
+                    item = self.devicesAreaLayout.itemAt(i)
+                    widget = item.widget()
+                    widget.deleteLater()
+                    i -= 1
                 
         except FileNotFoundError:
             try:
-                if not len(os.listdir(f'{run}/{userName}')) == 0:
+                if len(os.listdir(f'{run}/{userName}')) != 0:
                     print(f"Devices found inside {run}")
                     self.foundInMedia = False
                     self.show_on_screen(run)
-
-            except FileNotFoundError:
+                else:
+                    for i in range(len(self.captureDevices)):
+                        item = self.devicesAreaLayout.itemAt(i)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        i -= 1
+                    
+            except Exception:
                 print("No device found...")
                 pass
 
@@ -201,38 +212,58 @@ class CHOOSEDEVICE(QWidget):
         # Show available files
         ################################################################################
         try:
+            count = 0
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
-                if f"{baseFolderName}" in os.listdir(f"{location}/{userName}/{output}/"):
-                    self.availableDevices = QPushButton(self.devicesAreadWidget)
-                    self.availableDevices.setCheckable(True)
-                    self.availableDevices.setAutoExclusive(True)
-                    self.availableDevices.setFixedSize(180, 180)
-                    self.availableDevices.setText(output)
-                    self.availableDevices.adjustSize()
-                    self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-                    self.availableDevices.setFont(QFont("Ubuntu", 11))
-                    self.availableDevices.setStyleSheet(
-                        "QPushButton"
-                        "{"
-                        "text-align: bottom;"
-                        "padding-bottom: 25px;"
-                        "}")
-                    
-                    # Image
-                    image = QLabel(self.availableDevices)
-                    image.setFixedSize(96, 96)
-                    image.move(46, 35)
-                    image.setStyleSheet(
-                        "QLabel"
-                        "{"
-                        f"background-image: url({src_restore_icon});"
-                        "background-repeat: no-repeat;"
-                        "background-color: transparent;"
-                        "}")
+                if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
+                    if output not in self.captureDevices:
+                        # If device is in list, display to user just on time per device
+                        self.captureDevices.append(output)
 
-                    self.devicesAreaLayout.addWidget(self.availableDevices)
-        except:
+                        self.availableDevices = QPushButton(self.devicesAreadWidget)
+                        self.availableDevices.setCheckable(True)
+                        self.availableDevices.setAutoExclusive(True)
+                        self.availableDevices.setFixedSize(180, 180)
+                        self.availableDevices.setText(output)
+                        self.availableDevices.adjustSize()
+                        # TODO
+                        self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
+                        self.availableDevices.setFont(QFont("Ubuntu", 11))
+                        self.availableDevices.setStyleSheet(
+                            "QPushButton"
+                            "{"
+                            "text-align: bottom;"
+                            "padding-bottom: 25px;"
+                            "}")
+                        
+                        # Image
+                        image = QLabel(self.availableDevices)
+                        image.setFixedSize(96, 96)
+                        image.move(46, 35)
+                        image.setStyleSheet(
+                            "QLabel"
+                            "{"
+                            f"background-image: url({src_restore_icon});"
+                            "background-repeat: no-repeat;"
+                            "background-color: transparent;"
+                            "}")
+
+                        self.devicesAreaLayout.addWidget(self.availableDevices)
+            
+                    # If x device is removed or unmounted, remove from screen
+                    for output in self.captureDevices:
+                        if output not in os.listdir(f'{location}/{userName}'):
+                            # Current output index
+                            index = self.captureDevices.index(output)
+                            # Remove from list
+                            self.captureDevices.remove(output)             
+                            # Delete from screen
+                            item = self.devicesAreaLayout.itemAt(index)
+                            widget = item.widget()
+                            widget.deleteLater()
+                            index -= 1
+
+        except Exception:
             pass
 
         ################################################################################
@@ -804,12 +835,12 @@ class BACKUPSCREEN(QWidget):
         self.description = QLabel()
         self.description.setFont(QFont("Ubuntu", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.description.setText(f'Information from "{appName}" ' 
-            'will been transferred to this PC.')
+        self.description.setText(f"Backups from {appName} " 
+            "will been transferred to this PC.")
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 11))
+        self.moreDescription.setFont(QFont("Ubuntu", 14))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText('Click on "Restore" to begin.') 
 
@@ -939,7 +970,7 @@ class BACKUPSCREEN(QWidget):
 
         # Update
         self.timer.timeout.connect(self.read_ini_file)
-        self.timer.start(1000)
+        self.timer.start(2000)
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -993,7 +1024,7 @@ class BACKUPSCREEN(QWidget):
 
 
 app = QApplication(sys.argv)
-main = WELCOMESCREEN()
+main = PREBACKUP()
 main2 = CHOOSEDEVICE()
 main3 = OPTIONS()
 main4 = PREBACKUP()
