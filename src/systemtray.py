@@ -79,7 +79,7 @@ class APP:
         # Check ini
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every x second
+        timer.start(2000)  # update every x second
         self.updates()
 
         self.app.exec()
@@ -112,13 +112,18 @@ class APP:
         if self.iniSystemTray == "false":
             print("Exiting system tray...")
 
-            # Write ini file
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                config.set('SYSTEMTRAY', 'system_tray', 'false')
-                config.write(configfile)
+            try:
+                # Write ini file
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('SYSTEMTRAY', 'system_tray', 'false')
+                    config.write(configfile)
 
+            except KeyError as error:
+                print(error)
+                print("System Tray KeyError!")
+                
             exit()
 
         self.conditions()

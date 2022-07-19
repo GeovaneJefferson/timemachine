@@ -4,6 +4,12 @@ from setup import *
 # QTimer
 timer = QtCore.QTimer()
 
+################################################################
+# Window management
+################################################################
+windowXSize = 500
+windowYSize = 380
+
 
 class EXTERNAL(QWidget):
     def __init__(self):
@@ -18,7 +24,7 @@ class EXTERNAL(QWidget):
     def iniUI(self):
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setWindowTitle("External devices:")
-        self.setFixedSize(500, 380)
+        self.setFixedSize(windowXSize, windowYSize)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
@@ -28,7 +34,13 @@ class EXTERNAL(QWidget):
         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
         fg = self.frameGeometry()
         fg.moveCenter(centerPoint)
-        self.move(fg.topLeft())
+        self.move(fg.topLeft().x(), fg.topLeft().y() - 100)
+
+        # Opening animation
+        self.openAnimation = QPropertyAnimation(self, b"pos")
+        self.openAnimation.setEndValue(QPoint(fg.topLeft().x(), fg.topLeft().y()))
+        self.openAnimation.setDuration(300)
+        self.openAnimation.start()
 
         self.read_ini_file()
 
