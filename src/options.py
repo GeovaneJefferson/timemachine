@@ -312,11 +312,11 @@ class UI(QMainWindow):
             border: transparent;
         """)
         self.allowFlatpakNamesCheckBox.clicked.connect(self.on_allow__flatpak_names_clicked)
-
+        
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
         self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data "
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
             "(Back up flatpak names is necessary)")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
@@ -329,7 +329,7 @@ class UI(QMainWindow):
         ################################################################################
         self.resetWidget = QWidget(self)
         self.resetWidget.setGeometry(280, 340, 500, 90)
-
+ 
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
         self.resetLayout.setSpacing(0)
@@ -443,7 +443,7 @@ class UI(QMainWindow):
         # Get USER home folders
         for folder in getHomeFolders:
             # Hide hidden folder
-            if not "." in folder:
+            if not "." in folder:    
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
@@ -455,7 +455,7 @@ class UI(QMainWindow):
                     "}")
                 # self.foldersCheckbox.setFixedSize(150, 22)
                 self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
-
+                
                 # Activate checkboxes in user.ini
                 if folder.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
@@ -535,7 +535,7 @@ class UI(QMainWindow):
             self.hoursSpinBox.setEnabled(True)
             self.minutesSpinBox.setEnabled(True)
             self.oneTimePerDayRadio.setChecked(True)
-
+            
             # Enable all days
             self.sunCheckBox.setEnabled(True)
             self.monCheckBox.setEnabled(True)
@@ -544,14 +544,14 @@ class UI(QMainWindow):
             self.thuCheckBox.setEnabled(True)
             self.friCheckBox.setEnabled(True)
             self.satCheckBox.setEnabled(True)
-
+        
         # Multiple time per day
         elif iniMultipleTimePerDay == "true":
             self.hoursSpinBox.setEnabled(False)
             self.minutesSpinBox.setEnabled(False)
             self.multipleTimePerDayComboBox.setEnabled(True)
             self.moreTimePerDayRadio.setChecked(True)
-
+        
             # Disable all days
             self.sunCheckBox.setEnabled(False)
             self.monCheckBox.setEnabled(False)
@@ -606,7 +606,7 @@ class UI(QMainWindow):
 
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
-
+        
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
@@ -755,7 +755,7 @@ class UI(QMainWindow):
                 self.hoursSpinBox.setEnabled(True)
                 self.minutesSpinBox.setEnabled(True)
                 self.oneTimePerDayRadio.setChecked(True)
-
+                
                 # Enable all days
                 self.sunCheckBox.setEnabled(True)
                 self.monCheckBox.setEnabled(True)
@@ -775,7 +775,7 @@ class UI(QMainWindow):
                 self.minutesSpinBox.setEnabled(False)
                 self.multipleTimePerDayComboBox.setEnabled(True)
                 self.moreTimePerDayRadio.setChecked(True)
-
+        
                 # Disable all days
                 self.sunCheckBox.setEnabled(False)
                 self.monCheckBox.setEnabled(False)
@@ -824,7 +824,7 @@ class UI(QMainWindow):
             config.write(configfile)
 
     def on_button_fix_clicked(self):
-        resetConfirmation = QMessageBox.question(self, 'Reset',
+        resetConfirmation = QMessageBox.question(self, 'Reset', 
             'Are you sure you want to reset settings?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
@@ -836,6 +836,7 @@ class UI(QMainWindow):
                 config.set('BACKUP', 'first_startup', 'false')
                 config.set('BACKUP', 'auto_backup', 'false')
                 config.set('BACKUP', 'backup_now', 'false')
+                config.set('BACKUP', 'checker_running', 'false')
                 config.set('BACKUP', 'allow_flatpak_names', 'true')
                 config.set('BACKUP', 'allow_flatpak_data', 'false')
 
@@ -897,11 +898,16 @@ class UI(QMainWindow):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-
-        # Call backup checker or not?
-        if self.iniAutomaticallyBackup == "false":
+        self.iniBackupIsRunning = config['BACKUP']['checker_running']
+        
+        # Is is checker is not running and auto is enabled
+        if self.iniBackupIsRunning == "false" and self.iniAutomaticallyBackup == "true":
             # Call backup check py
             sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+            # Set checker running to true
+            with open(src_user_config, 'w') as configfile:
+                config.set('BACKUP', 'checker_running', "true")
+                config.write(configfile)
 
         exit()
 
