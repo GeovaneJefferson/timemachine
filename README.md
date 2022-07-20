@@ -24,7 +24,7 @@ using "Enter Time Machine" mode.
 #### Still not enough space for a new backup?
   Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 
-## Behind the "scenes":
+## Behind The Scenes:
 On the main Time Machine's window, will show base information about your backup device.
 Such as: 
 * Backup HD/SSD Name
@@ -63,7 +63,7 @@ You will notice that your system tray will from time to time change its color to
 * White = Normal color, automatically backup is ON and your backup device is connected and mounted.
 * Blue = Time Machine is current backing your files, after is done, it will changes to White color.
 * Red = If automatically backup is ON but your backup device is disconnected or not mounted, you will see a Red system tray icon.
-  - Red system tray icon can also means that Time Machine had some problem to back up. Open Time Machine and read the report about it.
+  - Red system tray icon can also mean that Time Machine had some problem to back up. Open Time Machine main window and read the report about it.
 
 ## Requirements
 * pyside6
