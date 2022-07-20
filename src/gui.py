@@ -146,13 +146,13 @@ class UI(QMainWindow):
         ################################################################################
         self.extraInformationLabel = QLabel(self)
         self.extraInformationLabel.setFont(item)
-
+        
         ################################################################################
         # Current backup label information
         ################################################################################
         self.currentBackUpLabel = QLabel(self)
         self.currentBackUpLabel.setFont(item)
-
+        
         ################################################################################
         # Backup now button
         ################################################################################
@@ -163,7 +163,7 @@ class UI(QMainWindow):
         self.backupNowButton.adjustSize()
         self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
-        self.backupNowButton.setEnabled(False)
+        self.backupNowButton.setEnabled(False)        
 
         ################################################################################
         # Description
@@ -263,7 +263,7 @@ class UI(QMainWindow):
 
         # Update
         timer.timeout.connect(self.read_ini_file)
-        timer.start(2000) # Update every x seconds
+        timer.start(1000) # Update every x seconds
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -286,6 +286,7 @@ class UI(QMainWindow):
             self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
+            # self.iniBackupIsRunning = config['BACKUP']['checker_running']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
@@ -306,15 +307,16 @@ class UI(QMainWindow):
             self.iniNextBackupSat = config['SCHEDULE']['sat']
             self.everytime = config['SCHEDULE']['everytime']
 
+            # Times
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
 
             # Current information about an error
             self.iniExtraInformation = config['INFO']['notification_add_info']
-
+            
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-
+            
         except KeyError as keyError:
             print(keyError)
             print("Main window KeyError!")
@@ -332,13 +334,13 @@ class UI(QMainWindow):
 
         except FileNotFoundError:
             try:
-                os.listdir(f"{run}/{userName}/{self.iniHDName}")
+                os.listdir(f"{run}/{userName}/{self.iniHDName}") 
                 self.connected_connection()
 
             except FileNotFoundError:
                 # Disable backup now button
-                self.backupNowButton.setEnabled(False)
-                # Disconnected
+                self.backupNowButton.setEnabled(False)    
+                # Disconnected     
                 self.externalStatusLabel.setText("Status: Disconnected")
                 self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
@@ -352,12 +354,12 @@ class UI(QMainWindow):
         ################################################################################
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
-
+        
         try:
             # Clean notification info
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w') as configfile:  
                 config.set('INFO', 'notification_add_info', ' ')
                 config.write(configfile)
 
@@ -394,7 +396,7 @@ class UI(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None":
+        if self.iniHDName != "None":  
             # Show backup button if no back up is been made
             if self.iniBackupNow == "false":
                 # Enable backup now button
@@ -631,7 +633,7 @@ class UI(QMainWindow):
             self.automaticallyCheckBox.setChecked(True)
         else:
             self.automaticallyCheckBox.setChecked(False)
-
+        
         self.load_system_tray()
 
     def load_system_tray(self):
@@ -647,22 +649,32 @@ class UI(QMainWindow):
     def automatically_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
+        with open(src_user_config, 'w') as configfile:  
             if self.automaticallyCheckBox.isChecked():
                 if not os.path.exists(src_backup_check_desktop):
                     # Copy .desktop to user folder (Autostart .desktop)
-                    shutil.copy(src_backup_check, src_backup_check_desktop)
+                    shutil.copy(src_backup_check, src_backup_check_desktop)  
 
                 config.set('BACKUP', 'auto_backup', 'true')
                 config.write(configfile)
 
                 # Backup checker
                 sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-                print("Auto backup was successfully activated!")
+                # Set checker running to true
+                with open(src_user_config, 'w') as configfile:
+                    config.set('BACKUP', 'checker_running', "true")
+                    config.write(configfile)
 
+                print("Auto backup was successfully activated!")
+     
             else:
                 config.set('BACKUP', 'auto_backup', 'false')
-                config.write(configfile)
+                config.write(configfile)    
+                
+                # Set checker running to false
+                with open(src_user_config, 'w') as configfile:
+                    config.set('BACKUP', 'checker_running', "false")
+                    config.write(configfile)
 
                 print("Auto backup was successfully deactivated!")
 
