@@ -15,6 +15,7 @@ class UI(QWidget):
 
         # Folders
         self.currentFolder = str()
+        
         # Times
         self.timeFolders = []
         self.countForTime = 0

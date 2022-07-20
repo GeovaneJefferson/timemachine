@@ -15,8 +15,7 @@ class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
         self.foundInMedia = None
-        self.outputBox = ()
-
+        self.chooseDevice = ()
         self.captureDevices = []
 
         self.iniUI()
@@ -77,6 +76,32 @@ class EXTERNAL(QWidget):
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         
+       # Protocol combobox
+        # self.protocolComboBox = QComboBox(self)
+        # self.protocolComboBox.setFrame(True)
+        # self.protocolComboBox.setFixedSize(60, 28)
+        # self.protocolComboBox.setFont(QFont("Ubuntu", 11))
+        # self.protocolComboBox.move(20, 336)
+        # self.protocolComboBox.setStyleSheet(
+        #     "QComboBox"
+        #     "{"
+        #         "border: 0px solid transparent;"
+        #     "}")
+
+        # protocolList = [
+        #     "ftp:",
+        #     "stp:"]
+        # self.protocolComboBox.addItems(protocolList)
+        # self.protocolComboBox.currentIndexChanged.connect(self.on_every_combox_changed)
+
+        # Cancel button
+        self.cancelButton = QPushButton(self)
+        self.cancelButton.setFont(item)
+        self.cancelButton.setText("Cancel")
+        self.cancelButton.adjustSize()
+        self.cancelButton.move(300, 340)
+        self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
+
         # Use this device
         self.useDiskButton = QPushButton(self)
         self.useDiskButton.setFont(item)
@@ -86,14 +111,6 @@ class EXTERNAL(QWidget):
         self.useDiskButton.move(400, 340)
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
-
-        # Cancel button
-        self.cancelButton = QPushButton(self)
-        self.cancelButton.setFont(item)
-        self.cancelButton.setText("Cancel")
-        self.cancelButton.adjustSize()
-        self.cancelButton.move(300, 340)
-        self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
         # Update
         timer.timeout.connect(self.check_connection)
@@ -205,8 +222,8 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
-        if " " in self.outputBox:
-            self.outputBox = str(self.outputBox.replace(" ", "\ "))
+        if " " in self.chooseDevice:
+            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ "))
 
         ################################################################################
         # Update INI file
@@ -214,19 +231,19 @@ class EXTERNAL(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.outputBox}')
-            config.set('EXTERNAL', 'name', f'{self.outputBox}')
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.chooseDevice}')
+            config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
             config.write(configfile)
 
         self.close()
 
     def on_device_clicked(self, output):
         if self.availableDevices.isChecked():
-            self.outputBox = output
+            self.chooseDevice = output
             # Enable use disk
             self.useDiskButton.setEnabled(True)
         else:
-            self.outputBox = ""
+            self.chooseDevice = ""
             # Disable use disk
             self.useDiskButton.setEnabled(False)
 
