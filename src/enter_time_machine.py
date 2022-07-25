@@ -35,8 +35,8 @@ class UI(QWidget):
         ################################################################################
         self.setWindowTitle(f"Enter {appName}")
         self.setWindowIcon(QIcon(src_restore_icon))
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.showFullScreen()
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        # self.showFullScreen()
 
         self.read_ini_file()
 
@@ -345,6 +345,8 @@ class UI(QWidget):
 
         # Show available files
         try:
+            count = 0
+            searchWidth = 436
             horizontal = 0
             vertical = 0
             imagePrefix = ((".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"))
@@ -357,7 +359,7 @@ class UI(QWidget):
                     # Buttons for output
                     self.searchResult = QPushButton(self)
                     self.searchResult.setCheckable(True)
-                    self.searchResult.setFixedSize(455, 48)
+                    self.searchResult.setFixedSize(searchWidth, 48)
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
@@ -490,18 +492,32 @@ class UI(QWidget):
 
                     # Add layout and widgets
                     self.filesGridLayout.addWidget(self.searchResult, vertical, horizontal)
+                    count += 1
 
                     ################################################################################
                     # Display number of item on the screen
                     ################################################################################
                     # TODO
-                    # NO DYNAMIC RESULT!
+                    # # NO DYNAMIC RESULT!
+                    # horizontal += 1
+                    # # Only allow x number of item in the row
+                    # if horizontal %2 == 0:
+                    #     horizontal = 0
+                    #     vertical += 1
+
+                    print(count)
+                    print("COUNT :", searchWidth * count)
+                    # print(self.scroll.width())
+                    # If searchWidth if higher than scroll width, go to the next column
                     horizontal += 1
-                    # Only allow x number of item in the row
-                    if horizontal %2 == 0:
+                    if searchWidth * count >= (self.scroll.width() - 200):
+                        # Reset counts
+                        count = 0
+                        # Reset horizontal
                         horizontal = 0
+                        # Add 1 to vertical
                         vertical += 1
-                     
+
         except FileNotFoundError as error:
             # self.excludeTimeList.append(self.timeFolders[self.countForTime])
 
