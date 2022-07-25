@@ -20,6 +20,7 @@ class RESTORE:
         # Read file
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
+
         # Restore
         self.iniApplicationNames = config['RESTORE']['applications_name']
         self.iniApplicationData = config['RESTORE']['application_data']
@@ -151,69 +152,63 @@ class RESTORE:
             self.flatpakLocaloBeRestore.append(f"{src_flatpak_local_location}/{output}")
             self.flatpakLocaloBeRestore=[]
 
+        self.apply_users_saved_wallpaper()
+
+    def apply_users_saved_wallpaper(self):
+        print("Apply user's wallpaper...")
+        for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
+            # Get current user's background (Gnome)
+            self.userDE = os.popen(getUserDE)
+            self.userDE = self.userDE.read().strip().lower()
+
+            if self.userDE == "gnome":
+                sub.run(f"{setGnomeWallpaper} {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)    # Create tmb folder
+
         if self.iniFilesAndsFolders == "true":
             self.restore_home()
+
         else:
             # If allow flatpak names is true; flatpak data is also true
-            self.restore_flatpak_apps(countForRuleOf3=1)
+            self.restore_flatpak_apps()
 
-    def restore_home(self, countForRuleOf3=1):
+    def restore_home(self):t
         # Change system tray icon to yellow
         with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'notification_id', "3")
             config.write(configfile)
                     
         try:
-            if self.iniFilesAndsFolders == "true":
-                ################################################################################
-                # self.Percent100 for the "Rule of 3" calculation
-                ################################################################################
-                # Home folders + Flatpak data (var/app) + .local/share/flatpak
-                if self.iniApplicationData == "true": 
-                    self.percent100 = len(self.homeFolderToBeRestore) + len(self.flatpakLocaloBeRestore) + len(self.flatpakVarToBeRestore)
-                # Only Home folders 
-                else:
-                    self.percent100 = len(self.homeFolderToBeRestore)
-   
-                print("Restoring Home folders...")
-                for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                        f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):
+            print("Restoring Home folders...")
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):
 
-                    ###############################################################################
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'feedback_status', f"{output}")
-                        config.write(configfile)
-                    
-                    ###############################################################################
-                    # If output folder do not exist, create it
-                    if not os.path.exists(f"{homeUser}/{output}/"):
-                        print(f"This {output} do not exist inside {homeUser}/ Home")
-                        sub.run(f"{createCMDFolder} {homeUser}/{output}", shell=True)
-                    
-                    ###############################################################################
-                    # Restore Home folders
-                    print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
-                    sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
-                    ###############################################################################
-                    
-                    # Calculate percent of the process ("rule of 3")
-                    calculateRuleOf3 = ((self.percent100 - countForRuleOf3) * 100 / self.percent100)
-                    calculateRuleOf3 = int(100 - calculateRuleOf3)
-                    
-                    # Update the current percent of the process INI file
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                        config.write(configfile)
-                    
-                    ###############################################################################
-                    # Add 1 to self.countForRuleOf3
-                    countForRuleOf3 += 1
+                ###############################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"{output}")
+                    config.write(configfile)
+                
+                ###############################################################################
+                # If output folder do not exist, create it
+                if not os.path.exists(f"{homeUser}/{output}/"):
+                    print(f"This {output} do not exist inside {homeUser}/ Home")
+                    sub.run(f"{createCMDFolder} {homeUser}/{output}", shell=True)
+                
+                ###############################################################################
+                # Restore Home folders
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
+                ###############################################################################
+                
+                # Update the current percent of the process INI file
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
+                    config.write(configfile)     
         except:
             pass
 
-        self.restore_flatpak_apps(countForRuleOf3)
+        self.restore_flatpak_apps()
 
-    def restore_flatpak_apps(self, countForRuleOf3):
+    def restore_flatpak_apps(self, ):
         if self.iniApplicationNames == "true":
             print("Installing flatpaks apps...")
             try: 
@@ -223,39 +218,21 @@ class RESTORE:
 
                     for output in read_file:
                         output = output.strip()
-                        
-                        # Add to list
-                        self.percent100 = len(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                            f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/") 
-                        
                         ###############################################################################
                         with open(src_user_config, 'w') as configfile:
                             config.set('INFO', 'feedback_status', f"{output}")
                             config.write(configfile)
 
                         ###############################################################################
-                        print(f"flatpak install -y --user --noninteractive {output}")
-                        sub.run(f"flatpak install -y --user --noninteractive {output}", shell=True)
+                        print(f"flatpak install -y --noninteractive {output}")
+                        sub.run(f"flatpak install -y --noninteractive {output}", shell=True)
                         ###############################################################################
-                        
-                        # Calculate percent of the process ("rule of 3")
-                        calculateRuleOf3 = ((self.percent100 - countForRuleOf3) * 100 / self.percent100)
-                        calculateRuleOf3 = int(100 - calculateRuleOf3)
-                        
-                        # Update the current percent of the process INI file
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                            config.write(configfile)
-                        
-                        ###############################################################################
-                        # Add 1 to self.countForRuleOf3
-                        countForRuleOf3 += 1
             except:
                 pass
 
-        self.restore_flatpak_data(countForRuleOf3)
+        self.restore_flatpak_data()
 
-    def restore_flatpak_data(self, countForRuleOf3):
+    def restore_flatpak_data(self, ):
         if self.iniApplicationData == "true":
             print("Restoring flatpaks data...")
             try:
@@ -272,29 +249,19 @@ class RESTORE:
                     sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
                     
                     ###############################################################################
-                    # Calculate percent of the process ("rule of 3")
-                    calculateRuleOf3 = ((self.percent100 - countForRuleOf3) * 100 / self.percent100)
-                    calculateRuleOf3 = int(100 - calculateRuleOf3)
-
-                    ###############################################################################
                     # Update the current percent of the process INI file
                     ###############################################################################
                     with open(src_user_config, 'w') as configfile:
                         config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
                         config.write(configfile)
-
-                    ###############################################################################
-                    # Add 1 to countForRuleOf3
-                    countForRuleOf3 += 1
-
             except:
                 pass
             
-            self.restore_flatpak_data_local(countForRuleOf3)
+            self.restore_flatpak_data_local()
         
         self.end_backup()
 
-    def restore_flatpak_data_local(self, countForRuleOf3):
+    def restore_flatpak_data_local(self, ):
         print("Restoring flatpaks data (local)...")
         try:
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}/"):
@@ -308,10 +275,6 @@ class RESTORE:
                 ################################################################################
                 print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
                 sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
-                ###############################################################################
-                # Calculate percent of the process ("rule of 3")
-                calculateRuleOf3 = ((self.percent100 - countForRuleOf3) * 100 / self.percent100)
-                calculateRuleOf3 = int(100 - calculateRuleOf3)
 
                 ###############################################################################
                 # Update the current percent of the process INI file
@@ -320,15 +283,11 @@ class RESTORE:
                     config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
                     config.write(configfile)
 
-                ###############################################################################
-                # Add 1 to countForRuleOf3
-                countForRuleOf3 += 1
-
         except:
             pass
 
         self.end_backup()
-            
+       
     def end_backup(self):
         print("Ending restoring...")
         ###############################################################################

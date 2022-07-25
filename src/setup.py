@@ -12,7 +12,8 @@ from pathlib import Path
 from datetime import datetime
 from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtCore import Qt, QSize, QRect, QPropertyAnimation, QEasingCurve, QPoint
+from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
+    QEasingCurve, QPoint)
 from PySide6.QtGui import QFont, QPixmap, QIcon, QMovie, QAction
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
@@ -42,11 +43,16 @@ copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 
+# DE
+getUserDE = "echo $DESKTOP_SESSION"
+
+# Gnome
+getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
+setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
 
 # Locations
 media = "/media"
 run = "/run/media"
-
 
 ################################################################################
 ## Fonts
@@ -105,3 +111,19 @@ src_migration_assistant = f"{homeUser}/.local/share/timemachine/src/migration_as
 src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
 
 
+def signal_exit(*args):
+    print("Updating INI settings... Exiting...")
+    exit()
+    
+# Error fuction
+def error_trying_to_backup(error):
+    # Set notification_id to 2
+    config = configparser.ConfigParser()
+    config.read(src_user_config)
+    with open(src_user_config, 'w') as configfile:
+        config.set('INFO', 'notification_id', "2")
+        config.set('INFO', 'notification_add_info', f"{error}")
+        config.write(configfile)
+
+    print(error)
+    exit()

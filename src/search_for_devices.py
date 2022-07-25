@@ -24,6 +24,7 @@ class EXTERNAL(QWidget):
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setWindowTitle("External devices:")
         self.setFixedSize(windowXSize, windowYSize)
+        # self.setFixedSize(windowXSize, windowYSize)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
@@ -33,13 +34,13 @@ class EXTERNAL(QWidget):
         centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
         fg = self.frameGeometry()
         fg.moveCenter(centerPoint)
-        self.move(fg.topLeft().x(), fg.topLeft().y() - 100)
-
+        self.move(fg.topLeft().x(), fg.topLeft().y())
+        
         # Opening animation
-        self.openAnimation = QPropertyAnimation(self, b"pos")
-        self.openAnimation.setEndValue(QPoint(fg.topLeft().x(), fg.topLeft().y()))
-        self.openAnimation.setDuration(300)
-        self.openAnimation.start()
+        # self.openAnimation = QPropertyAnimation(self, b"size")
+        # self.openAnimation.setEndValue(QSize(windowXSize, windowYSize))
+        # self.openAnimation.setDuration(150)
+        # self.openAnimation.start()
 
         self.read_ini_file()
 
@@ -58,9 +59,6 @@ class EXTERNAL(QWidget):
         self.whereFrame = QFrame()
         self.whereFrame.setFixedSize(440, 280)
         self.whereFrame.move(20, 40)
-        # self.whereFrame.setStyleSheet("""
-        #    background-color: rgb(38, 39, 40);
-        # """)
 
         # Scroll
         self.scroll = QScrollArea(self)

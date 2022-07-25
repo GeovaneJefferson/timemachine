@@ -30,9 +30,10 @@ class UI(QMainWindow):
         # Left Widget
         ################################################################################
         self.leftWidget = QWidget(self)
-        self.leftWidget.setGeometry(20, 20, 200, 410)
+        self.leftWidget.setGeometry(20, 20, 200, 410) 
+        # border-right: 1px solid rgb(68, 69, 70);
         self.leftWidget.setStyleSheet("""
-            border-right: 1px solid rgb(68, 69, 70);
+            border-right: 1px solid rgb(198, 198, 198);
         """)
 
         # Left layout
@@ -171,7 +172,7 @@ class UI(QMainWindow):
         self.descriptionWidget = QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
         self.descriptionWidget.setStyleSheet("""
-            border-top: 1px solid rgb(68, 69, 70);
+            border-top: 1px solid rgb(198, 198, 198);
         """)
 
         # Description Layout
@@ -286,7 +287,7 @@ class UI(QMainWindow):
             self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            # self.iniBackupIsRunning = config['BACKUP']['checker_running']
+            self.iniBackupIsRunning = config['BACKUP']['checker_running']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
@@ -320,8 +321,8 @@ class UI(QMainWindow):
         except KeyError as keyError:
             print(keyError)
             print("Main window KeyError!")
-            exit()
-
+            pass
+            
         self.check_connection()
 
     def check_connection(self):
@@ -655,29 +656,26 @@ class UI(QMainWindow):
                     # Copy .desktop to user folder (Autostart .desktop)
                     shutil.copy(src_backup_check, src_backup_check_desktop)  
 
-                config.set('BACKUP', 'auto_backup', 'true')
-                config.write(configfile)
-
-                # Backup checker
-                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
                 # Set checker running to true
                 with open(src_user_config, 'w') as configfile:
                     config.set('BACKUP', 'checker_running', "true")
+                    config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
+                
+                # Backup checker
+                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
                 print("Auto backup was successfully activated!")
      
             else:
-                config.set('BACKUP', 'auto_backup', 'false')
-                config.write(configfile)    
-                
                 # Set checker running to false
                 with open(src_user_config, 'w') as configfile:
                     config.set('BACKUP', 'checker_running', "false")
+                    config.set('BACKUP', 'auto_backup', 'false')
                     config.write(configfile)
-
                 print("Auto backup was successfully deactivated!")
 
+    # TODO
     def system_tray_clicked(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -713,7 +711,7 @@ class UI(QMainWindow):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
 
     def options_clicked(self):
-        sub.run(f"python3 {src_options_py}", shell=True)
+        sub.Popen(f"python3 {src_options_py}", shell=True)
 
 
 app = QApplication(sys.argv)

@@ -37,7 +37,7 @@ class WELCOMESCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/backup_128px.svg);"
+            f"background-image: url({src_restore_icon});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -481,6 +481,25 @@ class PREBACKUP(QWidget):
         self.restorekWidget.setFixedSize(400, 250)
         
         ################################################################################
+        # Wallpaper checkbox
+        ################################################################################
+        self.wallpaperCheckBox = QCheckBox(self.restorekWidget)
+        self.wallpaperCheckBox.setText(" Wallpaper")
+        self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
+        self.wallpaperCheckBox.move(20, 100)
+        self.wallpaperCheckBox.setEnabled(True)
+        self.wallpaperCheckBox.setVisible(True)
+
+        # Application size information
+        self.wallpaperSizeInformation = QLabel(self.restorekWidget)
+        self.wallpaperSizeInformation.setText("0 KB")
+        self.wallpaperSizeInformation.setFont(QFont("Ubuntu", 10))
+        self.wallpaperSizeInformation.adjustSize()
+        self.wallpaperSizeInformation.move(320, 102)
+        self.wallpaperSizeInformation.setEnabled(False)
+        self.wallpaperSizeInformation.setVisible(False)
+
+        ################################################################################
         # Application checkbox (Installed names)
         ################################################################################
         self.applicationNamesCheckBox = QCheckBox(self.restorekWidget)
@@ -562,25 +581,6 @@ class PREBACKUP(QWidget):
         self.userSizeInformation.adjustSize()
         self.userSizeInformation.setAlignment(QtCore.Qt.AlignRight)
         self.userSizeInformation.move(320, 102)
-
-        ################################################################################
-        # Wallpaper checkbox
-        ################################################################################
-        self.wallpaperCheckBox = QCheckBox(self.restorekWidget)
-        self.wallpaperCheckBox.setText(" Wallpaper")
-        self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
-        self.wallpaperCheckBox.move(20, 100)
-        self.wallpaperCheckBox.setEnabled(False)
-        self.wallpaperCheckBox.setVisible(False)
-
-        # Application size information
-        self.wallpaperSizeInformation = QLabel(self.restorekWidget)
-        self.wallpaperSizeInformation.setText("0 KB")
-        self.wallpaperSizeInformation.setFont(QFont("Ubuntu", 10))
-        self.wallpaperSizeInformation.adjustSize()
-        self.wallpaperSizeInformation.move(320, 102)
-        self.wallpaperSizeInformation.setEnabled(False)
-        self.wallpaperSizeInformation.setVisible(False)
 
         ################################################################################
         # Buttons

@@ -1,38 +1,16 @@
 #! /usr/bin/python3
 from setup import *
 
-
-# Error fuction
-def error_trying_to_backup(error):
-    # Set notification_id to 2
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    with open(src_user_config, 'w') as configfile:
-        config.set('INFO', 'notification_id', "2")
-        config.set('INFO', 'notification_add_info', f"{error}")
-        config.write(configfile)
-
-    print(error)
-    exit()
-
-def signal_exit(*args):
-    print("Updating INI settings... Exiting...")
-    # Set backup now to false
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    with open(src_user_config, 'w') as configfile:
-        config.set('BACKUP', 'backup_now', "false")
-        config.write(configfile)
-
-    exit()
+################################################################################
+## Signal
+################################################################################
+# If user turn off or kill the app, update INI file
+signal.signal(signal.SIGINT, signal_exit)
+signal.signal(signal.SIGTERM, signal_exit)
 
 
 class BACKUP:
     def __init__(self):
-        # Signal
-        signal.signal(signal.SIGINT, signal_exit)
-        signal.signal(signal.SIGTERM, signal_exit)
-
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -53,14 +31,14 @@ class BACKUP:
             ################################################################################
             self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniFolders = config.options('FOLDER')
-            self.iniBackupNowChecker = config['BACKUP']['backup_now']
+            self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniOneTimePerDay = config['MODE']['one_time_mode']
             self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
             self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
-            self.iniNotification = config['INFO']['notification_id']
 
             # Create folders
             self.createTMBFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+            self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
             self.applicationMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
             self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
             self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
@@ -77,33 +55,36 @@ class BACKUP:
             exit()
 
     def create_TMB(self):
-        # Change system tray icon to blue
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "1")
-            config.write(configfile)
-
         ################################################################################
         # Create TMB
         ################################################################################
-        if self.iniBackupNowChecker == "true":  # Read user.ini
-            try:
-                # Create {self.firstFolderName}
-                if not os.path.exists(self.createTMBFolder):
-                    sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}", shell=True)
+        # if self.iniBackupNow == "true":  # Read user.ini
+        try:
+            ################################################################################
+            # Change system tray icon to blue
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_id', "1")
+                config.write(configfile)
+                
+            ################################################################################
+            # Create {self.firstFolderName}
+            if not os.path.exists(self.createTMBFolder):
+                sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}", shell=True)
 
-                # Create {self.secondsFolderName}
-                if not os.path.exists(self.createTMBFolder):
-                    print("TMB folder inside external, was created.")
-                    sub.run(f"{createCMDFolder} {self.createTMBFolder}", shell=True)
+            # Create {self.secondsFolderName}
+            if not os.path.exists(self.createTMBFolder):
+                print("TMB folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {self.createTMBFolder}", shell=True)
+            ################################################################################
 
-            except FileNotFoundError as error:
-                error_trying_to_backup(error)
+        except FileNotFoundError as error:
+            error_trying_to_backup(error)
 
-        else:
-            print("Nothing to do right now...")
-            exit()
+        # else:
+        #     print("Nothing to do right now...")
+        #     exit()
 
         self.get_home_folders_size()
 
@@ -174,7 +155,7 @@ class BACKUP:
         else:
           self.calculate_flatpak_folders()
 
-    def calculate_flatpak_folders(self, sizeLimit=500000):
+    def calculate_flatpak_folders(self):
         print("Checking size of folders (Flatpak)...")
         try:
             ################################################################################
@@ -370,32 +351,67 @@ class BACKUP:
             if self.iniAllowFlatpakData == "true":
                 # Create inside base application folder
                 if not os.path.exists(self.applicationMainFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)  # Create folder with date
+                    sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)  
 
                 self.applicationMainFolder
                 # Create inside external Var Folder
                 if not os.path.exists(self.applicationVarFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationVarFolder}", shell=True)  # Create folder with date
+                    sub.run(f"{createCMDFolder} {self.applicationVarFolder}", shell=True)  
 
                 # Create inside external Local Folder
                 if not os.path.exists(self.applicationLocalFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  # Create folder with date
+                    sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  
+            
+            ################################################################################
+            # Create wallpaper folder
+            ################################################################################
+            if not os.path.exists(self.wallpaperMainFolder):
+                sub.run(f"{createCMDFolder} {self.wallpaperMainFolder}", shell=True)   
 
             ################################################################################
             # Create application folder
             ################################################################################
             if not os.path.exists(self.flatpakTxtFile):
                 print("Flatpak file was created.")
-                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)    # Create tmb folder
+                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)   
 
         except FileNotFoundError as error:
-            # Call error function (id 4)
+            # Call error function 
             error_trying_to_backup(error)
 
+        self.get_user_background()
+
+    def get_user_background(self):
+        # Get current user's background (Gnome)
+        self.userDE = os.popen(getUserDE)
+        self.userDE = self.userDE.read().strip().lower()
+
+        # Get current wallpaper
+        if self.userDE == "gnome":
+            self.getWallpaper = os.popen(getGnomeWallpaper)
+            self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
+        
+        self.backup_user_wallpaper()
+
+    def backup_user_wallpaper(self):
+        print("Backing up current wallpaper...")
+        # Replace wallpaper inside the folder, only allow 1
+        # If is empty
+        if len(os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")) > 0:
+            # Delete all image inside wallpaper folder
+            for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
+                print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
+                sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
+        else:
+            sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+                
+        # Condition
+        ################################################################################
         if self.iniAllowFlatpakNames == "true":
             self.write_flatpak_file()
         else:
             self.getMode()
+        
 
     def write_flatpak_file(self):
         # Add flatpak name to the list
@@ -540,19 +556,23 @@ class BACKUP:
         print("Ending backup...")
         ################################################################################
         # Set backup_now to "false", backup_running to "false" and Update "last backup"
-        ################################################################################
-        ###############################################################################
         # After all done, feedback_status = "" 
         ###############################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
+            # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
+            # Update last backup time
             config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
             # Change system tray color to white (Normal)
             config.set('INFO', 'notification_id', "0")
+            # Reset Main Window information
             config.set('INFO', 'notification_add_info', "")
+            # Clean current back up folder from Main Window
             config.set('INFO', 'feedback_status', "")
+            # Set checker runner to False
+            config.set('BACKUP', 'checker_running', "true")
             config.write(configfile)
 
         ################################################################################

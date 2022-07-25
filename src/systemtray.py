@@ -59,12 +59,14 @@ class APP:
         # Enter time machine button
         self.enterTimeMachineButton = QAction("Enter Time Machine")
         self.enterTimeMachineButton.setFont(QFont(item))
-        self.enterTimeMachineButton.triggered.connect(lambda: sub.run(f"python3 {src_enter_time_machine_py}", shell=True))
+        self.enterTimeMachineButton.triggered.connect(lambda: sub.Popen(f"python3 "
+            f"{src_enter_time_machine_py}", shell=True))
 
         # Open settings button
         self.openSettingsButton = QAction("Open Time Machine Preferences...")
         self.openSettingsButton.setFont(QFont(item))
-        self.openSettingsButton.triggered.connect(lambda: sub.run(f"python3 {src_options_py}", shell=True))
+        self.openSettingsButton.triggered.connect(lambda: sub.Popen(f"python3 "
+            f"{src_options_py}", shell=True))
 
         # Add all to menu
         self.menu.addAction(self.dummyLine)
@@ -88,10 +90,12 @@ class APP:
         timer.timeout.connect(self.updates)
         timer.start(2000)  # update every x second
         self.updates()
-
+        
+        # App exec
         self.app.exec()
-
+    
     def updates(self):
+        print("System tray is running...")
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -129,68 +133,9 @@ class APP:
 
             except KeyError as error:
                 print(error)
-                print("System Tray KeyError!")
+                print("System Tray (136) KeyError!")
                 
             exit()
-
-        self.conditions()
-
-    def conditions(self):
-        # INI information
-        self.iniLastBackupInformation.setText(f'Latest Backup to: "{(self.iniHDName)}":\n'
-            f'{self.iniLastBackup}')
-
-        if self.iniHDName != "None":
-            if self.iniBackupNow == "false":
-                if self.iniNotification == "0":
-                    # White color
-                    self.icon = QIcon(src_system_bar_icon)
-                    # Enable backup now button
-                    self.backupNowButton.setEnabled(True)
-                    # Enable enter in time machine button
-                    self.enterTimeMachineButton.setEnabled(True)
-
-                elif self.iniNotification == "2":
-                    if self.iniAutomaticallyBackup == "true":
-                        # Only changes color if user has automatically backup enabled
-                        # Red color
-                        self.icon = QIcon(src_system_bar_error_icon)
-                        # Disable backup now button
-                        self.backupNowButton.setEnabled(False)
-                        # Enable enter in time machine button
-                        self.enterTimeMachineButton.setEnabled(True)
-
-                    else:
-                        # White color
-                        self.icon = QIcon(src_system_bar_icon)
-                        # Disable backup now button
-                        self.backupNowButton.setEnabled(False)
-                        try:
-                            # Clean notification add info, because auto backup is not enabled
-                            config = configparser.ConfigParser()
-                            config.read(src_user_config)
-                            with open(src_user_config, 'w') as configfile:
-                                config.set('INFO', 'notification_add_info', ' ')
-                                config.write(configfile)
-
-                        except Exception as error:
-                            print(error)
-                            print("System tray error!")
-                            exit()
-
-            else:
-                # Blue color
-                self.icon = QIcon(src_system_bar_run_icon)
-                self.backupNowButton.setEnabled(False)
-
-            # Add the icon modifications to system tray
-            self.tray.setIcon(self.icon)
-
-        else:
-            # Disable backup now button
-            self.backupNowButton.setEnabled(False)
-            # Disable enter in time machine button
-            self.enterTimeMachineButton.setEnabled(False)
 
         self.check_connection()
 
@@ -235,20 +180,71 @@ class APP:
 
                     except Exception as error:
                         print(error)
+                        print("(242)")
                         exit()
 
+        # Condition
+        self.conditions()
+
+    def conditions(self):
+        # INI information
+        self.iniLastBackupInformation.setText(f'Latest Backup to: "{(self.iniHDName)}":\n'
+            f'{self.iniLastBackup}')
+
+        if self.iniHDName != "None":
+            if self.iniBackupNow == "false":
+                if self.iniNotification == "0":
+                    # White color
+                    self.icon = QIcon(src_system_bar_icon)
+                    # Enable backup now button
+                    self.backupNowButton.setEnabled(True)
+                    # Enable enter in time machine button
+                    self.enterTimeMachineButton.setEnabled(True)
+
+                elif self.iniNotification == "2":
+                    if self.iniAutomaticallyBackup == "true":
+                        # Only changes color if user has automatically backup enabled
+                        # Red color
+                        self.icon = QIcon(src_system_bar_error_icon)
+                        # Disable backup now button
+                        self.backupNowButton.setEnabled(False)
+                        # Enable enter in time machine button
+                        self.enterTimeMachineButton.setEnabled(True)
+
+                    else:
+                        # White color
+                        self.icon = QIcon(src_system_bar_icon)
+                        # Disable backup now button
+                        self.backupNowButton.setEnabled(False)
+                        try:
+                            # Clean notification add info, because auto backup is not enabled
+                            config = configparser.ConfigParser()
+                            config.read(src_user_config)
+                            with open(src_user_config, 'w') as configfile:
+                                config.set('INFO', 'notification_add_info', ' ')
+                                config.write(configfile)
+
+                        except Exception as error:
+                            print(error)
+                            print("System Tray (182) error!")
+                            exit()
+
+            else:
+                # Blue color
+                self.icon = QIcon(src_system_bar_run_icon)
+                self.backupNowButton.setEnabled(False)
+
+            # Add the icon modifications to system tray
+            self.tray.setIcon(self.icon)
+
+        else:
+            # Disable backup now button
+            self.backupNowButton.setEnabled(False)
+            # Disable enter in time machine button
+            self.enterTimeMachineButton.setEnabled(False)
+
     def backup_now(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                config.set('BACKUP', 'backup_now', 'true')
-                config.write(configfile)
+        sub.Popen(f"python3 {src_backup_now}", shell=True)
 
-            sub.Popen(f"python3 {src_backup_now}", shell=True)
-
-        except Exception as error:
-            print(error)
-            exit()
 
 main = APP()

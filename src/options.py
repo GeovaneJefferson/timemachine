@@ -34,11 +34,11 @@ class UI(QMainWindow):
         # Left Widget
         ################################################################################
         self.leftWidget = QWidget(self)
-        self.leftWidget.setGeometry(20, 20, 240, 500)
+        self.leftWidget.setGeometry(20, 20, 240, 505)
         self.leftWidget.setStyleSheet(
         "QWidget"
         "{"
-            "border-right: 1px solid rgb(68, 69, 70);"
+            "border-right: 1px solid rgb(198, 198, 198);"
         "}")
 
         # Left layout
@@ -65,27 +65,25 @@ class UI(QMainWindow):
         # Days to run widget
         ################################################################################
         self.daysToRunWidget = QWidget(self)
-        self.daysToRunWidget.setGeometry(280, 20, 500, 80)
+        self.daysToRunWidget.setGeometry(280, 20, 490, 80)
         self.daysToRunWidget.setStyleSheet("""
-            border-top: 1px solid rgb(68, 69, 70);
+            border-top: 1px solid rgb(198, 198, 198);
         """)
 
         # Days to run layout V
         self.daysToRunLayoutV = QVBoxLayout(self.daysToRunWidget)
         self.daysToRunLayoutV.setSpacing(10)
-        # self.daysToRunLayoutV.setContentsMargins(20, 0, 20, 20)
 
         # Days to run layout H
         self.daysToRunLayoutH = QHBoxLayout()
         self.daysToRunLayoutH.setSpacing(10)
-        # self.daysToRunLayoutV.setContentsMargins(20, 0, 20, 20)
 
         # Days to run title
         self.daysToRunTitle = QLabel()
         self.daysToRunTitle.setFont(QFont("Ubuntu", 11))
         self.daysToRunTitle.setText("Days to run:")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
-        self.daysToRunTitle.setFixedSize(200, 30)
+        self.daysToRunTitle.setFixedSize(180, 30)
         self.daysToRunTitle.setStyleSheet("""
             border-color: transparent;
         """)
@@ -153,10 +151,10 @@ class UI(QMainWindow):
         # Time to run widget
         ################################################################################
         self.timeToRunWidget = QWidget(self)
-        self.timeToRunWidget.setGeometry(280, 100, 500, 160)
+        self.timeToRunWidget.setGeometry(280, 100, 490, 160)
         self.timeToRunWidget.setStyleSheet("""
-            border-top: 1px solid rgb(68, 69, 70);
-            border-bottom: 1px solid rgb(68, 69, 70);
+            border-top: 1px solid rgb(198, 198, 198);
+            border-bottom: 1px solid rgb(198, 198, 198);
         """)
 
         # Time to run title
@@ -263,7 +261,7 @@ class UI(QMainWindow):
         # Multiple time per day combobox
         self.multipleTimePerDayComboBox = QComboBox()
         self.multipleTimePerDayComboBox.setFrame(True)
-        self.multipleTimePerDayComboBox.setFixedSize(155, 28)
+        self.multipleTimePerDayComboBox.setFixedSize(150, 28)
         self.multipleTimePerDayComboBox.setFont(QFont("Ubuntu", 10))
         self.multipleTimePerDayComboBox.setStyleSheet(
         "QComboBox"
@@ -282,11 +280,11 @@ class UI(QMainWindow):
         # Flatpak settings
         ################################################################################
         self.flatpakWidget = QWidget(self)
-        self.flatpakWidget.setGeometry(280, 260, 500, 80)
+        self.flatpakWidget.setGeometry(280, 260, 490, 80)
         self.flatpakWidget.setStyleSheet(
         "QWidget"
         "{"
-        "border-bottom: 1px solid rgb(68, 69, 70);"
+        "border-bottom: 1px solid rgb(198, 198, 198);"
         "}")
 
         # Notification layout
@@ -328,7 +326,7 @@ class UI(QMainWindow):
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 340, 500, 90)
+        self.resetWidget.setGeometry(280, 340, 490, 90)
  
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
@@ -878,7 +876,7 @@ class UI(QMainWindow):
 
                 # Restore section
                 config.set('RESTORE', 'is_restore_running', 'false')
-                config.set('RESTORE', 'applications_name', 'false')
+                config.set('RESTORE', 'applications_name', 'true')
                 config.set('RESTORE', 'application_data', 'false')
                 config.set('RESTORE', 'files_and_folders', 'false')
 
@@ -901,13 +899,19 @@ class UI(QMainWindow):
         self.iniBackupIsRunning = config['BACKUP']['checker_running']
         
         # Is is checker is not running and auto is enabled
-        if self.iniBackupIsRunning == "false" and self.iniAutomaticallyBackup == "true":
-            # Call backup check py
-            sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-            # Set checker running to true
-            with open(src_user_config, 'w') as configfile:
-                config.set('BACKUP', 'checker_running', "true")
-                config.write(configfile)
+        if self.iniAutomaticallyBackup == "true":
+            # If backup chcker is already running, do nothing
+            if self.iniBackupIsRunning == "false":
+                # Call backup check py
+                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+
+                # Set checker running to true
+                with open(src_user_config, 'w') as configfile:
+                    config.set('BACKUP', 'checker_running', "true")
+                    config.write(configfile)
+            else:
+                print("Backup checker is already running.")
+                print("Exiting...")
 
         exit()
 

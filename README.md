@@ -14,9 +14,7 @@ using "Enter Time Machine" mode.
 
 ## Features:
 * Local snapshots of your personal files, one or multiple times per day.
-* Snapshots of your installed Flatpaks name and Data, so you can easily restore them.
-* "Enter Time Machine" Still in development...
-* Will automatically back up at first boot, if time to do so has passed.
+* Backup of your installed Flatpaks name and Data, so you can easily restore them.
 * Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
 (The oldest backups are deleted when your backup disk is full.)
 * Important: Time Machine does not back up system files!
@@ -32,6 +30,12 @@ Such as:
 * When last backup was made
 * When the next backup will occur
 * Device connectivity
+
+## One Time Mode
+* Will automatically back up at first boot, if the schedule time to do so has passed.
+
+## Multiple Time Mode
+* Will automatically back up your files and apps every: 1, 2 or 4 hours.
 
 Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
 

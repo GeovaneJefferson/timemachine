@@ -1,14 +1,18 @@
 #! /usr/bin/python3
 from setup import *
 
+################################################################################
+## Signal
+################################################################################
+# If user turn off or kill the app, update INI file
+signal.signal(signal.SIGINT, signal_exit)
+signal.signal(signal.SIGTERM, signal_exit)
+
 
 class CLI:
     def __init__(self):
         # Variables
         self.isSystemTrayActivated = None
-        # Signal
-        signal.signal(signal.SIGINT, self.signal_exit)
-        signal.signal(signal.SIGTERM, self.signal_exit)
 
     def updates(self):
         try:
@@ -62,11 +66,12 @@ class CLI:
         ################################################################################
         # Prevent multiples system tray running
         ################################################################################
-        if self.iniSystemTray == "true" and self.isSystemTrayActivated != None and self.iniFirstStartup == "false":
-            # Call system tray
-            sub.Popen(f"python3 {src_system_tray}", shell=True)
-            # Set sysmtem activated to True
-            self.isSystemTrayActivated = True
+        if self.iniSystemTray == "true": 
+            if self.isSystemTrayActivated != None and self.iniFirstStartup == "false":
+                # Call system tray
+                sub.Popen(f"python3 {src_system_tray}", shell=True)
+                # Set sysmtem activated to True
+                self.isSystemTrayActivated = True
 
         self.check_connection()
 
@@ -142,8 +147,6 @@ class CLI:
                 print("No back up for today.")
                 self.no_backup()
 
-        self.check_the_mode()
-
     def check_the_mode(self):
         print("Checking mode...")
         # One time per day
@@ -192,9 +195,6 @@ class CLI:
 
         else: 
             print("Multiple time per day")
-            # print(self.totalCurrentTime)
-            # print(self.currentHour)
-            # print(self.currentMinute)
 
             if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
                 if self.iniBackupNow == "false":
@@ -213,22 +213,24 @@ class CLI:
 
     def call_backup_now(self):
         print("Back up will start shortly...")
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', 'true')
-            config.write(configfile)
-
         # Call backup now
         sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
         exit()
 
     def no_backup(self):
-        print("No backup... Updating INI file...")
+        print("One time mode")
+        print("No backup for today.")
+        print("Updating INI file...")
+        print("Exiting...")
         exit()
 
     def signal_exit(self, *args):
-        print("Change INI settings... Exiting...")
+        print("Setting checker running to off...")
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('BACKUP', 'checker_running', 'false')
+            config.write(configfile)
         self.no_backup()
 
 main = CLI()
@@ -236,10 +238,11 @@ main = CLI()
 while True:
     main.updates()
 
+    ################################################################################
+    # Prevent multiples backup checker running
+    ################################################################################
     if main.iniAutomaticallyBackup == "false":
         print("Exiting backup checker...")
         break
 
     time.sleep(1)
-
-exit()
