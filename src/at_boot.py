@@ -16,12 +16,21 @@ class BOOT:
         self.read_ini_file()
 
     def read_ini_file(self):
+        # Read ini file
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         # INI file
         self.iniHDName = config['EXTERNAL']['name']
         self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+
         self.system_tray()
 
     def system_tray(self):
+        # Read ini file
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         # Set startup to True
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'first_startup', 'true')
