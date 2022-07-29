@@ -14,7 +14,8 @@ from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint)
-from PySide6.QtGui import QFont, QPixmap, QIcon, QMovie, QAction
+from PySide6.QtGui import (QFont, QPixmap, QIcon, QMovie, QAction,
+                            QPalette, QColor)
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,
