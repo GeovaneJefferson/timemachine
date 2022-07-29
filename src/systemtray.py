@@ -7,6 +7,7 @@ timer = QtCore.QTimer()
 
 class APP:
     def __init__(self):
+        self.connected = None
         self.iniUI()
 
     def iniUI(self):
@@ -88,7 +89,7 @@ class APP:
         # Check ini
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(2000)  # update every x second
+        timer.start(1000)  # update every x second
         self.updates()
         
         # App exec
@@ -153,6 +154,9 @@ class APP:
                     config.set('INFO', 'notification_id', '0')
                     config.write(configfile)
 
+                # Devices was found
+                self.connected = True
+
             except FileNotFoundError:
                 try:
                     os.listdir(f"{run}/{userName}/{self.iniHDName}")
@@ -163,6 +167,9 @@ class APP:
                     with open(src_user_config, 'w') as configfile:
                         config.set('INFO', 'notification_id', '0')
                         config.write(configfile)
+
+                    # Devices was found
+                    self.connected = True
 
                 except FileNotFoundError:
                     try:
@@ -178,6 +185,9 @@ class APP:
                             config.set('INFO', 'notification_id', '2')
                             config.write(configfile)
 
+                        # Devices was not found
+                        self.connected = False
+
                     except Exception as error:
                         print(error)
                         print("(242)")
@@ -187,57 +197,97 @@ class APP:
         self.conditions()
 
     def conditions(self):
-        # INI information
+        # Update last backup information
         self.iniLastBackupInformation.setText(f'Latest Backup to: "{(self.iniHDName)}":\n'
             f'{self.iniLastBackup}')
 
+        # If backup device is registered
         if self.iniHDName != "None":
-            if self.iniBackupNow == "false":
-                if self.iniNotification == "0":
+            # If backup device is connected
+            if self.connected:
+                # Is not backing up now
+                if self.iniBackupNow == "false":
                     # White color
                     self.icon = QIcon(src_system_bar_icon)
                     # Enable backup now button
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.enterTimeMachineButton.setEnabled(True)
+                    # Add the icon modifications to system tray
+                    self.tray.setIcon(self.icon)
+        
+                    # # Errors handler
+                    # if self.iniNotification == "0":
+                    #     # White color
+                    #     self.icon = QIcon(src_system_bar_icon)
+                    #     # Enable backup now button
+                    #     self.backupNowButton.setEnabled(True)
+                    #     # Enable enter in time machine button
+                    #     self.enterTimeMachineButton.setEnabled(True)
 
-                elif self.iniNotification == "2":
-                    if self.iniAutomaticallyBackup == "true":
-                        # Only changes color if user has automatically backup enabled
-                        # Red color
-                        self.icon = QIcon(src_system_bar_error_icon)
-                        # Disable backup now button
-                        self.backupNowButton.setEnabled(False)
-                        # Enable enter in time machine button
-                        self.enterTimeMachineButton.setEnabled(True)
+                    # elif self.iniNotification == "2":
+                    #     # Only changes color if user has automatically backup enabled
+                    #     if self.iniAutomaticallyBackup == "true":
+                    #         # Red color
+                    #         self.icon = QIcon(src_system_bar_error_icon)
+                    #         # Disable backup now button
+                    #         self.backupNowButton.setEnabled(False)
+                    #         # Enable enter in time machine button
+                    #         self.enterTimeMachineButton.setEnabled(True)
 
-                    else:
-                        # White color
-                        self.icon = QIcon(src_system_bar_icon)
-                        # Disable backup now button
-                        self.backupNowButton.setEnabled(False)
-                        try:
-                            # Clean notification add info, because auto backup is not enabled
-                            config = configparser.ConfigParser()
-                            config.read(src_user_config)
-                            with open(src_user_config, 'w') as configfile:
-                                config.set('INFO', 'notification_add_info', ' ')
-                                config.write(configfile)
+                    #     else:
+                    #         # White color
+                    #         self.icon = QIcon(src_system_bar_icon)
+                    #         # Disable backup now button
+                    #         self.backupNowButton.setEnabled(False)
+                    #         try:
+                    #             # Clean notification add info, because auto backup is not enabled
+                    #             config = configparser.ConfigParser()
+                    #             config.read(src_user_config)
+                    #             with open(src_user_config, 'w') as configfile:
+                    #                 config.set('INFO', 'notification_add_info', ' ')
+                    #                 config.write(configfile)
 
-                        except Exception as error:
-                            print(error)
-                            print("System Tray (182) error!")
-                            exit()
+                    #         except Exception as error:
+                    #             print(error)
+                    #             print("System Tray (182) error!")
+                    #             exit()
 
+                else:
+                    # Blue color
+                    self.icon = QIcon(src_system_bar_run_icon)
+                    self.backupNowButton.setEnabled(False)
+                    # Add the icon modifications to system tray
+                    self.tray.setIcon(self.icon)
+        
             else:
-                # Blue color
-                self.icon = QIcon(src_system_bar_run_icon)
+                # Disable backup now button
                 self.backupNowButton.setEnabled(False)
+                # Enable enter in time machine button
+                # self.enterTimeMachineButton.setEnabled(True)
+    
+                # If backup device is not connected and automatically if ON
+                if self.iniAutomaticallyBackup == "true":
+                    # Change system tray red color
+                    self.icon = QIcon(src_system_bar_error_icon)
+                    # Add the icon modifications to system tray
+                    self.tray.setIcon(self.icon)
 
-            # Add the icon modifications to system tray
-            self.tray.setIcon(self.icon)
+                else:
+                    # Clean notification add info, because auto backup is not enabled
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('INFO', 'notification_add_info', ' ')
+                        config.write(configfile)
+
+                    # Change system tray red color
+                    self.icon = QIcon(src_system_bar_icon)
+                    # Add the icon modifications to system tray
+                    self.tray.setIcon(self.icon)
 
         else:
+            # If backup device is not registered
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
             # Disable enter in time machine button

@@ -162,7 +162,7 @@ class UI(QMainWindow):
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         # self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 162)
+        self.backupNowButton.move(420, 159)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
@@ -656,15 +656,14 @@ class UI(QMainWindow):
                     # Copy .desktop to user folder (Autostart .desktop)
                     shutil.copy(src_backup_check, src_backup_check_desktop)  
 
+                # Backup checker
+                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+
                 # Set checker running to true
                 with open(src_user_config, 'w') as configfile:
                     config.set('BACKUP', 'checker_running', "true")
                     config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
-                
-                # Backup checker
-                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-
                 print("Auto backup was successfully activated!")
      
             else:
@@ -699,7 +698,7 @@ class UI(QMainWindow):
         sub.Popen(f"python3 {src_system_tray}", shell=True)
 
     def select_external_clicked(self):
-        sub.run(f"python3 {src_search_for_devices}", shell=True)
+        sub.Popen(f"python3 {src_search_for_devices}", shell=True)
 
     def backup_now_clicked(self):
         config = configparser.ConfigParser()

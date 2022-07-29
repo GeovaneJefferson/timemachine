@@ -893,35 +893,40 @@ class UI(QMainWindow):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
 
     def on_save_button_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-        self.iniBackupIsRunning = config['BACKUP']['checker_running']
+        exit()
+
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
+        # self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
+        # self.iniBackupIsRunning = config['BACKUP']['checker_running']
         
         # Is is checker is not running and auto is enabled
-        if self.iniAutomaticallyBackup == "true":
+        # if self.iniAutomaticallyBackup == "true":
             # If backup chcker is already running, do nothing
-            if self.iniBackupIsRunning == "false":
+            # if self.iniBackupIsRunning == "false":
+                # print("Here")
                 # Call backup check py
-                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+                # sub.Popen(f"python3 {src_backup_check_py}", shell=True)
 
-                # Set checker running to true
-                with open(src_user_config, 'w') as configfile:
-                    config.set('BACKUP', 'checker_running', "true")
-                    config.write(configfile)
-            else:
-                print("Backup checker is already running.")
-                print("Exiting...")
+                # # Set checker running to true
+                # with open(src_user_config, 'w') as configfile:
+                #     config.set('BACKUP', 'checker_running', "true")
+                #     config.write(configfile)
+            # else:
+            #     print("Backup checker is already running.")
+            #     print("Exiting...")
+        # else:
+        #     config = configparser.ConfigParser()
+        #     config.read(src_user_config)
+        #     with open(src_user_config, 'w') as configfile:
+        #         config.set('BACKUP', 'checker_running', "false")
+        #         config.write(configfile)
 
-        exit()
 
 
 app = QApplication(sys.argv)
-tic = time.time()
 main = UI()
 main.show()
-toc = time.time()
-print(f'Options {(toc-tic):.4f} seconds')
 sys.exit(app.exec())
 
 

@@ -145,7 +145,7 @@ class CLI:
 
             else:
                 print("No back up for today.")
-                self.no_backup()
+                # self.no_backup()
 
     def check_the_mode(self):
         print("Checking mode...")
@@ -174,9 +174,9 @@ class CLI:
                     self.call_backup_now()
 
                 else: 
-                    print(f"{appName} has alredy made a backup for today.")
+                    print(f"{appName} has already made a backup for today.")
                     print("Time to back up has passed")
-                    self.no_backup()
+                    # self.no_backup()
 
             elif self.totalCurrentTime == self.totalNextTime:
                 self.call_backup_now()
@@ -213,26 +213,33 @@ class CLI:
 
     def call_backup_now(self):
         print("Back up will start shortly...")
+
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('BACKUP', 'backup_now', 'true')
+            config.write(configfile)
+
         # Call backup now
         sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
         exit()
 
     def no_backup(self):
-        print("One time mode")
         print("No backup for today.")
         print("Updating INI file...")
         print("Exiting...")
-        exit()
+        
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
+        # with open(src_user_config, 'w') as configfile:
+        #     config.set('BACKUP', 'checker_running', 'false')
+        #     config.write(configfile)
+
+        # exit()
 
     def signal_exit(self, *args):
-        print("Setting checker running to off...")
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'checker_running', 'false')
-            config.write(configfile)
-        self.no_backup()
-
+        signal_exit()
+   
 main = CLI()
 # Exit program if auto_backup is false
 while True:
