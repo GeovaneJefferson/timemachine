@@ -82,10 +82,6 @@ class BACKUP:
         except FileNotFoundError as error:
             error_trying_to_backup(error)
 
-        # else:
-        #     print("Nothing to do right now...")
-        #     exit()
-
         self.get_home_folders_size()
 
     def get_home_folders_size(self):
@@ -314,7 +310,7 @@ class BACKUP:
                             config.set('INFO', 'notification_add_info', f"Space needed: {addToNotificationInfo}")
                             config.write(configfile)
 
-                        # Set "backup_now" to false and eixt()
+                        # Signal
                         signal_exit()
 
                     else:
@@ -394,14 +390,16 @@ class BACKUP:
         self.backup_user_wallpaper()
 
     def backup_user_wallpaper(self):
+        # TODO
         print("Backing up current wallpaper...")
         # Replace wallpaper inside the folder, only allow 1
-        # If is empty
-        if len(os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")) > 0:
+        # If is not empty
+        if os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
             # Delete all image inside wallpaper folder
             for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
                 print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
+        
         else:
             sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
                 
@@ -411,21 +409,35 @@ class BACKUP:
             self.write_flatpak_file()
         else:
             self.getMode()
-        
 
     def write_flatpak_file(self):
-        # Add flatpak name to the list
-        count = 0
-        dummyList = []
-        # Get user installed flatpaks
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(self.flatpakTxtFile, 'w') as configfile:  # Set auto backup to true
-            for output in os.popen("flatpak list --columns=app --app"):
-                dummyList.append(output)
-                # Write USER installed flatpak to flatpak.txt inside external device
-                configfile.write(dummyList[count])
-                count += 1
+        try:
+            # Add flatpak name to the list
+            count = 0
+            dummyList = []
+            # Get user installed flatpaks
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(self.flatpakTxtFile, 'w') as configfile:  # Set auto backup to true
+                for output in os.popen("flatpak list --columns=app --app"):
+                    dummyList.append(output)
+                    # Write USER installed flatpak to flatpak.txt inside external device
+                    configfile.write(dummyList[count])
+                    count += 1
+
+        # If read only error    
+        except OSError as error:
+            print(error)
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Set backup now to False
+                config.set('BACKUP', 'backup_now', 'false')
+                # Change system tray color to red (Error)
+                config.set('INFO', 'notification_id', "2")
+                # Reset Main Window information
+                config.set('INFO', 'notification_add_info', f"Read-only, {error}")
+            exit()
 
         self.getMode()
 

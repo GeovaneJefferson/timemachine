@@ -35,8 +35,8 @@ class UI(QWidget):
         ################################################################################
         self.setWindowTitle(f"Enter {appName}")
         self.setWindowIcon(QIcon(src_restore_icon))
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        # self.showFullScreen()
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        self.showFullScreen()
 
         self.read_ini_file()
 

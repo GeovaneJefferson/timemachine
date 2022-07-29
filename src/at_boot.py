@@ -2,13 +2,6 @@
 from setup import *
 
 
-########################################################################
-# Read ini file
-########################################################################
-config = configparser.ConfigParser()
-config.read(src_user_config)
-
-
 class BOOT:
     def __init__(self):
         # Delay startup for x seconds

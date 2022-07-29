@@ -113,6 +113,12 @@ src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")
+    config = configparser.ConfigParser()
+    config.read(src_user_config)
+    with open(src_user_config, 'w') as configfile:
+        config.set('BACKUP', 'checker_running', 'false')
+        config.write(configfile)
+
     exit()
     
 # Error fuction
@@ -123,6 +129,7 @@ def error_trying_to_backup(error):
     with open(src_user_config, 'w') as configfile:
         config.set('INFO', 'notification_id', "2")
         config.set('INFO', 'notification_add_info', f"{error}")
+        config.set('BACKUP', 'checker_running', 'false')
         config.write(configfile)
 
     print(error)

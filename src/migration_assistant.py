@@ -169,7 +169,7 @@ class CHOOSEDEVICE(QWidget):
         # Search external inside media
         ################################################################################
         try:
-            if len(os.listdir(f'{media}/{userName}')) != 0:
+            if os.listdir(f'{media}/{userName}'):
                 self.foundInMedia = True
                 self.show_on_screen(media)
 
@@ -182,7 +182,7 @@ class CHOOSEDEVICE(QWidget):
                 
         except FileNotFoundError:
             try:
-                if len(os.listdir(f'{run}/{userName}')) != 0:
+                if os.listdir(f'{run}/{userName}'):
                     print(f"Devices found inside {run}")
                     self.foundInMedia = False
                     self.show_on_screen(run)
@@ -484,12 +484,12 @@ class PREBACKUP(QWidget):
         # Wallpaper checkbox
         ################################################################################
         self.wallpaperCheckBox = QCheckBox(self.restorekWidget)
-        self.wallpaperCheckBox.setText(" Wallpaper")
+        self.wallpaperCheckBox.setText(" Wallpaper (Gnome)")
         self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
         self.wallpaperCheckBox.move(20, 100)
-        self.wallpaperCheckBox.setEnabled(True)
-        self.wallpaperCheckBox.setVisible(True)
-
+        self.wallpaperCheckBox.setEnabled(False)
+        self.wallpaperCheckBox.clicked.connect(self.on_wallpaper_clicked)
+        
         # Application size information
         self.wallpaperSizeInformation = QLabel(self.restorekWidget)
         self.wallpaperSizeInformation.setText("0 KB")
@@ -690,6 +690,14 @@ class PREBACKUP(QWidget):
     #     except FileNotFoundError:
     #         print("No flatpak file found")
     #         pass
+    
+        # Get current user's background (Gnome)
+        userDE = os.popen(getUserDE)
+        userDE = userDE.read().strip().lower()
+
+        # Activate wallpaper option if DE = Gnome
+        if userDE == "gnome":
+            self.wallpaperCheckBox.setEnabled(True)
 
     def on_application_names_clicked(self):
         # If user allow app to back up data, auto activate
@@ -776,6 +784,32 @@ class PREBACKUP(QWidget):
                 self.continueButton.setEnabled(False)
                 if "files" in self.outputBox:
                     self.outputBox.remove("files")
+
+            # Write to INI file
+            config.write(configfile)
+
+            self.on_wallpaper_clicked()
+            
+    def on_wallpaper_clicked(self):
+        ################################################################################
+        # Write to INI file
+        ################################################################################
+        with open(src_user_config, 'w') as configfile:
+            if self.wallpaperCheckBox.isChecked():
+                config.set('RESTORE', 'wallpaper', 'true')
+
+                # Enable continue button
+                self.continueButton.setEnabled(True)
+                # Add wallpaper to list
+                self.outputBox.append("wallpaper")
+              
+            else:
+                config.set('RESTORE', 'wallpaper', 'false')
+
+                # Disable continue button
+                self.continueButton.setEnabled(False)
+                if "wallpaper" in self.outputBox:
+                    self.outputBox.remove("wallpaper")
 
             # Write to INI file
             config.write(configfile)
