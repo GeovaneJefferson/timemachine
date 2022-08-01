@@ -68,11 +68,11 @@ class APP:
         self.enterTimeMachineButton.triggered.connect(lambda: sub.Popen(f"python3 "
             f"{src_enter_time_machine_py}", shell=True))
 
-        # Open settings button
-        self.openSettingsButton = QAction("Open Time Machine Preferences...")
-        self.openSettingsButton.setFont(QFont(item))
-        self.openSettingsButton.triggered.connect(lambda: sub.Popen(f"python3 "
-            f"{src_options_py}", shell=True))
+        # Open Time Machine button
+        self.openTimeMachine = QAction(f"Open {appName}")
+        self.openTimeMachine.setFont(QFont(item))
+        self.openTimeMachine.triggered.connect(lambda: sub.Popen(f"python3 "
+            f"{src_main_window_py}", shell=True))
 
         # Add all to menu
         self.menu.addAction(self.dummyLine)
@@ -81,7 +81,7 @@ class APP:
         self.menu.addAction(self.enterTimeMachineButton)
         self.menu.addAction(self.backupNowButton)
         self.menu.addAction(self.dummyLine3)
-        self.menu.addAction(self.openSettingsButton)
+        self.menu.addAction(self.openTimeMachine)
 
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)

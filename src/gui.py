@@ -161,9 +161,8 @@ class MAIN(QMainWindow):
         self.backupNowButton = QPushButton(self)
         self.backupNowButton.setText("Back Up Now")
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
-        # self.backupNowButton.setFixedSize(100, 28)
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 159)
+        self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
@@ -171,7 +170,7 @@ class MAIN(QMainWindow):
         # Description
         ################################################################################
         self.descriptionWidget = QWidget(self)
-        self.descriptionWidget.setGeometry(240, 220, 440, 160)
+        self.descriptionWidget.setGeometry(240, 200, 440, 160)
         self.descriptionWidget.setStyleSheet("""
             border-top: 1px solid rgb(198, 198, 198);
         """)
@@ -944,7 +943,6 @@ class OPTION(QMainWindow):
 
     def iniUI(self):
         self.setWindowIcon(QIcon(src_backup_icon))
-        # self.resize(800, 550)
 
         ################################################################################
         # Center window
@@ -967,15 +965,9 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left Widget
         ################################################################################
-
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 240, 405)
-        self.leftWidget.setStyleSheet(
-        "QWidget"
-        "{"
-            "border-right: 1px solid rgb(198, 198, 198);"
-        "}")
-    
+   
         # Scroll
         self.scroll = QScrollArea(self)
         self.scroll.setFixedSize(240, 405)
