@@ -57,6 +57,11 @@ class APP:
         self.backupNowButton.setFont(QFont(item))
         self.backupNowButton.triggered.connect(self.backup_now)
 
+        # Skip this backup
+        self.skipThisBackup = QAction("Skip This Backup")
+        self.skipThisBackup.setFont(QFont(item))
+        # self.skipThisBackup.triggered.connect(self.backup_now)
+
         # Enter time machine button
         self.enterTimeMachineButton = QAction("Enter Time Machine")
         self.enterTimeMachineButton.setFont(QFont(item))

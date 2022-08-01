@@ -99,9 +99,6 @@ class UI(QMainWindow):
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
         self.farRightWidget.setGeometry(412, 40, 280, 120)
-        # self.farRightWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
 
         # Right widget
         self.farRightLayout = QVBoxLayout(self.farRightWidget)

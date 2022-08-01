@@ -198,8 +198,16 @@ class BACKUP:
             print(error)
             exit()
 
-        self.condition_to_continue()
+    #     self.wait_before_continue()
 
+    # def wait_before_continue(self):
+    #     print("Waiting x seconds before continue...")
+    #     print("So user has the Time to 'Skip This Backup, if their want.'")
+    #     # Wait x time
+    #     time.sleep(8)
+
+        self.condition_to_continue()
+    
     def condition_to_continue(self):
         # This will check if Home + Flatpaks folders to backup has enough space to continue
         # with the backup process.
@@ -251,6 +259,8 @@ class BACKUP:
                         config.read(src_user_config)
                         with open(src_user_config, 'w') as configfile:
                             config.set('INFO', 'notification_id', "2")
+                            # Turn backup now OFF
+                            config.set('BACKUP', 'backup_now', 'false')
                             config.set('INFO', 'notification_add_info', "Please, manual delete file(s)/folder(s) inside "
                                 "your backup device, to make space for Time Machine's backup!")
                             config.write(configfile)
@@ -390,7 +400,6 @@ class BACKUP:
         self.backup_user_wallpaper()
 
     def backup_user_wallpaper(self):
-        # TODO
         print("Backing up current wallpaper...")
         # Replace wallpaper inside the folder, only allow 1
         # If is not empty
@@ -593,7 +602,7 @@ class BACKUP:
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+        # sub.Popen(f"python3 {src_backup_check_py}", shell=True)
         exit()
 
 
