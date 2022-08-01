@@ -221,8 +221,8 @@ class CLI:
             config.write(configfile)
 
         # Call backup now
-        sub.Popen(f"python3 {src_backup_now}", shell=True)  # Call backup now
-        exit()
+        sub.run(f"python3 {src_backup_now}", shell=True)  # Call backup now
+        # exit()
 
     def no_backup(self):
         print("No backup for today.")
@@ -250,6 +250,14 @@ while True:
     ################################################################################
     if main.iniAutomaticallyBackup == "false":
         print("Exiting backup checker...")
+        # Turn backup now to OFF
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('BACKUP', 'backup_now', 'false')
+            config.write(configfile)
+
         break
 
     time.sleep(1)
+exit()

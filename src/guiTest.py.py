@@ -356,18 +356,18 @@ class MAIN(QMainWindow):
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
         
-        try:
-            # Clean notification info
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:  
-                config.set('INFO', 'notification_add_info', ' ')
-                config.write(configfile)
+        #try:
+            ## Clean notification info
+            #config = configparser.ConfigParser()
+            #config.read(src_user_config)
+            #with open(src_user_config, 'w') as configfile:
+                #config.set('INFO', 'notification_add_info', ' ')
+                #config.write(configfile)
 
-        except Exception as error:
-            print(Exception)
-            print("Main Window error!")
-            exit()
+        #except Exception as error:
+            #print(Exception)
+            #print("Main Window error!")
+            #exit()
 
         self.get_size_informations()
 
@@ -590,11 +590,11 @@ class MAIN(QMainWindow):
                     self.nextDay = "Sat"
 
         # Save next backup to user.ini
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
-            config.write(configfile)
+        #config = configparser.ConfigParser()
+        #config.read(src_user_config)
+        #with open(src_user_config, 'w') as configfile:
+            #config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+            #config.write(configfile)
 
         self.load_current_backup_folder()
 
@@ -705,14 +705,10 @@ class MAIN(QMainWindow):
         self.setEnabled(False)
         mainDevices.show()
 
-        # sub.run(f"python3 {src_search_for_devices}", shell=True)
-
     def backup_now_clicked(self):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
 
     def options_clicked(self):
-        # widget.setCurrentWidget(mainDevices)
-        # widget.setCurrentWidget(mainOption)   
         sub.run(f"python3 {src_options_py}", shell=True)
 
 
@@ -805,10 +801,10 @@ class EXTERNAL(QWidget):
         ################################################################################
         try:
             print("Searching for external devices under media...")
-            if len(os.listdir(f'{media}/{userName}')) != 0:
-                print(f"{media} is Empty")
+            if os.listdir(f'{media}/{userName}') != 0:
                 self.foundInMedia = True
                 self.where(media)
+
             else:
                 for i in range(len(self.captureDevices)):
                     item = self.verticalLayout.itemAt(i)
@@ -822,6 +818,7 @@ class EXTERNAL(QWidget):
                 if len(os.listdir(f'{run}/{userName}')) != 0:
                     self.foundInMedia = False
                     self.where(run)
+
                 else:
                     for i in range(len(self.captureDevices)):
                         item = self.verticalLayout.itemAt(i)
@@ -930,29 +927,29 @@ class EXTERNAL(QWidget):
             self.useDiskButton.setEnabled(False)
 
     def on_button_cancel_clicked(self):
-        mainDevices.hide()
+        mainDevices.close()
         main.setEnabled(True)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    app.setStyle("Fusion")
-    dark_palette = QPalette()
-    dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.WindowText, Qt.white)
-    dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    dark_palette.setColor(QPalette.Text, Qt.white)
-    dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    dark_palette.setColor(QPalette.BrightText, Qt.red)
-    dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-    app.setPalette(dark_palette)
-    app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
+    #app.setStyle("Fusion")
+    #dark_palette = QPalette()
+    #dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    #dark_palette.setColor(QPalette.WindowText, Qt.white)
+    #dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    #dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    #dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    #dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    #dark_palette.setColor(QPalette.Text, Qt.white)
+    #dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    #dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    #dark_palette.setColor(QPalette.BrightText, Qt.red)
+    #dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    #dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    #dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    #app.setPalette(dark_palette)
+    #app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
 
     ####################
     main = MAIN()
