@@ -55,19 +55,16 @@ class BACKUP:
             exit()
 
     def create_TMB(self):
-        ################################################################################
-        # Create TMB
-        ################################################################################
-        # if self.iniBackupNow == "true":  # Read user.ini
+        # Set backup now to True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('BACKUP', 'backup_now', "true")
+            config.write(configfile)
+            
         try:
             ################################################################################
-            # Change system tray icon to blue
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "1")
-                config.write(configfile)
-                
+            # Create TMB
             ################################################################################
             # Create {self.firstFolderName}
             if not os.path.exists(self.createTMBFolder):
@@ -198,14 +195,6 @@ class BACKUP:
             print(error)
             exit()
 
-    #     self.wait_before_continue()
-
-    # def wait_before_continue(self):
-    #     print("Waiting x seconds before continue...")
-    #     print("So user has the Time to 'Skip This Backup, if their want.'")
-    #     # Wait x time
-    #     time.sleep(8)
-
         self.condition_to_continue()
     
     def condition_to_continue(self):
@@ -277,7 +266,7 @@ class BACKUP:
             else:
                 if self.iniAllowFlatpakData == "true":
                     print("AllowFlatpakData is enabled!")
-		            ################################################################################
+                    ################################################################################
                     # Flatpaks conditions to continue with the backup
                     ################################################################################
                     # Sum Home folder + Flapatk var/app/ + Flapatk .local/share/flatpak
@@ -393,24 +382,31 @@ class BACKUP:
         self.userDE = self.userDE.read().strip().lower()
 
         # Get current wallpaper
-        if self.userDE == "gnome":
+        if "gnome" in self.userDE:
             self.getWallpaper = os.popen(getGnomeWallpaper)
             self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
-        
-        self.backup_user_wallpaper()
+            # Remove spaces if exist
+            if " " in self.getWallpaper:
+                self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+
+            self.backup_user_wallpaper()
+
+        else:
+            self.write_flatpak_file()
 
     def backup_user_wallpaper(self):
         print("Backing up current wallpaper...")
         # Replace wallpaper inside the folder, only allow 1
         # If is not empty
-        if os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
+        insideWallpaperFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")
+        # If it has image inside the folder
+        if insideWallpaperFolder:
             # Delete all image inside wallpaper folder
             for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
                 print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
-        else:
-            sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+        sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
                 
         # Condition
         ################################################################################
