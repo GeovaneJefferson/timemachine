@@ -12,7 +12,7 @@ class MAIN(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowTitle(appName)
+        # self.setWindowTitle(appName)
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(700, 450)
 
@@ -1892,6 +1892,8 @@ if __name__ == '__main__':
     widget.addWidget(mainOpitions) 
     widget.setCurrentWidget(main)   
     widget.show()
+    # Window title name
+    widget.setWindowTitle(appName)
 
     app.exit(app.exec())
         
