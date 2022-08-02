@@ -8,7 +8,9 @@ config.read(src_user_config)
 
 class RESTORE:
     def __init__(self):
-        # Update INI file
+        # Set restore is running to True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             # Restore
             config.set('RESTORE', 'is_restore_running', "true")
@@ -18,9 +20,11 @@ class RESTORE:
 
     def read_ini_file(self):
         # Read file
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
-
         # Restore
         self.iniApplicationNames = config['RESTORE']['applications_name']
         self.iniApplicationData = config['RESTORE']['application_data']
@@ -155,14 +159,21 @@ class RESTORE:
         self.apply_users_saved_wallpaper()
 
     def apply_users_saved_wallpaper(self):
-        print("Apply user's wallpaper...")
-        for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
+        print("Applying user's wallpaper...")
+        for image in os.listdir(f"{self.iniExternalLocation}/"
+            f"{baseFolderName}/{wallpaperFolderName}/"):
             # Get current user's background (Gnome)
             self.userDE = os.popen(getUserDE)
             self.userDE = self.userDE.read().strip().lower()
 
-            if self.userDE == "gnome":
-                sub.run(f"{setGnomeWallpaper} {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)    # Create tmb folder
+            # Remove spaces if exist
+            if " " in image:
+                image = str(image.replace(" ", "\ "))
+
+            # Apply if user is using Gnome
+            if "gnome" in self.userDE:
+                sub.run(f"{setGnomeWallpaper} {self.iniExternalLocation}/"
+                    f"{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
 
         if self.iniFilesAndsFolders == "true":
             self.restore_home()
@@ -291,14 +302,16 @@ class RESTORE:
     def end_backup(self):
         print("Ending restoring...")
         ###############################################################################
-        # After all done, feedback_status = "" and set current_percent = 0
+        # Update INI file
         ###############################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'notification_id', "0")
             config.set('INFO', 'notification_add_info', "")
             config.set('INFO', 'feedback_status', "")
             config.set('INFO', 'current_percent', "0")
-            # Restore
+            # Restore settings
             config.set('RESTORE', 'is_restore_running', "false")
             config.write(configfile)
 

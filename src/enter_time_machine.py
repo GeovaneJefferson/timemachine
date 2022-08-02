@@ -363,7 +363,7 @@ class UI(QWidget):
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"100%" height="250"'
+                        scaledHTML = 'width:"100%" height="450"'
                         self.searchResult.setToolTip(
                             f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
                             f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
