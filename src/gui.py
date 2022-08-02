@@ -162,7 +162,7 @@ class MAIN(QMainWindow):
         self.backupNowButton.setText("Back Up Now")
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 162)
+        self.backupNowButton.move(420, 159)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
@@ -1281,7 +1281,6 @@ class OPTION(QMainWindow):
         self.fixButton = QPushButton()
         self.fixButton.setFont(QFont("Ubuntu", 10))
         self.fixButton.setText("Reset")
-        # self.fixButton.setFixedSize(80, 28)
         self.fixButton.adjustSize()
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 

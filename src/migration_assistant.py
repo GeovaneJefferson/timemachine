@@ -37,7 +37,7 @@ class WELCOMESCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_restore_icon});"
+            f"background-image: url({src_backup_icon});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -360,7 +360,7 @@ class OPTIONS(QWidget):
         self.restoreOption.setText(
             "Restore\n"
             f"from {appName}")
-        self.restoreOption.setFont(QFont("Ubuntu", 12))
+        self.restoreOption.setFont(QFont("Ubuntu", 11))
         self.restoreOption.setCheckable(True)
         self.restoreOption.setAutoExclusive(True)
         self.restoreOption.setFixedSize(200, 200)
@@ -368,7 +368,7 @@ class OPTIONS(QWidget):
         
         # Set up as new
         self.startAsNew = QPushButton()
-        self.startAsNew.setFont(QFont("Ubuntu", 12))
+        self.startAsNew.setFont(QFont("Ubuntu", 11))
         self.startAsNew.setText("Set Up as New")
         self.startAsNew.setCheckable(True)
         self.startAsNew.setAutoExclusive(True)
@@ -444,7 +444,6 @@ class PREBACKUP(QWidget):
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
         # Read INI file
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniApplicationNames = config['RESTORE']['applications_name']
@@ -457,9 +456,21 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Layouts
         ################################################################################
+        # Restore widget
+        self.optionskWidget = QWidget()
+        self.optionskWidget.setFixedSize(300, 300)
+        # self.optionskWidget.setStyleSheet("""border:1px solid black;""")
+
+        # Vertical base layout
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(20)
         self.verticalLayout.setContentsMargins(20, 20, 20, 20)
+
+        # Vertical options layout
+        self.verticalLayoutForOptions = QVBoxLayout(self.optionskWidget)
+        self.verticalLayoutForOptions.setSpacing(10)
+        self.verticalLayoutForOptions.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignTop)
+        self.verticalLayoutForOptions.setContentsMargins(20, 20, 20, 20)
 
         # Title
         self.title = QLabel()
@@ -474,46 +485,49 @@ class PREBACKUP(QWidget):
         self.description.setText("Choose which information you´d like to restore to this pc")
 
         ################################################################################
-        # Restore
-        ################################################################################
-        # Restore widget
-        self.restorekWidget = QWidget()
-        self.restorekWidget.setFixedSize(400, 250)
-        
-        ################################################################################
         # Wallpaper checkbox
         ################################################################################
-        self.wallpaperCheckBox = QCheckBox(self.restorekWidget)
+        self.wallpaperCheckBox = QCheckBox()
         self.wallpaperCheckBox.setText(" Wallpaper (Gnome)")
         self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
-        self.wallpaperCheckBox.move(20, 100)
+        self.wallpaperCheckBox.adjustSize()
         self.wallpaperCheckBox.setEnabled(False)
+        self.wallpaperCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.wallpaperCheckBox.setIconSize(QtCore.QSize(28, 28))
         self.wallpaperCheckBox.clicked.connect(self.on_wallpaper_clicked)
         
         # Application size information
-        self.wallpaperSizeInformation = QLabel(self.restorekWidget)
+        self.wallpaperSizeInformation = QLabel()
         self.wallpaperSizeInformation.setText("0 KB")
         self.wallpaperSizeInformation.setFont(QFont("Ubuntu", 10))
         self.wallpaperSizeInformation.adjustSize()
-        self.wallpaperSizeInformation.move(320, 102)
         self.wallpaperSizeInformation.setEnabled(False)
         self.wallpaperSizeInformation.setVisible(False)
 
         ################################################################################
-        # Application checkbox (Installed names)
+        # Application checkbox (Apps inside manual folder)
         ################################################################################
-        self.applicationNamesCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationNamesCheckBox.setText(" Application (Flatpaks)")
-        self.applicationNamesCheckBox.setFont(QFont("Ubuntu", 11))
-        self.applicationNamesCheckBox.move(20, 10)
-        self.applicationNamesCheckBox.clicked.connect(self.on_application_names_clicked)
-        
         # Get folder size
-        self.applicationNamesSize = os.popen(f"du -hs {self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}")
-        self.applicationNamesSize = self.applicationNamesSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "").replace("\t", "")
+        self.applicationNamesSize = os.popen(f"du -hs {self.iniExternalLocation}/"
+            f"{baseFolderName}/{flatpakTxt}")
+        self.applicationNamesSize = self.applicationNamesSize.read().strip("\t")
+        self.applicationNamesSize = self.applicationNamesSize.strip("\n")
+        self.applicationNamesSize = self.applicationNamesSize.replace(f"{self.iniExternalLocation}"
+            f"/{baseFolderName}/{flatpakTxt}", "").replace("\t", "")
+        
+        ################################################################################
+        # Application flatpak checkbox (Installed names)
+        ################################################################################
+        self.applicationCheckBox = QCheckBox()
+        self.applicationCheckBox.setText(f" Applications {self.applicationNamesSize}")
+        self.applicationCheckBox.setFont(QFont("Ubuntu", 11))
+        self.applicationCheckBox.adjustSize()
+        self.applicationCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.applicationCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.applicationCheckBox.clicked.connect(self.on_application_names_clicked)
 
         # Application size information
-        self.applicationSizeInformation = QLabel(self.restorekWidget)
+        self.applicationSizeInformation = QLabel()
         # If M inside self.applicationsSizeInformation, add B = MB
         if "M" in self.applicationNamesSize:
             self.applicationSizeInformation.setText(f"{self.applicationNamesSize}B")
@@ -522,15 +536,15 @@ class PREBACKUP(QWidget):
         self.applicationSizeInformation.setFont(QFont("Ubuntu", 10))
         self.applicationSizeInformation.adjustSize()
         self.applicationSizeInformation.setAlignment(QtCore.Qt.AlignRight)
-        self.applicationSizeInformation.move(320, 12)
 
         ################################################################################
         # Application checkbox (DATA)
         ################################################################################
-        self.applicationDataCheckBox = QCheckBox(self.restorekWidget)
-        self.applicationDataCheckBox.setText(" Application (Flatpaks Data)")
+        self.applicationDataCheckBox = QCheckBox()
+        self.applicationDataCheckBox.setText(" Application")
         self.applicationDataCheckBox.setFont(QFont("Ubuntu", 11))
-        self.applicationDataCheckBox.move(20, 40)
+        self.applicationDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.applicationDataCheckBox.setIconSize(QtCore.QSize(28, 28))
         self.applicationDataCheckBox.clicked.connect(self.on_application_data_clicked)
 
         # Get folder size
@@ -538,7 +552,7 @@ class PREBACKUP(QWidget):
         self.applicationDataSize = self.applicationDataSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}", "").replace("\t", "")
     
         # Application size information
-        self.applicationSizeInformation = QLabel(self.restorekWidget)
+        self.applicationSizeInformation = QLabel()
         # If M inside self.applicationsSizeInformation, add B = MB
         if "M" in self.applicationDataSize:
             self.applicationSizeInformation.setText(f"{self.applicationDataSize}B")
@@ -546,22 +560,23 @@ class PREBACKUP(QWidget):
             self.applicationSizeInformation.setText(f"{self.applicationDataSize}")
         self.applicationSizeInformation.setFont(QFont("Ubuntu", 10))
         self.applicationSizeInformation.adjustSize()
-        self.applicationSizeInformation.move(320, 42)
 
         ################################################################################
         # Files & Folders checkbox
         ################################################################################
-        self.fileAndFoldersCheckBox = QCheckBox(self.restorekWidget)
+        self.fileAndFoldersCheckBox = QCheckBox()
         self.fileAndFoldersCheckBox.setText(" File and Folders")
         self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
-        self.fileAndFoldersCheckBox.move(20, 70)
+        # self.fileAndFoldersCheckBox.move(20, 70)
         self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
+        self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
 
         # Get folder size
         self.fileAndFoldersFolderSize = os.popen(f"du -hs {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/")
         self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/", "").replace("\t", "")
         
-        self.fileAndFoldersFolderInformation = QLabel(self.restorekWidget)
+        self.fileAndFoldersFolderInformation = QLabel()
         # If K inside self.applicationsSizeInformation, add K = KB
         if "K" in self.fileAndFoldersFolderSize:
             self.fileAndFoldersFolderInformation.setText(f"{self.fileAndFoldersFolderSize}B")
@@ -571,16 +586,14 @@ class PREBACKUP(QWidget):
         self.fileAndFoldersFolderInformation.setFont(QFont("Ubuntu", 10))
         self.fileAndFoldersFolderInformation.adjustSize()
         self.fileAndFoldersFolderInformation.setAlignment(QtCore.Qt.AlignRight)
-        self.fileAndFoldersFolderInformation.move(320, 72)
 
         ################################################################################
         # User information
         ################################################################################
-        self.userSizeInformation = QLabel(self.restorekWidget)
+        self.userSizeInformation = QLabel()
         self.userSizeInformation.setFont(QFont("Ubuntu", 10))
         self.userSizeInformation.adjustSize()
         self.userSizeInformation.setAlignment(QtCore.Qt.AlignRight)
-        self.userSizeInformation.move(320, 102)
 
         ################################################################################
         # Buttons
@@ -607,8 +620,12 @@ class PREBACKUP(QWidget):
         ################################################################################
         self.verticalLayout.addWidget(self.title)
         self.verticalLayout.addWidget(self.description)
+
         self.verticalLayout.addStretch()
-        self.verticalLayout.addWidget(self.restorekWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.verticalLayout.addWidget(self.optionskWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.verticalLayoutForOptions.addWidget(self.wallpaperCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.applicationCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.fileAndFoldersCheckBox)
         self.verticalLayout.addStretch()
 
         self.setLayout(self.verticalLayout)
@@ -621,16 +638,17 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Look for flatpakTxt inside external device
-            with open(f"{self.iniExternalLocation}/{userName}{baseFolderName}/{flatpakTxt}", 'r') as output:
+            with open(f"{self.iniExternalLocation}/{userName}"
+                f"{baseFolderName}/{flatpakTxt}", 'r') as output:
                 output = output.read()
                 # If is  not empty, enable these boxes
                 if output != "":
-                    self.applicationNamesCheckBox.setEnabled(True)
+                    self.applicationCheckBox.setEnabled(True)
 
                 else:
                     # Disable these boxes
-                    self.applicationNamesCheckBox.setEnabled(False)  
-        except:
+                    self.applicationCheckBox.setEnabled(False)  
+        except FileNotFoundError:
             pass
 
         ################################################################################
@@ -678,7 +696,7 @@ class PREBACKUP(QWidget):
     #         with open(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "r") as write_file:
     #             for item in write_file:
     #                 print(f"{(item.strip())}")
-    #                 output = QLabel(self.restorekWidget)
+    #                 output = QLabel(self.optionskWidget)
     #                 output.setText(item)
     #                 output.setFont(QFont("Ubuntu", 11))
     #                 output.setFixedSize(200, 34)
@@ -696,18 +714,18 @@ class PREBACKUP(QWidget):
         userDE = userDE.read().strip().lower()
 
         # Activate wallpaper option if DE = Gnome
-        if userDE == "gnome":
+        if "gnome" in userDE:
             self.wallpaperCheckBox.setEnabled(True)
 
     def on_application_names_clicked(self):
         # If user allow app to back up data, auto activate
         # backup flatpaks name too.
         with open(src_user_config, 'w') as configfile:
-            if self.applicationNamesCheckBox.isChecked():
+            if self.applicationCheckBox.isChecked():
                 config.set('RESTORE', 'applications_name', 'true')
 
                 # Activate data checkbox
-                self.applicationNamesCheckBox.setChecked(True)
+                self.applicationCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list
@@ -741,7 +759,7 @@ class PREBACKUP(QWidget):
                 config.set('RESTORE', 'application_data', 'true')
 
                 # Activate names checkbox
-                self.applicationNamesCheckBox.setChecked(True)
+                self.applicationCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list if not already there
@@ -937,7 +955,7 @@ class BACKUPSCREEN(QWidget):
 
         # External device name
         self.externalDeviceName = QLabel()
-        self.externalDeviceName.setFont(QFont("Ubuntu", 12))
+        self.externalDeviceName.setFont(QFont("Ubuntu", 11))
         # Add userName 
         self.iniExternalName = config['EXTERNAL']['name']
         self.externalDeviceName.setText(self.iniExternalName)
@@ -958,7 +976,7 @@ class BACKUPSCREEN(QWidget):
         widgetLayout = QHBoxLayout(widgetThisPCName)
 
         self.thisPCName = QLabel()
-        self.thisPCName.setFont(QFont("Ubuntu", 12))
+        self.thisPCName.setFont(QFont("Ubuntu", 11))
         self.thisPCName.setText(f"{userName}") # 
         self.thisPCName.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.thisPCName.adjustSize()
@@ -1058,7 +1076,7 @@ class BACKUPSCREEN(QWidget):
 
 
 app = QApplication(sys.argv)
-main = WELCOMESCREEN()
+main = PREBACKUP()
 main2 = CHOOSEDEVICE()
 main3 = OPTIONS()
 main4 = PREBACKUP()

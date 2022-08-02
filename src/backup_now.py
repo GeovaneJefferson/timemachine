@@ -36,13 +36,21 @@ class BACKUP:
             self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
             self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
 
-            # Create folders
+            # TMB folder
             self.createTMBFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+            # RPM main folder
+            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{rpmFolderName}"
+            # Wallpaper main folder
             self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
+            # Application main folder
             self.applicationMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
+            # Application main Var folder
             self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
+            # Application main Local folder
             self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+            # Date folder
             self.dateFolder = f"{self.createTMBFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}"
+            # Time folder
             self.timeFolder = f"{self.createTMBFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}/{self.currentHour}-{self.currentMinute}"
 
             # Flatpak txt file
@@ -66,7 +74,6 @@ class BACKUP:
             ################################################################################
             # Create TMB
             ################################################################################
-            # Create {self.firstFolderName}
             if not os.path.exists(self.createTMBFolder):
                 sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}", shell=True)
 
@@ -74,7 +81,6 @@ class BACKUP:
             if not os.path.exists(self.createTMBFolder):
                 print("TMB folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {self.createTMBFolder}", shell=True)
-            ################################################################################
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
@@ -342,26 +348,19 @@ class BACKUP:
             ################################################################################
             # Create application folder
             ################################################################################
-            print("Creating application folder...")
             if self.iniAllowFlatpakData == "true":
-                # Create inside base application folder
+                # Create inside base "application" folder
                 if not os.path.exists(self.applicationMainFolder):
                     sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)  
 
                 self.applicationMainFolder
-                # Create inside external Var Folder
+                # Create inside external "Var" Folder
                 if not os.path.exists(self.applicationVarFolder):
                     sub.run(f"{createCMDFolder} {self.applicationVarFolder}", shell=True)  
 
-                # Create inside external Local Folder
+                # Create inside external "Local" Folder
                 if not os.path.exists(self.applicationLocalFolder):
                     sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  
-            
-            ################################################################################
-            # Create wallpaper folder
-            ################################################################################
-            if not os.path.exists(self.wallpaperMainFolder):
-                sub.run(f"{createCMDFolder} {self.wallpaperMainFolder}", shell=True)   
 
             ################################################################################
             # Create application folder
@@ -369,6 +368,18 @@ class BACKUP:
             if not os.path.exists(self.flatpakTxtFile):
                 print("Flatpak file was created.")
                 sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)   
+
+            ################################################################################
+            # Create wallpaper folder
+            ################################################################################
+            if not os.path.exists(self.wallpaperMainFolder):
+                sub.run(f"{createCMDFolder} {self.wallpaperMainFolder}", shell=True)   
+
+            ################################################################################
+            # Create RPM folder (Folder to manual place rpms apps)
+            ################################################################################
+            if not os.path.exists(self.self.rpmMainFolder):
+                sub.run(f"{createCMDFolder} {self.self.rpmMainFolder}", shell=True)   
 
         except FileNotFoundError as error:
             # Call error function 
