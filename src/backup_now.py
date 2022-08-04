@@ -38,8 +38,6 @@ class BACKUP:
 
             # TMB folder
             self.createTMBFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # RPM main folder
-            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{rpmFolderName}"
             # Wallpaper main folder
             self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
             # Application main folder
@@ -48,11 +46,12 @@ class BACKUP:
             self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
             # Application main Local folder
             self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+            # RPM main folder
+            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
             # Date folder
             self.dateFolder = f"{self.createTMBFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}"
             # Time folder
             self.timeFolder = f"{self.createTMBFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}/{self.currentHour}-{self.currentMinute}"
-
             # Flatpak txt file
             self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -378,8 +377,8 @@ class BACKUP:
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)
             ################################################################################
-            if not os.path.exists(self.self.rpmMainFolder):
-                sub.run(f"{createCMDFolder} {self.self.rpmMainFolder}", shell=True)   
+            if not os.path.exists(self.rpmMainFolder):
+                sub.run(f"{createCMDFolder} {self.rpmMainFolder}", shell=True)   
 
         except FileNotFoundError as error:
             # Call error function 
@@ -511,11 +510,11 @@ class BACKUP:
             error_trying_to_backup(error)
 
         if self.iniAllowFlatpakData == "true":
-            self.backup_flatpak()
+            self.backup_flatpak_data()
         else:
             self.end_backup()
 
-    def backup_flatpak(self):
+    def backup_flatpak_data(self):
         print("Backing up Flatpak folders...")
         try:
             ################################################################################

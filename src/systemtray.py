@@ -38,17 +38,17 @@ class APP:
         self.iniLastBackupInformation.setEnabled(False)
 
         # Line
-        self.dummyLine = QAction("-------------------------------------")
+        self.dummyLine = QAction("――――――――――――――")
         self.dummyLine.setFont(QFont(item))
         self.dummyLine.setEnabled(False)
 
         # Line2
-        self.dummyLine2 = QAction("-------------------------------------")
+        self.dummyLine2 = QAction("――――――――――――――")
         self.dummyLine2.setFont(QFont(item))
         self.dummyLine2.setEnabled(False)
       
         # Line3
-        self.dummyLine3 = QAction("-------------------------------------")
+        self.dummyLine3 = QAction("――――――――――――――")
         self.dummyLine3.setFont(QFont(item))
         self.dummyLine3.setEnabled(False)
       
@@ -117,6 +117,8 @@ class APP:
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             # INI last backup
             self.iniLastBackup = config['INFO']['latest']
+            # Current backup information
+            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
 
         except KeyError as error:
             print(error)
@@ -202,10 +204,6 @@ class APP:
         self.conditions()
 
     def conditions(self):
-        # Update last backup information
-        self.iniLastBackupInformation.setText(f'Latest Backup to: "{(self.iniHDName)}":\n'
-            f'{self.iniLastBackup}')
-
         # If backup device is registered
         if self.iniHDName != "None":
             # If backup device is connected
@@ -218,50 +216,19 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.enterTimeMachineButton.setEnabled(True)
+                    # Update last backup information
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
+                        f'{self.iniLastBackup}')
                     # Add the icon modifications to system tray
                     self.tray.setIcon(self.icon)
-        
-                    # # Errors handler
-                    # if self.iniNotification == "0":
-                    #     # White color
-                    #     self.icon = QIcon(src_system_bar_icon)
-                    #     # Enable backup now button
-                    #     self.backupNowButton.setEnabled(True)
-                    #     # Enable enter in time machine button
-                    #     self.enterTimeMachineButton.setEnabled(True)
-
-                    # elif self.iniNotification == "2":
-                    #     # Only changes color if user has automatically backup enabled
-                    #     if self.iniAutomaticallyBackup == "true":
-                    #         # Red color
-                    #         self.icon = QIcon(src_system_bar_error_icon)
-                    #         # Disable backup now button
-                    #         self.backupNowButton.setEnabled(False)
-                    #         # Enable enter in time machine button
-                    #         self.enterTimeMachineButton.setEnabled(True)
-
-                    #     else:
-                    #         # White color
-                    #         self.icon = QIcon(src_system_bar_icon)
-                    #         # Disable backup now button
-                    #         self.backupNowButton.setEnabled(False)
-                    #         try:
-                    #             # Clean notification add info, because auto backup is not enabled
-                    #             config = configparser.ConfigParser()
-                    #             config.read(src_user_config)
-                    #             with open(src_user_config, 'w') as configfile:
-                    #                 config.set('INFO', 'notification_add_info', ' ')
-                    #                 config.write(configfile)
-
-                    #         except Exception as error:
-                    #             print(error)
-                    #             print("System Tray (182) error!")
-                    #             exit()
 
                 else:
                     # Blue color
                     self.icon = QIcon(src_system_bar_run_icon)
+                    # Disable backup now button
                     self.backupNowButton.setEnabled(False)
+                    # Update last backup information
+                    self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
                     # Add the icon modifications to system tray
                     self.tray.setIcon(self.icon)
         
