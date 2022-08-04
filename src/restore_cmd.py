@@ -26,8 +26,9 @@ class RESTORE:
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
         # Restore
-        self.iniApplicationNames = config['RESTORE']['applications_name']
-        self.iniApplicationData = config['RESTORE']['application_data']
+        self.iniFlatpakApplications = config['RESTORE']['applications_flatpak_names']
+        self.iniApplicationsPackages = config['RESTORE']['applications_packages']
+        self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
 
         self.get_home_backup_folders()
@@ -45,9 +46,7 @@ class RESTORE:
         try:
             self.latestDateFolder = []
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
-                print(output)
                 if not "." in output:
-                    print(output)
                     self.latestDateFolder.append(output)
                     self.latestDateFolder.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
@@ -72,89 +71,89 @@ class RESTORE:
             print(error)
             pass
         
-        if self.iniFilesAndsFolders == "true":
-            self.get_home_folders_size()
-        # If flatpak names is true, flatpak data is also true
-        elif self.iniApplicationNames == "true":
-            self.get_flatpak_data_size()
+        self.get_home_folders_size()
 
     def get_home_folders_size(self):
-        print("Checking size of folders...")
-        ################################################################################
-        # Get folders size
-        ################################################################################
-        self.homeFolderToRestoreSizeList=[]
-        self.homeFolderToBeRestore=[]
-        for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-            f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):  # Get folders size before back up to external
-             # Capitalize first letter
-            output = output.capitalize() 
-            # Can output be found inside Users Home?
-            try:
-                os.listdir(f"{homeUser}/{output}")
-            except:
-                # Lower output first letter
-                output = output.lower() # Lower output first letter
-            # Get folder size
-            getSize = os.popen(f"du -s {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/", "").replace("\t", "")
-            getSize = int(getSize)
+        try:
+            print("Checking size of folders...")
+            ################################################################################
+            # Get folders size
+            ################################################################################
+            self.homeFolderToRestoreSizeList=[]
+            self.homeFolderToBeRestore=[]
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):  # Get folders size before back up to external
+                 # Capitalize first letter
+                output = output.capitalize() 
+                # Can output be found inside Users Home?
+                try:
+                    os.listdir(f"{homeUser}/{output}")
+                except:
+                    # Lower output first letter
+                    output = output.lower() # Lower output first letter
+                # Get folder size
+                getSize = os.popen(f"du -s {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                        f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/")
+                getSize = getSize.read().strip("\t").strip("\n").replace(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                        f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/", "").replace("\t", "")
+                getSize = int(getSize)
 
-            # Add to list
-            self.homeFolderToRestoreSizeList.append(getSize)
-            # Add output inside self.homeFolderToBeRestore
-            self.homeFolderToBeRestore.append(output)
+                # Add to list
+                self.homeFolderToRestoreSizeList.append(getSize)
+                # Add output inside self.homeFolderToBeRestore
+                self.homeFolderToBeRestore.append(output)
 
-        if self.iniApplicationData == "true":
-            self.get_flatpak_data_size()
-        else:
-            self.restore_home()
+        except:
+            pass
+
+        self.get_flatpak_data_size()
 
     def get_flatpak_data_size(self):
-        print("Checking size of flatpak (var)...")
-        ################################################################################
-        # Get folders size
-        ################################################################################
-        self.flatpakVarSizeList=[]
-        self.flatpakLocalSizeList=[]
-        self.flatpakVarToBeRestore=[]
-        self.flatpakLocaloBeRestore=[]
-        
-        for output in os.listdir(src_flatpak_var_location): 
-            print(f"du -s {src_flatpak_var_location}/{output}")
-            getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
-            getSize = int(getSize)
-
+        try:
+            print("Checking size of flatpak (var)...")
             ################################################################################
-            # Add to list
-            # If current folder (output inside var/app) is not higher than X MB
-            # Add to list to be backup
+            # Get folders size
             ################################################################################
-            # Add to self.flatpakVarSizeList KBytes size of the current output (folder inside var/app)
-            # inside external device
-            self.flatpakVarSizeList.append(getSize)
-            # Add current output (folder inside var/app) to be backup later
-            self.flatpakVarToBeRestore.append(f"{src_flatpak_var_location}/{output}")
-        
-        ################################################################################
-        # Get flatpak (.local/share/flatpak) folders size
-        ################################################################################
-        for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
-            # Get size of flatpak folder inside var/app/
-            print(f"du -s {src_flatpak_local_location}/{output}")
-
-            getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
-            getSize = int(getSize)
-
-            # Add to list to be backup
-            self.flatpakVarSizeList.append(getSize)
-            # Add current output (folder inside var/app) to be backup later
-            self.flatpakLocaloBeRestore.append(f"{src_flatpak_local_location}/{output}")
+            self.flatpakVarSizeList=[]
+            self.flatpakLocalSizeList=[]
+            self.flatpakVarToBeRestore=[]
             self.flatpakLocaloBeRestore=[]
+            
+            for output in os.listdir(src_flatpak_var_location): 
+                getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
+                getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
+                getSize = int(getSize)
+
+                ################################################################################
+                # Add to list
+                # If current folder (output inside var/app) is not higher than X MB
+                # Add to list to be backup
+                ################################################################################
+                # Add to self.flatpakVarSizeList KBytes size of the current output (folder inside var/app)
+                # inside external device
+                self.flatpakVarSizeList.append(getSize)
+                # Add current output (folder inside var/app) to be backup later
+                self.flatpakVarToBeRestore.append(f"{src_flatpak_var_location}/{output}")
+            
+            ################################################################################
+            # Get flatpak (.local/share/flatpak) folders size
+            ################################################################################
+            for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
+                # Get size of flatpak folder inside var/app/
+                print(f"du -s {src_flatpak_local_location}/{output}")
+
+                getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
+                getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
+                getSize = int(getSize)
+
+                # Add to list to be backup
+                self.flatpakVarSizeList.append(getSize)
+                # Add current output (folder inside var/app) to be backup later
+                self.flatpakLocaloBeRestore.append(f"{src_flatpak_local_location}/{output}")
+                self.flatpakLocaloBeRestore=[]
+
+        except:
+            pass
 
         self.apply_users_saved_wallpaper()
 
@@ -167,22 +166,128 @@ class RESTORE:
             self.userDE = self.userDE.read().strip().lower()
 
             # Remove spaces if exist
-            if " " in image:
-                image = str(image.replace(" ", "\ "))
+            if "," in image:
+                image = str(image.replace(", ", "\, "))
+
+                if " " in image:
+                    image = str(image.replace(" ", "\ "))
 
             # Apply if user is using Gnome
-            if "gnome" in self.userDE:
+            if "gnome" or "pop" in self.userDE:
+                print(f"{setGnomeWallpaper} {self.iniExternalLocation}/"
+                    f"{baseFolderName}/{wallpaperFolderName}/{image}")
                 sub.run(f"{setGnomeWallpaper} {self.iniExternalLocation}/"
                     f"{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
+
+        if self.iniApplicationsPackages == "true":
+            self.restore_applications_packages()
+
+        else:
+            self.restore_flatpaks()
+
+    def restore_applications_packages(self):
+        print("Installing applications packages...")
+        try: 
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                f"{applicationFolderName}/{rpmFolderName}"):
+                print(f"{installRPM} {output}")
+                # Install rpms applciation
+                sub.run(f"{installRPM} {output}", shell=True)
+        except:
+            pass
+        
+        self.restore_flatpaks()
+
+    def restore_flatpaks(self):
+        if self.iniFlatpakApplications == "true":
+            print("Installing flatpaks apps...")
+            try: 
+                # Restore flatpak apps
+                with open(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "r") as read_file:
+                    read_file = read_file.readlines()
+
+                    for output in read_file:
+                        output = output.strip()
+                        ###############################################################################
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('INFO', 'feedback_status', f"{output}")
+                            config.write(configfile)
+
+                        ###############################################################################
+                        print(f"flatpak install -y --noninteractive {output}")
+                        sub.run(f"flatpak install -y --noninteractive {output}", shell=True)
+                        ###############################################################################
+                
+                # Got to flatpak DATA
+                self.restore_flatpak_data()
+
+            except:
+                pass
+
+        else:
+            if self.iniFilesAndsFolders == "true":
+                self.restore_home()
+
+            else:
+                self.end_backup()
+
+    def restore_flatpak_data(self):
+        print("Restoring flatpaks data...")
+        try:
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}/"):
+                ###############################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"{output}")
+                    config.write(configfile)
+
+                ################################################################################
+                # Restore flatpak data (var) folders from external device
+                ################################################################################
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
+                
+                ###############################################################################
+                # Update the current percent of the process INI file
+                ###############################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
+                    config.write(configfile)
+        except:
+            pass
+        
+        self.restore_flatpak_data_local()
+        
+    def restore_flatpak_data_local(self):
+        print("Restoring flatpaks data (local)...")
+        try:
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}/"):
+                ###############################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"{output}")
+                    config.write(configfile)
+
+                ################################################################################
+                # Restore flatpak data (var) folders from external device
+                ################################################################################
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
+
+                ###############################################################################
+                # Update the current percent of the process INI file
+                ###############################################################################
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
+                    config.write(configfile)
+        except:
+            pass
 
         if self.iniFilesAndsFolders == "true":
             self.restore_home()
 
         else:
-            # If allow flatpak names is true; flatpak data is also true
-            self.restore_flatpak_apps()
+            self.end_backup()
 
-    def restore_home(self):t
+    def restore_home(self):
         # Change system tray icon to yellow
         with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'notification_id', "3")
@@ -217,88 +322,8 @@ class RESTORE:
         except:
             pass
 
-        self.restore_flatpak_apps()
-
-    def restore_flatpak_apps(self, ):
-        if self.iniApplicationNames == "true":
-            print("Installing flatpaks apps...")
-            try: 
-                # Restore flatpak apps
-                with open(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "r") as read_file:
-                    read_file = read_file.readlines()
-
-                    for output in read_file:
-                        output = output.strip()
-                        ###############################################################################
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'feedback_status', f"{output}")
-                            config.write(configfile)
-
-                        ###############################################################################
-                        print(f"flatpak install -y --noninteractive {output}")
-                        sub.run(f"flatpak install -y --noninteractive {output}", shell=True)
-                        ###############################################################################
-            except:
-                pass
-
-        self.restore_flatpak_data()
-
-    def restore_flatpak_data(self, ):
-        if self.iniApplicationData == "true":
-            print("Restoring flatpaks data...")
-            try:
-                for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}/"):
-                    ###############################################################################
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'feedback_status', f"{output}")
-                        config.write(configfile)
-
-                    ################################################################################
-                    # Restore flatpak data (var) folders from external device
-                    ################################################################################
-                    print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
-                    sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
-                    
-                    ###############################################################################
-                    # Update the current percent of the process INI file
-                    ###############################################################################
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                        config.write(configfile)
-            except:
-                pass
-            
-            self.restore_flatpak_data_local()
-        
         self.end_backup()
 
-    def restore_flatpak_data_local(self, ):
-        print("Restoring flatpaks data (local)...")
-        try:
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}/"):
-                ###############################################################################
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"{output}")
-                    config.write(configfile)
-
-                ################################################################################
-                # Restore flatpak data (var) folders from external device
-                ################################################################################
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
-                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
-
-                ###############################################################################
-                # Update the current percent of the process INI file
-                ###############################################################################
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                    config.write(configfile)
-
-        except:
-            pass
-
-        self.end_backup()
-       
     def end_backup(self):
         print("Ending restoring...")
         ###############################################################################
@@ -313,6 +338,11 @@ class RESTORE:
             config.set('INFO', 'current_percent', "0")
             # Restore settings
             config.set('RESTORE', 'is_restore_running', "false")
+            config.set('RESTORE', 'wallpaper', "false")
+            config.set('RESTORE', 'applications_packages', "false")
+            config.set('RESTORE', 'applications_flatpak_names', "false")
+            config.set('RESTORE', 'applications_data', "false")
+            config.set('RESTORE', 'files_and_folders', "false")
             config.write(configfile)
 
         ################################################################################

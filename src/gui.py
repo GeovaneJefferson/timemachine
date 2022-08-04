@@ -68,9 +68,6 @@ class MAIN(QMainWindow):
         ################################################################################
         self.rightWidget = QWidget(self)
         self.rightWidget.setGeometry(240, 40, 170, 154)
-        # self.rightWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
 
         # Right layout
         self.rightLayout = QVBoxLayout(self.rightWidget)
@@ -100,10 +97,6 @@ class MAIN(QMainWindow):
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
         self.farRightWidget.setGeometry(412, 40, 280, 120)
-        # self.farRightWidget.setStyleSheet("""
-        #     border: 1px solid red;
-        # """)
-
         # Right widget
         self.farRightLayout = QVBoxLayout(self.farRightWidget)
         self.farRightLayout.setSpacing(0)
@@ -223,10 +216,18 @@ class MAIN(QMainWindow):
         self.optionsButton.adjustSize()
         self.optionsButton.clicked.connect(self.on_options_clicked)
 
+        # Help button
+        self.helpButton = QPushButton()
+        self.helpButton.setText("?")
+        self.helpButton.setFont(QFont("Ubuntu", 10))
+        self.helpButton.setFixedSize(24, 24)
+        self.helpButton.clicked.connect(
+            lambda: sub.Popen(f"xdg-open {githubHome}", shell=True))
+        
         # Show system tray
         self.showInSystemTrayCheckBox = QCheckBox(self)
         self.showInSystemTrayCheckBox.setFont(item)
-        self.showInSystemTrayCheckBox.setText(f"Show {appName} in system tray")
+        self.showInSystemTrayCheckBox.setText(f"Show {appName} in menu bar")
         self.showInSystemTrayCheckBox.setFixedSize(280, 20)
         self.showInSystemTrayCheckBox.move(240, 410)
         self.showInSystemTrayCheckBox.setStyleSheet("""
@@ -257,7 +258,9 @@ class MAIN(QMainWindow):
         self.descriptionLayout.addWidget(self.descriptionText, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         #  Options layout
+        self.optionsLayout.addStretch()
         self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
+        self.optionsLayout.addWidget(self.helpButton, 0, Qt.AlignRight | Qt.AlignVCenter)
 
         # Set Layouts
         self.setLayout(self.leftLayout)
@@ -287,7 +290,6 @@ class MAIN(QMainWindow):
             self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            # self.iniBackupIsRunning = config['BACKUP']['checker_running']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
@@ -356,18 +358,18 @@ class MAIN(QMainWindow):
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
         
-        #try:
-            ## Clean notification info
-            #config = configparser.ConfigParser()
-            #config.read(src_user_config)
-            #with open(src_user_config, 'w') as configfile:
-                #config.set('INFO', 'notification_add_info', ' ')
-                #config.write(configfile)
+        # try:
+        #     # Clean notification info
+        #     config = configparser.ConfigParser()
+        #     config.read(src_user_config)
+        #     with open(src_user_config, 'w') as configfile:
+        #         config.set('INFO', 'notification_add_info', ' ')
+        #         config.write(configfile)
 
-        #except Exception as error:
-            #print(Exception)
-            #print("Main Window error!")
-            #exit()
+        # except Exception as error:
+        #     print(Exception)
+        #     print("Main Window error!")
+        #     exit()
 
         self.get_size_informations()
 
@@ -590,11 +592,11 @@ class MAIN(QMainWindow):
                     self.nextDay = "Sat"
 
         # Save next backup to user.ini
-        #config = configparser.ConfigParser()
-        #config.read(src_user_config)
-        #with open(src_user_config, 'w') as configfile:
-            #config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
-            #config.write(configfile)
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+            config.write(configfile)
 
         self.load_current_backup_folder()
 
@@ -1191,7 +1193,7 @@ class OPTION(QMainWindow):
         # Multiple time per day combobox
         self.multipleTimePerDayComboBox = QComboBox()
         self.multipleTimePerDayComboBox.setFrame(True)
-        self.multipleTimePerDayComboBox.setFixedSize(135, 28)
+        self.multipleTimePerDayComboBox.setFixedSize(132, 28)
         self.multipleTimePerDayComboBox.setFont(QFont("Ubuntu", 10))
         self.multipleTimePerDayComboBox.setStyleSheet(
         "QComboBox"
@@ -1287,12 +1289,12 @@ class OPTION(QMainWindow):
         ################################################################################
         # Donate, Update and Save buttons
         ################################################################################
-        self.donateAndSaveWidget = QWidget(self)
-        self.donateAndSaveWidget.setGeometry(478, 390, 220, 60)
+        self.donateAndBackWidget = QWidget(self)
+        self.donateAndBackWidget.setGeometry(478, 390, 220, 60)
 
         # Donate and Settings widget
-        self.donateAndSaveLayout = QHBoxLayout(self.donateAndSaveWidget)
-        self.donateAndSaveLayout.setSpacing(10)
+        self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
+        self.donateAndBackLayout.setSpacing(10)
 
         # Donate buton
         self.donateButton = QPushButton()
@@ -1354,9 +1356,10 @@ class OPTION(QMainWindow):
         self.resetLayout.addWidget(self.resetText, 0, Qt.AlignLeft | Qt.AlignTop)
         self.resetLayout.addWidget(self.fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
-        # Save layout
-        self.donateAndSaveLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.donateAndSaveLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        # Donate layout
+        self.donateAndBackLayout.addStretch()
+        self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
 
         self.setLayout(self.leftLayout)
 
@@ -1375,6 +1378,7 @@ class OPTION(QMainWindow):
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
                 self.foldersCheckbox.adjustSize()
+                self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"
@@ -1805,15 +1809,15 @@ class OPTION(QMainWindow):
 
                 # Restore section
                 config.set('RESTORE', 'is_restore_running', 'false')
-                config.set('RESTORE', 'applications_name', 'true')
-                config.set('RESTORE', 'application_data', 'false')
+                config.set('RESTORE', 'applications_packages', 'true')
+                config.set('RESTORE', 'applications_flatpak_names', 'true')
+                config.set('RESTORE', 'applications_data', 'false')
                 config.set('RESTORE', 'files_and_folders', 'false')
 
                 # Write to INI file
                 config.write(configfile)
 
             print("All settings was reset!")
-            exit()
 
         else:
             QMessageBox.Close
@@ -1823,33 +1827,6 @@ class OPTION(QMainWindow):
 
     def on_save_button_clicked(self):
         widget.setCurrentWidget(main)
-
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)
-        # self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-        # self.iniBackupIsRunning = config['BACKUP']['checker_running']
-        
-        # Is is checker is not running and auto is enabled
-        # if self.iniAutomaticallyBackup == "true":
-            # If backup chcker is already running, do nothing
-            # if self.iniBackupIsRunning == "false":
-                # print("Here")
-                # Call backup check py
-                # sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-
-                # # Set checker running to true
-                # with open(src_user_config, 'w') as configfile:
-                #     config.set('BACKUP', 'checker_running', "true")
-                #     config.write(configfile)
-            # else:
-            #     print("Backup checker is already running.")
-            #     print("Exiting...")
-        # else:
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-        #     with open(src_user_config, 'w') as configfile:
-        #         config.set('BACKUP', 'checker_running', "false")
-        #         config.write(configfile)
 
 
 if __name__ == '__main__':

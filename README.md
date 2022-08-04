@@ -22,15 +22,6 @@ using "Enter Time Machine" mode.
 #### Still not enough space for a new backup?
   Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 
-## Behind The Scenes:
-On the main Time Machine's window, will show base information about your backup device.
-Such as: 
-* Backup HD/SSD Name
-* Free space of the backup HD/SSD
-* When last backup was made
-* When the next backup will occur
-* Device connectivity
-
 ## One Time Mode
 * Will automatically back up at first boot, if the schedule time to do so has passed.
 
@@ -38,6 +29,10 @@ Such as:
 * Will automatically back up your files and apps every: 1, 2 or 4 hours.
 
 Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
+
+## External drive connected to your PC
+Time Machine can back up to an external drive connected to a USB, HD or SSD.
+Time Machine ##WILL NOT ERASE YOUR EXTERNAL DEVICE! 
 
 ## Create a Time Machine backup
 1. Connect an external storage device, such as a USB or HD/SSD.
@@ -50,7 +45,7 @@ First, open Time Machine and allow to "show in the system tray".
 Then, click on Time Machine in system tray and select "Enter Time Machine"
 (Remember, will only work if Time Machine has made at least one backup already.)
 
-Still in development...
+###Still in development...
 
 ## Migration Assistant
 A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your files/folders and apps, after a fresh install.

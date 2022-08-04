@@ -27,6 +27,9 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 ################################################################################
 ## Variables
 ################################################################################
+# Github
+githubHome = "https://www.github.com/geovanejefferson/timemachine"
+
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
@@ -44,8 +47,10 @@ flatpakTxt = "flatpak.txt"
 copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
+installRPM = "sudo rpm -i"
 
 # DE
+supported = "gnome"
 getUserDE = "echo $DESKTOP_SESSION"
 
 # Gnome
