@@ -155,7 +155,7 @@ class MAIN(QMainWindow):
         self.backupNowButton.setText("Back Up Now")
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 159)
+        self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
@@ -910,6 +910,28 @@ class EXTERNAL(QWidget):
         ################################################################################
         if " " in self.chooseDevice:
             self.chooseDevice = str(self.chooseDevice.replace(" ", "\ "))
+
+        ################################################################################
+        # Get user's ox
+        ################################################################################
+        userDE = os.popen(getUserDE)
+        userDE = userDE.read().strip().lower()
+
+        ################################################################################
+        # Update INI file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            if "ubuntu" or "debian" in userDE:
+                # Save user's os name
+                config.set(f'INFO', 'os', 'deb')
+            
+            elif "fedora" or "opensuse" in userDE:
+                # Save user's os name
+                config.set(f'INFO', 'os', 'rpm')
+
+            config.write(configfile)
 
         ################################################################################
         # Update INI file
@@ -1796,6 +1818,7 @@ class OPTION(QMainWindow):
                 config.set('SCHEDULE', 'everytime', '60')
 
                 # Info section
+                config.set('INFO', 'os', 'None')
                 config.set('INFO', 'latest', 'None')
                 config.set('INFO', 'next', 'None')
                 config.set('INFO', 'notification_id', '0')

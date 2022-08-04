@@ -34,25 +34,28 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 appName = "Time Machine"
 appNameClose = "timemachine"
 appVersion = "v1.1.1"
+
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
 wallpaperFolderName = "wallpaper"
-rpmFolderName = "rpm"
-debFolderName = "deb"
 varFolderName = "var"
 localFolderName = "share"
 flatpakTxt = "flatpak.txt"
+
+rpmFolderName = "rpm"
+debFolderName = "deb"
 
 # CMD commands
 copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 installRPM = "sudo rpm -ivh --replacepkgs"
+installDEB = "sudo dpkg -i"
 
 # DE
 supported = "gnome"
-getUserDE = "echo $DESKTOP_SESSION"
+getUserDE = "cat /etc/os-release"
 
 # Gnome
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
