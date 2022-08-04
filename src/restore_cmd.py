@@ -165,6 +165,13 @@ class RESTORE:
             self.userDE = os.popen(getUserDE)
             self.userDE = self.userDE.read().strip().lower()
 
+            # Copy the wallpaper to the user's Pictures
+            print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                f"{wallpaperFolderName}/{image} {homeUser}/Pictures")
+            
+            sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
+
             # Remove spaces if exist
             if "," in image:
                 image = str(image.replace(", ", "\, "))
@@ -174,10 +181,9 @@ class RESTORE:
 
             # Apply if user is using Gnome
             if "gnome" or "pop" in self.userDE:
-                print(f"{setGnomeWallpaper} {self.iniExternalLocation}/"
-                    f"{baseFolderName}/{wallpaperFolderName}/{image}")
-                sub.run(f"{setGnomeWallpaper} {self.iniExternalLocation}/"
-                    f"{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
+                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+                    
+                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
