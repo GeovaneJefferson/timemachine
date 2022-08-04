@@ -30,6 +30,14 @@ using "Enter Time Machine" mode.
 
 Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
 
+## Enter Time Machine
+First, open Time Machine and allow to "show in the system tray".
+
+Then, click on Time Machine in system tray and select "Enter Time Machine"
+(Remember, will only work if Time Machine has made at least one backup already.)
+
+Still in development...
+
 ## External drive connected to your PC
 Time Machine can back up to an external drive connected to a USB, HD or SSD.
 Time Machine ##WILL NOT ERASE YOUR EXTERNAL DEVICE! 
@@ -39,13 +47,10 @@ Time Machine ##WILL NOT ERASE YOUR EXTERNAL DEVICE!
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.
 3. Then, click on "Back Up Now".
 
-## Enter Time Machine
-First, open Time Machine and allow to "show in the system tray".
-
-Then, click on Time Machine in system tray and select "Enter Time Machine"
-(Remember, will only work if Time Machine has made at least one backup already.)
-
-Still in development...
+#### Packages
+* Inside of "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.
+These folders was created, so you can manual put ".deb" or ".rpm" packages inside, to be easily restore with
+Migration Assistant.
 
 ## Migration Assistant
 A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your files/folders and apps, after a fresh install.

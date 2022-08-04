@@ -30,6 +30,8 @@ class RESTORE:
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
+        # INFO
+        self.iniOS = config['INFO']['os']
 
         self.get_home_backup_folders()
 
@@ -162,8 +164,8 @@ class RESTORE:
         for image in os.listdir(f"{self.iniExternalLocation}/"
             f"{baseFolderName}/{wallpaperFolderName}/"):
             # Get current user's background (Gnome)
-            self.userDE = os.popen(getUserDE)
-            self.userDE = self.userDE.read().strip().lower()
+            # self.userDE = os.popen(getUserDE)
+            # self.userDE = self.userDE.read().strip().lower()
 
             # Copy the wallpaper to the user's Pictures
             print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
@@ -178,13 +180,12 @@ class RESTORE:
 
                 if " " in image:
                     image = str(image.replace(" ", "\ "))
-
-            # Apply if user is using Gnome
-            if "gnome" or "pop" in self.userDE:
-                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
-                    
-                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
-
+      
+            print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+            sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
+            # Set wallpaper to Zoom
+            sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
 
@@ -194,17 +195,31 @@ class RESTORE:
     def restore_applications_packages(self):
         print("Installing applications packages...")
         try: 
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
-                f"{applicationFolderName}/{rpmFolderName}"):
-                print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{applicationFolderName}/{rpmFolderName}/{output}")
-                # Install rpms applciation
-                sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
-                # Set wallpaper to Zoom
-                sub.run(f"{zoomGnomeWallpaper}", shell=True)
-                
+            if self.iniOS == "rpm":
+                ################################################################################
+                # Restore RPMS
+                ################################################################################
+                for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                    f"{applicationFolderName}/{rpmFolderName}"):
+                    print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{rpmFolderName}/{output}")
+                    # Install rpms applications
+                    sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
+            
+            elif self.iniOS == "deb":
+                ################################################################################
+                # Restore DEBS
+                ################################################################################
+                for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                    f"{applicationFolderName}/{debFolderName}"):
+                    print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{debFolderName}/{output}")
+                    # Install debs applications
+                    sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
         except:
+            print("Error trying to install packages...")
             pass
         
         self.restore_flatpaks()
