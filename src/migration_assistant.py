@@ -769,8 +769,7 @@ class PREBACKUP(QWidget):
         dummyList.clear()
 
     def on_application_clicked(self):
-        # If user allow app to back up data, auto activate
-        # backup flatpaks name too.
+        # Restore packages applications
         with open(src_user_config, 'w') as configfile:
             if self.applicationCheckBox.isChecked():
                 config.set('RESTORE', 'applications_packages', 'true')
@@ -780,20 +779,14 @@ class PREBACKUP(QWidget):
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list
-                self.outputBox.append("names")
+                self.outputBox.append("packages")
 
             else:
                 config.set('RESTORE', 'applications_packages', 'false')
-                config.set('RESTORE', 'applications_data', 'false')
 
-                # Disable data checkbox
-                self.flatpakDataCheckBox.setChecked(False)
                 # Disable names
-                if "names" in self.outputBox:
-                    self.outputBox.remove("names")
-                # Disable data too, if in list
-                if "data" in self.outputBox:
-                    self.outputBox.remove("data")
+                if "packages" in self.outputBox:
+                    self.outputBox.remove("packages")
       
             # Write to INI file
             config.write(configfile)
@@ -805,8 +798,6 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Write to INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.flatpakCheckBox.isChecked():
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
@@ -840,15 +831,15 @@ class PREBACKUP(QWidget):
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
                 config.set('RESTORE', 'applications_data', 'true')
 
-                # Activate names checkbox
+                # Activate data checkbox
                 self.flatpakDataCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
-                # Add names to list if not already there
-                if "names" not in self.outputBox:
-                    self.outputBox.append("names")
-                # Add data to list
-                self.outputBox.append("data")
+                # Add data to list if not already there
+                if "data" not in self.outputBox:
+                    self.outputBox.append("data")
+                # Auto enable flatpak to list
+                self.outputBox.append("flatpak")
               
             else:
                 config.set('RESTORE', 'applications_data', 'false')
@@ -1140,15 +1131,10 @@ class BACKUPSCREEN(QWidget):
         self.backButton.setEnabled(False)
         # Disable restore button
         self.startRestoreButton.setEnabled(False)
-        # Start restoring
-        self.call_restoring()
-
-    def call_restoring(self):
         # Call restore python
         sub.run(f"python3 {src_restore_cmd}", shell=True)
-
-        if self.iniIsRestoreRunning == "false":
-            widget.setCurrentIndex(widget.currentIndex()+1)
+        # Change screen
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
 class DONE(QWidget):
     def __init__(self):
