@@ -190,9 +190,14 @@ class RESTORE:
         try: 
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                 f"{applicationFolderName}/{rpmFolderName}"):
-                print(f"{installRPM} {output}")
+                print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{applicationFolderName}/{rpmFolderName}/{output}")
                 # Install rpms applciation
-                sub.run(f"{installRPM} {output}", shell=True)
+                sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
+                # Set wallpaper to Zoom
+                sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                
         except:
             pass
         
@@ -288,13 +293,11 @@ class RESTORE:
             self.end_backup()
 
     def restore_home(self):
-        # Change system tray icon to yellow
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "3")
-            config.write(configfile)
-                    
         try:
             print("Restoring Home folders...")
+            print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/")
+                    
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):
 
@@ -311,14 +314,15 @@ class RESTORE:
                 
                 ###############################################################################
                 # Restore Home folders
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/")
-                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/{output}/ {homeUser}/{output}/", shell=True)
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"
+                    f"{output}/ {homeUser}/{output}/")
+
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"
+                    f"{output}/ {homeUser}/{output}/", shell=True)
                 ###############################################################################
-                
-                # Update the current percent of the process INI file
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                    config.write(configfile)     
+
         except:
             pass
 

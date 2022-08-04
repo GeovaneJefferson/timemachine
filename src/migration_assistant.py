@@ -1140,6 +1140,10 @@ class BACKUPSCREEN(QWidget):
         self.backButton.setEnabled(False)
         # Disable restore button
         self.startRestoreButton.setEnabled(False)
+        # Start restoring
+        self.call_restoring()
+
+    def call_restoring(self):
         # Call restore python
         sub.run(f"python3 {src_restore_cmd}", shell=True)
 
