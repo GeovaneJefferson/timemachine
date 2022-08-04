@@ -45,7 +45,7 @@ First, open Time Machine and allow to "show in the system tray".
 Then, click on Time Machine in system tray and select "Enter Time Machine"
 (Remember, will only work if Time Machine has made at least one backup already.)
 
-###Still in development...
+Still in development...
 
 ## Migration Assistant
 A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your files/folders and apps, after a fresh install.
