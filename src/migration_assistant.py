@@ -443,6 +443,8 @@ class PREBACKUP(QWidget):
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
+        # INFO
+        self.iniOS = config['INFO']['os']
 
         self.widgets()
 
@@ -503,14 +505,14 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Application checkbox
         ################################################################################
-        self.applicationCheckBox = QCheckBox()
-        self.applicationCheckBox.setText(f" Applications "
+        self.applicationPackagesCheckBox = QCheckBox()
+        self.applicationPackagesCheckBox.setText(f" Applications "
             f"              {self.applicationSize}")
-        self.applicationCheckBox.setFont(QFont("Ubuntu", 11))
-        self.applicationCheckBox.adjustSize()
-        self.applicationCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
-        self.applicationCheckBox.setIconSize(QtCore.QSize(28, 28))
-        self.applicationCheckBox.clicked.connect(self.on_application_clicked)
+        self.applicationPackagesCheckBox.setFont(QFont("Ubuntu", 11))
+        self.applicationPackagesCheckBox.adjustSize()
+        self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.applicationPackagesCheckBox.clicked.connect(self.on_application_clicked)
 
         # Application size information
         self.applicationSizeInformation = QLabel()
@@ -641,7 +643,7 @@ class PREBACKUP(QWidget):
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.optionskWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayoutForOptions.addWidget(self.wallpaperCheckBox)
-        self.verticalLayoutForOptions.addWidget(self.applicationCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakDataCheckBox)
         self.verticalLayoutForOptions.addWidget(self.fileAndFoldersCheckBox)
@@ -662,11 +664,11 @@ class PREBACKUP(QWidget):
                 output = output.read()
                 # If is  not empty, enable these boxes
                 if output != "":
-                    self.applicationCheckBox.setEnabled(True)
+                    self.flatpakCheckBox.setEnabled(True)
 
                 else:
                     # Disable these boxes
-                    self.applicationCheckBox.setEnabled(False)  
+                    self.flatpakCheckBox.setEnabled(False)  
 
         except FileNotFoundError:
             pass
@@ -681,17 +683,23 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             dummyList = []
-            for output in os.listdir(f"{self.iniExternalLocation}/"
-                f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}"):
-                dummyList.append(output)
+            if self.iniOS == "rpm":
+                for output in os.listdir(f"{self.iniExternalLocation}/"
+                    f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}"):
+                    dummyList.append(output)
+
+            elif self.iniOS == "deb":
+                for output in os.listdir(f"{self.iniExternalLocation}/"
+                    f"{baseFolderName}/{applicationFolderName}/{debFolderName}"):
+                    dummyList.append(output)
         except:
             pass
 
         if dummyList:
-            self.applicationCheckBox.setEnabled(True)
+            self.applicationPackagesCheckBox.setEnabled(True)
 
         else:
-            self.applicationCheckBox.setEnabled(False)  
+            self.applicationPackagesCheckBox.setEnabled(False)  
 
         # Empty list
         dummyList.clear()
@@ -771,11 +779,11 @@ class PREBACKUP(QWidget):
     def on_application_clicked(self):
         # Restore packages applications
         with open(src_user_config, 'w') as configfile:
-            if self.applicationCheckBox.isChecked():
+            if self.applicationPackagesCheckBox.isChecked():
                 config.set('RESTORE', 'applications_packages', 'true')
 
                 # Activate data checkbox
-                self.applicationCheckBox.setChecked(True)
+                self.applicationPackagesCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list
@@ -1195,7 +1203,7 @@ class DONE(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = WELCOMESCREEN()
+    main = PREBACKUP()
     main2 = CHOOSEDEVICE()
     main3 = OPTIONS()
     main4 = PREBACKUP()
