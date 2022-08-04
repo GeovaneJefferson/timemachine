@@ -219,8 +219,8 @@ class RESTORE:
                             config.write(configfile)
 
                         ###############################################################################
-                        print(f"flatpak install -y --noninteractive {output}")
-                        sub.run(f"flatpak install -y --noninteractive {output}", shell=True)
+                        print(f"flatpak install --system --noninteractive --assumeyes --or-update {output}")
+                        sub.run(f"flatpak install --system --noninteractive --assumeyes --or-update {output}", shell=True)
                         ###############################################################################
                 
                 # Got to flatpak DATA
