@@ -47,7 +47,7 @@ flatpakTxt = "flatpak.txt"
 copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
-installRPM = "sudo rpm -i"
+installRPM = "sudo rpm -ivh --replacepkgs"
 
 # DE
 supported = "gnome"
@@ -56,6 +56,7 @@ getUserDE = "echo $DESKTOP_SESSION"
 # Gnome
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
 setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
+zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
 
 # Locations
 media = "/media"

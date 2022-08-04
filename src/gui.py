@@ -904,6 +904,7 @@ class EXTERNAL(QWidget):
                     index -= 1
 
     def on_use_disk_clicked(self):
+        print(self.chooseDevice)
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
