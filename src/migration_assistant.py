@@ -306,10 +306,6 @@ class CHOOSEDEVICE(QWidget):
             # Disable use disk button
             self.continueButton.setEnabled(False)
 
-    def on_button_refresh_clicked(self):
-        sub.Popen(f"python3 {src_welcome_screen}", shell=True)
-        exit()
-
 class OPTIONS(QWidget):
     def __init__(self):
         super().__init__()

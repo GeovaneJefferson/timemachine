@@ -222,7 +222,7 @@ class RESTORE:
                 # Install gnome software plugin flatpak
                 sub.run("sudo apt install -y gnome-software-plugin-flatpak", shell=True)
                 # Add flathub repository
-                sub.run("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
+                sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
 
                 ################################################################################
                 # Restore DEBS
