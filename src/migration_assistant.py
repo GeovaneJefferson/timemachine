@@ -464,7 +464,7 @@ class PREBACKUP(QWidget):
 
         # Vertical options layout
         self.verticalLayoutForOptions = QVBoxLayout(self.optionskWidget)
-        self.verticalLayoutForOptions.setSpacing(10)
+        self.verticalLayoutForOptions.setSpacing(5)
         self.verticalLayoutForOptions.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignTop)
         self.verticalLayoutForOptions.setContentsMargins(20, 20, 20, 20)
 
