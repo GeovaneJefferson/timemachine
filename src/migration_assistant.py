@@ -756,9 +756,10 @@ class PREBACKUP(QWidget):
     def find_wallpaper(self):
         try:
             dummyList = []
-            # Get current user's background
+            # Find user's DE type
             userDE = os.popen(getUserDE)
             userDE = userDE.read().strip().lower()
+            # Get current user's background
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                 f"{wallpaperFolderName}/"):
                 dummyList.append(output)
@@ -1203,7 +1204,7 @@ class DONE(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = PREBACKUP()
+    main = WELCOMESCREEN()
     main2 = CHOOSEDEVICE()
     main3 = OPTIONS()
     main4 = PREBACKUP()
