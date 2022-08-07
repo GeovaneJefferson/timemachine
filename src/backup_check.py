@@ -221,7 +221,7 @@ class CLI:
             config.write(configfile)
 
         # Call backup now
-        sub.run(f"python3 {src_backup_now}", shell=True)  # Call backup now
+        sub.run(f"python3 {src_backup_now}", shell=True) 
 
     def no_backup(self):
         print("No backup for today.")

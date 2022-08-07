@@ -194,8 +194,14 @@ class RESTORE:
 
     def restore_applications_packages(self):
         print("Installing applications packages...")
-        try: 
+        try:             
             if self.iniOS == "rpm":
+                ################################################################################
+                # Distros like Fedora already has flatpak installed
+                ################################################################################
+                # Add flathub repository
+                sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
+                
                 ################################################################################
                 # Restore RPMS
                 ################################################################################
@@ -208,6 +214,16 @@ class RESTORE:
                         f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
             
             elif self.iniOS == "deb":
+                ################################################################################
+                # First install flatphub if necessary
+                ################################################################################
+                # Install flatpka
+                sub.run("sudo apt install -y flatpak", shell=True)
+                # Install gnome software plugin flatpak
+                sub.run("sudo apt install -y gnome-software-plugin-flatpak", shell=True)
+                # Add flathub repository
+                sub.run("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
+
                 ################################################################################
                 # Restore DEBS
                 ################################################################################
