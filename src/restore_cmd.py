@@ -163,10 +163,6 @@ class RESTORE:
         print("Applying user's wallpaper...")
         for image in os.listdir(f"{self.iniExternalLocation}/"
             f"{baseFolderName}/{wallpaperFolderName}/"):
-            # Get current user's background (Gnome)
-            # self.userDE = os.popen(getUserDE)
-            # self.userDE = self.userDE.read().strip().lower()
-
             # Copy the wallpaper to the user's Pictures
             print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
                 f"{wallpaperFolderName}/{image} {homeUser}/Pictures")
