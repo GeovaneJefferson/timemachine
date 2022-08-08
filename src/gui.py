@@ -8,13 +8,10 @@ timer = QtCore.QTimer()
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
-
         self.iniUI()
 
     def iniUI(self):
-        # self.setWindowTitle(appName)
         self.setWindowIcon(QIcon(src_backup_icon))
-        self.setFixedSize(700, 450)
 
         ################################################################################
         # Center window
@@ -1954,6 +1951,7 @@ if __name__ == '__main__':
     widget.show()
     # Window title name
     widget.setWindowTitle(appName)
+    widget.setFixedSize(700, 450)
 
     app.exit(app.exec())
         
