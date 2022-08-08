@@ -1122,8 +1122,6 @@ class BACKUPSCREEN(QWidget):
             self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-            # Current backup information
-            self.iniCurrentPercentBackup = config['INFO']['current_percent']
             # Get current notification ID
             self.iniNotificationID = config['INFO']['notification_id']
 
