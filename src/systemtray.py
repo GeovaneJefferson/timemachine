@@ -88,7 +88,7 @@ class APP:
         # Check ini
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every x second
+        timer.start(2000)  # update every x second
         self.updates()
         
         # App exec
@@ -253,6 +253,8 @@ class APP:
                     self.tray.setIcon(self.icon)
 
         else:
+            # Update last backup information
+            self.iniLastBackupInformation.setText('First, select a backup device.')
             # If backup device is not registered
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
