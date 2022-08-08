@@ -30,6 +30,8 @@ class RESTORE:
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
+        self.iniWallpaper = config['RESTORE']['wallpaper']
+        self.iniRestoreIcon = config['RESTORE']['icon']
         # INFO
         self.packageManager = config['INFO']['packageManager']
         # Icon
@@ -167,43 +169,45 @@ class RESTORE:
         self.apply_users_saved_wallpaper()
 
     def apply_users_saved_wallpaper(self):
-        print("Applying user's wallpaper...")
-        for image in os.listdir(f"{self.iniExternalLocation}/"
-            f"{baseFolderName}/{wallpaperFolderName}/"):
-            # Copy the wallpaper to the user's Pictures
-            print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                f"{wallpaperFolderName}/{image} {homeUser}/Pictures")
-            
-            sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
+        if self.iniWallpaper == "true":
+            print("Applying user's wallpaper...")
+            for image in os.listdir(f"{self.iniExternalLocation}/"
+                f"{baseFolderName}/{wallpaperFolderName}/"):
+                # Copy the wallpaper to the user's Pictures
+                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{wallpaperFolderName}/{image} {homeUser}/Pictures")
+                
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
 
-            # Remove spaces if exist
-            if "," in image:
-                image = str(image.replace(", ", "\, "))
+                # Remove spaces if exist
+                if "," in image:
+                    image = str(image.replace(", ", "\, "))
 
-                if " " in image:
-                    image = str(image.replace(" ", "\ "))
-      
-            print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
-            sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
-            # Set wallpaper to Zoom
-            sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                    if " " in image:
+                        image = str(image.replace(" ", "\ "))
+          
+                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
+                # Set wallpaper to Zoom
+                sub.run(f"{zoomGnomeWallpaper}", shell=True)
 
         self.restore_icons()
                 
     def restore_icons(self):
-        # First try to apply from the default user icon folder
-        try:
-            sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
-        except:
-            ################################################################################
-            # Create .icons inside home user
-            ################################################################################
-            if not os.path.exists(f"{homeUser}/.icons"):
-                sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
+        if self.iniRestoreIcon == "true":
+            # First try to apply from the default user icon folder
+            try:
+                sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
+            except:
+                ################################################################################
+                # Create .icons inside home user
+                ################################################################################
+                if not os.path.exists(f"{homeUser}/.icons"):
+                    sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
 
-            # Copy icon from the backup to .icon folder
-            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                # Copy icon from the backup to .icon folder
+                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()

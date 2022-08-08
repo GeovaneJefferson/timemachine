@@ -472,6 +472,14 @@ class BACKUP:
         # Get users /usr/share/icons
         ################################################################################
         print(f"Backing up icon...")
+        
+        # Write to INI file whats been back up now
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'feedback_status', f"Backing up: icons")
+            config.write(configfile)
+
         # Try to find the current icon inside /usr/share/icons
         try:
             sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
@@ -481,13 +489,6 @@ class BACKUP:
         else:
             print("Current icon could not be found!")
             pass
-
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'feedback_status', f"Backing up: {userCurrentIcon}")
-            config.write(configfile)
 
         # Condition
         if self.iniAllowFlatpakNames == "true":
