@@ -150,7 +150,6 @@ class CLI:
                 f"Path={self.home_user}/.local/share/timemachine/\n "
                 f"Categories=System\n "
                 f"StartupWMClass=mainwindow.py\n "
-                f"WM_CLASS(STRING)='mainwindow.py', 'mainwindow.py'\n "
                 f"Terminal=false")
 
         try:
