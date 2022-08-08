@@ -358,18 +358,18 @@ class MAIN(QMainWindow):
         self.externalStatusLabel.setText("Status: Connected")
         self.externalStatusLabel.setStyleSheet('color: green')
         
-        # try:
-        #     # Clean notification info
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-        #     with open(src_user_config, 'w') as configfile:
-        #         config.set('INFO', 'notification_add_info', ' ')
-        #         config.write(configfile)
+        try:
+            # Clean notification info
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'notification_add_info', ' ')
+                config.write(configfile)
 
-        # except Exception as error:
-        #     print(Exception)
-        #     print("Main Window error!")
-        #     exit()
+        except Exception as error:
+            print(Exception)
+            print("Main Window error!")
+            pass
 
         self.get_size_informations()
 
@@ -650,58 +650,65 @@ class MAIN(QMainWindow):
             self.showInSystemTrayCheckBox.setChecked(False)
 
     def automatically_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:  
-            if self.automaticallyCheckBox.isChecked():
-                if not os.path.exists(src_backup_check_desktop):
-                    # Copy .desktop to user folder (Autostart .desktop)
-                    shutil.copy(src_backup_check, src_backup_check_desktop)  
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:  
+                if self.automaticallyCheckBox.isChecked():
+                    if not os.path.exists(src_backup_check_desktop):
+                        # Copy .desktop to user folder (Autostart .desktop)
+                        shutil.copy(src_backup_check, src_backup_check_desktop)  
 
-                config.set('BACKUP', 'auto_backup', 'true')
-                config.write(configfile)
-
-                # Backup checker
-                sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-                # Set checker running to true
-                with open(src_user_config, 'w') as configfile:
-                    config.set('BACKUP', 'checker_running', "true")
+                    config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
 
-                print("Auto backup was successfully activated!")
-     
-            else:
-                config.set('BACKUP', 'auto_backup', 'false')
-                config.write(configfile)    
-                
-                # Set checker running to false
-                with open(src_user_config, 'w') as configfile:
-                    config.set('BACKUP', 'checker_running', "false")
-                    config.write(configfile)
+                    # Backup checker
+                    sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+                    # Set checker running to true
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('BACKUP', 'checker_running', "true")
+                        config.write(configfile)
 
-                print("Auto backup was successfully deactivated!")
+                    print("Auto backup was successfully activated!")
+         
+                else:
+                    config.set('BACKUP', 'auto_backup', 'false')
+                    config.write(configfile)    
+                    
+                    # Set checker running to false
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('BACKUP', 'checker_running', "false")
+                        config.write(configfile)
+
+                    print("Auto backup was successfully deactivated!")
+        except:
+            pass
 
     def system_tray_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.showInSystemTrayCheckBox.isChecked():
-                config.set('SYSTEMTRAY', 'system_tray', 'true')
-                config.write(configfile)
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.showInSystemTrayCheckBox.isChecked():
+                    config.set('SYSTEMTRAY', 'system_tray', 'true')
+                    config.write(configfile)
 
-                print("System tray was successfully enabled!")
+                    print("System tray was successfully enabled!")
 
-            else:
-                config.set('SYSTEMTRAY', 'system_tray', 'false')
-                config.write(configfile)
+                else:
+                    config.set('SYSTEMTRAY', 'system_tray', 'false')
+                    config.write(configfile)
 
-                print("System tray was successfully disabled!")
+                    print("System tray was successfully disabled!")
 
-        ################################################################################
-        # Call system tray
-        # System tray can check if is not already runnnig
-        ################################################################################
-        sub.Popen(f"python3 {src_system_tray}", shell=True)
+            ################################################################################
+            # Call system tray
+            # System tray can check if is not already runnnig
+            ################################################################################
+            sub.Popen(f"python3 {src_system_tray}", shell=True)
+
+        except:
+            pass
 
     def select_external_clicked(self):
         self.setEnabled(False)
@@ -920,31 +927,35 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Update INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if "ubuntu" or "debian" in userDE:
-                # Save user's os name
-                config.set(f'INFO', 'os', 'deb')
-            
-            elif "fedora" or "opensuse" in userDE:
-                # Save user's os name
-                config.set(f'INFO', 'os', 'rpm')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if "ubuntu" or "debian" in userDE:
+                    # Save user's os name
+                    config.set(f'INFO', 'os', 'deb')
+                
+                elif "fedora" or "opensuse" in userDE:
+                    # Save user's os name
+                    config.set(f'INFO', 'os', 'rpm')
 
-            config.write(configfile)
+                config.write(configfile)
 
-        ################################################################################
-        # Update INI file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.chooseDevice}')
-            config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
-            config.write(configfile)
+            ################################################################################
+            # Update INI file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.chooseDevice}')
+                config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
+                config.write(configfile)
 
-        main.setEnabled(True)
-        self.close()
+            main.setEnabled(True)
+            self.close()
+
+        except:
+            pass
 
     def on_device_clicked(self, output):
         if self.availableDevices.isChecked():
@@ -1547,299 +1558,356 @@ class OPTION(QMainWindow):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if config.has_option('FOLDER', output):
-                config.remove_option('FOLDER', output)
-            else:
-                config.set('FOLDER', output, 'true')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if config.has_option('FOLDER', output):
+                    config.remove_option('FOLDER', output)
+                else:
+                    config.set('FOLDER', output, 'true')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
         
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if chooseMultipleTimePerDayCombox == 0:
-                config.set('SCHEDULE', 'everytime', '60')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if chooseMultipleTimePerDayCombox == 0:
+                    config.set('SCHEDULE', 'everytime', '60')
 
-            elif chooseMultipleTimePerDayCombox == 1:
-                config.set('SCHEDULE', 'everytime', '120')
+                elif chooseMultipleTimePerDayCombox == 1:
+                    config.set('SCHEDULE', 'everytime', '120')
 
-            elif chooseMultipleTimePerDayCombox == 2:
-                config.set('SCHEDULE', 'everytime', '240')
+                elif chooseMultipleTimePerDayCombox == 2:
+                    config.set('SCHEDULE', 'everytime', '240')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_check_sun_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.sunCheckBox.isChecked():
-                config.set('SCHEDULE', 'sun', 'true')
-                print("Sun")
-            else:
-                config.set('SCHEDULE', 'sun', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.sunCheckBox.isChecked():
+                    config.set('SCHEDULE', 'sun', 'true')
+                    print("Sun")
+                else:
+                    config.set('SCHEDULE', 'sun', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_check_mon_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.monCheckBox.isChecked():
-                config.set('SCHEDULE', 'mon', 'true')
-                print("Mon")
-            else:
-                config.set('SCHEDULE', 'mon', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.monCheckBox.isChecked():
+                    config.set('SCHEDULE', 'mon', 'true')
+                    print("Mon")
+                else:
+                    config.set('SCHEDULE', 'mon', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+        except:
+            pass
 
     def on_check_tue_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.tueCheckBox.isChecked():
-                config.set('SCHEDULE', 'tue', 'true')
-                print("Tue")
-            else:
-                config.set('SCHEDULE', 'tue', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.tueCheckBox.isChecked():
+                    config.set('SCHEDULE', 'tue', 'true')
+                    print("Tue")
+                else:
+                    config.set('SCHEDULE', 'tue', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_check_wed_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.wedCheckBox.isChecked():
-                config.set('SCHEDULE', 'wed', 'true')
-                print("Wed")
-            else:
-                config.set('SCHEDULE', 'wed', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.wedCheckBox.isChecked():
+                    config.set('SCHEDULE', 'wed', 'true')
+                    print("Wed")
+                else:
+                    config.set('SCHEDULE', 'wed', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+        except:
+            pass
 
     def on_check_thu_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.thuCheckBox.isChecked():
-                config.set('SCHEDULE', 'thu', 'true')
-                print("Thu")
-            else:
-                config.set('SCHEDULE', 'thu', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.thuCheckBox.isChecked():
+                    config.set('SCHEDULE', 'thu', 'true')
+                    print("Thu")
+                else:
+                    config.set('SCHEDULE', 'thu', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+        except:
+            pass
 
     def on_check_fri_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.friCheckBox.isChecked():
-                config.set('SCHEDULE', 'fri', 'true')
-                print("Fri")
-            else:
-                config.set('SCHEDULE', 'fri', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.friCheckBox.isChecked():
+                    config.set('SCHEDULE', 'fri', 'true')
+                    print("Fri")
+                else:
+                    config.set('SCHEDULE', 'fri', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_check_sat_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.satCheckBox.isChecked():
-                config.set('SCHEDULE', 'sat', 'true')
-                print("Sat")
-            else:
-                config.set('SCHEDULE', 'sat', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.satCheckBox.isChecked():
+                    config.set('SCHEDULE', 'sat', 'true')
+                    print("Sat")
+                else:
+                    config.set('SCHEDULE', 'sat', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)    
+
+        except:
+            pass
 
     def label_hours_changed(self):
         hours = str(self.hoursSpinBox.value())
+        try:
+            # Save hours
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # with open(src_user_config, 'w+') as configfile:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'hours', hours)
+                if hours in fixMinutes:
+                    config.set('SCHEDULE', 'hours', '0' + hours)
 
-        # Save hours
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w+') as configfile:
-            config.set('SCHEDULE', 'hours', hours)
-            if hours in fixMinutes:
-                config.set('SCHEDULE', 'hours', '0' + hours)
+                # Write to INI file
+                config.write(configfile)
 
-            # Write to INI file
-            config.write(configfile)
+        except:
+            pass
 
     def label_minutes_changed(self):
         minutes = str(self.minutesSpinBox.value())
+        try:
+            # Save minutes
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # with open(src_user_config, 'w+') as configfile:
+            with open(src_user_config, 'w') as configfile:
+                config.set('SCHEDULE', 'minutes', minutes)
+                if minutes in fixMinutes:
+                    config.set('SCHEDULE', 'minutes', '0' + minutes)
 
-        # Save minutes
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w+') as configfile:
-            config.set('SCHEDULE', 'minutes', minutes)
-            if minutes in fixMinutes:
-                config.set('SCHEDULE', 'minutes', '0' + minutes)
+                # Write to INI file
+                config.write(configfile)
 
-            # Write to INI file
-            config.write(configfile)
+        except:
+            pass
 
     def on_frequency_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w+') as configfile:
-            if self.oneTimePerDayRadio.isChecked():
-                config.set('MODE', 'one_time_mode', 'true')
-                print("One time per day selected")
-                # DISABLE MORE TIME MODE
-                config.set('MODE', 'more_time_mode', 'false')
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # with open(src_user_config, 'w+') as configfile:
+            with open(src_user_config, 'w') as configfile:
+                if self.oneTimePerDayRadio.isChecked():
+                    config.set('MODE', 'one_time_mode', 'true')
+                    print("One time per day selected")
+                    # DISABLE MORE TIME MODE
+                    config.set('MODE', 'more_time_mode', 'false')
 
-                self.multipleTimePerDayComboBox.setEnabled(False)
-                self.hoursSpinBox.setEnabled(True)
-                self.minutesSpinBox.setEnabled(True)
-                self.oneTimePerDayRadio.setChecked(True)
-                
-                # Enable all days
-                self.sunCheckBox.setEnabled(True)
-                self.monCheckBox.setEnabled(True)
-                self.tueCheckBox.setEnabled(True)
-                self.wedCheckBox.setEnabled(True)
-                self.thuCheckBox.setEnabled(True)
-                self.friCheckBox.setEnabled(True)
-                self.satCheckBox.setEnabled(True)
+                    self.multipleTimePerDayComboBox.setEnabled(False)
+                    self.hoursSpinBox.setEnabled(True)
+                    self.minutesSpinBox.setEnabled(True)
+                    self.oneTimePerDayRadio.setChecked(True)
+                    
+                    # Enable all days
+                    self.sunCheckBox.setEnabled(True)
+                    self.monCheckBox.setEnabled(True)
+                    self.tueCheckBox.setEnabled(True)
+                    self.wedCheckBox.setEnabled(True)
+                    self.thuCheckBox.setEnabled(True)
+                    self.friCheckBox.setEnabled(True)
+                    self.satCheckBox.setEnabled(True)
 
-            elif self.moreTimePerDayRadio.isChecked():
-                config.set('MODE', 'more_time_mode', 'true')
-                print("Multiple time per day selected")
-                # DISABLE ONE TIME MODE
-                config.set('MODE', 'one_time_mode', 'false')
+                elif self.moreTimePerDayRadio.isChecked():
+                    config.set('MODE', 'more_time_mode', 'true')
+                    print("Multiple time per day selected")
+                    # DISABLE ONE TIME MODE
+                    config.set('MODE', 'one_time_mode', 'false')
 
-                self.hoursSpinBox.setEnabled(False)
-                self.minutesSpinBox.setEnabled(False)
-                self.multipleTimePerDayComboBox.setEnabled(True)
-                self.moreTimePerDayRadio.setChecked(True)
-        
-                # Disable all days
-                self.sunCheckBox.setEnabled(False)
-                self.monCheckBox.setEnabled(False)
-                self.tueCheckBox.setEnabled(False)
-                self.wedCheckBox.setEnabled(False)
-                self.thuCheckBox.setEnabled(False)
-                self.friCheckBox.setEnabled(False)
-                self.satCheckBox.setEnabled(False)
+                    self.hoursSpinBox.setEnabled(False)
+                    self.minutesSpinBox.setEnabled(False)
+                    self.multipleTimePerDayComboBox.setEnabled(True)
+                    self.moreTimePerDayRadio.setChecked(True)
+            
+                    # Disable all days
+                    self.sunCheckBox.setEnabled(False)
+                    self.monCheckBox.setEnabled(False)
+                    self.tueCheckBox.setEnabled(False)
+                    self.wedCheckBox.setEnabled(False)
+                    self.thuCheckBox.setEnabled(False)
+                    self.friCheckBox.setEnabled(False)
+                    self.satCheckBox.setEnabled(False)
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+        except:
+            pass
 
     def on_allow__flatpak_names_clicked(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.allowFlatpakNamesCheckBox.isChecked():
-                config.set('BACKUP', 'allow_flatpak_names', 'true')
-                print("Allow flatpaks installed names")
-            else:
-                config.set('BACKUP', 'allow_flatpak_names', 'false')
-                config.set('BACKUP', 'allow_flatpak_data', 'false')
-                self.allowFlatpakDataCheckBox.setChecked(False)
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.allowFlatpakNamesCheckBox.isChecked():
+                    config.set('BACKUP', 'allow_flatpak_names', 'true')
+                    print("Allow flatpaks installed names")
+                else:
+                    config.set('BACKUP', 'allow_flatpak_names', 'false')
+                    config.set('BACKUP', 'allow_flatpak_data', 'false')
+                    self.allowFlatpakDataCheckBox.setChecked(False)
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_allow__flatpak_data_clicked(self):
-        # If user allow app to back up data, auto activate
-        # backup flatpaks name too.
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.allowFlatpakDataCheckBox.isChecked():
-                config.set('BACKUP', 'allow_flatpak_names', 'true')
-                config.set('BACKUP', 'allow_flatpak_data', 'true')
-                print("Allow flatpaks installed names + data")
+        try:
+            # If user allow app to back up data, auto activate
+            # backup flatpaks name too.
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                if self.allowFlatpakDataCheckBox.isChecked():
+                    config.set('BACKUP', 'allow_flatpak_names', 'true')
+                    config.set('BACKUP', 'allow_flatpak_data', 'true')
+                    print("Allow flatpaks installed names + data")
 
-                # Activate names checkbox
-                self.allowFlatpakNamesCheckBox.setChecked(True)
+                    # Activate names checkbox
+                    self.allowFlatpakNamesCheckBox.setChecked(True)
 
-            else:
-                config.set('BACKUP', 'allow_flatpak_data', 'false')
+                else:
+                    config.set('BACKUP', 'allow_flatpak_data', 'false')
 
-            # Write to INI file
-            config.write(configfile)
+                # Write to INI file
+                config.write(configfile)
+
+        except:
+            pass
 
     def on_button_fix_clicked(self):
         resetConfirmation = QMessageBox.question(self, 'Reset', 
             'Are you sure you want to reset settings?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
-            # Reset settings
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Backup section
-                config.set('BACKUP', 'first_startup', 'false')
-                config.set('BACKUP', 'auto_backup', 'false')
-                config.set('BACKUP', 'backup_now', 'false')
-                config.set('BACKUP', 'checker_running', 'false')
-                config.set('BACKUP', 'allow_flatpak_names', 'true')
-                config.set('BACKUP', 'allow_flatpak_data', 'false')
+            try:
+                # Reset settings
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    # Backup section
+                    config.set('BACKUP', 'first_startup', 'false')
+                    config.set('BACKUP', 'auto_backup', 'false')
+                    config.set('BACKUP', 'backup_now', 'false')
+                    config.set('BACKUP', 'checker_running', 'false')
+                    config.set('BACKUP', 'allow_flatpak_names', 'true')
+                    config.set('BACKUP', 'allow_flatpak_data', 'false')
 
-                # External section
-                config.set('EXTERNAL', 'hd', 'None')
-                config.set('EXTERNAL', 'name', 'None')
+                    # External section
+                    config.set('EXTERNAL', 'hd', 'None')
+                    config.set('EXTERNAL', 'name', 'None')
 
-                # Mode section
-                config.set('MODE', 'one_time_mode', 'false')
-                config.set('MODE', 'more_time_mode', 'true')
+                    # Mode section
+                    config.set('MODE', 'one_time_mode', 'false')
+                    config.set('MODE', 'more_time_mode', 'true')
 
-                # System tray  section
-                config.set('SYSTEMTRAY', 'system_tray', 'false')
+                    # System tray  section
+                    config.set('SYSTEMTRAY', 'system_tray', 'false')
 
-                # Schedule section
-                config.set('SCHEDULE', 'sun', 'false')
-                config.set('SCHEDULE', 'mon', 'true')
-                config.set('SCHEDULE', 'tue', 'true')
-                config.set('SCHEDULE', 'wed', 'true')
-                config.set('SCHEDULE', 'thu', 'true')
-                config.set('SCHEDULE', 'fri', 'true')
-                config.set('SCHEDULE', 'sat', 'false')
-                config.set('SCHEDULE', 'hours', '10')
-                config.set('SCHEDULE', 'minutes', '00')
-                config.set('SCHEDULE', 'everytime', '60')
+                    # Schedule section
+                    config.set('SCHEDULE', 'sun', 'false')
+                    config.set('SCHEDULE', 'mon', 'true')
+                    config.set('SCHEDULE', 'tue', 'true')
+                    config.set('SCHEDULE', 'wed', 'true')
+                    config.set('SCHEDULE', 'thu', 'true')
+                    config.set('SCHEDULE', 'fri', 'true')
+                    config.set('SCHEDULE', 'sat', 'false')
+                    config.set('SCHEDULE', 'hours', '10')
+                    config.set('SCHEDULE', 'minutes', '00')
+                    config.set('SCHEDULE', 'everytime', '60')
 
-                # Info section
-                config.set('INFO', 'os', 'None')
-                config.set('INFO', 'latest', 'None')
-                config.set('INFO', 'next', 'None')
-                config.set('INFO', 'notification_id', '0')
-                config.set('INFO', 'feedback_status', ' ')
+                    # Info section
+                    config.set('INFO', 'os', 'None')
+                    config.set('INFO', 'latest', 'None')
+                    config.set('INFO', 'next', 'None')
+                    config.set('INFO', 'notification_id', '0')
+                    config.set('INFO', 'feedback_status', ' ')
 
-                # Folders section
-                config.set('FOLDER', 'pictures', 'true')
-                config.set('FOLDER', 'documents', 'true')
-                config.set('FOLDER', 'music', 'true')
-                config.set('FOLDER', 'videos', 'true')
-                config.set('FOLDER', 'desktop', 'true')
+                    # Folders section
+                    config.set('FOLDER', 'pictures', 'true')
+                    config.set('FOLDER', 'documents', 'true')
+                    config.set('FOLDER', 'music', 'true')
+                    config.set('FOLDER', 'videos', 'true')
+                    config.set('FOLDER', 'desktop', 'true')
 
-                # Restore section
-                config.set('RESTORE', 'is_restore_running', 'false')
-                config.set('RESTORE', 'applications_packages', 'true')
-                config.set('RESTORE', 'applications_flatpak_names', 'true')
-                config.set('RESTORE', 'applications_data', 'false')
-                config.set('RESTORE', 'files_and_folders', 'false')
+                    # Restore section
+                    config.set('RESTORE', 'is_restore_running', 'false')
+                    config.set('RESTORE', 'applications_packages', 'true')
+                    config.set('RESTORE', 'applications_flatpak_names', 'true')
+                    config.set('RESTORE', 'applications_data', 'false')
+                    config.set('RESTORE', 'files_and_folders', 'false')
 
-                # Write to INI file
-                config.write(configfile)
+                    # Write to INI file
+                    config.write(configfile)
+
+            except:
+                pass
 
             print("All settings was reset!")
 

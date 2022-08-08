@@ -449,7 +449,7 @@ class BACKUP:
             # Get user installed flatpaks
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(self.flatpakTxtFile, 'w') as configfile:  # Set auto backup to true
+            with open(self.flatpakTxtFile, 'w') as configfile:  
                 for output in os.popen("flatpak list --columns=app --app"):
                     dummyList.append(output)
                     # Write USER installed flatpak to flatpak.txt inside external device
