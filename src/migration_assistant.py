@@ -439,7 +439,7 @@ class PREBACKUP(QWidget):
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
-        self.iniOS = config['INFO']['os']
+        self.packageManager = config['INFO']['packageManager']
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -491,7 +491,7 @@ class PREBACKUP(QWidget):
         # Application checkbox (Apps inside manual folder)
         ################################################################################
         # Get folder size
-        if self.iniOS == "rpm":
+        if self.packageManager == "rpm":
             self.applicationSize = os.popen(f"du -hs {self.iniExternalLocation}/"
                 f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}")
             self.applicationSize = self.applicationSize.read().strip("\t")
@@ -499,7 +499,7 @@ class PREBACKUP(QWidget):
             self.applicationSize = self.applicationSize.replace(f"{self.iniExternalLocation}"
                 f"/{baseFolderName}/{applicationFolderName}/{rpmFolderName}", "").replace("\t", "")
         
-        elif self.iniOS == "deb":
+        elif self.packageManager == "deb":
             self.applicationSize = os.popen(f"du -hs {self.iniExternalLocation}/"
                 f"{baseFolderName}/{applicationFolderName}/{debFolderName}")
             self.applicationSize = self.applicationSize.read().strip("\t")
@@ -694,12 +694,12 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             dummyList = []
-            if self.iniOS == "rpm":
+            if self.packageManager == "rpm":
                 for output in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}"):
                     dummyList.append(output)
 
-            elif self.iniOS == "deb":
+            elif self.packageManager == "deb":
                 for output in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{applicationFolderName}/{debFolderName}"):
                     dummyList.append(output)
@@ -768,7 +768,7 @@ class PREBACKUP(QWidget):
         try:
             dummyList = []
             # Find user's DE type
-            userDE = os.popen(getUserDE)
+            userDE = os.popen(getUserPackageManager)
             userDE = userDE.read().strip().lower()
             # Get current user's background
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"

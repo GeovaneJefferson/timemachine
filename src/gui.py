@@ -921,7 +921,7 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Get user's ox
         ################################################################################
-        userDE = os.popen(getUserDE)
+        userDE = os.popen(getUserPackageManager)
         userDE = userDE.read().strip().lower()
 
         ################################################################################
@@ -933,11 +933,11 @@ class EXTERNAL(QWidget):
             with open(src_user_config, 'w') as configfile:
                 if "ubuntu" or "debian" in userDE:
                     # Save user's os name
-                    config.set(f'INFO', 'os', 'deb')
+                    config.set(f'INFO', 'packageManager', 'deb')
                 
                 elif "fedora" or "opensuse" in userDE:
                     # Save user's os name
-                    config.set(f'INFO', 'os', 'rpm')
+                    config.set(f'INFO', 'packageManager', 'rpm')
 
                 config.write(configfile)
 
@@ -1883,7 +1883,7 @@ class OPTION(QMainWindow):
                     config.set('SCHEDULE', 'everytime', '60')
 
                     # Info section
-                    config.set('INFO', 'os', 'None')
+                    config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')

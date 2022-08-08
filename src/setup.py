@@ -55,7 +55,8 @@ installDEB = "sudo dpkg -i"
 
 # DE
 supported = "gnome"
-getUserDE = "cat /etc/os-release"
+getUserDE = "echo $XDG_CURRENT_DESKTOP"
+getUserPackageManager = "cat /etc/os-release"
 
 # Gnome
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"

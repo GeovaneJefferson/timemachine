@@ -31,7 +31,7 @@ class RESTORE:
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
-        self.iniOS = config['INFO']['os']
+        self.packageManager = config['INFO']['packageManager']
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -193,7 +193,7 @@ class RESTORE:
     def restore_applications_packages(self):
         print("Installing applications packages...")
         try:             
-            if self.iniOS == "rpm":
+            if self.packageManager == "rpm":
                 ################################################################################
                 # Distros like Fedora already has flatpak installed
                 ################################################################################
@@ -211,7 +211,7 @@ class RESTORE:
                     sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
             
-            elif self.iniOS == "deb":
+            elif self.packageManager == "deb":
                 ################################################################################
                 # First install flatphub if necessary
                 ################################################################################
