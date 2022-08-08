@@ -32,6 +32,8 @@ class RESTORE:
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
         self.iniOS = config['INFO']['os']
+        # Flatpak txt file
+        self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
         self.get_home_backup_folders()
 
@@ -241,7 +243,7 @@ class RESTORE:
             print("Installing flatpaks apps...")
             try: 
                 # Restore flatpak apps
-                with open(f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}", "r") as read_file:
+                with open(self.flatpakTxtFile, "r") as read_file:
                     read_file = read_file.readlines()
 
                     for output in read_file:

@@ -223,7 +223,6 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setFixedSize(180, 180)
                         self.availableDevices.setText(output)
                         self.availableDevices.adjustSize()
-                        # TODO
                         self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
                         self.availableDevices.setFont(QFont("Ubuntu", 11))
                         self.availableDevices.setStyleSheet(
@@ -236,7 +235,7 @@ class CHOOSEDEVICE(QWidget):
                         # Image
                         image = QLabel(self.availableDevices)
                         image.setFixedSize(96, 96)
-                        image.move(46, 35)
+                        image.move(40, 35)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
@@ -441,6 +440,8 @@ class PREBACKUP(QWidget):
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
         self.iniOS = config['INFO']['os']
+        # Flatpak txt file
+        self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
         self.widgets()
 
@@ -451,7 +452,6 @@ class PREBACKUP(QWidget):
         # Restore widget
         self.optionskWidget = QWidget()
         self.optionskWidget.setFixedSize(300, 300)
-        # self.optionskWidget.setStyleSheet("""border:1px solid black;""")
 
         # Vertical base layout
         self.verticalLayout = QVBoxLayout()
@@ -491,12 +491,21 @@ class PREBACKUP(QWidget):
         # Application checkbox (Apps inside manual folder)
         ################################################################################
         # Get folder size
-        self.applicationSize = os.popen(f"du -hs {self.iniExternalLocation}/"
-            f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}")
-        self.applicationSize = self.applicationSize.read().strip("\t")
-        self.applicationSize = self.applicationSize.strip("\n")
-        self.applicationSize = self.applicationSize.replace(f"{self.iniExternalLocation}"
-            f"/{baseFolderName}/{applicationFolderName}/{rpmFolderName}", "").replace("\t", "")
+        if self.iniOS == "rpm":
+            self.applicationSize = os.popen(f"du -hs {self.iniExternalLocation}/"
+                f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}")
+            self.applicationSize = self.applicationSize.read().strip("\t")
+            self.applicationSize = self.applicationSize.strip("\n")
+            self.applicationSize = self.applicationSize.replace(f"{self.iniExternalLocation}"
+                f"/{baseFolderName}/{applicationFolderName}/{rpmFolderName}", "").replace("\t", "")
+        
+        elif self.iniOS == "deb":
+            self.applicationSize = os.popen(f"du -hs {self.iniExternalLocation}/"
+                f"{baseFolderName}/{applicationFolderName}/{debFolderName}")
+            self.applicationSize = self.applicationSize.read().strip("\t")
+            self.applicationSize = self.applicationSize.strip("\n")
+            self.applicationSize = self.applicationSize.replace(f"{self.iniExternalLocation}"
+                f"/{baseFolderName}/{applicationFolderName}/{debFolderName}", "").replace("\t", "")
 
         ################################################################################
         # Application checkbox
@@ -524,13 +533,19 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Application checkbox (names)
         ################################################################################
-        self.flatpakCheckBox = QCheckBox()
-        self.flatpakCheckBox.setText(" Flatpak (Apps)")
-        self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
-        self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
-        self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
-        self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
-        
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(self.flatpakTxtFile, "r") as read_file:
+            flatpaksToBeInstalled = len(read_file.readlines())
+
+            self.flatpakCheckBox = QCheckBox()
+            self.flatpakCheckBox.setText(f" Flatpak "
+                f"                   {flatpaksToBeInstalled} Apps")
+            self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
+            self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
+            self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
+            
         ################################################################################
         # Application checkbox (DATA)
         ################################################################################
@@ -584,7 +599,7 @@ class PREBACKUP(QWidget):
         # Files and Folders checkbox        
         self.fileAndFoldersCheckBox = QCheckBox()
         self.fileAndFoldersCheckBox.setText(" File and Folders"
-            f"         {self.fileAndFoldersFolderSize}")
+            f"       {self.fileAndFoldersFolderSize}")
         self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
         self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
         self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -1200,7 +1215,7 @@ class DONE(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = WELCOMESCREEN()
+    main = PREBACKUP()
     main2 = CHOOSEDEVICE()
     main3 = OPTIONS()
     main4 = PREBACKUP()
