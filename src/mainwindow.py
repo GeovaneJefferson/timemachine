@@ -1887,6 +1887,7 @@ class OPTION(QMainWindow):
 
                     # Info section
                     config.set('INFO', 'packageManager', 'None')
+                    config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')

@@ -50,6 +50,8 @@ class BACKUP:
             self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
             # Check date inside backup folder
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+            # Icons users folder
+            self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}"
             
             # PACKAGES
             # RPM main folder
@@ -98,6 +100,13 @@ class BACKUP:
             if not os.path.exists(self.applicationMainFolder):
                 print("Application folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)
+
+            ################################################################################
+            # Create Icons folder
+            ################################################################################
+            if not os.path.exists(self.iconsMainFolder):
+                print("Icons folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {self.iconsMainFolder}", shell=True)
 
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)
@@ -441,8 +450,46 @@ class BACKUP:
         # Set zoom mode
         sub.run(f"{zoomGnomeWallpaper}", shell=True) 
 
-        # Condition
+        self.backup_icons()
+
+    # TODO
+    def backup_icons(self):
         ################################################################################
+        # Get current use icon by user
+        ################################################################################
+        userCurrentIcon = os.popen(getUserIcon)
+        userCurrentIcon = userCurrentIcon.read().strip()
+        userCurrentIcon = userCurrentIcon.replace("'", "")
+
+        # Save icon information
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'icon', f"{userCurrentIcon}")
+            config.write(configfile)
+
+        ################################################################################
+        # Get users /usr/share/icons
+        ################################################################################
+        print(f"Backing up icon...")
+        # Try to find the current icon inside /usr/share/icons
+        try:
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        except:
+            # Try to find the current icon inside /home/user/.icons
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        else:
+            print("Current icon could not be found!")
+            pass
+
+        # Write to INI file whats been back up now
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'feedback_status', f"Backing up: {userCurrentIcon}")
+            config.write(configfile)
+
+        # Condition
         if self.iniAllowFlatpakNames == "true":
             self.write_flatpak_file()
         else:

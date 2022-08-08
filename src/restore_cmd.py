@@ -32,6 +32,11 @@ class RESTORE:
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
         self.packageManager = config['INFO']['packageManager']
+        # Icon
+        self.iniIcon = config['INFO']['icon']
+
+        # Icons users folder
+        self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}"
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -183,7 +188,23 @@ class RESTORE:
             sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
             # Set wallpaper to Zoom
             sub.run(f"{zoomGnomeWallpaper}", shell=True)
+
+        self.restore_icons()
                 
+    def restore_icons(self):
+        # First try to apply from the default user icon folder
+        try:
+            sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
+        except:
+            ################################################################################
+            # Create .icons inside home user
+            ################################################################################
+            if not os.path.exists(f"{homeUser}/.icons"):
+                sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
+
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
 
@@ -286,12 +307,6 @@ class RESTORE:
                 print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
                 sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
                 
-                ###############################################################################
-                # Update the current percent of the process INI file
-                ###############################################################################
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                    config.write(configfile)
         except:
             pass
         
@@ -312,12 +327,6 @@ class RESTORE:
                 print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
                 sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
 
-                ###############################################################################
-                # Update the current percent of the process INI file
-                ###############################################################################
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'current_percent', f"{(calculateRuleOf3):.0f}")
-                    config.write(configfile)
         except:
             pass
 
@@ -374,7 +383,6 @@ class RESTORE:
             config.set('INFO', 'notification_id', "0")
             config.set('INFO', 'notification_add_info', "")
             config.set('INFO', 'feedback_status', "")
-            config.set('INFO', 'current_percent', "0")
             # Restore settings
             config.set('RESTORE', 'is_restore_running', "false")
             config.set('RESTORE', 'wallpaper', "false")
