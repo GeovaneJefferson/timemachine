@@ -41,16 +41,11 @@ class APP:
         self.dummyLine = QAction("――――――――――――――")
         self.dummyLine.setFont(QFont(item))
         self.dummyLine.setEnabled(False)
-
+      
         # Line2
         self.dummyLine2 = QAction("――――――――――――――")
         self.dummyLine2.setFont(QFont(item))
         self.dummyLine2.setEnabled(False)
-      
-        # Line3
-        self.dummyLine3 = QAction("――――――――――――――")
-        self.dummyLine3.setFont(QFont(item))
-        self.dummyLine3.setEnabled(False)
       
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
@@ -75,12 +70,11 @@ class APP:
             f"{src_main_window_py}", shell=True))
 
         # Add all to menu
-        self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.iniLastBackupInformation)
-        self.menu.addAction(self.dummyLine2)
+        self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.enterTimeMachineButton)
         self.menu.addAction(self.backupNowButton)
-        self.menu.addAction(self.dummyLine3)
+        self.menu.addAction(self.dummyLine2)
         self.menu.addAction(self.openTimeMachine)
 
         # Adding options to the System Tray

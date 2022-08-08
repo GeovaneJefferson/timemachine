@@ -1028,9 +1028,11 @@ class OPTION(QMainWindow):
         # Days to run widget
         ################################################################################
         self.daysToRunWidget = QWidget(self)
-        self.daysToRunWidget.setGeometry(280, 20, 390, 80)
+        self.daysToRunWidget.setGeometry(285, 20, 390, 80)
         self.daysToRunWidget.setStyleSheet("""
             border-top: 1px solid rgb(198, 198, 198);
+            border-left: 1px solid rgb(198, 198, 198);
+            border-right: 1px solid rgb(198, 198, 198);
         """)
 
         # Days to run layout V
@@ -1046,7 +1048,7 @@ class OPTION(QMainWindow):
         self.daysToRunTitle.setFont(QFont("Ubuntu", 11))
         self.daysToRunTitle.setText("Days to run:")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
-        self.daysToRunTitle.setFixedSize(180, 30)
+        self.daysToRunTitle.adjustSize()
         self.daysToRunTitle.setStyleSheet("""
             border-color: transparent;
         """)
@@ -1114,10 +1116,12 @@ class OPTION(QMainWindow):
         # Time to run widget
         ################################################################################
         self.timeToRunWidget = QWidget(self)
-        self.timeToRunWidget.setGeometry(280, 100, 390, 140)
+        self.timeToRunWidget.setGeometry(285, 100, 390, 140)
         self.timeToRunWidget.setStyleSheet("""
             border-top: 1px solid rgb(198, 198, 198);
             border-bottom: 1px solid rgb(198, 198, 198);
+            border-left: 1px solid rgb(198, 198, 198);
+            border-right: 1px solid rgb(198, 198, 198);
         """)
 
         # Time to run title
@@ -1125,7 +1129,7 @@ class OPTION(QMainWindow):
         self.timeToRunTitle.setFont(QFont("Ubuntu", 11))
         self.timeToRunTitle.setText("Time to run:")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
-        self.timeToRunTitle.setFixedSize(180, 30)
+        self.timeToRunTitle.adjustSize()
         self.timeToRunTitle.setStyleSheet("""
             border: transparent;
         """)
@@ -1243,11 +1247,13 @@ class OPTION(QMainWindow):
         # Flatpak settings
         ################################################################################
         self.flatpakWidget = QWidget(self)
-        self.flatpakWidget.setGeometry(280, 240, 390, 80)
+        self.flatpakWidget.setGeometry(285, 240, 390, 80)
         self.flatpakWidget.setStyleSheet(
         "QWidget"
         "{"
         "border-bottom: 1px solid rgb(198, 198, 198);"
+        "border-left: 1px solid rgb(198, 198, 198);"
+        "border-right: 1px solid rgb(198, 198, 198);"
         "}")
 
         # Notification layout
