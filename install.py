@@ -146,11 +146,11 @@ class CLI:
                 f"Name=Time Machine\n "
                 f"Comment=Backup your files\n "
                 f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
-                f"Exec=python3 {self.home_user}/.local/share/timemachine/src/gui.py\n "
+                f"Exec=python3 {src_main_window_py}\n "
                 f"Path={self.home_user}/.local/share/timemachine/\n "
                 f"Categories=System\n "
-                f"StartupWMClass=gui.py\n "
-                f"WM_CLASS(STRING)='gui.py', 'gui.py'\n "
+                f"StartupWMClass={src_main_window_py}\n "
+                f"WM_CLASS(STRING)='{src_main_window_py}', 'mainwindow.py'\n "
                 f"Terminal=false")
 
         try:
