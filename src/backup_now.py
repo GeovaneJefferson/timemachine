@@ -461,34 +461,43 @@ class BACKUP:
         userCurrentIcon = userCurrentIcon.read().strip()
         userCurrentIcon = userCurrentIcon.replace("'", "")
 
-        # Save icon information
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'icon', f"{userCurrentIcon}")
-            config.write(configfile)
+        # Only one icon inside the backup folder
+        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/")
+        if insideIconFolder:
+            # Delete all image inside wallpaper folder
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if icon != userCurrentIcon:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/{icon}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/{icon}", shell=True)
 
-        ################################################################################
-        # Get users /usr/share/icons
-        ################################################################################
-        print(f"Backing up icon...")
-        
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'feedback_status', f"Backing up: icons")
-            config.write(configfile)
+                    # Save icon information
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('INFO', 'icon', f"{userCurrentIcon}")
+                        config.write(configfile)
 
-        # Try to find the current icon inside /usr/share/icons
-        try:
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        except:
-            # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        else:
-            print("Current icon could not be found!")
-            pass
+                    ################################################################################
+                    # Get users /usr/share/icons
+                    ################################################################################
+                    # Write to INI file whats been back up now
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('INFO', 'feedback_status', f"Backing up: icons")
+                        config.write(configfile)
+
+                    print(f"Backing up icon...")
+                    # Try to find the current icon inside /usr/share/icons
+                    try:
+                        sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+                    except:
+                        # Try to find the current icon inside /home/user/.icons
+                        sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+                    else:
+                        print("Current icon could not be found!")
+                        pass
 
         # Condition
         if self.iniAllowFlatpakNames == "true":

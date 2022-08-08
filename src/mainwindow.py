@@ -948,6 +948,14 @@ class EXTERNAL(QWidget):
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
 
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/"):
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'icon', f'{icon}')
+                    config.write(configfile)
+                
             main.setEnabled(True)
             self.close()
 
