@@ -404,21 +404,25 @@ class BACKUP:
         self.get_user_background()
 
     def get_user_background(self):
-        self.userDE = os.popen(getUserDE)
-        self.userDE = self.userDE.read().strip().lower()
+        # Get users DE (Gnome or KDE etc.)
+        userDE = os.popen(getUserDE)
+        userDE = userDE.read().strip().lower()
 
-        # Get current wallpaper
-        if "gnome" or "ubuntu" in self.userDE:
+        if "gnome" or "ubuntu" or "pop" in userDE:
+            # Get current wallpaper
             self.getWallpaper = os.popen(getGnomeWallpaper)
             self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
-            # Remove spaces if exist
-            if " " in self.getWallpaper:
-                self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
-
-            self.backup_user_wallpaper()
-
+            # If it has comma
+            if "," in self.getWallpaper:
+                self.getWallpaper = str(self.getWallpaper.replace(", ", "\, "))
+                # Remove spaces if exist
+                if " " in self.getWallpaper:
+                    self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
         else:
+            print("No supported DE found to back up the wallpaper.")
             self.write_flatpak_file()
+
+        self.backup_user_wallpaper()
 
     def backup_user_wallpaper(self):
         print("Backing up current wallpaper...")
@@ -433,7 +437,9 @@ class BACKUP:
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
         sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
-                
+        # Set zoom mode
+        sub.run(f"{zoomGnomeWallpaper}", shell=True) 
+
         # Condition
         ################################################################################
         if self.iniAllowFlatpakNames == "true":
