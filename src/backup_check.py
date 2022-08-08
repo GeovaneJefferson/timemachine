@@ -17,7 +17,6 @@ class CLI:
     def updates(self):
         try:
             print("Updating...")
-
             config = configparser.ConfigParser()
             config.read(src_user_config)
 
@@ -54,7 +53,10 @@ class CLI:
             self.currentMinute = now.strftime("%M")
             self.totalCurrentTime = self.currentHour + self.currentMinute
             self.totalNextTime = self.iniNextHour + self.ininextMinute
-
+            
+            # Check date inside backup folder
+            self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+            
         except KeyError as error:
             print(keyError)
             print("Backup checker KeyError!")
@@ -151,16 +153,28 @@ class CLI:
         print("Checking mode...")
         # One time per day
         if self.iniOneTimePerDay == "true":
-            print("One time per day found")
             if self.totalCurrentTime > self.totalNextTime:
                 ################################################################################
-                # ! Every time user turn off pc, firstStartup inside INI file is update to true
+                # ! Every time user turn off pc, firstStartup, "first boot" inside INI file is set to true
                 # Only backup if:
                 #  * App was unable to backup because PC was off
                 #  * Make sure that App had not already made a backup today after time has passed
-                # by check the latest backup date "self.iniLatestDate" inside INI file.
+                # by checking inside the backup device, if today date is not already inside, backup
                 ################################################################################
-                if self.iniFirstStartup == "true" and self.dayName not in self.iniLatestDate: 
+                # Get folders inside the backup folder, and check the last backup date
+                dateFolders = []
+                dummyDate = datetime.now()
+                dummyDate = dummyDate.strftime("%x")
+                dummyDate = dummyDate.replace("/", "-")
+
+                for output in os.listdir(self.checkDateInsideBackupFolder):  
+                    dateFolders.append(output)
+                    dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+
+                # If is not the first boot
+                # If todays date can not be found inside the backup device, backup was not made today.
+                if self.iniFirstStartup == "true" and dummyDate not in dateFolders: 
+                # if self.iniFirstStartup == "true" and self.dayName not in self.iniLatestDate: 
                     ################################################################################
                     # Set startup to False and Continue to back up
                     ################################################################################

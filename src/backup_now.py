@@ -48,6 +48,8 @@ class BACKUP:
             self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
             # Application main Local folder
             self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+            # Check date inside backup folder
+            self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
             
             # PACKAGES
             # RPM main folder
@@ -249,9 +251,8 @@ class BACKUP:
                 ################################################################################
                 try:
                     dateFolders = []
-                    for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"):
+                    for output in os.listdir(self.checkDateInsideBackupFolder):
                         if not "." in output:
-                            print(output)
                             dateFolders.append(output)
                             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
