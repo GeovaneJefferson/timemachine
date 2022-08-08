@@ -488,6 +488,17 @@ class PREBACKUP(QWidget):
         self.wallpaperCheckBox.clicked.connect(self.on_wallpaper_clicked)
         
         ################################################################################
+        # Icons checkbox
+        ################################################################################
+        self.iconCheckBox = QCheckBox()
+        self.iconCheckBox.setText(" Icon")
+        self.iconCheckBox.setFont(QFont("Ubuntu", 11))
+        self.iconCheckBox.adjustSize()
+        self.iconCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.iconCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.iconCheckBox.clicked.connect(self.on_wallpaper_clicked)
+        
+        ################################################################################
         # Application checkbox (Apps inside manual folder)
         ################################################################################
         # Get folder size
@@ -654,6 +665,7 @@ class PREBACKUP(QWidget):
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.optionskWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayoutForOptions.addWidget(self.wallpaperCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.iconCheckBox)
         self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakDataCheckBox)
@@ -768,7 +780,7 @@ class PREBACKUP(QWidget):
         try:
             dummyList = []
             # Find user's DE type
-            userDE = os.popen(getUserPackageManager)
+            userDE = os.popen(getUserDE)
             userDE = userDE.read().strip().lower()
             # Get current user's background
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
@@ -926,8 +938,34 @@ class PREBACKUP(QWidget):
             # Write to INI file
             config.write(configfile)
             
-            # Allow continue?
-            self.allow_to_continue()
+        self.on_icon_clicked()
+
+    def on_icon_clicked(self):
+        ################################################################################
+        # Write to INI file
+        ################################################################################
+        with open(src_user_config, 'w') as configfile:
+            if self.iconCheckBox.isChecked():
+                config.set('RESTORE', 'icon', 'true')
+
+                # Enable continue button
+                self.continueButton.setEnabled(True)
+                # Add icon to list
+                self.outputBox.append("icon")
+              
+            else:
+                config.set('RESTORE', 'icon', 'false')
+
+                # Disable continue button
+                self.continueButton.setEnabled(False)
+                if "icon" in self.outputBox:
+                    self.outputBox.remove("icon")
+
+            # Write to INI file
+            config.write(configfile)
+            
+        # Allow continue?
+        self.allow_to_continue()
 
     def allow_to_continue(self):
         # If self.outputBox is not empty, allow it
