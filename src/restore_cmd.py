@@ -237,18 +237,14 @@ class RESTORE:
     def restore_theme(self):
         if self.iniSystemSettings == "true":
             print("Restoring theme...")
-            # First try to apply from the default user theme folder
-            try:
-                sub.run(f"{setUserTheme} {self.iniTheme}" ,shell=True)
-            except:
-                ################################################################################
-                # Create .icons inside home user
-                ################################################################################
-                if not os.path.exists(f"{homeUser}/.themes"):
-                    sub.run(f"{createCMDFolder} {homeUser}.themes", shell=True)   
+            ################################################################################
+            # Create .icons inside home user
+            ################################################################################
+            if not os.path.exists(f"{homeUser}/.themes"):
+                sub.run(f"{createCMDFolder} {homeUser}.themes", shell=True)   
 
-                # Copy theme from the backup to .theme folder
-                sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
+            # Copy theme from the backup to .theme folder
+            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
