@@ -284,7 +284,6 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
         with open(src_user_config, 'w') as configfile:
             config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.outputBox}')
             config.set('EXTERNAL', 'name', f'{self.outputBox}')
@@ -675,6 +674,8 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Look for flatpakTxt inside external device
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
             with open(f"{self.iniExternalLocation}/{userName}"
                 f"{baseFolderName}/{flatpakTxt}", 'r') as output:
                 output = output.read()
@@ -797,6 +798,8 @@ class PREBACKUP(QWidget):
 
     def on_application_clicked(self):
         # Restore packages applications
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.applicationPackagesCheckBox.isChecked():
                 config.set('RESTORE', 'applications_packages', 'true')
@@ -825,6 +828,8 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Write to INI file
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.flatpakCheckBox.isChecked():
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
@@ -853,6 +858,8 @@ class PREBACKUP(QWidget):
     def on_applications_data_clicked(self):
         # If user allow app to back up data, auto activate
         # backup flatpaks name too.
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.flatpakDataCheckBox.isChecked():
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
@@ -886,6 +893,8 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Write to INI file
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.fileAndFoldersCheckBox.isChecked():
                 config.set('RESTORE', 'files_and_folders', 'true')
@@ -913,6 +922,8 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Write to INI file
         ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             if self.systemSettingsCheckBox.isChecked():
                 config.set('RESTORE', 'system_settings', 'true')
