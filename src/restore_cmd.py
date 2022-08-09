@@ -174,12 +174,10 @@ class RESTORE:
 
     def apply_users_saved_wallpaper(self):
         if self.iniSystemSettings == "true":
+            print("Restoring wallpaper...")
             for image in os.listdir(f"{self.iniExternalLocation}/"
                 f"{baseFolderName}/{wallpaperFolderName}/"):
                 # Copy the wallpaper to the user's Pictures
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{wallpaperFolderName}/{image} {homeUser}/Pictures")
-                
                 sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
 
@@ -190,7 +188,6 @@ class RESTORE:
                     if " " in image:
                         image = str(image.replace(" ", "\ "))
           
-                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
                 sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
@@ -200,6 +197,7 @@ class RESTORE:
 
     def restore_icons(self):
         if self.iniSystemSettings == "true":
+            print("Restoring icon...")
             ################################################################################
             # Get saved icon and theme, then write to INI file
             ################################################################################
@@ -208,11 +206,13 @@ class RESTORE:
             with open(src_user_config, 'w') as configfile:
                 # Get current icon
                 for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                # for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
                     # Write to INI file saved icon name
                     config.set('INFO', 'icon', f'{icon}')
                     config.write(configfile)
-            
+
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
                 # Get current theme
                 for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
                     # Write to INI file saved theme name
@@ -236,9 +236,10 @@ class RESTORE:
 
     def restore_theme(self):
         if self.iniSystemSettings == "true":
+            print("Restoring theme...")
             # First try to apply from the default user theme folder
             try:
-                sub.run(f"{setUserTheme} {self.iniTheme} " ,shell=True)
+                sub.run(f"{setUserTheme} {self.iniTheme}" ,shell=True)
             except:
                 ################################################################################
                 # Create .icons inside home user
