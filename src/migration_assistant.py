@@ -780,8 +780,16 @@ class PREBACKUP(QWidget):
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                 f"{wallpaperFolderName}/"):
                 dummyList.append(output)
-            # No need to check theme and icon
 
+            # Check if icon has been backup
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                f"{iconFolderName}/"):
+                dummyList.append(output)
+
+            # Check if theme has been backup
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                f"{themeFolderName}/"):
+                dummyList.append(output)
         except:
             pass
 

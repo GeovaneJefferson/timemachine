@@ -54,6 +54,8 @@ class BACKUP:
             self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
             # Themes users folder
             self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+            # Gnome-shell users folder
+            self.gnomeShellMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
             
             # PACKAGES
             # RPM main folder
@@ -161,13 +163,6 @@ class BACKUP:
             getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
             getIconSize = int(getIconSize)
 
-        else:
-            print("Current icon could not be found!")
-            pass
-
-        # Add icon size to list
-        self.systemSettingsFolderToBackupSizeList.append(getIconSize)
-
         ################################################################################
         # Get theme folders size
         ################################################################################
@@ -190,10 +185,8 @@ class BACKUP:
             getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{userCurrentTheme}", "").replace("\t", "")
             getThemeSize = int(getThemeSize)
 
-        else:
-            print("Current theme could not be found!")
-            pass
-
+        # Add icon size to list
+        self.systemSettingsFolderToBackupSizeList.append(getIconSize)
         # Add theme size to list
         self.systemSettingsFolderToBackupSizeList.append(getThemeSize)
         # Sum of system settings
@@ -504,12 +497,14 @@ class BACKUP:
             # Get current wallpaper
             self.getWallpaper = os.popen(getGnomeWallpaper)
             self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
+            
             # If it has comma
             if "," in self.getWallpaper:
-                self.getWallpaper = str(self.getWallpaper.replace(", ", "\, "))
+                self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
                 # Remove spaces if exist
                 if " " in self.getWallpaper:
                     self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+
         else:
             print("No supported DE found to back up the wallpaper.")
             self.write_flatpak_file()
@@ -574,9 +569,6 @@ class BACKUP:
         except:
             # Try to find the current icon inside /home/user/.icons
             sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        else:
-            print("Current icon could not be found!")
-            pass
         
         self.backup_theme()
 
@@ -621,8 +613,29 @@ class BACKUP:
         except:
             # Try to find the current theme inside /home/user/.theme
             sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-        else:
-            print("Current theme could not be found!")
+
+        ################################################################################
+        # Create gnome-shell inside theme current theme folder
+        ################################################################################
+        if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
+            f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
+
+            print("Gnome-shell folder inside external, was created.")
+            sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+
+        ################################################################################
+        # Get gnome-shell with the current theme name
+        ################################################################################
+        try:
+            insideGnomeShellThemeFolder = os.listdir(f"/usr/share/gnome-shell/theme/{userCurrentTheme}/")
+            if insideGnomeShellThemeFolder:
+                print("Backing up theme gnome-shell...")
+                sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
+                    f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+        
+        except:
             pass
 
         # Condition
