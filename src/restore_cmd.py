@@ -30,15 +30,19 @@ class RESTORE:
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
         self.iniApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-        self.iniWallpaper = config['RESTORE']['wallpaper']
-        self.iniRestoreIcon = config['RESTORE']['icon']
+        self.iniSystemSettings = config['RESTORE']['system_settings']
+
         # INFO
         self.packageManager = config['INFO']['packageManager']
         # Icon
         self.iniIcon = config['INFO']['icon']
+        # Theme
+        self.iniTheme = config['INFO']['theme']
 
         # Icons users folder
-        self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}"
+        self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+        # Themes users folder
+        self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -169,8 +173,7 @@ class RESTORE:
         self.apply_users_saved_wallpaper()
 
     def apply_users_saved_wallpaper(self):
-        if self.iniWallpaper == "true":
-            print("Applying user's wallpaper...")
+        if self.iniSystemSettings == "true":
             for image in os.listdir(f"{self.iniExternalLocation}/"
                 f"{baseFolderName}/{wallpaperFolderName}/"):
                 # Copy the wallpaper to the user's Pictures
@@ -192,22 +195,65 @@ class RESTORE:
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
 
-        self.restore_icons()
-                
+            # Restore icon
+            self.restore_icons()
+        
+        # Continue
+        if self.iniApplicationsPackages == "true":
+            self.restore_applications_packages()
+
+        else:
+            self.restore_flatpaks()
+
     def restore_icons(self):
-        if self.iniRestoreIcon == "true":
-            # First try to apply from the default user icon folder
+        ################################################################################
+        # Get saved icon and theme, then write to INI file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            # Get current icon
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+            # for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                # Write to INI file saved icon name
+                config.set('INFO', 'icon', f'{icon}')
+                config.write(configfile)
+        
+            # Get current theme
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                # Write to INI file saved theme name
+                config.set('INFO', 'theme', f'{theme}')
+                config.write(configfile)
+            
+        # First try to apply from the default user icon folder
+        try:
+            sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
+        except:
+            ################################################################################
+            # Create .icons inside home user
+            ################################################################################
+            if not os.path.exists(f"{homeUser}/.icons"):
+                sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
+
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+
+        self.restore_theme()
+
+    def restore_theme(self):
+        if self.iniSystemSettings == "true":
+            # First try to apply from the default user theme folder
             try:
-                sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
+                sub.run(f"{setUserTheme} {self.iniTheme} " ,shell=True)
             except:
                 ################################################################################
                 # Create .icons inside home user
                 ################################################################################
-                if not os.path.exists(f"{homeUser}/.icons"):
-                    sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
+                if not os.path.exists(f"{homeUser}/.themes"):
+                    sub.run(f"{createCMDFolder} {homeUser}.themes", shell=True)   
 
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                # Copy theme from the backup to .theme folder
+                sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
@@ -219,12 +265,7 @@ class RESTORE:
         print("Installing applications packages...")
         try:             
             if self.packageManager == "rpm":
-                ################################################################################
                 # Distros like Fedora already has flatpak installed
-                ################################################################################
-                # Add flathub repository
-                sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
-                
                 ################################################################################
                 # Restore RPMS
                 ################################################################################
@@ -232,6 +273,7 @@ class RESTORE:
                     f"{applicationFolderName}/{rpmFolderName}"):
                     print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/{output}")
+
                     # Install rpms applications
                     sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
@@ -240,12 +282,10 @@ class RESTORE:
                 ################################################################################
                 # First install flatphub if necessary
                 ################################################################################
-                # Install flatpka
+                # Install flatpak
                 sub.run("sudo apt install -y flatpak", shell=True)
                 # Install gnome software plugin flatpak
                 sub.run("sudo apt install -y gnome-software-plugin-flatpak", shell=True)
-                # Add flathub repository
-                sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
 
                 ################################################################################
                 # Restore DEBS
@@ -254,9 +294,14 @@ class RESTORE:
                     f"{applicationFolderName}/{debFolderName}"):
                     print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/{output}")
+                        
                     # Install debs applications
                     sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
+            
+            # Add flathub repository
+            sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
+        
         except:
             print("Error trying to install packages...")
             pass

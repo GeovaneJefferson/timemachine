@@ -792,7 +792,6 @@ class EXTERNAL(QWidget):
         self.useDiskButton.setFont(item)
         self.useDiskButton.setText("Use Disk")
         self.useDiskButton.adjustSize()
-        # self.useDiskButton.setFixedSize(80, 28)
         self.useDiskButton.move(400, 340)
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
@@ -908,7 +907,6 @@ class EXTERNAL(QWidget):
                     index -= 1
 
     def on_use_disk_clicked(self):
-        print(self.chooseDevice)
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
@@ -948,14 +946,6 @@ class EXTERNAL(QWidget):
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
 
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/"):
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'icon', f'{icon}')
-                    config.write(configfile)
-                
             main.setEnabled(True)
             self.close()
 

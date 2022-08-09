@@ -39,7 +39,8 @@ baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
 wallpaperFolderName = "wallpaper"
-iconsFolderName = "icons"
+iconFolderName = "icon"
+themeFolderName = "theme"
 varFolderName = "var"
 localFolderName = "share"
 flatpakTxt = "flatpak.txt"
@@ -51,6 +52,7 @@ debFolderName = "deb"
 copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
+getFlatpaks = "flatpak list --columns=app --app"
 installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
 
@@ -63,8 +65,13 @@ getUserPackageManager = "cat /etc/os-release"
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
 setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
 zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
+# Icon
 getUserIcon = "gsettings get org.gnome.desktop.interface icon-theme"
 setUserIcon = "gsettings set org.gnome.desktop.interface icon-theme"
+# Theme
+getUserTheme = "gsettings get org.gnome.desktop.interface gtk-theme"
+setUserTheme = "gsettings set org.gnome.desktop.interface gtk-theme"
+
 # Locations
 media = "/media"
 run = "/run/media"
@@ -124,7 +131,6 @@ src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"
 src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_devices.py"
 src_migration_assistant = f"{homeUser}/.local/share/timemachine/src/migration_assistant.py"
 src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
-
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")
