@@ -1886,6 +1886,7 @@ class OPTION(QMainWindow):
                     # Info section
                     config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'icon', 'None')
+                    config.set('INFO', 'theme', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
@@ -1904,6 +1905,7 @@ class OPTION(QMainWindow):
                     config.set('RESTORE', 'applications_flatpak_names', 'true')
                     config.set('RESTORE', 'applications_data', 'false')
                     config.set('RESTORE', 'files_and_folders', 'false')
+                    config.set('RESTORE', 'system_settings', 'false')
 
                     # Write to INI file
                     config.write(configfile)
