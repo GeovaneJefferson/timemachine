@@ -475,28 +475,22 @@ class PREBACKUP(QWidget):
         self.description.setFont(QFont("Ubuntu", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText("Choose which information you´d like to restore to this pc")
-
-        ################################################################################
-        # Wallpaper checkbox
-        ################################################################################
-        self.wallpaperCheckBox = QCheckBox()
-        self.wallpaperCheckBox.setText(" Wallpaper")
-        self.wallpaperCheckBox.setFont(QFont("Ubuntu", 11))
-        self.wallpaperCheckBox.adjustSize()
-        self.wallpaperCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
-        self.wallpaperCheckBox.setIconSize(QtCore.QSize(28, 28))
-        self.wallpaperCheckBox.clicked.connect(self.on_wallpaper_clicked)
         
         ################################################################################
-        # Icons checkbox
+        # System settings checkbox
         ################################################################################
-        self.iconCheckBox = QCheckBox()
-        self.iconCheckBox.setText(" Icon")
-        self.iconCheckBox.setFont(QFont("Ubuntu", 11))
-        self.iconCheckBox.adjustSize()
-        self.iconCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
-        self.iconCheckBox.setIconSize(QtCore.QSize(28, 28))
-        self.iconCheckBox.clicked.connect(self.on_wallpaper_clicked)
+        self.systemSettingsCheckBox = QCheckBox()
+        self.systemSettingsCheckBox.setText(" System Settings")
+        self.systemSettingsCheckBox.setFont(QFont("Ubuntu", 11))
+        self.systemSettingsCheckBox.adjustSize()
+        self.systemSettingsCheckBox.setToolTip("This will restore: \n"
+            "* Wallpaper\n"
+            "* Theme\n"
+            "* Icon")
+
+        self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
         
         ################################################################################
         # Application checkbox (Apps inside manual folder)
@@ -664,12 +658,11 @@ class PREBACKUP(QWidget):
 
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.optionskWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.verticalLayoutForOptions.addWidget(self.wallpaperCheckBox)
-        self.verticalLayoutForOptions.addWidget(self.iconCheckBox)
         self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
         self.verticalLayoutForOptions.addWidget(self.flatpakDataCheckBox)
         self.verticalLayoutForOptions.addWidget(self.fileAndFoldersCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.systemSettingsCheckBox)
         self.verticalLayout.addStretch()
 
         self.setLayout(self.verticalLayout)
@@ -774,28 +767,30 @@ class PREBACKUP(QWidget):
         # Clean list
         dummyList.clear()
         
-        self.find_wallpaper()
+        self.enable_system_settings()
 
-    def find_wallpaper(self):
+    def enable_system_settings(self):
         try:
             dummyList = []
             # Find user's DE type
             userDE = os.popen(getUserDE)
             userDE = userDE.read().strip().lower()
-            # Get current user's background
+            # Check if a wallpaper has been backup
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                 f"{wallpaperFolderName}/"):
                 dummyList.append(output)
+            # No need to check theme and icon
+
         except:
             pass
 
         if dummyList:
             # Activate wallpaper option
             if "gnome" in userDE:
-                self.wallpaperCheckBox.setEnabled(True)
+                self.systemSettingsCheckBox.setEnabled(True)
 
         else:
-            self.wallpaperCheckBox.setEnabled(False)  
+            self.systemSettingsCheckBox.setEnabled(False)  
 
         # Empty list
         dummyList.clear()
@@ -914,52 +909,26 @@ class PREBACKUP(QWidget):
             # Allow continue?
             self.allow_to_continue()
   
-    def on_wallpaper_clicked(self):
+    def on_system_settings_clicked(self):
         ################################################################################
         # Write to INI file
         ################################################################################
         with open(src_user_config, 'w') as configfile:
-            if self.wallpaperCheckBox.isChecked():
-                config.set('RESTORE', 'wallpaper', 'true')
+            if self.systemSettingsCheckBox.isChecked():
+                config.set('RESTORE', 'system_settings', 'true')
 
                 # Enable continue button
                 self.continueButton.setEnabled(True)
-                # Add wallpaper to list
-                self.outputBox.append("wallpaper")
+                # Add system_settings to list
+                self.outputBox.append("system_settings")
               
             else:
-                config.set('RESTORE', 'wallpaper', 'false')
+                config.set('RESTORE', 'system_settings', 'false')
 
                 # Disable continue button
                 self.continueButton.setEnabled(False)
-                if "wallpaper" in self.outputBox:
-                    self.outputBox.remove("wallpaper")
-
-            # Write to INI file
-            config.write(configfile)
-            
-        self.on_icon_clicked()
-
-    def on_icon_clicked(self):
-        ################################################################################
-        # Write to INI file
-        ################################################################################
-        with open(src_user_config, 'w') as configfile:
-            if self.iconCheckBox.isChecked():
-                config.set('RESTORE', 'icon', 'true')
-
-                # Enable continue button
-                self.continueButton.setEnabled(True)
-                # Add icon to list
-                self.outputBox.append("icon")
-              
-            else:
-                config.set('RESTORE', 'icon', 'false')
-
-                # Disable continue button
-                self.continueButton.setEnabled(False)
-                if "icon" in self.outputBox:
-                    self.outputBox.remove("icon")
+                if "system_settings" in self.outputBox:
+                    self.outputBox.remove("system_settings")
 
             # Write to INI file
             config.write(configfile)

@@ -51,7 +51,9 @@ class BACKUP:
             # Check date inside backup folder
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
             # Icons users folder
-            self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}"
+            self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+            # Themes users folder
+            self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
             
             # PACKAGES
             # RPM main folder
@@ -102,11 +104,18 @@ class BACKUP:
                 sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)
 
             ################################################################################
-            # Create Icons folder
+            # Create Icon folder
             ################################################################################
             if not os.path.exists(self.iconsMainFolder):
-                print("Icons folder inside external, was created.")
+                print("Icon folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {self.iconsMainFolder}", shell=True)
+            
+            ################################################################################
+            # Create Theme folder
+            ################################################################################
+            if not os.path.exists(self.themeMainFolder):
+                print("Theme folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {self.themeMainFolder}", shell=True)
 
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)
@@ -123,6 +132,73 @@ class BACKUP:
         except FileNotFoundError as error:
             error_trying_to_backup(error)
 
+        self.get_system_settings_size()
+    
+    def get_system_settings_size(self):
+        print("Checking size of System Settings...")
+     
+        self.systemSettingsFolderToBackupSizeList=[]
+     
+        # Get current use icon by user
+        userCurrentIcon = os.popen(getUserIcon)
+        userCurrentIcon = userCurrentIcon.read().strip()
+        userCurrentIcon = userCurrentIcon.replace("'", "")
+
+        ################################################################################
+        # Get icon folders size
+        ################################################################################
+        # Try to find the current icon inside /usr/share/icons
+        try:
+            # Get folder size fomr /usr/share/icons
+            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentIcon}")
+            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentIcon}", "").replace("\t", "")
+            getIconSize = int(getIconSize)
+
+        except:
+            # If can not be found inside /usr/share/icons, try .icons in Home
+            # Get folder size
+            getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentIcon}")
+            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
+            getIconSize = int(getIconSize)
+
+        else:
+            print("Current icon could not be found!")
+            pass
+
+        # Add icon size to list
+        self.systemSettingsFolderToBackupSizeList.append(getIconSize)
+
+        ################################################################################
+        # Get theme folders size
+        ################################################################################
+        # Get current use theme by user
+        userCurrentTheme = os.popen(getUserTheme)
+        userCurrentTheme = userCurrentTheme.read().strip()
+        userCurrentTheme = userCurrentTheme.replace("'", "")
+
+        # Try to find the current icon inside /usr/share/icons
+        try:
+            # Get folder size fomr /usr/share/icons
+            getThemeSize = os.popen(f"du -s /usr/share/themes/{userCurrentTheme}")
+            getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"/usr/share/themes/{userCurrentTheme}", "").replace("\t", "")
+            getThemeSize = int(getThemeSize)
+
+        except:
+            # If can not be found inside /usr/share/icons, try .icons in Home
+            # Get folder size
+            getThemeSize = os.popen(f"du -s {homeUser}/.themes/{userCurrentTheme}")
+            getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{userCurrentTheme}", "").replace("\t", "")
+            getThemeSize = int(getThemeSize)
+
+        else:
+            print("Current theme could not be found!")
+            pass
+
+        # Add theme size to list
+        self.systemSettingsFolderToBackupSizeList.append(getThemeSize)
+        # Sum of system settings
+        self.totalSystemSettingsFolderToBackupSize = sum(self.systemSettingsFolderToBackupSizeList)
+        
         self.get_home_folders_size()
 
     def get_home_folders_size(self):
@@ -178,12 +254,6 @@ class BACKUP:
         self.totalHomeFoldersToBackupSize = sum(self.homeFolderToBackupSizeList)
         # Calculate free space
         self.freeSpace = int(self.externalMaxSize - self.usedSpace)
-
-        ################################################################################
-        print("All folders size sum : ", self.totalHomeFoldersToBackupSize)
-        print("External maximum size:   ", self.externalMaxSize)
-        print(f"External used space:   ", self.usedSpace)
-        print("External free size:   ", self.freeSpace)
 
         # If user allowed backup Flatpak Data, calculate flatpaks folders size
         # Backup Flatpaks Data will auto enable "allow Flatpaks names".
@@ -242,6 +312,13 @@ class BACKUP:
         self.condition_to_continue()
     
     def condition_to_continue(self):
+        ################################################################################
+        print("All folders size sum : ", self.totalHomeFoldersToBackupSize)
+        print("SYstem Settings size sum : ", self.totalSystemSettingsFolderToBackupSize)
+        print("External maximum size:   ", self.externalMaxSize)
+        print(f"External used space:   ", self.usedSpace)
+        print("External free size:   ", self.freeSpace)
+
         # This will check if Home + Flatpaks folders to backup has enough space to continue
         # with the backup process.
         print("Checking folders conditions (size)...")
@@ -250,7 +327,8 @@ class BACKUP:
             ################################################################################
             # Home conditions to continue with the backup
             ################################################################################
-            if self.totalHomeFoldersToBackupSize >= self.freeSpace:
+            # Home + Icon + Theme
+            if self.totalHomeFoldersToBackupSize + self.totalSystemSettingsFolderToBackupSize >= self.freeSpace:
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
@@ -313,7 +391,11 @@ class BACKUP:
                     # Flatpaks conditions to continue with the backup
                     ################################################################################
                     # Sum Home folder + Flapatk var/app/ + Flapatk .local/share/flatpak
-                    homePlusFlatpakToBackupSize = sum(self.homeFolderToBackupSizeList + self.flatpakVarSizeList + self.flatpakLocalSizeList)
+                    homePlusSystemSettingsPlusFlatpakToBackupSize = sum(
+                        self.homeFolderToBackupSizeList + 
+                        self.systemSettingsFolderToBackupSizeList +
+                        self.flatpakVarSizeList + 
+                        self.flatpakLocalSizeList)
 
                     ################################################################################
                     # Condition
@@ -321,14 +403,14 @@ class BACKUP:
                     # Total fodlers to backup: HOme + flatpak(var/app) + flatpak + (.local/share/flatpak)
                     # FreSpace = External device free space
 
-                    if homePlusFlatpakToBackupSize >= self.freeSpace:
+                    if homePlusSystemSettingsPlusFlatpakToBackupSize >= self.freeSpace:
                         # If Home folders to backup is good to continue, then check flatpaks folders
                         print("External has space enough to backup Home folders,")
                         # External devices has not space enough to backup FLatpaks folders
                         print(f"but not Flatpaks folders.")
 
                         # Calculate KBytes to MB or GB
-                        spaceNeeded = homePlusFlatpakToBackupSize
+                        spaceNeeded = homePlusSystemSettingsPlusFlatpakToBackupSize
                         # Condition
                         if len(str(spaceNeeded)) <= 6:
                             spaceNeeded = spaceNeeded / 1000 # Convert to MB
@@ -435,7 +517,6 @@ class BACKUP:
         self.backup_user_wallpaper()
 
     def backup_user_wallpaper(self):
-        print("Backing up current wallpaper...")
         # Replace wallpaper inside the folder, only allow 1
         # If is not empty
         insideWallpaperFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")
@@ -452,7 +533,6 @@ class BACKUP:
 
         self.backup_icons()
 
-    # TODO
     def backup_icons(self):
         ################################################################################
         # Get current use icon by user
@@ -461,43 +541,89 @@ class BACKUP:
         userCurrentIcon = userCurrentIcon.read().strip()
         userCurrentIcon = userCurrentIcon.replace("'", "")
 
+        ################################################################################
         # Only one icon inside the backup folder
-        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/")
+        ################################################################################
+        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/")
         if insideIconFolder:
             # Delete all image inside wallpaper folder
-            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/"):
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
                 # If is not the same name, remove it, and backup the new one
                 if icon != userCurrentIcon:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/{icon}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconsFolderName}/{icon}", shell=True)
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}", shell=True)
 
-                    # Save icon information
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'icon', f"{userCurrentIcon}")
-                        config.write(configfile)
+        # Save icon information
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'icon', f"{userCurrentIcon}")
+            config.write(configfile)
 
-                    ################################################################################
-                    # Get users /usr/share/icons
-                    ################################################################################
-                    # Write to INI file whats been back up now
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'feedback_status', f"Backing up: icons")
-                        config.write(configfile)
+        # Write to INI file whats been back up now
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'feedback_status', f"Backing up: icons")
+            config.write(configfile)
 
-                    print(f"Backing up icon...")
-                    # Try to find the current icon inside /usr/share/icons
-                    try:
-                        sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-                    except:
-                        # Try to find the current icon inside /home/user/.icons
-                        sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-                    else:
-                        print("Current icon could not be found!")
-                        pass
+        # Get users /usr/share/icons
+        # Try to find the current icon inside /usr/share/icons
+        try:
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        except:
+            # Try to find the current icon inside /home/user/.icons
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        else:
+            print("Current icon could not be found!")
+            pass
+        
+        self.backup_theme()
+
+    def backup_theme(self):
+        ################################################################################
+        # Get current use icon by user
+        ################################################################################
+        userCurrentTheme = os.popen(getUserTheme)
+        userCurrentTheme = userCurrentTheme.read().strip()
+        userCurrentTheme = userCurrentTheme.replace("'", "")
+
+        ################################################################################
+        # Only one icon inside the backup folder
+        ################################################################################
+        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
+        if insideThemeFolder:
+            # Delete all theme inside wallpaper folder
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if theme != userCurrentTheme:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
+
+        # Save theme information
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'theme', f"{userCurrentTheme}")
+            config.write(configfile)
+
+        # Write to INI file whats been back up now
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('INFO', 'feedback_status', f"Backing up: theme")
+            config.write(configfile)
+
+        # Get users /usr/share/theme
+        # Try to find the current theme inside /usr/share/theme
+        try:
+            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        except:
+            # Try to find the current theme inside /home/user/.theme
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        else:
+            print("Current theme could not be found!")
+            pass
 
         # Condition
         if self.iniAllowFlatpakNames == "true":
@@ -514,7 +640,7 @@ class BACKUP:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(self.flatpakTxtFile, 'w') as configfile:  
-                for output in os.popen("flatpak list --columns=app --app"):
+                for output in os.popen(getFlatpaks):
                     dummyList.append(output)
                     # Write USER installed flatpak to flatpak.txt inside external device
                     configfile.write(dummyList[count])
