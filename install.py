@@ -23,10 +23,12 @@ class CLI:
         # Current folder
         self.src_backup_check = "src/desktop/backup_check.desktop"
         self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
+        self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
 
         # Destination folder
         self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
         self.dst_timemachine_desktop = f"{self.home_user}/.local/share/applications/timemachine.desktop"
+        self.dst_migration_assistant = f"{self.home_user}/.local/share/applications/migration_assistant.desktop"
         self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
         self.create_autostart_folder = f"{self.home_user}/.config/autostart"
 
@@ -116,43 +118,55 @@ class CLI:
             if not os.path.exists(f"{self.home_user}/.local/share/applications/"):
                 sub.run(f"{self.createCmd} {self.home_user}/.local/share/applications/", shell=True)
 
-        except FileNotFoundError:
-            print("Error trying to create application´s folder inside users home!")
-            exit()
+            ################################################################################
+            # Copy all .desktop
+            # Backup checker .desktop
+            ################################################################################
+            with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
+                writer.write(
+                    f"[Desktop Entry]\n "
+                    f"Type=Application\n "
+                    f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py\n"
+                    f"Hidden=false\n "
+                    f"NoDisplay=false\n "
+                    f"Name=Time Machine\n "
+                    f"Comment=Backup your files\n "
+                    f"Icon={self.restore_icon}")
 
-        ################################################################################
-        # Copy all .desktop
-        # Backup checker .desktop
-        ################################################################################
-        with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
-            writer.write(
-                f"[Desktop Entry]\n "
-                f"Type=Application\n "
-                f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py\n"
-                f"Hidden=false\n "
-                f"NoDisplay=false\n "
-                f"Name=Time Machine\n "
-                f"Comment=Backup your files\n "
-                f"Icon={self.restore_icon}")
+            ################################################################################
+            # Time Machine entry .desktop
+            ################################################################################
+            with open(self.src_timemachine_desktop, "w") as writer:  # Modify timemachine.desktop and add username to it
+                writer.write(
+                    f"[Desktop Entry]\n "
+                    f"Version=1.0\n "
+                    f"Type=Application\n "
+                    f"Name=Time Machine\n "
+                    f"Comment=Backup your files\n "
+                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
+                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/mainwindow.py\n "
+                    f"Path={self.home_user}/.local/share/timemachine/\n "
+                    f"Categories=System\n "
+                    f"StartupWMClass=mainwindow.py\n "
+                    f"Terminal=false")
 
-        ################################################################################
-        # Time Machine entry .desktop
-        ################################################################################
-        with open(self.src_timemachine_desktop, "w") as writer:  # Modify timemachine.desktop and add username to it
-            writer.write(
-                f"[Desktop Entry]\n "
-                f"Version=1.0\n "
-                f"Type=Application\n "
-                f"Name=Time Machine\n "
-                f"Comment=Backup your files\n "
-                f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
-                f"Exec=python3 {self.home_user}/.local/share/timemachine/src/mainwindow.py\n "
-                f"Path={self.home_user}/.local/share/timemachine/\n "
-                f"Categories=System\n "
-                f"StartupWMClass=mainwindow.py\n "
-                f"Terminal=false")
+            ################################################################################
+            # Migration Assistant entry .desktop
+            ################################################################################
+            with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
+                writer.write(
+                    f"[Desktop Entry]\n "
+                    f"Version=1.0\n "
+                    f"Type=Application\n "
+                    f"Name=Migration Assistant\n "
+                    f"Comment=Restore settings from a Time Machine backup\n "
+                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
+                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
+                    f"Path={self.home_user}/.local/share/timemachine/\n "
+                    f"Categories=System\n "
+                    f"StartupWMClass=migration_assistant.py\n "
+                    f"Terminal=false")
 
-        try:
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
             shutil.copytree(self.getCurrentLocation,
@@ -162,12 +176,14 @@ class CLI:
             shutil.copy(self.src_timemachine_desktop,
                         self.dst_timemachine_desktop)
 
+            # Copy migration_assistant.desktop to destination folder
+            shutil.copy(self.src_migration_assistant,
+                        self.dst_migration_assistant)
             print("Program was installed!")
 
-        except FileExistsError:
-            print("App is already installed!")
-
-        exit()
+        except FileNotFoundError:
+            print("Error trying install Time Machine")
+            exit()
 
 
 app = CLI()
