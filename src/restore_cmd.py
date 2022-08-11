@@ -219,10 +219,7 @@ class RESTORE:
                     config.set('INFO', 'theme', f'{theme}')
                     config.write(configfile)
                 
-            # First try to apply from the default user icon folder
             try:
-                sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
-            except:
                 ################################################################################
                 # Create .icons inside home user
                 ################################################################################
@@ -231,6 +228,9 @@ class RESTORE:
 
                 # Copy icon from the backup to .icon folder
                 sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+
+            except:
+                pass
 
         self.restore_theme()
 
