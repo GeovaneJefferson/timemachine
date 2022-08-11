@@ -198,9 +198,7 @@ class RESTORE:
     def restore_icons(self):
         if self.iniSystemSettings == "true":
             print("Restoring icon...")
-            ################################################################################
-            # Get saved icon and theme, then write to INI file
-            ################################################################################
+
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
@@ -210,22 +208,25 @@ class RESTORE:
                     config.set('INFO', 'icon', f'{icon}')
                     config.write(configfile)
                 
-            try:
-                ################################################################################
-                # Create .icons inside home user
-                ################################################################################
-                if not os.path.exists(f"{homeUser}/.icons"):
-                    sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
+        try:
+            ################################################################################
+            # Create .icons inside home user
+            ################################################################################
+            print(f"{createCMDFolder} {homeUser}/.icons")
+            if not os.path.exists(f"{homeUser}/.icons"):
+                print("Creating .icons inside home user...")
+                print(f"{createCMDFolder} {homeUser}/.icons")
+                sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
 
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
-                
-                # Apply the icon
-                print(f"Applying {setUserIcon} {self.iniIcon}")
-                sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+            
+            # Apply the icon
+            print(f"Applying {setUserIcon} {self.iniIcon}")
+            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
 
-            except:
-                pass
+        except:
+            pass
 
         self.restore_theme()
 
@@ -241,12 +242,13 @@ class RESTORE:
                     # Write to INI file saved theme name
                     config.set('INFO', 'theme', f'{theme}')
                     config.write(configfile)
-
+        try:
             ################################################################################
-            # Create .icons inside home user
+            # Create .themes inside home user
             ################################################################################
             if not os.path.exists(f"{homeUser}/.themes"):
-                sub.run(f"{createCMDFolder} {homeUser}.themes", shell=True)   
+                print("Creating .themes inside home user...")
+                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
 
             # Copy theme from the backup to .theme folder
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
@@ -254,6 +256,9 @@ class RESTORE:
             # Apply theme
             print(f"Applying {setUserTheme} {self.iniTheme}")
             sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+
+        except:
+            pass
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
