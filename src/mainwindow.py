@@ -402,10 +402,14 @@ class MAIN(QMainWindow):
             if self.iniBackupNow == "false":
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
+                # Enable auto checkbox
+                self.automaticallyCheckBox.setEnabled(True)
 
             else:
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
+                # Disable auto checkbox
+                self.automaticallyCheckBox.setEnabled(False)
 
         else:
             # Set external name
@@ -623,12 +627,12 @@ class MAIN(QMainWindow):
         ################################################################################
         # Auto backup
         ################################################################################
-        if self.iniHDName == "None":
-            # Disable automatically backup checkbox
-            self.automaticallyCheckBox.setEnabled(False)
-        else:
-            # Enable automatically backup checkbox
-            self.automaticallyCheckBox.setEnabled(True)
+        # if self.iniHDName == "None":
+        #     # Disable automatically backup checkbox
+        #     self.automaticallyCheckBox.setEnabled(False)
+        # else:
+        #     # Enable automatically backup checkbox
+        #     self.automaticallyCheckBox.setEnabled(True)
 
         if self.iniAutomaticallyBackup == "true":
             self.automaticallyCheckBox.setChecked(True)
