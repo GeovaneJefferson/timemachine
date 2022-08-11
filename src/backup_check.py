@@ -22,9 +22,10 @@ class CLI:
 
             # INI file
             self.iniHDName = config['EXTERNAL']['name']
+            self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLatestDate = config['INFO']['latest']
-
+            
             # Dates
             self.iniScheduleSun = config['SCHEDULE']['sun']
             self.iniScheduleMon = config['SCHEDULE']['mon']
