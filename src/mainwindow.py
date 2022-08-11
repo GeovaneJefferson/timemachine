@@ -45,8 +45,6 @@ class MAIN(QMainWindow):
         self.backupImageLabel.setStyleSheet(
             "QLabel"
             "{"
-Enable
-        # Automatically checkbox
             f"background-image: url({src_backup_icon});"
             "border-color: transparent;"
             "background-repeat: no-repeat;"
@@ -54,7 +52,7 @@ Enable
 
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
-        self.False.setFont(QFont("Ubuntu", 10))
+        self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
         self.automaticallyCheckBox.setText("Back Up Automatically")
         self.automaticallyCheckBox.adjustSize()
         self.automaticallyCheckBox.setStyleSheet("""
@@ -235,14 +233,12 @@ Enable
         """)
         self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
 
-        ####Enable###########################backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
-        self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
-#################################################
+        ################################################################################
         # Add widgets and Layouts
         ################################################################################
         # Left Layout
         self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
-        self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.False | Qt.AlignTop)
+        self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
         self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
@@ -335,17 +331,14 @@ Enable
         ################################################################################
         try:
             os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Check if external can be found
-            print(f"Found {self.iniHDName} inside {media}")
             self.connected_connection()
 
         except FileNotFoundError:
             try:
                 os.listdir(f"{run}/{userName}/{self.iniHDName}") 
-                print(f"Found {self.iniHDName} inside {run}")
                 self.connected_connection()
 
             except FileNotFoundError:
-                print("Unsupported partition type!")
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)    
                 # Disconnected     
@@ -409,14 +402,10 @@ Enable
             if self.iniBackupNow == "false":
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
-                # Enable "back up automatically" checkbox
-                self.automaticallyCheckBox.setEnabled(True)
 
             else:
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
-                # Disable "back up automatically" checkbox
-                self.automaticallyCheckBox.setEnabled(False)
 
         else:
             # Set external name
@@ -638,8 +627,6 @@ Enable
             # Disable automatically backup checkbox
             self.automaticallyCheckBox.setEnabled(False)
         else:
-            self.automaticallyCheckBox.setChecked(True)
-        else:Enable
             # Enable automatically backup checkbox
             self.automaticallyCheckBox.setEnabled(True)
 
@@ -647,7 +634,7 @@ Enable
             self.automaticallyCheckBox.setChecked(True)
         else:
             self.automaticallyCheckBox.setChecked(False)
-        False
+        
         self.load_system_tray()
 
     def load_system_tray(self):
@@ -660,15 +647,13 @@ Enable
         else:
             self.showInSystemTrayCheckBox.setChecked(False)
 
-    def automatically_clicked(self):g, 'w') Enable configfile:  
-                if self.automaticallyCheckBox.isChecked():
-                    if not os.path.e
+    def automatically_clicked(self):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:  
                 if self.automaticallyCheckBox.isChecked():
-                    if False os.path.exists(src_backup_check_desktop):
+                    if not os.path.exists(src_backup_check_desktop):
                         # Copy .desktop to user folder (Autostart .desktop)
                         shutil.copy(src_backup_check, src_backup_check_desktop)  
 
