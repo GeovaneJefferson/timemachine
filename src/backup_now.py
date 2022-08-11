@@ -525,6 +525,170 @@ class BACKUP:
         sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
         # Set zoom mode
         sub.run(f"{zoomGnomeWallpaper}", shell=True) 
+       
+        # Condition
+        if self.iniAllowFlatpakNames == "true":
+            self.write_flatpak_file()
+        else:
+            self.getMode()
+    
+    def write_flatpak_file(self):
+        try:
+            # Add flatpak name to the list
+            count = 0
+            dummyList = []
+            # Get user installed flatpaks
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(self.flatpakTxtFile, 'w') as configfile:  
+                for output in os.popen(getFlatpaks):
+                    dummyList.append(output)
+                    # Write USER installed flatpak to flatpak.txt inside external device
+                    configfile.write(dummyList[count])
+                    count += 1
+
+        # If read only error    
+        except OSError as error:
+            print(error)
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Set backup now to False
+                config.set('BACKUP', 'backup_now', 'false')
+                # Change system tray color to red (Error)
+                config.set('INFO', 'notification_id', "2")
+                # Reset Main Window information
+                config.set('INFO', 'notification_add_info', f"Read-only, {error}")
+            exit()
+
+
+        self.getMode()
+
+    def getMode(self):
+        print("Getting mode...")
+        ################################################################################
+        # Type of backup (One or Multiple times per day)
+        ################################################################################
+        try:
+            # One time per day
+            if self.iniOneTimePerDay == "true":
+                print("Mode: One time per day")
+
+            # Multiple time per day
+            else:
+                print("Mode: Multiple time per day")
+                sub.run(f"{createCMDFolder} {self.timeFolder}", shell=True)  # Create folder with date and time
+
+        except FileNotFoundError as error:
+            error_trying_to_backup(error)
+
+        self.backup_home()
+
+    def backup_home(self):
+        print("Backing up Home folders...")
+        try:
+            ################################################################################
+            # Start Home backup
+            ################################################################################
+            # Backup all (user.ini true folders)
+            for output in self.homeFolderToBeBackup:
+                ###############################################################################
+                # Write current save file name to INI file
+                # so it can be show on main window (gui.py)
+                # This way, user will have a feedback to what
+                # is happening.
+                # Write current folder been backup to INI file
+                ###############################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                    config.write(configfile)
+
+                ###############################################################################
+                # Copy the Home files/folders
+                ###############################################################################
+                print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
+                sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
+                # sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                ###############################################################################
+                # Copy the Home files/folders
+                ###############################################################################
+
+        except FileNotFoundError as error:
+            error_trying_to_backup(error)
+
+        if self.iniAllowFlatpakData == "true":
+            self.backup_flatpak_data()
+        else:
+            self.backup_icons()
+
+    def backup_flatpak_data(self):
+        print("Backing up Flatpak folders...")
+        try:
+            ################################################################################
+            # Start Flatpak (var/app) backup
+            ################################################################################
+            count = 0
+            for output in self.flatpakVarToBeBackup: # For folders inside self.flatpakVarToBeBackup
+                ###############################################################################
+                # Write current save file name to INI file
+                # so it can be show on main window (gui.py)
+                # This way, user will have a feedback to what
+                # is happening.
+                # Write current folder been backup to INI file
+                ###############################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                    config.write(configfile)
+
+                ###############################################################################
+                # Copy the Flatpak var/app folders
+                ###############################################################################
+                print(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                sub.run(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                # sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                ###############################################################################
+                # Copy the Flatpak var/app folders
+                ###############################################################################
+                count += 1
+
+            ################################################################################
+            # Start Flatpak (.local/share/flatpak) backup
+            ################################################################################
+            count = 0
+            for output in self.flatpakLocaloBeBackup: # For folders inside self.flatpakLocalToBeBackup
+                ###############################################################################
+                # Write current save file name to INI file
+                # so it can be show on main window (gui.py)
+                # This way, user will have a feedback to what
+                # is happening.
+                # Write current folder been backup to INI file
+                ###############################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                    config.write(configfile)
+
+                ###############################################################################
+                # Copy the Flatpak var/app folders
+                ###############################################################################
+                print(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
+                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}", shell=True)
+                ###############################################################################
+                # Copy the Flatpak var/app folders
+                ###############################################################################
+                count += 1
+
+        except FileNotFoundError as error:
+            error_trying_to_backup(error)
 
         self.backup_icons()
 
@@ -650,170 +814,6 @@ class BACKUP:
         
         except:
             pass
-
-        # Condition
-        if self.iniAllowFlatpakNames == "true":
-            self.write_flatpak_file()
-        else:
-            self.getMode()
-
-    def write_flatpak_file(self):
-        try:
-            # Add flatpak name to the list
-            count = 0
-            dummyList = []
-            # Get user installed flatpaks
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(self.flatpakTxtFile, 'w') as configfile:  
-                for output in os.popen(getFlatpaks):
-                    dummyList.append(output)
-                    # Write USER installed flatpak to flatpak.txt inside external device
-                    configfile.write(dummyList[count])
-                    count += 1
-
-        # If read only error    
-        except OSError as error:
-            print(error)
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Set backup now to False
-                config.set('BACKUP', 'backup_now', 'false')
-                # Change system tray color to red (Error)
-                config.set('INFO', 'notification_id', "2")
-                # Reset Main Window information
-                config.set('INFO', 'notification_add_info', f"Read-only, {error}")
-            exit()
-
-        self.getMode()
-
-    def getMode(self):
-        print("Getting mode...")
-        ################################################################################
-        # Type of backup (One or Multiple times per day)
-        ################################################################################
-        try:
-            # One time per day
-            if self.iniOneTimePerDay == "true":
-                print("Mode: One time per day")
-
-            # Multiple time per day
-            else:
-                print("Mode: Multiple time per day")
-                sub.run(f"{createCMDFolder} {self.timeFolder}", shell=True)  # Create folder with date and time
-
-        except FileNotFoundError as error:
-            error_trying_to_backup(error)
-
-        self.backup_home()
-
-    def backup_home(self):
-        print("Backing up Home folders...")
-        try:
-            ################################################################################
-            # Start Home backup
-            ################################################################################
-            # Backup all (user.ini true folders)
-            for output in self.homeFolderToBeBackup:
-                ###############################################################################
-                # Write current save file name to INI file
-                # so it can be show on main window (gui.py)
-                # This way, user will have a feedback to what
-                # is happening.
-                # Write current folder been backup to INI file
-                ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
-
-                ###############################################################################
-                # Copy the Home files/folders
-                ###############################################################################
-                print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
-                sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
-                
-                # print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
-                # sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
-                ###############################################################################
-                # Copy the Home files/folders
-                ###############################################################################
-
-        except FileNotFoundError as error:
-            error_trying_to_backup(error)
-
-        if self.iniAllowFlatpakData == "true":
-            self.backup_flatpak_data()
-        else:
-            self.end_backup()
-
-    def backup_flatpak_data(self):
-        print("Backing up Flatpak folders...")
-        try:
-            ################################################################################
-            # Start Flatpak (var/app) backup
-            ################################################################################
-            count = 0
-            for output in self.flatpakVarToBeBackup: # For folders inside self.flatpakVarToBeBackup
-                ###############################################################################
-                # Write current save file name to INI file
-                # so it can be show on main window (gui.py)
-                # This way, user will have a feedback to what
-                # is happening.
-                # Write current folder been backup to INI file
-                ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
-
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
-                print(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
-                
-                # print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                # sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
-                count += 1
-
-            ################################################################################
-            # Start Flatpak (.local/share/flatpak) backup
-            ################################################################################
-            count = 0
-            for output in self.flatpakLocaloBeBackup: # For folders inside self.flatpakLocalToBeBackup
-                ###############################################################################
-                # Write current save file name to INI file
-                # so it can be show on main window (gui.py)
-                # This way, user will have a feedback to what
-                # is happening.
-                # Write current folder been backup to INI file
-                ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
-
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
-                print(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
-                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}"
-                    , shell=True)
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
-                count += 1
-
-        except FileNotFoundError as error:
-            error_trying_to_backup(error)
 
         self.end_backup()
 
