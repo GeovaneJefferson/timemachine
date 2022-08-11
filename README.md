@@ -48,6 +48,13 @@ Time Machine ##WILL NOT ERASE YOUR EXTERNAL DEVICE!
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.
 3. Then, click on "Back Up Now".
 
+By now, Time Machine will backup:
+* Your files and folders (If you choose to)
+* Flatpaks installed names
+* Flatpaks installed Data (If you choose to) - Not fully tested
+* Wallpaper (Automatic, Only for Gnome) 
+* Theme and Icon (Automatic, Only for Gnome)
+
 #### Packages
 * Inside of "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.
 These folders was created, so you can manual put ".deb" or ".rpm" packages inside, to be easily restore with
@@ -93,4 +100,3 @@ Example:
 ![](src/screenshots/img.png)
 ![](src/screenshots/img_2.png)
 ![](src/screenshots/img_3.png)
-![](src/screenshots/img_4.png)
