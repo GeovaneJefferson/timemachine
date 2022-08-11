@@ -548,27 +548,34 @@ class BACKUP:
                     print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}...")
                     sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}", shell=True)
 
-        # Save icon information
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
+            # Save icon information
             config.set('INFO', 'icon', f"{userCurrentIcon}")
-            config.write(configfile)
-
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'feedback_status', f"Backing up: icons")
             config.write(configfile)
 
         # Get users /usr/share/icons
         # Try to find the current icon inside /usr/share/icons
         try:
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            # If folder is empty, use CP to copy
+            if not insideIconFolder:
+                print(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}")
+                sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            
+            else:
+                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+
         except:
-            # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            # If folder is empty, use CP to copy
+            if not insideIconFolder:
+                print(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}")
+                sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            
+            else:
+                # Try to find the current icon inside /home/user/.icons
+                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
         
         self.backup_theme()
 
@@ -592,27 +599,33 @@ class BACKUP:
                     print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
                     sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
 
-        # Save theme information
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
+            # Save theme information
             config.set('INFO', 'theme', f"{userCurrentTheme}")
-            config.write(configfile)
-
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
             config.set('INFO', 'feedback_status', f"Backing up: theme")
             config.write(configfile)
 
         # Get users /usr/share/theme
         # Try to find the current theme inside /usr/share/theme
         try:
-            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            # If folder is empty, use CP to copy
+            if not insideThemeFolder:
+                print(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}")
+                sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            
+            else:
+                sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+
         except:
-            # Try to find the current theme inside /home/user/.theme
-            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            if not insideThemeFolder:
+                print(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}")
+                sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            
+            else:
+                # Try to find the current theme inside /home/user/.theme
+                sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
 
         ################################################################################
         # Create gnome-shell inside theme current theme folder
@@ -719,8 +732,11 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
-                sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
+                sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
+                # sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
@@ -757,8 +773,11 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                print(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                sub.run(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                # sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################

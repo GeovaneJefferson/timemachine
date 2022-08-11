@@ -20,9 +20,6 @@ config.read(src_user_config)
 class WELCOMESCREEN(QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
-
-    def initUI(self):
         self.widgets()
 
     def widgets(self):
@@ -1238,7 +1235,15 @@ class DONE(QWidget):
         self.setLayout(self.titlelLayout)
 
 if __name__ == '__main__':
+    try:
+        sub.check_call(["pkexec"], shell=True)
+    except sub.CalledProcessError:
+        print("Fail!")
+        exit()
+    else:
+        pass
     app = QApplication(sys.argv)
+
     main = WELCOMESCREEN()
     main2 = CHOOSEDEVICE()
     main3 = OPTIONS()

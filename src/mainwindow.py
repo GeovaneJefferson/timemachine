@@ -403,13 +403,17 @@ class MAIN(QMainWindow):
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
                 # Enable auto checkbox
-                self.automaticallyCheckBox.setEnabled(True)
+                self.automaticallyCheckBox.setEnabled(True)                
+                # Enable System tray
+                self.showInSystemTrayCheckBox.setEnabled(True)
 
             else:
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
                 # Disable auto checkbox
                 self.automaticallyCheckBox.setEnabled(False)
+                # Disable System tray
+                self.showInSystemTrayCheckBox.setEnabled(False)
 
         else:
             # Set external name
