@@ -7,7 +7,7 @@ try:
     sub.run(f"rm -rf {homeUser}/.local/share/timemachine/", shell=True)
     sub.run(f"rm {homeUser}/.local/share/applications/timemachine.desktop", shell=True)
     sub.run(f"rm {homeUser}/.config/autostart/backup_check.desktop", shell=True)
-    sub.run(f"rm {homeUser}/.config/autostart/migration_assistant.desktop", shell=True)
+    sub.run(f"rm {homeUser}/.local/share/applications/migration_assistant.desktop", shell=True)
 
 except Exception as error:
     print(error)
