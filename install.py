@@ -179,6 +179,9 @@ class CLI:
             # Copy migration_assistant.desktop to destination folder
             shutil.copy(self.src_migration_assistant,
                         self.dst_migration_assistant)
+
+            sub.run(f"sudo chmod o+x {self.home_user}/.local/share/timemachine/src/migration_assistant.py", shell=True)
+            
             print("Program was installed!")
 
         except FileNotFoundError:
