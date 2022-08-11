@@ -218,6 +218,7 @@ class MAIN(QMainWindow):
         self.helpButton.setText("?")
         self.helpButton.setFont(QFont("Ubuntu", 10))
         self.helpButton.setFixedSize(24, 24)
+        self.helpButton.setToolTip("Help")
         self.helpButton.clicked.connect(
             lambda: sub.Popen(f"xdg-open {githubHome}", shell=True))
         
