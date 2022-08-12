@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from logging import exception
 from setup import *
 
 ################################################################################
@@ -722,25 +723,27 @@ class BACKUP:
 
         # Get users /usr/share/icons
         # Try to find the current icon inside /usr/share/icons
-        try:
-            # If folder is empty, use CP to copy
-            if not insideIconFolder:
-                print(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}")
+        # If folder is empty, use CP to copy
+        if not insideIconFolder:
+            try:
+                # USR/SHARE
                 sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            
-            else:
-                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-
-        except:
-            # If folder is empty, use CP to copy
-            if not insideIconFolder:
-                print(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}")
+            except:
+                # .THEMES
                 sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            
             else:
+                pass
+
+        else:
+            try:
+                # USR/SHARE
+                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            except: 
                 # Try to find the current icon inside /home/user/.icons
                 sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        
+            else:
+                pass
+
         self.backup_theme()
 
     def backup_theme(self):
@@ -771,26 +774,8 @@ class BACKUP:
             config.set('INFO', 'feedback_status', f"Backing up: theme")
             config.write(configfile)
 
-        # Get users /usr/share/theme
-        # Try to find the current theme inside /usr/share/theme
-        try:
-            # If folder is empty, use CP to copy
-            if not insideThemeFolder:
-                print(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}")
-                sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            
-            else:
-                sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-
-        except:
-            if not insideThemeFolder:
-                print(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}")
-                sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            
-            else:
-                # Try to find the current theme inside /home/user/.theme
-                sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-
+        ################################################################################
+        # Try to find the current theme inside /home/user/.theme
         ################################################################################
         # Create gnome-shell inside theme current theme folder
         ################################################################################
@@ -800,6 +785,29 @@ class BACKUP:
             print("Gnome-shell folder inside external, was created.")
             sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
                 f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+    
+        # Get users /usr/share/theme
+        # Try to find the current theme inside /usr/share/theme
+        # If folder is empty, use CP to copy
+        if not insideThemeFolder:
+            try:
+                # USR/SHARE
+                sub.check_call(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            except:
+                # .THEMES
+                sub.check_call(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            else:
+                pass
+
+        else:
+            try:
+                # USR/SHARE
+                sub.check_call(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            except:
+                # .THEMES
+                sub.check_call(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            else:
+                pass
 
         ################################################################################
         # Get gnome-shell with the current theme name
@@ -811,7 +819,6 @@ class BACKUP:
                 sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
                     f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-        
         except:
             pass
 

@@ -920,7 +920,7 @@ class EXTERNAL(QWidget):
         # Adapt external name is it has space in the name
         ################################################################################
         if " " in self.chooseDevice:
-            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ "))
+            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
 
         ################################################################################
         # Get user's ox
