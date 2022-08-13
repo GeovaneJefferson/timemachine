@@ -199,13 +199,16 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring icon...")
 
+            dummyList = []
+            # Get current icon
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                dummyList.append(icon)
+
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                # Get current icon
-                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
                     # Write to INI file saved icon name
-                    config.set('INFO', 'icon', f'{icon}')
+                    config.set('INFO', 'icon', f'{dummyList[0]}')
                     config.write(configfile)
                 
         try:
@@ -234,14 +237,18 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring theme...")
 
+            dummyList = []
+            # Get current theme
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                dummyList.append(theme)
+
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                # Get current theme
-                for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                    # Write to INI file saved theme name
-                    config.set('INFO', 'theme', f'{theme}')
-                    config.write(configfile)
+                # Write to INI file saved theme name
+                config.set('INFO', 'theme', f'{dummyList[0]}')
+                config.write(configfile)
+
         try:
             ################################################################################
             # Create .themes inside home user

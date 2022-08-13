@@ -112,6 +112,7 @@ class CLI:
 
         # Install flathub
         try:
+            print("Installing flathub...")
             sub.run(f"sudo {self.installFlathub}", shell=True)
         except:
             pass
@@ -190,8 +191,8 @@ class CLI:
             shutil.copy(self.src_migration_assistant,
                         self.dst_migration_assistant)
 
-            # Give permission to Migration Assistant
-            sub.run(f"sudo chmod o+x {self.home_user}/.local/share/timemachine/src/migration_assistant.py", shell=True)
+            # # Give permission to Migration Assistant
+            # sub.run(f"sudo chmod o+x {self.home_user}/.local/share/timemachine/src/migration_assistant.py", shell=True)
             
             print("Program was installed!")
 
