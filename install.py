@@ -24,7 +24,7 @@ class CLI:
         # Current folder
         self.src_backup_check = "src/desktop/backup_check.desktop"
         self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
-        self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
+        # self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
 
         # Destination folder
         self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
@@ -164,19 +164,19 @@ class CLI:
             ################################################################################
             # Migration Assistant entry .desktop
             ################################################################################
-            with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
-                writer.write(
-                    f"[Desktop Entry]\n "
-                    f"Version=1.0\n "
-                    f"Type=Application\n "
-                    f"Name=Migration Assistant\n "
-                    f"Comment=Restore settings from a Time Machine backup\n "
-                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
-                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
-                    f"Path={self.home_user}/.local/share/timemachine/\n "
-                    f"Categories=System\n "
-                    f"StartupWMClass=migration_assistant.py\n "
-                    f"Terminal=false")
+            # with open(self.src_migration_assistant, "w") as writer:  
+            #     writer.write(
+            #         f"[Desktop Entry]\n "
+            #         f"Version=1.0\n "
+            #         f"Type=Application\n "
+            #         f"Name=Migration Assistant\n "
+            #         f"Comment=Restore settings from a Time Machine backup\n "
+            #         f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
+            #         f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
+            #         f"Path={self.home_user}/.local/share/timemachine/\n "
+            #         f"Categories=System\n "
+            #         f"StartupWMClass=migration_assistant.py\n "
+            #         f"Terminal=false")
 
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
@@ -188,8 +188,8 @@ class CLI:
                         self.dst_timemachine_desktop)
 
             # Copy migration_assistant.desktop to destination folder
-            shutil.copy(self.src_migration_assistant,
-                        self.dst_migration_assistant)
+            # shutil.copy(self.src_migration_assistant,
+            #             self.dst_migration_assistant)
 
             # # Give permission to Migration Assistant
             # sub.run(f"sudo chmod o+x {self.home_user}/.local/share/timemachine/src/migration_assistant.py", shell=True)
