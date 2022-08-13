@@ -515,9 +515,15 @@ class BACKUP:
             # If it has comma
             if "," in self.getWallpaper:
                 self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
-                # Remove spaces if exist
-                if " " in self.getWallpaper:
-                    self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+            # Remove spaces if exist
+            if " " in self.getWallpaper:
+                self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+            # Remove / at the end if exist
+            if self.getWallpaper.endswith("/"):
+                self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
+                self.getWallpaper = "".join(str(self.getWallpaper))
+                self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
+                self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
 
         else:
             print("No supported DE found to back up the wallpaper.")
@@ -536,7 +542,8 @@ class BACKUP:
                 print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
-        sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+        print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
+        sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
         # Set zoom mode
         sub.run(f"{zoomGnomeWallpaper}", shell=True) 
        
