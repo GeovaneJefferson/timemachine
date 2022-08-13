@@ -34,10 +34,6 @@ class RESTORE:
 
         # INFO
         self.packageManager = config['INFO']['packageManager']
-        # Icon
-        self.iniIcon = config['INFO']['icon']
-        # Theme
-        self.iniTheme = config['INFO']['theme']
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
@@ -224,9 +220,17 @@ class RESTORE:
             # Copy icon from the backup to .icon folder
             sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
             
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # Icon
+            iniIcon = config['INFO']['icon']
+        
             # Apply the icon
-            print(f"Applying {setUserIcon} {self.iniIcon}")
-            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+            print(f"Applying {setUserIcon} {iniIcon}")
+            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
 
         except:
             pass
@@ -260,9 +264,17 @@ class RESTORE:
             # Copy theme from the backup to .theme folder
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
             
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # Theme
+            iniTheme = config['INFO']['theme']
+
             # Apply theme
-            print(f"Applying {setUserTheme} {self.iniTheme}")
-            sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+            print(f"Applying {setUserTheme} {iniTheme}")
+            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
 
         except:
             pass
