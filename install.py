@@ -71,12 +71,14 @@ class CLI:
             if user_os == "ubuntu":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y upgrade", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
             
             # Debian
             elif user_os == "debian":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y upgrade", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
 
             # Opensuse
@@ -89,6 +91,7 @@ class CLI:
             elif user_os == "fedora":
                 print("")
                 sub.run(f"sudo dnf -y update", shell=True)
+                sub.run(f"sudo dnf -y upgrade", shell=True)
                 sub.run(f"sudo dnf -y install {self.installDependencies} qt5-qtbase-devel", shell=True)
 
             # Arch
