@@ -1235,13 +1235,6 @@ class DONE(QWidget):
         self.setLayout(self.titlelLayout)
 
 if __name__ == '__main__':
-    try:
-        sub.check_call(["pkexec"], shell=True)
-    except sub.CalledProcessError:
-        print("Fail!")
-        exit()
-    else:
-        pass
     app = QApplication(sys.argv)
 
     main = WELCOMESCREEN()
