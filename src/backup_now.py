@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from logging import exception
 from setup import *
 
 ################################################################################
@@ -15,8 +16,11 @@ class BACKUP:
 
     def read_ini_file(self):
         try:
+            self.alreadyClearTrash = False
+            
             config = configparser.ConfigParser()
             config.read(src_user_config)
+
             # Get hour, minute
             self.dateTime = datetime.now()
             self.dateDay = self.dateTime.strftime("%d")
@@ -325,9 +329,19 @@ class BACKUP:
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
-
+                
+                # First try to clean .Trash inside the external device
+                if not self.alreadyClearTrash:
+                    print(f"Deleting .trash...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
+                    # set AlreadyClearTrash to True
+                    self.alreadyClearTrash = True
+                    # Return to the top (Maybe, empty the .trash was enough to continue :D)
+                    self.condition_to_continue()
+                
                 ################################################################################
                 # Get available dates inside TMB
+                # Delete based in Dates
                 ################################################################################
                 try:
                     dateFolders = []
@@ -501,9 +515,15 @@ class BACKUP:
             # If it has comma
             if "," in self.getWallpaper:
                 self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
-                # Remove spaces if exist
-                if " " in self.getWallpaper:
-                    self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+            # Remove spaces if exist
+            if " " in self.getWallpaper:
+                self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+            # Remove / at the end if exist
+            if self.getWallpaper.endswith("/"):
+                self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
+                self.getWallpaper = "".join(str(self.getWallpaper))
+                self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
+                self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
 
         else:
             print("No supported DE found to back up the wallpaper.")
@@ -522,128 +542,17 @@ class BACKUP:
                 print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
-        sub.run(f"{copyRsyncCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+        print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
+        sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
         # Set zoom mode
         sub.run(f"{zoomGnomeWallpaper}", shell=True) 
-
-        self.backup_icons()
-
-    def backup_icons(self):
-        ################################################################################
-        # Get current use icon by user
-        ################################################################################
-        userCurrentIcon = os.popen(getUserIcon)
-        userCurrentIcon = userCurrentIcon.read().strip()
-        userCurrentIcon = userCurrentIcon.replace("'", "")
-
-        ################################################################################
-        # Only one icon inside the backup folder
-        ################################################################################
-        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/")
-        if insideIconFolder:
-            # Delete all image inside wallpaper folder
-            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                # If is not the same name, remove it, and backup the new one
-                if icon != userCurrentIcon:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}", shell=True)
-
-        # Save icon information
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'icon', f"{userCurrentIcon}")
-            config.write(configfile)
-
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'feedback_status', f"Backing up: icons")
-            config.write(configfile)
-
-        # Get users /usr/share/icons
-        # Try to find the current icon inside /usr/share/icons
-        try:
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        except:
-            # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-        
-        self.backup_theme()
-
-    def backup_theme(self):
-        ################################################################################
-        # Get current use icon by user
-        ################################################################################
-        userCurrentTheme = os.popen(getUserTheme)
-        userCurrentTheme = userCurrentTheme.read().strip()
-        userCurrentTheme = userCurrentTheme.replace("'", "")
-
-        ################################################################################
-        # Only one icon inside the backup folder
-        ################################################################################
-        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
-        if insideThemeFolder:
-            # Delete all theme inside wallpaper folder
-            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                # If is not the same name, remove it, and backup the new one
-                if theme != userCurrentTheme:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
-
-        # Save theme information
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'theme', f"{userCurrentTheme}")
-            config.write(configfile)
-
-        # Write to INI file whats been back up now
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'feedback_status', f"Backing up: theme")
-            config.write(configfile)
-
-        # Get users /usr/share/theme
-        # Try to find the current theme inside /usr/share/theme
-        try:
-            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-        except:
-            # Try to find the current theme inside /home/user/.theme
-            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-
-        ################################################################################
-        # Create gnome-shell inside theme current theme folder
-        ################################################################################
-        if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
-            f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
-
-            print("Gnome-shell folder inside external, was created.")
-            sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
-                f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-
-        ################################################################################
-        # Get gnome-shell with the current theme name
-        ################################################################################
-        try:
-            insideGnomeShellThemeFolder = os.listdir(f"/usr/share/gnome-shell/theme/{userCurrentTheme}/")
-            if insideGnomeShellThemeFolder:
-                print("Backing up theme gnome-shell...")
-                sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
-                    f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-        
-        except:
-            pass
-
+       
         # Condition
         if self.iniAllowFlatpakNames == "true":
             self.write_flatpak_file()
         else:
             self.getMode()
-
+    
     def write_flatpak_file(self):
         try:
             # Add flatpak name to the list
@@ -672,6 +581,7 @@ class BACKUP:
                 # Reset Main Window information
                 config.set('INFO', 'notification_add_info', f"Read-only, {error}")
             exit()
+
 
         self.getMode()
 
@@ -719,8 +629,11 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
-                sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
+                sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
+                # sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
@@ -731,7 +644,7 @@ class BACKUP:
         if self.iniAllowFlatpakData == "true":
             self.backup_flatpak_data()
         else:
-            self.end_backup()
+            self.backup_icons()
 
     def backup_flatpak_data(self):
         print("Backing up Flatpak folders...")
@@ -757,8 +670,11 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                print(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                sub.run(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
+                
+                # print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
+                # sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
@@ -786,8 +702,7 @@ class BACKUP:
                 # Copy the Flatpak var/app folders
                 ###############################################################################
                 print(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
-                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}"
-                    , shell=True)
+                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}", shell=True)
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
@@ -795,6 +710,137 @@ class BACKUP:
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
+
+        self.backup_icons()
+
+    def backup_icons(self):
+        ################################################################################
+        # Get current use icon by user
+        ################################################################################
+        userCurrentIcon = os.popen(getUserIcon)
+        userCurrentIcon = userCurrentIcon.read().strip()
+        userCurrentIcon = userCurrentIcon.replace("'", "")
+
+        ################################################################################
+        # Only one icon inside the backup folder
+        ################################################################################
+        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/")
+        if insideIconFolder:
+            # Delete all image inside wallpaper folder
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if icon != userCurrentIcon:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}", shell=True)
+
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            # Save icon information
+            config.set('INFO', 'icon', f"{userCurrentIcon}")
+            config.set('INFO', 'feedback_status', f"Backing up: icons")
+            config.write(configfile)
+
+        # Get users /usr/share/icons
+        # Try to find the current icon inside /usr/share/icons
+        # If folder is empty, use CP to copy
+        if not insideIconFolder:
+            try:
+                # USR/SHARE
+                sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            except:
+                # .THEMES
+                sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            else:
+                pass
+
+        else:
+            try:
+                # USR/SHARE
+                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            except: 
+                # Try to find the current icon inside /home/user/.icons
+                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            else:
+                pass
+
+        self.backup_theme()
+
+    def backup_theme(self):
+        ################################################################################
+        # Get current use icon by user
+        ################################################################################
+        userCurrentTheme = os.popen(getUserTheme)
+        userCurrentTheme = userCurrentTheme.read().strip()
+        userCurrentTheme = userCurrentTheme.replace("'", "")
+
+        ################################################################################
+        # Only one icon inside the backup folder
+        ################################################################################
+        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
+        if insideThemeFolder:
+            # Delete all theme inside wallpaper folder
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if theme != userCurrentTheme:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
+
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            # Save theme information
+            config.set('INFO', 'theme', f"{userCurrentTheme}")
+            config.set('INFO', 'feedback_status', f"Backing up: theme")
+            config.write(configfile)
+
+        ################################################################################
+        # Try to find the current theme inside /home/user/.theme
+        ################################################################################
+        # Create gnome-shell inside theme current theme folder
+        ################################################################################
+        if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
+            f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
+
+            print("Gnome-shell folder inside external, was created.")
+            sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+    
+        # Get users /usr/share/theme
+        # Try to find the current theme inside /usr/share/theme
+        # If folder is empty, use CP to copy
+        if not insideThemeFolder:
+            try:
+                # USR/SHARE
+                sub.check_call(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            except:
+                # .THEMES
+                sub.check_call(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            else:
+                pass
+
+        else:
+            try:
+                # USR/SHARE
+                sub.check_call(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            except:
+                # .THEMES
+                sub.check_call(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            else:
+                pass
+
+        ################################################################################
+        # Get gnome-shell with the current theme name
+        ################################################################################
+        try:
+            insideGnomeShellThemeFolder = os.listdir(f"/usr/share/gnome-shell/theme/{userCurrentTheme}/")
+            if insideGnomeShellThemeFolder:
+                print("Backing up theme gnome-shell...")
+                sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
+                    f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+        except:
+            pass
 
         self.end_backup()
 

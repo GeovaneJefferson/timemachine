@@ -50,7 +50,8 @@ rpmFolderName = "rpm"
 debFolderName = "deb"
 
 # CMD commands
-copyRsyncCMD = "rsync -avrh --exclude={'cache','.cache'}"
+copyRsyncCMD = "rsync -avr --exclude={'cache','.cache'}"
+copyCPCMD = "cp -Lrv"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 getFlatpaks = "flatpak list --columns=app --app"

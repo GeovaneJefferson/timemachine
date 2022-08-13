@@ -20,9 +20,6 @@ config.read(src_user_config)
 class WELCOMESCREEN(QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
-
-    def initUI(self):
         self.widgets()
 
     def widgets(self):
@@ -1239,6 +1236,7 @@ class DONE(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
     main = WELCOMESCREEN()
     main2 = CHOOSEDEVICE()
     main3 = OPTIONS()

@@ -34,10 +34,6 @@ class RESTORE:
 
         # INFO
         self.packageManager = config['INFO']['packageManager']
-        # Icon
-        self.iniIcon = config['INFO']['icon']
-        # Theme
-        self.iniTheme = config['INFO']['theme']
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
@@ -198,53 +194,90 @@ class RESTORE:
     def restore_icons(self):
         if self.iniSystemSettings == "true":
             print("Restoring icon...")
-            ################################################################################
-            # Get saved icon and theme, then write to INI file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Get current icon
-                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'icon', f'{icon}')
-                    config.write(configfile)
+
+            dummyList = []
+            # Get current icon
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                dummyList.append(icon)
 
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                # Get current theme
-                for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                    # Write to INI file saved theme name
-                    config.set('INFO', 'theme', f'{theme}')
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'icon', f'{dummyList[0]}')
                     config.write(configfile)
                 
-            # First try to apply from the default user icon folder
-            try:
-                sub.run(f"{setUserIcon} {self.iniIcon} " ,shell=True)
-            except:
-                ################################################################################
-                # Create .icons inside home user
-                ################################################################################
-                if not os.path.exists(f"{homeUser}/.icons"):
-                    sub.run(f"{createCMDFolder} {homeUser}.icons", shell=True)   
+        try:
+            ################################################################################
+            # Create .icons inside home user
+            ################################################################################
+            print(f"{createCMDFolder} {homeUser}/.icons")
+            if not os.path.exists(f"{homeUser}/.icons"):
+                print("Creating .icons inside home user...")
+                print(f"{createCMDFolder} {homeUser}/.icons")
+                sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
 
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+            
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # Icon
+            iniIcon = config['INFO']['icon']
+        
+            # Apply the icon
+            print(f"Applying {setUserIcon} {iniIcon}")
+            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+
+        except:
+            pass
 
         self.restore_theme()
 
     def restore_theme(self):
         if self.iniSystemSettings == "true":
             print("Restoring theme...")
+
+            dummyList = []
+            # Get current theme
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                dummyList.append(theme)
+
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Write to INI file saved theme name
+                config.set('INFO', 'theme', f'{dummyList[0]}')
+                config.write(configfile)
+
+        try:
             ################################################################################
-            # Create .icons inside home user
+            # Create .themes inside home user
             ################################################################################
             if not os.path.exists(f"{homeUser}/.themes"):
-                sub.run(f"{createCMDFolder} {homeUser}.themes", shell=True)   
+                print("Creating .themes inside home user...")
+                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
 
             # Copy theme from the backup to .theme folder
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
+            
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # Theme
+            iniTheme = config['INFO']['theme']
+
+            # Apply theme
+            print(f"Applying {setUserTheme} {iniTheme}")
+            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+
+        except:
+            pass
 
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()

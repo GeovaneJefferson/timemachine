@@ -93,7 +93,8 @@ class MAIN(QMainWindow):
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(412, 40, 280, 120)
+        self.farRightWidget.setGeometry(412, 40, 280, 154)
+
         # Right widget
         self.farRightLayout = QVBoxLayout(self.farRightWidget)
         self.farRightLayout.setSpacing(0)
@@ -152,7 +153,7 @@ class MAIN(QMainWindow):
         self.backupNowButton.setText("Back Up Now")
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         self.backupNowButton.adjustSize()
-        self.backupNowButton.move(420, 162)
+        # self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
@@ -243,13 +244,14 @@ class MAIN(QMainWindow):
         #  Right Layout
         self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.rightLayout.addWidget(self.selectDiskButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
-
+        
         #  Far Right Layout
         self.farRightLayout.addWidget(self.externalNameLabel, 0, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalSizeLabel, 0, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.backupNowButton, 4, Qt.AlignLeft | Qt.AlignTop)
 
         # Description Layout
         self.descriptionLayout.addWidget(self.descriptionTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
@@ -402,10 +404,18 @@ class MAIN(QMainWindow):
             if self.iniBackupNow == "false":
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
+                # Enable auto checkbox
+                self.automaticallyCheckBox.setEnabled(True)                
+                # Enable System tray
+                self.showInSystemTrayCheckBox.setEnabled(True)
 
             else:
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
+                # Disable auto checkbox
+                self.automaticallyCheckBox.setEnabled(False)
+                # Disable System tray
+                self.showInSystemTrayCheckBox.setEnabled(False)
 
         else:
             # Set external name
@@ -623,12 +633,12 @@ class MAIN(QMainWindow):
         ################################################################################
         # Auto backup
         ################################################################################
-        if self.iniHDName == "None":
-            # Disable automatically backup checkbox
-            self.automaticallyCheckBox.setEnabled(False)
-        else:
-            # Enable automatically backup checkbox
-            self.automaticallyCheckBox.setEnabled(True)
+        # if self.iniHDName == "None":
+        #     # Disable automatically backup checkbox
+        #     self.automaticallyCheckBox.setEnabled(False)
+        # else:
+        #     # Enable automatically backup checkbox
+        #     self.automaticallyCheckBox.setEnabled(True)
 
         if self.iniAutomaticallyBackup == "true":
             self.automaticallyCheckBox.setChecked(True)
@@ -912,7 +922,7 @@ class EXTERNAL(QWidget):
         # Adapt external name is it has space in the name
         ################################################################################
         if " " in self.chooseDevice:
-            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ "))
+            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
 
         ################################################################################
         # Get user's ox
