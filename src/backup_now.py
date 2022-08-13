@@ -16,8 +16,11 @@ class BACKUP:
 
     def read_ini_file(self):
         try:
+            self.alreadyClearTrash = False
+            
             config = configparser.ConfigParser()
             config.read(src_user_config)
+
             # Get hour, minute
             self.dateTime = datetime.now()
             self.dateDay = self.dateTime.strftime("%d")
@@ -326,9 +329,19 @@ class BACKUP:
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
-
+                
+                # First try to clean .Trash inside the external device
+                if not self.alreadyClearTrash:
+                    print(f"Deleting .trash...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
+                    # set AlreadyClearTrash to True
+                    self.alreadyClearTrash = True
+                    # Return to the top (Maybe, empty the .trash was enough to continue :D)
+                    self.condition_to_continue()
+                
                 ################################################################################
                 # Get available dates inside TMB
+                # Delete based in Dates
                 ################################################################################
                 try:
                     dateFolders = []
