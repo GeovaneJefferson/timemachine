@@ -11,6 +11,7 @@ class CLI:
         self.installDependencies = "python3-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installDependenciesArch = "python-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
+        self.installFlathub = "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
         # Folders
         self.home_user = str(Path.home())
@@ -105,6 +106,12 @@ class CLI:
         except:
             print("Error trying to install dependencies!")
             exit()
+
+        # Install flathub
+        try:
+            sub.run(f"sudo {self.installFlathub}", shell=True)
+        except:
+            pass
 
         self.begin_to_install()
 
