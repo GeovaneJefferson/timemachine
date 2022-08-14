@@ -820,6 +820,10 @@ class PREBACKUP(QWidget):
             # Activate wallpaper option
             if "gnome" in userDE:
                 self.systemSettingsCheckBox.setEnabled(True)
+            
+            else:
+                # If is KDE ex.
+                self.systemSettingsCheckBox.setEnabled(False)  
 
         else:
             self.systemSettingsCheckBox.setEnabled(False)  
