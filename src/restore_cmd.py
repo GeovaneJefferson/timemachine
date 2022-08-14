@@ -187,9 +187,9 @@ class RESTORE:
                 if "," in image:
                     image = str(image.replace(", ", "\, "))
 
-                    if " " in image:
-                        image = str(image.replace(" ", "\ "))
-          
+                if " " in image:
+                    image = str(image.replace(" ", "\ "))
+        
                 # Light or Dark wallpaper
                 if getColorScheme == "prefer-light":
                     # Light theme
