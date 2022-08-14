@@ -186,6 +186,7 @@ class RESTORE:
                 # Remove spaces if exist
                 if "," in image:
                     image = str(image.replace(", ", "\, "))
+                    
                     # Add \ if it has space
                     if " " in image:
                         image = str(image.replace(" ", "\ "))
