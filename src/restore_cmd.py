@@ -170,9 +170,7 @@ class RESTORE:
 
     def apply_users_saved_wallpaper(self):
         if self.iniSystemSettings == "true":
-            ################################################################################
             # Detect color scheme
-            ################################################################################
             getColorScheme = os.popen(detectThemeMode)
             getColorScheme = getColorScheme.read().strip().replace("'", "")
                 
