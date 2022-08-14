@@ -23,6 +23,10 @@ Then, re-configure Time Machine again.
 ### Solution
 I am still trying to fix this :D
 
+## Support:
+* Gnome -> Full support
+* Kde -> Partial support
+
 ## Features:
 * Local snapshots of your personal files, one or multiple times per day.
 * Backup of your installed Flatpaks name and Data, so you can easily restore them.
