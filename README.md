@@ -57,7 +57,6 @@ Still in development...
 ## External drive connected to your PC
 Time Machine can back up to an external drive connected to a USB, HD or SSD.
 
-## Time Machine WILL NOT ERASE YOUR EXTERNAL DEVICE!
 ## Create a Time Machine backup
 - Is highly recommended that your backup device is formated as an "Ext4" partition.
 

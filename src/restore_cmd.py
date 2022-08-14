@@ -170,6 +170,10 @@ class RESTORE:
 
     def apply_users_saved_wallpaper(self):
         if self.iniSystemSettings == "true":
+            # Detect color scheme
+            getColorScheme = os.popen(detectThemeMode)
+            getColorScheme = getColorScheme.read().strip().replace("'", "")
+                
             print("Restoring wallpaper...")
             for image in os.listdir(f"{self.iniExternalLocation}/"
                 f"{baseFolderName}/{wallpaperFolderName}/"):
@@ -180,11 +184,20 @@ class RESTORE:
                 # Remove spaces if exist
                 if "," in image:
                     image = str(image.replace(", ", "\, "))
-
+                    
+                    # Add \ if it has space
                     if " " in image:
                         image = str(image.replace(" ", "\ "))
-          
-                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
+            
+                # Light or Dark wallpaper
+                if getColorScheme == "prefer-light":
+                    # Light theme
+                    sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
+
+                else:
+                    # Dark theme
+                    sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}/", shell=True)
+
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
 
