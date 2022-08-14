@@ -64,9 +64,16 @@ getUserDE = "echo $XDG_CURRENT_DESKTOP"
 getUserPackageManager = "cat /etc/os-release"
 
 # Gnome
+detectThemeMode = "gsettings get org.gnome.desktop.interface color-scheme"
+
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
+getGnomeWallpaperDark = "gsettings get org.gnome.desktop.background picture-uri-dark"
+
 setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
+setGnomeWallpaperDark = "gsettings set org.gnome.desktop.background picture-uri-dark"
+
 zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
+
 # Icon
 getUserIcon = "gsettings get org.gnome.desktop.interface icon-theme"
 setUserIcon = "gsettings set org.gnome.desktop.interface icon-theme"
