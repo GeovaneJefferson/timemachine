@@ -503,21 +503,36 @@ class BACKUP:
         self.get_user_background()
 
     def get_user_background(self):
+        ################################################################################
+        # Detect color scheme
+        ################################################################################
+        getColorScheme = os.popen(detectThemeMode)
+        getColorScheme = getColorScheme.read().strip().replace("'", "")
+            
         # Get users DE (Gnome or KDE etc.)
         userDE = os.popen(getUserDE)
         userDE = userDE.read().strip().lower()
 
         if "gnome" or "ubuntu" or "pop" in userDE:
-            # Get current wallpaper
-            self.getWallpaper = os.popen(getGnomeWallpaper)
-            self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
+            # Light theme
+            if getColorScheme == "prefer-light":
+                # Get current wallpaper
+                self.getWallpaper = os.popen(getGnomeWallpaper)
+                self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
             
+            else:
+                # Get current wallpaper (Dark)
+                self.getWallpaper = os.popen(getGnomeWallpaperDark)
+                self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
+        
             # If it has comma
             if "," in self.getWallpaper:
                 self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
+            
             # Remove spaces if exist
             if " " in self.getWallpaper:
                 self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+            
             # Remove / at the end if exist
             if self.getWallpaper.endswith("/"):
                 self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
@@ -544,6 +559,7 @@ class BACKUP:
         
         print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
         sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+        
         # Set zoom mode
         sub.run(f"{zoomGnomeWallpaper}", shell=True) 
        
