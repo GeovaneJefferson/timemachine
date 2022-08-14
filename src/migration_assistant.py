@@ -116,7 +116,7 @@ class CHOOSEDEVICE(QWidget):
         self.description.setFont(QFont("Ubuntu", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText(f"Select a {appName} " 
-            "disk to transfer it's information to this PC.")
+            "backup disk to transfer it's information to this PC.")
 
         # More description
         self.moreDescription = QLabel()
@@ -206,7 +206,6 @@ class CHOOSEDEVICE(QWidget):
         # Show available files
         ################################################################################
         try:
-            count = 0
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
                 if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
@@ -395,15 +394,6 @@ class OPTIONS(QWidget):
         
         self.setLayout(self.verticalLayout)
 
-    def on_continue_clicked(self):
-        # If user clicked on restore from...
-        if self.outputBox == "restore":
-            widget.setCurrentIndex(widget.currentIndex()+1)
-
-        # If user do not want to restore
-        else:
-            exit()
-
     def on_device_clicked(self, output):
         # Add output to self.outputBox
         self.outputBox = output
@@ -416,6 +406,14 @@ class OPTIONS(QWidget):
             self.outputBox = ""
             # Disable continue
             self.continueButton.setEnabled(False)
+    
+    def on_continue_clicked(self):
+        # If user clicked on restore from...
+        if self.outputBox == "restore":
+            widget.setCurrentIndex(widget.currentIndex()+1)
+
+        else:
+            widget.setCurrentWidget(main6)
 
 class PREBACKUP(QWidget):
     def __init__(self):
@@ -436,6 +434,11 @@ class PREBACKUP(QWidget):
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         # INFO
         self.packageManager = config['INFO']['packageManager']
+        # Icons users folder
+        self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+        # Themes users folder
+        self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+       
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -470,13 +473,30 @@ class PREBACKUP(QWidget):
         self.description = QLabel()
         self.description.setFont(QFont("Ubuntu", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.description.setText("Choose which information you´d like to restore to this pc")
+        self.description.setText("Please select the items you wish to transfer to this PC.")
         
         ################################################################################
         # System settings checkbox
         ################################################################################
+        self.systemSettingsFolderSize = os.popen(f"du -hs {self.iconsMainFolder}")
+        self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+        self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+        self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{self.iconsMainFolder}", "")
+
+        # System settings size information
+        self.SystemSettingsSizeInformation = QLabel()
+        # If M inside self.applicationsSizeInformation, add B = MB
+        if "M" in self.systemSettingsFolderSize:
+            self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}B")
+        else:
+            self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}")
+        self.SystemSettingsSizeInformation.setFont(QFont("Ubuntu", 10))
+        self.SystemSettingsSizeInformation.adjustSize()
+
+
         self.systemSettingsCheckBox = QCheckBox()
-        self.systemSettingsCheckBox.setText(" System Settings")
+        self.systemSettingsCheckBox.setText(" System Settings"
+            f"                {self.systemSettingsFolderSize}")
         self.systemSettingsCheckBox.setFont(QFont("Ubuntu", 11))
         self.systemSettingsCheckBox.adjustSize()
         self.systemSettingsCheckBox.setToolTip("This will restore: \n"
@@ -506,18 +526,20 @@ class PREBACKUP(QWidget):
             self.applicationSize = self.applicationSize.read().strip("\t")
             self.applicationSize = self.applicationSize.strip("\n")
             self.applicationSize = self.applicationSize.replace(f"{self.iniExternalLocation}"
-                f"/{baseFolderName}/{applicationFolderName}/{debFolderName}", "").replace("\t", "")
+                f"/{baseFolderName}/{applicationFolderName}/{debFolderName}", "")
 
         ################################################################################
         # Application checkbox
         ################################################################################
         self.applicationPackagesCheckBox = QCheckBox()
         self.applicationPackagesCheckBox.setText(f" Applications "
-            f"              {self.applicationSize}")
+            f"                      {self.applicationSize}")
         self.applicationPackagesCheckBox.setFont(QFont("Ubuntu", 11))
         self.applicationPackagesCheckBox.adjustSize()
         self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
         self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.applicationPackagesCheckBox.setToolTip("This will reinstall: \n"
+            "* All manual saved packages")
         self.applicationPackagesCheckBox.clicked.connect(self.on_application_clicked)
 
         # Application size information
@@ -541,10 +563,12 @@ class PREBACKUP(QWidget):
 
             self.flatpakCheckBox = QCheckBox()
             self.flatpakCheckBox.setText(f" Flatpak "
-                f"                   {flatpaksToBeInstalled} Apps")
+                f"                           {flatpaksToBeInstalled} Apps")
             self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
             self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
+            self.flatpakCheckBox.setToolTip("This will reinstall: \n"
+                "* All flatpak saved names")
             self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
             
         ################################################################################
@@ -595,15 +619,17 @@ class PREBACKUP(QWidget):
         self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t")
         self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.strip("\n")
         self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{self.iniExternalLocation}"
-            f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "").replace("\t", "")
+            f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "")
 
         # Files and Folders checkbox        
         self.fileAndFoldersCheckBox = QCheckBox()
         self.fileAndFoldersCheckBox.setText(" File and Folders"
-            f"       {self.fileAndFoldersFolderSize}")
+            f"                {self.fileAndFoldersFolderSize}")
         self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
         self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
         self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
+            "* All recents back up folders")
         self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
 
 
