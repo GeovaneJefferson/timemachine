@@ -70,7 +70,7 @@ By now, Time Machine will backup:
 * Flatpaks installed names
 * Flatpaks installed Data (If you choose to) - Not fully tested
 * Wallpaper (Automatic, Only for Gnome) 
-* Theme and Icon (Automatic, Only for Gnome)
+* Theme, Icon and cursor (Automatic, Only for Gnome)
 
 #### Packages
 * Inside of "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.

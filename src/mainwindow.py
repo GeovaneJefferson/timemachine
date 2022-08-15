@@ -1876,8 +1876,8 @@ class OPTION(QMainWindow):
                     config.set('EXTERNAL', 'name', 'None')
 
                     # Mode section
-                    config.set('MODE', 'one_time_mode', 'false')
-                    config.set('MODE', 'more_time_mode', 'true')
+                    config.set('MODE', 'one_time_mode', 'true')
+                    config.set('MODE', 'more_time_mode', 'false')
 
                     # System tray  section
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
@@ -1898,6 +1898,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
+                    config.set('INFO', 'cursor', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
