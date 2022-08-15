@@ -56,6 +56,8 @@ class BACKUP:
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
             # Icons users folder
             self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+            # Cursor users folder
+            self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
             # Themes users folder
             self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
             # Gnome-shell users folder
@@ -115,6 +117,13 @@ class BACKUP:
             if not os.path.exists(self.iconsMainFolder):
                 print("Icon folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {self.iconsMainFolder}", shell=True)
+
+            ################################################################################
+            # Create Cursor folder
+            ################################################################################
+            if not os.path.exists(self.cursorMainFolder):
+                print("Cursor folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {self.cursorMainFolder}", shell=True)
             
             ################################################################################
             # Create Theme folder
@@ -779,6 +788,70 @@ class BACKUP:
                 sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
             else:
                 pass
+
+        self.backup_cursor()
+
+    def backup_cursor(self):
+        ################################################################################
+        # Get current use cursor by user
+        ################################################################################
+        userCurrentcursor = os.popen(getUserCursor)
+        userCurrentcursor = userCurrentcursor.read().strip()
+        userCurrentcursor = userCurrentcursor.replace("'", "")
+
+        ################################################################################
+        # Only one cursor inside the backup folder
+        ################################################################################
+        insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
+        if insidecursorFolder:
+            # Delete all cursors inside wallpaper folder
+            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if cursor != userCurrentcursor:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
+
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            # Save cursor information
+            config.set('INFO', 'cursor', f"{userCurrentcursor}")
+            config.set('INFO', 'feedback_status', f"Backing up: cursor")
+            config.write(configfile)
+
+        # Get users /usr/share/icons
+        # Try to find the current cursor inside /usr/share/icons
+        # If folder is empty, use CP to copy
+        if not insidecursorFolder:
+            try:
+                # USR/SHARE
+                # Try to find
+                os.listdir(f"/usr/share/icons/{userCurrentcursor}/")
+                sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+            except:
+                try:
+                    # .Icons
+                    # Try to find
+                    os.listdir(f"{homeUser}/.icons/{userCurrentcursor}/")
+                    sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+                except:
+                    pass
+        else:
+            try:
+                # USR/SHARE/ICONS
+                # Try to find
+                os.listdir(f"{homeUser}/.icons/{userCurrentcursor}/")
+                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+            except: 
+                try:
+                    # Try to find the current cursor inside /home/user/.icons
+                    sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+                except:
+                    pass
 
         self.backup_theme()
 

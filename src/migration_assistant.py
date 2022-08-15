@@ -502,7 +502,8 @@ class PREBACKUP(QWidget):
         self.systemSettingsCheckBox.setToolTip("This will restore: \n"
             "* Wallpaper\n"
             "* Theme\n"
-            "* Icon")
+            "* Icon\n"
+            "* Cursor")
 
         self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
         self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))

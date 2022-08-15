@@ -37,8 +37,8 @@ class RESTORE:
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-        # Themes users folder
-        self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+        # Cursor users folder
+        self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
@@ -244,6 +244,43 @@ class RESTORE:
             # Apply the icon
             print(f"Applying {setUserIcon} {iniIcon}")
             sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+
+        except:
+            pass
+
+        self.restore_cursor()
+
+    def restore_cursor(self):
+        if self.iniSystemSettings == "true":
+            print("Restoring cursor...")
+
+            dummyList = []
+            # Get current cursor
+            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                dummyList.append(cursor)
+
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'cursor', f'{dummyList[0]}')
+                    config.write(configfile)
+                
+        try:
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+            
+            ################################################################################
+            # Read file
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            # Cursor
+            iniCursor = config['INFO']['cursor']
+        
+            # Apply cursor
+            print(f"Applying {setUserCursor} {iniCursor}")
+            sub.run(f"{setUserCursor} {iniCursor}", shell=True)
 
         except:
             pass

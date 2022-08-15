@@ -41,6 +41,7 @@ applicationFolderName = "applications"
 wallpaperFolderName = "wallpaper"
 iconFolderName = "icon"
 themeFolderName = "theme"
+cursorFolderName = "cursor"
 gnomeShellFolder = "gnome-shell"
 varFolderName = "var"
 localFolderName = "share"
@@ -63,7 +64,9 @@ supported = "gnome"
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
 getUserPackageManager = "cat /etc/os-release"
 
-# Gnome
+################################################################################
+# GNOME
+#################################################################################
 detectThemeMode = "gsettings get org.gnome.desktop.interface color-scheme"
 
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
@@ -77,9 +80,14 @@ zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options
 # Icon
 getUserIcon = "gsettings get org.gnome.desktop.interface icon-theme"
 setUserIcon = "gsettings set org.gnome.desktop.interface icon-theme"
+
 # Theme
 getUserTheme = "gsettings get org.gnome.desktop.interface gtk-theme"
 setUserTheme = "gsettings set org.gnome.desktop.interface gtk-theme"
+
+# cursor
+getUserCursor = "gsettings get org.gnome.desktop.interface cursor-theme"
+setUserCursor = "gsettings set org.gnome.desktop.interface cursor-theme"
 
 # Locations
 media = "/media"
