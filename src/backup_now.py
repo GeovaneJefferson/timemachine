@@ -521,37 +521,44 @@ class BACKUP:
         # Get users DE (Gnome or KDE etc.)
         userDE = os.popen(getUserDE)
         userDE = userDE.read().strip().lower()
-
-        if "gnome" or "ubuntu" or "pop" in userDE:
-            # Light theme
-            if getColorScheme == "prefer-light":
-                # Get current wallpaper
-                self.getWallpaper = os.popen(getGnomeWallpaper)
-                self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
-            
-            else:
-                # Get current wallpaper (Dark)
-                self.getWallpaper = os.popen(getGnomeWallpaperDark)
-                self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
         
-            # If it has comma
-            if "," in self.getWallpaper:
-                self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
+        # Check if user DE is in the supported list
+        count = 0
+        for _ in supported:
+            if supported[count] == userDE:
+                # Light theme
+                if getColorScheme == "prefer-light":
+                    # Get current wallpaper
+                    self.getWallpaper = os.popen(getGnomeWallpaper)
+                    self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
+                
+                else:
+                    # Get current wallpaper (Dark)
+                    self.getWallpaper = os.popen(getGnomeWallpaperDark)
+                    self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
             
-            # Remove spaces if exist
-            if " " in self.getWallpaper:
-                self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
-            
-            # Remove / at the end if exist
-            if self.getWallpaper.endswith("/"):
-                self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
-                self.getWallpaper = "".join(str(self.getWallpaper))
-                self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
-                self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
+                # If it has comma
+                if "," in self.getWallpaper:
+                    self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
+                
+                # Remove spaces if exist
+                if " " in self.getWallpaper:
+                    self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
+                
+                # Remove / at the end if exist
+                if self.getWallpaper.endswith("/"):
+                    self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
+                    self.getWallpaper = "".join(str(self.getWallpaper))
+                    self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
+                    self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
+                
+                # After one supported item was found, continue
+                continue
 
-        else:
-            print("No supported DE found to back up the wallpaper.")
-            self.write_flatpak_file()
+            else:
+                print("No supported DE found to back up the wallpaper.")
+                self.write_flatpak_file()
+            count += 1
 
         self.backup_user_wallpaper()
 
