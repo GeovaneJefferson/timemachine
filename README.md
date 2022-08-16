@@ -32,6 +32,7 @@ I am still trying to fix this :D
 * Backup of your installed Flatpaks name and Data, so you can easily restore them.
 * Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
 (The oldest backups are deleted when your backup disk is full.)
+
 * Important: Time Machine does not back up system files!
 * The first backup might take a long time, but you can continue using your PC while a backup is been made. 
 
