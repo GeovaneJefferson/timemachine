@@ -831,24 +831,23 @@ class EXTERNAL(QWidget):
                     i -= 1
 
         except FileNotFoundError:
-            if len(os.listdir(f'{run}/{userName}')) != 0:
-                print("Found device(s) inside Run")
-                self.foundInMedia = False
-                self.where(run)
+            try:
+                if len(os.listdir(f'{run}/{userName}')) != 0:
+                    print("Found device(s) inside Run")
+                    self.foundInMedia = False
+                    self.where(run)
 
-            else:
-                try:
-                    print(self.captureDevices)
-                    print(len(self.captureDevices))
-                    for i in range(len(self.captureDevices)):
-                        item = self.verticalLayout.itemAt(i)
-                        widget = item.widget()
-                        widget.deleteLater()
+                else:
+                        print(self.captureDevices)
+                        print(len(self.captureDevices))
+                        for i in range(len(self.captureDevices)):
+                            item = self.verticalLayout.itemAt(i)
+                            widget = item.widget()
+                            widget.deleteLater()
                         i -= 1
-
-                except:
-                    self.captureDevices.clear()
-                    pass
+            except:
+                self.captureDevices.clear()
+                pass
 
     def where(self, location):
         # Gettíng devices locations
