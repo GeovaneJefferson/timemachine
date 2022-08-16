@@ -980,7 +980,6 @@ class EXTERNAL(QWidget):
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
-
         self.iniUI()
 
     def iniUI(self):
@@ -1336,11 +1335,19 @@ class OPTION(QMainWindow):
         # Donate, Update and Save buttons
         ################################################################################
         self.donateAndBackWidget = QWidget(self)
-        self.donateAndBackWidget.setGeometry(478, 390, 220, 60)
+        self.donateAndBackWidget.setGeometry(310, 390, 380, 60)
 
         # Donate and Settings widget
         self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
+
+        # update buton
+        self.searchUpdateButton = QPushButton()
+        self.searchUpdateButton.setText("Search For Update")
+        self.searchUpdateButton.setFont(QFont("Ubuntu", 10))
+        self.searchUpdateButton.adjustSize()
+        self.searchUpdateButton.setVisible(True)
+        self.searchUpdateButton.clicked.connect(self.on_search_for_updates_clicked)
 
         # Donate buton
         self.donateButton = QPushButton()
@@ -1404,9 +1411,10 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
+        self.donateAndBackLayout.addWidget(self.searchUpdateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-
+        
         self.setLayout(self.leftLayout)
 
         self.get_folders()
@@ -1929,6 +1937,41 @@ class OPTION(QMainWindow):
 
         else:
             QMessageBox.Close
+
+    def on_search_for_updates_clicked(self):
+        # Check for git updates
+        x = os.popen("git remote update && git status -uno").read()
+
+        # Updates found
+        if "Your branch is behind" in str(x):
+            applyUpdatesConfirmation = QMessageBox.question(self, 'Install Updates', 
+            'Are you sure you want to install the updates?',
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if applyUpdatesConfirmation == QMessageBox.Yes:
+                try:
+                    os.popen("git pull")
+                    print("Updated successfully") 
+                    # Close a open the next message
+                    QMessageBox.Close
+                    # Updated sucessfully message
+                    updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+                    f'You are now using the latest version of {appName}.',
+                    QMessageBox.Ok)
+
+                    if notUpdatesFound == QMessageBox.Ok:
+                        QMessageBox.Close
+
+                except:
+                    QMessageBox.Close
+        
+        else:
+            notUpdatesFound = QMessageBox.question(self, 'No Updates Found', 
+            f'You are using the latest version of {appName}.',
+            QMessageBox.Ok)
+
+            if notUpdatesFound == QMessageBox.Ok:
+                QMessageBox.Close
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
