@@ -59,8 +59,6 @@ Time Machine can back up to an external drive connected to a USB, HD or SSD.
 
 ## Time Machine WILL NOT ERASE YOUR EXTERNAL DEVICE! 
 ## Create a Time Machine backup
-- Is highly recommended that your backup device is formated as an "Ext4" partition.
-
 1. Connect an external storage device, such as a USB or HD/SSD.
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.
 3. Then, click on "Back Up Now".
