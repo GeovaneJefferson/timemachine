@@ -1341,9 +1341,9 @@ class OPTION(QMainWindow):
         self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
 
-        # update buton
+        # Update button
         self.searchUpdateButton = QPushButton()
-        self.searchUpdateButton.setText("Search For Update")
+        self.searchUpdateButton.setText("Search For Updates")
         self.searchUpdateButton.setFont(QFont("Ubuntu", 10))
         self.searchUpdateButton.adjustSize()
         self.searchUpdateButton.setVisible(True)
@@ -1945,12 +1945,12 @@ class OPTION(QMainWindow):
         # Updates found
         if "Your branch is behind" in str(x):
             applyUpdatesConfirmation = QMessageBox.question(self, 'Install Updates', 
-            'Are you sure you want to install the updates?',
+            'Are you sure that you want to install the updates?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
-                    os.popen("git pull")
+                    os.popen("git stash; git stash; git pull")
                     print("Updated successfully") 
                     # Close a open the next message
                     QMessageBox.Close
