@@ -32,6 +32,7 @@ I am still trying to fix this :D
 * Backup of your installed Flatpaks name and Data, so you can easily restore them.
 * Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
 (The oldest backups are deleted when your backup disk is full.)
+
 * Important: Time Machine does not back up system files!
 * The first backup might take a long time, but you can continue using your PC while a backup is been made. 
 
@@ -57,9 +58,11 @@ Still in development...
 ## External drive connected to your PC
 Time Machine can back up to an external drive connected to a USB, HD or SSD.
 
+<<<<<<< HEAD
+=======
+## Time Machine WILL NOT ERASE OR FORMAT YOUR EXTERNAL DEVICE! 
+>>>>>>> dev
 ## Create a Time Machine backup
-- Is highly recommended that your backup device is formated as an "Ext4" partition.
-
 1. Connect an external storage device, such as a USB or HD/SSD.
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.
 3. Then, click on "Back Up Now".
@@ -69,7 +72,7 @@ By now, Time Machine will backup:
 * Flatpaks installed names
 * Flatpaks installed Data (If you choose to) - Not fully tested
 * Wallpaper (Automatic, Only for Gnome) 
-* Theme and Icon (Automatic, Only for Gnome)
+* Theme, Icon and cursor (Automatic, Only for Gnome)
 
 #### Packages
 * Inside of "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.

@@ -831,24 +831,23 @@ class EXTERNAL(QWidget):
                     i -= 1
 
         except FileNotFoundError:
-            if len(os.listdir(f'{run}/{userName}')) != 0:
-                print("Found device(s) inside Run")
-                self.foundInMedia = False
-                self.where(run)
+            try:
+                if len(os.listdir(f'{run}/{userName}')) != 0:
+                    print("Found device(s) inside Run")
+                    self.foundInMedia = False
+                    self.where(run)
 
-            else:
-                try:
-                    print(self.captureDevices)
-                    print(len(self.captureDevices))
-                    for i in range(len(self.captureDevices)):
-                        item = self.verticalLayout.itemAt(i)
-                        widget = item.widget()
-                        widget.deleteLater()
+                else:
+                        print(self.captureDevices)
+                        print(len(self.captureDevices))
+                        for i in range(len(self.captureDevices)):
+                            item = self.verticalLayout.itemAt(i)
+                            widget = item.widget()
+                            widget.deleteLater()
                         i -= 1
-
-                except:
-                    self.captureDevices.clear()
-                    pass
+            except:
+                self.captureDevices.clear()
+                pass
 
     def where(self, location):
         # Gettíng devices locations
@@ -980,7 +979,6 @@ class EXTERNAL(QWidget):
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
-
         self.iniUI()
 
     def iniUI(self):
@@ -1336,11 +1334,19 @@ class OPTION(QMainWindow):
         # Donate, Update and Save buttons
         ################################################################################
         self.donateAndBackWidget = QWidget(self)
-        self.donateAndBackWidget.setGeometry(478, 390, 220, 60)
+        self.donateAndBackWidget.setGeometry(310, 390, 380, 60)
 
         # Donate and Settings widget
         self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
+
+        # Update button
+        self.searchUpdateButton = QPushButton()
+        self.searchUpdateButton.setText("Search For Updates")
+        self.searchUpdateButton.setFont(QFont("Ubuntu", 10))
+        self.searchUpdateButton.adjustSize()
+        self.searchUpdateButton.setVisible(True)
+        self.searchUpdateButton.clicked.connect(self.on_search_for_updates_clicked)
 
         # Donate buton
         self.donateButton = QPushButton()
@@ -1404,9 +1410,10 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
+        self.donateAndBackLayout.addWidget(self.searchUpdateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-
+        
         self.setLayout(self.leftLayout)
 
         self.get_folders()
@@ -1876,8 +1883,8 @@ class OPTION(QMainWindow):
                     config.set('EXTERNAL', 'name', 'None')
 
                     # Mode section
-                    config.set('MODE', 'one_time_mode', 'false')
-                    config.set('MODE', 'more_time_mode', 'true')
+                    config.set('MODE', 'one_time_mode', 'true')
+                    config.set('MODE', 'more_time_mode', 'false')
 
                     # System tray  section
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
@@ -1898,6 +1905,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
+                    config.set('INFO', 'cursor', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
@@ -1928,6 +1936,41 @@ class OPTION(QMainWindow):
 
         else:
             QMessageBox.Close
+
+    def on_search_for_updates_clicked(self):
+        # Check for git updates
+        x = os.popen("git remote update && git status -uno").read()
+
+        # Updates found
+        if "Your branch is behind" in str(x):
+            applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
+            'Do you want to install the updates?\n',
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if applyUpdatesConfirmation == QMessageBox.Yes:
+                try:
+                    os.popen("git stash; git stash; git pull")
+                    print("Updated successfully") 
+                    # Close a open the next message
+                    QMessageBox.Close
+                    # Updated sucessfully message
+                    updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+                    f'You are now using the latest version of {appName}.\n',
+                    QMessageBox.Ok)
+
+                    if notUpdatesFound == QMessageBox.Ok:
+                        QMessageBox.Close
+
+                except:
+                    QMessageBox.Close
+        
+        else:
+            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
+            f'You are using the latest version of {appName}.',
+            QMessageBox.Ok)
+
+            if notUpdatesFound == QMessageBox.Ok:
+                QMessageBox.Close
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)

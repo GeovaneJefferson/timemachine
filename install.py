@@ -71,14 +71,12 @@ class CLI:
             if user_os == "ubuntu":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
-                sub.run(f"sudo apt -y upgrade", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
             
             # Debian
             elif user_os == "debian":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
-                sub.run(f"sudo apt -y upgrade", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
 
             # Opensuse
@@ -91,7 +89,6 @@ class CLI:
             elif user_os == "fedora":
                 print("")
                 sub.run(f"sudo dnf -y update", shell=True)
-                sub.run(f"sudo dnf -y upgrade", shell=True)
                 sub.run(f"sudo dnf -y install {self.installDependencies} qt5-qtbase-devel", shell=True)
 
             # Arch
@@ -162,21 +159,21 @@ class CLI:
                     f"Terminal=false")
 
             ################################################################################
-            # Migration Assistant entry .desktop
+            # Call Migration Assistant entry .desktop
             ################################################################################
-            # with open(self.src_migration_assistant, "w") as writer:  
-            #     writer.write(
-            #         f"[Desktop Entry]\n "
-            #         f"Version=1.0\n "
-            #         f"Type=Application\n "
-            #         f"Name=Migration Assistant\n "
-            #         f"Comment=Restore settings from a Time Machine backup\n "
-            #         f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
-            #         f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
-            #         f"Path={self.home_user}/.local/share/timemachine/\n "
-            #         f"Categories=System\n "
-            #         f"StartupWMClass=migration_assistant.py\n "
-            #         f"Terminal=false")
+            with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
+                writer.write(
+                    f"[Desktop Entry]\n "
+                    f"Version=1.0\n "
+                    f"Type=Application\n "
+                    f"Name=Migration Assistant\n "
+                    f"Comment=Restore settings from a Time Machine backup\n "
+                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
+                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
+                    f"Path={self.home_user}/.local/share/timemachine/\n "
+                    f"Categories=System\n "
+                    f"StartupWMClass=migration_assistant.py\n "
+                    f"Terminal=false")
 
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
