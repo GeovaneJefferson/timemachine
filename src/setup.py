@@ -60,7 +60,9 @@ installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
 
 # DE
-supported = "gnome"
+supported = ["gnome", "ubuntu", "ubuntu:gnome", "pop"]
+supportedDEBPackageManager = ["debian", "ubuntu"]
+supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
 getUserPackageManager = "cat /etc/os-release"
 
