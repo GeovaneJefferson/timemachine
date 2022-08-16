@@ -647,7 +647,7 @@ class BACKUP:
             for output in self.homeFolderToBeBackup:
                 ###############################################################################
                 # Write current save file name to INI file
-                # so it can be show on main window (gui.py)
+                # so it can be show on main window (mainwindow.py)
                 # This way, user will have a feedback to what
                 # is happening.
                 # Write current folder been backup to INI file
@@ -663,12 +663,6 @@ class BACKUP:
                 ###############################################################################
                 print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
                 sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
-                
-                # print(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}")
-                # sub.run(f"{copyRsyncCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
-                ###############################################################################
-                # Copy the Home files/folders
-                ###############################################################################
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
