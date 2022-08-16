@@ -1956,7 +1956,8 @@ class OPTION(QMainWindow):
                     QMessageBox.Close
                     # Updated sucessfully message
                     updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-                    f'You are now using the latest version of {appName}.',
+                    f'You are now using the latest version of {appName}.\n',
+                    f"Your {appName}'s settings will be reset.\n",
                     QMessageBox.Ok)
 
                     if notUpdatesFound == QMessageBox.Ok:
