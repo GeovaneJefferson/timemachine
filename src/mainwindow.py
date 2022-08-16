@@ -1966,7 +1966,7 @@ class OPTION(QMainWindow):
                     QMessageBox.Close
         
         else:
-            notUpdatesFound = QMessageBox.question(self, 'No Updates Found', 
+            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
             f'You are using the latest version of {appName}.',
             QMessageBox.Ok)
 
