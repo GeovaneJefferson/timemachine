@@ -59,7 +59,7 @@ class CLI:
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
             
         except KeyError as error:
-            print(keyError)
+            print(error)
             print("Backup checker KeyError!")
             exit()
             
@@ -163,19 +163,17 @@ class CLI:
                 # by checking inside the backup device, if today date is not already inside, backup
                 ################################################################################
                 # Get folders inside the backup folder, and check the last backup date
-                dateFolders = []
-                dummyDate = datetime.now()
-                dummyDate = dummyDate.strftime("%x")
-                dummyDate = dummyDate.replace("/", "-")
+                todayDate = datetime.now()
+                todayDate = todayDate.strftime("%d-%m-%y")
 
+                dateFolders = []
                 for output in os.listdir(self.checkDateInsideBackupFolder):  
                     dateFolders.append(output)
                     dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
                 # If is not the first boot
-                # If todays date can not be found inside the backup device, backup was not made today.
-                if self.iniFirstStartup == "true" and dummyDate not in dateFolders: 
-                # if self.iniFirstStartup == "true" and self.dayName not in self.iniLatestDate: 
+                # If todays date can not be found inside the backup device's folders, backup was not made today.
+                if self.iniFirstStartup == "true" and todayDate not in dateFolders: 
                     ################################################################################
                     # Set startup to False and Continue to back up
                     ################################################################################
@@ -191,7 +189,6 @@ class CLI:
                 else: 
                     print(f"{appName} has already made a backup for today.")
                     print("Time to back up has passed")
-                    # self.no_backup()
 
             elif self.totalCurrentTime == self.totalNextTime:
                 self.call_backup_now()
