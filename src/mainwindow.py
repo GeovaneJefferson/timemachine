@@ -1944,8 +1944,8 @@ class OPTION(QMainWindow):
 
         # Updates found
         if "Your branch is behind" in str(x):
-            applyUpdatesConfirmation = QMessageBox.question(self, 'Install Updates', 
-            'Are you sure that you want to install the updates?',
+            applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
+            'Do you want to install the updates?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
