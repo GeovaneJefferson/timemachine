@@ -162,7 +162,7 @@ class CLI:
                     f"Terminal=false")
 
             ################################################################################
-            # Migration Assistant entry .desktop
+            # Call Migration Assistant entry .desktop
             ################################################################################
             with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
                 writer.write(
@@ -172,11 +172,11 @@ class CLI:
                     f"Name=Migration Assistant\n "
                     f"Comment=Restore settings from a Time Machine backup\n "
                     f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
-                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/migration_assistant.py\n "
-                    f"Path={self.home_user}/.local/share/timemachine/\n "
+                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/call_migration_assistant.py\n "
+                    f"Path={self.home_user}/.local/share/timemachine/src/\n "
                     f"Categories=System\n "
                     f"StartupWMClass=migration_assistant.py\n "
-                    f"Terminal=false")
+                    f"Terminal=true")
 
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
