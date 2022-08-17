@@ -342,14 +342,14 @@ class MAIN(QMainWindow):
 
             except FileNotFoundError:
                 # Disable backup now button
-                self.backupNowButton.setEnabled(False)    
+                self.backupNowButton.setEnabled(False)       
                 # Disconnected     
                 self.externalStatusLabel.setText("Status: Disconnected")
                 self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
                 self.externalSizeLabel.setText("No information available")
 
-        self.set_external_name()
+        self.condition()
 
     def connected_connection(self):
         ################################################################################
@@ -420,8 +420,10 @@ class MAIN(QMainWindow):
         else:
             # Set external name
             self.externalNameLabel.setText("None")
+            # Enable backup now button
             self.backupNowButton.setEnabled(False)
-
+            self.automaticallyCheckBox.setEnabled(False)
+      
         self.set_external_name()
 
     def set_external_name(self):
@@ -824,11 +826,14 @@ class EXTERNAL(QWidget):
                 self.where(media)
 
             else:
-                for i in range(len(self.captureDevices)):
-                    item = self.verticalLayout.itemAt(i)
-                    widget = item.widget()
-                    widget.deleteLater()
-                    i -= 1
+                try:
+                    for i in range(len(self.captureDevices)):
+                        item = self.verticalLayout.itemAt(i)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        i -= 1
+                except AttributeError as error:
+                    pass
 
         except FileNotFoundError:
             try:
@@ -838,13 +843,17 @@ class EXTERNAL(QWidget):
                     self.where(run)
 
                 else:
+                    try:
                         print(self.captureDevices)
                         print(len(self.captureDevices))
                         for i in range(len(self.captureDevices)):
                             item = self.verticalLayout.itemAt(i)
                             widget = item.widget()
                             widget.deleteLater()
-                        i -= 1
+                            i -= 1
+                    except AttributeError as error:
+                        pass
+
             except:
                 self.captureDevices.clear()
                 pass
@@ -1000,7 +1009,7 @@ class OPTION(QMainWindow):
         version.setFont(QFont("Ubuntu", 10))
         version.setText(appVersion)
         version.setFixedSize(80, 20)
-        version.move(270, 505)
+        version.move(270, 410)
 
         ################################################################################
         # Left Widget
