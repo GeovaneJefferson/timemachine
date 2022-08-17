@@ -609,7 +609,7 @@ class PREBACKUP(QWidget):
 
             self.systemSettingsCheckBox = QCheckBox()
             self.systemSettingsCheckBox.setText(" System Settings"
-                f"                {self.systemSettingsFolderSize}")
+                f"               {self.systemSettingsFolderSize}")
             self.systemSettingsCheckBox.setFont(QFont("Ubuntu", 11))
             self.systemSettingsCheckBox.adjustSize()
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
@@ -912,8 +912,8 @@ class PREBACKUP(QWidget):
         self.enable_system_settings()
 
     def enable_system_settings(self):
+        dummyList = []
         try:
-            dummyList = []
             # Find user's DE type
             userPackageManager = os.popen(getUserDE)
             userPackageManager = userPackageManager.read().strip().lower()
@@ -938,6 +938,7 @@ class PREBACKUP(QWidget):
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option
+                    print(bool(supported[count] == userPackageManager))
                     if supported[count] == userPackageManager:
                         self.systemSettingsCheckBox.setEnabled(True)
                         # After one supported item was found, continue
