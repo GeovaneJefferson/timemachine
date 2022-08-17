@@ -194,11 +194,13 @@ class RESTORE:
                 # Light or Dark wallpaper
                 if getColorScheme == "prefer-light" or "default":
                     # Light theme o default
-                    sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
+                    print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+                    sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
 
                 else:
                     # Dark theme
-                    sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}/", shell=True)
+                    print(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}")
+                    sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}", shell=True)
 
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
