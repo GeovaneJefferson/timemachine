@@ -1009,7 +1009,7 @@ class OPTION(QMainWindow):
         version.setFont(QFont("Ubuntu", 10))
         version.setText(appVersion)
         version.setFixedSize(80, 20)
-        version.move(270, 505)
+        version.move(270, 410)
 
         ################################################################################
         # Left Widget
