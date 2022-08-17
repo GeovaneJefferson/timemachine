@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from multiprocessing import dummy
 from setup import *
 import multiprocessing
 
@@ -25,17 +26,7 @@ iniHDName = config['EXTERNAL']['name']
 iniApplicationsPackages = config['RESTORE']['applications_packages']
 iniApplicationData = config['RESTORE']['applications_data']
 iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-   
-# INFO
-packageManager = config['INFO']['packageManager']
-# Icons users folder
-iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-# Themes users folder
-themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
 
-# Flatpak txt file
-flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-        
 iniIsRestoreRunning = config['RESTORE']['is_restore_running']
 iniApplicationsPackages = config['RESTORE']['applications_packages']
 iniApplicationData = config['RESTORE']['applications_data']
@@ -44,6 +35,39 @@ iniFilesAndsFolders = config['RESTORE']['files_and_folders']
 iniCurrentBackupInfo = config['INFO']['feedback_status']
 # Get current notification ID
 iniNotificationID = config['INFO']['notification_id']
+# INFO
+packageManager = config['INFO']['packageManager']
+
+# Base folder
+createBaseFolder = f"{iniExternalLocation}/{baseFolderName}"
+# Backup folder
+createBackupFolder = f"{iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+# Wallpaper main folder
+wallpaperMainFolder = f"{iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
+# Application main folder
+applicationMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
+# Application main Var folder
+applicationVarFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
+# Application main Local folder
+applicationLocalFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+# Check date inside backup folder
+checkDateInsideBackupFolder = f"{iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+
+# PACKAGES
+# RPM main folder
+rpmMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
+# DEB main folder
+debMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
+
+# Icons users folder
+iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+# Themes users folder
+themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
+
+# Flatpak txt file
+flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
+        
 
 
 class WELCOMESCREEN(QWidget):
@@ -63,7 +87,7 @@ class WELCOMESCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_backup_icon});"
+            f"background-image: url({src_migration_assistant_128px});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -141,21 +165,40 @@ class OPTIONS(QWidget):
             f"If you already have back up with {appName}\n"
             "You can use the restore option.")
 
+        ################################################################################
         # Restore from
+        ################################################################################
+        imagePosX = 38
+        imagePosy = 20
         self.restoreOption = QPushButton()
+        pixmap = QPixmap(f'{src_migration_assistant_128px}')
+        image = QLabel(self.restoreOption)
+        image.setPixmap(pixmap)
+        image.setFixedSize(pixmap.width(),pixmap.height())
+        image.move(imagePosX, imagePosy)
+        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
         self.restoreOption.setText(
-            "Restore\n"
+            "\n\n\n\n\n\n\nRestore\n"
             f"from {appName}")
         self.restoreOption.setFont(QFont("Ubuntu", 11))
         self.restoreOption.setCheckable(True)
         self.restoreOption.setAutoExclusive(True)
         self.restoreOption.setFixedSize(200, 200)
         self.restoreOption.clicked.connect(lambda *args: self.on_device_clicked("restore"))
-        
+
+        ################################################################################
         # Set up as new
+        ################################################################################
         self.startAsNew = QPushButton()
+        pixmap = QPixmap(f'{src_migration_assistant_clean_128px}')
+        image = QLabel(self.startAsNew)
+        image.setPixmap(pixmap)
+        image.setFixedSize(pixmap.width(),pixmap.height())
+        image.move(imagePosX, imagePosy)
+        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
         self.startAsNew.setFont(QFont("Ubuntu", 11))
-        self.startAsNew.setText("Set Up as New")
+        self.startAsNew.setText(
+            "\n\n\n\n\n\n\nSet Up as New")
         self.startAsNew.setCheckable(True)
         self.startAsNew.setAutoExclusive(True)
         self.startAsNew.setFixedSize(200, 200)
@@ -223,25 +266,6 @@ class CHOOSEDEVICE(QWidget):
         self.outputBox = ()
         self.captureDevices = []
 
-        # # Update
-        # timer.timeout.connect(self.read_ini_file)
-        # timer.start(2000) # Update every x seconds
-        self.read_ini_file()
-
-    def read_ini_file(self):
-        # ################################################################################
-        # # Read file
-        # ################################################################################
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)
-
-        # # Read INI file
-        # iniExternalLocation = config['EXTERNAL']['hd']
-        # self.iniHDName = config['EXTERNAL']['name']
-        # iniApplicationsPackages = config['RESTORE']['applications_packages']
-        # iniApplicationData = config['RESTORE']['applications_data']
-        # iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-       
         self.widgets()
 
     def widgets(self):
@@ -531,12 +555,47 @@ class PREBACKUP(QWidget):
         ################################################################################
         # System settings checkbox
         ################################################################################
+        dummySystemSettingsSizeList = []
         try:
+            # Icons size
             self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder}")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
-     
+            # Add to dummySystemSettingsSizeList
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+
+        except:
+            pass
+        
+        try:    
+            # Theme size
+            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName}")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
+            # Add to dummySystemSettingsSizeList
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+        
+        except:    
+            pass
+
+        try:
+            # Cursor size
+            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName}")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{cursorFolderName}", "")
+            # Add to dummySystemSettingsSizeList
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+
+            # Sum all values inside dummySystemSettingsSizeList
+            self.systemSettingsFolderSize = sum(dummySystemSettingsSizeList)
+        
+        except:
+            pass
+
+        try:
             # System settings size information
             self.SystemSettingsSizeInformation = QLabel()
             # If M inside self.applicationsSizeInformation, add B = MB
@@ -641,6 +700,7 @@ class PREBACKUP(QWidget):
         self.flatpakDataCheckBox.setFont(QFont("Ubuntu", 11))
         self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
         self.flatpakDataCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.flatpakDataCheckBox.setEnabled(False)
         self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
 
         try:
@@ -759,8 +819,7 @@ class PREBACKUP(QWidget):
             # Look for flatpakTxt inside external device
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(f"{iniExternalLocation}/{userName}"
-                f"{baseFolderName}/{flatpakTxt}", 'r') as output:
+            with open(f"{flatpakTxtFile}", 'r') as output:
                 output = output.read()
                 # If is  not empty, enable these boxes
                 if output != "":
@@ -784,13 +843,11 @@ class PREBACKUP(QWidget):
         try:
             dummyList = []
             if packageManager == "rpm":
-                for output in os.listdir(f"{iniExternalLocation}/"
-                    f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}"):
+                for output in os.listdir(f"{rpmMainFolder}/"):
                     dummyList.append(output)
 
             elif packageManager == "deb":
-                for output in os.listdir(f"{iniExternalLocation}/"
-                    f"{baseFolderName}/{applicationFolderName}/{debFolderName}"):
+                for output in os.listdir(f"{debMainFolder}/"):
                     dummyList.append(output)
 
             if dummyList:
@@ -815,17 +872,15 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             dummyList = []
-            for output in os.listdir(f"{iniExternalLocation}/"
-                f"{baseFolderName}/{applicationFolderName}/{varFolderName}/"):
+            for output in os.listdir(f"{applicationVarFolder}/"):
                 dummyList.append(output)
-
 
             if dummyList:
                 self.flatpakDataCheckBox.setEnabled(True)
 
             else:
                 self.flatpakDataCheckBox.setEnabled(False)  
-
+            
             # Empty list
             dummyList.clear()
 
@@ -839,8 +894,7 @@ class PREBACKUP(QWidget):
         try:
             dummyList = []
             # Check inside backup folder 
-            for output in os.listdir(f"{iniExternalLocation}/"
-                f"{baseFolderName}/{backupFolderName}/"):
+            for output in os.listdir(f"{createBackupFolder}/"):
                 dummyList.append(output)
 
             if dummyList:
@@ -864,25 +918,20 @@ class PREBACKUP(QWidget):
             userPackageManager = os.popen(getUserDE)
             userPackageManager = userPackageManager.read().strip().lower()
             # Check if a wallpaper has been backup
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{wallpaperFolderName}/"):
+            for output in os.listdir(f"{wallpaperMainFolder}/"):
                 dummyList.append(output)
 
             # Check if icon has been backup
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{iconFolderName}/"):
+            for output in os.listdir(f"{iconsMainFolder}/"):
                 dummyList.append(output)
 
             # Check if theme has been backup
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{themeFolderName}/"):
+            for output in os.listdir(f"{themeMainFolder}/"):
                 dummyList.append(output)
             
             # Check if cursor has been backup
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{cursorFolderName}/"):
+            for output in os.listdir(f"{cursorMainFolder}/"):
                 dummyList.append(output)
-
 
             if dummyList:
                 # Check if user DE is in the supported list
@@ -1308,7 +1357,7 @@ class DONE(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_backup_icon});"
+            f"background-image: url({src_migration_assistant_128px});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1320,7 +1369,7 @@ class DONE(QWidget):
         self.title.setText("Migration Assistant")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
 
-       # More description
+        # More description
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Ubuntu", 14))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
@@ -1367,7 +1416,7 @@ if __name__ == '__main__':
 
     # Window settings
     widget.setWindowTitle(appName)
-    widget.setWindowIcon(QIcon(src_backup_icon))
+    widget.setWindowIcon(QIcon(src_migration_assistant_128px))
     widget.setFixedSize(windowXSize, windowYSize)
     widget.show()
 

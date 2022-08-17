@@ -37,6 +37,8 @@ class RESTORE:
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+        # Themes users folder
+        self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
         # Cursor users folder
         self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
         # Flatpak txt file
@@ -224,7 +226,6 @@ class RESTORE:
             ################################################################################
             # Create .icons inside home user
             ################################################################################
-            print(f"{createCMDFolder} {homeUser}/.icons")
             if not os.path.exists(f"{homeUser}/.icons"):
                 print("Creating .icons inside home user...")
                 print(f"{createCMDFolder} {homeUser}/.icons")

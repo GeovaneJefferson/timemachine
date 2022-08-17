@@ -168,7 +168,7 @@ class CLI:
                     f"Type=Application\n "
                     f"Name=Migration Assistant\n "
                     f"Comment=Restore settings from a Time Machine backup\n "
-                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_icon.svg\n "
+                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/migration_assistant_128px.svg\n "
                     f"Exec=python3 {self.home_user}/.local/share/timemachine/src/call_migration_assistant.py\n "
                     f"Path={self.home_user}/.local/share/timemachine/src/\n "
                     f"Categories=System\n "
@@ -188,9 +188,6 @@ class CLI:
             shutil.copy(self.src_migration_assistant,
                         self.dst_migration_assistant)
 
-            # # Give permission to Migration Assistant
-            # sub.run(f"sudo chmod o+x {self.home_user}/.local/share/timemachine/src/migration_assistant.py", shell=True)
-            
             print("Program was installed!")
 
         except FileNotFoundError:

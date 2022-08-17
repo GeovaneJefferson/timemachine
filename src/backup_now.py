@@ -773,6 +773,7 @@ class BACKUP:
         if not insideIconFolder:
             try:
                 # USR/SHARE
+                os.listdir(f"/usr/share/icons/{userCurrentIcon}")
                 sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
             except:
                 # .THEMES
@@ -783,6 +784,7 @@ class BACKUP:
         else:
             try:
                 # USR/SHARE
+                os.listdir(f"/usr/share/icons/{userCurrentIcon}")
                 sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
             except: 
                 # Try to find the current icon inside /home/user/.icons
@@ -834,7 +836,6 @@ class BACKUP:
                 try:
                     # .Icons
                     # Try to find
-                    os.listdir(f"{homeUser}/.icons/{userCurrentcursor}/")
                     sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
 
                 except:
@@ -902,20 +903,22 @@ class BACKUP:
         if not insideThemeFolder:
             try:
                 # USR/SHARE
-                sub.check_call(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+                os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
+                sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
             except:
                 # .THEMES
-                sub.check_call(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+                sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
             else:
                 pass
 
         else:
             try:
                 # USR/SHARE
-                sub.check_call(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+                os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
+                sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
             except:
                 # .THEMES
-                sub.check_call(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+                sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
             else:
                 pass
 
@@ -927,7 +930,7 @@ class BACKUP:
             if insideGnomeShellThemeFolder:
                 print("Backing up theme gnome-shell...")
                 sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
-                    f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{self.iniExternalLocation}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
         except:
             pass
