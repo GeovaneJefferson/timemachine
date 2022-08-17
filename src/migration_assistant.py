@@ -681,7 +681,7 @@ class PREBACKUP(QWidget):
 
                 self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
-                    f"                           {flatpaksToBeInstalled} Apps")
+                    f"                         {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -752,7 +752,7 @@ class PREBACKUP(QWidget):
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" File and Folders"
-                f"                {self.fileAndFoldersFolderSize}")
+                f"                 {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -938,7 +938,6 @@ class PREBACKUP(QWidget):
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option
-                    print(bool(supported[count] == userPackageManager))
                     if supported[count] == userPackageManager:
                         self.systemSettingsCheckBox.setEnabled(True)
                         # After one supported item was found, continue
