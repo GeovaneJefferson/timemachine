@@ -37,6 +37,8 @@ class RESTORE:
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
+        # Themes users folder
+        self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
         # Cursor users folder
         self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
         # Flatpak txt file
@@ -185,13 +187,13 @@ class RESTORE:
                 if "," in image:
                     image = str(image.replace(", ", "\, "))
                     
-                    # Add \ if it has space
-                    if " " in image:
-                        image = str(image.replace(" ", "\ "))
-            
+                # Add \ if it has space
+                if " " in image:
+                    image = str(image.replace(" ", "\ "))
+        
                 # Light or Dark wallpaper
-                if getColorScheme == "prefer-light":
-                    # Light theme
+                if getColorScheme == "prefer-light" or "default":
+                    # Light theme o default
                     sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
 
                 else:
@@ -224,7 +226,6 @@ class RESTORE:
             ################################################################################
             # Create .icons inside home user
             ################################################################################
-            print(f"{createCMDFolder} {homeUser}/.icons")
             if not os.path.exists(f"{homeUser}/.icons"):
                 print("Creating .icons inside home user...")
                 print(f"{createCMDFolder} {homeUser}/.icons")
