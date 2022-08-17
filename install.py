@@ -161,19 +161,19 @@ class CLI:
             ################################################################################
             # Call Migration Assistant entry .desktop
             ################################################################################
-            with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
-                writer.write(
-                    f"[Desktop Entry]\n "
-                    f"Version=1.0\n "
-                    f"Type=Application\n "
-                    f"Name=Migration Assistant\n "
-                    f"Comment=Restore settings from a Time Machine backup\n "
-                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/migration_assistant_128px.svg\n "
-                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/call_migration_assistant.py\n "
-                    f"Path={self.home_user}/.local/share/timemachine/src/\n "
-                    f"Categories=System\n "
-                    f"StartupWMClass=migration_assistant.py\n "
-                    f"Terminal=false")
+            # with open(self.src_migration_assistant, "w") as writer:
+            #     writer.write(
+            #         f"[Desktop Entry]\n "
+            #         f"Version=1.0\n "
+            #         f"Type=Application\n "
+            #         f"Name=Migration Assistant\n "
+            #         f"Comment=Restore settings from a Time Machine backup\n "
+            #         f"Icon={self.home_user}/.local/share/timemachine/src/icons/migration_assistant_128px.svg\n "
+            #         f"Exec=python3 {self.home_user}/.local/share/timemachine/src/call_migration_assistant.py\n "
+            #         f"Path={self.home_user}/.local/share/timemachine/src/\n "
+            #         f"Categories=System\n "
+            #         f"StartupWMClass=migration_assistant.py\n "
+            #         f"Terminal=false")
 
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
