@@ -187,13 +187,13 @@ class RESTORE:
                 if "," in image:
                     image = str(image.replace(", ", "\, "))
                     
-                    # Add \ if it has space
-                    if " " in image:
-                        image = str(image.replace(" ", "\ "))
-            
+                # Add \ if it has space
+                if " " in image:
+                    image = str(image.replace(" ", "\ "))
+        
                 # Light or Dark wallpaper
-                if getColorScheme == "prefer-light":
-                    # Light theme
+                if getColorScheme == "prefer-light" or "default":
+                    # Light theme o default
                     sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}/", shell=True)
 
                 else:
