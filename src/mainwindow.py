@@ -11,8 +11,6 @@ class MAIN(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        self.setWindowIcon(QIcon(src_backup_icon))
-
         ################################################################################
         # Center window
         ################################################################################
@@ -2021,6 +2019,7 @@ if __name__ == '__main__':
     widget.show()
     # Window title name
     widget.setWindowTitle(appName)
+    widget.setWindowIcon(QIcon(src_backup_icon))
     widget.setFixedSize(700, 450)
 
     app.exit(app.exec())
