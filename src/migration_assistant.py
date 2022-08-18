@@ -935,6 +935,9 @@ class PREBACKUP(QWidget):
 
             if dummyList:
                 # Check if user DE is in the supported list
+                print(supported)
+                print(userPackageManager)
+                print(dummyList)
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option
