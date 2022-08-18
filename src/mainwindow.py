@@ -598,16 +598,16 @@ class MAIN(QMainWindow):
                     self.nextDay = "Fri"
                 elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-        # try:
-        #     # Save next backup to user.ini
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-        #     with open(src_user_config, 'w') as configfile:
-        #         config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
-        #         config.write(configfile)
+        try:
+            # Save next backup to user.ini
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+                config.write(configfile)
         
-        # except:
-        #     pass
+        except:
+            pass
 
         self.load_current_backup_folder()
 
