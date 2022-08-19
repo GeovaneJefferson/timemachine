@@ -220,9 +220,9 @@ class RESTORE:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'icon', f'{dummyList[0]}')
-                    config.write(configfile)
+                # Write to INI file saved icon name
+                config.set('INFO', 'icon', f'{dummyList[0]}')
+                config.write(configfile)
                 
         try:
             ################################################################################
