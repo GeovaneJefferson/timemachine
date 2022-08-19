@@ -316,7 +316,7 @@ class RESTORE:
                 sub.run(f"{setUserTheme} {iniTheme}", shell=True)
 
         except:
-            print("No thme to restore.")
+            print("No theme to restore.")
             pass
 
         if self.iniApplicationsPackages == "true":
