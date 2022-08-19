@@ -180,10 +180,10 @@ class OPTIONS(QWidget):
         self.restoreOption.setText(
             "\n\n\n\n\n\n\nRestore\n"
             f"from {appName}")
-        self.restoreOption.setFont(QFont("Ubuntu", 11))
+        self.restoreOption.setFont(QFont("Ubuntu", 12))
         self.restoreOption.setCheckable(True)
         self.restoreOption.setAutoExclusive(True)
-        self.restoreOption.setFixedSize(200, 200)
+        self.restoreOption.setFixedSize(200, 210)
         self.restoreOption.clicked.connect(lambda *args: self.on_device_clicked("restore"))
 
         ################################################################################
@@ -196,12 +196,12 @@ class OPTIONS(QWidget):
         image.setFixedSize(pixmap.width(),pixmap.height())
         image.move(imagePosX, imagePosy)
         # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.startAsNew.setFont(QFont("Ubuntu", 11))
+        self.startAsNew.setFont(QFont("Ubuntu", 12))
         self.startAsNew.setText(
             "\n\n\n\n\n\n\nSet Up as New")
         self.startAsNew.setCheckable(True)
         self.startAsNew.setAutoExclusive(True)
-        self.startAsNew.setFixedSize(200, 200)
+        self.startAsNew.setFixedSize(200, 210)
         self.startAsNew.clicked.connect(lambda *args: self.on_device_clicked("new"))
        
         ################################################################################
@@ -388,7 +388,7 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setText(output)
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setFont(QFont("Ubuntu", 11))
+                        self.availableDevices.setFont(QFont("Ubuntu", 12))
                         self.availableDevices.setStyleSheet(
                             "QPushButton"
                             "{"
@@ -751,8 +751,8 @@ class PREBACKUP(QWidget):
 
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
-            self.fileAndFoldersCheckBox.setText(" File and Folders"
-                f"                {self.fileAndFoldersFolderSize}")
+            self.fileAndFoldersCheckBox.setText(" Files and Folders"
+                f"              {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
