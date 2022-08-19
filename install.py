@@ -24,7 +24,7 @@ class CLI:
         # Current folder
         self.src_backup_check = "src/desktop/backup_check.desktop"
         self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
-        # self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
+        self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
 
         # Destination folder
         self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
@@ -184,9 +184,9 @@ class CLI:
             shutil.copy(self.src_timemachine_desktop,
                         self.dst_timemachine_desktop)
 
-            # # Copy migration_assistant.desktop to destination folder
-            # shutil.copy(self.src_migration_assistant,
-            #             self.dst_migration_assistant)
+            # Copy migration_assistant.desktop to destination folder
+            shutil.copy(self.src_migration_assistant,
+                        self.dst_migration_assistant)
 
             print("Program was installed!")
 
