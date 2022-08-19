@@ -60,14 +60,14 @@ class APP:
         # Enter time machine button
         self.enterTimeMachineButton = QAction("Enter Time Machine")
         self.enterTimeMachineButton.setFont(QFont(item))
-        self.enterTimeMachineButton.triggered.connect(lambda: sub.Popen(f"python3 "
-            f"{src_enter_time_machine_py}", shell=True))
+        self.enterTimeMachineButton.triggered.connect(
+            lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
 
         # Open Time Machine button
         self.openTimeMachine = QAction(f"Open {appName}")
         self.openTimeMachine.setFont(QFont(item))
-        self.openTimeMachine.triggered.connect(lambda: sub.Popen(f"python3 "
-            f"{src_main_window_py}", shell=True))
+        self.openTimeMachine.triggered.connect(
+            lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
 
         # Add all to menu
         self.menu.addAction(self.iniLastBackupInformation)
