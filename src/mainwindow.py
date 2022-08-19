@@ -1431,8 +1431,16 @@ class OPTION(QMainWindow):
         config.read(src_user_config)
         getIniFolders = config.options('FOLDER')
 
-        # Get USER home folders
+        # Sort folders alphabetically
+        dummyList = []
         for folder in getHomeFolders:
+            if not "." in folder:    
+                dummyList.append(folder)
+                dummyList.sort()
+
+        print(dummyList)    
+        # Get USER home folders
+        for folder in dummyList:
             # Hide hidden folder
             if not "." in folder:    
                 # Checkboxes
@@ -1445,7 +1453,6 @@ class OPTION(QMainWindow):
                     "{"
                     "border-color: transparent;"
                     "}")
-                # self.foldersCheckbox.setFixedSize(150, 22)
                 self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
                 
                 # Activate checkboxes in user.ini
