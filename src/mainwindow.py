@@ -184,7 +184,7 @@ class MAIN(QMainWindow):
         self.descriptionText.setText(
             "* Keep local snapshots of your personal files as space permits\n"
             "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
-            "* Schedule backups Hourly or Daily\n"
+            "* Schedule backups Hourly, Daily or Weekly\n"
             "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
@@ -975,6 +975,7 @@ class EXTERNAL(QWidget):
             # Enable use disk
             self.useDiskButton.setEnabled(True)
         else:
+            # Clean choose disk
             self.chooseDevice = ""
             # Disable use disk
             self.useDiskButton.setEnabled(False)
@@ -1951,7 +1952,7 @@ class OPTION(QMainWindow):
         # Updates found
         if "Your branch is behind" in str(x):
             applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
-            'Do you want to install the updates?\n',
+            f'Do you want to install the updates? \nThis will reset and close {appName}',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
