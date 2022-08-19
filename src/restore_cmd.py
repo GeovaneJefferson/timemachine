@@ -212,44 +212,40 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring icon...")
 
-        try:
-            dummyList = []
-            # Get current icon
-            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                dummyList.append(icon)
-
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Write to INI file saved icon name
-                config.set('INFO', 'icon', f'{dummyList[0]}')
-                config.write(configfile)
+            try:
+                dummyList = []
+                # Get current icon
+                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                    dummyList.append(icon)
                 
-            ################################################################################
-            # Create .icons inside home user
-            ################################################################################
-            if not os.path.exists(f"{homeUser}/.icons"):
-                print("Creating .icons inside home user...")
-                print(f"{createCMDFolder} {homeUser}/.icons")
-                sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
+                # If has something to restore
+                if dummyList:
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    # Icon
+                    iniIcon = config['INFO']['icon']
+                    with open(src_user_config, 'w') as configfile:
+                        # Write to INI file saved icon name
+                        config.set('INFO', 'icon', f'{dummyList[0]}')
+                        config.write(configfile)
 
-            # Copy icon from the backup to .icon folder
-            sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
-            
-            ################################################################################
-            # Read file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # Icon
-            iniIcon = config['INFO']['icon']
-        
-            # Apply the icon
-            print(f"Applying {setUserIcon} {iniIcon}")
-            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+                    ################################################################################
+                    # Create .icons inside home user
+                    ################################################################################
+                    if not os.path.exists(f"{homeUser}/.icons"):
+                        print("Creating .icons inside home user...")
+                        print(f"{createCMDFolder} {homeUser}/.icons")
+                        sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
 
-        except:
-            pass
+                    # Copy icon from the backup to .icon folder
+                    sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                    # Apply the icon
+                    print(f"Applying {setUserIcon} {iniIcon}")
+                    sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+
+            except:
+                print("No icon to restore.")
+                pass
 
         self.restore_cursor()
 
@@ -257,36 +253,31 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring cursor...")
 
-            dummyList = []
-            # Get current cursor
-            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                dummyList.append(cursor)
+            try:        
+                dummyList = []
+                # Get current cursor
+                for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                    dummyList.append(cursor)
 
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'cursor', f'{dummyList[0]}')
-                    config.write(configfile)
-                
-        try:
-            # Copy icon from the backup to .icon folder
-            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
-            
-            ################################################################################
-            # Read file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # Cursor
-            iniCursor = config['INFO']['cursor']
-        
-            # Apply cursor
-            print(f"Applying {setUserCursor} {iniCursor}")
-            sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+                # If has something to restore
+                if dummyList:
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    # Cursor
+                    iniCursor = config['INFO']['cursor']
+                    with open(src_user_config, 'w') as configfile:
+                        # Write to INI file saved icon name
+                        config.set('INFO', 'cursor', f'{dummyList[0]}')
+                        config.write(configfile)
+                        
+                    # Copy icon from the backup to .icon folder
+                    sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+                    # Apply cursor
+                    print(f"Applying {setUserCursor} {iniCursor}")
+                    sub.run(f"{setUserCursor} {iniCursor}", shell=True)
 
-        except:
-            pass
+            except:
+                pass
 
         self.restore_theme()
 
@@ -294,42 +285,38 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring theme...")
 
+        try:
             dummyList = []
             # Get current theme
             for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
                 dummyList.append(theme)
 
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Write to INI file saved theme name
-                config.set('INFO', 'theme', f'{dummyList[0]}')
-                config.write(configfile)
+            # If has something to restore
+            if dummyList:
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                # Theme
+                iniTheme = config['INFO']['theme']
+                with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved theme name
+                    config.set('INFO', 'theme', f'{dummyList[0]}')
+                    config.write(configfile)
 
-        try:
-            ################################################################################
-            # Create .themes inside home user
-            ################################################################################
-            if not os.path.exists(f"{homeUser}/.themes"):
-                print("Creating .themes inside home user...")
-                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
+                ################################################################################
+                # Create .themes inside home user
+                ################################################################################
+                if not os.path.exists(f"{homeUser}/.themes"):
+                    print("Creating .themes inside home user...")
+                    sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
 
-            # Copy theme from the backup to .theme folder
-            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-            
-            ################################################################################
-            # Read file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # Theme
-            iniTheme = config['INFO']['theme']
-
-            # Apply theme
-            print(f"Applying {setUserTheme} {iniTheme}")
-            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+                # Copy theme from the backup to .theme folder
+                sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
+                # Apply theme
+                print(f"Applying {setUserTheme} {iniTheme}")
+                sub.run(f"{setUserTheme} {iniTheme}", shell=True)
 
         except:
+            print("No thme to restore.")
             pass
 
         if self.iniApplicationsPackages == "true":
