@@ -94,7 +94,7 @@ class CLI:
             # Arch
             elif user_os == "arch":
                 print("")
-                sub.run(f"sudo pacman -Syu {self.installDependenciesArch}", shell=True)
+                sub.run(f"sudo pacman -S {self.installDependenciesArch}", shell=True)
 
             ################################################################################
             # Install PySide6
