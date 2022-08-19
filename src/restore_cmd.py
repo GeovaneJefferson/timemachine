@@ -212,6 +212,7 @@ class RESTORE:
         if self.iniSystemSettings == "true":
             print("Restoring icon...")
 
+        try:
             dummyList = []
             # Get current icon
             for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
@@ -224,7 +225,6 @@ class RESTORE:
                 config.set('INFO', 'icon', f'{dummyList[0]}')
                 config.write(configfile)
                 
-        try:
             ################################################################################
             # Create .icons inside home user
             ################################################################################
