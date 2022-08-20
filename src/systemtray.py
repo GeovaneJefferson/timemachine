@@ -83,18 +83,18 @@ class APP:
         # Tray
         self.icon = QIcon(src_system_bar_icon)
         self.tray.setIcon(self.icon)
-
+        
         ################################################################################
         # Check ini
         ################################################################################
-        timer.timeout.connect(self.updates)
+        timer.timeout.connect(self.read_INI_file)
         timer.start(2000)  # update every x second
-        self.updates()
+        self.read_INI_file()
         
         # App exec
         self.app.exec()
     
-    def updates(self):
+    def read_INI_file(self):
         print("System tray is running...")
         try:
             config = configparser.ConfigParser()
@@ -120,7 +120,7 @@ class APP:
             exit()
 
         self.system_tray_manager()
-
+    
     def system_tray_manager(self):
         if self.iniSystemTray == "false":
             print("Exiting system tray...")
