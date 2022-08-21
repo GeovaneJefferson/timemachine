@@ -849,7 +849,11 @@ class PREBACKUP(QWidget):
             elif packageManager == "deb":
                 for output in os.listdir(f"{debMainFolder}/"):
                     dummyList.append(output)
+            
+            else:
+                pass
 
+            # If has something inside
             if dummyList:
                 self.applicationPackagesCheckBox.setEnabled(True)
 
