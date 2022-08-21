@@ -1961,7 +1961,6 @@ class OPTION(QMainWindow):
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
                     os.popen("git stash; git stash; git pull")
-                    print("Updated successfully") 
                     # Close a open the next message
                     QMessageBox.Close
                     # Updated sucessfully message
@@ -1969,8 +1968,10 @@ class OPTION(QMainWindow):
                     f'You are now using the latest version of {appName}.\n',
                     QMessageBox.Ok)
 
-                    if notUpdatesFound == QMessageBox.Ok:
+                    if updatesWasInstalled == QMessageBox.Ok:
                         QMessageBox.Close
+                        # Exit the application to reload the new settings
+                        exit()
 
                 except:
                     QMessageBox.Close
