@@ -1901,13 +1901,13 @@ class OPTION(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
 
                     # Schedule section
-                    config.set('SCHEDULE', 'sun', 'false')
+                    config.set('SCHEDULE', 'sun', 'true')
                     config.set('SCHEDULE', 'mon', 'true')
                     config.set('SCHEDULE', 'tue', 'true')
                     config.set('SCHEDULE', 'wed', 'true')
                     config.set('SCHEDULE', 'thu', 'true')
                     config.set('SCHEDULE', 'fri', 'true')
-                    config.set('SCHEDULE', 'sat', 'false')
+                    config.set('SCHEDULE', 'sat', 'true')
                     config.set('SCHEDULE', 'hours', '10')
                     config.set('SCHEDULE', 'minutes', '00')
                     config.set('SCHEDULE', 'everytime', '60')
