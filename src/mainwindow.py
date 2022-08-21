@@ -886,7 +886,7 @@ class EXTERNAL(QWidget):
                 self.availableDevices.setText(output)
                 self.availableDevices.setFixedSize(444, 60)
                 self.availableDevices.setCheckable(True)
-                # self.availableDevices.autoExclusive(True)
+                self.availableDevices.setAutoExclusive(True)
                 text = self.availableDevices.text()
                 self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
 
