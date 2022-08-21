@@ -937,8 +937,8 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Get user's ox
         ################################################################################
-        userDE = os.popen(getUserPackageManager)
-        userDE = userDE.read().strip().lower()
+        userPackageManager = os.popen(getUserPackageManager)
+        userPackageManager = userPackageManager.read().strip().lower()
 
         ################################################################################
         # Update INI file
@@ -947,13 +947,16 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                if "ubuntu" or "debian" in userDE:
+                if "ubuntu" or "debian" in userPackageManager:
                     # Save user's os name
                     config.set(f'INFO', 'packageManager', 'deb')
                 
-                elif "fedora" or "opensuse" in userDE:
+                elif "fedora" or "opensuse" in userPackageManager:
                     # Save user's os name
                     config.set(f'INFO', 'packageManager', 'rpm')
+                
+                else:
+                    pass
 
                 config.write(configfile)
 
