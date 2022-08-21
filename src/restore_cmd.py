@@ -222,8 +222,8 @@ class RESTORE:
                 if dummyList:
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
-                    # Icon
-                    iniIcon = config['INFO']['icon']
+                    # # Icon
+                    # self.iniIcon = config['INFO']['icon']
                     with open(src_user_config, 'w') as configfile:
                         # Write to INI file saved icon name
                         config.set('INFO', 'icon', f'{dummyList[0]}')
@@ -239,9 +239,9 @@ class RESTORE:
 
                     # Copy icon from the backup to .icon folder
                     sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
-                    # Apply the icon
-                    print(f"Applying {setUserIcon} {iniIcon}")
-                    sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+                    # # Apply the icon
+                    # print(f"Applying {setUserIcon} {self.iniIcon}")
+                    # sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
 
             except:
                 print("No icon to restore.")
@@ -263,8 +263,8 @@ class RESTORE:
                 if dummyList:
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
-                    # Cursor
-                    iniCursor = config['INFO']['cursor']
+                    # # Cursor
+                    # self.iniCursor = config['INFO']['cursor']
                     with open(src_user_config, 'w') as configfile:
                         # Write to INI file saved icon name
                         config.set('INFO', 'cursor', f'{dummyList[0]}')
@@ -272,9 +272,9 @@ class RESTORE:
                         
                     # Copy icon from the backup to .icon folder
                     sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
-                    # Apply cursor
-                    print(f"Applying {setUserCursor} {iniCursor}")
-                    sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+                    # # Apply cursor
+                    # print(f"Applying {setUserCursor} {self.iniCursor}")
+                    # sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
 
             except:
                 pass
@@ -295,8 +295,8 @@ class RESTORE:
             if dummyList:
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
-                # Theme
-                iniTheme = config['INFO']['theme']
+                # # Theme
+                # self.iniTheme = config['INFO']['theme']
                 with open(src_user_config, 'w') as configfile:
                     # Write to INI file saved theme name
                     config.set('INFO', 'theme', f'{dummyList[0]}')
@@ -311,9 +311,9 @@ class RESTORE:
 
                 # Copy theme from the backup to .theme folder
                 sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-                # Apply theme
-                print(f"Applying {setUserTheme} {iniTheme}")
-                sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+                # # Apply theme
+                # print(f"Applying {setUserTheme} {self.iniTheme}")
+                # sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
 
         except:
             print("No theme to restore.")
@@ -486,6 +486,26 @@ class RESTORE:
         self.end_backup()
 
     def end_backup(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        # # Icon
+        iniIcon = config['INFO']['icon']
+        # Theme
+        iniTheme = config['INFO']['theme']
+        # Cursor
+        iniCursor = config['INFO']['cursor']
+
+        print("Apply all system settings...")
+        # Apply the icon
+        print(f"Applying {setUserIcon} {iniIcon}")
+        sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+        # Apply cursor
+        print(f"Applying {setUserCursor} {iniCursor}")
+        sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+        # Apply theme
+        print(f"Applying {setUserTheme} {iniTheme}")
+        sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+
         print("Ending restoring...")
         ###############################################################################
         # Update INI file
