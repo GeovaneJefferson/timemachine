@@ -1436,11 +1436,17 @@ class OPTION(QMainWindow):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         getIniFolders = config.options('FOLDER')
+        # Sort folders alphabetically
+        dummyList = []
+        for folder in getHomeFolders:
+            if not "." in folder:    
+                dummyList.append(folder)
+                dummyList.sort()
 
         # Get USER home folders
-        for folder in getHomeFolders:
+        for folder in dummyList:
             # Hide hidden folder
-            if not "." in folder:    
+            if not "." in folder:   
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
