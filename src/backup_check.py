@@ -154,7 +154,8 @@ class CLI:
         print("Checking mode...")
         # One time per day
         if self.iniOneTimePerDay == "true":
-            if self.totalCurrentTime > self.totalNextTime:
+            # If current time is higher than time to backup, and is the first boot
+            if self.totalCurrentTime > self.totalNextTime and self.iniFirstStartup == "true":
                 ################################################################################
                 # ! Every time user turn off pc, firstStartup, "first boot" inside INI file is set to true
                 # Only backup if:
@@ -162,18 +163,16 @@ class CLI:
                 #  * Make sure that App had not already made a backup today after time has passed
                 # by checking inside the backup device, if today date is not already inside, backup
                 ################################################################################
-                # Get folders inside the backup folder, and check the last backup date
-                todayDate = datetime.now()
-                todayDate = todayDate.strftime("%d-%m-%y")
-
                 dateFolders = []
                 for output in os.listdir(self.checkDateInsideBackupFolder):  
                     dateFolders.append(output)
                     dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-
-                # If is not the first boot
+       
+                # Get folders inside the backup folder, and check the last backup date
+                todayDate = datetime.now()
+                todayDate = todayDate.strftime("%d-%m-%y")
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
-                if self.iniFirstStartup == "true" and todayDate not in dateFolders: 
+                if todayDate not in dateFolders: 
                     ################################################################################
                     # Set startup to False and Continue to back up
                     ################################################################################
@@ -233,7 +232,8 @@ class CLI:
             config.write(configfile)
 
         # Call backup now
-        sub.run(f"python3 {src_backup_now}", shell=True) 
+        sub.Popen(f"python3 {src_backup_now}", shell=True) 
+        time.sleep(60)
 
     def no_backup(self):
         print("No backup for today.")
