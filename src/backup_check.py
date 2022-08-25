@@ -233,7 +233,8 @@ class CLI:
 
         # Call backup now
         sub.Popen(f"python3 {src_backup_now}", shell=True) 
-        time.sleep(60)
+        exit()
+        # time.sleep(60)
 
     def no_backup(self):
         print("No backup for today.")
