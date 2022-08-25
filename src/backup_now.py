@@ -966,6 +966,8 @@ class BACKUP:
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
+        # Call backup checker
+        sub.Popen(f"python3 {src_backup_check}", shell=True) 
         exit()
 
 

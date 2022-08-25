@@ -784,7 +784,7 @@ class EXTERNAL(QWidget):
         self.scroll.setFixedSize(460, 280)
         self.scroll.move(20, 40)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidget(self.whereFrame)
 
         # Vertical layout V
