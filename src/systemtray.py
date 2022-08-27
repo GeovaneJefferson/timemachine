@@ -46,7 +46,7 @@ class APP:
         self.dummyLine2 = QAction("――――――――――――")
         self.dummyLine2.setFont(QFont(item))
         self.dummyLine2.setEnabled(False)
-      
+
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
         self.backupNowButton.setFont(QFont(item))
