@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from logging import exception
 from setup import *
 
 # QTimer
@@ -103,8 +104,6 @@ class APP:
             self.iniBackupNow = config['BACKUP']['backup_now']
             # Automatically backup
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            # INI notification
-            self.iniNotification = config['INFO']['notification_id']
             # INI HD Name
             self.iniHDName = config['EXTERNAL']['name']
             # INI system tray
@@ -117,15 +116,15 @@ class APP:
         except KeyError as error:
             print(error)
             print("System Tray KeyError!")
-            exit()
+            pass
 
         self.system_tray_manager()
 
     def system_tray_manager(self):
-        if self.iniSystemTray == "false":
-            print("Exiting system tray...")
+        try:
+            if self.iniSystemTray == "false":
+                print("Exiting system tray...")
 
-            try:
                 # Write ini file
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
@@ -133,11 +132,10 @@ class APP:
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
 
-            except KeyError as error:
-                print(error)
-                print("System Tray (136) KeyError!")
-                
-            exit()
+        except KeyError as error:
+            print(error)
+            print("System Tray (136) KeyError!")
+            pass
 
         self.check_connection()
 
@@ -191,8 +189,7 @@ class APP:
 
                     except Exception as error:
                         print(error)
-                        print("(242)")
-                        exit()
+                        pass
 
         # Condition
         self.conditions()
@@ -210,9 +207,12 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.enterTimeMachineButton.setEnabled(True)
-                    # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
-                        f'{self.iniLastBackup}')
+                    try:
+                        # Update last backup information
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
+                            f'{self.iniLastBackup}')
+                    except:
+                        pass
                     # Add the icon modifications to system tray
                     self.tray.setIcon(self.icon)
 
@@ -221,8 +221,11 @@ class APP:
                     self.icon = QIcon(src_system_bar_run_icon)
                     # Disable backup now button
                     self.backupNowButton.setEnabled(False)
-                    # Update last backup information
-                    self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
+                    try:
+                        # Update last backup information
+                        self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
+                    except:
+                        pass
                     # Add the icon modifications to system tray
                     self.tray.setIcon(self.icon)
         
@@ -231,30 +234,37 @@ class APP:
                 self.backupNowButton.setEnabled(False)
                 # Enable enter in time machine button
                 # self.enterTimeMachineButton.setEnabled(True)
-    
-                # If backup device is not connected and automatically if ON
-                if self.iniAutomaticallyBackup == "true":
-                    # Change system tray red color
-                    self.icon = QIcon(src_system_bar_error_icon)
-                    # Add the icon modifications to system tray
-                    self.tray.setIcon(self.icon)
+                try:
+        
+                    # If backup device is not connected and automatically if ON
+                    if self.iniAutomaticallyBackup == "true":
+                        # Change system tray red color
+                        self.icon = QIcon(src_system_bar_error_icon)
+                        # Add the icon modifications to system tray
+                        self.tray.setIcon(self.icon)
 
-                else:
-                    # Clean notification add info, because auto backup is not enabled
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'notification_add_info', ' ')
-                        config.write(configfile)
+                    else:
+                        # Clean notification add info, because auto backup is not enabled
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('INFO', 'notification_add_info', ' ')
+                            config.write(configfile)
+                except:
+                    pass
 
-                    # Change system tray red color
-                    self.icon = QIcon(src_system_bar_icon)
-                    # Add the icon modifications to system tray
-                    self.tray.setIcon(self.icon)
+                # Change system tray red color
+                self.icon = QIcon(src_system_bar_icon)
+                # Add the icon modifications to system tray
+                self.tray.setIcon(self.icon)
 
         else:
-            # Update last backup information
-            self.iniLastBackupInformation.setText('First, select a backup device.')
+            try:
+                # Update last backup information
+                self.iniLastBackupInformation.setText('First, select a backup device.')
+            except:
+                pass
+
             # If backup device is not registered
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
