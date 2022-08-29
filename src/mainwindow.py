@@ -170,7 +170,7 @@ class MAIN(QMainWindow):
         # Description Title
         self.descriptionTitle = QLabel()
         self.descriptionTitle.setFont(topicTitle)
-        self.descriptionTitle.setText(f"{appName} is able to:\n\n")
+        self.descriptionTitle.setText(f"{appName} keeps:\n\n")
         self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionTitle.setFixedSize(420, 24)
         self.descriptionTitle.setStyleSheet("""
@@ -182,10 +182,10 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-            "* Keep local snapshots of your personal files as space permits\n"
-            "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
-            "* Schedule backups Hourly, Daily or Weekly\n"
-            "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
+            "• Local snapshots as space permits\n"
+            "• Hourly, Daily or Weekly backups\n"
+            "• Flatpaks Data and/or only Flatpaks installed names\n"
+            "• Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -1019,7 +1019,7 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left Widget
         ################################################################################
-        self.leftWidget = QWidget(self)
+        self.leftWidget = QWidget()
         self.leftWidget.setGeometry(20, 20, 240, 405)
    
         # Scroll
@@ -1027,17 +1027,17 @@ class OPTION(QMainWindow):
         self.scroll.setFixedSize(240, 405)
         self.scroll.move(20, 20)
         self.scroll.setWidgetResizable(True)
-        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidget(self.leftWidget)
 
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(10)
         self.leftLayout.setContentsMargins(10, 10, 10, 10)
-
+        
+        ################################################################################
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont("Ubuntu", 11))
+        self.leftTitle.setFont(QFont("Ubuntu", 12))
         self.leftTitle.setText("Available folders to be\nback up:")
         self.leftTitle.adjustSize()
 
@@ -1450,6 +1450,7 @@ class OPTION(QMainWindow):
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
+                self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
                 self.foldersCheckbox.adjustSize()
                 self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
@@ -1457,7 +1458,6 @@ class OPTION(QMainWindow):
                     "{"
                     "border-color: transparent;"
                     "}")
-                # self.foldersCheckbox.setFixedSize(150, 22)
                 self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
                 
                 # Activate checkboxes in user.ini
