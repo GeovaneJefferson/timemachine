@@ -122,16 +122,11 @@ class APP:
 
     def system_tray_manager(self):
         try:
+            print(self.iniSystemTray)
             if self.iniSystemTray == "false":
                 print("Exiting system tray...")
-
-                # Write ini file
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('SYSTEMTRAY', 'system_tray', 'false')
-                    config.write(configfile)
-
+                exit()
+                
         except KeyError as error:
             print(error)
             print("System Tray (136) KeyError!")
@@ -232,8 +227,6 @@ class APP:
             else:
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
-                # Enable enter in time machine button
-                # self.enterTimeMachineButton.setEnabled(True)
                 try:
         
                     # If backup device is not connected and automatically if ON
