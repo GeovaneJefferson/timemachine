@@ -232,9 +232,7 @@ class CLI:
             config.write(configfile)
 
         # Call backup now
-        sub.Popen(f"python3 {src_backup_now}", shell=True) 
-        exit()
-        # time.sleep(60)
+        sub.run(f"python3 {src_backup_now}", shell=True) 
 
     def no_backup(self):
         print("No backup for today.")
