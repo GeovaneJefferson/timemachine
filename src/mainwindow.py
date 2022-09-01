@@ -883,7 +883,7 @@ class EXTERNAL(QWidget):
                 # Avaliables external  devices
                 self.availableDevices = QPushButton(self.whereFrame)
                 self.availableDevices.setFont(QFont('Ubuntu', 12))
-                self.availableDevices.setText(output)
+                self.availableDevices.setText(f"{output}")
                 self.availableDevices.setFixedSize(444, 60)
                 self.availableDevices.setCheckable(True)
                 self.availableDevices.setAutoExclusive(True)
@@ -1011,10 +1011,10 @@ class OPTION(QMainWindow):
     def widgets(self):
         # Apps version
         version = QLabel(self)
-        version.setFont(QFont("Ubuntu", 10))
-        version.setText(appVersion)
+        version.setFont(QFont("Ubuntu", 4))
+        version.setText(f"<h1>{appVersion}</h1>")
         version.setFixedSize(80, 20)
-        version.move(270, 410)
+        version.move(290, 410)
 
         ################################################################################
         # Left Widget
