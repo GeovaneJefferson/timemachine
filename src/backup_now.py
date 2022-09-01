@@ -344,7 +344,6 @@ class BACKUP:
         # with the backup process.
         print("Checking folders conditions (size)...")
         while True:
-            print("Still checking...")
             ################################################################################
             # Home conditions to continue with the backup
             ################################################################################
@@ -362,8 +361,9 @@ class BACKUP:
                     sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
                     # set AlreadyClearTrash to True
                     self.alreadyClearTrash = True
-                    # Return to the top (Maybe, empty the .trash was enough to continue :D)
-                    self.condition_to_continue()
+                    # TODO
+                    # Return to calculate all folders to be backup
+                    self.get_system_settings_size()
                 
                 ################################################################################
                 # Get available dates inside TMB
@@ -376,7 +376,6 @@ class BACKUP:
                             dateFolders.append(output)
                             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
-                    print(f"Date available: {dateFolders}")
                     ################################################################################
                     # Delete oldest folders
                     ################################################################################
@@ -395,7 +394,10 @@ class BACKUP:
                         # Action
                         print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
                         sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
-
+                        # TODO
+                        # Return to calculate all folders to be backup
+                        self.get_system_settings_size()
+                
                     else:
                         # Set notification_id to 2
                         config = configparser.ConfigParser()
@@ -983,8 +985,6 @@ class BACKUP:
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
-        # Call backup checker
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True) 
         exit()
 
 

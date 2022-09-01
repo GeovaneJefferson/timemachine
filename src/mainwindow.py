@@ -101,7 +101,7 @@ class MAIN(QMainWindow):
         # Set external name
         ################################################################################
         self.externalNameLabel = QLabel()
-        self.externalNameLabel.setFont(bigTitle)
+        self.externalNameLabel.setFont(QFont("Ubuntu", 10))
         self.externalNameLabel.setFixedSize(350, 80)
         self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
@@ -417,7 +417,7 @@ class MAIN(QMainWindow):
 
         else:
             # Set external name
-            self.externalNameLabel.setText("None")
+            self.externalNameLabel.setText("<h1>None</h1>")
             # Enable backup now button
             self.backupNowButton.setEnabled(False)
             self.automaticallyCheckBox.setEnabled(False)
@@ -425,7 +425,7 @@ class MAIN(QMainWindow):
         self.set_external_name()
 
     def set_external_name(self):
-        self.externalNameLabel.setText(self.iniHDName)
+        self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
 
         self.set_external_last_backup()
 
@@ -1037,8 +1037,8 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont("Ubuntu", 12))
-        self.leftTitle.setText("Available folders to be\nback up:")
+        self.leftTitle.setFont(QFont("Ubuntu", 6))
+        self.leftTitle.setText("<h1>Folders to be back up:</h1>")
         self.leftTitle.adjustSize()
 
         # Frame
@@ -1066,8 +1066,8 @@ class OPTION(QMainWindow):
 
         # Days to run title
         self.daysToRunTitle = QLabel()
-        self.daysToRunTitle.setFont(QFont("Ubuntu", 11))
-        self.daysToRunTitle.setText("Days to run:")
+        self.daysToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.daysToRunTitle.setText("<h1>Days to run:</h1>")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.daysToRunTitle.adjustSize()
         self.daysToRunTitle.setStyleSheet("""
@@ -1147,8 +1147,8 @@ class OPTION(QMainWindow):
 
         # Time to run title
         self.timeToRunTitle = QLabel(self.timeToRunWidget)
-        self.timeToRunTitle.setFont(QFont("Ubuntu", 11))
-        self.timeToRunTitle.setText("Time to run:")
+        self.timeToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.timeToRunTitle.setText("<h1>Time to run:</h1>")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.timeToRunTitle.adjustSize()
         self.timeToRunTitle.setStyleSheet("""
@@ -1213,8 +1213,8 @@ class OPTION(QMainWindow):
 
         # Hours title
         self.hoursTitle = QLabel()
-        self.hoursTitle.setFont(QFont("Ubuntu", 10))
-        self.hoursTitle.setText("Hours")
+        self.hoursTitle.setFont(QFont("Ubuntu", 4))
+        self.hoursTitle.setText("<h1>Hours</h1>")
         self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
             border-color: transparent;
@@ -1223,8 +1223,8 @@ class OPTION(QMainWindow):
 
         # Minutes title
         self.minutesTitle = QLabel()
-        self.minutesTitle.setFont(QFont("Ubuntu", 10))
-        self.minutesTitle.setText("Minutes")
+        self.minutesTitle.setFont(QFont("Ubuntu", 4))
+        self.minutesTitle.setText("<h1>Minutes</h1>")
         self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
             border-color: transparent;
@@ -1283,8 +1283,8 @@ class OPTION(QMainWindow):
 
         # Notification title
         self.flatpakTitle = QLabel()
-        self.flatpakTitle.setFont(QFont("Ubuntu", 11))
-        self.flatpakTitle.setText("Flatpak Settings:")
+        self.flatpakTitle.setFont(QFont("Ubuntu", 5))
+        self.flatpakTitle.setText("<h1>Flatpak Settings:</h1>")
         self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
         self.flatpakTitle.setStyleSheet("""
@@ -1324,8 +1324,8 @@ class OPTION(QMainWindow):
 
         # Reset title
         self.resetTitle = QLabel()
-        self.resetTitle.setFont(QFont("Ubuntu", 11))
-        self.resetTitle.setText("Reset:")
+        self.resetTitle.setFont(QFont("Ubuntu", 5))
+        self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
