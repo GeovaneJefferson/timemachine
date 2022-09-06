@@ -616,7 +616,7 @@ class PREBACKUP(QWidget):
                 "* Wallpaper\n"
                 "* Theme\n"
                 "* Icon\n"
-                "* Cursor")
+                "* Cursor theme")
 
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -754,7 +754,7 @@ class PREBACKUP(QWidget):
 
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
-            self.fileAndFoldersCheckBox.setText(" File and Folders"
+            self.fileAndFoldersCheckBox.setText(" Files and Folders"
                 f"                 {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
@@ -1165,9 +1165,9 @@ class BACKUPSCREEN(QWidget):
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 14))
+        self.moreDescription.setFont(QFont("Ubuntu", 6))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText('Click on "Restore" to begin.') 
+        self.moreDescription.setText('<h1>Click on "Restore" to begin.</h1>') 
 
         # Restoring description
         self.whileRestoringDescription = QLabel()
