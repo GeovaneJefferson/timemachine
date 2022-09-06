@@ -48,6 +48,12 @@ class MAIN(QMainWindow):
             "background-repeat: no-repeat;"
             "}")
 
+        # App name
+        self.appName = QLabel()
+        self.appName.setFont(QFont("Ubuntu", 5))
+        self.appName.setText(f"<h1>{appName}</h1>")
+        self.appName.adjustSize()
+
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
         self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
@@ -236,6 +242,7 @@ class MAIN(QMainWindow):
         ################################################################################
         # Left Layout
         self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.appName, 0, Qt.AlignHCenter | Qt.AlignTop)
         self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
