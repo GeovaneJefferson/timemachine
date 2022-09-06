@@ -1042,7 +1042,7 @@ class OPTION(QMainWindow):
 
         # Frame
         self.leftFrame = QFrame()
-        self.leftFrame.adjustSize()
+        self.leftFrame.setGeometry(20, 20, 240, 405)
    
         ################################################################################
         # Days to run widget
@@ -1382,7 +1382,6 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left layout
         self.leftLayout.addWidget(self.leftTitle, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignLeft | Qt.AlignTop)
 
         # Days to run layout V
         self.daysToRunLayoutV.addWidget(self.daysToRunTitle, 0, Qt.AlignTop | Qt.AlignLeft)
