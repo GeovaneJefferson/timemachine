@@ -184,8 +184,7 @@ class MAIN(QMainWindow):
         self.descriptionText.setText(
             "• Local snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
-            "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Will automatically back up at first boot, if time to do so\n   has passed.\n\n"
+            "• Flatpaks Data and/or only Flatpaks installed names\n\n"
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -1884,7 +1883,6 @@ class OPTION(QMainWindow):
                 config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:
                     # Backup section
-                    config.set('BACKUP', 'first_startup', 'false')
                     config.set('BACKUP', 'auto_backup', 'false')
                     config.set('BACKUP', 'backup_now', 'false')
                     config.set('BACKUP', 'checker_running', 'false')

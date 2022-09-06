@@ -35,7 +35,6 @@ class CLI:
             self.iniScheduleFri = config['SCHEDULE']['fri']
             self.iniScheduleSat = config['SCHEDULE']['sat']
 
-            self.iniFirstStartup = config['BACKUP']['first_startup']
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
             self.iniOneTimePerDay = config['MODE']['one_time_mode']
@@ -70,7 +69,7 @@ class CLI:
         # Prevent multiples system tray running
         ################################################################################
         if self.iniSystemTray == "true": 
-            if self.isSystemTrayActivated != None and self.iniFirstStartup == "false":
+            if self.isSystemTrayActivated != None:
                 # Call system tray
                 sub.Popen(f"python3 {src_system_tray}", shell=True)
                 # Set sysmtem activated to True
@@ -152,36 +151,21 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
+        dateFolders = []
+        for output in os.listdir(self.checkDateInsideBackupFolder):  
+            dateFolders.append(output)
+            dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+
+        # Get folders inside the backup folder, and check the last backup date
+        todayDate = datetime.now()
+        todayDate = todayDate.strftime("%d-%m-%y")
+        
         # One time per day
         if self.iniOneTimePerDay == "true":
-            # If current time is higher than time to backup, and is the first boot
-            if self.totalCurrentTime > self.totalNextTime and self.iniFirstStartup == "true":
-                ################################################################################
-                # ! Every time user turn off pc, firstStartup, "first boot" inside INI file is set to true
-                # Only backup if:
-                #  * App was unable to backup because PC was off
-                #  * Make sure that App had not already made a backup today after time has passed
-                # by checking inside the backup device, if today date is not already inside, backup
-                ################################################################################
-                dateFolders = []
-                for output in os.listdir(self.checkDateInsideBackupFolder):  
-                    dateFolders.append(output)
-                    dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-       
-                # Get folders inside the backup folder, and check the last backup date
-                todayDate = datetime.now()
-                todayDate = todayDate.strftime("%d-%m-%y")
+            # If current time is higher than time to backup
+            if self.totalCurrentTime > self.totalNextTime:
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
                 if todayDate not in dateFolders: 
-                    ################################################################################
-                    # Set startup to False and Continue to back up
-                    ################################################################################
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('BACKUP', 'first_startup', 'false')
-                        config.write(configfile)
-                        
                     # Call backup now
                     self.call_backup_now()
 
@@ -194,15 +178,6 @@ class CLI:
 
             else:
                 print("Waiting for the right time to backup...")
-                ################################################################################
-                # Set startup to False, so wont backup twice after passed time :D
-                # Write to  INI file
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('BACKUP', 'first_startup', 'false')
-                    config.write(configfile)
 
         else: 
             print("Multiple time per day")

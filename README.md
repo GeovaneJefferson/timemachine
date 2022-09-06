@@ -40,7 +40,8 @@ I am still trying to fix this :D
   Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 
 ## One Time Mode
-* Will automatically back up at first boot, if the schedule time to do so has passed.
+* Hourly, Daily or Weekly backups
+* Will automatically back up even if the schedule time to do so has passed.
 
 ## Multiple Time Mode
 * Will automatically back up your files and apps every: 1, 2 or 4 hours.
