@@ -1976,12 +1976,12 @@ class OPTION(QMainWindow):
 
                     if updatesWasInstalled == QMessageBox.Ok:
                         QMessageBox.Close
-                        
-                    # Exit the application to reload the new settings
-                    exit()
 
                 except:
                     QMessageBox.Close
+                    
+                # Exit the application to reload the new settings
+                exit()
         
         else:
             notUpdatesFound = QMessageBox.question(self, 'Software Update', 
