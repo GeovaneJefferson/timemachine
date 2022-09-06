@@ -138,7 +138,7 @@ src_migration_assistant_128px = f"{homeUser}/.local/share/timemachine/src/icons/
 src_migration_assistant_clean_128px = f"{homeUser}/.local/share/timemachine/src/icons/migration_assistant_clean_128px.svg"
 src_backup_now = f"{homeUser}/.local/share/timemachine/src/backup_now.py"
 src_backup_check = f"{homeUser}/.local/share/timemachine/src/desktop/backup_check.desktop"
-src_restore_small_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_46px.svg"
+# src_restore_small_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_46px.svg"
 src_main_window_py = f"{homeUser}/.local/share/timemachine/src/mainwindow.py"
 src_enter_time_machine_py = f"{homeUser}/.local/share/timemachine/src/enter_time_machine.py"
 
