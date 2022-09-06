@@ -573,8 +573,8 @@ class ENTERTIMEMACHINE(QWidget):
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
 
-            # Set self.filesToRestore length
-            self.restoreButton.setText(f"Restore({len(self.filesToRestore)})")
+            # Restore label + filesToRestore and self.filesToRestoreWithSpace lenght
+            self.restoreButton.setText(f"Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})")
 
             # Hide up function if 1 or more items is/are selected
             # Up

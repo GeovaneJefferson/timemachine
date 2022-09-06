@@ -386,9 +386,9 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setAutoExclusive(True)
                         self.availableDevices.setFixedSize(180, 180)
                         self.availableDevices.setText(output)
+                        self.availableDevices.setFont(QFont("Ubuntu", 12))
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setFont(QFont("Ubuntu", 11))
                         self.availableDevices.setStyleSheet(
                             "QPushButton"
                             "{"
@@ -749,6 +749,9 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
                 f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "")
 
+            # Clean terminal
+            # sub.Popen("clear", shell=True)
+
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" File and Folders"
@@ -939,9 +942,6 @@ class PREBACKUP(QWidget):
 
             if dummyList:
                 # Check if user DE is in the supported list
-                print(supported)
-                print(userPackageManager)
-                print(dummyList)
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option

@@ -749,9 +749,7 @@ class EXTERNAL(QWidget):
 
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(windowXSize, windowYSize)
-        # self.setFixedSize(windowXSize, windowYSize)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
         # Center window
@@ -884,23 +882,18 @@ class EXTERNAL(QWidget):
                 self.availableDevices = QPushButton(self.whereFrame)
                 self.availableDevices.setFont(QFont('Ubuntu', 12))
                 self.availableDevices.setText(f"{output}")
-                self.availableDevices.setFixedSize(444, 60)
+                self.availableDevices.setFixedSize(440, 60)
                 self.availableDevices.setCheckable(True)
                 self.availableDevices.setAutoExclusive(True)
                 text = self.availableDevices.text()
                 self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-
+                
                 # Image
-                image = QLabel(self.availableDevices)
-                image.setFixedSize(46, 46)
-                image.move(6, 6)
-                image.setStyleSheet(
-                    "QLabel"
-                    "{"
-                    f"background-image: url({src_restore_small_icon});"
-                    "background-repeat: no-repeat;"
-                    "background-position: center;"
-                    "}")
+                dummyLabel = QLabel(self.availableDevices)
+                image = QPixmap(f"{src_restore_icon}")
+                image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                dummyLabel.move(7, 7)
+                dummyLabel.setPixmap(image)
 
                 ################################################################################
                 # Auto checked this choosed external device
@@ -1037,7 +1030,7 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont("Ubuntu", 6))
+        self.leftTitle.setFont(QFont("Ubuntu", 5))
         self.leftTitle.setText("<h1>Folders to be back up:</h1>")
         self.leftTitle.adjustSize()
 
@@ -1959,10 +1952,10 @@ class OPTION(QMainWindow):
 
     def on_search_for_updates_clicked(self):
         # Check for git updates
-        x = os.popen("git remote update && git status -uno").read()
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
         # Updates found
-        if "Your branch is behind" in str(x):
+        if "Your branch is behind" in str(gitUpdateCommand):
             applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
             'Do you want to install the updates?\n',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1979,8 +1972,9 @@ class OPTION(QMainWindow):
 
                     if updatesWasInstalled == QMessageBox.Ok:
                         QMessageBox.Close
-                        # Exit the application to reload the new settings
-                        exit()
+                        
+                    # Exit the application to reload the new settings
+                    exit()
 
                 except:
                     QMessageBox.Close
