@@ -5,8 +5,8 @@ from setup import *
 ## Signal
 ################################################################################
 # If user turn off or kill the app, update INI file
-signal.signal(signal.SIGINT, signal_exit)
-signal.signal(signal.SIGTERM, signal_exit)
+# signal.signal(signal.SIGINT, signal_exit)
+# signal.signal(signal.SIGTERM, signal_exit)
 
 
 class CLI:
@@ -25,7 +25,7 @@ class CLI:
             self.iniExternalLocation = config['EXTERNAL']['hd']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
             self.iniLatestDate = config['INFO']['latest']
-            
+
             # Dates
             self.iniScheduleSun = config['SCHEDULE']['sun']
             self.iniScheduleMon = config['SCHEDULE']['mon']
@@ -53,22 +53,24 @@ class CLI:
             self.currentMinute = now.strftime("%M")
             self.totalCurrentTime = self.currentHour + self.currentMinute
             self.totalNextTime = self.iniNextHour + self.ininextMinute
-            
+
             # Check date inside backup folder
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            
+
         except KeyError as error:
             print(error)
             print("Backup checker KeyError!")
-            exit()
-            
+            # Wait x seconds and try again
+            time.sleep(2)
+            self.updates()
+
         self.is_system_tray_running()
 
     def is_system_tray_running(self):
         ################################################################################
         # Prevent multiples system tray running
         ################################################################################
-        if self.iniSystemTray == "true": 
+        if self.iniSystemTray == "true":
             if self.isSystemTrayActivated != None:
                 # Call system tray
                 sub.Popen(f"python3 {src_system_tray}", shell=True)
@@ -77,7 +79,7 @@ class CLI:
 
         self.check_connection()
 
-    def check_connection(self):  
+    def check_connection(self):
         ################################################################################
         # Check for external in media/
         ################################################################################
@@ -111,18 +113,17 @@ class CLI:
                     config.write(configfile)
 
                 print("No external device found.")
-                print(f"Please, connect the external device, so next time, " 
+                print(f"Please, connect the external device, so next time, "
                     f"{appName} will be able to backup.")
-                pass
 
-        self.check_the_date()
+        # self.check_the_date()
 
     def check_the_date(self):
         print("Checking dates...")
         # Is Multiple time per day enabled?
         if self.iniMultipleTimePerDay == "true":
             self.check_the_mode()
-        
+
         else:
             if self.dayName == "Sun" and self.iniScheduleSun == "true":
                 self.check_the_mode()
@@ -152,24 +153,24 @@ class CLI:
     def check_the_mode(self):
         print("Checking mode...")
         dateFolders = []
-        for output in os.listdir(self.checkDateInsideBackupFolder):  
+        for output in os.listdir(self.checkDateInsideBackupFolder):
             dateFolders.append(output)
             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         # Get folders inside the backup folder, and check the last backup date
         todayDate = datetime.now()
         todayDate = todayDate.strftime("%d-%m-%y")
-        
+
         # One time per day
         if self.iniOneTimePerDay == "true":
             # If current time is higher than time to backup
             if self.totalCurrentTime > self.totalNextTime:
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
-                if todayDate not in dateFolders: 
+                if todayDate not in dateFolders:
                     # Call backup now
                     self.call_backup_now()
 
-                else: 
+                else:
                     print(f"{appName} has already made a backup for today.")
                     print("Time to back up has passed")
 
@@ -179,7 +180,7 @@ class CLI:
             else:
                 print("Waiting for the right time to backup...")
 
-        else: 
+        else:
             print("Multiple time per day")
 
             if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
@@ -207,42 +208,45 @@ class CLI:
             config.write(configfile)
 
         # Call backup now
-        sub.run(f"python3 {src_backup_now}", shell=True) 
+        sub.run(f"python3 {src_backup_now}", shell=True)
 
     def no_backup(self):
         print("No backup for today.")
         print("Updating INI file...")
         print("Exiting...")
-        
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)
-        # with open(src_user_config, 'w') as configfile:
-        #     config.set('BACKUP', 'checker_running', 'false')
-        #     config.write(configfile)
 
-        # exit()
+    # def signal_exit(self, *args):
+    #     signal_exit()
 
-    def signal_exit(self, *args):
-        signal_exit()
-   
 main = CLI()
 # Exit program if auto_backup is false
 while True:
+    time.sleep(1)
     main.updates()
 
     ################################################################################
     # Prevent multiples backup checker running
     ################################################################################
-    if main.iniAutomaticallyBackup == "false":
-        print("Exiting backup checker...")
-        # Turn backup now to OFF
+    try:
+        if main.iniAutomaticallyBackup == "false":
+            print("Exiting backup checker...")
+            # Turn backup now to OFF
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('BACKUP', 'backup_now', 'false')
+                config.write(configfile)
+
+            break
+
+    except Exception as error:
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', 'false')
+            config.set('INFO', 'notification_add_info', f"{error}")
             config.write(configfile)
-
+    
         break
-
-    time.sleep(1)
+    
 exit()
+

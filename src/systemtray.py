@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-from logging import exception
 from setup import *
 
 # QTimer
@@ -16,7 +15,7 @@ class APP:
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(appName)
         self.app.setApplicationName(appName)
-
+    
         self.widget()
 
     def widget(self):
@@ -27,9 +26,6 @@ class APP:
         self.tray.setIcon(QIcon(src_system_bar_icon))
         self.tray.setVisible(True)
 
-        ################################################################################
-        # Add item on the menu bar
-        ################################################################################
         # Create a menu
         self.menu = QMenu()
 
@@ -59,8 +55,8 @@ class APP:
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Skip this backup
-        self.skipThisBackup = QAction("Skip This Backup")
-        self.skipThisBackup.setFont(QFont(item))
+        # self.skipThisBackup = QAction("Skip This Backup")
+        # self.skipThisBackup.setFont(QFont(item))
         # self.skipThisBackup.triggered.connect(self.backup_now)
 
         # Enter time machine button
@@ -83,14 +79,13 @@ class APP:
         self.menu.addAction(self.backupNowButton)
         self.menu.addAction(self.dummyLine3)
         self.menu.addAction(self.openTimeMachine)
-
+        
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
 
         # Tray
-        self.icon = QIcon(src_system_bar_icon)
-        self.tray.setIcon(self.icon)
-
+        # self.tray.setIcon(QIcon(src_system_bar_icon))
+        
         ################################################################################
         # Check ini
         ################################################################################
@@ -98,8 +93,10 @@ class APP:
         timer.start(2000)  # update every x second
         self.updates()
         
-        # App exec
         self.app.exec()
+
+        # # App exec
+        # self.app.exec()
     
     def updates(self):
         print("System tray is running...")
@@ -123,12 +120,11 @@ class APP:
             print(error)
             print("System Tray KeyError!")
             pass
-
+        
         self.system_tray_manager()
 
     def system_tray_manager(self):
         try:
-            print(self.iniSystemTray)
             if self.iniSystemTray == "false":
                 print("Exiting system tray...")
                 exit()
@@ -147,44 +143,17 @@ class APP:
         if self.iniBackupNow == "false":
             try:
                 os.listdir(f"{media}/{userName}/{self.iniHDName}")
-                # If usb is connected, change notification id to 0 (White color)
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'notification_id', '0')
-                    config.write(configfile)
-
                 # Devices was found
                 self.connected = True
 
             except FileNotFoundError:
                 try:
                     os.listdir(f"{run}/{userName}/{self.iniHDName}")
-
-                    # If usb is connected, change notification id to 0 (White color)
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('INFO', 'notification_id', '0')
-                        config.write(configfile)
-
                     # Devices was found
                     self.connected = True
 
                 except FileNotFoundError:
                     try:
-                        # Hide backup now button
-                        self.backupNowButton.setEnabled(False)
-                        # Hide Enter In Time Machine
-                        self.enterTimeMachineButton.setEnabled(False)
-
-                        # Change system tray color to red, because not backup device was found or mounted
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', '2')
-                            config.write(configfile)
-
                         # Devices was not found
                         self.connected = False
 
@@ -200,69 +169,65 @@ class APP:
         if self.iniHDName != "None":
             # If backup device is connected
             if self.connected:
+                # If usb is connected, change notification id to 0 (White color)
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'notification_id', '0')
+                    config.write(configfile)
+
                 # Is not backing up now
                 if self.iniBackupNow == "false":
                     # White color
-                    self.icon = QIcon(src_system_bar_icon)
+                    self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Enable backup now button
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.enterTimeMachineButton.setEnabled(True)
-                    try:
-                        # Update last backup information
-                        self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
-                            f'{self.iniLastBackup}')
-                    except:
-                        pass
-                    # Add the icon modifications to system tray
-                    self.tray.setIcon(self.icon)
+                    # Update last backup information
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
+                        f'{self.iniLastBackup}')
 
                 else:
                     # Blue color
-                    self.icon = QIcon(src_system_bar_run_icon)
+                    self.tray.setIcon(QIcon(src_system_bar_run_icon))
                     # Disable backup now button
                     self.backupNowButton.setEnabled(False)
-                    try:
-                        # Update last backup information
-                        self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
-                    except:
-                        pass
-                    # Add the icon modifications to system tray
-                    self.tray.setIcon(self.icon)
+                    # Update last backup information
+                    self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
         
             else:
-                # Disable backup now button
+                # Hide backup now button
                 self.backupNowButton.setEnabled(False)
-                try:
-        
-                    # If backup device is not connected and automatically if ON
-                    if self.iniAutomaticallyBackup == "true":
-                        # Change system tray red color
-                        self.icon = QIcon(src_system_bar_error_icon)
-                        # Add the icon modifications to system tray
-                        self.tray.setIcon(self.icon)
+                # Hide Enter In Time Machine
+                self.enterTimeMachineButton.setEnabled(False)
+      
+                # Change system tray color to red, because not backup device was found or mounted
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('INFO', 'notification_id', '2')
+                    config.write(configfile)
 
-                    else:
-                        # Clean notification add info, because auto backup is not enabled
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_add_info', ' ')
-                            config.write(configfile)
-                except:
-                    pass
+                # If backup device is not connected and automatically if ON
+                if self.iniAutomaticallyBackup == "true":
+                    # Change system tray red color
+                    self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
-                # Change system tray red color
-                self.icon = QIcon(src_system_bar_icon)
-                # Add the icon modifications to system tray
-                self.tray.setIcon(self.icon)
+                else:
+                    # Clean notification add info, because auto backup is not enabled
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('INFO', 'notification_add_info', ' ')
+                        config.write(configfile)
+           
+                    # Change system tray white color
+                    self.tray.setIcon(QIcon(src_system_bar_icon))
 
         else:
-            try:
-                # Update last backup information
-                self.iniLastBackupInformation.setText('First, select a backup device.')
-            except:
-                pass
+            # Update last backup information
+            self.iniLastBackupInformation.setText('First, select a backup device.')
 
             # If backup device is not registered
             # Disable backup now button
@@ -273,5 +238,5 @@ class APP:
     def backup_now(self):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
 
-
-main = APP()
+if __name__ == '__main__':
+    main = APP()
