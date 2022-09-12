@@ -221,7 +221,7 @@ class CLI:
 main = CLI()
 # Exit program if auto_backup is false
 while True:
-    time.sleep(1)
+    time.sleep(2)
     main.updates()
 
     ################################################################################
