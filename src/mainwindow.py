@@ -48,6 +48,12 @@ class MAIN(QMainWindow):
             "background-repeat: no-repeat;"
             "}")
 
+        # App name
+        self.appName = QLabel()
+        self.appName.setFont(QFont("Ubuntu", 5))
+        self.appName.setText(f"<h1>{appName}</h1>")
+        self.appName.adjustSize()
+
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
         self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
@@ -101,7 +107,7 @@ class MAIN(QMainWindow):
         # Set external name
         ################################################################################
         self.externalNameLabel = QLabel()
-        self.externalNameLabel.setFont(bigTitle)
+        self.externalNameLabel.setFont(QFont("Ubuntu", 10))
         self.externalNameLabel.setFixedSize(350, 80)
         self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
@@ -170,7 +176,7 @@ class MAIN(QMainWindow):
         # Description Title
         self.descriptionTitle = QLabel()
         self.descriptionTitle.setFont(topicTitle)
-        self.descriptionTitle.setText(f"{appName} is able to:\n\n")
+        self.descriptionTitle.setText(f"{appName} keeps:\n\n")
         self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionTitle.setFixedSize(420, 24)
         self.descriptionTitle.setStyleSheet("""
@@ -182,10 +188,16 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
+<<<<<<< HEAD
             "* Keep local snapshots of your personal files as space permits\n"
             "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
             "* Schedule backups Hourly, Daily or Weekly\n"
             "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
+=======
+            "• Local snapshots as space permits\n"
+            "• Hourly, Daily or Weekly backups\n"
+            "• Flatpaks Data and/or only Flatpaks installed names\n\n"
+>>>>>>> origin/dev
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -237,6 +249,7 @@ class MAIN(QMainWindow):
         ################################################################################
         # Left Layout
         self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.appName, 0, Qt.AlignHCenter | Qt.AlignTop)
         self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
@@ -417,7 +430,7 @@ class MAIN(QMainWindow):
 
         else:
             # Set external name
-            self.externalNameLabel.setText("None")
+            self.externalNameLabel.setText("<h1>None</h1>")
             # Enable backup now button
             self.backupNowButton.setEnabled(False)
             self.automaticallyCheckBox.setEnabled(False)
@@ -425,7 +438,7 @@ class MAIN(QMainWindow):
         self.set_external_name()
 
     def set_external_name(self):
-        self.externalNameLabel.setText(self.iniHDName)
+        self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
 
         self.set_external_last_backup()
 
@@ -598,13 +611,16 @@ class MAIN(QMainWindow):
                     self.nextDay = "Fri"
                 elif self.iniNextBackupSat == "true":
                     self.nextDay = "Sat"
-
-        # Save next backup to user.ini
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
-            config.write(configfile)
+        try:
+            # Save next backup to user.ini
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+                config.write(configfile)
+        
+        except:
+            pass
 
         self.load_current_backup_folder()
 
@@ -746,9 +762,7 @@ class EXTERNAL(QWidget):
 
         self.setWindowIcon(QIcon(src_backup_icon))
         self.setFixedSize(windowXSize, windowYSize)
-        # self.setFixedSize(windowXSize, windowYSize)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         ################################################################################
         # Center window
@@ -781,7 +795,7 @@ class EXTERNAL(QWidget):
         self.scroll.setFixedSize(460, 280)
         self.scroll.move(20, 40)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidget(self.whereFrame)
 
         # Vertical layout V
@@ -880,23 +894,19 @@ class EXTERNAL(QWidget):
                 # Avaliables external  devices
                 self.availableDevices = QPushButton(self.whereFrame)
                 self.availableDevices.setFont(QFont('Ubuntu', 12))
-                self.availableDevices.setText(output)
-                self.availableDevices.setFixedSize(444, 60)
+                self.availableDevices.setText(f"{output}")
+                self.availableDevices.setFixedSize(440, 60)
                 self.availableDevices.setCheckable(True)
+                self.availableDevices.setAutoExclusive(True)
                 text = self.availableDevices.text()
                 self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-
+                
                 # Image
-                image = QLabel(self.availableDevices)
-                image.setFixedSize(46, 46)
-                image.move(6, 6)
-                image.setStyleSheet(
-                    "QLabel"
-                    "{"
-                    f"background-image: url({src_restore_small_icon});"
-                    "background-repeat: no-repeat;"
-                    "background-position: center;"
-                    "}")
+                dummyLabel = QLabel(self.availableDevices)
+                image = QPixmap(f"{src_restore_icon}")
+                image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                dummyLabel.move(7, 7)
+                dummyLabel.setPixmap(image)
 
                 ################################################################################
                 # Auto checked this choosed external device
@@ -933,8 +943,8 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Get user's ox
         ################################################################################
-        userDE = os.popen(getUserPackageManager)
-        userDE = userDE.read().strip().lower()
+        userPackageManager = os.popen(getUserPackageManager)
+        userPackageManager = userPackageManager.read().strip().lower()
 
         ################################################################################
         # Update INI file
@@ -943,13 +953,16 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                if "ubuntu" or "debian" in userDE:
+                if "ubuntu" or "debian" in userPackageManager:
                     # Save user's os name
                     config.set(f'INFO', 'packageManager', 'deb')
                 
-                elif "fedora" or "opensuse" in userDE:
+                elif "fedora" or "opensuse" in userPackageManager:
                     # Save user's os name
                     config.set(f'INFO', 'packageManager', 'rpm')
+                
+                else:
+                    pass
 
                 config.write(configfile)
 
@@ -1005,15 +1018,15 @@ class OPTION(QMainWindow):
     def widgets(self):
         # Apps version
         version = QLabel(self)
-        version.setFont(QFont("Ubuntu", 10))
-        version.setText(appVersion)
+        version.setFont(QFont("Ubuntu", 4))
+        version.setText(f"<h1>{appVersion}</h1>")
         version.setFixedSize(80, 20)
-        version.move(270, 410)
+        version.move(290, 410)
 
         ################################################################################
         # Left Widget
         ################################################################################
-        self.leftWidget = QWidget(self)
+        self.leftWidget = QWidget()
         self.leftWidget.setGeometry(20, 20, 240, 405)
    
         # Scroll
@@ -1021,23 +1034,23 @@ class OPTION(QMainWindow):
         self.scroll.setFixedSize(240, 405)
         self.scroll.move(20, 20)
         self.scroll.setWidgetResizable(True)
-        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidget(self.leftWidget)
 
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(10)
         self.leftLayout.setContentsMargins(10, 10, 10, 10)
-
+        
+        ################################################################################
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont("Ubuntu", 11))
-        self.leftTitle.setText("Available folders to be\nback up:")
+        self.leftTitle.setFont(QFont("Ubuntu", 5))
+        self.leftTitle.setText("<h1>Folders to be back up:</h1>")
         self.leftTitle.adjustSize()
 
         # Frame
         self.leftFrame = QFrame()
-        self.leftFrame.adjustSize()
+        self.leftFrame.setGeometry(20, 20, 240, 405)
    
         ################################################################################
         # Days to run widget
@@ -1060,8 +1073,8 @@ class OPTION(QMainWindow):
 
         # Days to run title
         self.daysToRunTitle = QLabel()
-        self.daysToRunTitle.setFont(QFont("Ubuntu", 11))
-        self.daysToRunTitle.setText("Days to run:")
+        self.daysToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.daysToRunTitle.setText("<h1>Days to run:</h1>")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.daysToRunTitle.adjustSize()
         self.daysToRunTitle.setStyleSheet("""
@@ -1141,8 +1154,8 @@ class OPTION(QMainWindow):
 
         # Time to run title
         self.timeToRunTitle = QLabel(self.timeToRunWidget)
-        self.timeToRunTitle.setFont(QFont("Ubuntu", 11))
-        self.timeToRunTitle.setText("Time to run:")
+        self.timeToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.timeToRunTitle.setText("<h1>Time to run:</h1>")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.timeToRunTitle.adjustSize()
         self.timeToRunTitle.setStyleSheet("""
@@ -1207,8 +1220,8 @@ class OPTION(QMainWindow):
 
         # Hours title
         self.hoursTitle = QLabel()
-        self.hoursTitle.setFont(QFont("Ubuntu", 10))
-        self.hoursTitle.setText("Hours")
+        self.hoursTitle.setFont(QFont("Ubuntu", 4))
+        self.hoursTitle.setText("<h1>Hours</h1>")
         self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
             border-color: transparent;
@@ -1217,8 +1230,8 @@ class OPTION(QMainWindow):
 
         # Minutes title
         self.minutesTitle = QLabel()
-        self.minutesTitle.setFont(QFont("Ubuntu", 10))
-        self.minutesTitle.setText("Minutes")
+        self.minutesTitle.setFont(QFont("Ubuntu", 4))
+        self.minutesTitle.setText("<h1>Minutes</h1>")
         self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
             border-color: transparent;
@@ -1277,8 +1290,8 @@ class OPTION(QMainWindow):
 
         # Notification title
         self.flatpakTitle = QLabel()
-        self.flatpakTitle.setFont(QFont("Ubuntu", 11))
-        self.flatpakTitle.setText("Flatpak Settings:")
+        self.flatpakTitle.setFont(QFont("Ubuntu", 5))
+        self.flatpakTitle.setText("<h1>Flatpak Settings:</h1>")
         self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
         self.flatpakTitle.setStyleSheet("""
@@ -1318,8 +1331,8 @@ class OPTION(QMainWindow):
 
         # Reset title
         self.resetTitle = QLabel()
-        self.resetTitle.setFont(QFont("Ubuntu", 11))
-        self.resetTitle.setText("Reset:")
+        self.resetTitle.setFont(QFont("Ubuntu", 5))
+        self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
@@ -1377,7 +1390,6 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left layout
         self.leftLayout.addWidget(self.leftTitle, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.leftLayout.addWidget(self.leftFrame, 0, Qt.AlignLeft | Qt.AlignTop)
 
         # Days to run layout V
         self.daysToRunLayoutV.addWidget(self.daysToRunTitle, 0, Qt.AlignTop | Qt.AlignLeft)
@@ -1430,7 +1442,14 @@ class OPTION(QMainWindow):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         getIniFolders = config.options('FOLDER')
+        # Sort folders alphabetically
+        dummyList = []
+        for folder in getHomeFolders:
+            if not "." in folder:    
+                dummyList.append(folder)
+                dummyList.sort()
 
+<<<<<<< HEAD
         # Sort folders alphabetically
         dummyList = []
         for folder in getHomeFolders:
@@ -1439,13 +1458,16 @@ class OPTION(QMainWindow):
                 dummyList.sort()
 
         print(dummyList)    
+=======
+>>>>>>> origin/dev
         # Get USER home folders
         for folder in dummyList:
             # Hide hidden folder
-            if not "." in folder:    
+            if not "." in folder:   
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
+                self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
                 self.foldersCheckbox.adjustSize()
                 self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
@@ -1886,7 +1908,6 @@ class OPTION(QMainWindow):
                 config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:
                     # Backup section
-                    config.set('BACKUP', 'first_startup', 'false')
                     config.set('BACKUP', 'auto_backup', 'false')
                     config.set('BACKUP', 'backup_now', 'false')
                     config.set('BACKUP', 'checker_running', 'false')
@@ -1905,13 +1926,13 @@ class OPTION(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
 
                     # Schedule section
-                    config.set('SCHEDULE', 'sun', 'false')
+                    config.set('SCHEDULE', 'sun', 'true')
                     config.set('SCHEDULE', 'mon', 'true')
                     config.set('SCHEDULE', 'tue', 'true')
                     config.set('SCHEDULE', 'wed', 'true')
                     config.set('SCHEDULE', 'thu', 'true')
                     config.set('SCHEDULE', 'fri', 'true')
-                    config.set('SCHEDULE', 'sat', 'false')
+                    config.set('SCHEDULE', 'sat', 'true')
                     config.set('SCHEDULE', 'hours', '10')
                     config.set('SCHEDULE', 'minutes', '00')
                     config.set('SCHEDULE', 'everytime', '60')
@@ -1954,10 +1975,10 @@ class OPTION(QMainWindow):
 
     def on_search_for_updates_clicked(self):
         # Check for git updates
-        x = os.popen("git remote update && git status -uno").read()
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
         # Updates found
-        if "Your branch is behind" in str(x):
+        if "Your branch is behind" in str(gitUpdateCommand):
             applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
             'Do you want to install the updates?\n',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1965,7 +1986,6 @@ class OPTION(QMainWindow):
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
                     os.popen("git stash; git stash; git pull")
-                    print("Updated successfully") 
                     # Close a open the next message
                     QMessageBox.Close
                     # Updated sucessfully message
@@ -1973,11 +1993,14 @@ class OPTION(QMainWindow):
                     f'You are now using the latest version of {appName}.\n',
                     QMessageBox.Ok)
 
-                    if notUpdatesFound == QMessageBox.Ok:
+                    if updatesWasInstalled == QMessageBox.Ok:
                         QMessageBox.Close
 
                 except:
                     QMessageBox.Close
+                    
+                # Exit the application to reload the new settings
+                exit()
         
         else:
             notUpdatesFound = QMessageBox.question(self, 'Software Update', 

@@ -150,6 +150,9 @@ class BACKUP:
         self.get_system_settings_size()
     
     def get_system_settings_size(self):
+        self.iconInside = False
+        self.themeInside = False
+
         print("Checking size of System Settings...")
      
         self.systemSettingsFolderToBackupSizeList=[]
@@ -168,13 +171,19 @@ class BACKUP:
             getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentIcon}")
             getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentIcon}", "").replace("\t", "")
             getIconSize = int(getIconSize)
+            self.iconInside = True
 
         except:
-            # If can not be found inside /usr/share/icons, try .icons in Home
-            # Get folder size
-            getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentIcon}")
-            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
-            getIconSize = int(getIconSize)
+            try:
+                # If can not be found inside /usr/share/icons, try .icons in Home
+                # Get folder size
+                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentIcon}")
+                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
+                getIconSize = int(getIconSize)
+                self.iconInside = True
+
+            except:
+                pass
 
         ################################################################################
         # Get theme folders size
@@ -190,20 +199,33 @@ class BACKUP:
             getThemeSize = os.popen(f"du -s /usr/share/themes/{userCurrentTheme}")
             getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"/usr/share/themes/{userCurrentTheme}", "").replace("\t", "")
             getThemeSize = int(getThemeSize)
+            self.themeInside = True
 
         except:
-            # If can not be found inside /usr/share/icons, try .icons in Home
-            # Get folder size
-            getThemeSize = os.popen(f"du -s {homeUser}/.themes/{userCurrentTheme}")
-            getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{userCurrentTheme}", "").replace("\t", "")
-            getThemeSize = int(getThemeSize)
+            try:
+                # If can not be found inside /usr/share/icons, try .icons in Home
+                # Get folder size
+                getThemeSize = os.popen(f"du -s {homeUser}/.themes/{userCurrentTheme}")
+                getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{userCurrentTheme}", "").replace("\t", "")
+                getThemeSize = int(getThemeSize)
+                self.themeInside = True
 
-        # Add icon size to list
-        self.systemSettingsFolderToBackupSizeList.append(getIconSize)
-        # Add theme size to list
-        self.systemSettingsFolderToBackupSizeList.append(getThemeSize)
-        # Sum of system settings
-        self.totalSystemSettingsFolderToBackupSize = sum(self.systemSettingsFolderToBackupSizeList)
+            except:
+                pass
+
+        
+        # Check if Time Machine found icon and/or theme to be backup
+        if self.iconInside:
+            # Add icon size to list
+            self.systemSettingsFolderToBackupSizeList.append(getIconSize)
+        
+        if self.themeInside:
+            # Add theme size to list
+            self.systemSettingsFolderToBackupSizeList.append(getThemeSize)
+
+        if self.iconInside or self.themeInside:
+            # Sum of system settings
+            self.totalSystemSettingsFolderToBackupSize = int(sum(self.systemSettingsFolderToBackupSizeList))
         
         self.get_home_folders_size()
 
@@ -318,18 +340,10 @@ class BACKUP:
         self.condition_to_continue()
     
     def condition_to_continue(self):
-        ################################################################################
-        print("All folders size sum : ", self.totalHomeFoldersToBackupSize)
-        print("SYstem Settings size sum : ", self.totalSystemSettingsFolderToBackupSize)
-        print("External maximum size:   ", self.externalMaxSize)
-        print(f"External used space:   ", self.usedSpace)
-        print("External free size:   ", self.freeSpace)
-
         # This will check if Home + Flatpaks folders to backup has enough space to continue
         # with the backup process.
         print("Checking folders conditions (size)...")
         while True:
-            print("Still checking...")
             ################################################################################
             # Home conditions to continue with the backup
             ################################################################################
@@ -338,15 +352,18 @@ class BACKUP:
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
-                
+
+                ################################################################################
                 # First try to clean .Trash inside the external device
+                ################################################################################
                 if not self.alreadyClearTrash:
                     print(f"Deleting .trash...")
                     sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
                     # set AlreadyClearTrash to True
                     self.alreadyClearTrash = True
-                    # Return to the top (Maybe, empty the .trash was enough to continue :D)
-                    self.condition_to_continue()
+                    # TODO
+                    # Return to calculate all folders to be backup
+                    self.get_system_settings_size()
                 
                 ################################################################################
                 # Get available dates inside TMB
@@ -359,7 +376,6 @@ class BACKUP:
                             dateFolders.append(output)
                             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
-                    print(f"Date available: {dateFolders}")
                     ################################################################################
                     # Delete oldest folders
                     ################################################################################
@@ -378,7 +394,10 @@ class BACKUP:
                         # Action
                         print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
                         sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
-
+                        # TODO
+                        # Return to calculate all folders to be backup
+                        self.get_system_settings_size()
+                
                     else:
                         # Set notification_id to 2
                         config = configparser.ConfigParser()
@@ -388,11 +407,11 @@ class BACKUP:
                             # Turn backup now OFF
                             config.set('BACKUP', 'backup_now', 'false')
                             config.set('INFO', 'notification_add_info', "Please, manual delete file(s)/folder(s) inside "
-                                "your backup device, to make space for Time Machine's backup!")
+                                    f"your backup device, to make space for {appName}'s backup!")
                             config.write(configfile)
 
-                        print("Please, manual delete file(s)/folder(s) inside your backup device, to make space for Time "
-                        "Machine's backup!")
+                        print(f"Please, manual delete file(s)/folder(s) inside your backup device, to make space for {appName}'s "
+                        "backup!")
                         exit()
 
                 except FileNotFoundError as error:
@@ -966,7 +985,6 @@ class BACKUP:
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
-        # sub.Popen(f"python3 {src_backup_check_py}", shell=True)
         exit()
 
 

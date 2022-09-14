@@ -8,7 +8,8 @@ from pathlib import Path
 class CLI:
     def __init__(self):
         # Install command
-        self.installDependencies = "python3-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+        # Wayland libs
+        self.installDependencies = "python3-pip flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
         self.installDependenciesArch = "python-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
         self.installPipPackages = "pyside6"
         self.installFlathub = "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"

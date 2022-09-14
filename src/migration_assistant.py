@@ -386,9 +386,13 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setAutoExclusive(True)
                         self.availableDevices.setFixedSize(180, 180)
                         self.availableDevices.setText(output)
+                        self.availableDevices.setFont(QFont("Ubuntu", 12))
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
+<<<<<<< HEAD
                         self.availableDevices.setFont(QFont("Ubuntu", 12))
+=======
+>>>>>>> origin/dev
                         self.availableDevices.setStyleSheet(
                             "QPushButton"
                             "{"
@@ -609,14 +613,14 @@ class PREBACKUP(QWidget):
 
             self.systemSettingsCheckBox = QCheckBox()
             self.systemSettingsCheckBox.setText(" System Settings"
-                f"                {self.systemSettingsFolderSize}")
+                f"               {self.systemSettingsFolderSize}")
             self.systemSettingsCheckBox.setFont(QFont("Ubuntu", 11))
             self.systemSettingsCheckBox.adjustSize()
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
                 "* Wallpaper\n"
                 "* Theme\n"
                 "* Icon\n"
-                "* Cursor")
+                "* Cursor theme")
 
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -681,7 +685,7 @@ class PREBACKUP(QWidget):
 
                 self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
-                    f"                           {flatpaksToBeInstalled} Apps")
+                    f"                         {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -749,10 +753,17 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
                 f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "")
 
+            # Clean terminal
+            # sub.Popen("clear", shell=True)
+
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
+<<<<<<< HEAD
                 f"              {self.fileAndFoldersFolderSize}")
+=======
+                f"                 {self.fileAndFoldersFolderSize}")
+>>>>>>> origin/dev
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -849,7 +860,11 @@ class PREBACKUP(QWidget):
             elif packageManager == "deb":
                 for output in os.listdir(f"{debMainFolder}/"):
                     dummyList.append(output)
+            
+            else:
+                pass
 
+            # If has something inside
             if dummyList:
                 self.applicationPackagesCheckBox.setEnabled(True)
 
@@ -912,8 +927,8 @@ class PREBACKUP(QWidget):
         self.enable_system_settings()
 
     def enable_system_settings(self):
+        dummyList = []
         try:
-            dummyList = []
             # Find user's DE type
             userPackageManager = os.popen(getUserDE)
             userPackageManager = userPackageManager.read().strip().lower()
@@ -1158,9 +1173,9 @@ class BACKUPSCREEN(QWidget):
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 14))
+        self.moreDescription.setFont(QFont("Ubuntu", 6))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText('Click on "Restore" to begin.') 
+        self.moreDescription.setText('<h1>Click on "Restore" to begin.</h1>') 
 
         # Restoring description
         self.whileRestoringDescription = QLabel()
