@@ -1315,7 +1315,7 @@ class OPTION(QMainWindow):
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
-        self.resetWidget.setGeometry(280, 320, 390, 90)
+        self.resetWidget.setGeometry(285, 320, 390, 90)
  
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
@@ -1980,6 +1980,8 @@ class OPTION(QMainWindow):
                 except:
                     QMessageBox.Close
                     
+                # Re-open app
+                sub.Popen(f"python3 {src_main_window_py}", shell=True)
                 # Exit the application to reload the new settings
                 exit()
         
