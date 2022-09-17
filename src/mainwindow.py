@@ -188,16 +188,9 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-<<<<<<< HEAD
-            "* Keep local snapshots of your personal files as space permits\n"
-            "* Keep Flatpaks Data and/or only Flatpaks installed names\n"
-            "* Schedule backups Hourly, Daily or Weekly\n"
-            "* Will automatically back up at first boot, if time to do so\n   has passed.\n"
-=======
             "• Local snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n\n"
->>>>>>> origin/dev
             "Delete the oldest backups when your disk becomes full.\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -1449,17 +1442,6 @@ class OPTION(QMainWindow):
                 dummyList.append(folder)
                 dummyList.sort()
 
-<<<<<<< HEAD
-        # Sort folders alphabetically
-        dummyList = []
-        for folder in getHomeFolders:
-            if not "." in folder:    
-                dummyList.append(folder)
-                dummyList.sort()
-
-        print(dummyList)    
-=======
->>>>>>> origin/dev
         # Get USER home folders
         for folder in dummyList:
             # Hide hidden folder
