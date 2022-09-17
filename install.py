@@ -10,7 +10,7 @@ class CLI:
         # Install command
         # Wayland libs
         self.installDependencies = "python3-pip flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
-        self.installDependenciesArch = "python-pip flatpak"    # qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+        self.installDependenciesArch = "python-pip flatpak"   
         self.installPipPackages = "pyside6"
         self.installFlathub = "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
@@ -56,9 +56,10 @@ class CLI:
 
         elif "arch" in output:
             self.requirements("arch")
+
         else:
             print("No support OS found!")
-            print("Contact the developer :D")
+            print("Please, Contact the developer :D")
             exit()
 
     def requirements(self, user_os):
@@ -101,7 +102,7 @@ class CLI:
             # Install PySide6
             ################################################################################
             print("")
-            print("PySide6 pip need to be installed.")
+            print("Installing PySide6 and pip...")
             sub.run(f"pip install {self.installPipPackages}", shell=True)
 
         except:
@@ -112,6 +113,7 @@ class CLI:
         try:
             print("Installing flathub...")
             sub.run(f"sudo {self.installFlathub}", shell=True)
+
         except:
             pass
 
@@ -176,16 +178,22 @@ class CLI:
                     f"StartupWMClass=migration_assistant.py\n "
                     f"Terminal=true")
 
+            ################################################################################
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
+            ################################################################################
             shutil.copytree(self.getCurrentLocation,
                             self.dst_folder_timemachine)
 
+            ################################################################################
             # Copy .desktop and .timemachine.desktop to destination folder
+            ################################################################################
             shutil.copy(self.src_timemachine_desktop,
                         self.dst_timemachine_desktop)
 
+            ################################################################################
             # Copy migration_assistant.desktop to destination folder
+            ################################################################################
             shutil.copy(self.src_migration_assistant,
                         self.dst_migration_assistant)
 
