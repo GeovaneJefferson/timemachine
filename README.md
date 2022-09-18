@@ -100,11 +100,9 @@ Example:
 
 
 ## Uninstall:
-Inside Time Machine folder, right click, "open terminal", write "python3 uninstall.py" and press Enter.
+Command:
 
-Example:
-
-    python3 uninstall.py
+    cd .local/share/timemachine/; python3 uninstall.py
 
 ## Screenshots:
 ![](src/screenshots/img.png)
