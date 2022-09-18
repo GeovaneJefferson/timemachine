@@ -39,6 +39,7 @@ class BACKUP:
             self.iniOneTimePerDay = config['MODE']['one_time_mode']
             self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
             self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
+            self.iniUserOS = config['INFO']['os']
 
             # Base folder
             self.createBaseFolder = f"{self.iniExternalLocation}/{baseFolderName}"
@@ -537,14 +538,10 @@ class BACKUP:
         getColorScheme = os.popen(detectThemeMode)
         getColorScheme = getColorScheme.read().strip().replace("'", "")
             
-        # Get users DE (Gnome or KDE etc.)
-        userDE = os.popen(getUserDE)
-        userDE = userDE.read().strip().lower()
-        
         # Check if user DE is in the supported list
         count = 0
         for _ in supported:
-            if supported[count] == userDE:
+            if supported[count] == self.iniUserOS:
                 # Light theme
                 if getColorScheme == "prefer-light":
                     # Get current wallpaper
