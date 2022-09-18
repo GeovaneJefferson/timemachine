@@ -934,11 +934,17 @@ class EXTERNAL(QWidget):
             self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
 
         ################################################################################
-        # Get user's ox
+        # Get user's packagemanager
         ################################################################################
         userPackageManager = os.popen(getUserPackageManager)
         userPackageManager = userPackageManager.read().strip().lower()
 
+        ################################################################################
+        # Get users DE
+        ################################################################################
+        userDE = os.popen(getUserDE)
+        userDE = userDE.read().strip().lower()
+        
         ################################################################################
         # Update INI file
         ################################################################################
@@ -948,10 +954,12 @@ class EXTERNAL(QWidget):
             with open(src_user_config, 'w') as configfile:
                 if "ubuntu" or "debian" in userPackageManager:
                     # Save user's os name
+                    config.set(f'INFO', 'os', f'{userDE}')
                     config.set(f'INFO', 'packageManager', 'deb')
                 
                 elif "fedora" or "opensuse" in userPackageManager:
                     # Save user's os name
+                    config.set(f'INFO', 'os',  f'{userDE}')
                     config.set(f'INFO', 'packageManager', 'rpm')
                 
                 else:
@@ -1919,6 +1927,7 @@ class OPTION(QMainWindow):
                     config.set('SCHEDULE', 'everytime', '60')
 
                     # Info section
+                    config.set('INFO', 'os', 'None')
                     config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')

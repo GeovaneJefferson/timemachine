@@ -34,6 +34,7 @@ class RESTORE:
 
         # INFO
         self.packageManager = config['INFO']['packageManager']
+        self.iniUserOS = config['INFO']['os']
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
@@ -153,8 +154,6 @@ class RESTORE:
             ################################################################################
             for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
                 # Get size of flatpak folder inside var/app/
-                print(f"du -s {src_flatpak_local_location}/{output}")
-
                 getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
                 getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
                 getSize = int(getSize)
@@ -213,20 +212,18 @@ class RESTORE:
             print("Restoring icon...")
 
             try:
-                dummyList = []
-                # Get current icon
+                self.somethingToRestoreInIcon = []
+                # Check for icon to be restored
                 for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                    dummyList.append(icon)
+                    self.somethingToRestoreInIcon.append(icon)
                 
                 # If has something to restore
-                if dummyList:
+                if self.somethingToRestoreInIcon:
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
-                    # # Icon
-                    # self.iniIcon = config['INFO']['icon']
                     with open(src_user_config, 'w') as configfile:
                         # Write to INI file saved icon name
-                        config.set('INFO', 'icon', f'{dummyList[0]}')
+                        config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
                         config.write(configfile)
 
                     ################################################################################
@@ -239,9 +236,6 @@ class RESTORE:
 
                     # Copy icon from the backup to .icon folder
                     sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
-                    # # Apply the icon
-                    # print(f"Applying {setUserIcon} {self.iniIcon}")
-                    # sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
 
             except:
                 print("No icon to restore.")
@@ -254,27 +248,22 @@ class RESTORE:
             print("Restoring cursor...")
 
             try:        
-                dummyList = []
-                # Get current cursor
+                self.somethingToRestoreInCursor = []
+                # Check for cursor to be restored
                 for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                    dummyList.append(cursor)
+                    self.somethingToRestoreInCursor.append(cursor)
 
                 # If has something to restore
-                if dummyList:
+                if self.somethingToRestoreInCursor:
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
-                    # # Cursor
-                    # self.iniCursor = config['INFO']['cursor']
                     with open(src_user_config, 'w') as configfile:
                         # Write to INI file saved icon name
-                        config.set('INFO', 'cursor', f'{dummyList[0]}')
+                        config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
                         config.write(configfile)
                         
                     # Copy icon from the backup to .icon folder
                     sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
-                    # # Apply cursor
-                    # print(f"Applying {setUserCursor} {self.iniCursor}")
-                    # sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
 
             except:
                 pass
@@ -286,20 +275,18 @@ class RESTORE:
             print("Restoring theme...")
 
         try:
-            dummyList = []
-            # Get current theme
+            self.somethingToRestoreInTheme = []
+            # Check for theme to be restored
             for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                dummyList.append(theme)
+                self.somethingToRestoreInTheme.append(theme)
 
             # If has something to restore
-            if dummyList:
+            if self.somethingToRestoreInTheme:
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
-                # # Theme
-                # self.iniTheme = config['INFO']['theme']
                 with open(src_user_config, 'w') as configfile:
                     # Write to INI file saved theme name
-                    config.set('INFO', 'theme', f'{dummyList[0]}')
+                    config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
                     config.write(configfile)
 
                 ################################################################################
@@ -311,9 +298,6 @@ class RESTORE:
 
                 # Copy theme from the backup to .theme folder
                 sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-                # # Apply theme
-                # print(f"Applying {setUserTheme} {self.iniTheme}")
-                # sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
 
         except:
             print("No theme to restore.")
@@ -329,7 +313,6 @@ class RESTORE:
         print("Installing applications packages...")
         try:             
             if self.packageManager == "rpm":
-                # Distros like Fedora already has flatpak installed
                 ################################################################################
                 # Restore RPMS
                 ################################################################################
@@ -344,14 +327,6 @@ class RESTORE:
             
             elif self.packageManager == "deb":
                 ################################################################################
-                # First install flatphub if necessary
-                ################################################################################
-                # Install flatpak
-                sub.run("sudo apt install -y flatpak", shell=True)
-                # Install gnome software plugin flatpak
-                sub.run("sudo apt install -y gnome-software-plugin-flatpak", shell=True)
-
-                ################################################################################
                 # Restore DEBS
                 ################################################################################
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
@@ -362,7 +337,10 @@ class RESTORE:
                     # Install debs applications
                     sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
-            
+
+                # Fix packages installation
+                sub.run("sudo apt install -y -f", shell=True)
+
             # Add flathub repository
             sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
         
@@ -388,7 +366,6 @@ class RESTORE:
                             config.write(configfile)
 
                         ###############################################################################
-                        print(f"flatpak install --system --noninteractive --assumeyes --or-update {output}")
                         sub.run(f"flatpak install --system --noninteractive --assumeyes --or-update {output}", shell=True)
                         ###############################################################################
                 
@@ -408,7 +385,8 @@ class RESTORE:
     def restore_flatpak_data(self):
         print("Restoring flatpaks data...")
         try:
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}/"):
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/"
+                f"{varFolderName}/"):
                 ###############################################################################
                 with open(src_user_config, 'w') as configfile:
                     config.set('INFO', 'feedback_status', f"{output}")
@@ -417,8 +395,8 @@ class RESTORE:
                 ################################################################################
                 # Restore flatpak data (var) folders from external device
                 ################################################################################
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}")
-                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{applicationFolderName}/{varFolderName}/{output} {src_flatpak_var_location}", shell=True)
                 
         except:
             pass
@@ -428,8 +406,11 @@ class RESTORE:
     def restore_flatpak_data_local(self):
         print("Restoring flatpaks data (local)...")
         try:
-            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}/"):
-                ###############################################################################
+            for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
+                f"{applicationFolderName}/{localFolderName}/"):
+
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:
                     config.set('INFO', 'feedback_status', f"{output}")
                     config.write(configfile)
@@ -437,8 +418,8 @@ class RESTORE:
                 ################################################################################
                 # Restore flatpak data (var) folders from external device
                 ################################################################################
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}")
-                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
+                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                    f"{applicationFolderName}/{localFolderName}/{output} {src_flatpak_local_location}", shell=True)
 
         except:
             pass
@@ -452,33 +433,28 @@ class RESTORE:
     def restore_home(self):
         try:
             print("Restoring Home folders...")
-            print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                    f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/")
-                    
             for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                     f"{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"):
 
-                ###############################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
                 with open(src_user_config, 'w') as configfile:
                     config.set('INFO', 'feedback_status', f"{output}")
                     config.write(configfile)
                 
                 ###############################################################################
                 # If output folder do not exist, create it
+                ###############################################################################
                 if not os.path.exists(f"{homeUser}/{output}/"):
                     print(f"This {output} do not exist inside {homeUser}/ Home")
                     sub.run(f"{createCMDFolder} {homeUser}/{output}", shell=True)
                 
                 ###############################################################################
                 # Restore Home folders
-                print(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"
-                    f"{output}/ {homeUser}/{output}/")
-
+                ###############################################################################
                 sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{backupFolderName}/{self.latestDateFolder[0]}/{self.latestTimeFolder[0]}/"
                     f"{output}/ {homeUser}/{output}/", shell=True)
-                ###############################################################################
 
         except:
             pass
@@ -495,16 +471,20 @@ class RESTORE:
         # Cursor
         iniCursor = config['INFO']['cursor']
 
-        print("Apply all system settings...")
-        # Apply the icon
-        print(f"Applying {setUserIcon} {iniIcon}")
-        sub.run(f"{setUserIcon} {iniIcon}", shell=True)
-        # Apply cursor
-        print(f"Applying {setUserCursor} {iniCursor}")
-        sub.run(f"{setUserCursor} {iniCursor}", shell=True)
-        # Apply theme
-        print(f"Applying {setUserTheme} {iniTheme}")
-        sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+        # Apply the icon if True
+        if self.somethingToRestoreInIcon:
+            print(f"Applying {setUserIcon} {iniIcon}")
+            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+
+        # Apply cursor if True
+        if self.somethingToRestoreInCursor:
+            print(f"Applying {setUserCursor} {iniCursor}")
+            sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+
+        # Apply theme if True
+        if self.somethingToRestoreInTheme:
+            print(f"Applying {setUserTheme} {iniTheme}")
+            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
 
         print("Ending restoring...")
         ###############################################################################
