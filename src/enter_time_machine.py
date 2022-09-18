@@ -74,6 +74,12 @@ class ENTERTIMEMACHINE(QWidget):
         self.scrollForFoldersFiles = QScrollArea()
         self.scrollForFoldersFiles.setWidgetResizable(True)
         self.scrollForFoldersFiles.setWidget(widgetCenter)
+        
+        # Show loading label
+        self.loadingLabel = QLabel(self.scrollForFoldersFiles)
+        self.loadingLabel.move(365, 300)
+        self.loadingLabel.setText("<h1>Loading...</h1>")
+        self.loadingLabel.setFont(QFont("Ubuntu", 10))
 
         # Folders/Files Layout
         self.folderFilesLayout = QGridLayout(widgetCenter)
@@ -153,7 +159,7 @@ class ENTERTIMEMACHINE(QWidget):
         # Current location
         ################################################################################
         self.currentLocation = QLabel()
-        self.currentLocation.setFont(QFont("Ubuntu", 34))
+        self.currentLocation.setFont(QFont("Ubuntu", 14))
         self.currentLocation.setText("Pictures")
         self.currentLocation.setStyleSheet("""
                     background-color: transparent;
@@ -496,6 +502,8 @@ class ENTERTIMEMACHINE(QWidget):
                 print("Change dates...")
                 self.countForDate += 1
                 self.countForTime = 0
+        
+        self.loadingLabel.setVisible(False)
 
         self.up_down()
 
@@ -529,7 +537,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def label_updates(self):
         # Update current folder (label)
-        self.currentLocation.setText(self.currentFolder)
+        self.currentLocation.setText(f"<h1>{self.currentFolder}</h1>")
 
         # Update date label
         self.dateLabel.setText(f"{self.dateFolders[(self.countForDate)]}")
@@ -544,6 +552,10 @@ class ENTERTIMEMACHINE(QWidget):
             self.afterGrayDate.setText(f"{self.dateFolders[(self.countForDate) - 1]}")
         else:
             self.afterGrayDate.setText("")
+        
+        # # Set loading label to False
+        # print("HAHAH")
+        # self.loadingLabel.setVisible(False)
 
     def add_to_restore(self, output, getDate, getTime):
         ################################################################################
@@ -716,6 +728,9 @@ class ENTERTIMEMACHINE(QWidget):
         self.show_on_screen()
 
     def change_folder(self, folder):
+        # Set loading label to False
+        self.loadingLabel.setVisible(True)
+
         # Update self.currentFolder
         self.currentFolder = folder
         # Reset date
