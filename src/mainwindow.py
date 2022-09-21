@@ -166,9 +166,10 @@ class MAIN(QMainWindow):
         ################################################################################
         self.descriptionWidget = QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
-        self.descriptionWidget.setStyleSheet("""
-            border-top: 1px solid rgb(198, 198, 198);
-        """)
+        # self.descriptionWidget.setStyleSheet("""
+        #     border-top: 1px solid rgb(198, 198, 198);
+        #     border-bottom: 1px solid rgb(198, 198, 198);
+        # """)
 
         # Description Layout
         self.descriptionLayout = QVBoxLayout(self.descriptionWidget)
@@ -176,9 +177,10 @@ class MAIN(QMainWindow):
         # Description Title
         self.descriptionTitle = QLabel()
         self.descriptionTitle.setFont(topicTitle)
-        self.descriptionTitle.setText(f"{appName} keeps:\n\n")
+        self.descriptionTitle.setText(f"{appName} keeps:")
+        self.descriptionTitle.adjustSize()
         self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
-        self.descriptionTitle.setFixedSize(420, 24)
+        # self.descriptionTitle.setFixedSize(420, 24)
         self.descriptionTitle.setStyleSheet("""
             border-color: transparent;
             color: gray;
@@ -191,7 +193,7 @@ class MAIN(QMainWindow):
             "• Local snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n\n"
-            "Delete the oldest backups when your disk becomes full.\n")
+            "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
         self.descriptionText.setStyleSheet("""
