@@ -1,6 +1,9 @@
 #! /usr/bin/python3
 from logging import exception
 from setup import *
+# TODO
+# Error when external is full
+# Maybe error occours when app check space needed for the backup
 
 ################################################################################
 ## Signal
@@ -477,7 +480,7 @@ class BACKUP:
                         break
 
                 else:
-                    print("External has space enough to backup Home + Flatpaks folders.")
+                    print("External has space enough to backup Home + Flatpaks installed names.")
                     print("External has space enough to continue.")
                     self.create_pre_folders_inside_external()
 
