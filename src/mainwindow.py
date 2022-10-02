@@ -368,7 +368,7 @@ class MAIN(QMainWindow):
             # Clean notification info
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set('INFO', 'notification_add_info', ' ')
                 config.write(configfile)
 
@@ -610,7 +610,7 @@ class MAIN(QMainWindow):
             # Save next backup to user.ini
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
                 config.write(configfile)
         
@@ -672,7 +672,7 @@ class MAIN(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:  
+            with open(src_user_config, 'w', encoding='utf8') as configfile:  
                 if self.automaticallyCheckBox.isChecked():
                     if not os.path.exists(src_backup_check_desktop):
                         # Copy .desktop to user folder (Autostart .desktop)
@@ -684,7 +684,7 @@ class MAIN(QMainWindow):
                     # Backup checker
                     sub.Popen(f"python3 {src_backup_check_py}", shell=True)
                     # Set checker running to true
-                    with open(src_user_config, 'w') as configfile:
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('BACKUP', 'checker_running', "true")
                         config.write(configfile)
 
@@ -695,7 +695,7 @@ class MAIN(QMainWindow):
                     config.write(configfile)    
                     
                     # Set checker running to false
-                    with open(src_user_config, 'w') as configfile:
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('BACKUP', 'checker_running', "false")
                         config.write(configfile)
 
@@ -707,7 +707,7 @@ class MAIN(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.showInSystemTrayCheckBox.isChecked():
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
@@ -953,7 +953,7 @@ class EXTERNAL(QWidget):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if "ubuntu" or "debian" in userPackageManager:
                     # Save user's os name
                     config.set(f'INFO', 'os', f'{userDE}')
@@ -974,7 +974,7 @@ class EXTERNAL(QWidget):
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.chooseDevice}')
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
@@ -1608,7 +1608,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if config.has_option('FOLDER', output):
                     config.remove_option('FOLDER', output)
                 else:
@@ -1626,7 +1626,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if chooseMultipleTimePerDayCombox == 0:
                     config.set('SCHEDULE', 'everytime', '60')
 
@@ -1646,7 +1646,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.sunCheckBox.isChecked():
                     config.set('SCHEDULE', 'sun', 'true')
                     print("Sun")
@@ -1663,7 +1663,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.monCheckBox.isChecked():
                     config.set('SCHEDULE', 'mon', 'true')
                     print("Mon")
@@ -1679,7 +1679,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.tueCheckBox.isChecked():
                     config.set('SCHEDULE', 'tue', 'true')
                     print("Tue")
@@ -1696,7 +1696,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.wedCheckBox.isChecked():
                     config.set('SCHEDULE', 'wed', 'true')
                     print("Wed")
@@ -1712,7 +1712,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.thuCheckBox.isChecked():
                     config.set('SCHEDULE', 'thu', 'true')
                     print("Thu")
@@ -1728,7 +1728,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.friCheckBox.isChecked():
                     config.set('SCHEDULE', 'fri', 'true')
                     print("Fri")
@@ -1745,7 +1745,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.satCheckBox.isChecked():
                     config.set('SCHEDULE', 'sat', 'true')
                     print("Sat")
@@ -1765,7 +1765,7 @@ class OPTION(QMainWindow):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set('SCHEDULE', 'hours', hours)
                 if hours in fixMinutes:
                     config.set('SCHEDULE', 'hours', '0' + hours)
@@ -1783,7 +1783,7 @@ class OPTION(QMainWindow):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set('SCHEDULE', 'minutes', minutes)
                 if minutes in fixMinutes:
                     config.set('SCHEDULE', 'minutes', '0' + minutes)
@@ -1799,7 +1799,7 @@ class OPTION(QMainWindow):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.oneTimePerDayRadio.isChecked():
                     config.set('MODE', 'one_time_mode', 'true')
                     print("One time per day selected")
@@ -1849,7 +1849,7 @@ class OPTION(QMainWindow):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.allowFlatpakNamesCheckBox.isChecked():
                     config.set('BACKUP', 'allow_flatpak_names', 'true')
                     print("Allow flatpaks installed names")
@@ -1870,7 +1870,7 @@ class OPTION(QMainWindow):
             # backup flatpaks name too.
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.allowFlatpakDataCheckBox.isChecked():
                     config.set('BACKUP', 'allow_flatpak_names', 'true')
                     config.set('BACKUP', 'allow_flatpak_data', 'true')
@@ -1897,7 +1897,7 @@ class OPTION(QMainWindow):
                 # Reset settings
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
                     # Backup section
                     config.set('BACKUP', 'auto_backup', 'false')
                     config.set('BACKUP', 'backup_now', 'false')
