@@ -2005,7 +2005,7 @@ class OPTION(QMainWindow):
                 QMessageBox.Close
 
     def donate_clicked(self):
-        sub.Popen("xdg-open https://www.paypal.com/paypalme/geovanejeff", shell=True)
+        sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)
 
     def on_save_button_clicked(self):
         widget.setCurrentWidget(main)
