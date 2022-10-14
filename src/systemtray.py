@@ -177,7 +177,7 @@ class APP:
                 # If usb is connected, change notification id to 0 (White color)
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
                     config.set('INFO', 'notification_id', '0')
                     config.write(configfile)
 
@@ -210,7 +210,7 @@ class APP:
                 # Change system tray color to red, because not backup device was found or mounted
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
                     config.set('INFO', 'notification_id', '2')
                     config.write(configfile)
 
@@ -223,7 +223,7 @@ class APP:
                     # Clean notification add info, because auto backup is not enabled
                     config = configparser.ConfigParser()
                     config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('INFO', 'notification_add_info', ' ')
                         config.write(configfile)
            
