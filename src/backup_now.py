@@ -358,18 +358,6 @@ class BACKUP:
                 print("Please wait...")
 
                 ################################################################################
-                # First try to clean .Trash inside the external device
-                ################################################################################
-                if not self.alreadyClearTrash:
-                    print(f"Deleting .trash...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
-                    # set AlreadyClearTrash to True
-                    self.alreadyClearTrash = True
-                    # TODO
-                    # Return to calculate all folders to be backup
-                    self.get_system_settings_size()
-                
-                ################################################################################
                 # Get available dates inside TMB
                 # Delete based in Dates
                 ################################################################################
@@ -398,6 +386,11 @@ class BACKUP:
                         # Action
                         print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
                         sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
+                        
+                        # First try to clean .Trash inside the external device
+                        print(f"Deleting .trash too...")
+                        sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
+
                         # TODO
                         # Return to calculate all folders to be backup
                         self.get_system_settings_size()
