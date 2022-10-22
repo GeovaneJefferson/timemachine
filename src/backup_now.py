@@ -393,7 +393,7 @@ class BACKUP:
 
                         # TODO
                         # Return to calculate all folders to be backup
-                        self.condition_to_continue()
+                        self.get_system_settings_size()
                 
                     else:
                         # Set notification_id to 2
