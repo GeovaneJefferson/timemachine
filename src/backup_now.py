@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-from logging import exception
 from setup import *
 # TODO
 # Error when external is full
@@ -906,9 +905,12 @@ class BACKUP:
             f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
 
             print("Gnome-shell folder inside external, was created.")
-            sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
-                f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-    
+            try:
+                sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+            except:
+                pass
+
         # Get users /usr/share/theme
         # Try to find the current theme inside /usr/share/theme
         # If folder is empty, use CP to copy
