@@ -1,8 +1,10 @@
 #! /usr/bin/python3
+from logging import exception
 from setup import *
 # TODO
 # Error when external is full
 # Maybe error occours when app check space needed for the backup
+# Just the "way" to get size infor of the External Storage
 
 ################################################################################
 ## Signal
@@ -350,8 +352,10 @@ class BACKUP:
             ################################################################################
             # Home conditions to continue with the backup
             ################################################################################
-            # Home + Icon + Theme
-            if self.totalHomeFoldersToBackupSize + self.totalSystemSettingsFolderToBackupSize >= self.freeSpace:
+            # Home + Icon + Theme + aditional number, just for safety
+            if (self.totalHomeFoldersToBackupSize + 
+                self.totalSystemSettingsFolderToBackupSize >= 
+                self.freeSpace + 1500000):
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
@@ -416,6 +420,11 @@ class BACKUP:
                     exit()
 
             else:
+                print("enough space to continue...")
+                print(self.freeSpace)
+                print(self.totalHomeFoldersToBackupSize + self.totalSystemSettingsFolderToBackupSize)
+                print("enough space to continue...")
+
                 if self.iniAllowFlatpakData == "true":
                     print("AllowFlatpakData is enabled!")
                     ################################################################################
@@ -904,11 +913,12 @@ class BACKUP:
         if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
             f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
 
-            print("Gnome-shell folder inside external, was created.")
             try:
                 sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-            except:
+                print("Gnome-shell folder inside external, was created.")
+            
+            except exception as error:
                 pass
 
         # Get users /usr/share/theme
