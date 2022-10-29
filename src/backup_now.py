@@ -353,9 +353,12 @@ class BACKUP:
             # Home conditions to continue with the backup
             ################################################################################
             # Home + Icon + Theme + aditional number, just for safety
+            # TODOx
+
             if (self.totalHomeFoldersToBackupSize + 
-                self.totalSystemSettingsFolderToBackupSize >= 
-                self.freeSpace + 1500000):
+                self.totalSystemSettingsFolderToBackupSize + 1500000 >= 
+                self.freeSpace):
+
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
@@ -420,9 +423,6 @@ class BACKUP:
                     exit()
 
             else:
-                print("enough space to continue...")
-                print(self.freeSpace)
-                print(self.totalHomeFoldersToBackupSize + self.totalSystemSettingsFolderToBackupSize)
                 print("enough space to continue...")
 
                 if self.iniAllowFlatpakData == "true":
