@@ -1,10 +1,5 @@
 #! /usr/bin/python3
-from logging import exception
 from setup import *
-# TODO
-# Error when external is full
-# Maybe error occours when app check space needed for the backup
-# Just the "way" to get size infor of the External Storage
 
 ################################################################################
 ## Signal
@@ -353,7 +348,6 @@ class BACKUP:
             # Home conditions to continue with the backup
             ################################################################################
             # Home + Icon + Theme + aditional number, just for safety
-            # TODOx
 
             if (self.totalHomeFoldersToBackupSize + 
                 self.totalSystemSettingsFolderToBackupSize + 1500000 >= 
@@ -397,7 +391,6 @@ class BACKUP:
                         print(f"Deleting .trash too...")
                         sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
 
-                        # TODO
                         # Return to calculate all folders to be backup
                         self.get_system_settings_size()
                 
@@ -918,7 +911,7 @@ class BACKUP:
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
                 print("Gnome-shell folder inside external, was created.")
             
-            except exception as error:
+            except Exception as error:
                 pass
 
         # Get users /usr/share/theme
