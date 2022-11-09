@@ -509,12 +509,14 @@ class ENTERTIMEMACHINE(QWidget):
 
     def up_down(self):
         try:
+            # Date Index
+            self.dateIndex = self.dateFolders.index(self.dateFolders[self.countForDate])
             ################################################################################
             # Up settings
             # If clicked on up, go back in time
             ################################################################################
             # 0 = The latest date available
-            if self.dateFolders.index(self.dateFolders[self.countForDate]) == 0: 
+            if self.dateIndex == 0: 
                 self.downButton.setEnabled(False)
             else:
                 self.downButton.setEnabled(True)
@@ -523,7 +525,7 @@ class ENTERTIMEMACHINE(QWidget):
             # Down settings
             # If clicked on down, go forward in time
             ################################################################################
-            if self.dateFolders.index(self.dateFolders[self.countForDate]) + 1  == len(self.dateFolders):
+            if self.dateIndex + 1  == len(self.dateFolders):
                 self.upButton.setEnabled(False)
 
             else:
@@ -639,11 +641,25 @@ class ENTERTIMEMACHINE(QWidget):
             ################################################################################
             # Reactivate buttons
             ################################################################################
-            if self.dateIndex != 0:  # If is not last/top date
-                self.upButton.setEnabled(True)
-
-            if not (self.dateIndex + 1) == len(self.dateFolders):  # If is not last/bottom date
+            ################################################################################
+            # Up settings
+            # If clicked on up, go back in time
+            ################################################################################
+            # 0 = The latest date available
+            if self.dateIndex == 0: 
+                self.downButton.setEnabled(False)
+            else:
                 self.downButton.setEnabled(True)
+
+            ################################################################################
+            # Down settings
+            # If clicked on down, go forward in time
+            ################################################################################
+            if self.dateIndex + 1  == len(self.dateFolders):
+                self.upButton.setEnabled(False)
+
+            else:
+                self.upButton.setEnabled(True)
 
         ################################################################################
         # Connection restore button
