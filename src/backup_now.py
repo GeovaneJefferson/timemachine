@@ -1,9 +1,5 @@
 #! /usr/bin/python3
-from logging import exception
 from setup import *
-# TODO
-# Error when external is full
-# Maybe error occours when app check space needed for the backup
 
 ################################################################################
 ## Signal
@@ -351,24 +347,16 @@ class BACKUP:
             ################################################################################
             # Home conditions to continue with the backup
             ################################################################################
-            # Home + Icon + Theme
-            if self.totalHomeFoldersToBackupSize + self.totalSystemSettingsFolderToBackupSize >= self.freeSpace:
+            # Home + Icon + Theme + aditional number, just for safety
+
+            if (self.totalHomeFoldersToBackupSize + 
+                self.totalSystemSettingsFolderToBackupSize + 1500000 >= 
+                self.freeSpace):
+
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
 
-                ################################################################################
-                # First try to clean .Trash inside the external device
-                ################################################################################
-                if not self.alreadyClearTrash:
-                    print(f"Deleting .trash...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
-                    # set AlreadyClearTrash to True
-                    self.alreadyClearTrash = True
-                    # TODO
-                    # Return to calculate all folders to be backup
-                    self.get_system_settings_size()
-                
                 ################################################################################
                 # Get available dates inside TMB
                 # Delete based in Dates
@@ -398,7 +386,11 @@ class BACKUP:
                         # Action
                         print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
                         sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
-                        # TODO
+                        
+                        # First try to clean .Trash inside the external device
+                        print(f"Deleting .trash too...")
+                        sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
+
                         # Return to calculate all folders to be backup
                         self.get_system_settings_size()
                 
@@ -424,6 +416,8 @@ class BACKUP:
                     exit()
 
             else:
+                print("enough space to continue...")
+
                 if self.iniAllowFlatpakData == "true":
                     print("AllowFlatpakData is enabled!")
                     ################################################################################
@@ -912,10 +906,14 @@ class BACKUP:
         if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
             f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
 
-            print("Gnome-shell folder inside external, was created.")
-            sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
-                f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-    
+            try:
+                sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                    f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+                print("Gnome-shell folder inside external, was created.")
+            
+            except Exception as error:
+                pass
+
         # Get users /usr/share/theme
         # Try to find the current theme inside /usr/share/theme
         # If folder is empty, use CP to copy
