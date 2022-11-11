@@ -10,7 +10,6 @@ import signal
 
 from pathlib import Path
 from datetime import datetime
-from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint)
@@ -33,7 +32,7 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.4 dev"
+appVersion = "v1.1.4"
 
 baseFolderName = "TMB"
 backupFolderName = "backups"
