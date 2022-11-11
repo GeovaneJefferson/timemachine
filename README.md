@@ -12,14 +12,6 @@ using "Enter Time Machine" mode.
 * This is a backup application created using PySide6 for Linux.
 * Make sure that your clock method is "24 hour clock", not "12 hour clock" AM/PM.
 
-## Know bugs:
-* Unable to open Time Machine.
-- This is something to do with "ConfigParser", this only happens when main window (Time Machine) is open. I think that happens when "main window" is try to write to INI file, sometimes, something goes wrong.
-
-### Work around
-- User need to copy "user.ini" from the download Time Machine or take a copy from the github and then, paste inside "/home/$USER/.local/share/timemachine/src/ini/user.ini".
-Then, re-configure Time Machine again.
-
 ### Solution
 I am still trying to fix this :D
 
