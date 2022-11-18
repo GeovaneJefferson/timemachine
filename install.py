@@ -8,7 +8,7 @@ from pathlib import Path
 class CLI:
     def __init__(self):
         # Install command
-        # DEB
+        # DEB 
         self.installDependencies = "python3-pip flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
         # ARCH
         self.installDependenciesArch = "python-pip flatpak"   

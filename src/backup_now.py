@@ -565,15 +565,14 @@ class BACKUP:
                     self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
                     self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
                 
-                # After one supported item was found, continue
-                continue
+                # After one supported item was found, go to self.backup_user_wallpaper()
+                self.backup_user_wallpaper()
 
             else:
-                print("No supported DE found to back up the wallpaper.")
-                self.write_flatpak_file()
-            count += 1
+                count += 1
 
-        self.backup_user_wallpaper()
+        print("No supported DE found to back up the wallpaper.")
+        self.write_flatpak_file()
 
     def backup_user_wallpaper(self):
         # Replace wallpaper inside the folder, only allow 1
@@ -581,11 +580,13 @@ class BACKUP:
         insideWallpaperFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")
         # If it has image inside the folder
         if insideWallpaperFolder:
+            print("Image(s) found inside.")
             # Delete all image inside wallpaper folder
             for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
                 print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
+        print("Backing up wallpaper...")
         print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
         sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
         
