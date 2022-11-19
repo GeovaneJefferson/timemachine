@@ -1,19 +1,13 @@
 <p align="center">
   <img width="150" height="150" src="src/icons/backup_150px.png">
- <h1 align="center">Time Machine</h1>
+ <h1 align="center">Back up your PC with Time Machine</h1>
 </p>
-Use Time Machine to automatically back up your personal data. 
-
-Having a backup allows you to recover files that you later delete or can't access,
-using "Enter Time Machine" mode.
+Use Time Machine, the built-in backup feature of your PC, to automatically back up your personal data, music, photos and documents. Having a backup allows you to recover files that you later delete or can't access.
 
 ## Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
 * Make sure that your clock method is "24 hour clock", not "12 hour clock" AM/PM.
-
-### Solution
-I am still trying to fix this :D
 
 ## Support:
 * Gnome -> Full support
@@ -40,13 +34,11 @@ I am still trying to fix this :D
 
 Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
 
-## Enter Time Machine
+## Browse Time Machine Backups
 First, open Time Machine and allow to "show in the system tray".
 
-Then, click on Time Machine in system tray and select "Enter Time Machine"
+Then, click on Time Machine in system tray and select "Browse Time Backups"
 (Remember, will only work if Time Machine has made at least one backup already.)
-
-Still in development...
 
 ## External drive connected to your PC
 Time Machine can back up to an external drive connected to a USB, HD or SSD.
