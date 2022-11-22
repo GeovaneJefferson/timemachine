@@ -1920,7 +1920,7 @@ class OPTION(QMainWindow):
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
         # Updates found
-        if "Your branch is behind" or "have diverged" in str(gitUpdateCommand):
+        if "Your branch is behind" in str(gitUpdateCommand):
             applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
             'Do you want to install the updates?\n',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
