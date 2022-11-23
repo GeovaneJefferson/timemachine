@@ -59,10 +59,10 @@ class APP:
         # self.skipThisBackup.setFont(QFont(item))
         # self.skipThisBackup.triggered.connect(self.backup_now)
 
-        # Enter time machine button
-        self.enterTimeMachineButton = QAction("Enter Time Machine")
-        self.enterTimeMachineButton.setFont(QFont(item))
-        self.enterTimeMachineButton.triggered.connect(
+        # Browse Time Machine Backups button
+        self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
+        self.browseTimeMachineBackupsButton.setFont(QFont(item))
+        self.browseTimeMachineBackupsButton.triggered.connect(
             lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
 
         # Open Time Machine button
@@ -75,8 +75,8 @@ class APP:
         self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.iniLastBackupInformation)
         self.menu.addAction(self.dummyLine2)
-        self.menu.addAction(self.enterTimeMachineButton)
         self.menu.addAction(self.backupNowButton)
+        self.menu.addAction(self.browseTimeMachineBackupsButton)
         self.menu.addAction(self.dummyLine3)
         self.menu.addAction(self.openTimeMachine)
         
@@ -84,26 +84,21 @@ class APP:
         self.tray.setContextMenu(self.menu)
 
         # Tray
-<<<<<<< HEAD
-        self.icon = QIcon(src_system_bar_icon)
-        self.tray.setIcon(self.icon)
-=======
         # self.tray.setIcon(QIcon(src_system_bar_icon))
->>>>>>> origin/dev
         
         ################################################################################
         # Check ini
         ################################################################################
-        timer.timeout.connect(self.read_INI_file)
+        timer.timeout.connect(self.updates)
         timer.start(2000)  # update every x second
-        self.read_INI_file()
+        self.updates()
         
         self.app.exec()
 
         # # App exec
         # self.app.exec()
     
-    def read_INI_file(self):
+    def updates(self):
         print("System tray is running...")
         try:
             config = configparser.ConfigParser()
@@ -127,7 +122,7 @@ class APP:
             pass
         
         self.system_tray_manager()
-    
+
     def system_tray_manager(self):
         try:
             if self.iniSystemTray == "false":
@@ -188,7 +183,7 @@ class APP:
                     # Enable backup now button
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
-                    self.enterTimeMachineButton.setEnabled(True)
+                    self.browseTimeMachineBackupsButton.setEnabled(True)
                     # Update last backup information
                     self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
                         f'{self.iniLastBackup}')
@@ -205,7 +200,7 @@ class APP:
                 # Hide backup now button
                 self.backupNowButton.setEnabled(False)
                 # Hide Enter In Time Machine
-                self.enterTimeMachineButton.setEnabled(False)
+                self.browseTimeMachineBackupsButton.setEnabled(False)
       
                 # Change system tray color to red, because not backup device was found or mounted
                 config = configparser.ConfigParser()
@@ -238,7 +233,7 @@ class APP:
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
             # Disable enter in time machine button
-            self.enterTimeMachineButton.setEnabled(False)
+            self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def backup_now(self):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
