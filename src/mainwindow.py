@@ -802,6 +802,12 @@ class EXTERNAL(QWidget):
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         
+        # Info 
+        self.notAllowed = QLabel(self)
+        self.notAllowed.setText("Diveces with space(s) and/or special characters will not be visible.")
+        self.notAllowed.setFont(item)
+        self.notAllowed.move(20,20)
+
         # Cancel button
         self.cancelButton = QPushButton(self)
         self.cancelButton.setFont(item)
@@ -885,7 +891,9 @@ class EXTERNAL(QWidget):
         ################################################################################
         # If not already in list, add
         for output in os.listdir(f'{location}/{userName}'):
-            if output not in self.captureDevices:
+            # No spaces and special characters allowed
+            if output not in self.captureDevices and "'" not in output and " " not in output:
+                print(output)
                 # If device is in list, display to user just on time per device
                 self.captureDevices.append(output)
 
@@ -935,8 +943,8 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
-        if " " in self.chooseDevice:
-            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
+        # if " " in self.chooseDevice:
+        #     self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
 
         ################################################################################
         # Get user's packagemanager
