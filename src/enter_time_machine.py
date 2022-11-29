@@ -44,8 +44,8 @@ class ENTERTIMEMACHINE(QWidget):
     def widgets(self):
         # Base vertical layout
         baseV = QVBoxLayout()
-        baseV.setAlignment(QtCore.Qt.AlignVCenter)
-        baseV.setContentsMargins(20, 20, 20, 20)
+        # baseV.setAlignment(QtCore.Qt.AlignVCenter)
+        # baseV.setContentsMargins(20, 20, 20, 20)
         
         baseH = QHBoxLayout()
         # baseH.setContentsMargins(20, 20, 20, 20)
@@ -72,20 +72,30 @@ class ENTERTIMEMACHINE(QWidget):
         # Folders/Files 
         # Scroll
         widgetCenter = QWidget()
-        self.scrollForFoldersFiles = QScrollArea()
-        self.scrollForFoldersFiles.setWidgetResizable(True)
-        self.scrollForFoldersFiles.setWidget(widgetCenter)
+        self.scrollForFolders = QScrollArea()
+        self.scrollForFolders.setWidgetResizable(True)
+        self.scrollForFolders.setMinimumHeight(160)
+
+        # Scroll files
+        self.scrollForFiles = QScrollArea()
+        self.scrollForFiles.setWidgetResizable(True)
+        self.scrollForFiles.setWidget(widgetCenter)
         
         # Show loading label
-        self.loadingLabel = QLabel(self.scrollForFoldersFiles)
+        self.loadingLabel = QLabel(self.scrollForFiles)
         self.loadingLabel.move(365, 300)
         self.loadingLabel.setText("<h1>Loading...</h1>")
         self.loadingLabel.setFont(QFont("Ubuntu", 10))
 
-        # Folders/Files Layout
-        self.folderFilesLayout = QGridLayout(widgetCenter)
-        self.folderFilesLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.folderFilesLayout.setContentsMargins(10, 20, 10, 20)
+        # Folders Layout
+        self.foldersLayoutHorizontal = QHBoxLayout(self.scrollForFolders)
+        self.foldersLayoutHorizontal.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.foldersLayoutHorizontal.setContentsMargins(10, 20, 10, 20)
+
+        # Files Layout
+        self.filesLayoutGrid = QGridLayout(widgetCenter)
+        self.filesLayoutGrid.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.filesLayoutGrid.setContentsMargins(10, 20, 10, 20)
 
         ################################################################################
         # Up/Down widget
@@ -193,7 +203,10 @@ class ENTERTIMEMACHINE(QWidget):
         # Layouts
         ################################################################################
         baseH.addWidget(self.widgetLeft)
-        baseH.addWidget(self.scrollForFoldersFiles)
+        baseH.addLayout(baseV)
+        # baseH.addWidget(self.scrollForFolders)
+        # baseH.addWidget(self.scrollForFolders)
+        # baseH.addWidget(self.scrollForFiles)
         baseH.addWidget(widgetUpDown)
         baseH.addWidget(widgetRight)
 
@@ -205,12 +218,14 @@ class ENTERTIMEMACHINE(QWidget):
         self.upDownLayout.addWidget(self.afterGrayDate, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.upDownLayout.addStretch()
         
-        baseV.addWidget(self.currentLocation)
-        baseV.addLayout(baseH)
+        # baseV.addWidget(self.currentLocation)
+        # baseV.addLayout(baseH)
+        baseV.addWidget(self.scrollForFolders)
+        baseV.addWidget(self.scrollForFiles, 1)
         self.restoreLayout.addWidget(self.restoreButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         baseV.addLayout(self.restoreLayout)
         
-        self.setLayout(baseV)
+        self.setLayout(baseH)
 
         self.get_folders()
     
@@ -391,96 +406,103 @@ class ENTERTIMEMACHINE(QWidget):
                     f"{self.timeFolders[self.countForTime]}/{self.currentFolder}"):
                 
                 # Only show files and hide hidden outputs
+                # if not output.startswith(".") and "." in output:
+                print("     Files: ", output)
+                self.filesResult = QPushButton(self)
+                self.filesResult.setCheckable(True)
+                self.filesResult.setFixedSize(filesButtomX, filesButtomY)
+                self.filesResult.setIconSize(QtCore.QSize(64, 64))
+                self.filesResult.clicked.connect(
+                        lambda *, output=output: self.add_to_restore(
+                            output, self.dateFolders[self.countForDate],
+                            self.timeFolders[self.countForTime]))
+
+                ################################################################################
+                # Text
+                ################################################################################
+                text = QLabel(self.filesResult)
+                text.setText(output.capitalize())
+                text.setFont(QFont("Ubuntu", 11))
+                text.move(10, filesButtomY-25)
+
+                # Show bigger preview if mouse hover
+                if output.endswith(imagePrefix):
+                    scaledHTML = 'width:"100%" height="250"'
+                    self.filesResult.setToolTip(
+                        f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                        f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+                        f"{self.currentFolder}/{output} {scaledHTML}/>")
+
+                ################################################################################
+                # Preview of files that are not in imagePrefix
+                ################################################################################
+                # Image label
+                image = QLabel(self.filesResult)
+                image.move(10, 10)
+                image.setStyleSheet(
+                    "QLabel"
+                    "{"
+                    "background-repeat: no-repeat;"
+                    "}")
+
+                if output.endswith(imagePrefix):
+                    scaledHTML = 'width:"100%" height="80"'
+                    image.setText(
+                        f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                        f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+                        f"{self.currentFolder}/{output} {scaledHTML}/>")
+
+                elif output.endswith(".txt"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/txt.png"))
+
+                elif output.endswith(".pdf"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/pdf.png"))
+
+                elif output.endswith(".py"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/py.png"))
+
+                elif output.endswith(".cpp"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/cpp.png"))
+
+                elif output.endswith(".sh"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/bash.png"))
+
+                elif output.endswith(".blend"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/blend.png"))
+
+                elif output.endswith(".excel"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/excel.png"))
+
+                elif output.endswith(".mp4"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/mp4.png"))
+
+                elif output.endswith(".iso"):
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/iso.png"))
+                
+                elif not output.endswith(".")and "." not in output:
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+
+                else:
+                    self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/none.png"))
+
+                # Only show files and hide hidden outputs
                 if not output.startswith(".") and "." in output:
-                    print("     Files: ", output)
-                    self.searchResult = QPushButton(self)
-                    self.searchResult.setCheckable(True)
-                    self.searchResult.setFixedSize(filesButtomX, filesButtomY)
-                    self.searchResult.setIconSize(QtCore.QSize(64, 64))
-                    self.searchResult.clicked.connect(
-                            lambda *, output=output: self.add_to_restore(
-                                output, self.dateFolders[self.countForDate],
-                                self.timeFolders[self.countForTime]))
+                    self.filesLayoutGrid.addWidget(self.filesResult, vertical, horizontal)
+                
+                else:
+                    self.foldersLayoutHorizontal.addWidget(self.filesResult)
 
-                    ################################################################################
-                    # Text
-                    ################################################################################
-                    text = QLabel(self.searchResult)
-                    text.setText(output.capitalize())
-                    text.setFont(QFont("Ubuntu", 11))
-                    text.move(10, filesButtomY-25)
+                count += 1
 
-                    # Show bigger preview if mouse hover
-                    if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"100%" height="250"'
-                        self.searchResult.setToolTip(
-                            f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                            f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-                            f"{self.currentFolder}/{output} {scaledHTML}/>")
-
-                    ################################################################################
-                    # Preview of files that are not in imagePrefix
-                    ################################################################################
-                    # Image label
-                    image = QLabel(self.searchResult)
-                    image.move(10, 10)
-                    image.setStyleSheet(
-                        "QLabel"
-                        "{"
-                        "background-repeat: no-repeat;"
-                        "}")
-
-                    if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"100%" height="80"'
-                        image.setText(
-                            f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                            f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-                            f"{self.currentFolder}/{output} {scaledHTML}/>")
-
-                    elif output.endswith(".txt"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/txt.png"))
-
-                    elif output.endswith(".pdf"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/pdf.png"))
-
-                    elif output.endswith(".py"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/py.png"))
-
-                    elif output.endswith(".cpp"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/cpp.png"))
-
-                    elif output.endswith(".sh"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/bash.png"))
-
-                    elif output.endswith(".blend"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/blend.png"))
-
-                    elif output.endswith(".excel"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/excel.png"))
-
-                    elif output.endswith(".mp4"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/mp4.png"))
-
-                    elif output.endswith(".iso"):
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/iso.png"))
-
-                    else:
-                        self.searchResult.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/none.png"))
-
-
-                    # Add layout and widgets
-                    self.folderFilesLayout.addWidget(self.searchResult, vertical, horizontal)
-                    count += 1
-
-                    # If filesButtomX if higher than scroll width, go to the next column
-                    horizontal += 1
-                    if count %3 == 0:
-                        # Reset counts
-                        count = 0
-                        # Reset horizontal
-                        horizontal = 0
-                        # Add 1 to vertical
-                        vertical += 1
+                # If filesButtomX if higher than scroll width, go to the next column
+                horizontal += 1
+                if count %3 == 0:
+                    # Reset counts
+                    count = 0
+                    # Reset horizontal
+                    horizontal = 0
+                    # Add 1 to vertical
+                    vertical += 1
 
         except FileNotFoundError as error:
             print("")
@@ -778,11 +800,19 @@ class ENTERTIMEMACHINE(QWidget):
 
         try:
             if exec == "clean_folders_files":
-                for i in range(self.folderFilesLayout.count()):
-                    item = self.folderFilesLayout.itemAt(i)
+                for i in range(self.filesLayoutGrid.count()):
+                    item = self.filesLayoutGrid.itemAt(i)
                     widget = item.widget()
                     widget.deleteLater()
                     i -= 1
+                
+                # Clean folders too
+                for i in range(self.foldersLayoutHorizontal.count()):
+                    item = self.foldersLayoutHorizontal.itemAt(i)
+                    widget = item.widget()
+                    widget.deleteLater()
+                    i -= 1
+                
         except:
             pass
 
