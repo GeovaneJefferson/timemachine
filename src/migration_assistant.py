@@ -1,7 +1,5 @@
 #! /usr/bin/python3
-from multiprocessing import dummy
 from setup import *
-import multiprocessing
 
 # QTimer
 timer = QtCore.QTimer()
@@ -67,7 +65,6 @@ cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
 
 # Flatpak txt file
 flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-        
 
 
 class WELCOMESCREEN(QWidget):
@@ -258,6 +255,7 @@ class OPTIONS(QWidget):
 
         else:
             widget.setCurrentWidget(main6)
+
 
 class CHOOSEDEVICE(QWidget):
     def __init__(self):
@@ -1128,7 +1126,6 @@ class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
         self.outputBox = ()
-        self.showFullScreen()
 
         self.widgets()
 
@@ -1344,12 +1341,37 @@ class BACKUPSCREEN(QWidget):
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
+        self.restoreInAction = 0
+        self.alreadyCounted = False
         self.showFullScreen()
         self.initUI()
 
     def initUI(self):
-        self.widgets()
+        # Update
+        timer.timeout.connect(self.read_ini_file)
+        timer.start(1000) # Update every x seconds
+        self.read_ini_file()
 
+    def read_ini_file(self):
+        print(widget.currentIndex())
+
+        ################################################################################
+        # Read file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
+
+        if self.iniIsRestoreRunning == "true" and not self.alreadyCounted:
+            self.alreadyCounted = True
+            self.restoreInAction += 1
+        
+        if self.restoreInAction == 1:
+            if self.iniIsRestoreRunning == "false":
+                exit()
+
+        self.widgets()
+            
     def widgets(self):
         # Title layout
         self.titlelLayout = QVBoxLayout()
@@ -1382,27 +1404,11 @@ class START_RESTORING(QWidget):
     def BEGIN_RESTORING(self):
         # Call restore python
         sub.Popen(f"python3 {src_restore_cmd}", shell=True)
-        try:
-            while True:
-                ################################################################################
-                # Read file
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
 
-                self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-                if self.iniIsRestoreRunning == "false":
-                    # After done, exit
-                    exit()
-                
-                else:
-                    time.sleep(2)
-
-        except:
-            pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    widget = QStackedWidget()
 
     main = WELCOMESCREEN()
     main2 = OPTIONS()
@@ -1411,7 +1417,6 @@ if __name__ == '__main__':
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
 
-    widget = QStackedWidget()
     widget.addWidget(main)   
     widget.addWidget(main2) 
     widget.addWidget(main3) 
@@ -1422,12 +1427,8 @@ if __name__ == '__main__':
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
-    widget.setWindowIcon(QIcon(src_migration_assistant_128px))
-        # widget.setCurrentIndex(widget.currentIndex()+1)
-    if (widget.currentIndex() + 1) == 6:
-        widget.showFullScreen()
-    else:
-        widget.setFixedSize(windowXSize, windowYSize)
+    widget.setWindowIcon(QIcon(src_migration_assistant_128px)) 
+    widget.setFixedSize(windowXSize, windowYSize)
     widget.show()
 
     app.exit(app.exec())
