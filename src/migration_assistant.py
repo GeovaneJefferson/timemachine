@@ -755,7 +755,7 @@ class PREBACKUP(QWidget):
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
-                f"                 {self.fileAndFoldersFolderSize}")
+                f"               {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -1128,6 +1128,7 @@ class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
         self.outputBox = ()
+        self.showFullScreen()
 
         self.widgets()
 
@@ -1271,7 +1272,7 @@ class BACKUPSCREEN(QWidget):
         self.startRestoreButton.adjustSize()
         self.startRestoreButton.move(800, 555)
         self.startRestoreButton.setEnabled(True)
-        self.startRestoreButton.clicked.connect(self.start_restoring)
+        self.startRestoreButton.clicked.connect(self.change_screen)
 
         ################################################################################
         # Add layouts and widgets
@@ -1292,9 +1293,6 @@ class BACKUPSCREEN(QWidget):
         # Add userName self.set
         self.setLayout(self.verticalLayout)
 
-        # Update
-        # timer.timeout.connect(self.read_ini_file)
-        # timer.start(1000)
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -1334,19 +1332,19 @@ class BACKUPSCREEN(QWidget):
         except:
             pass
 
-    def start_restoring(self):
-        # Disable back button
-        self.backButton.setEnabled(False)
-        # Disable restore button
-        self.startRestoreButton.setEnabled(False)
-        # Call restore python
-        sub.run(f"python3 {src_restore_cmd}", shell=True)
+    def change_screen(self):
         # Change screen
         widget.setCurrentIndex(widget.currentIndex()+1)
-
-class DONE(QWidget):
+       
+        # Disable back button
+        # self.backButton.setEnabled(False)
+        # Disable restore button
+        # self.startRestoreButton.setEnabled(False)
+        
+class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
+        self.showFullScreen()
         self.initUI()
 
     def initUI(self):
@@ -1358,49 +1356,50 @@ class DONE(QWidget):
         self.titlelLayout.setSpacing(20)
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
         
-        # Image       
-        image = QLabel()
-        image.setFixedSize(128, 128)
-        image.setStyleSheet(
-            "QLabel"
-            "{"
-            f"background-image: url({src_migration_assistant_128px});"
-            "background-repeat: no-repeat;"
-            "background-color: transparent;"
-            "background-position: center;"
-            "}")
-        
         # Welcome
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 34))
-        self.title.setText("Migration Assistant")
+        self.title.setFont(QFont("Ubuntu", 28))
+        self.title.setText("This may take a few minutes.")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 14))
+        self.moreDescription.setFont(QFont("Ubuntu", 10))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText("All done!") 
-
-        ################################################################################
-        # Buttons
-        ################################################################################
-        # Close button
-        self.closeButton = QPushButton(self)
-        self.closeButton.setText("Close")
-        self.closeButton.setFont(QFont("Ubuntu", 10))
-        self.closeButton.adjustSize()
-        self.closeButton.move(800, 555)
-        self.closeButton.clicked.connect(lambda: exit())
+        self.moreDescription.setText("Don't turn off your PC.") 
 
         ###########################################################################
         # Add layouts and widgets
         ################################################################################
-        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(self.moreDescription, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.titlelLayout.addStretch()
+        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
 
+        self.BEGIN_RESTORING()
+
+    def BEGIN_RESTORING(self):
+        # Call restore python
+        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
+        try:
+            while True:
+                ################################################################################
+                # Read file
+                ################################################################################
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+
+                self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
+                if self.iniIsRestoreRunning == "false":
+                    # After done, exit
+                    exit()
+                
+                else:
+                    time.sleep(2)
+
+        except:
+            pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -1410,7 +1409,7 @@ if __name__ == '__main__':
     main3 = CHOOSEDEVICE()
     main4 = PREBACKUP()
     main5 = BACKUPSCREEN()
-    main6 = DONE()
+    main6 = START_RESTORING()
 
     widget = QStackedWidget()
     widget.addWidget(main)   
@@ -1422,9 +1421,13 @@ if __name__ == '__main__':
     widget.setCurrentWidget(main)   
 
     # Window settings
-    widget.setWindowTitle(appName)
+    widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_128px))
-    widget.setFixedSize(windowXSize, windowYSize)
+        # widget.setCurrentIndex(widget.currentIndex()+1)
+    if (widget.currentIndex() + 1) == 6:
+        widget.showFullScreen()
+    else:
+        widget.setFixedSize(windowXSize, windowYSize)
     widget.show()
 
     app.exit(app.exec())
