@@ -556,7 +556,7 @@ class PREBACKUP(QWidget):
         dummySystemSettingsSizeList = []
         try:
             # Icons size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
@@ -568,7 +568,7 @@ class PREBACKUP(QWidget):
         
         try:    
             # Theme size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
@@ -580,7 +580,7 @@ class PREBACKUP(QWidget):
 
         try:
             # Cursor size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{cursorFolderName}", "")
@@ -1294,23 +1294,6 @@ class BACKUPSCREEN(QWidget):
 
     def read_ini_file(self):
         try:
-        #     ################################################################################
-        #     # Read file
-        #     ################################################################################
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-
-        #     iniExternalName = config['EXTERNAL']['name']
-        #     iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-        #     iniApplicationsPackages = config['RESTORE']['applications_packages']
-        #     iniApplicationData = config['RESTORE']['applications_data']
-        #     iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-        #     # Current backup information
-        #     iniCurrentBackupInfo = config['INFO']['feedback_status']
-        #     # Get current notification ID
-        #     iniNotificationID = config['INFO']['notification_id']
-
-            # Add externalDeviceName text
             self.externalDeviceName.setText(iniExternalName)
 
             ################################################################################
@@ -1334,7 +1317,6 @@ class BACKUPSCREEN(QWidget):
         widget.setCurrentIndex(widget.currentIndex()+1)
         # Call restore python
         sub.Popen(f"python3 {src_restore_cmd}", shell=True)
-        print("Restoring")
         
 class START_RESTORING(QWidget):
     def __init__(self):
@@ -1351,8 +1333,6 @@ class START_RESTORING(QWidget):
         self.read_ini_file()
 
     def read_ini_file(self):
-        print(widget.currentIndex())
-
         ################################################################################
         # Read file
         ################################################################################
