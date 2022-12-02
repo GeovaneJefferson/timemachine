@@ -1332,11 +1332,9 @@ class BACKUPSCREEN(QWidget):
     def change_screen(self):
         # Change screen
         widget.setCurrentIndex(widget.currentIndex()+1)
-       
-        # Disable back button
-        # self.backButton.setEnabled(False)
-        # Disable restore button
-        # self.startRestoreButton.setEnabled(False)
+        # Call restore python
+        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
+        print("Restoring")
         
 class START_RESTORING(QWidget):
     def __init__(self):
@@ -1398,12 +1396,6 @@ class START_RESTORING(QWidget):
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
-
-        self.BEGIN_RESTORING()
-
-    def BEGIN_RESTORING(self):
-        # Call restore python
-        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
 
 
 if __name__ == '__main__':
