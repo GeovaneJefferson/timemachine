@@ -10,7 +10,6 @@ import signal
 
 from pathlib import Path
 from datetime import datetime
-from random import randint
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint)
