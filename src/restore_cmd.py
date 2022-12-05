@@ -519,7 +519,8 @@ class RESTORE:
             # Set auto rebooting to false
             config.set('INFO', 'auto_reboot', "false")
             sub.Popen("sudo reboot", shell=True)
-            
-        exit()
+
+        else:
+            exit()
 
 main = RESTORE()
