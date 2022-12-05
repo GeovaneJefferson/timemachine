@@ -943,7 +943,7 @@ class PREBACKUP(QWidget):
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option
-                    if supported[count] == userPackageManager:
+                    if supported[count] in userPackageManager:
                         self.systemSettingsCheckBox.setEnabled(True)
                         # After one supported item was found, continue
                         continue
