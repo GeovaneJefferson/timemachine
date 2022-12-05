@@ -473,17 +473,17 @@ class RESTORE:
         iniCursor = config['INFO']['cursor']
 
         # Apply the icon if True
-        if self.somethingToRestoreInIcon:
+        if self.somethingToRestoreInIcon and self.iniSystemSettings == "true":
             print(f"Applying {setUserIcon} {iniIcon}")
             sub.run(f"{setUserIcon} {iniIcon}", shell=True)
 
         # Apply cursor if True
-        if self.somethingToRestoreInCursor:
+        if self.somethingToRestoreInCursor and self.iniSystemSettings == "true":
             print(f"Applying {setUserCursor} {iniCursor}")
             sub.run(f"{setUserCursor} {iniCursor}", shell=True)
 
         # Apply theme if True
-        if self.somethingToRestoreInTheme:
+        if self.somethingToRestoreInTheme and self.iniSystemSettings == "true":
             print(f"Applying {setUserTheme} {iniTheme}")
             sub.run(f"{setUserTheme} {iniTheme}", shell=True)
 
