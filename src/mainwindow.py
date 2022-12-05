@@ -194,7 +194,7 @@ class MAIN(QMainWindow):
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n"
             "• Wallpaper (Only for Gnome)\n"
-            "• Theme, Icon and cursor (Only for Gnome)\n\n"
+            "• Theme, Icon and cursor\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
