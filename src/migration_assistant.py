@@ -1166,6 +1166,12 @@ class BACKUPSCREEN(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 6))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText('<h1>Click on "Restore" to begin.</h1>') 
+        
+        # Automatically reboot
+        self.autoReboot = QCheckBox()
+        self.autoReboot.setFont(QFont("Ubuntu", 10))
+        self.autoReboot.setText('Automatically reboot after migration is done.') 
+        self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
         self.whileRestoringDescription = QLabel()
@@ -1278,6 +1284,7 @@ class BACKUPSCREEN(QWidget):
         self.verticalLayout.addWidget(self.description)
         self.verticalLayout.addWidget(self.devicesAreadWidget, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.moreDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.autoReboot, 12, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.whileRestoringDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
         # Widget device layouts
@@ -1317,6 +1324,19 @@ class BACKUPSCREEN(QWidget):
         widget.setCurrentIndex(widget.currentIndex()+1)
         # Call restore python
         sub.Popen(f"python3 {src_restore_cmd}", shell=True)
+
+    def auto_reboot_clicked(self):
+        # Automatically reboot after done
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            if self.autoReboot.isChecked():
+                config.set('INFO', 'auto_reboot', 'true')
+            else:
+                config.set('INFO', 'auto_reboot', 'false')
+
+            config.write(configfile)
+
         
 class START_RESTORING(QWidget):
     def __init__(self):
@@ -1395,7 +1415,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main6) 
-    widget.setCurrentWidget(main)   
+    widget.setCurrentWidget(main5)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
