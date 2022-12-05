@@ -472,20 +472,24 @@ class RESTORE:
         # Cursor
         iniCursor = config['INFO']['cursor']
 
-        # Apply the icon if True
-        if self.somethingToRestoreInIcon and self.iniSystemSettings == "true":
-            print(f"Applying {setUserIcon} {iniIcon}")
-            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+        try:
+            # Apply the icon if True
+            if self.somethingToRestoreInIcon and self.iniSystemSettings == "true":
+                print(f"Applying {setUserIcon} {iniIcon}")
+                sub.run(f"{setUserIcon} {iniIcon}", shell=True)
 
-        # Apply cursor if True
-        if self.somethingToRestoreInCursor and self.iniSystemSettings == "true":
-            print(f"Applying {setUserCursor} {iniCursor}")
-            sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+            # Apply cursor if True
+            if self.somethingToRestoreInCursor and self.iniSystemSettings == "true":
+                print(f"Applying {setUserCursor} {iniCursor}")
+                sub.run(f"{setUserCursor} {iniCursor}", shell=True)
 
-        # Apply theme if True
-        if self.somethingToRestoreInTheme and self.iniSystemSettings == "true":
-            print(f"Applying {setUserTheme} {iniTheme}")
-            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+            # Apply theme if True
+            if self.somethingToRestoreInTheme and self.iniSystemSettings == "true":
+                print(f"Applying {setUserTheme} {iniTheme}")
+                sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+        
+        except KeyError:
+            pass
 
         print("Ending restoring...")
         ###############################################################################

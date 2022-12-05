@@ -1284,7 +1284,7 @@ class BACKUPSCREEN(QWidget):
         self.verticalLayout.addWidget(self.description)
         self.verticalLayout.addWidget(self.devicesAreadWidget, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.moreDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.autoReboot, 12, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.autoReboot, 3, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.whileRestoringDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
         # Widget device layouts
