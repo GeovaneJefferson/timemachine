@@ -205,75 +205,75 @@ class RESTORE:
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
 
+            # Restore icon
+            self.restore_icons()
+
         # Restore icon
-        self.restore_icons()
+        self.restore_applications_packages()
 
     def restore_icons(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring icon...")
+        print("Restoring icon...")
 
-            try:
-                self.somethingToRestoreInIcon = []
-                # Check for icon to be restored
-                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                    self.somethingToRestoreInIcon.append(icon)
-                
-                # If has something to restore
-                if self.somethingToRestoreInIcon:
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        # Write to INI file saved icon name
-                        config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
-                        config.write(configfile)
+        try:
+            self.somethingToRestoreInIcon = []
+            # Check for icon to be restored
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                self.somethingToRestoreInIcon.append(icon)
+            
+            # If has something to restore
+            if self.somethingToRestoreInIcon:
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
+                    config.write(configfile)
 
-                    ################################################################################
-                    # Create .icons inside home user
-                    ################################################################################
-                    if not os.path.exists(f"{homeUser}/.icons"):
-                        print("Creating .icons inside home user...")
-                        print(f"{createCMDFolder} {homeUser}/.icons")
-                        sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
+                ################################################################################
+                # Create .icons inside home user
+                ################################################################################
+                if not os.path.exists(f"{homeUser}/.icons"):
+                    print("Creating .icons inside home user...")
+                    print(f"{createCMDFolder} {homeUser}/.icons")
+                    sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
 
-                    # Copy icon from the backup to .icon folder
-                    sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                # Copy icon from the backup to .icon folder
+                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
 
-            except:
-                print("No icon to restore.")
-                pass
+        except:
+            print("No icon to restore.")
+            pass
 
         self.restore_cursor()
 
     def restore_cursor(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring cursor...")
+        print("Restoring cursor...")
 
-            try:        
-                self.somethingToRestoreInCursor = []
-                # Check for cursor to be restored
-                for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                    self.somethingToRestoreInCursor.append(cursor)
+        try:        
+            self.somethingToRestoreInCursor = []
+            # Check for cursor to be restored
+            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                self.somethingToRestoreInCursor.append(cursor)
 
-                # If has something to restore
-                if self.somethingToRestoreInCursor:
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        # Write to INI file saved icon name
-                        config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-                        config.write(configfile)
-                        
-                    # Copy icon from the backup to .icon folder
-                    sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+            # If has something to restore
+            if self.somethingToRestoreInCursor:
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
+                    config.write(configfile)
+                    
+                # Copy icon from the backup to .icon folder
+                sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
 
-            except:
-                pass
+        except:
+            pass
 
         self.restore_theme()
 
     def restore_theme(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring theme...")
+        print("Restoring theme...")
 
         try:
             self.somethingToRestoreInTheme = []
