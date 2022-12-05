@@ -488,7 +488,7 @@ class RESTORE:
                 print(f"Applying {setUserTheme} {iniTheme}")
                 sub.run(f"{setUserTheme} {iniTheme}", shell=True)
         
-        except KeyError:
+        except:
             pass
 
         print("Ending restoring...")
