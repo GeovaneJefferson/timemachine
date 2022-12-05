@@ -518,11 +518,17 @@ class RESTORE:
 
         if self.iniAutoReboot == "true":
             print("Rebooting in 5 seconds...")
-            time.sleep(5)
+            ###############################################################################
+            # Update INI file
+            ###############################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Set auto rebooting to false
+                config.set('INFO', 'auto_reboot', "false")
 
-            # Set auto rebooting to false
-            config.set('INFO', 'auto_reboot', "false")
-            sub.Popen("sudo reboot", shell=True)
+            time.sleep(5)
+            sub.run("sudo reboot", shell=True)
 
         else:
             exit()
