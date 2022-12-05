@@ -35,6 +35,7 @@ class RESTORE:
         # INFO
         self.packageManager = config['INFO']['packageManager']
         self.iniUserOS = config['INFO']['os']
+        self.iniAutoReboot = config['INFO']['auto_reboot']
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
@@ -509,6 +510,16 @@ class RESTORE:
         # After backup is done
         ################################################################################
         print("Restoring is done!")
+        # Reboot
+
+        if self.iniAutoReboot == "true":
+            print("Rebooting in 5 seconds...")
+            time.sleep(5)
+
+            # Set auto rebooting to false
+            config.set('INFO', 'auto_reboot', "false")
+            sub.Popen("sudo reboot", shell=True)
+            
         exit()
 
 main = RESTORE()
