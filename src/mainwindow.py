@@ -1332,36 +1332,69 @@ class OPTION(QMainWindow):
         """)
         self.allowFlatpakDataCheckBox.clicked.connect(self.on_allow__flatpak_data_clicked)
 
+
+        ################################################################################
+        # Apparence widget
+        ################################################################################
+        # self.apparenceWidget = QWidget(self)
+        # self.apparenceWidget.setGeometry(285, 320, 390, 90)
+ 
+        # # Reset layout
+        # self.apparenceLayout = QVBoxLayout(self.apparenceWidget)
+        # self.apparenceLayout.setSpacing(0)
+
+        # # Reset title
+        # self.resetTitle = QLabel()
+        # self.resetTitle.setFont(QFont("Ubuntu", 5))
+        # self.resetTitle.setText("<h1>Apparence:</h1>")
+        # self.resetTitle.adjustSize()
+        # self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
+
+        # # Reset label text
+        # self.resetText = QLabel()
+        # self.resetText.setFont(QFont("Ubuntu", 10))
+        # self.resetText.setText('Choose White or Dark theme.')
+        # self.resetText.adjustSize()
+
+        ################################################################################
+        # Apparence button
+        ################################################################################
+        # self.apparenceButton = QPushButton()
+        # self.apparenceButton.setFont(QFont("Ubuntu", 10))
+        # self.apparenceButton.adjustSize()
+        # self.apparenceButton.clicked.connect(self.on_apparence_button_clicked)
+
         ################################################################################
         # Reset widget
         ################################################################################
-        self.apparenceWidget = QWidget(self)
-        self.apparenceWidget.setGeometry(285, 320, 390, 90)
- 
+        self.resetWidget = QWidget(self)
+        self.resetWidget.setGeometry(285, 320, 390, 90)
+         
         # Reset layout
-        self.apparenceLayout = QVBoxLayout(self.apparenceWidget)
-        self.apparenceLayout.setSpacing(0)
-
+        self.resetLayout = QVBoxLayout(self.resetWidget)
+        self.resetLayout.setSpacing(0)
+        
         # Reset title
         self.resetTitle = QLabel()
         self.resetTitle.setFont(QFont("Ubuntu", 5))
-        self.resetTitle.setText("<h1>Apparence:</h1>")
+        self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
         # Reset label text
         self.resetText = QLabel()
         self.resetText.setFont(QFont("Ubuntu", 10))
-        self.resetText.setText('Choose White or Dark theme.')
+        self.resetText.setText('If something seems broken, click on "Reset", to reset settings.')
         self.resetText.adjustSize()
 
         ################################################################################
-        # Apparence button
+        # Fix button
         ################################################################################
-        self.apparenceButton = QPushButton()
-        self.apparenceButton.setFont(QFont("Ubuntu", 10))
-        self.apparenceButton.adjustSize()
-        self.apparenceButton.clicked.connect(self.on_apparence_button_clicked)
+        self.fixButton = QPushButton()
+        self.fixButton.setFont(QFont("Ubuntu", 10))
+        self.fixButton.setText("Reset")
+        self.fixButton.adjustSize()
+        self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
         # Donate, Update and Save buttons
@@ -1436,9 +1469,9 @@ class OPTION(QMainWindow):
         self.flatpakLayout.addWidget(self.allowFlatpakDataCheckBox)
 
         # Reset layout
-        self.apparenceLayout.addWidget(self.resetTitle, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.apparenceLayout.addWidget(self.resetText, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.apparenceLayout.addWidget(self.apparenceButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.resetLayout.addWidget(self.resetTitle, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.resetLayout.addWidget(self.resetText, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.resetLayout.addWidget(self.fixButton, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
@@ -1923,6 +1956,84 @@ class OPTION(QMainWindow):
         if themeChanger == QMessageBox.Ok:
             QMessageBox.Close
 
+    def on_button_fix_clicked(self):
+        resetConfirmation = QMessageBox.question(self, 'Reset', 
+            'Are you sure you want to reset settings?',
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if resetConfirmation == QMessageBox.Yes:
+            try:
+                # Reset settings
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
+                    # Backup section
+                    config.set('BACKUP', 'auto_backup', 'false')
+                    config.set('BACKUP', 'backup_now', 'false')
+                    config.set('BACKUP', 'checker_running', 'false')
+                    config.set('BACKUP', 'allow_flatpak_names', 'true')
+                    config.set('BACKUP', 'allow_flatpak_data', 'false')
+
+                    # External section
+                    config.set('EXTERNAL', 'hd', 'None')
+                    config.set('EXTERNAL', 'name', 'None')
+
+                    # Mode section
+                    config.set('MODE', 'one_time_mode', 'true')
+                    config.set('MODE', 'more_time_mode', 'false')
+
+                    # System tray  section
+                    config.set('SYSTEMTRAY', 'system_tray', 'false')
+
+                    # Schedule section
+                    config.set('SCHEDULE', 'sun', 'true')
+                    config.set('SCHEDULE', 'mon', 'true')
+                    config.set('SCHEDULE', 'tue', 'true')
+                    config.set('SCHEDULE', 'wed', 'true')
+                    config.set('SCHEDULE', 'thu', 'true')
+                    config.set('SCHEDULE', 'fri', 'true')
+                    config.set('SCHEDULE', 'sat', 'true')
+                    config.set('SCHEDULE', 'hours', '10')
+                    config.set('SCHEDULE', 'minutes', '00')
+                    config.set('SCHEDULE', 'everytime', '60')
+
+                    # Info section
+                    config.set('INFO', 'os', 'None')
+                    config.set('INFO', 'packageManager', 'None')
+                    config.set('INFO', 'icon', 'None')
+                    config.set('INFO', 'theme', 'None')
+                    config.set('INFO', 'cursor', 'None')
+                    config.set('INFO', 'latest', 'None')
+                    config.set('INFO', 'next', 'None')
+                    config.set('INFO', 'notification_id', '0')
+                    config.set('INFO', 'feedback_status', ' ')
+                    config.set('INFO', 'auto_reboot', 'false')
+
+                    # Folders section
+                    config.set('FOLDER', 'pictures', 'true')
+                    config.set('FOLDER', 'documents', 'true')
+                    config.set('FOLDER', 'music', 'true')
+                    config.set('FOLDER', 'videos', 'true')
+                    config.set('FOLDER', 'desktop', 'true')
+
+                    # Restore section
+                    config.set('RESTORE', 'is_restore_running', 'false')
+                    config.set('RESTORE', 'applications_packages', 'true')
+                    config.set('RESTORE', 'applications_flatpak_names', 'true')
+                    config.set('RESTORE', 'applications_data', 'false')
+                    config.set('RESTORE', 'files_and_folders', 'false')
+                    config.set('RESTORE', 'system_settings', 'false')
+
+                    # Write to INI file
+                    config.write(configfile)
+
+            except:
+                pass
+
+            print("All settings was reset!")
+
+        else:
+            QMessageBox.Close
+
     def on_search_for_updates_clicked(self):
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
@@ -1986,31 +2097,31 @@ if __name__ == '__main__':
     widget.setWindowIcon(QIcon(src_backup_icon))
     widget.setFixedSize(700, 450)
 
-    if main.darkMode == "true":
-        mainOpitions.apparenceButton.setText("White")
+    # if main.darkMode == "true":
+    #     mainOpitions.apparenceButton.setText("White")
 
-        app.setStyle("Fusion")
-        dark_palette = QPalette()
-        dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.WindowText, Qt.white)
-        dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-        dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-        dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-        dark_palette.setColor(QPalette.Text, Qt.white)
-        dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ButtonText, Qt.white)
-        dark_palette.setColor(QPalette.BrightText, Qt.red)
-        dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-        app.setPalette(dark_palette)
-        app.setStyleSheet(
-            "QToolTip { color: #ffffff;"
-            "background-color: #2a82da;"
-            "border: 1px solid white; }")
-    else:
-        mainOpitions.apparenceButton.setText("Dark")    
+    #     app.setStyle("Fusion")
+    #     dark_palette = QPalette()
+    #     dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.WindowText, Qt.white)
+    #     dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    #     dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    #     dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    #     dark_palette.setColor(QPalette.Text, Qt.white)
+    #     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    #     dark_palette.setColor(QPalette.BrightText, Qt.red)
+    #     dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    #     app.setPalette(dark_palette)
+    #     app.setStyleSheet(
+    #         "QToolTip { color: #ffffff;"
+    #         "background-color: #2a82da;"
+    #         "border: 1px solid white; }")
+    # else:
+    #     mainOpitions.apparenceButton.setText("Dark")    
 
     app.exit(app.exec())
         
