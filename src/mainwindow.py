@@ -2046,9 +2046,14 @@ class OPTION(QMainWindow):
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
-                    os.popen("git stash; git stash; git pull")
+                    
+                    os.popen("git fetch origin dev")
+                    os.popen("git reset --hard FETCH_HEAD")
+                    # os.popen("git stash; git stash; git pull")
+
                     # Close a open the next message
                     QMessageBox.Close
+                    
                     # Updated sucessfully message
                     updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
                     f'You are now using the latest version of {appName}.\n',
