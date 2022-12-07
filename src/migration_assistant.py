@@ -291,7 +291,7 @@ class CHOOSEDEVICE(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText(f"Make sure that your External device " 
-            f"with a {appName} backup is connected to this PC.")
+            f"with a {appName}'s backup is connected to this PC.")
 
         ################################################################################
         # Devices Area
