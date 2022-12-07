@@ -1,7 +1,5 @@
 #! /usr/bin/python3
-from multiprocessing import dummy
 from setup import *
-import multiprocessing
 
 # QTimer
 timer = QtCore.QTimer()
@@ -11,7 +9,6 @@ timer = QtCore.QTimer()
 ################################################################
 windowXSize = 900
 windowYSize = 600
-
 
 ################################################################################
 # Read file
@@ -67,7 +64,6 @@ cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
 
 # Flatpak txt file
 flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-        
 
 
 class WELCOMESCREEN(QWidget):
@@ -259,6 +255,7 @@ class OPTIONS(QWidget):
         else:
             widget.setCurrentWidget(main6)
 
+
 class CHOOSEDEVICE(QWidget):
     def __init__(self):
         super().__init__()
@@ -389,10 +386,6 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setFont(QFont("Ubuntu", 12))
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-<<<<<<< HEAD
-                        self.availableDevices.setFont(QFont("Ubuntu", 12))
-=======
->>>>>>> origin/dev
                         self.availableDevices.setStyleSheet(
                             "QPushButton"
                             "{"
@@ -562,7 +555,7 @@ class PREBACKUP(QWidget):
         dummySystemSettingsSizeList = []
         try:
             # Icons size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
@@ -574,7 +567,7 @@ class PREBACKUP(QWidget):
         
         try:    
             # Theme size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
@@ -586,7 +579,7 @@ class PREBACKUP(QWidget):
 
         try:
             # Cursor size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName}")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{cursorFolderName}", "")
@@ -622,7 +615,7 @@ class PREBACKUP(QWidget):
                 "* Icon\n"
                 "* Cursor theme")
 
-            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/settingsicon.png"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
             
@@ -658,7 +651,7 @@ class PREBACKUP(QWidget):
                 f"                      {self.applicationSize}")
             self.applicationPackagesCheckBox.setFont(QFont("Ubuntu", 11))
             self.applicationPackagesCheckBox.adjustSize()
-            self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
             self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.applicationPackagesCheckBox.setToolTip("This will reinstall: \n"
                 "* All manual saved packages")
@@ -687,7 +680,7 @@ class PREBACKUP(QWidget):
                 self.flatpakCheckBox.setText(f" Flatpak "
                     f"                         {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
-                self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+                self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
                     "* All flatpak saved names")
@@ -702,7 +695,7 @@ class PREBACKUP(QWidget):
         self.flatpakDataCheckBox = QCheckBox()
         self.flatpakDataCheckBox.setText(" Flatpak (Data)")
         self.flatpakDataCheckBox.setFont(QFont("Ubuntu", 11))
-        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
         self.flatpakDataCheckBox.setIconSize(QtCore.QSize(28, 28))
         self.flatpakDataCheckBox.setEnabled(False)
         self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
@@ -759,13 +752,10 @@ class PREBACKUP(QWidget):
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
-<<<<<<< HEAD
-                f"              {self.fileAndFoldersFolderSize}")
-=======
-                f"                 {self.fileAndFoldersFolderSize}")
->>>>>>> origin/dev
+                f"                 {self.fileAndFoldersFolderSize}"
+                f"               {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
-            self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
                 "* All recents back up folders")
@@ -953,7 +943,7 @@ class PREBACKUP(QWidget):
                 count = 0
                 for _ in supported:
                     # Activate wallpaper option
-                    if supported[count] == userPackageManager:
+                    if supported[count] in userPackageManager:
                         self.systemSettingsCheckBox.setEnabled(True)
                         # After one supported item was found, continue
                         continue
@@ -1176,6 +1166,12 @@ class BACKUPSCREEN(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 6))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText('<h1>Click on "Restore" to begin.</h1>') 
+        
+        # Automatically reboot
+        self.autoReboot = QCheckBox()
+        self.autoReboot.setFont(QFont("Ubuntu", 10))
+        self.autoReboot.setText('Automatically reboot after migration is done.') 
+        self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
         self.whileRestoringDescription = QLabel()
@@ -1191,7 +1187,7 @@ class BACKUPSCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/restore_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1203,7 +1199,7 @@ class BACKUPSCREEN(QWidget):
         image2.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/arrow.png);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/arrow.png);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1215,7 +1211,7 @@ class BACKUPSCREEN(QWidget):
         image3.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/pc_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/pc_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1279,7 +1275,7 @@ class BACKUPSCREEN(QWidget):
         self.startRestoreButton.adjustSize()
         self.startRestoreButton.move(800, 555)
         self.startRestoreButton.setEnabled(True)
-        self.startRestoreButton.clicked.connect(self.start_restoring)
+        self.startRestoreButton.clicked.connect(self.change_screen)
 
         ################################################################################
         # Add layouts and widgets
@@ -1289,6 +1285,7 @@ class BACKUPSCREEN(QWidget):
         self.verticalLayout.addWidget(self.devicesAreadWidget, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.moreDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.whileRestoringDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.autoReboot, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
         # Widget device layouts
         self.imagesLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter)
@@ -1300,30 +1297,10 @@ class BACKUPSCREEN(QWidget):
         # Add userName self.set
         self.setLayout(self.verticalLayout)
 
-        # Update
-        # timer.timeout.connect(self.read_ini_file)
-        # timer.start(1000)
         self.read_ini_file()
 
     def read_ini_file(self):
         try:
-        #     ################################################################################
-        #     # Read file
-        #     ################################################################################
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-
-        #     iniExternalName = config['EXTERNAL']['name']
-        #     iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-        #     iniApplicationsPackages = config['RESTORE']['applications_packages']
-        #     iniApplicationData = config['RESTORE']['applications_data']
-        #     iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-        #     # Current backup information
-        #     iniCurrentBackupInfo = config['INFO']['feedback_status']
-        #     # Get current notification ID
-        #     iniNotificationID = config['INFO']['notification_id']
-
-            # Add externalDeviceName text
             self.externalDeviceName.setText(iniExternalName)
 
             ################################################################################
@@ -1342,85 +1319,96 @@ class BACKUPSCREEN(QWidget):
         except:
             pass
 
-    def start_restoring(self):
-        # Disable back button
-        self.backButton.setEnabled(False)
-        # Disable restore button
-        self.startRestoreButton.setEnabled(False)
-        # Call restore python
-        sub.run(f"python3 {src_restore_cmd}", shell=True)
+    def change_screen(self):
         # Change screen
         widget.setCurrentIndex(widget.currentIndex()+1)
+        # Call restore python
+        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
 
-class DONE(QWidget):
+    def auto_reboot_clicked(self):
+        # Automatically reboot after done
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            if self.autoReboot.isChecked():
+                config.set('INFO', 'auto_reboot', 'true')
+            else:
+                config.set('INFO', 'auto_reboot', 'false')
+
+            config.write(configfile)
+
+        
+class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
+        self.restoreInAction = 0
+        self.alreadyCounted = False
+        self.showFullScreen()
         self.initUI()
 
     def initUI(self):
-        self.widgets()
+        # Update
+        timer.timeout.connect(self.read_ini_file)
+        timer.start(1000) # Update every x seconds
+        self.read_ini_file()
 
+    def read_ini_file(self):
+        ################################################################################
+        # Read file
+        ################################################################################
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
+
+        if self.iniIsRestoreRunning == "true" and not self.alreadyCounted:
+            self.alreadyCounted = True
+            self.restoreInAction += 1
+        
+        if self.restoreInAction == 1:
+            if self.iniIsRestoreRunning == "false":
+                exit()
+
+        self.widgets()
+            
     def widgets(self):
         # Title layout
         self.titlelLayout = QVBoxLayout()
         self.titlelLayout.setSpacing(20)
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
         
-        # Image       
-        image = QLabel()
-        image.setFixedSize(128, 128)
-        image.setStyleSheet(
-            "QLabel"
-            "{"
-            f"background-image: url({src_migration_assistant_128px});"
-            "background-repeat: no-repeat;"
-            "background-color: transparent;"
-            "background-position: center;"
-            "}")
-        
         # Welcome
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 34))
-        self.title.setText("Migration Assistant")
+        self.title.setFont(QFont("Ubuntu", 28))
+        self.title.setText("This may take a few minutes.")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 14))
+        self.moreDescription.setFont(QFont("Ubuntu", 10))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText("All done!") 
-
-        ################################################################################
-        # Buttons
-        ################################################################################
-        # Close button
-        self.closeButton = QPushButton(self)
-        self.closeButton.setText("Close")
-        self.closeButton.setFont(QFont("Ubuntu", 10))
-        self.closeButton.adjustSize()
-        self.closeButton.move(800, 555)
-        self.closeButton.clicked.connect(lambda: exit())
+        self.moreDescription.setText("Don't turn off your PC.") 
 
         ###########################################################################
         # Add layouts and widgets
         ################################################################################
-        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(self.moreDescription, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.titlelLayout.addStretch()
+        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    widget = QStackedWidget()
 
     main = WELCOMESCREEN()
     main2 = OPTIONS()
     main3 = CHOOSEDEVICE()
     main4 = PREBACKUP()
     main5 = BACKUPSCREEN()
-    main6 = DONE()
+    main6 = START_RESTORING()
 
-    widget = QStackedWidget()
     widget.addWidget(main)   
     widget.addWidget(main2) 
     widget.addWidget(main3) 
@@ -1430,8 +1418,8 @@ if __name__ == '__main__':
     widget.setCurrentWidget(main)   
 
     # Window settings
-    widget.setWindowTitle(appName)
-    widget.setWindowIcon(QIcon(src_migration_assistant_128px))
+    widget.setWindowTitle("Migration Assistant")
+    widget.setWindowIcon(QIcon(src_migration_assistant_128px)) 
     widget.setFixedSize(windowXSize, windowYSize)
     widget.show()
 

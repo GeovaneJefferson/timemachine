@@ -19,9 +19,6 @@ Use Time Machine, the built-in backup feature of your PC, to automatically back 
 * Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
 (The oldest backups are deleted when your backup disk is full.)
 
-* Important: Time Machine does not back up system files!
-* The first backup might take a long time, but you can continue using your PC while a backup is been made. 
-
 #### Still not enough space for a new backup?
   Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
 

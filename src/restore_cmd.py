@@ -35,6 +35,7 @@ class RESTORE:
         # INFO
         self.packageManager = config['INFO']['packageManager']
         self.iniUserOS = config['INFO']['os']
+        self.iniAutoReboot = config['INFO']['auto_reboot']
 
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
@@ -204,75 +205,75 @@ class RESTORE:
                 # Set wallpaper to Zoom
                 sub.run(f"{zoomGnomeWallpaper}", shell=True)
 
+            # Restore icon
+            self.restore_icons()
+
         # Restore icon
-        self.restore_icons()
+        self.restore_applications_packages()
 
     def restore_icons(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring icon...")
+        print("Restoring icon...")
 
-            try:
-                self.somethingToRestoreInIcon = []
-                # Check for icon to be restored
-                for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                    self.somethingToRestoreInIcon.append(icon)
-                
-                # If has something to restore
-                if self.somethingToRestoreInIcon:
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        # Write to INI file saved icon name
-                        config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
-                        config.write(configfile)
+        try:
+            self.somethingToRestoreInIcon = []
+            # Check for icon to be restored
+            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+                self.somethingToRestoreInIcon.append(icon)
+            
+            # If has something to restore
+            if self.somethingToRestoreInIcon:
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
+                    config.write(configfile)
 
-                    ################################################################################
-                    # Create .icons inside home user
-                    ################################################################################
-                    if not os.path.exists(f"{homeUser}/.icons"):
-                        print("Creating .icons inside home user...")
-                        print(f"{createCMDFolder} {homeUser}/.icons")
-                        sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
+                ################################################################################
+                # Create .icons inside home user
+                ################################################################################
+                if not os.path.exists(f"{homeUser}/.icons"):
+                    print("Creating .icons inside home user...")
+                    print(f"{createCMDFolder} {homeUser}/.icons")
+                    sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
 
-                    # Copy icon from the backup to .icon folder
-                    sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                # Copy icon from the backup to .icon folder
+                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
 
-            except:
-                print("No icon to restore.")
-                pass
+        except:
+            print("No icon to restore.")
+            pass
 
         self.restore_cursor()
 
     def restore_cursor(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring cursor...")
+        print("Restoring cursor...")
 
-            try:        
-                self.somethingToRestoreInCursor = []
-                # Check for cursor to be restored
-                for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                    self.somethingToRestoreInCursor.append(cursor)
+        try:        
+            self.somethingToRestoreInCursor = []
+            # Check for cursor to be restored
+            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                self.somethingToRestoreInCursor.append(cursor)
 
-                # If has something to restore
-                if self.somethingToRestoreInCursor:
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        # Write to INI file saved icon name
-                        config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-                        config.write(configfile)
-                        
-                    # Copy icon from the backup to .icon folder
-                    sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+            # If has something to restore
+            if self.somethingToRestoreInCursor:
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    # Write to INI file saved icon name
+                    config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
+                    config.write(configfile)
+                    
+                # Copy icon from the backup to .icon folder
+                sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
 
-            except:
-                pass
+        except:
+            pass
 
         self.restore_theme()
 
     def restore_theme(self):
-        if self.iniSystemSettings == "true":
-            print("Restoring theme...")
+        print("Restoring theme...")
 
         try:
             self.somethingToRestoreInTheme = []
@@ -471,20 +472,24 @@ class RESTORE:
         # Cursor
         iniCursor = config['INFO']['cursor']
 
-        # Apply the icon if True
-        if self.somethingToRestoreInIcon:
-            print(f"Applying {setUserIcon} {iniIcon}")
-            sub.run(f"{setUserIcon} {iniIcon}", shell=True)
+        try:
+            # Apply the icon if True
+            if self.somethingToRestoreInIcon and self.iniSystemSettings == "true":
+                print(f"Applying {setUserIcon} {iniIcon}")
+                sub.run(f"{setUserIcon} {iniIcon}", shell=True)
 
-        # Apply cursor if True
-        if self.somethingToRestoreInCursor:
-            print(f"Applying {setUserCursor} {iniCursor}")
-            sub.run(f"{setUserCursor} {iniCursor}", shell=True)
+            # Apply cursor if True
+            if self.somethingToRestoreInCursor and self.iniSystemSettings == "true":
+                print(f"Applying {setUserCursor} {iniCursor}")
+                sub.run(f"{setUserCursor} {iniCursor}", shell=True)
 
-        # Apply theme if True
-        if self.somethingToRestoreInTheme:
-            print(f"Applying {setUserTheme} {iniTheme}")
-            sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+            # Apply theme if True
+            if self.somethingToRestoreInTheme and self.iniSystemSettings == "true":
+                print(f"Applying {setUserTheme} {iniTheme}")
+                sub.run(f"{setUserTheme} {iniTheme}", shell=True)
+        
+        except:
+            pass
 
         print("Ending restoring...")
         ###############################################################################
@@ -509,6 +514,23 @@ class RESTORE:
         # After backup is done
         ################################################################################
         print("Restoring is done!")
-        exit()
+        # Reboot
+
+        if self.iniAutoReboot == "true":
+            print("Rebooting in 5 seconds...")
+            ###############################################################################
+            # Update INI file
+            ###############################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Set auto rebooting to false
+                config.set('INFO', 'auto_reboot', "false")
+
+            time.sleep(5)
+            sub.run("sudo reboot", shell=True)
+
+        else:
+            exit()
 
 main = RESTORE()

@@ -32,7 +32,7 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.3"
+appVersion = "v1.1.4"
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
@@ -156,6 +156,7 @@ def signal_exit(*args):
     config = configparser.ConfigParser()
     config.read(src_user_config)
     with open(src_user_config, 'w') as configfile:
+        config.set('BACKUP', 'backup_now', 'false')
         config.set('BACKUP', 'checker_running', 'false')
         config.write(configfile)
 

@@ -192,7 +192,9 @@ class MAIN(QMainWindow):
         self.descriptionText.setText(
             "• Local snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
-            "• Flatpaks Data and/or only Flatpaks installed names\n\n"
+            "• Flatpaks Data and/or only Flatpaks installed names\n"
+            "• Wallpaper (Only for Gnome)\n"
+            "• Theme, Icon and cursor\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -302,6 +304,7 @@ class MAIN(QMainWindow):
 
             # Mode
             self.oneTimeMode = config['MODE']['one_time_mode']
+            self.darkMode = config['MODE']['dark_mode']
 
             # Dates
             self.nextDay = "None"
@@ -799,6 +802,12 @@ class EXTERNAL(QWidget):
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         
+        # Info 
+        self.notAllowed = QLabel(self)
+        self.notAllowed.setText("Diveces with space(s) and/or special characters will not be visible.")
+        self.notAllowed.setFont(item)
+        self.notAllowed.move(20,20)
+
         # Cancel button
         self.cancelButton = QPushButton(self)
         self.cancelButton.setFont(item)
@@ -882,7 +891,9 @@ class EXTERNAL(QWidget):
         ################################################################################
         # If not already in list, add
         for output in os.listdir(f'{location}/{userName}'):
-            if output not in self.captureDevices:
+            # No spaces and special characters allowed
+            if output not in self.captureDevices and "'" not in output and " " not in output:
+                print(output)
                 # If device is in list, display to user just on time per device
                 self.captureDevices.append(output)
 
@@ -932,8 +943,8 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
-        if " " in self.chooseDevice:
-            self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
+        # if " " in self.chooseDevice:
+        #     self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
 
         ################################################################################
         # Get user's packagemanager
@@ -1322,16 +1333,48 @@ class OPTION(QMainWindow):
         """)
         self.allowFlatpakDataCheckBox.clicked.connect(self.on_allow__flatpak_data_clicked)
 
+
+        ################################################################################
+        # Apparence widget
+        ################################################################################
+        # self.apparenceWidget = QWidget(self)
+        # self.apparenceWidget.setGeometry(285, 320, 390, 90)
+ 
+        # # Reset layout
+        # self.apparenceLayout = QVBoxLayout(self.apparenceWidget)
+        # self.apparenceLayout.setSpacing(0)
+
+        # # Reset title
+        # self.resetTitle = QLabel()
+        # self.resetTitle.setFont(QFont("Ubuntu", 5))
+        # self.resetTitle.setText("<h1>Apparence:</h1>")
+        # self.resetTitle.adjustSize()
+        # self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
+
+        # # Reset label text
+        # self.resetText = QLabel()
+        # self.resetText.setFont(QFont("Ubuntu", 10))
+        # self.resetText.setText('Choose White or Dark theme.')
+        # self.resetText.adjustSize()
+
+        ################################################################################
+        # Apparence button
+        ################################################################################
+        # self.apparenceButton = QPushButton()
+        # self.apparenceButton.setFont(QFont("Ubuntu", 10))
+        # self.apparenceButton.adjustSize()
+        # self.apparenceButton.clicked.connect(self.on_apparence_button_clicked)
+
         ################################################################################
         # Reset widget
         ################################################################################
         self.resetWidget = QWidget(self)
         self.resetWidget.setGeometry(285, 320, 390, 90)
- 
+         
         # Reset layout
         self.resetLayout = QVBoxLayout(self.resetWidget)
         self.resetLayout.setSpacing(0)
-
+        
         # Reset title
         self.resetTitle = QLabel()
         self.resetTitle.setFont(QFont("Ubuntu", 5))
@@ -1889,6 +1932,31 @@ class OPTION(QMainWindow):
         except:
             pass
 
+    def on_apparence_button_clicked(self):
+        # Reset settings
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:
+            # Mode section
+            # True = Dark, White = False
+            if main.darkMode == "true":
+                print("HERE")
+                print((main.darkMode))
+
+                config.set('MODE', 'dark_mode', 'false')
+            else:
+                config.set('MODE', 'dark_mode', 'true')
+
+            # Write to INI file
+            config.write(configfile)
+
+        themeChanger = QMessageBox.question(self, 'Change Theme', 
+        f'Will be applied after {appName} is restarted.',
+        QMessageBox.Ok)
+
+        if themeChanger == QMessageBox.Ok:
+            QMessageBox.Close
+
     def on_button_fix_clicked(self):
         resetConfirmation = QMessageBox.question(self, 'Reset', 
             'Are you sure you want to reset settings?',
@@ -1939,6 +2007,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
                     config.set('INFO', 'feedback_status', ' ')
+                    config.set('INFO', 'auto_reboot', 'false')
 
                     # Folders section
                     config.set('FOLDER', 'pictures', 'true')
@@ -1978,9 +2047,12 @@ class OPTION(QMainWindow):
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
+                    os.popen("git pull origin dev")
                     os.popen("git stash; git stash; git pull")
+
                     # Close a open the next message
                     QMessageBox.Close
+                    
                     # Updated sucessfully message
                     updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
                     f'You are now using the latest version of {appName}.\n',
@@ -2014,25 +2086,6 @@ class OPTION(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-
-    #app.setStyle("Fusion")
-    #dark_palette = QPalette()
-    #dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    #dark_palette.setColor(QPalette.WindowText, Qt.white)
-    #dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    #dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    #dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    #dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    #dark_palette.setColor(QPalette.Text, Qt.white)
-    #dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    #dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    #dark_palette.setColor(QPalette.BrightText, Qt.red)
-    #dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    #dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    #dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-    #app.setPalette(dark_palette)
-    #app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
-
     ####################
     main = MAIN()
     mainDevices = EXTERNAL()
@@ -2047,6 +2100,32 @@ if __name__ == '__main__':
     widget.setWindowTitle(appName)
     widget.setWindowIcon(QIcon(src_backup_icon))
     widget.setFixedSize(700, 450)
+
+    # if main.darkMode == "true":
+    #     mainOpitions.apparenceButton.setText("White")
+
+    #     app.setStyle("Fusion")
+    #     dark_palette = QPalette()
+    #     dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.WindowText, Qt.white)
+    #     dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    #     dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    #     dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    #     dark_palette.setColor(QPalette.Text, Qt.white)
+    #     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    #     dark_palette.setColor(QPalette.BrightText, Qt.red)
+    #     dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    #     app.setPalette(dark_palette)
+    #     app.setStyleSheet(
+    #         "QToolTip { color: #ffffff;"
+    #         "background-color: #2a82da;"
+    #         "border: 1px solid white; }")
+    # else:
+    #     mainOpitions.apparenceButton.setText("Dark")    
 
     app.exit(app.exec())
         
