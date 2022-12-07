@@ -10,7 +10,6 @@ timer = QtCore.QTimer()
 windowXSize = 900
 windowYSize = 600
 
-
 ################################################################################
 # Read file
 ################################################################################
@@ -616,7 +615,7 @@ class PREBACKUP(QWidget):
                 "* Icon\n"
                 "* Cursor theme")
 
-            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/settingsicon.png"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
             
@@ -652,7 +651,7 @@ class PREBACKUP(QWidget):
                 f"                      {self.applicationSize}")
             self.applicationPackagesCheckBox.setFont(QFont("Ubuntu", 11))
             self.applicationPackagesCheckBox.adjustSize()
-            self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
             self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.applicationPackagesCheckBox.setToolTip("This will reinstall: \n"
                 "* All manual saved packages")
@@ -681,7 +680,7 @@ class PREBACKUP(QWidget):
                 self.flatpakCheckBox.setText(f" Flatpak "
                     f"                         {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
-                self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+                self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
                     "* All flatpak saved names")
@@ -696,7 +695,7 @@ class PREBACKUP(QWidget):
         self.flatpakDataCheckBox = QCheckBox()
         self.flatpakDataCheckBox.setText(" Flatpak (Data)")
         self.flatpakDataCheckBox.setFont(QFont("Ubuntu", 11))
-        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
         self.flatpakDataCheckBox.setIconSize(QtCore.QSize(28, 28))
         self.flatpakDataCheckBox.setEnabled(False)
         self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
@@ -755,7 +754,7 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
                 f"               {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
-            self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+            self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
                 "* All recents back up folders")
@@ -1187,7 +1186,7 @@ class BACKUPSCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/restore_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1199,7 +1198,7 @@ class BACKUPSCREEN(QWidget):
         image2.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/arrow.png);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/arrow.png);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1211,7 +1210,7 @@ class BACKUPSCREEN(QWidget):
         image3.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/timemachine/src/icons/pc_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/pc_128px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1415,7 +1414,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main6) 
-    widget.setCurrentWidget(main)   
+    widget.setCurrentWidget(main4)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
