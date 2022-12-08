@@ -8,6 +8,7 @@ timer = QtCore.QTimer()
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
+        self.deviceCanBeFound = False
         self.iniUI()
 
     def iniUI(self):
@@ -342,11 +343,13 @@ class MAIN(QMainWindow):
         ################################################################################
         try:
             os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Check if external can be found
+            self.deviceCanBeFound = True
             self.connected_connection()
 
         except FileNotFoundError:
             try:
                 os.listdir(f"{run}/{userName}/{self.iniHDName}") 
+                self.deviceCanBeFound = True
                 self.connected_connection()
 
             except FileNotFoundError:
@@ -357,6 +360,7 @@ class MAIN(QMainWindow):
                 self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
                 self.externalSizeLabel.setText("No information available")
+                self.deviceCanBeFound = False
 
         self.condition()
 
@@ -408,7 +412,7 @@ class MAIN(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None":  
+        if self.iniHDName != "None" and self.deviceCanBeFound:  
             # Show backup button if no back up is been made
             if self.iniBackupNow == "false":
                 # Enable backup now button
@@ -431,7 +435,8 @@ class MAIN(QMainWindow):
             self.externalNameLabel.setText("<h1>None</h1>")
             # Enable backup now button
             self.backupNowButton.setEnabled(False)
-            self.automaticallyCheckBox.setEnabled(False)
+            # Enable auto checkbox
+            # self.automaticallyCheckBox.setEnabled(False)
       
         self.set_external_name()
 
