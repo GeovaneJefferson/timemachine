@@ -1429,7 +1429,7 @@ if __name__ == '__main__':
     widget.addWidget(main3) 
     widget.addWidget(main4) 
     widget.addWidget(main5) 
-    widget.addWidget(main6) 
+    widget.addWidget(main) 
     widget.setCurrentWidget(main6)   
 
     # Window settings
