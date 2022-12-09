@@ -1386,6 +1386,20 @@ class START_RESTORING(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 10))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Don't turn off your PC.") 
+        self.moreDescription.setStyleSheet("""
+        color: gray;
+        """)
+
+        # Process bar
+        self.processBar = QProgressBar()
+        self.processBar.setFixedWidth(20)
+        self.processBar.setStyleSheet("""
+        #WorkingProgressBar::chunk 
+        {
+            border-radius: 6px;
+            background-color: #009688;
+        }
+        """)
 
         ###########################################################################
         # Add layouts and widgets
@@ -1393,6 +1407,8 @@ class START_RESTORING(QWidget):
         self.titlelLayout.addStretch()
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(QProgressBar(self, minimum=0, maximum=0, textVisible=False,
+                        objectName="WorkingProgressBar"))
         self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
 
@@ -1414,7 +1430,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main6) 
-    widget.setCurrentWidget(main)   
+    widget.setCurrentWidget(main6)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
