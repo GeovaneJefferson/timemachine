@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
-                            QSystemTrayIcon, QMenu, QStackedWidget)
+                            QSystemTrayIcon, QMenu, QStackedWidget, QProgressBar)
 
 ################################################################################
 ## Variables
