@@ -842,27 +842,31 @@ class PREBACKUP(QWidget):
         # If Var is empty, just pass this options
         ################################################################################
         try:
-            dummyList = []
+            dummyListRPM = []
+            dummyListDeb = []
             if packageManager == "rpm":
                 for output in os.listdir(f"{rpmMainFolder}/"):
-                    dummyList.append(output)
+                    dummyListRPM.append(output)
 
             elif packageManager == "deb":
                 for output in os.listdir(f"{debMainFolder}/"):
-                    dummyList.append(output)
+                    dummyListDeb.append(output)
             
             else:
                 pass
 
             # If has something inside
-            if dummyList:
+            if dummyListRPM and packageManager == "rpm":
+                self.applicationPackagesCheckBox.setEnabled(True)
+            
+            elif dummyListDeb and packageManager == "deb":
                 self.applicationPackagesCheckBox.setEnabled(True)
 
             else:
                 self.applicationPackagesCheckBox.setEnabled(False)  
 
             # Empty list
-            dummyList.clear()
+            dummyListRPM.clear()
             
         except:
             pass
@@ -1387,6 +1391,20 @@ class START_RESTORING(QWidget):
         self.moreDescription.setFont(QFont("Ubuntu", 10))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Don't turn off your PC.") 
+        self.moreDescription.setStyleSheet("""
+        color: gray;
+        """)
+
+        # Process bar
+        self.processBar = QProgressBar()
+        self.processBar.setFixedWidth(20)
+        self.processBar.setStyleSheet("""
+        #WorkingProgressBar::chunk 
+        {
+            border-radius: 6px;
+            background-color: #009688;
+        }
+        """)
 
         ###########################################################################
         # Add layouts and widgets
@@ -1394,6 +1412,8 @@ class START_RESTORING(QWidget):
         self.titlelLayout.addStretch()
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(QProgressBar(self, minimum=0, maximum=0, textVisible=False,
+                        objectName="WorkingProgressBar"))
         self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
 
