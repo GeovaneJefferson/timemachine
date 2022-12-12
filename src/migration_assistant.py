@@ -841,31 +841,24 @@ class PREBACKUP(QWidget):
         # If Var is empty, just pass this options
         ################################################################################
         try:
-            dummyListRPM = []
-            dummyListDeb = []
+            dummyList = []
             if packageManager == "rpm":
-                for output in os.listdir(f"{rpmMainFolder}/"):
-                    dummyListRPM.append(output)
+                for outputRPM in os.listdir(f"{rpmMainFolder}/"):
+                    dummyList.append(outputRPM)
 
             elif packageManager == "deb":
-                for output in os.listdir(f"{debMainFolder}/"):
-                    dummyListDeb.append(output)
+                for outputDeb in os.listdir(f"{debMainFolder}/"):
+                    dummyList.append(outputDeb)
             
-            else:
-                pass
-
             # If has something inside
-            if dummyListRPM and packageManager == "rpm":
+            if dummyList:
                 self.applicationPackagesCheckBox.setEnabled(True)
             
-            elif dummyListDeb and packageManager == "deb":
-                self.applicationPackagesCheckBox.setEnabled(True)
-
             else:
                 self.applicationPackagesCheckBox.setEnabled(False)  
 
             # Empty list
-            dummyListRPM.clear()
+            dummyList.clear()
             
         except:
             pass
