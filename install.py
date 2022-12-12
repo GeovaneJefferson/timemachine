@@ -11,7 +11,7 @@ class CLI:
         # DEB 
         self.installDependencies = "python3-pip flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
         # ARCH
-        self.installDependenciesArch = "python-pip flatpak"   
+        self.installDependenciesArch = "python3-pip flatpak"   
         # PIP
         self.installPipPackages = "pyside6"
         # Extra: Flathub
@@ -167,7 +167,7 @@ class CLI:
             ################################################################################
             # Call Migration Assistant entry .desktop
             ################################################################################
-            with open(self.src_migration_assistant, "w") as writer:  # Modify timemachine.desktop and add username to it
+            with open(self.src_migration_assistant, "w") as writer:
                 writer.write(
                     f"[Desktop Entry]\n "
                     f"Version=1.0\n "
@@ -179,7 +179,7 @@ class CLI:
                     f"Path={self.home_user}/.local/share/timemachine/src/\n "
                     f"Categories=System\n "
                     f"StartupWMClass=migration_assistant.py\n "
-                    f"Terminal=true")
+                    f"Terminal=false")
 
             ################################################################################
             # Copy current Time Machine folder to user
