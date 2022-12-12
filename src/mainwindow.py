@@ -946,12 +946,6 @@ class EXTERNAL(QWidget):
 
     def on_use_disk_clicked(self):
         ################################################################################
-        # Adapt external name is it has space in the name
-        ################################################################################
-        # if " " in self.chooseDevice:
-        #     self.chooseDevice = str(self.chooseDevice.replace(" ", "\ ")).strip()
-
-        ################################################################################
         # Get user's packagemanager
         ################################################################################
         userPackageManager = os.popen(getUserPackageManager)
@@ -963,6 +957,8 @@ class EXTERNAL(QWidget):
         userDE = os.popen(getUserDE)
         userDE = userDE.read().strip().lower()
         
+        print(userDE)
+        print(userPackageManager)
         ################################################################################
         # Update INI file
         ################################################################################
@@ -970,19 +966,15 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if "ubuntu" or "debian" in userPackageManager:
+                if "ubuntu" in userPackageManager:
                     # Save user's os name
-                    config.set(f'INFO', 'os', f'{userDE}')
-                    config.set(f'INFO', 'packageManager', 'deb')
+                    config.set('INFO', 'packageManager', 'deb')
                 
-                elif "fedora" or "opensuse" in userPackageManager:
+                elif "fedora" in userPackageManager:
                     # Save user's os name
-                    config.set(f'INFO', 'os',  f'{userDE}')
-                    config.set(f'INFO', 'packageManager', 'rpm')
-                
-                else:
-                    pass
+                    config.set('INFO', 'packageManager', 'rpm')
 
+                config.set(f'INFO', 'os',  f'{userDE}')
                 config.write(configfile)
 
             ################################################################################
@@ -1007,7 +999,6 @@ class EXTERNAL(QWidget):
             # Enable use disk
             self.useDiskButton.setEnabled(True)
         else:
-            # Clean choose disk
             self.chooseDevice = ""
             # Disable use disk
             self.useDiskButton.setEnabled(False)
@@ -2052,8 +2043,7 @@ class OPTION(QMainWindow):
 
             if applyUpdatesConfirmation == QMessageBox.Yes:
                 try:
-                    os.popen("git pull origin dev")
-                    os.popen("git stash; git stash; git pull")
+                    os.popen("git stash; git pull")
 
                     # Close a open the next message
                     QMessageBox.Close
