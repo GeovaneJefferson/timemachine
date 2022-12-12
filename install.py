@@ -179,7 +179,7 @@ class CLI:
                     f"Path={self.home_user}/.local/share/timemachine/src/\n "
                     f"Categories=System\n "
                     f"StartupWMClass=migration_assistant.py\n "
-                    f"Terminal=false")
+                    f"Terminal=true")
 
             ################################################################################
             # Copy current Time Machine folder to user
