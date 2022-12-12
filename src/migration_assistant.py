@@ -1388,7 +1388,7 @@ class START_RESTORING(QWidget):
         """)
 
         # Process bar
-        self.processBar = QProgressBar()
+        self.processBar = QProgressBar(self)
         self.processBar.setFixedWidth(20)
         self.processBar.setStyleSheet("""
         #WorkingProgressBar::chunk 
@@ -1427,7 +1427,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main6) 
-    widget.setCurrentWidget(main)   
+    widget.setCurrentWidget(main6)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
