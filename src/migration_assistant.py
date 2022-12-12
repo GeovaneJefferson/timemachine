@@ -841,27 +841,31 @@ class PREBACKUP(QWidget):
         # If Var is empty, just pass this options
         ################################################################################
         try:
-            dummyList = []
+            dummyListRPM = []
+            dummyListDeb = []
             if packageManager == "rpm":
                 for output in os.listdir(f"{rpmMainFolder}/"):
-                    dummyList.append(output)
+                    dummyListRPM.append(output)
 
             elif packageManager == "deb":
                 for output in os.listdir(f"{debMainFolder}/"):
-                    dummyList.append(output)
+                    dummyListDeb.append(output)
             
             else:
                 pass
 
             # If has something inside
-            if dummyList:
+            if dummyListRPM and packageManager == "rpm":
+                self.applicationPackagesCheckBox.setEnabled(True)
+            
+            elif dummyListDeb and packageManager == "deb":
                 self.applicationPackagesCheckBox.setEnabled(True)
 
             else:
                 self.applicationPackagesCheckBox.setEnabled(False)  
 
             # Empty list
-            dummyList.clear()
+            dummyListRPM.clear()
             
         except:
             pass
@@ -1430,7 +1434,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main) 
-    widget.setCurrentWidget(main6)   
+    widget.setCurrentWidget(main)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
