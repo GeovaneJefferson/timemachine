@@ -1428,7 +1428,7 @@ if __name__ == '__main__':
     widget.addWidget(main4) 
     widget.addWidget(main5) 
     widget.addWidget(main6) 
-    widget.setCurrentWidget(main6)   
+    widget.setCurrentWidget(main)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
