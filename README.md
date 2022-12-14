@@ -1,35 +1,26 @@
-<p align="center">
-  <img width="150" height="150" src="src/icons/backup_150px.png">
- <h1 align="center">Back up your PC with Time Machine</h1>
-</p>
-Use Time Machine, the built-in backup feature of your PC, to automatically back up your personal data, music, photos and documents. Having a backup allows you to recover files that you later delete or can't access.
-
 ## Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
 * Make sure that your clock method is "24 hour clock", not "12 hour clock" AM/PM.
+* Time Machine WILL NOT ERASE OR FORMAT YOUR EXTERNAL DEVICE!
 
-## Support:
-* Gnome -> Full support
-* Kde -> Partial support
+<p align="center">
+  <img width="150" height="150" src="src/icons/backup_150px.png">
+ <h1 align="left">Back up your PC with Time Machine</h1>
+</p>
+Use Time Machine, the built-in backup feature of your PC, to automatically back up your personal data, music, photos and documents. Having a backup allows you to recover files that you later delete or can't access.
 
-## Features:
-* Local snapshots of your personal files, one or multiple times per day.
-* Backup of your installed Flatpaks name and Data, so you can easily restore them.
-* Will automatically delete the oldest backup, until has enough space for a new backup, but will keep at least one backup left. 
-(The oldest backups are deleted when your backup disk is full.)
+## Connect a storage device to use for backups
+Connect an external storage device to your PC, such as a USB, HD or SSD.
 
-#### Still not enough space for a new backup?
-  Time Machine will alert you at Time Machine's main window, asking you to manually delete some file(s)/folder(s), so it can proceed with the backup.
+* Ideally, your backup disk should have at least twice the storage capacity of every disk or volume you're backing up. If your backup disk doesn't have enough storage space to contain a complete backup, Time Machine will let you know.
 
-## One Time Mode
-* Hourly, Daily or Weekly backups
-* Will automatically back up even if the schedule time to do so has passed.
+## Make a backup
+**Back up automatically**. After you select your storage device in Time Machine, Time Machine automatically begins making periodic backups.
 
-## Multiple Time Mode
-* Will automatically back up your files and apps every: 1, 2 or 4 hours.
+**Back up manually**. To start a backup manually, without waiting for the next automatic backup, choose Back Up Now from the Time Machine menu ![](src/screenshots/systemtrayicon.png) in the menu bar.
 
-Before a backup is made, Time Machine will analize and calculate your backup device full size, free space and space needed for Time Machine's next backup.
+**Check backup status**. Use the Time Machine menu ![](src/screenshots/systemtrayicon.png) in the menu bar to check the status of a backup. For example, when a backup is not underway, the menu shows the date and time of the latest backup.
 
 ## Browse Time Machine Backups
 First, open Time Machine and allow to "show in the system tray".
@@ -37,10 +28,6 @@ First, open Time Machine and allow to "show in the system tray".
 Then, click on Time Machine in system tray and select "Browse Time Backups"
 (Remember, will only work if Time Machine has made at least one backup already.)
 
-## External drive connected to your PC
-Time Machine can back up to an external drive connected to a USB, HD or SSD.
-
-## Time Machine WILL NOT ERASE OR FORMAT YOUR EXTERNAL DEVICE! 
 ## Create a Time Machine backup
 1. Connect an external storage device, such as a USB or HD/SSD.
 2. Open Time Machine, click on "Select Backup Disk". This can also be done via system tray Time Machine, after enabled.
@@ -51,7 +38,7 @@ By now, Time Machine will backup:
 * Flatpaks installed names
 * Flatpaks installed Data (If you choose to) - Not fully tested
 * Wallpaper (Automatic, Only for Gnome) 
-* Theme, Icon and cursor (Automatic, Only for Gnome)
+* Theme, Icon and cursor theme.
 
 #### Packages
 * Inside of "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.
