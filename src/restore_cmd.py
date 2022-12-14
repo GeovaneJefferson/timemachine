@@ -531,6 +531,7 @@ class RESTORE:
             sub.run("sudo reboot", shell=True)
 
         else:
+            print("Closing window...")
             exit()
 
 main = RESTORE()
