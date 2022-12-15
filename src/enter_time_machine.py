@@ -45,11 +45,8 @@ class ENTERTIMEMACHINE(QWidget):
     def widgets(self):
         # Base vertical layout
         baseV = QVBoxLayout()
-        # baseV.setAlignment(QtCore.Qt.AlignVCenter)
-        # baseV.setContentsMargins(20, 20, 20, 20)
-        
+
         baseH = QHBoxLayout()
-        # baseH.setContentsMargins(20, 20, 20, 20)
 
         ################################################################################
         # Left widget
@@ -75,7 +72,7 @@ class ENTERTIMEMACHINE(QWidget):
         widgetCenterForFolders = QWidget()
         self.scrollForFolders = QScrollArea()
         self.scrollForFolders.setWidgetResizable(True)
-        self.scrollForFolders.setMinimumHeight(180)
+        self.scrollForFolders.setMinimumHeight(190)
         self.scrollForFolders.setWidget(widgetCenterForFolders)
 
         # Scroll files
@@ -392,8 +389,8 @@ class ENTERTIMEMACHINE(QWidget):
 
         # Show available files
         try:
-            filesButtomX = 220
-            filesButtomY = 120
+            filesButtomX = 240
+            filesButtomY = 140
 
             ################################################################################
             # (FILES) Preview of files that are not in imagePrefix
@@ -430,7 +427,10 @@ class ENTERTIMEMACHINE(QWidget):
                     text = QLabel(self.filesResult)
                     text.setText(output.capitalize())
                     text.setFont(QFont("Ubuntu", 11))
-                    text.move(10, filesButtomY-25)
+                    text.setAlignment(QtCore.Qt.AlignLeft)
+                    text.setMaximumSize(filesButtomX - 20, 35)
+                    text.setWordWrap(True)
+                    text.move(10, filesButtomY - 40)
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
@@ -852,26 +852,26 @@ if __name__ == '__main__':
     main.setWindowIcon(QIcon(src_backup_icon))
     main.setFixedSize(1300, 800)
     
-    if main.darkMode == "true":
-        app.setStyle("Fusion")
-        dark_palette = QPalette()
-        dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.WindowText, Qt.white)
-        dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-        dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-        dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-        dark_palette.setColor(QPalette.Text, Qt.white)
-        dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-        dark_palette.setColor(QPalette.ButtonText, Qt.white)
-        dark_palette.setColor(QPalette.BrightText, Qt.red)
-        dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-        app.setPalette(dark_palette)
-        app.setStyleSheet(
-            "QToolTip { color: #ffffff;"
-            "background-color: #2a82da;"
-            "border: 1px solid white; }")
+    # if main.darkMode == "true":
+    #     app.setStyle("Fusion")
+    #     dark_palette = QPalette()
+    #     dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.WindowText, Qt.white)
+    #     dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    #     dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    #     dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    #     dark_palette.setColor(QPalette.Text, Qt.white)
+    #     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    #     dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    #     dark_palette.setColor(QPalette.BrightText, Qt.red)
+    #     dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    #     dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    #     app.setPalette(dark_palette)
+    #     app.setStyleSheet(
+    #         "QToolTip { color: #ffffff;"
+    #         "background-color: #2a82da;"
+    #         "border: 1px solid white; }")
             
     app.exit(app.exec())
