@@ -2013,7 +2013,7 @@ class OPTION(QMainWindow):
                     config.set('FOLDER', 'desktop', 'true')
 
                     # Restore section
-                    config.set('RESTORE', 'is_restore_running', 'false')
+                    config.set('RESTORE', 'is_restore_running', 'none')
                     config.set('RESTORE', 'applications_packages', 'false')
                     config.set('RESTORE', 'applications_flatpak_names', 'false')
                     config.set('RESTORE', 'applications_data', 'false')
