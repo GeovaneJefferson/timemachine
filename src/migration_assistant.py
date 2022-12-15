@@ -253,7 +253,8 @@ class OPTIONS(QWidget):
             widget.setCurrentIndex(widget.currentIndex()+1)
 
         else:
-            widget.setCurrentWidget(main6)
+            exit()
+            # widget.setCurrentWidget(main6)
 
 
 class CHOOSEDEVICE(QWidget):
@@ -1338,32 +1339,6 @@ class BACKUPSCREEN(QWidget):
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
-        self.restoreInAction = 0
-        self.alreadyCounted = False
-        self.showFullScreen()
-        self.initUI()
-
-    def initUI(self):
-        # Update
-        timer.timeout.connect(self.read_ini_file)
-        timer.start(1000) # Update every x seconds
-        self.read_ini_file()
-
-    def read_ini_file(self):
-        ################################################################################
-        # Read file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-
-        if self.iniIsRestoreRunning == "true" and not self.alreadyCounted:
-            self.alreadyCounted = True
-            self.restoreInAction += 1
-        
-        if self.restoreInAction == 1:
-            if self.iniIsRestoreRunning == "false":
-                exit()
 
         self.widgets()
             
@@ -1381,22 +1356,11 @@ class START_RESTORING(QWidget):
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 10))
+        self.moreDescription.setFont(QFont("Ubuntu", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Don't turn off your PC.") 
         self.moreDescription.setStyleSheet("""
         color: gray;
-        """)
-
-        # Process bar
-        self.processBar = QProgressBar(self)
-        self.processBar.setFixedWidth(20)
-        self.processBar.setStyleSheet("""
-        #WorkingProgressBar::chunk 
-        {
-            border-radius: 6px;
-            background-color: #009688;
-        }
         """)
 
         ###########################################################################
@@ -1405,8 +1369,6 @@ class START_RESTORING(QWidget):
         self.titlelLayout.addStretch()
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(QProgressBar(self, minimum=0, maximum=0, textVisible=False,
-                        objectName="WorkingProgressBar"))
         self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
 
