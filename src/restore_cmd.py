@@ -192,7 +192,7 @@ class RESTORE:
                     image = str(image.replace(" ", "\ "))
         
                 # Light or Dark wallpaper
-                if getColorScheme == "prefer-light" or "default":
+                if getColorScheme == "prefer-light" or getColorScheme == "default":
                     # Light theme o default
                     print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
                     sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
