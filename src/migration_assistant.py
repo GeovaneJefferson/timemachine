@@ -1317,6 +1317,12 @@ class BACKUPSCREEN(QWidget):
             pass
 
     def change_screen(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            config.set('RESTORE', 'is_restore_running', 'true')
+            config.write(configfile)
+
         # Change screen
         widget.setCurrentIndex(widget.currentIndex()+1)
         # Call restore python
@@ -1370,6 +1376,29 @@ class START_RESTORING(QWidget):
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addStretch()
         self.setLayout(self.titlelLayout)
+
+        # Update
+        timer.timeout.connect(self.read_ini_file)
+        timer.start(1000) # Update every x seconds
+        self.read_ini_file()
+
+    def read_ini_file(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.isRestoreRunning = config['RESTORE']['is_restore_running']
+
+        if self.isRestoreRunning == "false":
+            ###############################################################################
+            # Update INI file
+            ###############################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Set auto rebooting to false
+                config.set('RESTORE', 'is_restore_running', 'none')
+                config.write(configfile)
+
+            exit()
 
 
 if __name__ == '__main__':
