@@ -253,7 +253,8 @@ class OPTIONS(QWidget):
             widget.setCurrentIndex(widget.currentIndex()+1)
 
         else:
-            widget.setCurrentWidget(main6)
+            exit()
+            # widget.setCurrentWidget(main6)
 
 
 class CHOOSEDEVICE(QWidget):
