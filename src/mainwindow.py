@@ -2014,8 +2014,8 @@ class OPTION(QMainWindow):
 
                     # Restore section
                     config.set('RESTORE', 'is_restore_running', 'false')
-                    config.set('RESTORE', 'applications_packages', 'true')
-                    config.set('RESTORE', 'applications_flatpak_names', 'true')
+                    config.set('RESTORE', 'applications_packages', 'false')
+                    config.set('RESTORE', 'applications_flatpak_names', 'false')
                     config.set('RESTORE', 'applications_data', 'false')
                     config.set('RESTORE', 'files_and_folders', 'false')
                     config.set('RESTORE', 'system_settings', 'false')
