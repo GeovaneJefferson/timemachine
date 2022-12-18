@@ -213,9 +213,9 @@ class RESTORE:
                     # Check if user DE is in the supported list to Automatically apply
                     ################################################################
                     count = 0
-                    for _ in supported:
+                    for _ in supportedGnome:
                         # Activate wallpaper option
-                        if supported[count] in self.userPackageManager:
+                        if supportedGnome[count] in self.userPackageManager:
                             # Detect color scheme
                             getColorScheme = os.popen(detectThemeMode)
                             getColorScheme = getColorScheme.read().strip().replace("'", "")
@@ -243,10 +243,10 @@ class RESTORE:
                             sub.run(f"{zoomGnomeWallpaper}", shell=True)
                             ################################################################
 
-                        else:
+                        elif self.userPackageManager == "kde":
                             print("Restoring users wallpaper (KDE)...")
                             # Apply to KDE desktop
-                            sub.run("""
+                            os.popen("""
                                     dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
                                 var Desktops = desktops();
                                 for (i=0;i<Desktops.length;i++) {
@@ -255,11 +255,11 @@ class RESTORE:
                                         d.currentConfigGroup = Array("Wallpaper",
                                                                     "org.kde.image",
                                                                     "General");
-                                        d.writeConfig("Image", "{}/Pictures/{}");
+                                        d.writeConfig("Image", "file://%s/Pictures/%s");
                                 }'
-
-                                    """.format(homeUser, image), shell=True)
-                    
+                                    """ % (homeUser, image))
+                        else:
+                            pass
 
                     # Restore icon
                     self.restore_icons()
@@ -306,9 +306,9 @@ class RESTORE:
                 
                 # Check if user DE is in the supported list
                 ################################################################
-                for count in supported:
+                for count in supportedGnome:
                     # Activate wallpaper option
-                    if supported[count] in self.userPackageManager:
+                    if supportedGnome[count] in self.userPackageManager:
                         # Apply icon
                         print(f"Applying {setUserIcon} {self.iniIcon}")
                         sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
@@ -342,9 +342,9 @@ class RESTORE:
 
                 # Check if user DE is in the supported list
                 ################################################################
-                for count in supported:
+                for count in supportedGnome:
                     # Activate wallpaper option
-                    if supported[count] in self.userPackageManager:
+                    if supportedGnome[count] in self.userPackageManager:
                         # Apply cursor
                         print(f"Applying {setUserCursor} {self.iniCursor}")
                         sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
@@ -383,9 +383,9 @@ class RESTORE:
                 sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
                                # Check if user DE is in the supported list
                 ################################################################
-                for count in supported:
+                for count in supportedGnome:
                     # Activate wallpaper option
-                    if supported[count] in self.userPackageManager:
+                    if supportedGnome[count] in self.userPackageManager:
                         # Apply theme
                         print(f"Applying {setUserTheme} {self.iniTheme}")
                         sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
