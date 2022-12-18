@@ -54,7 +54,17 @@ class RESTORE:
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
-        self.get_home_backup_folders()
+        # Proceed to home
+        if self.iniFilesAndsFolders == "true":
+            self.get_home_backup_folders()
+
+        # Proceed to flatpak files (Local and Data)
+        elif self.iniFlatpakFiles == "true":
+            self.get_flatpak_data_size()
+        
+        # Proceed to wallpaper
+        elif self.iniSystemSettings == "true":
+            self.apply_users_saved_wallpaper()
 
     def get_home_backup_folders(self):
         self.iniFoldersList = []
@@ -179,6 +189,7 @@ class RESTORE:
         self.apply_users_saved_wallpaper()
 
     def apply_users_saved_wallpaper(self):
+        print("Restoring users wallpaper...")
         dummyList = []
         try:
             # Find user's DE type
