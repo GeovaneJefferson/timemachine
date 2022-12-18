@@ -216,50 +216,49 @@ class RESTORE:
                     for _ in supported:
                         # Activate wallpaper option
                         if supported[count] in self.userPackageManager:
-                            if supported[count] != "kde":
-                                # Detect color scheme
-                                getColorScheme = os.popen(detectThemeMode)
-                                getColorScheme = getColorScheme.read().strip().replace("'", "")
+                            # Detect color scheme
+                            getColorScheme = os.popen(detectThemeMode)
+                            getColorScheme = getColorScheme.read().strip().replace("'", "")
+                            
+                            # Remove spaces if exist
+                            if "," in image:
+                                image = str(image.replace(", ", "\, "))
                                 
-                                # Remove spaces if exist
-                                if "," in image:
-                                    image = str(image.replace(", ", "\, "))
-                                    
-                                # Add \ if it has space
-                                if " " in image:
-                                    image = str(image.replace(" ", "\ "))
+                            # Add \ if it has space
+                            if " " in image:
+                                image = str(image.replace(" ", "\ "))
 
-                                # Light or Dark wallpaper
-                                if getColorScheme == "prefer-light" or getColorScheme == "default":
-                                    # Light theme o default
-                                    print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
-                                    sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
-
-                                else:
-                                    # Dark theme
-                                    print(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}")
-                                    sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}", shell=True)
-
-                                # Set wallpaper to Zoom
-                                sub.run(f"{zoomGnomeWallpaper}", shell=True)
-                                ################################################################
+                            # Light or Dark wallpaper
+                            if getColorScheme == "prefer-light" or getColorScheme == "default":
+                                # Light theme o default
+                                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+                                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
 
                             else:
-                                print("Restoring users wallpaper (KDE)...")
-                                # Apply to KDE desktop
-                                sub.run("""
-                                        dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
-                                    var Desktops = desktops();
-                                    for (i=0;i<Desktops.length;i++) {
-                                            d = Desktops[i];
-                                            d.wallpaperPlugin = "org.kde.image";
-                                            d.currentConfigGroup = Array("Wallpaper",
-                                                                        "org.kde.image",
-                                                                        "General");
-                                            d.writeConfig("Image", "{}/Pictures/{}");
-                                    }'
+                                # Dark theme
+                                print(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}")
+                                sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}", shell=True)
 
-                                        """.format(homeUser, image), shell=True)
+                            # Set wallpaper to Zoom
+                            sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                            ################################################################
+
+                        else:
+                            print("Restoring users wallpaper (KDE)...")
+                            # Apply to KDE desktop
+                            sub.run("""
+                                    dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+                                var Desktops = desktops();
+                                for (i=0;i<Desktops.length;i++) {
+                                        d = Desktops[i];
+                                        d.wallpaperPlugin = "org.kde.image";
+                                        d.currentConfigGroup = Array("Wallpaper",
+                                                                    "org.kde.image",
+                                                                    "General");
+                                        d.writeConfig("Image", "{}/Pictures/{}");
+                                }'
+
+                                    """.format(homeUser, image), shell=True)
                     
 
                     # Restore icon
