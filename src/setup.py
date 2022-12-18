@@ -59,7 +59,7 @@ installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
 
 # DE
-supported = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
+supported = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop", "kde"]
 supportedDEBPackageManager = ["debian", "ubuntu"]
 supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
@@ -75,6 +75,21 @@ getGnomeWallpaperDark = "gsettings get org.gnome.desktop.background picture-uri-
 
 setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
 setGnomeWallpaperDark = "gsettings set org.gnome.desktop.background picture-uri-dark"
+
+setKDEWallpaper = """
+    dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+var Desktops = desktops();
+for (i=0;i<Desktops.length;i++) {
+        d = Desktops[i];
+        d.wallpaperPlugin = "org.kde.image";
+        d.currentConfigGroup = Array("Wallpaper",
+                                    "org.kde.image",
+                                    "General");
+        d.writeConfig("Image", "file:///home/live/Pictures/wallpaperflare.com_wallpaper.jpg");
+}'
+
+    """
+
 
 zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
 
