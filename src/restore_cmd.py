@@ -201,23 +201,25 @@ class RESTORE:
                 dummyList.append(wallpaper)
             
             # If has a wallpaper to restore and self.iniSystemSettings == "true":
-            if dummyList and self.iniSystemSettings == "true":
-                # Check if user DE is in the supported list
-                ################################################################
-                for count in supported:
-                    # Activate wallpaper option
-                    if supported[count] in self.userPackageManager:
-                        # Detect color scheme
-                        getColorScheme = os.popen(detectThemeMode)
-                        getColorScheme = getColorScheme.read().strip().replace("'", "")
+            if self.iniSystemSettings == "true":
+                if dummyList: 
+                    # Retore users wallpaper to Pictures
+                    for image in os.listdir(f"{self.iniExternalLocation}/"
+                        f"{baseFolderName}/{wallpaperFolderName}/"):
+                        # Copy the wallpaper to the user's Pictures
+                        sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                            f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
 
-                        print("Restoring wallpaper...")
-                        for image in os.listdir(f"{self.iniExternalLocation}/"
-                            f"{baseFolderName}/{wallpaperFolderName}/"):
-                            # Copy the wallpaper to the user's Pictures
-                            sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                                f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
-
+                    # Check if user DE is in the supported list to Automatically apply
+                    ################################################################
+                    count = 0
+                    for _ in supported:
+                        # Activate wallpaper option
+                        if supported[count] in self.userPackageManager:
+                            # Detect color scheme
+                            getColorScheme = os.popen(detectThemeMode)
+                            getColorScheme = getColorScheme.read().strip().replace("'", "")
+                            
                             # Remove spaces if exist
                             if "," in image:
                                 image = str(image.replace(", ", "\, "))
@@ -240,12 +242,17 @@ class RESTORE:
                             # Set wallpaper to Zoom
                             sub.run(f"{zoomGnomeWallpaper}", shell=True)
                             ################################################################
-                        
-                # Restore icon
-                self.restore_icons()
+                    
+                    # Restore icon
+                    self.restore_icons()
 
-            # Restore applications packages
-            self.restore_applications_packages()
+                else:
+                    # Restore icon
+                    self.restore_icons()
+
+            else:
+                # Restore applications packages
+                self.restore_applications_packages()
 
         except:
             pass
