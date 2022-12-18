@@ -45,8 +45,11 @@ class ENTERTIMEMACHINE(QWidget):
     def widgets(self):
         # Base vertical layout
         baseV = QVBoxLayout()
-
+        # baseV.setAlignment(QtCore.Qt.AlignVCenter)
+        # baseV.setContentsMargins(20, 20, 20, 20)
+        
         baseH = QHBoxLayout()
+        # baseH.setContentsMargins(20, 20, 20, 20)
 
         ################################################################################
         # Left widget
@@ -72,7 +75,7 @@ class ENTERTIMEMACHINE(QWidget):
         widgetCenterForFolders = QWidget()
         self.scrollForFolders = QScrollArea()
         self.scrollForFolders.setWidgetResizable(True)
-        self.scrollForFolders.setMinimumHeight(190)
+        self.scrollForFolders.setMinimumHeight(180)
         self.scrollForFolders.setWidget(widgetCenterForFolders)
 
         # Scroll files
@@ -389,8 +392,8 @@ class ENTERTIMEMACHINE(QWidget):
 
         # Show available files
         try:
-            filesButtomX = 240
-            filesButtomY = 140
+            filesButtomX = 220
+            filesButtomY = 120
 
             ################################################################################
             # (FILES) Preview of files that are not in imagePrefix
@@ -427,10 +430,7 @@ class ENTERTIMEMACHINE(QWidget):
                     text = QLabel(self.filesResult)
                     text.setText(output.capitalize())
                     text.setFont(QFont("Ubuntu", 11))
-                    text.setAlignment(QtCore.Qt.AlignLeft)
-                    text.setMaximumSize(filesButtomX - 20, 35)
-                    text.setWordWrap(True)
-                    text.move(10, filesButtomY - 40)
+                    text.move(10, filesButtomY-25)
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
