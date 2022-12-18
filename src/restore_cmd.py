@@ -59,7 +59,7 @@ class RESTORE:
             self.get_home_backup_folders()
 
         # Proceed to flatpak files (Local and Data)
-        elif self.iniFlatpakFiles == "true":
+        elif self.iniApplicationData == "true":
             self.get_flatpak_data_size()
         
         # Proceed to wallpaper
