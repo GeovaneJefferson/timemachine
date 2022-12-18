@@ -60,6 +60,7 @@ debMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}
 iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
 # Themes users folder
 themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+# Cursosr users folder
 cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
 
 # Flatpak txt file
@@ -916,9 +917,9 @@ class PREBACKUP(QWidget):
     def enable_system_settings(self):
         dummyList = []
         try:
-            # Find user's DE type
-            userPackageManager = os.popen(getUserDE)
-            userPackageManager = userPackageManager.read().strip().lower()
+            # # Find user's DE type
+            # userPackageManager = os.popen(getUserDE)
+            # userPackageManager = userPackageManager.read().strip().lower()
             # Check if a wallpaper has been backup
             for output in os.listdir(f"{wallpaperMainFolder}/"):
                 dummyList.append(output)
@@ -935,20 +936,11 @@ class PREBACKUP(QWidget):
             for output in os.listdir(f"{cursorMainFolder}/"):
                 dummyList.append(output)
 
+            # Check if user DE is in the supported list
             if dummyList:
-                # Check if user DE is in the supported list
-                count = 0
-                for _ in supported:
-                    # Activate wallpaper option
-                    if supported[count] in userPackageManager:
-                        self.systemSettingsCheckBox.setEnabled(True)
-                        # After one supported item was found, continue
-                        continue
-                    
-                    else:
-                        # If is KDE ex.
-                        self.systemSettingsCheckBox.setEnabled(False)  
-                    count += 1
+                # Enable systemSettingsCheckBox
+                self.systemSettingsCheckBox.setEnabled(True)
+                
             else:
                 self.systemSettingsCheckBox.setEnabled(False)  
 
