@@ -537,8 +537,8 @@ class BACKUP:
             
         # Check if user DE is in the supported list
         count = 0
-        for _ in supported:
-            if supported[count] == self.iniUserOS:
+        for _ in supportedGnome:
+            if supportedGnome[count] == self.iniUserOS:
                 # Light theme
                 if getColorScheme == "prefer-light":
                     # Get current wallpaper
