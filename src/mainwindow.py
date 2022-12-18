@@ -23,6 +23,18 @@ class MAIN(QMainWindow):
         self.widgets()
 
     def widgets(self):
+        # TODO
+        # widget = QWidget(self)
+        # widget.setGeometry(0, 0, 220,450)
+        # widget.setStyleSheet("""
+        #     background-color:  rgb(240, 241, 243);
+        # """)
+
+        # widget2 = QWidget(self)
+        # widget2.setGeometry(220, 0, 480,450)
+        # widget2.setStyleSheet("""
+        #     background-color:  rgb(233, 234, 236);
+        # """)
         ################################################################################
         # Left Widget
         ################################################################################
