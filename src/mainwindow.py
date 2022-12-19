@@ -89,7 +89,7 @@ class MAIN(QMainWindow):
 
         # Restore images
         self.restoreImageLabel = QLabel()
-        self.restoreImageLabel.setFixedSize(128, 128)
+        self.restoreImageLabel.setFixedSize(74, 74)
         self.restoreImageLabel.setStyleSheet(
             "QLabel"
             "{"
@@ -275,6 +275,7 @@ class MAIN(QMainWindow):
         self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
+        self.rightLayout.addStretch(10)
         self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.rightLayout.addWidget(self.selectDiskButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
         
