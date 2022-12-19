@@ -22,7 +22,7 @@ If your backup disk doesn't have enough storage space to contain a complete back
 periodic backups.
 
 **Back up manually.** To start a backup manually, without waiting for the next automatic backup, choose Back Up Now from
-the Time Machine menu ![](src/screenshots/systemtrayicon.png)![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) in 
+the Time Machine menu ![](src/screenshots/systemtrayicon.png)![systemtrayicon.svg](src%2Ficons%2Fsystemtrayicon.png) in 
 the menu bar.
 
 **Check backup status.** Use the Time Machine menu ![](src/screenshots/systemtrayicon.png)![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) 
