@@ -22,10 +22,10 @@ If your backup disk doesn't have enough storage space to contain a complete back
 periodic backups.
 
 **Back up manually.** To start a backup manually, without waiting for the next automatic backup, choose Back Up Now from
-the Time Machine menu ![](src/screenshots/systemtrayicon.png)![systemtrayicon.svg](src%2Ficons%2Fsystemtrayicon.png) in 
+the Time Machine menu ![](src/screenshots/git-systemtrayicon.png)![systemtrayicon.svg](src%2Ficons%2Fgit-systemtrayicon.png) in 
 the menu bar.
 
-**Check backup status.** Use the Time Machine menu ![](src/screenshots/systemtrayicon.png)![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) 
+**Check backup status.** Use the Time Machine menu ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) 
 in the menu bar to check the status of a backup. For example, when a backup is not underway, the menu shows the date and 
 time of the latest backup.
 
@@ -56,17 +56,17 @@ files/folders and apps, after a fresh installation.
 
 ## System Tray 
 You will notice that your system tray will from time to time change its color to White, Blue or Red.
-* ![](src/screenshots/systemtrayicon.png)![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) = Normal color, 
+* ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) = Normal color, 
 automatically backup is ON and your backup device is connected and mounted.
 
 
-* ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png) = Time Machine is current backing your files, after is done,
-it will change to ![](src/screenshots/systemtrayicon.png)![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png).
+* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing your files, after is done,
+it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
 
 
-* ![systemtrayiconerror.png](src%2Ficons%2Fsystemtrayiconerror.png) = If automatically backup is ON but your backup device
-is disconnected or not mounted, you will see ![systemtrayiconerror.png](src%2Ficons%2Fsystemtrayiconerror.png).
-  - ![systemtrayiconerror.png](src%2Ficons%2Fsystemtrayiconerror.png) can also mean that Time Machine had some problem to back up. Open Time Machine main window and 
+* ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) = If automatically backup is ON but your backup device
+is disconnected or not mounted, you will see ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png).
+  - ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) can also mean that Time Machine had some problem to back up. Open Time Machine main window and 
   read the report about it.
 
 ## Installation:
