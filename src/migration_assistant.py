@@ -375,52 +375,52 @@ class CHOOSEDEVICE(QWidget):
         try:
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
-                if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
-                    if output not in self.captureDevices:
-                        # If device is in list, display to user just on time per device
-                        self.captureDevices.append(output)
+                # if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
+                if output not in self.captureDevices:    
+                    # If device is in list, display to user just on time per device
+                    self.captureDevices.append(output)
 
-                        self.availableDevices = QPushButton(self.devicesAreadWidget)
-                        self.availableDevices.setCheckable(True)
-                        self.availableDevices.setAutoExclusive(True)
-                        self.availableDevices.setFixedSize(180, 180)
-                        self.availableDevices.setText(output)
-                        self.availableDevices.setFont(QFont("Ubuntu", 12))
-                        self.availableDevices.adjustSize()
-                        self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setStyleSheet(
-                            "QPushButton"
-                            "{"
-                            "text-align: bottom;"
-                            "padding-bottom: 25px;"
-                            "}")
-                        
-                        # Image
-                        image = QLabel(self.availableDevices)
-                        image.setFixedSize(96, 96)
-                        image.move(42, 35)
-                        image.setStyleSheet(
-                            "QLabel"
-                            "{"
-                            f"background-image: url({src_restore_icon});"
-                            "background-repeat: no-repeat;"
-                            "background-color: transparent;"
-                            "}")
+                    self.availableDevices = QPushButton(self.devicesAreadWidget)
+                    self.availableDevices.setCheckable(True)
+                    self.availableDevices.setAutoExclusive(True)
+                    self.availableDevices.setFixedSize(180, 180)
+                    self.availableDevices.setText(output)
+                    self.availableDevices.setFont(QFont("Ubuntu", 12))
+                    self.availableDevices.adjustSize()
+                    self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
+                    self.availableDevices.setStyleSheet(
+                        "QPushButton"
+                        "{"
+                        "text-align: bottom;"
+                        "padding-bottom: 25px;"
+                        "}")
+                    
+                    # Image
+                    image = QLabel(self.availableDevices)
+                    image.setFixedSize(96, 96)
+                    image.move(58, 35)
+                    image.setStyleSheet(
+                        "QLabel"
+                        "{"
+                        f"background-image: url({src_restore_icon});"
+                        "background-repeat: no-repeat;"
+                        "background-color: transparent;"
+                        "}")
 
-                        self.devicesAreaLayout.addWidget(self.availableDevices)
-            
-                    # If x device is removed or unmounted, remove from screen
-                    for output in self.captureDevices:
-                        if output not in os.listdir(f'{location}/{userName}'):
-                            # Current output index
-                            index = self.captureDevices.index(output)
-                            # Remove from list
-                            self.captureDevices.remove(output)             
-                            # Delete from screen
-                            item = self.devicesAreaLayout.itemAt(index)
-                            widget = item.widget()
-                            widget.deleteLater()
-                            index -= 1
+                    self.devicesAreaLayout.addWidget(self.availableDevices)
+        
+                # If x device is removed or unmounted, remove from screen
+                for output in self.captureDevices:
+                    if output not in os.listdir(f'{location}/{userName}'):
+                        # Current output index
+                        index = self.captureDevices.index(output)
+                        # Remove from list
+                        self.captureDevices.remove(output)             
+                        # Delete from screen
+                        item = self.devicesAreaLayout.itemAt(index)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        index -= 1
 
         except Exception:
             pass
