@@ -858,7 +858,7 @@ class BACKUP:
         try:
             # USR/SHARE/ICONS
             # Try to find
-            os.listdir(f"{homeUser}/.icons/{userCurrentcursor}/")
+            os.listdir(f"/usr/share/icons/{userCurrentcursor}")
             sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
 
         except: 
