@@ -311,7 +311,15 @@ class RESTORE:
                     if supportedGnome[count] in self.userPackageManager:
                         # Apply icon
                         print(f"Applying {setUserIcon} {self.iniIcon}")
-                        sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                        try:
+                            # USR/SHARE
+                            os.listdir(f"/usr/share/icons/{self.iniIcon}/")
+                            sub.run(f"{setUserIcon} /usr/share/icons/{self.iniIcon}", shell=True)
+                        except:
+                            # .icons
+                            sub.run(f"{setUserIcon} {homeUser}/.icons/{self.iniIcon}", shell=True)
+                        else:
+                            pass
 
         except:
             print("No icon to restore.")
@@ -322,78 +330,85 @@ class RESTORE:
     def restore_cursor(self):
         print("Restoring cursor...")
 
-        try:        
-            self.somethingToRestoreInCursor = []
-            # Check for cursor to be restored
-            for cursor in os.listdir(f"{self.cursorMainFolder}/"):
-                self.somethingToRestoreInCursor.append(cursor)
+        self.somethingToRestoreInCursor = []
+        # Check for cursor to be restored
+        for cursor in os.listdir(f"{self.cursorMainFolder}/"):
+            self.somethingToRestoreInCursor.append(cursor)
 
-            # If has something to restore
-            if self.somethingToRestoreInCursor:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-                    config.write(configfile)
-                    
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+        # If has something to restore
+        if self.somethingToRestoreInCursor:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Write to INI file saved icon name
+                config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
+                config.write(configfile)
+                
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
 
-                # Check if user DE is in the supported list
-                ################################################################
-                for count in supportedGnome:
-                    # Activate wallpaper option
-                    if supportedGnome[count] in self.userPackageManager:
-                        # Apply cursor
-                        print(f"Applying {setUserCursor} {self.iniCursor}")
-                        sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
-
-        except:
-            pass
+            # Check if user DE is in the supported list
+            ################################################################
+            for count in supportedGnome:
+                # Activate wallpaper option
+                if supportedGnome[count] in self.userPackageManager:
+                    # Apply cursor
+                    print(f"Applying {setUserCursor} {self.iniCursor}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/icons/{self.iniCursor}/")
+                        sub.run(f"{setUserCursor} /usr/share/icons/{self.iniCursor}", shell=True)
+                    except:
+                        # .cursor
+                        sub.run(f"{setUserCursor} {homeUser}/.icons/{self.iniCursor}", shell=True)
+                    else:
+                        pass
 
         self.restore_theme()
 
     def restore_theme(self):
         print("Restoring theme...")
 
-        try:
-            self.somethingToRestoreInTheme = []
-            # Check for theme to be restored
-            for theme in os.listdir(f"{self.themeMainFolder}/"):
-                self.somethingToRestoreInTheme.append(theme)
+        self.somethingToRestoreInTheme = []
+        # Check for theme to be restored
+        for theme in os.listdir(f"{self.themeMainFolder}/"):
+            self.somethingToRestoreInTheme.append(theme)
 
-            # If has something to restore
-            if self.somethingToRestoreInTheme:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved theme name
-                    config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
-                    config.write(configfile)
+        # If has something to restore
+        if self.somethingToRestoreInTheme:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Write to INI file saved theme name
+                config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
+                config.write(configfile)
 
-                ################################################################################
-                # Create .themes inside home user
-                ################################################################################
-                if not os.path.exists(f"{homeUser}/.themes"):
-                    print("Creating .themes inside home user...")
-                    sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
+            ################################################################################
+            # Create .themes inside home user
+            ################################################################################
+            if not os.path.exists(f"{homeUser}/.themes"):
+                print("Creating .themes inside home user...")
+                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
 
-                # Copy theme from the backup to .theme folder
-                sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-                               # Check if user DE is in the supported list
-                ################################################################
-                for count in supportedGnome:
-                    # Activate wallpaper option
-                    if supportedGnome[count] in self.userPackageManager:
-                        # Apply theme
-                        print(f"Applying {setUserTheme} {self.iniTheme}")
-                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+            # Copy theme from the backup to .theme folder
+            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
+                            # Check if user DE is in the supported list
+            ################################################################
+            for count in supportedGnome:
+                # Activate wallpaper option
+                if supportedGnome[count] in self.userPackageManager:
+                    # Apply theme
+                    print(f"Applying {setUserTheme} {self.iniTheme}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/themes/{self.iniTheme}/")
+                        sub.run(f"{setUserTheme} /usr/share/themes/{self.iniTheme}", shell=True)
+                    except:
+                        # .cursor
+                        sub.run(f"{setUserTheme} {homeUser}/.themes/{self.iniTheme}", shell=True)
+                    else:
+                        pass
         
-        except:
-            print("No theme to restore.")
-            pass
-
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
 
