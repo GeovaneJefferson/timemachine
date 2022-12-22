@@ -65,7 +65,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.foldersLayout = QVBoxLayout(self.widgetLeft)
         self.foldersLayout.setAlignment(QtCore.Qt.AlignLeft)
         #self.foldersLayout.setContentsMargins(10, 20, 10, 20)
-        self.foldersLayout.setSpacing(20)
+        self.foldersLayout.setSpacing(5)
         
         ################################################################################
         # Center widget
