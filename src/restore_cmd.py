@@ -306,7 +306,8 @@ class RESTORE:
                 
                 # Check if user DE is in the supported list
                 ################################################################
-                for count in supportedGnome:
+                count = 0
+                for _ in supportedGnome:
                     # Activate wallpaper option
                     if supportedGnome[count] in self.userPackageManager:
                         # Apply icon
@@ -349,7 +350,9 @@ class RESTORE:
 
             # Check if user DE is in the supported list
             ################################################################
-            for count in supportedGnome:
+            print("Checking support...")
+            count = 0
+            for _ in supportedGnome:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
                     # Apply cursor
@@ -359,10 +362,11 @@ class RESTORE:
                         os.listdir(f"/usr/share/icons/{self.iniCursor}/")
                         sub.run(f"{setUserCursor} /usr/share/icons/{self.iniCursor}", shell=True)
                     except:
-                        # .cursor
-                        sub.run(f"{setUserCursor} {homeUser}/.icons/{self.iniCursor}", shell=True)
-                    else:
-                        pass
+                        try:
+                            # .cursor
+                            sub.run(f"{setUserCursor} {homeUser}/.icons/{self.iniCursor}", shell=True)
+                        except:
+                            pass
 
         self.restore_theme()
 
@@ -394,7 +398,8 @@ class RESTORE:
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
                             # Check if user DE is in the supported list
             ################################################################
-            for count in supportedGnome:
+            count = 0
+            for _ in supportedGnome:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
                     # Apply theme
