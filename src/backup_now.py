@@ -537,8 +537,8 @@ class BACKUP:
             
         # Check if user DE is in the supported list
         count = 0
-        for _ in supported:
-            if supported[count] == self.iniUserOS:
+        for _ in supportedGnome:
+            if supportedGnome[count] == self.iniUserOS:
                 # Light theme
                 if getColorScheme == "prefer-light":
                     # Get current wallpaper
@@ -764,14 +764,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        insideIconFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/")
-        if insideIconFolder:
-            # Delete all image inside wallpaper folder
-            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
-                # If is not the same name, remove it, and backup the new one
-                if icon != userCurrentIcon:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/{icon}", shell=True)
+        # insideIconFolder = os.listdir(f"{self.iconsMainFolder}/")
+        # Delete all image inside .icons folder
+        # if insideIconFolder:
+        #     for icon in os.listdir(f"{self.iconsMainFolder}/"):
+        #         # If is not the same name, remove it, and backup the new one
+        #         if icon != userCurrentIcon:
+        #             print(f"Deleting {self.iconsMainFolder}/{icon}...")
+        #             sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -784,27 +784,27 @@ class BACKUP:
         # Get users /usr/share/icons
         # Try to find the current icon inside /usr/share/icons
         # If folder is empty, use CP to copy
-        if not insideIconFolder:
-            try:
-                # USR/SHARE
-                os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-                sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            except:
-                # .THEMES
-                sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            else:
-                pass
+        # if not insideIconFolder:
+        #     try:
+        #         # USR/SHARE
+        #         os.listdir(f"/usr/share/icons/{userCurrentIcon}")
+        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #     except:
+        #         # .THEMES
+        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #     else:
+        #         pass
 
+        # else:
+        try:
+            # USR/SHARE
+            os.listdir(f"/usr/share/icons/{userCurrentIcon}")
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        except: 
+            # Try to find the current icon inside /home/user/.icons
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
         else:
-            try:
-                # USR/SHARE
-                os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            except: 
-                # Try to find the current icon inside /home/user/.icons
-                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
-            else:
-                pass
+            pass
 
         self.backup_cursor()
 
@@ -819,14 +819,14 @@ class BACKUP:
         ################################################################################
         # Only one cursor inside the backup folder
         ################################################################################
-        insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
-        if insidecursorFolder:
-            # Delete all cursors inside wallpaper folder
-            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                # If is not the same name, remove it, and backup the new one
-                if cursor != userCurrentcursor:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
+        # insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
+        # if insidecursorFolder:
+        #     # Delete all cursors inside wallpaper folder
+        #     for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+        #         # If is not the same name, remove it, and backup the new one
+        #         if cursor != userCurrentcursor:
+        #             print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
+        #             sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -839,35 +839,35 @@ class BACKUP:
         # Get users /usr/share/icons
         # Try to find the current cursor inside /usr/share/icons
         # If folder is empty, use CP to copy
-        if not insidecursorFolder:
+        # if not insidecursorFolder:
+        #     try:
+        #         # USR/SHARE
+        #         # Try to find
+        #         os.listdir(f"/usr/share/icons/{userCurrentcursor}/")
+        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+        #     except:
+        #         try:
+        #             # .Icons
+        #             # Try to find
+        #             sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+        #         except:
+        #             pass
+        # else:
+        try:
+            # USR/SHARE/ICONS
+            # Try to find
+            os.listdir(f"/usr/share/icons/{userCurrentcursor}")
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+
+        except: 
             try:
-                # USR/SHARE
-                # Try to find
-                os.listdir(f"/usr/share/icons/{userCurrentcursor}/")
-                sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+                # Try to find the current cursor inside /home/user/.icons
+                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
 
             except:
-                try:
-                    # .Icons
-                    # Try to find
-                    sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
-
-                except:
-                    pass
-        else:
-            try:
-                # USR/SHARE/ICONS
-                # Try to find
-                os.listdir(f"{homeUser}/.icons/{userCurrentcursor}/")
-                sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
-
-            except: 
-                try:
-                    # Try to find the current cursor inside /home/user/.icons
-                    sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
-
-                except:
-                    pass
+                pass
 
         self.backup_theme()
 
@@ -882,14 +882,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
-        if insideThemeFolder:
-            # Delete all theme inside wallpaper folder
-            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                # If is not the same name, remove it, and backup the new one
-                if theme != userCurrentTheme:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
+        # insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
+        # if insideThemeFolder:
+        #     # Delete all theme inside wallpaper folder
+        #     for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+        #         # If is not the same name, remove it, and backup the new one
+        #         if theme != userCurrentTheme:
+        #             print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
+        #             sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -918,27 +918,27 @@ class BACKUP:
         # Get users /usr/share/theme
         # Try to find the current theme inside /usr/share/theme
         # If folder is empty, use CP to copy
-        if not insideThemeFolder:
-            try:
-                # USR/SHARE
-                os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
-                sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            except:
-                # .THEMES
-                sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            else:
-                pass
+        # if not insideThemeFolder:
+        #     try:
+        #         # USR/SHARE
+        #         os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
+        #         sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        #     except:
+        #         # .THEMES
+        #         sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        #     else:
+        #         pass
 
+        # else:
+        try:
+            # USR/SHARE
+            os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
+            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        except:
+            # .THEMES
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
         else:
-            try:
-                # USR/SHARE
-                os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
-                sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            except:
-                # .THEMES
-                sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-            else:
-                pass
+            pass
 
         ################################################################################
         # Get gnome-shell with the current theme name

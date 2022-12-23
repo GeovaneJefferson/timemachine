@@ -60,6 +60,7 @@ debMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}
 iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
 # Themes users folder
 themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
+# Cursosr users folder
 cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
 
 # Flatpak txt file
@@ -79,11 +80,11 @@ class WELCOMESCREEN(QWidget):
         
         # Image       
         image = QLabel()
-        image.setFixedSize(128, 128)
+        image.setFixedSize(140, 140)
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_migration_assistant_128px});"
+            f"background-image: url({src_migration_assistant_96px});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -91,13 +92,16 @@ class WELCOMESCREEN(QWidget):
         
         # Welcome
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 34))
+        self.title.setFont(QFont("Arial", 34))
         self.title.setText("Migration Assistant")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
        # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 11))
+        self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Use Migration Assistant to transfer information such as "
             "(Apps, Data, Files and Folders) to this PC.") 
@@ -108,7 +112,7 @@ class WELCOMESCREEN(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 10))
+        self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.clicked.connect(lambda: widget.setCurrentIndex(widget.currentIndex()+1))
@@ -143,19 +147,25 @@ class OPTIONS(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 18))
+        self.title.setFont(QFont("Arial", 18))
         self.title.setText("Apps & Data")
         self.title.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
         # Question
         self.question = QLabel()
-        self.question.setFont(QFont("Ubuntu", 24))
+        self.question.setFont(QFont("Arial", 24))
         self.question.setAlignment(QtCore.Qt.AlignHCenter)
         self.question.setText("What are you planning to do?")
+        self.question.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
         # Description
         self.description = QLabel()
-        self.description.setFont(QFont("Ubuntu", 11))
+        self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter)
         self.description.setText(
             f"If you already have back up with {appName}\n"
@@ -167,7 +177,7 @@ class OPTIONS(QWidget):
         imagePosX = 38
         imagePosy = 20
         self.restoreOption = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_128px}')
+        pixmap = QPixmap(f'{src_migration_assistant_96px}')
         image = QLabel(self.restoreOption)
         image.setPixmap(pixmap)
         image.setFixedSize(pixmap.width(),pixmap.height())
@@ -176,7 +186,7 @@ class OPTIONS(QWidget):
         self.restoreOption.setText(
             "\n\n\n\n\n\n\nRestore\n"
             f"from {appName}")
-        self.restoreOption.setFont(QFont("Ubuntu", 12))
+        self.restoreOption.setFont(QFont("Arial", 11))
         self.restoreOption.setCheckable(True)
         self.restoreOption.setAutoExclusive(True)
         self.restoreOption.setFixedSize(200, 210)
@@ -186,13 +196,13 @@ class OPTIONS(QWidget):
         # Set up as new
         ################################################################################
         self.startAsNew = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_clean_128px}')
+        pixmap = QPixmap(f'{src_migration_assistant_96px}')
         image = QLabel(self.startAsNew)
         image.setPixmap(pixmap)
         image.setFixedSize(pixmap.width(),pixmap.height())
         image.move(imagePosX, imagePosy)
         # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.startAsNew.setFont(QFont("Ubuntu", 12))
+        self.startAsNew.setFont(QFont("Arial", 11))
         self.startAsNew.setText(
             "\n\n\n\n\n\n\nSet Up as New")
         self.startAsNew.setCheckable(True)
@@ -206,7 +216,7 @@ class OPTIONS(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 10))
+        self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -214,7 +224,7 @@ class OPTIONS(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 10))
+        self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -276,20 +286,23 @@ class CHOOSEDEVICE(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu Bold", 28))
+        self.title.setFont(QFont("Arial Bold", 28))
         self.title.setText("Transfer information to this pc")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
         # Description
         self.description = QLabel()
-        self.description.setFont(QFont("Ubuntu", 11))
+        self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText(f"Select a {appName} " 
             "backup disk to transfer it's information to this PC.")
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 11))
+        self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText(f"Make sure that your External device " 
             f"with a {appName}'s backup is connected to this PC.")
@@ -309,7 +322,7 @@ class CHOOSEDEVICE(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 10))
+        self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -317,7 +330,7 @@ class CHOOSEDEVICE(QWidget):
         # Continue button
         self.continueButton = QPushButton(self)
         self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Ubuntu", 10))
+        self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
@@ -374,52 +387,52 @@ class CHOOSEDEVICE(QWidget):
         try:
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
-                if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
-                    if output not in self.captureDevices:
-                        # If device is in list, display to user just on time per device
-                        self.captureDevices.append(output)
+                # if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
+                if output not in self.captureDevices:    
+                    # If device is in list, display to user just on time per device
+                    self.captureDevices.append(output)
 
-                        self.availableDevices = QPushButton(self.devicesAreadWidget)
-                        self.availableDevices.setCheckable(True)
-                        self.availableDevices.setAutoExclusive(True)
-                        self.availableDevices.setFixedSize(180, 180)
-                        self.availableDevices.setText(output)
-                        self.availableDevices.setFont(QFont("Ubuntu", 12))
-                        self.availableDevices.adjustSize()
-                        self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setStyleSheet(
-                            "QPushButton"
-                            "{"
-                            "text-align: bottom;"
-                            "padding-bottom: 25px;"
-                            "}")
-                        
-                        # Image
-                        image = QLabel(self.availableDevices)
-                        image.setFixedSize(96, 96)
-                        image.move(42, 35)
-                        image.setStyleSheet(
-                            "QLabel"
-                            "{"
-                            f"background-image: url({src_restore_icon});"
-                            "background-repeat: no-repeat;"
-                            "background-color: transparent;"
-                            "}")
+                    self.availableDevices = QPushButton(self.devicesAreadWidget)
+                    self.availableDevices.setCheckable(True)
+                    self.availableDevices.setAutoExclusive(True)
+                    self.availableDevices.setFixedSize(180, 180)
+                    self.availableDevices.setText(output)
+                    self.availableDevices.setFont(QFont("Arial", 12))
+                    self.availableDevices.adjustSize()
+                    self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
+                    self.availableDevices.setStyleSheet(
+                        "QPushButton"
+                        "{"
+                        "text-align: bottom;"
+                        "padding-bottom: 25px;"
+                        "}")
+                    
+                    # Image
+                    image = QLabel(self.availableDevices)
+                    image.setFixedSize(96, 96)
+                    image.move(58, 35)
+                    image.setStyleSheet(
+                        "QLabel"
+                        "{"
+                        f"background-image: url({src_restore_icon});"
+                        "background-repeat: no-repeat;"
+                        "background-color: transparent;"
+                        "}")
 
-                        self.devicesAreaLayout.addWidget(self.availableDevices)
-            
-                    # If x device is removed or unmounted, remove from screen
-                    for output in self.captureDevices:
-                        if output not in os.listdir(f'{location}/{userName}'):
-                            # Current output index
-                            index = self.captureDevices.index(output)
-                            # Remove from list
-                            self.captureDevices.remove(output)             
-                            # Delete from screen
-                            item = self.devicesAreaLayout.itemAt(index)
-                            widget = item.widget()
-                            widget.deleteLater()
-                            index -= 1
+                    self.devicesAreaLayout.addWidget(self.availableDevices)
+        
+                # If x device is removed or unmounted, remove from screen
+                for output in self.captureDevices:
+                    if output not in os.listdir(f'{location}/{userName}'):
+                        # Current output index
+                        index = self.captureDevices.index(output)
+                        # Remove from list
+                        self.captureDevices.remove(output)             
+                        # Delete from screen
+                        item = self.devicesAreaLayout.itemAt(index)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        index -= 1
 
         except Exception:
             pass
@@ -455,7 +468,7 @@ class CHOOSEDEVICE(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            if "ubuntu" or "debian" in userPackageManager:
+            if "Arial" or "debian" in userPackageManager:
                 # Save user's os name
                 config.set(f'INFO', 'packageManager', 'deb')
             
@@ -525,7 +538,7 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Restore widget
         self.optionskWidget = QWidget()
-        self.optionskWidget.setFixedSize(300, 300)
+        self.optionskWidget.setFixedSize(320, 300)
 
         # Vertical base layout
         self.verticalLayout = QVBoxLayout()
@@ -540,13 +553,16 @@ class PREBACKUP(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 24))
+        self.title.setFont(QFont("Arial", 24))
         self.title.setText("Select the information to restore")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
         # Description
         self.description = QLabel()
-        self.description.setFont(QFont("Ubuntu", 11))
+        self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText("Please select the items you wish to transfer to this PC.")
         
@@ -601,14 +617,14 @@ class PREBACKUP(QWidget):
                 self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}B")
             else:
                 self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}")
-            self.SystemSettingsSizeInformation.setFont(QFont("Ubuntu", 10))
+            self.SystemSettingsSizeInformation.setFont(QFont("Arial", 10))
             self.SystemSettingsSizeInformation.adjustSize()
         
 
             self.systemSettingsCheckBox = QCheckBox()
             self.systemSettingsCheckBox.setText(" System Settings"
                 f"               {self.systemSettingsFolderSize}")
-            self.systemSettingsCheckBox.setFont(QFont("Ubuntu", 11))
+            self.systemSettingsCheckBox.setFont(QFont("Arial", 11))
             self.systemSettingsCheckBox.adjustSize()
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
                 "* Wallpaper\n"
@@ -650,7 +666,7 @@ class PREBACKUP(QWidget):
             self.applicationPackagesCheckBox = QCheckBox()
             self.applicationPackagesCheckBox.setText(f" Applications "
                 f"                      {self.applicationSize}")
-            self.applicationPackagesCheckBox.setFont(QFont("Ubuntu", 11))
+            self.applicationPackagesCheckBox.setFont(QFont("Arial", 11))
             self.applicationPackagesCheckBox.adjustSize()
             self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
             self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -665,7 +681,7 @@ class PREBACKUP(QWidget):
                 self.applicationSizeInformation.setText(f"{self.applicationSize}B")
             else:
                 self.applicationSizeInformation.setText(f"{self.applicationSize}")
-            self.applicationSizeInformation.setFont(QFont("Ubuntu", 10))
+            self.applicationSizeInformation.setFont(QFont("Arial", 10))
             self.applicationSizeInformation.adjustSize()
             self.applicationSizeInformation.setAlignment(QtCore.Qt.AlignRight)
 
@@ -680,7 +696,7 @@ class PREBACKUP(QWidget):
                 self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
                     f"                         {flatpaksToBeInstalled} Apps")
-                self.flatpakCheckBox.setFont(QFont("Ubuntu", 11))
+                self.flatpakCheckBox.setFont(QFont("Arial", 11))
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
@@ -695,7 +711,7 @@ class PREBACKUP(QWidget):
         ################################################################################
         self.flatpakDataCheckBox = QCheckBox()
         self.flatpakDataCheckBox.setText(" Flatpak (Data)")
-        self.flatpakDataCheckBox.setFont(QFont("Ubuntu", 11))
+        self.flatpakDataCheckBox.setFont(QFont("Arial", 11))
         self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
         self.flatpakDataCheckBox.setIconSize(QtCore.QSize(28, 28))
         self.flatpakDataCheckBox.setEnabled(False)
@@ -714,7 +730,7 @@ class PREBACKUP(QWidget):
                 self.applicationSizeInformation.setText(f"{self.flatpakDataSize}B")
             else:
                 self.applicationSizeInformation.setText(f"{self.flatpakDataSize}")
-            self.applicationSizeInformation.setFont(QFont("Ubuntu", 10))
+            self.applicationSizeInformation.setFont(QFont("Arial", 10))
             self.applicationSizeInformation.adjustSize()
         
         except:
@@ -755,7 +771,7 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
                 f"                 {self.fileAndFoldersFolderSize}"
                 f"               {self.fileAndFoldersFolderSize}")
-            self.fileAndFoldersCheckBox.setFont(QFont("Ubuntu", 11))
+            self.fileAndFoldersCheckBox.setFont(QFont("Arial", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
@@ -766,7 +782,7 @@ class PREBACKUP(QWidget):
             # User information
             ################################################################################
             self.userSizeInformation = QLabel()
-            self.userSizeInformation.setFont(QFont("Ubuntu", 10))
+            self.userSizeInformation.setFont(QFont("Arial", 10))
             self.userSizeInformation.adjustSize()
             self.userSizeInformation.setAlignment(QtCore.Qt.AlignRight)
 
@@ -776,7 +792,7 @@ class PREBACKUP(QWidget):
             # Back button
             self.backButton = QPushButton(self)
             self.backButton.setText("Back")
-            self.backButton.setFont(QFont("Ubuntu", 10))
+            self.backButton.setFont(QFont("Arial", 10))
             self.backButton.adjustSize()
             self.backButton.move(700, 555)
             self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -784,7 +800,7 @@ class PREBACKUP(QWidget):
             # Continue button
             self.continueButton = QPushButton(self)
             self.continueButton.setText("Continue")
-            self.continueButton.setFont(QFont("Ubuntu", 10))
+            self.continueButton.setFont(QFont("Arial", 10))
             self.continueButton.adjustSize()
             self.continueButton.move(800, 555)
             if not self.optionsAddedList:
@@ -917,9 +933,9 @@ class PREBACKUP(QWidget):
     def enable_system_settings(self):
         dummyList = []
         try:
-            # Find user's DE type
-            userPackageManager = os.popen(getUserDE)
-            userPackageManager = userPackageManager.read().strip().lower()
+            # # Find user's DE type
+            # userPackageManager = os.popen(getUserDE)
+            # userPackageManager = userPackageManager.read().strip().lower()
             # Check if a wallpaper has been backup
             for output in os.listdir(f"{wallpaperMainFolder}/"):
                 dummyList.append(output)
@@ -936,20 +952,11 @@ class PREBACKUP(QWidget):
             for output in os.listdir(f"{cursorMainFolder}/"):
                 dummyList.append(output)
 
+            # Check if user DE is in the supported list
             if dummyList:
-                # Check if user DE is in the supported list
-                count = 0
-                for _ in supported:
-                    # Activate wallpaper option
-                    if supported[count] in userPackageManager:
-                        self.systemSettingsCheckBox.setEnabled(True)
-                        # After one supported item was found, continue
-                        continue
-                    
-                    else:
-                        # If is KDE ex.
-                        self.systemSettingsCheckBox.setEnabled(False)  
-                    count += 1
+                # Enable systemSettingsCheckBox
+                self.systemSettingsCheckBox.setEnabled(True)
+                
             else:
                 self.systemSettingsCheckBox.setEnabled(False)  
 
@@ -1148,32 +1155,35 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 28))
+        self.title.setFont(QFont("Arial", 28))
         self.title.setText("Transferring Your information")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
 
         # Description
         self.description = QLabel()
-        self.description.setFont(QFont("Ubuntu", 11))
+        self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText(f"Backup from {appName} " 
             "will been transferred to this PC.")
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 6))
+        self.moreDescription.setFont(QFont("Arial", 6))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText('<h1>Click on "Restore" to begin.</h1>') 
         
         # Automatically reboot
         self.autoReboot = QCheckBox()
-        self.autoReboot.setFont(QFont("Ubuntu", 10))
+        self.autoReboot.setFont(QFont("Arial", 10))
         self.autoReboot.setText('Automatically reboot after migration is done.') 
         self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
         self.whileRestoringDescription = QLabel()
-        self.whileRestoringDescription.setFont(QFont("Ubuntu", 11))
+        self.whileRestoringDescription.setFont(QFont("Arial", 11))
         self.whileRestoringDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
         ################################################################################
@@ -1181,11 +1191,11 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         # Image 1       
         image = QLabel()
-        image.setFixedSize(128, 128)
+        image.setFixedSize(68, 68)
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1209,7 +1219,7 @@ class BACKUPSCREEN(QWidget):
         image3.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/pc_128px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1227,7 +1237,7 @@ class BACKUPSCREEN(QWidget):
 
         # External device name
         self.externalDeviceName = QLabel()
-        self.externalDeviceName.setFont(QFont("Ubuntu", 14))
+        self.externalDeviceName.setFont(QFont("Arial", 14))
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -1250,7 +1260,7 @@ class BACKUPSCREEN(QWidget):
         widgetLayout = QHBoxLayout(widgetThisPCName)
 
         self.thisPCName = QLabel()
-        self.thisPCName.setFont(QFont("Ubuntu", 14))
+        self.thisPCName.setFont(QFont("Arial", 14))
         self.thisPCName.setText(f"{(userName).capitalize()}")
         self.thisPCName.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.thisPCName.adjustSize()
@@ -1261,7 +1271,7 @@ class BACKUPSCREEN(QWidget):
         # Back button
         self.backButton = QPushButton(self)
         self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Ubuntu", 10))
+        self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
@@ -1269,7 +1279,7 @@ class BACKUPSCREEN(QWidget):
         # Continue button
         self.startRestoreButton = QPushButton(self)
         self.startRestoreButton.setText("Restore")
-        self.startRestoreButton.setFont(QFont("Ubuntu", 10))
+        self.startRestoreButton.setFont(QFont("Arial", 10))
         self.startRestoreButton.adjustSize()
         self.startRestoreButton.move(800, 555)
         self.startRestoreButton.setEnabled(True)
@@ -1356,13 +1366,17 @@ class START_RESTORING(QWidget):
         
         # Welcome
         self.title = QLabel()
-        self.title.setFont(QFont("Ubuntu", 28))
-        self.title.setText("This may take a few minutes.")
+        self.title.setFont(QFont("Arial", 28))
+        self.title.setText("This may take a few minutes...")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
+        self.title.setStyleSheet("""
+        font-weight: Bold;
+        """)
+
 
         # More description
         self.moreDescription = QLabel()
-        self.moreDescription.setFont(QFont("Ubuntu", 11))
+        self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Don't turn off your PC.") 
         self.moreDescription.setStyleSheet("""
@@ -1423,7 +1437,7 @@ if __name__ == '__main__':
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
-    widget.setWindowIcon(QIcon(src_migration_assistant_128px)) 
+    widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
     widget.setFixedSize(windowXSize, windowYSize)
     widget.show()
 

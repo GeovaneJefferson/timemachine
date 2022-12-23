@@ -23,6 +23,18 @@ class MAIN(QMainWindow):
         self.widgets()
 
     def widgets(self):
+        # TODO
+        # widget = QWidget(self)
+        # widget.setGeometry(0, 0, 220,450)
+        # widget.setStyleSheet("""
+        #     background-color:  rgb(240, 241, 243);
+        # """)
+
+        # widget2 = QWidget(self)
+        # widget2.setGeometry(220, 0, 480,450)
+        # widget2.setStyleSheet("""
+        #     background-color:  rgb(233, 234, 236);
+        # """)
         ################################################################################
         # Left Widget
         ################################################################################
@@ -77,7 +89,7 @@ class MAIN(QMainWindow):
 
         # Restore images
         self.restoreImageLabel = QLabel()
-        self.restoreImageLabel.setFixedSize(128, 128)
+        self.restoreImageLabel.setFixedSize(74, 74)
         self.restoreImageLabel.setStyleSheet(
             "QLabel"
             "{"
@@ -103,13 +115,16 @@ class MAIN(QMainWindow):
         # Right widget
         self.farRightLayout = QVBoxLayout(self.farRightWidget)
         self.farRightLayout.setSpacing(0)
+        # self.farRightWidget.setStyleSheet("""
+        #     border: 1px solid red;
+        #     """)
 
         ################################################################################
         # Set external name
         ################################################################################
         self.externalNameLabel = QLabel()
-        self.externalNameLabel.setFont(QFont("Ubuntu", 10))
-        self.externalNameLabel.setFixedSize(350, 80)
+        self.externalNameLabel.setFont(QFont("Ubuntu", 6))
+        # self.externalNameLabel.setFixedSize(350, 80)
         self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
@@ -118,6 +133,9 @@ class MAIN(QMainWindow):
         self.externalSizeLabel = QLabel()
         self.externalSizeLabel.setFont(item)
         self.externalSizeLabel.setFixedSize(200, 18)
+        self.externalSizeLabel.setStyleSheet("""
+            color: gray;
+            """)
 
         ################################################################################
         # Label last backup
@@ -126,12 +144,18 @@ class MAIN(QMainWindow):
         self.lastBackupLabel.setFont(item)
         self.lastBackupLabel.setText("Last Backup: None")
         self.lastBackupLabel.setFixedSize(200, 18)
+        self.lastBackupLabel.setStyleSheet("""
+            color: gray;
+            """)
 
         # Label last backup
         self.nextBackupLabel = QLabel()
         self.nextBackupLabel.setFont(item)
         self.nextBackupLabel.setText("Next Backup: None")
         self.nextBackupLabel.setFixedSize(250, 18)
+        self.nextBackupLabel.setStyleSheet("""
+            color: gray;
+            """)
 
         # Status Status
         self.externalStatusLabel = QLabel()
@@ -251,6 +275,7 @@ class MAIN(QMainWindow):
         self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
+        self.rightLayout.addStretch(10)
         self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.rightLayout.addWidget(self.selectDiskButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
         
@@ -260,6 +285,7 @@ class MAIN(QMainWindow):
         self.farRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addStretch(10)
         self.farRightLayout.addWidget(self.backupNowButton, 4, Qt.AlignLeft | Qt.AlignTop)
 
         # Description Layout

@@ -58,7 +58,8 @@ installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
 
 # DE
-supported = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
+supportedGnome = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
+supportedKDE = ["kde"]
 supportedDEBPackageManager = ["debian", "ubuntu"]
 supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
@@ -130,9 +131,9 @@ src_backup_check_desktop = f"{homeUser}/.config/autostart/backup_check.desktop"
 src_timemachine_desktop = f"{homeUser}/.local/share/applications/timemachine.desktop"
 src_folder_timemachine = f"{homeUser}/.local/share/timemachine"
 src_user_config = f"{homeUser}/.local/share/timemachine/src/ini/user.ini"
-src_restore_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_128px.svg"
+src_restore_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_64px.svg"
 src_backup_icon = f"{homeUser}/.local/share/timemachine/src/icons/backup_128px.png"
-src_migration_assistant_128px = f"{homeUser}/.local/share/timemachine/src/icons/migration_assistant_128px.svg"
+src_migration_assistant_96px = f"{homeUser}/.local/share/timemachine/src/icons/migration_assistant_96px.svg"
 src_migration_assistant_clean_128px = f"{homeUser}/.local/share/timemachine/src/icons/migration_assistant_clean_128px.svg"
 src_backup_now = f"{homeUser}/.local/share/timemachine/src/backup_now.py"
 src_backup_check = f"{homeUser}/.local/share/timemachine/src/desktop/backup_check.desktop"

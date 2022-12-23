@@ -36,7 +36,15 @@ class RESTORE:
         self.packageManager = config['INFO']['packageManager']
         self.iniUserOS = config['INFO']['os']
         self.iniAutoReboot = config['INFO']['auto_reboot']
+        # Icon
+        self.iniIcon = config['INFO']['icon']
+        # Theme
+        self.iniTheme = config['INFO']['theme']
+        # Cursor
+        self.iniCursor = config['INFO']['cursor']
 
+        # Wallpaper users folder
+        self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"        # Icons users folder
         # Icons users folder
         self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
         # Themes users folder
@@ -46,7 +54,17 @@ class RESTORE:
         # Flatpak txt file
         self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
-        self.get_home_backup_folders()
+        # Proceed to home
+        if self.iniFilesAndsFolders == "true":
+            self.get_home_backup_folders()
+
+        # Proceed to flatpak files (Local and Data)
+        elif self.iniApplicationData == "true":
+            self.get_flatpak_data_size()
+        
+        # Proceed to wallpaper
+        elif self.iniSystemSettings == "true":
+            self.apply_users_saved_wallpaper()
 
     def get_home_backup_folders(self):
         self.iniFoldersList = []
@@ -171,45 +189,91 @@ class RESTORE:
         self.apply_users_saved_wallpaper()
 
     def apply_users_saved_wallpaper(self):
-        if self.iniSystemSettings == "true":
-            # Detect color scheme
-            getColorScheme = os.popen(detectThemeMode)
-            getColorScheme = getColorScheme.read().strip().replace("'", "")
-                
-            print("Restoring wallpaper...")
-            for image in os.listdir(f"{self.iniExternalLocation}/"
-                f"{baseFolderName}/{wallpaperFolderName}/"):
-                # Copy the wallpaper to the user's Pictures
-                sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
+        print("Restoring users wallpaper...")
+        dummyList = []
+        try:
+            # Find user's DE type
+            self.userPackageManager = os.popen(getUserDE)
+            self.userPackageManager = self.userPackageManager.read().strip().lower()
 
-                # Remove spaces if exist
-                if "," in image:
-                    image = str(image.replace(", ", "\, "))
-                    
-                # Add \ if it has space
-                if " " in image:
-                    image = str(image.replace(" ", "\ "))
-        
-                # Light or Dark wallpaper
-                if getColorScheme == "prefer-light" or getColorScheme == "default":
-                    # Light theme o default
-                    print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
-                    sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
+            # Check if a wallpaper can be found
+            for wallpaper in os.listdir(f"{self.wallpaperMainFolder}/"):
+                dummyList.append(wallpaper)
+            
+            # If has a wallpaper to restore and self.iniSystemSettings == "true":
+            if self.iniSystemSettings == "true":
+                if dummyList: 
+                    # Retore users wallpaper to Pictures
+                    for image in os.listdir(f"{self.iniExternalLocation}/"
+                        f"{baseFolderName}/{wallpaperFolderName}/"):
+                        # Copy the wallpaper to the user's Pictures
+                        sub.run(f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
+                            f"{wallpaperFolderName}/{image} {homeUser}/Pictures", shell=True)
+
+                    # Check if user DE is in the supported list to Automatically apply
+                    ################################################################
+                    count = 0
+                    for _ in supportedGnome:
+                        # Activate wallpaper option
+                        if supportedGnome[count] in self.userPackageManager:
+                            # Detect color scheme
+                            getColorScheme = os.popen(detectThemeMode)
+                            getColorScheme = getColorScheme.read().strip().replace("'", "")
+                            
+                            # Remove spaces if exist
+                            if "," in image:
+                                image = str(image.replace(", ", "\, "))
+                                
+                            # Add \ if it has space
+                            if " " in image:
+                                image = str(image.replace(" ", "\ "))
+
+                            # Light or Dark wallpaper
+                            if getColorScheme == "prefer-light" or getColorScheme == "default":
+                                # Light theme o default
+                                print(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}")
+                                sub.run(f"{setGnomeWallpaper} {homeUser}/Pictures/{image}", shell=True)
+
+                            else:
+                                # Dark theme
+                                print(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}")
+                                sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}", shell=True)
+
+                            # Set wallpaper to Zoom
+                            sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                            ################################################################
+
+                        elif self.userPackageManager == "kde":
+                            print("Restoring users wallpaper (KDE)...")
+                            # Apply to KDE desktop
+                            os.popen("""
+                                    dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+                                var Desktops = desktops();
+                                for (i=0;i<Desktops.length;i++) {
+                                        d = Desktops[i];
+                                        d.wallpaperPlugin = "org.kde.image";
+                                        d.currentConfigGroup = Array("Wallpaper",
+                                                                    "org.kde.image",
+                                                                    "General");
+                                        d.writeConfig("Image", "file://%s/Pictures/%s");
+                                }'
+                                    """ % (homeUser, image))
+                        else:
+                            pass
+
+                    # Restore icon
+                    self.restore_icons()
 
                 else:
-                    # Dark theme
-                    print(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}")
-                    sub.run(f"{setGnomeWallpaperDark} {homeUser}/Pictures/{image}", shell=True)
+                    # Restore icon
+                    self.restore_icons()
 
-                # Set wallpaper to Zoom
-                sub.run(f"{zoomGnomeWallpaper}", shell=True)
+            else:
+                # Restore applications packages
+                self.restore_applications_packages()
 
-            # Restore icon
-            self.restore_icons()
-
-        # Restore icon
-        self.restore_applications_packages()
+        except:
+            pass
 
     def restore_icons(self):
         print("Restoring icon...")
@@ -217,7 +281,7 @@ class RESTORE:
         try:
             self.somethingToRestoreInIcon = []
             # Check for icon to be restored
-            for icon in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}/"):
+            for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 self.somethingToRestoreInIcon.append(icon)
             
             # If has something to restore
@@ -239,6 +303,23 @@ class RESTORE:
 
                 # Copy icon from the backup to .icon folder
                 sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                
+                # Check if user DE is in the supported list
+                ################################################################
+                for count in supportedGnome:
+                    # Activate wallpaper option
+                    if supportedGnome[count] in self.userPackageManager:
+                        # Apply icon
+                        print(f"Applying {setUserIcon} {self.iniIcon}")
+                        try:
+                            # USR/SHARE
+                            os.listdir(f"/usr/share/icons/{self.iniIcon}/")
+                            sub.run(f"{setUserIcon} /usr/share/icons/{self.iniIcon}", shell=True)
+                        except:
+                            # .icons
+                            sub.run(f"{setUserIcon} {homeUser}/.icons/{self.iniIcon}", shell=True)
+                        else:
+                            pass
 
         except:
             print("No icon to restore.")
@@ -249,61 +330,85 @@ class RESTORE:
     def restore_cursor(self):
         print("Restoring cursor...")
 
-        try:        
-            self.somethingToRestoreInCursor = []
-            # Check for cursor to be restored
-            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-                self.somethingToRestoreInCursor.append(cursor)
+        self.somethingToRestoreInCursor = []
+        # Check for cursor to be restored
+        for cursor in os.listdir(f"{self.cursorMainFolder}/"):
+            self.somethingToRestoreInCursor.append(cursor)
 
-            # If has something to restore
-            if self.somethingToRestoreInCursor:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-                    config.write(configfile)
-                    
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+        # If has something to restore
+        if self.somethingToRestoreInCursor:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Write to INI file saved icon name
+                config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
+                config.write(configfile)
+                
+            # Copy icon from the backup to .icon folder
+            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
 
-        except:
-            pass
+            # Check if user DE is in the supported list
+            ################################################################
+            for count in supportedGnome:
+                # Activate wallpaper option
+                if supportedGnome[count] in self.userPackageManager:
+                    # Apply cursor
+                    print(f"Applying {setUserCursor} {self.iniCursor}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/icons/{self.iniCursor}/")
+                        sub.run(f"{setUserCursor} /usr/share/icons/{self.iniCursor}", shell=True)
+                    except:
+                        # .cursor
+                        sub.run(f"{setUserCursor} {homeUser}/.icons/{self.iniCursor}", shell=True)
+                    else:
+                        pass
 
         self.restore_theme()
 
     def restore_theme(self):
         print("Restoring theme...")
 
-        try:
-            self.somethingToRestoreInTheme = []
-            # Check for theme to be restored
-            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-                self.somethingToRestoreInTheme.append(theme)
+        self.somethingToRestoreInTheme = []
+        # Check for theme to be restored
+        for theme in os.listdir(f"{self.themeMainFolder}/"):
+            self.somethingToRestoreInTheme.append(theme)
 
-            # If has something to restore
-            if self.somethingToRestoreInTheme:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved theme name
-                    config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
-                    config.write(configfile)
+        # If has something to restore
+        if self.somethingToRestoreInTheme:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                # Write to INI file saved theme name
+                config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
+                config.write(configfile)
 
-                ################################################################################
-                # Create .themes inside home user
-                ################################################################################
-                if not os.path.exists(f"{homeUser}/.themes"):
-                    print("Creating .themes inside home user...")
-                    sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
+            ################################################################################
+            # Create .themes inside home user
+            ################################################################################
+            if not os.path.exists(f"{homeUser}/.themes"):
+                print("Creating .themes inside home user...")
+                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
 
-                # Copy theme from the backup to .theme folder
-                sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-
-        except:
-            print("No theme to restore.")
-            pass
-
+            # Copy theme from the backup to .theme folder
+            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
+                            # Check if user DE is in the supported list
+            ################################################################
+            for count in supportedGnome:
+                # Activate wallpaper option
+                if supportedGnome[count] in self.userPackageManager:
+                    # Apply theme
+                    print(f"Applying {setUserTheme} {self.iniTheme}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/themes/{self.iniTheme}/")
+                        sub.run(f"{setUserTheme} /usr/share/themes/{self.iniTheme}", shell=True)
+                    except:
+                        # .cursor
+                        sub.run(f"{setUserTheme} {homeUser}/.themes/{self.iniTheme}", shell=True)
+                    else:
+                        pass
+        
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
 
@@ -463,34 +568,6 @@ class RESTORE:
         self.end_backup()
 
     def end_backup(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        # # Icon
-        iniIcon = config['INFO']['icon']
-        # Theme
-        iniTheme = config['INFO']['theme']
-        # Cursor
-        iniCursor = config['INFO']['cursor']
-
-        try:
-            # Apply the icon if True
-            if self.somethingToRestoreInIcon and self.iniSystemSettings == "true":
-                print(f"Applying {setUserIcon} {iniIcon}")
-                sub.run(f"{setUserIcon} {iniIcon}", shell=True)
-
-            # Apply cursor if True
-            if self.somethingToRestoreInCursor and self.iniSystemSettings == "true":
-                print(f"Applying {setUserCursor} {iniCursor}")
-                sub.run(f"{setUserCursor} {iniCursor}", shell=True)
-
-            # Apply theme if True
-            if self.somethingToRestoreInTheme and self.iniSystemSettings == "true":
-                print(f"Applying {setUserTheme} {iniTheme}")
-                sub.run(f"{setUserTheme} {iniTheme}", shell=True)
-        
-        except:
-            pass
-
         print("Ending restoring...")
         ###############################################################################
         # Update INI file
