@@ -707,6 +707,10 @@ class ENTERTIMEMACHINE(QWidget):
         self.restoreButton.clicked.connect(lambda *args: self.start_restore(getDate, getTime))
 
     def start_restore(self, getDate, getTime):
+        print("Your files are been restored...")
+        self.setEnabled(False)
+        self.restoreButton.setText("Files/Folders are being restored...")
+        
         ################################################################################
         # Restore files without spaces
         ################################################################################
@@ -718,7 +722,7 @@ class ENTERTIMEMACHINE(QWidget):
                     f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
                     f"{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/ &",
                     shell=True)
-
+                
                 # Add to count
                 count += 1
 
@@ -738,17 +742,8 @@ class ENTERTIMEMACHINE(QWidget):
 
         except:
             print("Error trying to restore files from external device...")
-            ################################################################################
-            # Set notification_id to 10
-            ################################################################################
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "9")
-                config.write(configfile)
-
-            sub.Popen(f"python3 {src_notification}", shell=True)  # Call notification
             exit()
 
-        print("Your files are been restored...")
         exit()
 
     def change_date_up(self):
