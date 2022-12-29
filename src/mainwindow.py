@@ -101,7 +101,7 @@ class MAIN(QMainWindow):
         # Select disk button
         self.selectDiskButton = QPushButton(self)
         self.selectDiskButton.setFont(QFont("Ubuntu", 10))
-        self.selectDiskButton.setText("Select Backup Disk...")
+        self.selectDiskButton.setText("  Select Backup Disk...  ")
         self.selectDiskButton.adjustSize()
         self.selectDiskButton.clicked.connect(self.select_external_clicked)
 
@@ -179,7 +179,7 @@ class MAIN(QMainWindow):
         # Backup now button
         ################################################################################
         self.backupNowButton = QPushButton(self)
-        self.backupNowButton.setText("Back Up Now")
+        self.backupNowButton.setText("  Back Up Now  ")
         self.backupNowButton.setFont(QFont("Ubuntu", 10))
         self.backupNowButton.adjustSize()
         # self.backupNowButton.move(420, 162)
@@ -1094,9 +1094,9 @@ class OPTION(QMainWindow):
         self.daysToRunWidget = QWidget(self)
         self.daysToRunWidget.setGeometry(285, 20, 390, 80)
         self.daysToRunWidget.setStyleSheet("""
-            border-top: 1px solid rgb(198, 198, 198);
-            border-left: 1px solid rgb(198, 198, 198);
-            border-right: 1px solid rgb(198, 198, 198);
+            border-top: 0px;
+            border-left: 0px;
+            border-right: 0px;
         """)
 
         # Days to run layout V
@@ -1182,10 +1182,10 @@ class OPTION(QMainWindow):
         self.timeToRunWidget = QWidget(self)
         self.timeToRunWidget.setGeometry(285, 100, 390, 140)
         self.timeToRunWidget.setStyleSheet("""
-            border-top: 1px solid rgb(198, 198, 198);
-            border-bottom: 1px solid rgb(198, 198, 198);
-            border-left: 1px solid rgb(198, 198, 198);
-            border-right: 1px solid rgb(198, 198, 198);
+            border-top: 0px;
+            border-bottom: 0px;
+            border-left: 0px;
+            border-right: 0px;
         """)
 
         # Time to run title
@@ -1315,9 +1315,9 @@ class OPTION(QMainWindow):
         self.flatpakWidget.setStyleSheet(
         "QWidget"
         "{"
-        "border-bottom: 1px solid rgb(198, 198, 198);"
-        "border-left: 1px solid rgb(198, 198, 198);"
-        "border-right: 1px solid rgb(198, 198, 198);"
+        "border-bottom: 0px;"
+        "border-left: 0px;"
+        "border-right: 0px;"
         "}")
 
         # Notification layout
