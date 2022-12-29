@@ -115,7 +115,8 @@ class WELCOMESCREEN(QWidget):
         self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
-        self.continueButton.clicked.connect(lambda: widget.setCurrentIndex(widget.currentIndex()+1))
+        self.continueButton.clicked.connect(self.on_continueButton_clicked)
+        # self.continueButton.clicked.connect(lambda: widget.setCurrentIndex(widget.currentIndex()+1))
 
         ###########################################################################
         # Add layouts and widgets
@@ -124,6 +125,11 @@ class WELCOMESCREEN(QWidget):
         self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.setLayout(self.titlelLayout)
+
+    def on_continueButton_clicked(self):
+        widget.addWidget(main2) 
+        widget.setCurrentIndex(widget.currentIndex()+1)
+
 
 class OPTIONS(QWidget):
     def __init__(self):
@@ -260,6 +266,7 @@ class OPTIONS(QWidget):
     def on_continue_clicked(self):
         # If user clicked on restore from...
         if self.outputBox == "restore":
+            widget.addWidget(main3) 
             widget.setCurrentIndex(widget.currentIndex()+1)
 
         else:
@@ -482,6 +489,7 @@ class CHOOSEDEVICE(QWidget):
             config.write(configfile)
 
         # Go to next window 
+        widget.addWidget(main4) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def on_device_clicked(self, output):
@@ -805,7 +813,8 @@ class PREBACKUP(QWidget):
             self.continueButton.move(800, 555)
             if not self.optionsAddedList:
                 self.continueButton.setEnabled(False)
-            self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
+            self.continueButton.clicked.connect(self.on_continue_button_clicked)
+            # self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
 
             ################################################################################
             # Add layouts and widgets
@@ -1127,6 +1136,10 @@ class PREBACKUP(QWidget):
             # Disable continue button
             self.continueButton.setEnabled(False)
 
+    def on_continue_button_clicked(self):
+        widget.addWidget(main5)
+        widget.setCurrentIndex(widget.currentIndex()+1)
+
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
@@ -1335,9 +1348,11 @@ class BACKUPSCREEN(QWidget):
             config.write(configfile)
 
         # Change screen
-        widget.setCurrentIndex(widget.currentIndex()+1)
+        widget.addWidget(main6)
         # Call restore python
         sub.Popen(f"python3 {src_restore_cmd}", shell=True)
+        widget.showFullScreen()
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
     def auto_reboot_clicked(self):
         # Automatically reboot after done
@@ -1372,7 +1387,6 @@ class START_RESTORING(QWidget):
         self.title.setStyleSheet("""
         font-weight: Bold;
         """)
-
 
         # More description
         self.moreDescription = QLabel()
@@ -1428,11 +1442,6 @@ if __name__ == '__main__':
     main6 = START_RESTORING()
 
     widget.addWidget(main)   
-    widget.addWidget(main2) 
-    widget.addWidget(main3) 
-    widget.addWidget(main4) 
-    widget.addWidget(main5) 
-    widget.addWidget(main6) 
     widget.setCurrentWidget(main)   
 
     # Window settings
