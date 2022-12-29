@@ -315,10 +315,10 @@ class RESTORE:
                         try:
                             # USR/SHARE
                             os.listdir(f"/usr/share/icons/{self.iniIcon}/")
-                            sub.run(f"{setUserIcon} /usr/share/icons/{self.iniIcon}", shell=True)
+                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
                         except:
                             # .icons
-                            sub.run(f"{setUserIcon} {homeUser}/.icons/{self.iniIcon}", shell=True)
+                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
                         else:
                             pass
 
@@ -360,11 +360,11 @@ class RESTORE:
                     try:
                         # USR/SHARE
                         os.listdir(f"/usr/share/icons/{self.iniCursor}/")
-                        sub.run(f"{setUserCursor} /usr/share/icons/{self.iniCursor}", shell=True)
+                        sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
                     except:
                         try:
                             # .cursor
-                            sub.run(f"{setUserCursor} {homeUser}/.icons/{self.iniCursor}", shell=True)
+                            sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
                         except:
                             pass
 
@@ -407,10 +407,10 @@ class RESTORE:
                     try:
                         # USR/SHARE
                         os.listdir(f"/usr/share/themes/{self.iniTheme}/")
-                        sub.run(f"{setUserTheme} /usr/share/themes/{self.iniTheme}", shell=True)
+                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
                     except:
                         # .cursor
-                        sub.run(f"{setUserTheme} {homeUser}/.themes/{self.iniTheme}", shell=True)
+                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
                     else:
                         pass
         
