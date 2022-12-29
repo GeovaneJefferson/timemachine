@@ -257,6 +257,7 @@ class OPTIONS(QWidget):
         if self.restoreOption.isChecked() or self.startAsNew.isChecked():
             # Enable continue
             self.continueButton.setEnabled(True)
+
         else:
             # Clean self.ouputBox
             self.outputBox = ""
@@ -395,7 +396,8 @@ class CHOOSEDEVICE(QWidget):
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
                 # if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
-                if output not in self.captureDevices:    
+                if output not in self.captureDevices:   
+                    # os.listdir(f"{location}/{userName}/{baseFolderName}")
                     # If device is in list, display to user just on time per device
                     self.captureDevices.append(output)
 
@@ -406,7 +408,8 @@ class CHOOSEDEVICE(QWidget):
                     self.availableDevices.setText(output)
                     self.availableDevices.setFont(QFont("Arial", 12))
                     self.availableDevices.adjustSize()
-                    self.availableDevices.clicked.connect(lambda *args, output=output: self.on_device_clicked(output))
+                    self.availableDevices.clicked.connect(
+                        lambda *args, output=output: self.on_device_clicked(output))
                     self.availableDevices.setStyleSheet(
                         "QPushButton"
                         "{"
@@ -429,17 +432,17 @@ class CHOOSEDEVICE(QWidget):
                     self.devicesAreaLayout.addWidget(self.availableDevices)
         
                 # If x device is removed or unmounted, remove from screen
-                for output in self.captureDevices:
-                    if output not in os.listdir(f'{location}/{userName}'):
-                        # Current output index
-                        index = self.captureDevices.index(output)
-                        # Remove from list
-                        self.captureDevices.remove(output)             
-                        # Delete from screen
-                        item = self.devicesAreaLayout.itemAt(index)
-                        widget = item.widget()
-                        widget.deleteLater()
-                        index -= 1
+                # for output in self.captureDevices:
+                #     if output not in os.listdir(f'{location}/{userName}'):
+                #         # Current output index
+                #         index = self.captureDevices.index(output)
+                #         # Remove from list
+                #         self.captureDevices.remove(output)             
+                #         # Delete from screen
+                #         item = self.devicesAreaLayout.itemAt(index)
+                #         widget = item.widget()
+                #         widget.deleteLater()
+                #         index -= 1
 
         except Exception:
             pass
@@ -454,14 +457,31 @@ class CHOOSEDEVICE(QWidget):
 
         self.setLayout(self.verticalLayout)
 
+    def on_device_clicked(self, output):
+        self.locationBackup = output
+        print(self.locationBackup)
+        print(output)
+        self.continueButton.setEnabled(True)
+        
+        # If user has clicked on one device
+        # if self.availableDevices.isChecked():
+        #     self.outputBox = output
+        #     # Enable use disk button
+        #     self.continueButton.setEnabled(True)
+        # else:
+        #     # If deselected, empty self.outputBox
+        #     self.outputBox = ""
+        #     # Disable use disk button
+        #     self.continueButton.setEnabled(False)
+
     def on_continue_clicked(self):
         # Enable continue button
-        self.continueButton.setEnabled(True)
+        # self.continueButton.setEnabled(True)
         ################################################################################
         # Adapt external name is it has space in the name
         ################################################################################
-        if " " in self.outputBox:
-            self.outputBox = str(self.outputBox.replace(" ", "\ ")).strip()
+        # if " " in self.outputBox:
+        #     self.outputBox = str(self.outputBox.replace(" ", "\ ")).strip()
 
         ################################################################################
         # Get user's ox
@@ -475,7 +495,7 @@ class CHOOSEDEVICE(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            if "Arial" or "debian" in userPackageManager:
+            if "ubuntu" or "debian" in userPackageManager:
                 # Save user's os name
                 config.set(f'INFO', 'packageManager', 'deb')
             
@@ -484,25 +504,13 @@ class CHOOSEDEVICE(QWidget):
                 config.set(f'INFO', 'packageManager', 'rpm')
 
             # Update INI file
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.outputBox}')
-            config.set('EXTERNAL', 'name', f'{self.outputBox}')
+            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.locationBackup}')
+            config.set('EXTERNAL', 'name', f'{self.locationBackup}')
             config.write(configfile)
 
         # Go to next window 
         widget.addWidget(main4) 
         widget.setCurrentIndex(widget.currentIndex()+1)
-
-    def on_device_clicked(self, output):
-        # If user has clicked on one device
-        if self.availableDevices.isChecked():
-            self.outputBox = output
-            # Enable use disk button
-            self.continueButton.setEnabled(True)
-        else:
-            # If deselected, empty self.outputBox
-            self.outputBox = ""
-            # Disable use disk button
-            self.continueButton.setEnabled(False)
 
 class PREBACKUP(QWidget):
     def __init__(self):
