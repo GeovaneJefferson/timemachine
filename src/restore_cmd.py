@@ -279,12 +279,10 @@ class RESTORE:
         print("Restoring icon...")
 
         try:
-            # self.somethingToRestoreInIcon = []
+            self.somethingToRestoreInIcon = []
             # Check for icon to be restored
             for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 self.somethingToRestoreInIcon.append(icon)
-                
-            print(icon)
             
             # # If has something to restore
             if self.somethingToRestoreInIcon:
@@ -338,7 +336,7 @@ class RESTORE:
         # Check for cursor to be restored
         for cursor in os.listdir(f"{self.cursorMainFolder}/"):
             self.somethingToRestoreInCursor.append(cursor)
-        print(cursor)
+            print(cursor)
 
         # If has something to restore
         if self.somethingToRestoreInCursor:
@@ -382,7 +380,7 @@ class RESTORE:
         # Check for theme to be restored
         for theme in os.listdir(f"{self.themeMainFolder}/"):
             self.somethingToRestoreInTheme.append(theme)
-        print(theme)
+            print(theme)
 
         # If has something to restore
         if self.somethingToRestoreInTheme:
