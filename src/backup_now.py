@@ -764,14 +764,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        # insideIconFolder = os.listdir(f"{self.iconsMainFolder}/")
+        insideIconFolder = os.listdir(f"{self.iconsMainFolder}/")
         # Delete all image inside .icons folder
-        # if insideIconFolder:
-        #     for icon in os.listdir(f"{self.iconsMainFolder}/"):
-        #         # If is not the same name, remove it, and backup the new one
-        #         if icon != userCurrentIcon:
-        #             print(f"Deleting {self.iconsMainFolder}/{icon}...")
-        #             sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
+        if insideIconFolder:
+            for icon in os.listdir(f"{self.iconsMainFolder}/"):
+                # If is not the same name, remove it, and backup the new one
+                if icon != userCurrentIcon:
+                    print(f"Deleting {self.iconsMainFolder}/{icon}...")
+                    sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -819,14 +819,14 @@ class BACKUP:
         ################################################################################
         # Only one cursor inside the backup folder
         ################################################################################
-        # insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
-        # if insidecursorFolder:
-        #     # Delete all cursors inside wallpaper folder
-        #     for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
-        #         # If is not the same name, remove it, and backup the new one
-        #         if cursor != userCurrentcursor:
-        #             print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
-        #             sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
+        insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
+        if insidecursorFolder:
+            # Delete all cursors inside wallpaper folder
+            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if cursor != userCurrentcursor:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -882,14 +882,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        # insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
-        # if insideThemeFolder:
-        #     # Delete all theme inside wallpaper folder
-        #     for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
-        #         # If is not the same name, remove it, and backup the new one
-        #         if theme != userCurrentTheme:
-        #             print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
-        #             sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
+        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
+        if insideThemeFolder:
+            # Delete all theme inside wallpaper folder
+            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+                # If is not the same name, remove it, and backup the new one
+                if theme != userCurrentTheme:
+                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
+                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)

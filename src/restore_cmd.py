@@ -279,19 +279,19 @@ class RESTORE:
         print("Restoring icon...")
 
         try:
-            self.somethingToRestoreInIcon = []
+            # self.somethingToRestoreInIcon = []
             # Check for icon to be restored
             for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 self.somethingToRestoreInIcon.append(icon)
             
-            # If has something to restore
+            # # If has something to restore
             if self.somethingToRestoreInIcon:
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    # Write to INI file saved icon name
-                    config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
-                    config.write(configfile)
+            #     config = configparser.ConfigParser()
+            #     config.read(src_user_config)
+            #     with open(src_user_config, 'w') as configfile:
+            #         # Write to INI file saved icon name
+            #         config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
+            #         config.write(configfile)
 
                 ################################################################################
                 # Create .icons inside home user
@@ -311,18 +311,17 @@ class RESTORE:
                     # Activate wallpaper option
                     if supportedGnome[count] in self.userPackageManager:
                         # Continue only if has a theme inside to restore
-                        if self.iniIcon != "none":
-                            # Apply icon
-                            print(f"Applying {setUserIcon} {self.iniIcon}")
-                            try:
-                                # USR/SHARE
-                                os.listdir(f"/usr/share/icons/{self.iniIcon}/")
-                                sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
-                            except:
-                                # .icons
-                                sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
-                            else:
-                                pass
+                        # Apply icon
+                        print(f"Applying {setUserIcon} {self.iniIcon}")
+                        try:
+                            # USR/SHARE
+                            os.listdir(f"/usr/share/icons/{self.iniIcon}/")
+                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                        except:
+                            # .icons
+                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                        else:
+                            pass
 
         except:
             print("No icon to restore.")
@@ -340,12 +339,12 @@ class RESTORE:
 
         # If has something to restore
         if self.somethingToRestoreInCursor:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Write to INI file saved icon name
-                config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-                config.write(configfile)
+            # config = configparser.ConfigParser()
+            # config.read(src_user_config)
+            # with open(src_user_config, 'w') as configfile:
+            #     # Write to INI file saved icon name
+            #     config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
+            #     config.write(configfile)
                 
             # Copy icon from the backup to .icon folder
             sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
@@ -358,19 +357,18 @@ class RESTORE:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
-                    if self.iniCursor != "none":
-                        # Apply cursor
-                        print(f"Applying {setUserCursor} {self.iniCursor}")
+                    # Apply cursor
+                    print(f"Applying {setUserCursor} {self.iniCursor}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/icons/{self.iniCursor}/")
+                        sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
+                    except:
                         try:
-                            # USR/SHARE
-                            os.listdir(f"/usr/share/icons/{self.iniCursor}/")
+                            # .cursor
                             sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
                         except:
-                            try:
-                                # .cursor
-                                sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
-                            except:
-                                pass
+                            pass
 
         self.restore_theme()
 
@@ -384,12 +382,12 @@ class RESTORE:
 
         # If has something to restore
         if self.somethingToRestoreInTheme:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w') as configfile:
-                # Write to INI file saved theme name
-                config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
-                config.write(configfile)
+            # config = configparser.ConfigParser()
+            # config.read(src_user_config)
+            # with open(src_user_config, 'w') as configfile:
+            #     # Write to INI file saved theme name
+            #     config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
+            #     config.write(configfile)
 
             ################################################################################
             # Create .themes inside home user
@@ -407,18 +405,17 @@ class RESTORE:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
-                    if self.iniTheme != "none":
-                        # Apply theme
-                        print(f"Applying {setUserTheme} {self.iniTheme}")
-                        try:
-                            # USR/SHARE
-                            os.listdir(f"/usr/share/themes/{self.iniTheme}/")
-                            sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
-                        except:
-                            # .cursor
-                            sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
-                        else:
-                            pass
+                    # Apply theme
+                    print(f"Applying {setUserTheme} {self.iniTheme}")
+                    try:
+                        # USR/SHARE
+                        os.listdir(f"/usr/share/themes/{self.iniTheme}/")
+                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                    except:
+                        # .cursor
+                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                    else:
+                        pass
         
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
