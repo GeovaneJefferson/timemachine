@@ -279,7 +279,7 @@ class RESTORE:
         print("Restoring icon...")
 
         try:
-            # self.somethingToRestoreInIcon = []
+            self.somethingToRestoreInIcon = []
             # Check for icon to be restored
             for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 self.somethingToRestoreInIcon.append(icon)
@@ -312,14 +312,14 @@ class RESTORE:
                     if supportedGnome[count] in self.userPackageManager:
                         # Continue only if has a theme inside to restore
                         # Apply icon
-                        print(f"Applying {setUserIcon} {self.iniIcon}")
+                        print(f"Applying {setUserIcon} {icon}")
                         try:
                             # USR/SHARE
-                            os.listdir(f"/usr/share/icons/{self.iniIcon}/")
-                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                            os.listdir(f"/usr/share/icons/{icon}/")
+                            sub.run(f"{setUserIcon} {icon}", shell=True)
                         except:
                             # .icons
-                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                            sub.run(f"{setUserIcon} {icon}", shell=True)
                         else:
                             pass
 
@@ -336,6 +336,7 @@ class RESTORE:
         # Check for cursor to be restored
         for cursor in os.listdir(f"{self.cursorMainFolder}/"):
             self.somethingToRestoreInCursor.append(cursor)
+            print(cursor)
 
         # If has something to restore
         if self.somethingToRestoreInCursor:
@@ -358,15 +359,15 @@ class RESTORE:
                 if supportedGnome[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply cursor
-                    print(f"Applying {setUserCursor} {self.iniCursor}")
+                    print(f"Applying {setUserCursor} {cursor}")
                     try:
                         # USR/SHARE
-                        os.listdir(f"/usr/share/icons/{self.iniCursor}/")
-                        sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
+                        os.listdir(f"/usr/share/icons/{cursor}/")
+                        sub.run(f"{setUserCursor} {cursor}", shell=True)
                     except:
                         try:
                             # .cursor
-                            sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
+                            sub.run(f"{setUserCursor} {cursor}", shell=True)
                         except:
                             pass
 
@@ -379,6 +380,7 @@ class RESTORE:
         # Check for theme to be restored
         for theme in os.listdir(f"{self.themeMainFolder}/"):
             self.somethingToRestoreInTheme.append(theme)
+            print(theme)
 
         # If has something to restore
         if self.somethingToRestoreInTheme:
@@ -406,14 +408,14 @@ class RESTORE:
                 if supportedGnome[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply theme
-                    print(f"Applying {setUserTheme} {self.iniTheme}")
+                    print(f"Applying {setUserTheme} {theme}")
                     try:
                         # USR/SHARE
-                        os.listdir(f"/usr/share/themes/{self.iniTheme}/")
-                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                        os.listdir(f"/usr/share/themes/{theme}/")
+                        sub.run(f"{setUserTheme} {theme}", shell=True)
                     except:
                         # .cursor
-                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                        sub.run(f"{setUserTheme} {theme}", shell=True)
                     else:
                         pass
         
