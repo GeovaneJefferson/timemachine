@@ -459,8 +459,6 @@ class CHOOSEDEVICE(QWidget):
 
     def on_device_clicked(self, output):
         self.locationBackup = output
-        print(self.locationBackup)
-        print(output)
         self.continueButton.setEnabled(True)
         
         # If user has clicked on one device

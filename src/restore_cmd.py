@@ -310,17 +310,19 @@ class RESTORE:
                 for _ in supportedGnome:
                     # Activate wallpaper option
                     if supportedGnome[count] in self.userPackageManager:
-                        # Apply icon
-                        print(f"Applying {setUserIcon} {self.iniIcon}")
-                        try:
-                            # USR/SHARE
-                            os.listdir(f"/usr/share/icons/{self.iniIcon}/")
-                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
-                        except:
-                            # .icons
-                            sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
-                        else:
-                            pass
+                        # Continue only if has a theme inside to restore
+                        if self.iniIcon != "none":
+                            # Apply icon
+                            print(f"Applying {setUserIcon} {self.iniIcon}")
+                            try:
+                                # USR/SHARE
+                                os.listdir(f"/usr/share/icons/{self.iniIcon}/")
+                                sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                            except:
+                                # .icons
+                                sub.run(f"{setUserIcon} {self.iniIcon}", shell=True)
+                            else:
+                                pass
 
         except:
             print("No icon to restore.")
@@ -355,18 +357,20 @@ class RESTORE:
             for _ in supportedGnome:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
-                    # Apply cursor
-                    print(f"Applying {setUserCursor} {self.iniCursor}")
-                    try:
-                        # USR/SHARE
-                        os.listdir(f"/usr/share/icons/{self.iniCursor}/")
-                        sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
-                    except:
+                    # Continue only if has a theme inside to restore
+                    if self.iniCursor != "none":
+                        # Apply cursor
+                        print(f"Applying {setUserCursor} {self.iniCursor}")
                         try:
-                            # .cursor
+                            # USR/SHARE
+                            os.listdir(f"/usr/share/icons/{self.iniCursor}/")
                             sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
                         except:
-                            pass
+                            try:
+                                # .cursor
+                                sub.run(f"{setUserCursor} {self.iniCursor}", shell=True)
+                            except:
+                                pass
 
         self.restore_theme()
 
@@ -402,17 +406,19 @@ class RESTORE:
             for _ in supportedGnome:
                 # Activate wallpaper option
                 if supportedGnome[count] in self.userPackageManager:
-                    # Apply theme
-                    print(f"Applying {setUserTheme} {self.iniTheme}")
-                    try:
-                        # USR/SHARE
-                        os.listdir(f"/usr/share/themes/{self.iniTheme}/")
-                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
-                    except:
-                        # .cursor
-                        sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
-                    else:
-                        pass
+                    # Continue only if has a theme inside to restore
+                    if self.iniTheme != "none":
+                        # Apply theme
+                        print(f"Applying {setUserTheme} {self.iniTheme}")
+                        try:
+                            # USR/SHARE
+                            os.listdir(f"/usr/share/themes/{self.iniTheme}/")
+                            sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                        except:
+                            # .cursor
+                            sub.run(f"{setUserTheme} {self.iniTheme}", shell=True)
+                        else:
+                            pass
         
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
