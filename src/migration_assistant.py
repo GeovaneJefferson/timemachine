@@ -104,7 +104,7 @@ class WELCOMESCREEN(QWidget):
         self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText("Use Migration Assistant to transfer information such as "
-            "(Apps, Data, Files and Folders) to this PC.") 
+            "(Applications + Data, Personal Files and Folders) to this PC.") 
 
         ################################################################################
         # Buttons
@@ -190,12 +190,15 @@ class OPTIONS(QWidget):
         image.move(imagePosX, imagePosy)
         # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
         self.restoreOption.setText(
-            "\n\n\n\n\n\n\nRestore\n"
+            "\n\n\n\n\n\n\n\nRestore\n"
             f"from {appName}")
         self.restoreOption.setFont(QFont("Arial", 11))
         self.restoreOption.setCheckable(True)
         self.restoreOption.setAutoExclusive(True)
         self.restoreOption.setFixedSize(200, 200)
+        self.restoreOption.setStyleSheet("""
+            font: bold;
+        """)
         self.restoreOption.clicked.connect(lambda *args: self.on_device_clicked("restore"))
 
         ################################################################################
@@ -214,6 +217,9 @@ class OPTIONS(QWidget):
         self.startAsNew.setCheckable(True)
         self.startAsNew.setAutoExclusive(True)
         self.startAsNew.setFixedSize(200, 200)
+        self.startAsNew.setStyleSheet("""
+            font: bold;
+        """)
         self.startAsNew.clicked.connect(lambda *args: self.on_device_clicked("new"))
        
         ################################################################################
@@ -413,8 +419,9 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.setStyleSheet(
                             "QPushButton"
                             "{"
-                            "text-align: bottom;"
-                            "padding-bottom: 25px;"
+                                "text-align: bottom;"
+                                "padding-bottom: 25px;"
+                                "font: bold;"
                             "}")
                         
                         # Image
@@ -571,7 +578,7 @@ class PREBACKUP(QWidget):
         self.title.setText("Select the information to restore")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
-        font-weight: Bold;
+            font-weight: Bold;
         """)
 
         # Description
@@ -643,8 +650,8 @@ class PREBACKUP(QWidget):
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
                 "* Wallpaper\n"
                 "* Theme\n"
-                "* Icon\n"
-                "* Cursor theme")
+                "   -- Icon\n"
+                "   -- Cursor")
 
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/settingsicon.png"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
@@ -714,7 +721,7 @@ class PREBACKUP(QWidget):
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/applicationsicon.png"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
-                    "* All flatpak saved names")
+                    "* All flatpak applications")
                 self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
 
         except:
@@ -788,7 +795,7 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/filesandfoldersicon.png"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
-                "* All recents back up folders")
+                "* All recents back up files and folders")
             self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
 
             ################################################################################
@@ -1196,7 +1203,7 @@ class BACKUPSCREEN(QWidget):
         # Automatically reboot
         self.autoReboot = QCheckBox()
         self.autoReboot.setFont(QFont("Arial", 10))
-        self.autoReboot.setText('Automatically reboot after migration is done.') 
+        self.autoReboot.setText('Automatically reboot after restoring is done.') 
         self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
@@ -1375,7 +1382,6 @@ class BACKUPSCREEN(QWidget):
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
-
         self.widgets()
             
     def widgets(self):
@@ -1397,7 +1403,9 @@ class START_RESTORING(QWidget):
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText("Don't turn off your PC.") 
+        self.moreDescription.setText(
+            "Don't turn off your PC.\n"
+            "This window will automatically close after restoring is done.") 
         self.moreDescription.setStyleSheet("""
         color: gray;
         """)
