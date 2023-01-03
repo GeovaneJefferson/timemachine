@@ -1382,6 +1382,7 @@ class BACKUPSCREEN(QWidget):
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
+
         self.widgets()
             
     def widgets(self):
