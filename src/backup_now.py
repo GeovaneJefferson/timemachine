@@ -158,9 +158,9 @@ class BACKUP:
         self.systemSettingsFolderToBackupSizeList=[]
      
         # Get current use icon by user
-        userCurrentIcon = os.popen(getUserIcon)
-        userCurrentIcon = userCurrentIcon.read().strip()
-        userCurrentIcon = userCurrentIcon.replace("'", "")
+        userCurrentGnomeIcon = os.popen(getUserIcon)
+        userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
+        userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
 
         ################################################################################
         # Get icon folders size
@@ -168,8 +168,8 @@ class BACKUP:
         # Try to find the current icon inside /usr/share/icons
         try:
             # Get folder size fomr /usr/share/icons
-            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentIcon}")
-            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentIcon}", "").replace("\t", "")
+            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentGnomeIcon}")
+            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentGnomeIcon}", "").replace("\t", "")
             getIconSize = int(getIconSize)
             self.iconInside = True
 
@@ -177,8 +177,8 @@ class BACKUP:
             try:
                 # If can not be found inside /usr/share/icons, try .icons in Home
                 # Get folder size
-                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentIcon}")
-                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
+                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentGnomeIcon}")
+                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentGnomeIcon}", "").replace("\t", "")
                 getIconSize = int(getIconSize)
                 self.iconInside = True
 
@@ -757,9 +757,9 @@ class BACKUP:
         ################################################################################
         # Get current use icon by user
         ################################################################################
-        userCurrentIcon = os.popen(getUserIcon)
-        userCurrentIcon = userCurrentIcon.read().strip()
-        userCurrentIcon = userCurrentIcon.replace("'", "")
+        userCurrentGnomeIcon = os.popen(getUserIcon)
+        userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
+        userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
 
         ################################################################################
         # Only one icon inside the backup folder
@@ -769,7 +769,7 @@ class BACKUP:
         if insideIconFolder:
             for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 # If is not the same name, remove it, and backup the new one
-                if icon != userCurrentIcon:
+                if icon != userCurrentGnomeIcon:
                     print(f"Deleting {self.iconsMainFolder}/{icon}...")
                     sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
 
@@ -777,7 +777,7 @@ class BACKUP:
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             # Save icon information
-            config.set('INFO', 'icon', f"{userCurrentIcon}")
+            config.set('INFO', 'icon', f"{userCurrentGnomeIcon}")
             config.set('INFO', 'feedback_status', f"Backing up: icons")
             config.write(configfile)
 
@@ -787,22 +787,22 @@ class BACKUP:
         # if not insideIconFolder:
         #     try:
         #         # USR/SHARE
-        #         os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #         os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
+        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         #     except:
         #         # .THEMES
-        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         #     else:
         #         pass
 
         # else:
         try:
             # USR/SHARE
-            os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         except: 
             # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         else:
             pass
 
