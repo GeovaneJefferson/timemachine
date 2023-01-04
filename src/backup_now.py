@@ -956,6 +956,11 @@ class BACKUP:
         self.end_backup()
 
     def end_backup(self):
+        # Get oldest backup info
+        oldestList = []
+        for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
+            oldestList.append(oldestOutput)
+        
         print("Ending backup...")
         ################################################################################
         # Set backup_now to "false", backup_running to "false" and Update "last backup"
@@ -966,6 +971,8 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
+            # Update oldest backup time
+            config.set('INFO', 'oldest', f'{oldestList[0]}')
             # Update last backup time
             config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
             # Change system tray color to white (Normal)

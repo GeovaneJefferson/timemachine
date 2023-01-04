@@ -138,13 +138,21 @@ class MAIN(QMainWindow):
             """)
 
         ################################################################################
-        # Label last backup
+        # Label UI backup
         ################################################################################
-        self.lastBackupLabel = QLabel()
-        self.lastBackupLabel.setFont(item)
-        self.lastBackupLabel.setText("Last Backup: None")
-        self.lastBackupLabel.setFixedSize(200, 18)
-        self.lastBackupLabel.setStyleSheet("""
+        self.oldestBackupLabel = QLabel()
+        self.oldestBackupLabel.setFont(item)
+        self.oldestBackupLabel.setText("Oldest Backup: None")
+        self.oldestBackupLabel.setFixedSize(200, 18)
+        self.oldestBackupLabel.setStyleSheet("""
+            color: gray;
+            """)
+            
+        self.lastestBackupLabel = QLabel()
+        self.lastestBackupLabel.setFont(item)
+        self.lastestBackupLabel.setText("Lastest Backup: None")
+        self.lastestBackupLabel.setFixedSize(200, 18)
+        self.lastestBackupLabel.setStyleSheet("""
             color: gray;
             """)
 
@@ -282,7 +290,8 @@ class MAIN(QMainWindow):
         #  Far Right Layout
         self.farRightLayout.addWidget(self.externalNameLabel, 0, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalSizeLabel, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.oldestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.lastestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addStretch(10)
@@ -326,6 +335,7 @@ class MAIN(QMainWindow):
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+            self.iniOldestBackup = config['INFO']['oldest']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
 
@@ -476,7 +486,8 @@ class MAIN(QMainWindow):
         # Last backup label
         ################################################################################
         if self.iniLastBackup != "":
-            self.lastBackupLabel.setText(f"Last Backup: {self.iniLastBackup}")
+            self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
+            self.oldestBackupLabel.setText(f"Oldest Backup: {self.iniOldestBackup}")
 
         self.load_time_backup()
 
@@ -2025,6 +2036,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
                     config.set('INFO', 'cursor', 'None')
+                    config.set('INFO', 'oldest', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
