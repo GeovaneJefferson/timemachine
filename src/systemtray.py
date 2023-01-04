@@ -60,7 +60,7 @@ class APP:
         # self.skipThisBackup.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
-        self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
+        self.browseTimeMachineBackupsButton = QAction(f"Enter {appName}")
         self.browseTimeMachineBackupsButton.setFont(QFont(item))
         self.browseTimeMachineBackupsButton.triggered.connect(
             lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
