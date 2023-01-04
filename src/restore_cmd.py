@@ -402,6 +402,9 @@ class RESTORE:
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
                             # Check if user DE is in the supported list
             ################################################################
+            """
+            lookandfeeltool -a theme name or location (KDE)
+            """
             count = 0
             for _ in supportedGnome:
                 # Activate wallpaper option
@@ -418,6 +421,7 @@ class RESTORE:
                         sub.run(f"{setUserTheme} {theme}", shell=True)
                     else:
                         pass
+
         
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()

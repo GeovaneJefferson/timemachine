@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from PySide6.QtGui import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -19,15 +20,17 @@ class APP:
         self.widget()
 
     def widget(self):
+        
         ################################################################################
         # Add icon
         ################################################################################
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(src_system_bar_icon))
         self.tray.setVisible(True)
+        self.tray.activated.connect(self.showMenuOnTrigger)
 
         # Create a menu
-        self.menu = QMenu()
+        # self.menu = QMenu()
 
         # Ini last backup information
         self.iniLastBackupInformation = QAction()
@@ -36,17 +39,14 @@ class APP:
 
         # Line
         self.dummyLine = QAction("――――――――――――――")
-        self.dummyLine.setFont(QFont(item))
         self.dummyLine.setEnabled(False)
       
         # Line2
         self.dummyLine2 = QAction("――――――――――――――")
-        self.dummyLine2.setFont(QFont(item))
         self.dummyLine2.setEnabled(False)
 
         # Line3
         self.dummyLine3 = QAction("――――――――――――――")
-        self.dummyLine3.setFont(QFont(item))
         self.dummyLine3.setEnabled(False)
 
         # Backup now button
@@ -72,16 +72,16 @@ class APP:
             lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
 
         # Add all to menu
-        self.menu.addAction(self.dummyLine)
-        self.menu.addAction(self.iniLastBackupInformation)
-        self.menu.addAction(self.dummyLine2)
-        self.menu.addAction(self.backupNowButton)
-        self.menu.addAction(self.browseTimeMachineBackupsButton)
-        self.menu.addAction(self.dummyLine3)
-        self.menu.addAction(self.openTimeMachine)
+        # self.menu.addAction(self.dummyLine)
+        # self.menu.addAction(self.iniLastBackupInformation)
+        # self.menu.addAction(self.dummyLine2)
+        # self.menu.addAction(self.backupNowButton)
+        # self.menu.addAction(self.browseTimeMachineBackupsButton)
+        # self.menu.addAction(self.dummyLine3)
+        # self.menu.addAction(self.openTimeMachine)
         
         # Adding options to the System Tray
-        self.tray.setContextMenu(self.menu)
+        # self.tray.setContextMenu(self.menu)
 
         # Tray
         # self.tray.setIcon(QIcon(src_system_bar_icon))
@@ -97,7 +97,21 @@ class APP:
 
         # # App exec
         # self.app.exec()
-    
+
+    def showMenuOnTrigger(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.menu = QMenu()
+            # self.menu.addAction(self.dummyLine)
+            self.menu.addAction(self.iniLastBackupInformation)
+            self.menu.addAction(self.dummyLine2)
+            self.menu.addAction(self.backupNowButton)
+            self.menu.addAction(self.browseTimeMachineBackupsButton)
+            self.menu.addAction(self.dummyLine3)
+            self.menu.addAction(self.openTimeMachine)
+            
+            self.tray.setContextMenu(self.menu)
+            self.tray.contextMenu().popup(QCursor.pos())
+
     def updates(self):
         print("System tray is running...")
         try:
@@ -185,8 +199,8 @@ class APP:
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
                     # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
-                        f'{self.iniLastBackup}')
+                    self.iniLastBackupInformation.setText(
+                        f'Latest Backup: {self.iniLastBackup}')
 
                 else:
                     # Blue color
