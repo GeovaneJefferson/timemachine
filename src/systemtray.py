@@ -36,17 +36,14 @@ class APP:
 
         # Line
         self.dummyLine = QAction("――――――――――――――")
-        self.dummyLine.setFont(QFont(item))
         self.dummyLine.setEnabled(False)
       
         # Line2
         self.dummyLine2 = QAction("――――――――――――――")
-        self.dummyLine2.setFont(QFont(item))
         self.dummyLine2.setEnabled(False)
 
         # Line3
         self.dummyLine3 = QAction("――――――――――――――")
-        self.dummyLine3.setFont(QFont(item))
         self.dummyLine3.setEnabled(False)
 
         # Backup now button

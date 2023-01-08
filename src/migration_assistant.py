@@ -103,8 +103,8 @@ class WELCOMESCREEN(QWidget):
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText("Use Migration Assistant to transfer information such as "
-            "(Applications + Data, Personal Files and Folders) to this PC.") 
+        self.moreDescription.setText("Use Migration Assistant to restore information such as "
+            "Applications, Files, Folders and more to this PC.") 
 
         ################################################################################
         # Buttons
@@ -127,7 +127,7 @@ class WELCOMESCREEN(QWidget):
         self.setLayout(self.titlelLayout)
 
     def on_continueButton_clicked(self):
-        widget.addWidget(main2) 
+        widget.addWidget(main3) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
 
