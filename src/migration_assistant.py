@@ -654,7 +654,7 @@ class PREBACKUP(QWidget):
                 "   -- Cursor")
 
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-development-symbolic.svg"))
-            self.systemSettingsCheckBox.setIconSize(QtCore.QSize(28, 28))
+            self.systemSettingsCheckBox.setIconSize(QtCore.QSize(22,22))
             self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
             
         except:
@@ -690,7 +690,7 @@ class PREBACKUP(QWidget):
             self.applicationPackagesCheckBox.setFont(QFont("Arial", 11))
             self.applicationPackagesCheckBox.adjustSize()
             self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/find-here-symbolic.svg"))
-            self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(28, 28))
+            self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(22,22))
             self.applicationPackagesCheckBox.setToolTip("This will reinstall: \n"
                 "* All manual saved packages")
             self.applicationPackagesCheckBox.clicked.connect(self.on_application_clicked)
@@ -719,7 +719,7 @@ class PREBACKUP(QWidget):
                     f"                         {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Arial", 11))
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/find-here-symbolic.svg"))
-                self.flatpakCheckBox.setIconSize(QtCore.QSize(28, 28))
+                self.flatpakCheckBox.setIconSize(QtCore.QSize(22,22))
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
                     "* All flatpak applications")
                 self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
@@ -734,7 +734,7 @@ class PREBACKUP(QWidget):
         self.flatpakDataCheckBox.setText(" Flatpak (Data)")
         self.flatpakDataCheckBox.setFont(QFont("Arial", 11))
         self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-documents-symbolic.svg"))
-        self.flatpakDataCheckBox.setIconSize(QtCore.QSize(28, 28))
+        self.flatpakDataCheckBox.setIconSize(QtCore.QSize(22,22))
         self.flatpakDataCheckBox.setEnabled(False)
         self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
 
@@ -793,7 +793,7 @@ class PREBACKUP(QWidget):
                 f"               {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Arial", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-documents-symbolic.svg"))
-            self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(28, 28))
+            self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(22,22))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
                 "* All recents back up files and folders")
             self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
@@ -1456,8 +1456,7 @@ if __name__ == '__main__':
     main6 = START_RESTORING()
 
     widget.addWidget(main)   
-    widget.addWidget(main4)   
-    widget.setCurrentWidget(main4)   
+    widget.setCurrentWidget(main)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
