@@ -1240,11 +1240,11 @@ class BACKUPSCREEN(QWidget):
 
         # Image 3       
         image3 = QLabel()
-        image3.setFixedSize(128, 128)
+        image3.setFixedSize(96, 96)
         image3.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg);"
+            f"background-image: url({homeUser}/.local/share/{appNameClose}/src/icons/applications-system.svg);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1254,7 +1254,7 @@ class BACKUPSCREEN(QWidget):
         # External device name
         ################################################################################
         widgetDeviceName = QWidget(self)
-        widgetDeviceName.setFixedSize(180, 40)
+        widgetDeviceName.setFixedSize(185, 40)
         widgetDeviceName.move(232, 265)
 
         # Widget device layout
@@ -1278,12 +1278,11 @@ class BACKUPSCREEN(QWidget):
         # This pc label
         ################################################################################
         widgetThisPCName = QWidget(self)
-        widgetThisPCName.setFixedSize(180, 40)
+        widgetThisPCName.setFixedSize(170, 40)
         widgetThisPCName.move(488, 265)
 
         # This pc name layout
         widgetLayout = QHBoxLayout(widgetThisPCName)
-
         self.thisPCName = QLabel()
         self.thisPCName.setFont(QFont("Arial", 14))
         self.thisPCName.setText(f"{(userName).capitalize()}")
@@ -1322,7 +1321,7 @@ class BACKUPSCREEN(QWidget):
 
         # Widget device layouts
         self.imagesLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter)
-        self.imagesLayout.addWidget(image2, 1, QtCore.Qt.AlignHCenter)
+        self.imagesLayout.addWidget(image2, 0, QtCore.Qt.AlignHCenter)
         self.imagesLayout.addWidget(image3, 1, QtCore.Qt.AlignHCenter)
         widgetDeviceLayout.addWidget(self.externalDeviceName)
         widgetLayout.addWidget(self.thisPCName)
