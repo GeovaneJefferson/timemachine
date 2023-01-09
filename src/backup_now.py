@@ -537,8 +537,8 @@ class BACKUP:
             
         # Check if user DE is in the supported list
         count = 0
-        for _ in supportedGnome:
-            if supportedGnome[count] == self.iniUserOS:
+        for _ in supportedOS:
+            if supportedOS[count] == self.iniUserOS:
                 # Light theme
                 if getColorScheme == "prefer-light":
                     # Get current wallpaper
@@ -568,6 +568,30 @@ class BACKUP:
                 # After one supported item was found, go to self.backup_user_wallpaper()
                 self.backup_user_wallpaper()
 
+            elif self.iniUserOS == "kde":
+                countAppletsrcLines = 0
+                oneMore = False
+                with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
+                    file = file.readlines()
+
+                    # Strips the newline character
+                    for line in file:
+                        line = line.strip()
+                        if oneMore:
+                            # print(f"Line {countAppletsrcLines}: {(line)}")
+                            line = line.replace("Image=", "")
+                            self.getWallpaper = str(line)
+                            print(self.getWallpaper)
+                            break
+
+                        if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
+                            countAppletsrcLines += 1
+                            oneMore = True
+                        countAppletsrcLines += 1
+
+                # After one supported item was found, go to self.backup_user_wallpaper()
+                self.backup_user_wallpaper()
+
             else:
                 count += 1
 
@@ -589,9 +613,6 @@ class BACKUP:
         print("Backing up wallpaper...")
         print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
         sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
-        
-        # Set zoom mode
-        sub.run(f"{zoomGnomeWallpaper}", shell=True) 
        
         # Condition
         if self.iniAllowFlatpakNames == "true":

@@ -223,10 +223,10 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-            "• Local snapshots as space permits\n"
+            "• Local HOME snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Wallpaper (Only for Gnome)\n"
+            "• Wallpaper\n"
             "• Theme, Icon and cursor\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)

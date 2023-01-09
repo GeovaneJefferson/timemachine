@@ -213,9 +213,9 @@ class RESTORE:
                     # Check if user DE is in the supported list to Automatically apply
                     ################################################################
                     count = 0
-                    for _ in supportedGnome:
+                    for _ in supportedOS:
                         # Activate wallpaper option
-                        if supportedGnome[count] in self.userPackageManager:
+                        if supportedOS[count] in self.userPackageManager:
                             # Detect color scheme
                             getColorScheme = os.popen(detectThemeMode)
                             getColorScheme = getColorScheme.read().strip().replace("'", "")
@@ -307,9 +307,9 @@ class RESTORE:
                 # Check if user DE is in the supported list
                 ################################################################
                 count = 0
-                for _ in supportedGnome:
+                for _ in supportedOS:
                     # Activate wallpaper option
-                    if supportedGnome[count] in self.userPackageManager:
+                    if supportedOS[count] in self.userPackageManager:
                         # Continue only if has a theme inside to restore
                         # Apply icon
                         print(f"Applying {setUserIcon} {icon}")
@@ -354,9 +354,9 @@ class RESTORE:
             ################################################################
             print("Checking support...")
             count = 0
-            for _ in supportedGnome:
+            for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedGnome[count] in self.userPackageManager:
+                if supportedOS[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply cursor
                     print(f"Applying {setUserCursor} {cursor}")
@@ -406,9 +406,9 @@ class RESTORE:
             lookandfeeltool -a theme name or location (KDE)
             """
             count = 0
-            for _ in supportedGnome:
+            for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedGnome[count] in self.userPackageManager:
+                if supportedOS[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply theme
                     print(f"Applying {setUserTheme} {theme}")
