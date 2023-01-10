@@ -579,7 +579,7 @@ class BACKUP:
                         line = line.strip()
                         if oneMore:
                             # print(f"Line {countAppletsrcLines}: {(line)}")
-                            line = line.replace("Image=", "")
+                            line = line.replace("Image=", "").replace("file:///", "")
                             self.getWallpaper = str(line)
                             print(self.getWallpaper)
                             break

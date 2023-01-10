@@ -287,7 +287,7 @@ class ENTERTIMEMACHINE(QWidget):
     def get_date(self):
         # Clean screen
         for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders_files")
+            self.clean_stuff_on_screen("clean_files")
         
         try:
             if not self.alreadyGotDateList:
@@ -388,7 +388,7 @@ class ENTERTIMEMACHINE(QWidget):
     def show_on_screen(self):
         # Clean screen
         for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders_files")
+            self.clean_stuff_on_screen("clean_files")
 
         # Show available files
         try:
@@ -599,7 +599,7 @@ class ENTERTIMEMACHINE(QWidget):
         #         self.filesToRestore.remove(output)  
 
         #     for _ in range(1):
-        #         self.clean_stuff_on_screen("clean_folders_files")
+        #         self.clean_stuff_on_screen("clean_files")
 
         #     self.show_on_screen()
 
@@ -769,7 +769,7 @@ class ENTERTIMEMACHINE(QWidget):
     def change_time(self, getTime):
         # Clean screen
         for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders_files")
+            self.clean_stuff_on_screen("clean_files")
 
         # Index of the getTime
         index = self.timeFolders.index(getTime)
@@ -791,7 +791,7 @@ class ENTERTIMEMACHINE(QWidget):
 
         # Clean screen
         for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders_files")
+            self.clean_stuff_on_screen("clean_files")
 
         # Return to getDate
         self.get_date()
@@ -811,7 +811,7 @@ class ENTERTIMEMACHINE(QWidget):
             pass
 
         try:
-            if exec == "clean_folders_files":
+            if exec == "clean_files":
                 for i in range(self.filesLayoutGrid.count()):
                     item = self.filesLayoutGrid.itemAt(i)
                     widget = item.widget()
@@ -845,28 +845,6 @@ if __name__ == '__main__':
     # Windows settings
     main.setWindowTitle(appName)
     main.setWindowIcon(QIcon(src_backup_icon))
-    main.setFixedSize(1300, 800)
+    main.setFixedSize(1280, 720)
     
-    # if main.darkMode == "true":
-    #     app.setStyle("Fusion")
-    #     dark_palette = QPalette()
-    #     dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.WindowText, Qt.white)
-    #     dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    #     dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    #     dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    #     dark_palette.setColor(QPalette.Text, Qt.white)
-    #     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    #     dark_palette.setColor(QPalette.BrightText, Qt.red)
-    #     dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    #     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    #     dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-    #     app.setPalette(dark_palette)
-    #     app.setStyleSheet(
-    #         "QToolTip { color: #ffffff;"
-    #         "background-color: #2a82da;"
-    #         "border: 1px solid white; }")
-            
     app.exit(app.exec())
