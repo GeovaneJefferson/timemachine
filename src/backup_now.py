@@ -15,8 +15,6 @@ class BACKUP:
 
     def read_ini_file(self):
         try:
-            self.alreadyClearTrash = False
-            
             config = configparser.ConfigParser()
             config.read(src_user_config)
 
@@ -569,7 +567,6 @@ class BACKUP:
                 self.backup_user_wallpaper()
 
             elif self.iniUserOS == "kde":
-                countAppletsrcLines = 0
                 oneMore = False
                 with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
                     file = file.readlines()
@@ -578,16 +575,13 @@ class BACKUP:
                     for line in file:
                         line = line.strip()
                         if oneMore:
-                            # print(f"Line {countAppletsrcLines}: {(line)}")
-                            line = line.replace("Image=", "").replace("file:///", "")
+                            line = line.replace("Image=", "").replace("file://", "")
                             self.getWallpaper = str(line)
                             print(self.getWallpaper)
                             break
 
                         if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
-                            countAppletsrcLines += 1
                             oneMore = True
-                        countAppletsrcLines += 1
 
                 # After one supported item was found, go to self.backup_user_wallpaper()
                 self.backup_user_wallpaper()
