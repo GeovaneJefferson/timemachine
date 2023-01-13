@@ -52,9 +52,9 @@ class APP:
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Skip this backup
-        self.skipThisBackup = QAction("Skip This Backup")
-        self.skipThisBackup.setFont(QFont(item))
-        self.skipThisBackup.triggered.connect(self.skip_backup)
+        # self.skipThisBackup = QAction("Skip This Backup")
+        # self.skipThisBackup.setFont(QFont(item))
+        # self.skipThisBackup.triggered.connect(self.skip_backup)
 
         # Browse Time Machine Backups button
         self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
@@ -73,7 +73,7 @@ class APP:
         self.menu.addAction(self.iniLastBackupInformation)
 
         self.menu.addAction(self.dummyLine2)
-        self.menu.addAction(self.skipThisBackup)
+        # self.menu.addAction(self.skipThisBackup)
 
         self.menu.addAction(self.backupNowButton)
         self.menu.addAction(self.browseTimeMachineBackupsButton)
@@ -182,11 +182,11 @@ class APP:
                     # White color
                     self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Show backup now button
-                    self.backupNowButton.setVisible(True)
+                    # self.backupNowButton.setVisible(True)
                     # Show backup now button
                     self.backupNowButton.setEnabled(True)
                     # Hide skip this backup
-                    self.skipThisBackup.setVisible(False)
+                    # self.skipThisBackup.setVisible(False)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
                     # Update last backup information
@@ -197,9 +197,9 @@ class APP:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
                     # Hide backup now button
-                    self.backupNowButton.setVisible(False)
+                    # self.backupNowButton.setVisible(False)
                     # Show skip this backup
-                    self.skipThisBackup.setVisible(True)
+                    # self.skipThisBackup.setVisible(True)
                     # Update last backup information
                     self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
         
@@ -238,9 +238,9 @@ class APP:
 
             # If backup device is not registered
             # Hide skip this backup
-            self.skipThisBackup.setVisible(False)
+            # self.skipThisBackup.setVisible(False)
             # Show backup now button
-            self.backupNowButton.setVisible(True)
+            # self.backupNowButton.setVisible(True)
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
             # Disable enter in time machine button
@@ -258,9 +258,9 @@ class APP:
             config.write(configfile)
         
         # Hide skip this backup
-        self.skipThisBackup.setVisible(False)
+        # self.skipThisBackup.setVisible(False)
         # Show backup now button
-        self.backupNowButton.setVisible(True)
+        # self.backupNowButton.setVisible(True)
 
 if __name__ == '__main__':
     main = APP()
