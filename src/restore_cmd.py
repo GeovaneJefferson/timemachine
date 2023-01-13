@@ -437,6 +437,21 @@ class RESTORE:
             self.restore_flatpaks()
 
     def restore_applications_packages(self):
+        # Dummy Exclude applications list
+        dummyExcludeAppsList = []
+
+        # Exclude application location
+        self.excludeAppsLoc = (f"{self.iniExternalLocation}/{baseFolderName}/"
+        f"{applicationFolderName}/{src_exclude_applications}")
+
+        dummyExcludeAppsList = []
+        # Read exclude applications from .exclude-application.txt
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(self.excludeAppsLoc, 'r') as readExclude:
+            readExclude = readExclude.read().split("\n")
+            dummyExcludeAppsList.append(f"{readExclude}")
+
         print("Installing applications packages...")
         try:             
             if self.packageManager == "rpm":
@@ -448,22 +463,27 @@ class RESTORE:
                     print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/{output}")
 
-                    # Install rpms applications
-                    sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
+                    # Install only if output if not in the exclude app list
+                    if output not in dummyExcludeAppsList:
+                        # Install rpms applications
+                        sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                            f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
             
             elif self.packageManager == "deb":
                 ################################################################################
                 # Restore DEBS
                 ################################################################################
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
-                    f"{applicationFolderName}/{debFolderName}"):
-                    print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{debFolderName}/{output}")
+                        f"{applicationFolderName}/{debFolderName}"):
+
+                    # Install only if output if not in the exclude app list
+                    if output not in dummyExcludeAppsList:
+                        print(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
+                                f"{applicationFolderName}/{debFolderName}/{output}")
                         
-                    # Install debs applications
-                    sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
+                        # Install debs applications
+                        sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
+                                f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
 
                 # Fix packages installation
                 sub.run("sudo apt install -y -f", shell=True)
