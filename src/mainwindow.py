@@ -811,15 +811,7 @@ class MAIN(QMainWindow):
 
             # Show button on screen            
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
-                
-
-        else:
-            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
-            f'You are using the latest version of {appName}.',
-            QMessageBox.Ok)
-
-            if notUpdatesFound == QMessageBox.Ok:
-                QMessageBox.Close
+            
 
 class EXTERNAL(QWidget):
     def __init__(self):
