@@ -9,6 +9,11 @@ class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
         self.deviceCanBeFound = False
+
+        # Check for update
+        for _ in range(1):
+            self.check_for_updates()
+
         self.iniUI()
 
     def iniUI(self):
@@ -772,7 +777,49 @@ class MAIN(QMainWindow):
     def on_options_clicked(self):
         # self.setMinimumSize(800, 550)
         widget.setCurrentWidget(mainOpitions)
-        # sub.run(f"python3 {src_options_py}", shell=True)
+
+    def on_update_button_clicked(self):
+        try:
+            os.popen("git stash; git pull")
+            
+            # Updated sucessfully message
+            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+            f'You are now using the latest version of {appName}.\n',
+            QMessageBox.Ok)
+
+            if updatesWasInstalled == QMessageBox.Ok:
+                QMessageBox.Close
+
+        except:
+            QMessageBox.Close
+            
+        # Re-open app
+        sub.Popen(f"python3 {src_main_window_py}", shell=True)
+        # Exit the application to reload the new settings
+        exit()
+        
+    def check_for_updates(self):
+        # Check for git updates
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+
+        # Updates found
+        if "Your branch is behind" in str(gitUpdateCommand):
+            updateAvailable = QPushButton()
+            updateAvailable.setText("Update Available")
+            updateAvailable.adjustSize()
+            updateAvailable.clicked.connect(self.on_update_button_clicked)
+
+            # Show button on screen            
+            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+                
+
+        else:
+            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
+            f'You are using the latest version of {appName}.',
+            QMessageBox.Ok)
+
+            if notUpdatesFound == QMessageBox.Ok:
+                QMessageBox.Close
 
 class EXTERNAL(QWidget):
     def __init__(self):
@@ -2047,49 +2094,6 @@ class OPTION(QMainWindow):
 
         else:
             QMessageBox.Close
-
-    def on_update_button_clicked(self):
-        try:
-            os.popen("git stash; git pull")
-            
-            # Updated sucessfully message
-            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-            f'You are now using the latest version of {appName}.\n',
-            QMessageBox.Ok)
-
-            if updatesWasInstalled == QMessageBox.Ok:
-                QMessageBox.Close
-
-        except:
-            QMessageBox.Close
-            
-        # Re-open app
-        sub.Popen(f"python3 {src_main_window_py}", shell=True)
-        # Exit the application to reload the new settings
-        exit()
-        
-    def check_for_updates(self):
-        # Check for git updates
-        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
-
-        # Updates found
-        if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable = QPushButton()
-            updateAvailable.setText("Update Available")
-            updateAvailable.adjustSize()
-            updateAvailable.clicked.connect(self.on_update_button_clicked)
-
-            # Show button on screen            
-            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
-                
-
-        else:
-            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
-            f'You are using the latest version of {appName}.',
-            QMessageBox.Ok)
-
-            if notUpdatesFound == QMessageBox.Ok:
-                QMessageBox.Close
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)
