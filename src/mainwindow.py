@@ -1427,14 +1427,6 @@ class OPTION(QMainWindow):
         self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
 
-        # Update button
-        self.searchUpdateButton = QPushButton()
-        self.searchUpdateButton.setText("Search For Updates")
-        self.searchUpdateButton.setFont(QFont("Ubuntu", 10))
-        self.searchUpdateButton.adjustSize()
-        self.searchUpdateButton.setVisible(True)
-        self.searchUpdateButton.clicked.connect(self.on_search_for_updates_clicked)
-
         # Donate buton
         self.donateButton = QPushButton()
         self.donateButton.setText("Donate")
@@ -1496,7 +1488,6 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
-        self.donateAndBackLayout.addWidget(self.searchUpdateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         
@@ -2057,39 +2048,82 @@ class OPTION(QMainWindow):
         else:
             QMessageBox.Close
 
-    def on_search_for_updates_clicked(self):
+    # def on_search_for_updates_clicked(self):
+    #     # Check for git updates
+    #     gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+
+    #     # Updates found
+    #     if "Your branch is behind" in str(gitUpdateCommand):
+    #         applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
+    #         'Do you want to install the updates?\n',
+    #         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+    #         if applyUpdatesConfirmation == QMessageBox.Yes:
+    #             try:
+    #                 os.popen("git stash; git pull")
+
+    #                 # Close a open the next message
+    #                 QMessageBox.Close
+                    
+    #                 # Updated sucessfully message
+    #                 updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+    #                 f'You are now using the latest version of {appName}.\n',
+    #                 QMessageBox.Ok)
+
+    #                 if updatesWasInstalled == QMessageBox.Ok:
+    #                     QMessageBox.Close
+
+    #             except:
+    #                 QMessageBox.Close
+                    
+    #             # Re-open app
+    #             sub.Popen(f"python3 {src_main_window_py}", shell=True)
+    #             # Exit the application to reload the new settings
+    #             exit()
+        
+    #     else:
+    #         notUpdatesFound = QMessageBox.question(self, 'Software Update', 
+    #         f'You are using the latest version of {appName}.',
+    #         QMessageBox.Ok)
+
+    #         if notUpdatesFound == QMessageBox.Ok:
+    #             QMessageBox.Close
+    
+    def on_update_button_clicked(self):
+        try:
+            os.popen("git stash; git pull")
+            
+            # Updated sucessfully message
+            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+            f'You are now using the latest version of {appName}.\n',
+            QMessageBox.Ok)
+
+            if updatesWasInstalled == QMessageBox.Ok:
+                QMessageBox.Close
+
+        except:
+            QMessageBox.Close
+            
+        # Re-open app
+        sub.Popen(f"python3 {src_main_window_py}", shell=True)
+        # Exit the application to reload the new settings
+        exit()
+        
+    def check_for_updates(self):
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
-            applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
-            'Do you want to install the updates?\n',
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            updateAvailable = QPushButton()
+            updateAvailable.setText("Update Available")
+            updateAvailable.adjustSize()
+            updateAvailable.clicked.connect(self.on_update_button_clicked)
 
-            if applyUpdatesConfirmation == QMessageBox.Yes:
-                try:
-                    os.popen("git stash; git pull")
+            # Show button on screen            
+            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+                
 
-                    # Close a open the next message
-                    QMessageBox.Close
-                    
-                    # Updated sucessfully message
-                    updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-                    f'You are now using the latest version of {appName}.\n',
-                    QMessageBox.Ok)
-
-                    if updatesWasInstalled == QMessageBox.Ok:
-                        QMessageBox.Close
-
-                except:
-                    QMessageBox.Close
-                    
-                # Re-open app
-                sub.Popen(f"python3 {src_main_window_py}", shell=True)
-                # Exit the application to reload the new settings
-                exit()
-        
         else:
             notUpdatesFound = QMessageBox.question(self, 'Software Update', 
             f'You are using the latest version of {appName}.',
