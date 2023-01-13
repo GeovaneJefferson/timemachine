@@ -781,7 +781,6 @@ class MAIN(QMainWindow):
     def check_for_updates(self):
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
-
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
             updateAvailable = QPushButton(self.leftWidget)
