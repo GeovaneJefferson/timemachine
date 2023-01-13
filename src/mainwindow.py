@@ -778,6 +778,21 @@ class MAIN(QMainWindow):
         # self.setMinimumSize(800, 550)
         widget.setCurrentWidget(mainOpitions)
 
+    def check_for_updates(self):
+        # Check for git updates
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+
+        # Updates found
+        if "Your branch is behind" in str(gitUpdateCommand):
+            updateAvailable = QPushButton()
+            updateAvailable.setText("Update Available")
+            updateAvailable.adjustSize()
+            updateAvailable.clicked.connect(self.on_update_button_clicked)
+
+
+            # Show button on screen            
+            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+            
     def on_update_button_clicked(self):
         try:
             os.popen("git stash; git pull")
@@ -797,22 +812,7 @@ class MAIN(QMainWindow):
         sub.Popen(f"python3 {src_main_window_py}", shell=True)
         # Exit the application to reload the new settings
         exit()
-        
-        
-    def check_for_updates(self):
-        # Check for git updates
-        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
-        # Updates found
-        if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable = QPushButton()
-            updateAvailable.setText("Update Available")
-            updateAvailable.adjustSize()
-            updateAvailable.clicked.connect(self.on_update_button_clicked)
-
-            # Show button on screen            
-            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
-            
 
 class EXTERNAL(QWidget):
     def __init__(self):
