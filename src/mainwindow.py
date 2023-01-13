@@ -1993,6 +1993,7 @@ class OPTION(QMainWindow):
                     config.set('BACKUP', 'checker_running', 'false')
                     config.set('BACKUP', 'allow_flatpak_names', 'true')
                     config.set('BACKUP', 'allow_flatpak_data', 'false')
+                    config.set('BACKUP', 'skip_this_backup', 'false')
 
                     # External section
                     config.set('EXTERNAL', 'hd', 'None')

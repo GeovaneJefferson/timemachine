@@ -5,6 +5,13 @@ from setup import *
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
+################################################################################
+## Signal
+################################################################################
+# If user turn off or kill the app, update INI file
+signal.signal(signal.SIGINT, signal_exit)
+signal.signal(signal.SIGTERM, signal_exit)
+
 
 class RESTORE:
     def __init__(self):

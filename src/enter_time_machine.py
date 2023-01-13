@@ -308,7 +308,7 @@ class ENTERTIMEMACHINE(QWidget):
                 config.set('INFO', 'notification_add_info', f"{error}")
                 config.write(configfile)
 
-            print("External not mounted or available...")
+            print("Backup devices was not found...")
             exit()
         
         self.get_time()
