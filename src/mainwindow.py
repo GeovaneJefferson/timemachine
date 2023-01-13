@@ -789,7 +789,8 @@ class MAIN(QMainWindow):
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
 
-            # Show button on screen            
+            # Show button on screen      
+            main = MAIN()
             main.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
             
     def on_update_button_clicked(self):
