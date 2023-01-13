@@ -798,6 +798,7 @@ class MAIN(QMainWindow):
         # Exit the application to reload the new settings
         exit()
         
+        
     def check_for_updates(self):
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
