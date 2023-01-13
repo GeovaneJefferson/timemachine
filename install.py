@@ -9,10 +9,12 @@ class CLI:
     def __init__(self):
         # Install command
         # DEB 
-        self.installDependencies = "python3-pip flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
+        self.installDependencies = "flatpak '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev" 
         # ARCH
-        self.installDependenciesArch = "python3-pip flatpak"   
+        # self.installDependenciesArch = "python3-pip flatpak"   
         # PIP
+        self.installPip = "python3-pip"
+        # PYSIDE6
         self.installPipPackages = "pyside6"
         # Extra: Flathub
         self.installFlathub = "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
@@ -76,36 +78,42 @@ class CLI:
             if user_os == "ubuntu":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y install {self.installPip}", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
             
             # Debian
             elif user_os == "debian":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
+                sub.run(f"sudo apt -y install {self.installPip}", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
 
             # Opensuse
             elif user_os == "opensuse":
                 print("")
                 sub.run(f"sudo zypper -y update", shell=True)
+                sub.run(f"sudo zypper -y install {self.installPip}", shell=True)
                 sub.run(f"sudo zypper -y install {self.installDependencies}", shell=True)
 
             # Fedora
             elif user_os == "fedora":
                 print("")
                 sub.run(f"sudo dnf -y update", shell=True)
-                sub.run(f"sudo dnf -y install {self.installDependencies} qt5-qtbase-devel", shell=True)
+                sub.run(f"sudo dnf -y install {self.installPip}", shell=True)
+                sub.run(f"sudo dnf -y install {self.installDependencies}", shell=True)
 
             # Arch
             elif user_os == "arch":
                 print("")
-                sub.run(f"sudo pacman -S {self.installDependenciesArch}", shell=True)
+                # sub.run(f"sudo pacman -S {self.installDependenciesArch}", shell=True)
+                sub.run(f"sudo pacman -S {self.installPip}", shell=True)
+                sub.run(f"sudo pacman -S {self.installDependencies}", shell=True)
 
             ################################################################################
             # Install PySide6
             ################################################################################
             print("")
-            print("Installing PySide6 and pip...")
+            print("Installing PySide6...")
             sub.run(f"pip install {self.installPipPackages}", shell=True)
 
         except:

@@ -9,6 +9,7 @@ class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
         self.deviceCanBeFound = False
+
         self.iniUI()
 
     def iniUI(self):
@@ -23,18 +24,6 @@ class MAIN(QMainWindow):
         self.widgets()
 
     def widgets(self):
-        # TODO
-        # widget = QWidget(self)
-        # widget.setGeometry(0, 0, 220,450)
-        # widget.setStyleSheet("""
-        #     background-color:  rgb(240, 241, 243);
-        # """)
-
-        # widget2 = QWidget(self)
-        # widget2.setGeometry(220, 0, 480,450)
-        # widget2.setStyleSheet("""
-        #     background-color:  rgb(233, 234, 236);
-        # """)
         ################################################################################
         # Left Widget
         ################################################################################
@@ -138,13 +127,21 @@ class MAIN(QMainWindow):
             """)
 
         ################################################################################
-        # Label last backup
+        # Label UI backup
         ################################################################################
-        self.lastBackupLabel = QLabel()
-        self.lastBackupLabel.setFont(item)
-        self.lastBackupLabel.setText("Last Backup: None")
-        self.lastBackupLabel.setFixedSize(200, 18)
-        self.lastBackupLabel.setStyleSheet("""
+        self.oldestBackupLabel = QLabel()
+        self.oldestBackupLabel.setFont(item)
+        self.oldestBackupLabel.setText("Oldest Backup: None")
+        self.oldestBackupLabel.setFixedSize(200, 18)
+        self.oldestBackupLabel.setStyleSheet("""
+            color: gray;
+            """)
+            
+        self.lastestBackupLabel = QLabel()
+        self.lastestBackupLabel.setFont(item)
+        self.lastestBackupLabel.setText("Lastest Backup: None")
+        self.lastestBackupLabel.setFixedSize(200, 18)
+        self.lastestBackupLabel.setStyleSheet("""
             color: gray;
             """)
 
@@ -215,11 +212,10 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-            "• Local snapshots as space permits\n"
+            "• Local HOME snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Wallpaper (Only for Gnome)\n"
-            "• Theme, Icon and cursor\n\n"
+            "• Wallpaper, Theme, Icon and cursor\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -282,7 +278,8 @@ class MAIN(QMainWindow):
         #  Far Right Layout
         self.farRightLayout.addWidget(self.externalNameLabel, 0, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalSizeLabel, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.lastBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.oldestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.lastestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addStretch(10)
@@ -299,6 +296,10 @@ class MAIN(QMainWindow):
 
         # Set Layouts
         self.setLayout(self.leftLayout)
+       
+        # Check for update
+        for _ in range(1):
+            self.check_for_updates()
 
         # Update
         timer.timeout.connect(self.read_ini_file)
@@ -326,6 +327,7 @@ class MAIN(QMainWindow):
             self.iniBackupNow = config['BACKUP']['backup_now']
             self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
             self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
+            self.iniOldestBackup = config['INFO']['oldest']
             self.iniLastBackup = config['INFO']['latest']
             self.iniNextBackup = config['INFO']['next']
 
@@ -476,7 +478,8 @@ class MAIN(QMainWindow):
         # Last backup label
         ################################################################################
         if self.iniLastBackup != "":
-            self.lastBackupLabel.setText(f"Last Backup: {self.iniLastBackup}")
+            self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
+            self.oldestBackupLabel.setText(f"Oldest Backup: {self.iniOldestBackup}")
 
         self.load_time_backup()
 
@@ -774,7 +777,42 @@ class MAIN(QMainWindow):
     def on_options_clicked(self):
         # self.setMinimumSize(800, 550)
         widget.setCurrentWidget(mainOpitions)
-        # sub.run(f"python3 {src_options_py}", shell=True)
+
+    def check_for_updates(self):
+        print("Checking updates...")
+        # Check for git updates
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+
+        # Updates found
+        if "Your branch is behind" in str(gitUpdateCommand):
+            updateAvailable = QPushButton()
+            updateAvailable.setText(" Update Available ")
+            updateAvailable.adjustSize()
+            updateAvailable.clicked.connect(self.on_update_button_clicked)
+            
+            # Show button on screen      
+            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+
+    def on_update_button_clicked(self):
+        try:
+            os.popen("git stash; git pull")
+            
+            # Updated sucessfully message
+            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
+            f'{appName} will be restarted.\n',
+            QMessageBox.Ok)
+
+            if updatesWasInstalled == QMessageBox.Ok:
+                QMessageBox.Close
+
+        except:
+            QMessageBox.Close
+            
+        # Re-open app
+        sub.Popen(f"python3 {src_main_window_py}", shell=True)
+        # Exit the application to reload the new settings
+        exit()
+
 
 class EXTERNAL(QWidget):
     def __init__(self):
@@ -1032,6 +1070,7 @@ class EXTERNAL(QWidget):
     def on_button_cancel_clicked(self):
         mainDevices.close()
         main.setEnabled(True)
+
 
 class OPTION(QMainWindow):
     def __init__(self):
@@ -1429,14 +1468,6 @@ class OPTION(QMainWindow):
         self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
 
-        # Update button
-        self.searchUpdateButton = QPushButton()
-        self.searchUpdateButton.setText("Search For Updates")
-        self.searchUpdateButton.setFont(QFont("Ubuntu", 10))
-        self.searchUpdateButton.adjustSize()
-        self.searchUpdateButton.setVisible(True)
-        self.searchUpdateButton.clicked.connect(self.on_search_for_updates_clicked)
-
         # Donate buton
         self.donateButton = QPushButton()
         self.donateButton.setText("Donate")
@@ -1498,7 +1529,6 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
-        self.donateAndBackLayout.addWidget(self.searchUpdateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         
@@ -1526,7 +1556,7 @@ class OPTION(QMainWindow):
                 self.foldersCheckbox.setText(folder)
                 self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
                 self.foldersCheckbox.adjustSize()
-                self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"
@@ -1995,6 +2025,7 @@ class OPTION(QMainWindow):
                     config.set('BACKUP', 'checker_running', 'false')
                     config.set('BACKUP', 'allow_flatpak_names', 'true')
                     config.set('BACKUP', 'allow_flatpak_data', 'false')
+                    config.set('BACKUP', 'skip_this_backup', 'false')
 
                     # External section
                     config.set('EXTERNAL', 'hd', 'None')
@@ -2025,6 +2056,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
                     config.set('INFO', 'cursor', 'None')
+                    config.set('INFO', 'oldest', 'None')
                     config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
@@ -2056,47 +2088,6 @@ class OPTION(QMainWindow):
 
         else:
             QMessageBox.Close
-
-    def on_search_for_updates_clicked(self):
-        # Check for git updates
-        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
-
-        # Updates found
-        if "Your branch is behind" in str(gitUpdateCommand):
-            applyUpdatesConfirmation = QMessageBox.question(self, 'Software Update', 
-            'Do you want to install the updates?\n',
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-            if applyUpdatesConfirmation == QMessageBox.Yes:
-                try:
-                    os.popen("git stash; git pull")
-
-                    # Close a open the next message
-                    QMessageBox.Close
-                    
-                    # Updated sucessfully message
-                    updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-                    f'You are now using the latest version of {appName}.\n',
-                    QMessageBox.Ok)
-
-                    if updatesWasInstalled == QMessageBox.Ok:
-                        QMessageBox.Close
-
-                except:
-                    QMessageBox.Close
-                    
-                # Re-open app
-                sub.Popen(f"python3 {src_main_window_py}", shell=True)
-                # Exit the application to reload the new settings
-                exit()
-        
-        else:
-            notUpdatesFound = QMessageBox.question(self, 'Software Update', 
-            f'You are using the latest version of {appName}.',
-            QMessageBox.Ok)
-
-            if notUpdatesFound == QMessageBox.Ok:
-                QMessageBox.Close
 
     def donate_clicked(self):
         sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)

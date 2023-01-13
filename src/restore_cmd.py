@@ -5,6 +5,13 @@ from setup import *
 config = configparser.ConfigParser()
 config.read(src_user_config)
 
+################################################################################
+## Signal
+################################################################################
+# If user turn off or kill the app, update INI file
+signal.signal(signal.SIGINT, signal_exit)
+signal.signal(signal.SIGTERM, signal_exit)
+
 
 class RESTORE:
     def __init__(self):
@@ -19,6 +26,7 @@ class RESTORE:
         self.read_ini_file()
 
     def read_ini_file(self):
+        print("read")
         # Read file
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -28,7 +36,7 @@ class RESTORE:
         # Restore
         self.iniFlatpakApplications = config['RESTORE']['applications_flatpak_names']
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
-        self.iniApplicationData = config['RESTORE']['applications_data']
+        self.iniFlatpakApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         self.iniSystemSettings = config['RESTORE']['system_settings']
 
@@ -58,8 +66,12 @@ class RESTORE:
         if self.iniFilesAndsFolders == "true":
             self.get_home_backup_folders()
 
+        # Proceed to application
+        elif self.iniApplicationsPackages == "true":
+            self.restore_applications_packages()
+
         # Proceed to flatpak files (Local and Data)
-        elif self.iniApplicationData == "true":
+        elif self.iniFlatpakApplicationData == "true":
             self.get_flatpak_data_size()
         
         # Proceed to wallpaper
@@ -67,6 +79,7 @@ class RESTORE:
             self.apply_users_saved_wallpaper()
 
     def get_home_backup_folders(self):
+        print("home")
         self.iniFoldersList = []
         # Get available folders from INI file
         for output in self.iniFolder:
@@ -213,9 +226,9 @@ class RESTORE:
                     # Check if user DE is in the supported list to Automatically apply
                     ################################################################
                     count = 0
-                    for _ in supportedGnome:
+                    for _ in supportedOS:
                         # Activate wallpaper option
-                        if supportedGnome[count] in self.userPackageManager:
+                        if supportedOS[count] in self.userPackageManager:
                             # Detect color scheme
                             getColorScheme = os.popen(detectThemeMode)
                             getColorScheme = getColorScheme.read().strip().replace("'", "")
@@ -307,9 +320,9 @@ class RESTORE:
                 # Check if user DE is in the supported list
                 ################################################################
                 count = 0
-                for _ in supportedGnome:
+                for _ in supportedOS:
                     # Activate wallpaper option
-                    if supportedGnome[count] in self.userPackageManager:
+                    if supportedOS[count] in self.userPackageManager:
                         # Continue only if has a theme inside to restore
                         # Apply icon
                         print(f"Applying {setUserIcon} {icon}")
@@ -354,9 +367,9 @@ class RESTORE:
             ################################################################
             print("Checking support...")
             count = 0
-            for _ in supportedGnome:
+            for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedGnome[count] in self.userPackageManager:
+                if supportedOS[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply cursor
                     print(f"Applying {setUserCursor} {cursor}")
@@ -402,10 +415,13 @@ class RESTORE:
             sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
                             # Check if user DE is in the supported list
             ################################################################
+            """
+            lookandfeeltool -a theme name or location (KDE)
+            """
             count = 0
-            for _ in supportedGnome:
+            for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedGnome[count] in self.userPackageManager:
+                if supportedOS[count] in self.userPackageManager:
                     # Continue only if has a theme inside to restore
                     # Apply theme
                     print(f"Applying {setUserTheme} {theme}")
@@ -418,6 +434,7 @@ class RESTORE:
                         sub.run(f"{setUserTheme} {theme}", shell=True)
                     else:
                         pass
+
         
         if self.iniApplicationsPackages == "true":
             self.restore_applications_packages()
@@ -426,6 +443,21 @@ class RESTORE:
             self.restore_flatpaks()
 
     def restore_applications_packages(self):
+        # Dummy Exclude applications list
+        dummyExcludeAppsList = []
+
+        # Exclude application location
+        self.excludeAppsLoc = (f"{self.iniExternalLocation}/{baseFolderName}/"
+        f"{applicationFolderName}/{src_exclude_applications}")
+
+        dummyExcludeAppsList = []
+        # Read exclude applications from .exclude-application.txt
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(self.excludeAppsLoc, 'r') as readExclude:
+            readExclude = readExclude.read().split("\n")
+            dummyExcludeAppsList.append(f"{readExclude}")
+
         print("Installing applications packages...")
         try:             
             if self.packageManager == "rpm":
@@ -437,22 +469,30 @@ class RESTORE:
                     print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/{output}")
 
-                    # Install rpms applications
-                    sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
+                    # Install only if output if not in the exclude app list
+                    if output not in str(dummyExcludeAppsList):
+                        # Install rpms applications
+                        sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
+                            f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
             
             elif self.packageManager == "deb":
                 ################################################################################
                 # Restore DEBS
                 ################################################################################
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
-                    f"{applicationFolderName}/{debFolderName}"):
-                    print(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{debFolderName}/{output}")
+                        f"{applicationFolderName}/{debFolderName}"):
+
+                    print(output)
+                    print(dummyExcludeAppsList)
+                    # Install only if output if not in the exclude app list
+                    if output not in str(dummyExcludeAppsList):
+                        print(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
+                                f"{applicationFolderName}/{debFolderName}/{output}")
                         
-                    # Install debs applications
-                    sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
-                        f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
+                        # Install debs applications
+                        sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
+                                f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
+            
 
                 # Fix packages installation
                 sub.run("sudo apt install -y -f", shell=True)

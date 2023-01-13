@@ -8,6 +8,7 @@ import time
 import sys
 import signal
 
+from threading import Thread
 from pathlib import Path
 from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
@@ -32,7 +33,7 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.4"
+appVersion = "v1.1.5"
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
@@ -58,8 +59,7 @@ installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
 
 # DE
-supportedGnome = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
-supportedKDE = ["kde"]
+supportedOS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
 supportedDEBPackageManager = ["debian", "ubuntu"]
 supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
@@ -151,6 +151,10 @@ src_notification = f"{homeUser}/.local/share/timemachine/src/notification.py"
 src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_devices.py"
 src_migration_assistant = f"{homeUser}/.local/share/timemachine/src/migration_assistant.py"
 src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
+
+# .Exclude-applications
+src_exclude_applications = ".exclude-applications.txt"
+
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")

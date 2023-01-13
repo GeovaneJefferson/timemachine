@@ -11,12 +11,11 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class BACKUP:
     def __init__(self):
+        pass
         self.read_ini_file()
 
     def read_ini_file(self):
         try:
-            self.alreadyClearTrash = False
-            
             config = configparser.ConfigParser()
             config.read(src_user_config)
 
@@ -75,7 +74,14 @@ class BACKUP:
             self.timeFolder = f"{self.createBackupFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}/{self.currentHour}-{self.currentMinute}"
             # Flatpak txt file
             self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-
+            
+            # Set backup now to True
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('BACKUP', 'backup_now', "true")
+                config.write(configfile)
+                
             self.create_base_folders()
 
         except KeyError as error:
@@ -83,13 +89,6 @@ class BACKUP:
             exit()
 
     def create_base_folders(self):
-        # Set backup now to True
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', "true")
-            config.write(configfile)
-            
         try:
             ################################################################################
             # Create TMB (Base)
@@ -158,9 +157,9 @@ class BACKUP:
         self.systemSettingsFolderToBackupSizeList=[]
      
         # Get current use icon by user
-        userCurrentIcon = os.popen(getUserIcon)
-        userCurrentIcon = userCurrentIcon.read().strip()
-        userCurrentIcon = userCurrentIcon.replace("'", "")
+        userCurrentGnomeIcon = os.popen(getUserIcon)
+        userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
+        userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
 
         ################################################################################
         # Get icon folders size
@@ -168,8 +167,8 @@ class BACKUP:
         # Try to find the current icon inside /usr/share/icons
         try:
             # Get folder size fomr /usr/share/icons
-            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentIcon}")
-            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentIcon}", "").replace("\t", "")
+            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentGnomeIcon}")
+            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentGnomeIcon}", "").replace("\t", "")
             getIconSize = int(getIconSize)
             self.iconInside = True
 
@@ -177,8 +176,8 @@ class BACKUP:
             try:
                 # If can not be found inside /usr/share/icons, try .icons in Home
                 # Get folder size
-                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentIcon}")
-                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentIcon}", "").replace("\t", "")
+                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentGnomeIcon}")
+                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentGnomeIcon}", "").replace("\t", "")
                 getIconSize = int(getIconSize)
                 self.iconInside = True
 
@@ -537,8 +536,8 @@ class BACKUP:
             
         # Check if user DE is in the supported list
         count = 0
-        for _ in supportedGnome:
-            if supportedGnome[count] == self.iniUserOS:
+        for _ in supportedOS:
+            if supportedOS[count] == self.iniUserOS:
                 # Light theme
                 if getColorScheme == "prefer-light":
                     # Get current wallpaper
@@ -568,6 +567,26 @@ class BACKUP:
                 # After one supported item was found, go to self.backup_user_wallpaper()
                 self.backup_user_wallpaper()
 
+            elif self.iniUserOS == "kde":
+                oneMore = False
+                with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
+                    file = file.readlines()
+
+                    # Strips the newline character
+                    for line in file:
+                        line = line.strip()
+                        if oneMore:
+                            line = line.replace("Image=", "").replace("file://", "")
+                            self.getWallpaper = str(line)
+                            print(self.getWallpaper)
+                            break
+
+                        if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
+                            oneMore = True
+
+                # After one supported item was found, go to self.backup_user_wallpaper()
+                self.backup_user_wallpaper()
+
             else:
                 count += 1
 
@@ -589,9 +608,6 @@ class BACKUP:
         print("Backing up wallpaper...")
         print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
         sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
-        
-        # Set zoom mode
-        sub.run(f"{zoomGnomeWallpaper}", shell=True) 
        
         # Condition
         if self.iniAllowFlatpakNames == "true":
@@ -757,9 +773,9 @@ class BACKUP:
         ################################################################################
         # Get current use icon by user
         ################################################################################
-        userCurrentIcon = os.popen(getUserIcon)
-        userCurrentIcon = userCurrentIcon.read().strip()
-        userCurrentIcon = userCurrentIcon.replace("'", "")
+        userCurrentGnomeIcon = os.popen(getUserIcon)
+        userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
+        userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
 
         ################################################################################
         # Only one icon inside the backup folder
@@ -769,7 +785,7 @@ class BACKUP:
         if insideIconFolder:
             for icon in os.listdir(f"{self.iconsMainFolder}/"):
                 # If is not the same name, remove it, and backup the new one
-                if icon != userCurrentIcon:
+                if icon != userCurrentGnomeIcon:
                     print(f"Deleting {self.iconsMainFolder}/{icon}...")
                     sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
 
@@ -777,7 +793,7 @@ class BACKUP:
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             # Save icon information
-            config.set('INFO', 'icon', f"{userCurrentIcon}")
+            config.set('INFO', 'icon', f"{userCurrentGnomeIcon}")
             config.set('INFO', 'feedback_status', f"Backing up: icons")
             config.write(configfile)
 
@@ -787,22 +803,22 @@ class BACKUP:
         # if not insideIconFolder:
         #     try:
         #         # USR/SHARE
-        #         os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #         os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
+        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         #     except:
         #         # .THEMES
-        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         #     else:
         #         pass
 
         # else:
         try:
             # USR/SHARE
-            os.listdir(f"/usr/share/icons/{userCurrentIcon}")
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         except: 
             # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentIcon} {self.iconsMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
         else:
             pass
 
@@ -956,6 +972,11 @@ class BACKUP:
         self.end_backup()
 
     def end_backup(self):
+        # Get oldest backup info
+        oldestList = []
+        for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
+            oldestList.append(oldestOutput)
+        
         print("Ending backup...")
         ################################################################################
         # Set backup_now to "false", backup_running to "false" and Update "last backup"
@@ -963,9 +984,17 @@ class BACKUP:
         ###############################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
+        
+        ################################################################################
+        # Get user.ini
+        ################################################################################
+        # self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+            
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
+            # Update oldest backup time
+            config.set('INFO', 'oldest', f'{oldestList[0]}')
             # Update last backup time
             config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
             # Change system tray color to white (Normal)
@@ -976,6 +1005,8 @@ class BACKUP:
             config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
+            # Skip this backup section
+            # config.set('BACKUP', 'skip_this_backup', 'false')
             config.write(configfile)
 
         ################################################################################
@@ -986,6 +1017,31 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
         exit()
 
+    # def skip_backup(self):
+    #     print("Skipping this backup...")
+    #     try:
+    #         config = configparser.ConfigParser()
+    #         config.read(src_user_config)
 
-main = BACKUP()
+    #         ################################################################################
+    #         # Get user.ini
+    #         ################################################################################
+    #         self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+            
+    #         if self.iniSkipThisBackup == "true":
+    #             # End the backup
+    #             self.end_backup()
 
+    #         time.sleep(1)
+
+    #     except KeyError:
+    #         # Return to the top
+    #         self.skip_backup()
+
+
+if __name__ == '__main__':
+    main = BACKUP()
+
+    # Thread(target = main.read_ini_file).start()
+    # # Keep watching for stop this backup
+    # Thread(target = main.skip_backup).start()
