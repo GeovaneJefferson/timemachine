@@ -183,6 +183,8 @@ class APP:
                     self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Show backup now button
                     self.backupNowButton.setVisible(True)
+                    # Show backup now button
+                    self.backupNowButton.setEnabled(True)
                     # Hide skip this backup
                     self.skipThisBackup.setVisible(False)
                     # Enable enter in time machine button
