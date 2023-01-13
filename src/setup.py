@@ -153,6 +153,10 @@ src_search_for_devices = f"{homeUser}/.local/share/timemachine/src/search_for_de
 src_migration_assistant = f"{homeUser}/.local/share/timemachine/src/migration_assistant.py"
 src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
 
+# .Exclude-applications
+src_exclude_applications = ".exclude-applications.txt"
+
+
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")
     config = configparser.ConfigParser()

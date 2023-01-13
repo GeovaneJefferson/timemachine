@@ -521,36 +521,18 @@ class PREBACKUP(QWidget):
     def __init__(self):
         super().__init__()
         self.optionsAddedList = []
-      
-        # # Update
-        # timer.timeout.connect(self.read_ini_file)
-        # timer.start(2000) # Update every x seconds
-        # self.read_ini_file()
-
+        self.alreadySelectApps = False
+        self.excludeAppList = []
+        self.excludeAppsLoc = (f"{iniExternalLocation}/{baseFolderName}/"
+                f"{applicationFolderName}/{src_exclude_applications}")
+        
+        # Delete .exclude-applications.txt first
+        if os.path.exists(self.excludeAppsLoc):
+            sub.run(f"rm -rf {self.excludeAppsLoc}", shell=True)
+            
         self.read_ini_file()
 
     def read_ini_file(self):
-        # ################################################################################
-        # # Read file
-        # ################################################################################
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)        
-
-        # # Read INI file
-        # iniExternalLocation = config['EXTERNAL']['hd']
-        # iniApplicationsPackages = config['RESTORE']['applications_packages']
-        # iniApplicationData = config['RESTORE']['applications_data']
-        # iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-        # # INFO
-        # packageManager = config['INFO']['packageManager']
-        # # Icons users folder
-        # iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-        # # Themes users folder
-        # themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
-       
-        # # Flatpak txt file
-        # flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-        
         self.widgets()
 
     def widgets(self):
@@ -559,7 +541,17 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Restore widget
         self.optionskWidget = QWidget()
-        self.optionskWidget.setFixedSize(320, 300)
+        # self.optionskWidget.setFixedSize(340, 300)
+        # self.optionskWidget.setStyleSheet("""
+        # border: 1px solid blue;
+        # """)
+
+        self.scrollOptions = QScrollArea(self)
+        self.scrollOptions.setFixedSize(360, 300)
+        # self.scrollOptions.setFixedHeight(300)
+        self.scrollOptions.setWidgetResizable(True)
+        # self.scrollOptions.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scrollOptions.setWidget(self.optionskWidget)
 
         # Vertical base layout
         self.verticalLayout = QVBoxLayout()
@@ -831,12 +823,30 @@ class PREBACKUP(QWidget):
             ################################################################################
             # Add layouts and widgets
             ################################################################################
+            # TODO
+            self.baseAppsWidget = QWidget()
+            # self.baseAppsWidget.setStyleSheet("""
+            # border: 1px solid red;
+            # """)
+
+            self.scrollShowMoreApps = QScrollArea()
+            self.scrollShowMoreApps.setFixedHeight(0)
+            self.scrollShowMoreApps.setWidgetResizable(True)
+            # self.scrollShowMoreApps.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+            self.scrollShowMoreApps.setWidget(self.baseAppsWidget)
+            ################################################################################
+
+            self.selectAppsLayout = QVBoxLayout(self.baseAppsWidget)
+            self.selectAppsLayout.setSpacing(5)
+
             self.verticalLayout.addWidget(self.title)
             self.verticalLayout.addWidget(self.description)
 
             self.verticalLayout.addStretch()
-            self.verticalLayout.addWidget(self.optionskWidget, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            self.verticalLayout.addWidget(self.scrollOptions, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
+            
+            self.verticalLayoutForOptions.addWidget(self.scrollShowMoreApps)
             self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
             self.verticalLayoutForOptions.addWidget(self.flatpakDataCheckBox)
             self.verticalLayoutForOptions.addWidget(self.fileAndFoldersCheckBox)
@@ -988,6 +998,14 @@ class PREBACKUP(QWidget):
             pass
 
     def on_application_clicked(self):
+        # Open applications checkboxes
+        if not self.alreadySelectApps:
+            self.scrollShowMoreApps.setFixedHeight(120)
+            self.alreadySelectApps = True
+        else:
+            self.scrollShowMoreApps.setFixedHeight(0)
+            self.alreadySelectApps = False
+
         # Restore packages applications
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -1002,19 +1020,41 @@ class PREBACKUP(QWidget):
                 # Add names to list
                 self.optionsAddedList.append("packages")
 
+                # Add checboxes dinamically
+                self.dummyCheckBoxList = []
+                for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                    f"{applicationFolderName}/{debFolderName}/"):
+                    dummyCheckBox = QCheckBox()
+                    dummyCheckBox.setText((output.split("_")[0]).capitalize())
+                    dummyCheckBox.setChecked(True)
+                    # self.dummyCheckBoxList.append(output)
+                    dummyCheckBox.clicked.connect(lambda *args, exclude=output: self.exclude_apps(exclude))
+
+                    self.selectAppsLayout.addWidget(dummyCheckBox)
+
             else:
                 config.set('RESTORE', 'applications_packages', 'false')
 
                 # Disable names
                 if "packages" in self.optionsAddedList:
                     self.optionsAddedList.remove("packages")
-      
+                
+                # Clean exclude lsit
+                self.excludeAppList.clear()
+
+                # Remove applications checkboxes
+                for i in range(self.selectAppsLayout.count()):
+                    item = self.selectAppsLayout.itemAt(i)
+                    widget = item.widget()
+                    widget.deleteLater()
+                    i -= 1
+
             # Write to INI file
             config.write(configfile)
 
             # Allow continue?
             self.allow_to_continue()
-  
+
     def on_flatpak_clicked(self):
         ################################################################################
         # Write to INI file
@@ -1149,8 +1189,47 @@ class PREBACKUP(QWidget):
             self.continueButton.setEnabled(False)
 
     def on_continue_button_clicked(self):
+        # Write applications exclude list .exclude-application.txt
+        # Create a .exclude-applications
+        if not os.path.exists(self.excludeAppsLoc):
+            sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
+
+        else:
+            # Delete before continue
+            sub.run(f"rm -rf {self.excludeAppsLoc}", shell=True)
+            # Create again
+            sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
+
+        if self.excludeAppList:
+            # Get user installed flatpaks
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(self.excludeAppsLoc, 'w') as configfile:
+                for apps in self.excludeAppList:  
+                    configfile.write(f"{apps}\n")
+        
+        # Change current index
         widget.addWidget(main5)
         widget.setCurrentIndex(widget.currentIndex()+1)
+
+    # STATIC FUNC
+    def select_apps_clicked(self):
+        if not self.alreadySelectApps:
+            self.scrollShowMoreApps.setFixedHeight(120)
+            self.alreadySelectApps = True
+
+        else:
+            self.scrollShowMoreApps.setFixedHeight(0)
+            self.alreadySelectApps = False
+
+    def exclude_apps(self, exclude):
+        # Only add to exclude, if it not already there
+        if exclude not in self.excludeAppList:
+            self.excludeAppList.append(exclude)
+        else:
+            self.excludeAppList.remove(exclude)
+
+        print("Exclude:", self.excludeAppList)   
 
 class BACKUPSCREEN(QWidget):
     def __init__(self):
