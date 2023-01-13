@@ -678,7 +678,7 @@ class PREBACKUP(QWidget):
             ################################################################################
             self.applicationPackagesCheckBox = QCheckBox()
             self.applicationPackagesCheckBox.setText(f" Applications "
-                f"                      {self.applicationSize}")
+                f"                              {self.applicationSize}")
             self.applicationPackagesCheckBox.setFont(QFont("Arial", 11))
             self.applicationPackagesCheckBox.adjustSize()
             self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/find-here-symbolic.svg"))
@@ -708,7 +708,7 @@ class PREBACKUP(QWidget):
 
                 self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
-                    f"                         {flatpaksToBeInstalled} Apps")
+                    f"                                  {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(QFont("Arial", 11))
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/find-here-symbolic.svg"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(22,22))
@@ -782,7 +782,7 @@ class PREBACKUP(QWidget):
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
-                f"               {self.fileAndFoldersFolderSize}")
+                f"                        {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(QFont("Arial", 11))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-documents-symbolic.svg"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(22,22))
@@ -1533,8 +1533,8 @@ if __name__ == '__main__':
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
 
-    widget.addWidget(main)   
-    widget.setCurrentWidget(main)   
+    widget.addWidget(main4)   
+    widget.setCurrentWidget(main4)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
