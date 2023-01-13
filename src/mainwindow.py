@@ -720,6 +720,9 @@ class MAIN(QMainWindow):
 
                     # Backup checker
                     sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+                    # Start auto package back up 
+                    sub.Popen(f"python3 {src_package_backup_py}", shell=True)
+                    
                     # Set checker running to true
                     with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('BACKUP', 'checker_running', "true")
