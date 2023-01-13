@@ -1038,6 +1038,6 @@ class BACKUP:
 if __name__ == '__main__':
     main = BACKUP()
 
-    Thread(target = BACKUP.read_ini_file).start()
+    Thread(target = main.read_ini_file).start()
     # Keep watching for stop this backup
-    Thread(target = BACKUP.skip_backup).start()
+    Thread(target = main.skip_backup).start()
