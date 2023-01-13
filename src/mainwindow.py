@@ -792,6 +792,7 @@ class MAIN(QMainWindow):
             # Show button on screen      
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
             
+            
     def on_update_button_clicked(self):
         try:
             os.popen("git stash; git pull")
