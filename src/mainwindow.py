@@ -784,13 +784,13 @@ class MAIN(QMainWindow):
 
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable = QPushButton()
+            updateAvailable = QPushButton(self.leftWidget)
             updateAvailable.setText("Update Available")
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
+
             # Show button on screen      
-            main = MAIN()
-            main.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+            # self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
             
     def on_update_button_clicked(self):
         try:
