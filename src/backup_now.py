@@ -999,6 +999,8 @@ class BACKUP:
             config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
+            # Backup section
+            config.set('BACKUP', 'skip_this_backup', 'false')
             config.write(configfile)
 
         ################################################################################
@@ -1020,15 +1022,6 @@ class BACKUP:
         self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
         
         if self.iniSkipThisBackup == "true":
-            # White to INI file
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                # Backup section
-                config.set('BACKUP', 'backup_now', 'false')
-                config.set('BACKUP', 'skip_this_backup', 'false')
-                config.write(configfile)
-            
             # End the backup
             self.end_backup()
 
