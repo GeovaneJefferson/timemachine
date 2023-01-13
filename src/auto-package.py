@@ -50,7 +50,7 @@ while True:
     if app.iniAutomaticallyBackup == "true":
         app.search_downloads()
         time.sleep(10)
-    else:
+    elif app.iniAutomaticallyBackup == "false":
         break
 print("Auto backup is off...")
 exit()
