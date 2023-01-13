@@ -1013,20 +1013,25 @@ class BACKUP:
 
     def skip_backup(self):
         print("Watching for skip this backup...")
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
 
-        ################################################################################
-        # Get user.ini
-        ################################################################################
-        self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
-        
-        if self.iniSkipThisBackup == "true":
-            # End the backup
-            self.end_backup()
+            ################################################################################
+            # Get user.ini
+            ################################################################################
+            self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+            
+            if self.iniSkipThisBackup == "true":
+                # End the backup
+                self.end_backup()
 
-        time.sleep(1)
- 
+            time.sleep(1)
+
+        except KeyError:
+            # Return to the top
+            self.skip_backup()
+
 
 if __name__ == '__main__':
     main = BACKUP()
