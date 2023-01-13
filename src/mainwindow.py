@@ -779,6 +779,7 @@ class MAIN(QMainWindow):
         widget.setCurrentWidget(mainOpitions)
 
     def check_for_updates(self):
+        print("Checking updates...")
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
@@ -791,15 +792,14 @@ class MAIN(QMainWindow):
             
             # Show button on screen      
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
-            
-            
+
     def on_update_button_clicked(self):
         try:
             os.popen("git stash; git pull")
             
             # Updated sucessfully message
             updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-            f'You are now using the latest version of {appName}.\n',
+            f'{appName} will be restarted.\n',
             QMessageBox.Ok)
 
             if updatesWasInstalled == QMessageBox.Ok:
@@ -1070,6 +1070,7 @@ class EXTERNAL(QWidget):
     def on_button_cancel_clicked(self):
         mainDevices.close()
         main.setEnabled(True)
+
 
 class OPTION(QMainWindow):
     def __init__(self):
