@@ -547,7 +547,7 @@ class PREBACKUP(QWidget):
         # """)
 
         self.scrollOptions = QScrollArea(self)
-        self.scrollOptions.setFixedSize(360, 300)
+        self.scrollOptions.setFixedSize(370, 300)
         # self.scrollOptions.setFixedHeight(300)
         self.scrollOptions.setWidgetResizable(True)
         # self.scrollOptions.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
