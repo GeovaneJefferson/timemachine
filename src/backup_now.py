@@ -11,7 +11,8 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class BACKUP:
     def __init__(self):
-        self.read_ini_file()
+        pass
+        # self.read_ini_file()
 
     def read_ini_file(self):
         try:
@@ -73,7 +74,14 @@ class BACKUP:
             self.timeFolder = f"{self.createBackupFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}/{self.currentHour}-{self.currentMinute}"
             # Flatpak txt file
             self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-
+            
+            # Set backup now to True
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w') as configfile:
+                config.set('BACKUP', 'backup_now', "true")
+                config.write(configfile)
+                
             self.create_base_folders()
 
         except KeyError as error:
@@ -81,13 +89,6 @@ class BACKUP:
             exit()
 
     def create_base_folders(self):
-        # Set backup now to True
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', "true")
-            config.write(configfile)
-            
         try:
             ################################################################################
             # Create TMB (Base)
@@ -1008,6 +1009,35 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
         exit()
 
+    def skip_backup(self):
+        print("Watching for skip this backup...")
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
 
-main = BACKUP()
+        ################################################################################
+        # Get user.ini
+        ################################################################################
+        self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+        
+        if self.iniSkipThisBackup == "true":
+            # White to INI file
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
+                # Backup section
+                config.set('BACKUP', 'backup_now', 'false')
+                config.set('BACKUP', 'skip_this_backup', 'false')
+                config.write(configfile)
+            
+            # End the backup
+            self.end_backup()
 
+        time.sleep(1)
+ 
+
+if __name__ == '__main__':
+    main = BACKUP()
+
+    Thread(target = BACKUP.read_ini_file).start()
+    # Keep watching for stop this backup
+    Thread(target = BACKUP.skip_backup).start()

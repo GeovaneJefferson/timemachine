@@ -8,6 +8,7 @@ import time
 import sys
 import signal
 
+from threading import Thread
 from pathlib import Path
 from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui

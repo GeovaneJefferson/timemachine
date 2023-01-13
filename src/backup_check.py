@@ -5,8 +5,8 @@ from setup import *
 ## Signal
 ################################################################################
 # If user turn off or kill the app, update INI file
-# signal.signal(signal.SIGINT, signal_exit)
-# signal.signal(signal.SIGTERM, signal_exit)
+signal.signal(signal.SIGINT, signal_exit)
+signal.signal(signal.SIGTERM, signal_exit)
 
 
 class CLI:
