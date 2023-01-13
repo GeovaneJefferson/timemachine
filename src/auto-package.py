@@ -53,3 +53,4 @@ while True:
     else:
         break
 print("Auto backup is off...")
+exit()
