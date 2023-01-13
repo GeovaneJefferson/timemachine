@@ -4,12 +4,6 @@ from setup import *
 class CHECKER:
     def __init__(self):
         self.downloadLoc = f"{homeUser}/Downloads"
-        self.savedStaticNumber = []
-        self.savedContinueNumber = []
-
-        self.staticOutput = False
-        self.continueOutput = False
-
         self.read_ini_files()
 
     def read_ini_files(self):
@@ -48,9 +42,10 @@ app = CHECKER()
 
 while True:
     if app.iniAutomaticallyBackup == "true":
+        app.read_ini_files()
         app.search_downloads()
         time.sleep(10)
-    elif app.iniAutomaticallyBackup == "false":
+    else:
         break
 print("Auto backup is off...")
 exit()
