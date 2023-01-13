@@ -10,10 +10,6 @@ class MAIN(QMainWindow):
         super(MAIN, self).__init__()
         self.deviceCanBeFound = False
 
-        # Check for update
-        for _ in range(1):
-            self.check_for_updates()
-
         self.iniUI()
 
     def iniUI(self):
@@ -300,6 +296,10 @@ class MAIN(QMainWindow):
 
         # Set Layouts
         self.setLayout(self.leftLayout)
+       
+        # Check for update
+        for _ in range(1):
+            self.check_for_updates()
 
         # Update
         timer.timeout.connect(self.read_ini_file)
@@ -781,15 +781,16 @@ class MAIN(QMainWindow):
     def check_for_updates(self):
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable = QPushButton(self.leftWidget)
+            updateAvailable = QPushButton()
             updateAvailable.setText("Update Available")
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
-
+            
             # Show button on screen      
-            # self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+            self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
             
     def on_update_button_clicked(self):
         try:
