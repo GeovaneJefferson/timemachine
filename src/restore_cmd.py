@@ -26,6 +26,7 @@ class RESTORE:
         self.read_ini_file()
 
     def read_ini_file(self):
+        print("read")
         # Read file
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -35,7 +36,7 @@ class RESTORE:
         # Restore
         self.iniFlatpakApplications = config['RESTORE']['applications_flatpak_names']
         self.iniApplicationsPackages = config['RESTORE']['applications_packages']
-        self.iniApplicationData = config['RESTORE']['applications_data']
+        self.iniFlatpakApplicationData = config['RESTORE']['applications_data']
         self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
         self.iniSystemSettings = config['RESTORE']['system_settings']
 
@@ -65,8 +66,12 @@ class RESTORE:
         if self.iniFilesAndsFolders == "true":
             self.get_home_backup_folders()
 
+        # Proceed to application
+        elif self.iniApplicationsPackages == "true":
+            self.restore_applications_packages()
+
         # Proceed to flatpak files (Local and Data)
-        elif self.iniApplicationData == "true":
+        elif self.iniFlatpakApplicationData == "true":
             self.get_flatpak_data_size()
         
         # Proceed to wallpaper
@@ -74,6 +79,7 @@ class RESTORE:
             self.apply_users_saved_wallpaper()
 
     def get_home_backup_folders(self):
+        print("home")
         self.iniFoldersList = []
         # Get available folders from INI file
         for output in self.iniFolder:
@@ -464,7 +470,7 @@ class RESTORE:
                         f"{applicationFolderName}/{rpmFolderName}/{output}")
 
                     # Install only if output if not in the exclude app list
-                    if output not in dummyExcludeAppsList:
+                    if output not in str(dummyExcludeAppsList):
                         # Install rpms applications
                         sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                             f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
@@ -476,14 +482,17 @@ class RESTORE:
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}"):
 
+                    print(output)
+                    print(dummyExcludeAppsList)
                     # Install only if output if not in the exclude app list
-                    if output not in dummyExcludeAppsList:
+                    if output not in str(dummyExcludeAppsList):
                         print(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
                                 f"{applicationFolderName}/{debFolderName}/{output}")
                         
                         # Install debs applications
                         sub.run(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
                                 f"{applicationFolderName}/{debFolderName}/{output}", shell=True)
+            
 
                 # Fix packages installation
                 sub.run("sudo apt install -y -f", shell=True)
