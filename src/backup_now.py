@@ -12,7 +12,7 @@ signal.signal(signal.SIGTERM, signal_exit)
 class BACKUP:
     def __init__(self):
         pass
-        # self.read_ini_file()
+        self.read_ini_file()
 
     def read_ini_file(self):
         try:
@@ -984,6 +984,12 @@ class BACKUP:
         ###############################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
+        
+        ################################################################################
+        # Get user.ini
+        ################################################################################
+        # self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+            
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
@@ -999,8 +1005,8 @@ class BACKUP:
             config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
-            # Backup section
-            config.set('BACKUP', 'skip_this_backup', 'false')
+            # Skip this backup section
+            # config.set('BACKUP', 'skip_this_backup', 'false')
             config.write(configfile)
 
         ################################################################################
@@ -1011,31 +1017,31 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
         exit()
 
-    def skip_backup(self):
-        print("Watching for skip this backup...")
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+    # def skip_backup(self):
+    #     print("Skipping this backup...")
+    #     try:
+    #         config = configparser.ConfigParser()
+    #         config.read(src_user_config)
 
-            ################################################################################
-            # Get user.ini
-            ################################################################################
-            self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
+    #         ################################################################################
+    #         # Get user.ini
+    #         ################################################################################
+    #         self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
             
-            if self.iniSkipThisBackup == "true":
-                # End the backup
-                self.end_backup()
+    #         if self.iniSkipThisBackup == "true":
+    #             # End the backup
+    #             self.end_backup()
 
-            time.sleep(1)
+    #         time.sleep(1)
 
-        except KeyError:
-            # Return to the top
-            self.skip_backup()
+    #     except KeyError:
+    #         # Return to the top
+    #         self.skip_backup()
 
 
 if __name__ == '__main__':
     main = BACKUP()
 
-    Thread(target = main.read_ini_file).start()
-    # Keep watching for stop this backup
-    Thread(target = main.skip_backup).start()
+    # Thread(target = main.read_ini_file).start()
+    # # Keep watching for stop this backup
+    # Thread(target = main.skip_backup).start()
