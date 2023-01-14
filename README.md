@@ -40,15 +40,17 @@ Then, click on Time Machine in system tray and select "Browse Time Backups"
 
 
 ## Backup frequency and duration
-
 Time Machine is able to make hourly backups for the past 24 hours, daily backups for the past month, or weekly backups. 
 
 The oldest backups are deleted when your backup disk is full.
 
 ### Packages
-* Inside "Application" folder, in your backup device, you will find folders: "deb", "rpm" etc.
-These folders were created, so you can manually put ".deb" or ".rpm" packages inside, to be easily restore after a fresh
-installation with Migration Assistant.
+* Now, Time Machine will be able to automatically back up packages: ".deb". 
+    (.deb file must be inside Downloads folder, for at least 30 seconds.)
+
+  Missing .rpm package to be added to Time Machine.
+  
+  * Automatically back up must be enabled.
 
 ## Migration Assistant
 A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your 
