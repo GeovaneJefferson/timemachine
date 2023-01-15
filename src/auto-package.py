@@ -8,6 +8,7 @@ class CHECKER:
 
     def read_ini_files(self):
         self.detectedPackagesDebList = []
+        self.detectedPackagesRPMList = []
         ################################################################################
         # Read file
         ################################################################################
@@ -17,11 +18,16 @@ class CHECKER:
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
         self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
+        self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
 
     def search_downloads(self):
-        # Read Downloads folder
-        for i in os.listdir(self.debMainFolder):
-            self.detectedPackagesDebList.append(i)
+        # Read Downloads folder for .deb
+        for debs in os.listdir(self.debMainFolder):
+            self.detectedPackagesDebList.append(debs)
+
+        # Read Downloads folder for .rpm
+        for rpms in os.listdir(self.rpmMainFolder):
+            self.detectedPackagesRPMList.append(rpms)
     
         print(self.detectedPackagesDebList)
         for output in os.listdir(self.downloadLoc):
@@ -32,11 +38,20 @@ class CHECKER:
                     sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.debMainFolder}", shell=True)
                 else:
                     print(f"{output} is already back up.")
+
+            elif output.endswith(".rpm"):
+                # Check if has not been already back up
+                if output not in self.detectedPackagesRPMList:
+                    # Back up DEB
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.rpmMainFolder}", shell=True)
+                else:
+                    print(f"{output} is already back up.")
             else:
                 print("No package to be backup...")
 
         # Clean list
         self.detectedPackagesDebList.clear()
+        self.detectedPackagesRPMList.clear()
 
 app = CHECKER()
 
@@ -47,5 +62,6 @@ while True:
         time.sleep(10)
     else:
         break
+    
 print("Auto backup is off...")
 exit()
