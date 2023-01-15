@@ -91,7 +91,7 @@ class APP:
         # Check ini
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(5000)  # update every x second
+        timer.start(2000)  # update every x second
         self.updates()
         
         self.app.exec()
