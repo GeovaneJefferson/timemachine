@@ -909,7 +909,7 @@ class EXTERNAL(QWidget):
         print("Searching for backup devices...")
         try:
             if len(os.listdir(f'{media}/{userName}')) != 0:
-                print("Found device(s) inside Run")
+                # print("Found device(s) inside Run")
                 self.foundInMedia = True
                 self.where(media)
 
@@ -926,14 +926,14 @@ class EXTERNAL(QWidget):
         except FileNotFoundError:
             try:
                 if len(os.listdir(f'{run}/{userName}')) != 0:
-                    print("Found device(s) inside Run")
+                    # print("Found device(s) inside Run")
                     self.foundInMedia = False
                     self.where(run)
 
                 else:
                     try:
-                        print(self.captureDevices)
-                        print(len(self.captureDevices))
+                        # print(self.captureDevices)
+                        # print(len(self.captureDevices))
                         for i in range(len(self.captureDevices)):
                             item = self.verticalLayout.itemAt(i)
                             widget = item.widget()
@@ -956,8 +956,7 @@ class EXTERNAL(QWidget):
         self.show_on_screen(location)
 
     def show_on_screen(self, location):
-        print("Showing available devices")
-
+        # print("Showing available devices")
         ################################################################################
         # Add buttons and images for each external
         ################################################################################
@@ -965,7 +964,7 @@ class EXTERNAL(QWidget):
         for output in os.listdir(f'{location}/{userName}'):
             # No spaces and special characters allowed
             if output not in self.captureDevices and "'" not in output and " " not in output:
-                print(output)
+                # print(output)
                 # If device is in list, display to user just on time per device
                 self.captureDevices.append(output)
 
@@ -1024,8 +1023,8 @@ class EXTERNAL(QWidget):
         userDE = os.popen(getUserDE)
         userDE = userDE.read().strip().lower()
         
-        print(userDE)
-        print(userPackageManager)
+        # print(userDE)
+        # print(userPackageManager)
         ################################################################################
         # Update INI file
         ################################################################################
