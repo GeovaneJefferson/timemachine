@@ -789,7 +789,7 @@ class MAIN(QMainWindow):
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
             updateAvailable = QPushButton()
-            updateAvailable.setText(" Update Available ")
+            updateAvailable.setText("   Update Available    ")
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
             
