@@ -61,7 +61,7 @@ class CLI:
             print(error)
             print("Backup checker KeyError!")
             # Wait x seconds and try again
-            time.sleep(2)
+            time.sleep(5)
             self.updates()
 
         self.is_system_tray_running()
@@ -221,7 +221,7 @@ class CLI:
 main = CLI()
 # Exit program if auto_backup is false
 while True:
-    time.sleep(2)
+    time.sleep(5)
     main.updates()
 
     ################################################################################
