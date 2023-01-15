@@ -45,11 +45,9 @@ Time Machine is able to make hourly backups for the past 24 hours, daily backups
 The oldest backups are deleted when your backup disk is full.
 
 ### Packages
-* Now, Time Machine will be able to automatically back up packages: ".deb". 
-    (.deb file must be inside Downloads folder, for at least 30 seconds.)
+* Now, Time Machine will be able to automatically back up packages: ".deb" and ".rpm. 
+    (Packages must be inside Downloads folder, for at least 30 seconds.)
 
-  Missing .rpm package to be added to Time Machine.
-  
   * Automatically back up must be enabled.
 
 ## Migration Assistant
