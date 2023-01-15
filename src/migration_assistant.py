@@ -521,8 +521,9 @@ class PREBACKUP(QWidget):
     def __init__(self):
         super().__init__()
         self.optionsAddedList = []
-        self.alreadySelectApps = False
         self.excludeAppList = []
+        self.countOfDebList = []
+        self.alreadySelectApps = False
         self.excludeAppsLoc = (f"{iniExternalLocation}/{baseFolderName}/"
                 f"{applicationFolderName}/{src_exclude_applications}")
         
@@ -580,78 +581,42 @@ class PREBACKUP(QWidget):
         self.description.setText("Please select the items you wish to transfer to this PC.")
         
         ################################################################################
+        # Application checkbox (DATA)
+        ################################################################################
+        self.flatpakDataCheckBox = QCheckBox()
+        self.flatpakDataCheckBox.setText(" Flatpak (Data)")
+        self.flatpakDataCheckBox.setFont(QFont("Arial", 11))
+        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-documents-symbolic.svg"))
+        self.flatpakDataCheckBox.setIconSize(QtCore.QSize(22,22))
+        self.flatpakDataCheckBox.setEnabled(False)
+        self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
+        
+        ################################################################################
+        # Buttons
+        ################################################################################
+        # Back button
+        self.backButton = QPushButton(self)
+        self.backButton.setText("Back")
+        self.backButton.setFont(QFont("Arial", 10))
+        self.backButton.adjustSize()
+        self.backButton.move(700, 555)
+        self.backButton.clicked.connect(self.on_back_button_clicked())
+
+        # Continue button
+        self.continueButton = QPushButton(self)
+        self.continueButton.setText("Continue")
+        self.continueButton.setFont(QFont("Arial", 10))
+        self.continueButton.adjustSize()
+        self.continueButton.move(800, 555)
+        if not self.optionsAddedList:
+            self.continueButton.setEnabled(False)
+        self.continueButton.clicked.connect(self.on_continue_button_clicked)
+
+        ################################################################################
         # System settings checkbox
         ################################################################################
         dummySystemSettingsSizeList = []
-        try:
-            # Icons size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder} 2>/dev/null")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
-            # Add to dummySystemSettingsSizeList
-            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
-
-        except:
-            pass
         
-        try:    
-            # Theme size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName} 2>/dev/null")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
-            # Add to dummySystemSettingsSizeList
-            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
-        
-        except:    
-            pass
-
-        try:
-            # Cursor size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName} 2>/dev/null")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{cursorFolderName}", "")
-            # Add to dummySystemSettingsSizeList
-            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
-
-            # Sum all values inside dummySystemSettingsSizeList
-            self.systemSettingsFolderSize = sum(dummySystemSettingsSizeList)
-        
-        except:
-            pass
-
-        try:
-            # System settings size information
-            self.SystemSettingsSizeInformation = QLabel()
-            # If M inside self.applicationsSizeInformation, add B = MB
-            if "M" in self.systemSettingsFolderSize:
-                self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}B")
-            else:
-                self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}")
-            self.SystemSettingsSizeInformation.setFont(QFont("Arial", 10))
-            self.SystemSettingsSizeInformation.adjustSize()
-        
-
-            self.systemSettingsCheckBox = QCheckBox()
-            self.systemSettingsCheckBox.setText(" System Settings"
-                f"               {self.systemSettingsFolderSize}")
-            self.systemSettingsCheckBox.setFont(QFont("Arial", 11))
-            self.systemSettingsCheckBox.adjustSize()
-            self.systemSettingsCheckBox.setToolTip("This will restore: \n"
-                "* Wallpaper\n"
-                "* Theme\n"
-                "   -- Icon\n"
-                "   -- Cursor")
-
-            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-development-symbolic.svg"))
-            self.systemSettingsCheckBox.setIconSize(QtCore.QSize(22,22))
-            self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
-            
-        except:
-            pass
-
         ################################################################################
         # Application checkbox (Apps inside manual folder)
         ################################################################################
@@ -699,7 +664,7 @@ class PREBACKUP(QWidget):
             self.applicationSizeInformation.setAlignment(QtCore.Qt.AlignRight)
 
             ################################################################################
-            # Application checkbox (names)
+            # Flatpak checkbox (names)
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -720,18 +685,10 @@ class PREBACKUP(QWidget):
             pass
 
         ################################################################################
-        # Application checkbox (DATA)
+        # Flatpaks DATA checkbox
         ################################################################################
-        self.flatpakDataCheckBox = QCheckBox()
-        self.flatpakDataCheckBox.setText(" Flatpak (Data)")
-        self.flatpakDataCheckBox.setFont(QFont("Arial", 11))
-        self.flatpakDataCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-documents-symbolic.svg"))
-        self.flatpakDataCheckBox.setIconSize(QtCore.QSize(22,22))
-        self.flatpakDataCheckBox.setEnabled(False)
-        self.flatpakDataCheckBox.clicked.connect(self.on_applications_data_clicked)
-
         try:
-            # Get folder size
+            # Get flatpak data size
             self.flatpakDataSize = os.popen(f"du -hs {iniExternalLocation}/{baseFolderName}/{applicationFolderName}")
             self.flatpakDataSize = self.flatpakDataSize.read().strip("\t").strip("\n").replace(f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}", "").replace("\t", "")
         
@@ -746,6 +703,67 @@ class PREBACKUP(QWidget):
             self.applicationSizeInformation.setFont(QFont("Arial", 10))
             self.applicationSizeInformation.adjustSize()
         
+        except:
+            pass
+
+        ################################################################################
+        # System Settings checkbox
+        ################################################################################
+        try:
+            # Icons size
+            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder} 2>/dev/null")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+
+            # Theme size
+            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName} 2>/dev/null")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+        
+            # Cursor size
+            self.systemSettingsFolderSize = os.popen(f"du -hs {cursorFolderName} 2>/dev/null")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{cursorFolderName}", "")
+            dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
+
+            # Sum all values inside dummySystemSettingsSizeList
+            self.systemSettingsFolderSize = sum(dummySystemSettingsSizeList)
+        
+        except:
+            pass
+
+        try:
+            # System settings size information
+            self.SystemSettingsSizeInformation = QLabel()
+            # If M inside self.applicationsSizeInformation, add B = MB
+            if "M" in self.systemSettingsFolderSize:
+                self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}B")
+            else:
+                self.SystemSettingsSizeInformation.setText(f"{self.systemSettingsFolderSize}")
+            self.SystemSettingsSizeInformation.setFont(QFont("Arial", 10))
+            self.SystemSettingsSizeInformation.adjustSize()
+        
+
+            self.systemSettingsCheckBox = QCheckBox()
+            self.systemSettingsCheckBox.setText(" System Settings"
+                f"               {self.systemSettingsFolderSize}")
+            self.systemSettingsCheckBox.setFont(QFont("Arial", 11))
+            self.systemSettingsCheckBox.adjustSize()
+            self.systemSettingsCheckBox.setToolTip("This will restore: \n"
+                "* Wallpaper\n"
+                "* Theme\n"
+                "   -- Icon\n"
+                "   -- Cursor")
+
+            self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder-development-symbolic.svg"))
+            self.systemSettingsCheckBox.setIconSize(QtCore.QSize(22,22))
+            self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
+            
         except:
             pass
 
@@ -776,9 +794,6 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
                 f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "")
 
-            # Clean terminal
-            # sub.Popen("clear", shell=True)
-
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
@@ -791,57 +806,22 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
 
             ################################################################################
-            # User information
-            ################################################################################
-            self.userSizeInformation = QLabel()
-            self.userSizeInformation.setFont(QFont("Arial", 10))
-            self.userSizeInformation.adjustSize()
-            self.userSizeInformation.setAlignment(QtCore.Qt.AlignRight)
-
-            ################################################################################
-            # Buttons
-            ################################################################################
-            # Back button
-            self.backButton = QPushButton(self)
-            self.backButton.setText("Back")
-            self.backButton.setFont(QFont("Arial", 10))
-            self.backButton.adjustSize()
-            self.backButton.move(700, 555)
-            self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
-
-            # Continue button
-            self.continueButton = QPushButton(self)
-            self.continueButton.setText("Continue")
-            self.continueButton.setFont(QFont("Arial", 10))
-            self.continueButton.adjustSize()
-            self.continueButton.move(800, 555)
-            if not self.optionsAddedList:
-                self.continueButton.setEnabled(False)
-            self.continueButton.clicked.connect(self.on_continue_button_clicked)
-            # self.continueButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()+1))
-
-            ################################################################################
             # Add layouts and widgets
             ################################################################################
-            # TODO
             self.baseAppsWidget = QWidget()
-            # self.baseAppsWidget.setStyleSheet("""
-            # border: 1px solid red;
-            # """)
 
             self.scrollShowMoreApps = QScrollArea()
             self.scrollShowMoreApps.setFixedHeight(0)
             self.scrollShowMoreApps.setWidgetResizable(True)
             # self.scrollShowMoreApps.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
             self.scrollShowMoreApps.setWidget(self.baseAppsWidget)
-            ################################################################################
 
+            ################################################################################
             self.selectAppsLayout = QVBoxLayout(self.baseAppsWidget)
             self.selectAppsLayout.setSpacing(5)
 
             self.verticalLayout.addWidget(self.title)
             self.verticalLayout.addWidget(self.description)
-
             self.verticalLayout.addStretch()
             self.verticalLayout.addWidget(self.scrollOptions, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
@@ -1012,7 +992,6 @@ class PREBACKUP(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.applicationPackagesCheckBox.isChecked():
                 config.set('RESTORE', 'applications_packages', 'true')
-
                 # Activate data checkbox
                 self.applicationPackagesCheckBox.setChecked(True)
                 # Enable continue button
@@ -1021,27 +1000,22 @@ class PREBACKUP(QWidget):
                 self.optionsAddedList.append("packages")
 
                 # Add checboxes dinamically
-                self.dummyCheckBoxList = []
-                for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                     f"{applicationFolderName}/{debFolderName}/"):
                     dummyCheckBox = QCheckBox()
-                    dummyCheckBox.setText((output.split("_")[0]).capitalize())
+                    dummyCheckBox.setText((exclude.split("_")[0]).capitalize())
                     dummyCheckBox.setChecked(True)
-                    # self.dummyCheckBoxList.append(output)
-                    dummyCheckBox.clicked.connect(lambda *args, exclude=output: self.exclude_apps(exclude))
+                    self.countOfDebList.append(exclude)
+                    dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
 
                     self.selectAppsLayout.addWidget(dummyCheckBox)
-
             else:
                 config.set('RESTORE', 'applications_packages', 'false')
-
                 # Disable names
-                if "packages" in self.optionsAddedList:
-                    self.optionsAddedList.remove("packages")
-                
+                # if "packages" in self.optionsAddedList:
+                self.optionsAddedList.remove("packages")
                 # Clean exclude lsit
                 self.excludeAppList.clear()
-
                 # Remove applications checkboxes
                 for i in range(self.selectAppsLayout.count()):
                     item = self.selectAppsLayout.itemAt(i)
@@ -1051,7 +1025,6 @@ class PREBACKUP(QWidget):
 
             # Write to INI file
             config.write(configfile)
-
             # Allow continue?
             self.allow_to_continue()
 
@@ -1064,26 +1037,23 @@ class PREBACKUP(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.flatpakCheckBox.isChecked():
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
-                
                 # Activate flatpak checkbox
                 self.flatpakCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list if not already there
-                if "flatpak" not in self.optionsAddedList:
-                    self.optionsAddedList.append("flatpak")
-
+                # if "flatpak" not in self.optionsAddedList:
+                self.optionsAddedList.append("flatpak")
             else:
                 config.set('RESTORE', 'applications_flatpak_names', 'false')
                 # Disable data checkbox
                 self.flatpakCheckBox.setChecked(False)
                 # Disable flatpak if in list
-                if "flatpak" in self.optionsAddedList:
-                    self.optionsAddedList.remove("flatpak")
+                # if "flatpak" in self.optionsAddedList:
+                self.optionsAddedList.remove("flatpak")
 
             # Write to INI file
             config.write(configfile)
-            
             # Allow continue?
             self.allow_to_continue()
 
@@ -1096,28 +1066,25 @@ class PREBACKUP(QWidget):
             if self.flatpakDataCheckBox.isChecked():
                 config.set('RESTORE', 'applications_flatpak_names', 'true')
                 config.set('RESTORE', 'applications_data', 'true')
-
-                # Activate data checkbox
+                # Activate flatpak DATA checkbox
                 self.flatpakDataCheckBox.setChecked(True)
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add data to list if not already there
-                if "data" not in self.optionsAddedList:
-                    self.optionsAddedList.append("data")
+                # if "data" not in self.optionsAddedList:
+                self.optionsAddedList.append("data")
                 # Auto enable flatpak to list
                 self.optionsAddedList.append("flatpak")
-              
             else:
                 config.set('RESTORE', 'applications_data', 'false')
-                # Disable data checkbox
+                # Disable flatpak DATA checkbox
                 self.flatpakDataCheckBox.setChecked(False)
                 # Disable data if in list
-                if "data" in self.optionsAddedList:
-                    self.optionsAddedList.remove("data")
+                # if "data" in self.optionsAddedList:
+                self.optionsAddedList.remove("data")
 
             # Write to INI file
             config.write(configfile)
-
             # Allow continue?
             self.allow_to_continue()
   
@@ -1130,23 +1097,19 @@ class PREBACKUP(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.fileAndFoldersCheckBox.isChecked():
                 config.set('RESTORE', 'files_and_folders', 'true')
-
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add files to list
                 self.optionsAddedList.append("files")
-              
             else:
                 config.set('RESTORE', 'files_and_folders', 'false')
-
                 # Disable continue button
                 self.continueButton.setEnabled(False)
-                if "files" in self.optionsAddedList:
-                    self.optionsAddedList.remove("files")
+                # if "files" in self.optionsAddedList:
+                self.optionsAddedList.remove("files")
 
             # Write to INI file
             config.write(configfile)
-
             # Allow continue?
             self.allow_to_continue()
   
@@ -1159,15 +1122,12 @@ class PREBACKUP(QWidget):
         with open(src_user_config, 'w') as configfile:
             if self.systemSettingsCheckBox.isChecked():
                 config.set('RESTORE', 'system_settings', 'true')
-
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add system_settings to list
                 self.optionsAddedList.append("system_settings")
-              
             else:
                 config.set('RESTORE', 'system_settings', 'false')
-
                 # Disable continue button
                 self.continueButton.setEnabled(False)
                 if "system_settings" in self.optionsAddedList:
@@ -1188,39 +1148,35 @@ class PREBACKUP(QWidget):
             # Disable continue button
             self.continueButton.setEnabled(False)
 
+    def on_back_button_clicked(self):
+       widget.setCurrentIndex(widget.currentIndex()-1)
+
+       self.alreadySelectApps = False
+
     def on_continue_button_clicked(self):
-        # Write applications exclude list .exclude-application.txt
-        # Create a .exclude-applications
-        if not os.path.exists(self.excludeAppsLoc):
-            sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
+        if self.applicationPackagesCheckBox.isChecked() == True:
+            # Write applications exclude list .exclude-application.txt
+            # Create a .exclude-applications
+            if not os.path.exists(self.excludeAppsLoc):
+                    sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
 
-        else:
-            # Delete before continue
-            sub.run(f"rm -rf {self.excludeAppsLoc}", shell=True)
-            # Create again
-            sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
+            else:
+                # Delete before continue
+                sub.run(f"rm -rf {self.excludeAppsLoc}", shell=True)
+                # Create again
+                sub.run(f"{createCMDFile} {self.excludeAppsLoc}", shell=True)
 
-        if self.excludeAppList:
-            # Get user installed flatpaks
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(self.excludeAppsLoc, 'w') as configfile:
-                for apps in self.excludeAppList:  
-                    configfile.write(f"{apps}\n")
-        
+            if self.excludeAppList:
+                # Get user installed flatpaks
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(self.excludeAppsLoc, 'w') as configfile:
+                    for apps in self.excludeAppList:  
+                        configfile.write(f"{apps}\n")
+            
         # Change current index
         widget.addWidget(main5)
         widget.setCurrentIndex(widget.currentIndex()+1)
-
-    # STATIC FUNC
-    def select_apps_clicked(self):
-        if not self.alreadySelectApps:
-            self.scrollShowMoreApps.setFixedHeight(120)
-            self.alreadySelectApps = True
-
-        else:
-            self.scrollShowMoreApps.setFixedHeight(0)
-            self.alreadySelectApps = False
 
     def exclude_apps(self, exclude):
         # Only add to exclude, if it not already there
@@ -1228,8 +1184,26 @@ class PREBACKUP(QWidget):
             self.excludeAppList.append(exclude)
         else:
             self.excludeAppList.remove(exclude)
+        
+        # if user deselect all app, application check to False
+        if len(self.excludeAppList) == len(self.countOfDebList):
+            self.applicationPackagesCheckBox.setChecked(False)
+            # Clean optionsAddedList
+            self.optionsAddedList.clear()
+            # Disable continue button
+            self.continueButton.setEnabled(False)
+        else:
+            self.applicationPackagesCheckBox.setChecked(True)
+            # Enable continue button
+            self.continueButton.setEnabled(True)
 
-        print("Exclude:", self.excludeAppList)   
+        # print("Len deb list:",len(self.countOfDebList))
+        # print("Len exclude list:",len(self.excludeAppList))
+        # print("Len options list:",len(self.optionsAddedList))
+        # print("Count options:",(self.optionsAddedList))
+        # print(bool(self.applicationPackagesCheckBox.isChecked()))
+        # print((self.excludeAppList))
+
 
 class BACKUPSCREEN(QWidget):
     def __init__(self):

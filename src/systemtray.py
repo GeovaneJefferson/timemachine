@@ -116,6 +116,8 @@ class APP:
             self.iniLastBackup = config['INFO']['latest']
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
+            # Notification id
+            self.iniNotificationID = config['INFO']['notification_id']
 
         except KeyError as error:
             print(error)
@@ -170,12 +172,14 @@ class APP:
         if self.iniHDName != "None":
             # If backup device is connected
             if self.connected:
-                # If usb is connected, change notification id to 0 (White color)
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    config.set('INFO', 'notification_id', '0')
-                    config.write(configfile)
+                # Read ini file befora write
+                if self.iniNotificationID != "0":
+                    # If usb is connected, change notification id to 0 (White color)
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
+                        config.set('INFO', 'notification_id', '0')
+                        config.write(configfile)
 
                 # Is not backing up now
                 if self.iniBackupNow == "false":
@@ -208,13 +212,15 @@ class APP:
                 self.backupNowButton.setEnabled(False)
                 # Hide Enter In Time Machine
                 self.browseTimeMachineBackupsButton.setEnabled(False)
-      
-                # Change system tray color to red, because not backup device was found or mounted
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    config.set('INFO', 'notification_id', '2')
-                    config.write(configfile)
+
+                # Read ini file befora write
+                if self.iniNotificationID != "2":
+                    # Change system tray color to red, because not backup device was found or mounted
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
+                        config.set('INFO', 'notification_id', '2')
+                        config.write(configfile)
 
                 # If backup device is not connected and automatically if ON
                 if self.iniAutomaticallyBackup == "true":
@@ -222,15 +228,17 @@ class APP:
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
                 else:
-                    # Clean notification add info, because auto backup is not enabled
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('INFO', 'notification_add_info', ' ')
-                        config.write(configfile)
-           
-                    # Change system tray white color
-                    self.tray.setIcon(QIcon(src_system_bar_icon))
+                    # Read ini file befora write
+                    if self.iniNotificationID != " ":
+                        # Clean notification add info, because auto backup is not enabled
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w', encoding='utf8') as configfile:
+                            config.set('INFO', 'notification_add_info', ' ')
+                            config.write(configfile)
+            
+                        # Change system tray white color
+                        self.tray.setIcon(QIcon(src_system_bar_icon))
 
         else:
             # Update last backup information
@@ -249,13 +257,13 @@ class APP:
     def backup_now(self):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
    
-    def skip_backup(self):
-        # Skip this backup
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w', encoding='utf8') as configfile:
-            config.set('BACKUP', 'skip_this_backup', 'true')
-            config.write(configfile)
+    # def skip_backup(self):
+    #     # Skip this backup
+    #     config = configparser.ConfigParser()
+    #     config.read(src_user_config)
+    #     with open(src_user_config, 'w', encoding='utf8') as configfile:
+    #         config.set('BACKUP', 'skip_this_backup', 'true')
+    #         config.write(configfile)
         
         # Hide skip this backup
         # self.skipThisBackup.setVisible(False)
