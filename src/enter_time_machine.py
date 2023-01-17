@@ -843,7 +843,7 @@ if __name__ == '__main__':
     main = ENTERTIMEMACHINE()
     main.show()
     # Windows settings
-    main.setWindowTitle(appName)
+    main.setWindowTitle(f"Browser {appName} Backups")
     main.setWindowIcon(QIcon(src_backup_icon))
     main.setFixedSize(1280, 720)
     
