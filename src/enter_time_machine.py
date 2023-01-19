@@ -27,6 +27,9 @@ class ENTERTIMEMACHINE(QWidget):
         self.countForDate = 0
         self.alreadyGotDateList = False
 
+        # xdg-open
+        self.folderAlreadyOpened = False
+
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -707,20 +710,17 @@ class ENTERTIMEMACHINE(QWidget):
         self.restoreButton.clicked.connect(lambda *args: self.start_restore(getDate, getTime))
 
     def start_restore(self, getDate, getTime):
-        print("Your files are been restored...")
-        self.setEnabled(False)
-        self.restoreButton.setText("Files/Folders are being restored...")
-        
         ################################################################################
         # Restore files without spaces
         ################################################################################
+        print("Your files are been restored...")
         try:
             count = 0
             for _ in self.filesToRestore:
                 sub.run(
                     f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
-                    f"{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/ &",
+                    f"{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/",
                     shell=True)
                 
                 # Add to count
@@ -735,7 +735,7 @@ class ENTERTIMEMACHINE(QWidget):
                     f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
                     f"{self.filesToRestoreWithSpace[count]} {homeUser}/"
-                    f"{self.currentFolder}/ &", shell=True)
+                    f"{self.currentFolder}/", shell=True)
 
                 # Add to count
                 count += 1
@@ -744,7 +744,16 @@ class ENTERTIMEMACHINE(QWidget):
             print("Error trying to restore files from external device...")
             exit()
 
-        exit()
+        """
+        After restore is done, open the item restore folder. 
+        If is not opened already.
+        """        
+        if not self.folderAlreadyOpened:
+            self.folderAlreadyOpened = True
+            # Open folder manager
+            print(f"Opening {homeUser}/{self.currentFolder}...")
+            sub.Popen(f"xdg-open {homeUser}/{self.currentFolder}",shell=True)
+            exit()
 
     def change_date_up(self):
         # Clean screen
