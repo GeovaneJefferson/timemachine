@@ -8,7 +8,7 @@
   <img width="150" height="150" src="src/icons/backup_150px.png">
  <h1 align="left">Back up your PC with Time Machine</h1>
 </p>
-Use Time Machine, the built-in backup feature of your PC, to automatically back up your personal data, music, photos and 
+Use Time Machine to automatically back up your personal data, music, photos and 
 documents. Having a backup allows you to recover files that you later delete or can't access.
 
 ## Connect a storage device to use for backups
@@ -51,16 +51,16 @@ The oldest backups are deleted when your backup disk is full.
   * Automatically back up must be enabled.
 
 ## Migration Assistant
-A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your 
-files/folders and apps, after a fresh installation.
+Something similar to Apple's "Migration Assistant", a easy way to restore your 
+files/folders, themes, apps etc. after a fresh installation.
 
 ## System Tray 
-You will notice that your system tray will from time to time change its color to White, Blue or Red.
+You will notice that your system tray will from time to time change its color from White to Blue or Red.
 * ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) = Normal color, 
 automatically backup is ON and your backup device is connected and mounted.
 
 
-* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing your files, after is done,
+* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing up your files, after is done,
 it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
 
 
