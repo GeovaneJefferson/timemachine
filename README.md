@@ -55,12 +55,12 @@ Something similar to Apple's "Migration Assistant", a easy way to restore your
 files/folders, themes, apps etc. after a fresh installation.
 
 ## System Tray 
-You will notice that your system tray will from time to time change its color to White, Blue or Red.
+You will notice that your system tray will from time to time change its color from White to Blue or Red.
 * ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) = Normal color, 
 automatically backup is ON and your backup device is connected and mounted.
 
 
-* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing your files, after is done,
+* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing up your files, after is done,
 it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
 
 
