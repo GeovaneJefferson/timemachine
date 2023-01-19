@@ -649,7 +649,7 @@ class PREBACKUP(QWidget):
             self.applicationPackagesCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/find-here-symbolic.svg"))
             self.applicationPackagesCheckBox.setIconSize(QtCore.QSize(22,22))
             self.applicationPackagesCheckBox.setToolTip("This will reinstall: \n"
-                "* All manual saved packages")
+                "* All backup's packages")
             self.applicationPackagesCheckBox.clicked.connect(self.on_application_clicked)
 
             # Application size information
