@@ -8,7 +8,7 @@
   <img width="150" height="150" src="src/icons/backup_150px.png">
  <h1 align="left">Back up your PC with Time Machine</h1>
 </p>
-Use Time Machine, the built-in backup feature of your PC, to automatically back up your personal data, music, photos and 
+Use Time Machine to automatically back up your personal data, music, photos and 
 documents. Having a backup allows you to recover files that you later delete or can't access.
 
 ## Connect a storage device to use for backups
