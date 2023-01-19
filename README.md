@@ -51,8 +51,8 @@ The oldest backups are deleted when your backup disk is full.
   * Automatically back up must be enabled.
 
 ## Migration Assistant
-A Welcome Screen is in development, something similar to Apple's "Migration Assistant", a easy way to restore your 
-files/folders and apps, after a fresh installation.
+Something similar to Apple's "Migration Assistant", a easy way to restore your 
+files/folders, themes, apps etc. after a fresh installation.
 
 ## System Tray 
 You will notice that your system tray will from time to time change its color to White, Blue or Red.
