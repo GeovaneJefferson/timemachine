@@ -106,7 +106,7 @@ class CLI:
             elif user_os == "arch":
                 print("")
                 # sub.run(f"sudo pacman -S {self.installDependenciesArch}", shell=True)
-                sub.run(f"sudo pacman -S {self.installPip}", shell=True)
+                sub.run(f"sudo pacman -S python-pip", shell=True)
                 sub.run(f"sudo pacman -S {self.installDependencies}", shell=True)
 
             ################################################################################
