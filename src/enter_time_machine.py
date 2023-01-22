@@ -431,7 +431,17 @@ class ENTERTIMEMACHINE(QWidget):
                     # Text
                     ################################################################################
                     text = QLabel(self.filesResult)
-                    text.setText(output.capitalize())
+
+                    # Short strings
+                    countStrings = len(output)
+                    recentEndswith = output.split(".")[-1]
+
+                    # Label
+                    if countStrings < 20:            
+                        text.setText(f"{(output.capitalize())}")
+                    else:
+                        text.setText(f"{(output[:20].capitalize())}...{recentEndswith}")
+
                     text.setFont(QFont("Ubuntu", 11))
                     text.move(10, filesButtomY-25)
 
