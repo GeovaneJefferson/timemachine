@@ -798,8 +798,15 @@ class MAIN(QMainWindow):
 
     def on_update_button_clicked(self):
         try:
+            # backup users ini settings first
+            # Check if ini file exist and can be found
+            if os.path.exists(src_user_config):
+                # Make a copy a move to /src
+                sub.run(
+                    f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
+
+            # Update
             os.popen("git stash; git pull")
-            
             # Updated sucessfully message
             updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
             f'{appName} will be restarted.\n',
@@ -807,6 +814,14 @@ class MAIN(QMainWindow):
 
             if updatesWasInstalled == QMessageBox.Ok:
                 QMessageBox.Close
+
+            # Delete the old ini file inside "ini" folder
+            sub.run(f"rm {src_user_config}", shell=True)
+            # Restore the copy to inside "ini" folder
+            sub.run(
+                f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+            # Delete the copy
+            sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini", shell=True)
 
         except:
             QMessageBox.Close
