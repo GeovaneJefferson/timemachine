@@ -798,7 +798,6 @@ class MAIN(QMainWindow):
 
     def on_update_button_clicked(self):
         try:
-            # backup users ini settings first
             # Check if ini file exist and can be found
             if os.path.exists(src_user_config):
                 # Make a copy a move to /src
