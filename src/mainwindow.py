@@ -763,7 +763,7 @@ class MAIN(QMainWindow):
         mainDevices.show()
 
     def backup_now_clicked(self):
-        sub.Popen(f"python3 {src_backup_now}", shell=True)
+        sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
 
     def on_options_clicked(self):
         # self.setMinimumSize(800, 550)
@@ -907,83 +907,85 @@ class EXTERNAL(QWidget):
 
         if device_location():
             print("Found inside media")
-            # Add buttons and images for each external
-            for output in os.listdir(f'{media}/{userName}'):
-                # No spaces and special characters allowed
-                if output not in self.captureDevices and "'" not in output and " " not in output:
-                    # print(output)
-                    # If device is in list, display to user just on time per device
-                    self.captureDevices.append(output)
+            try:
+                # Add buttons and images for each external
+                for output in os.listdir(f'{media}/{userName}'):
+                    # No spaces and special characters allowed
+                    if output not in self.captureDevices and "'" not in output and " " not in output:
+                        # print(output)
+                        # If device is in list, display to user just on time per device
+                        self.captureDevices.append(output)
 
-                    # Avaliables external  devices
-                    self.availableDevices = QPushButton(self.whereFrame)
-                    self.availableDevices.setFont(QFont('Ubuntu', 12))
-                    self.availableDevices.setText(f"{output}")
-                    self.availableDevices.setFixedSize(440, 60)
-                    self.availableDevices.setCheckable(True)
-                    self.availableDevices.setAutoExclusive(True)
-                    text = self.availableDevices.text()
-                    self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-                    
-                    # Image
-                    dummyLabel = QLabel(self.availableDevices)
-                    image = QPixmap(f"{src_restore_icon}")
-                    image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                    dummyLabel.move(7, 7)
-                    dummyLabel.setPixmap(image)
+                        # Avaliables external  devices
+                        self.availableDevices = QPushButton(self.whereFrame)
+                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setText(f"{output}")
+                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setCheckable(True)
+                        self.availableDevices.setAutoExclusive(True)
+                        text = self.availableDevices.text()
+                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+                        
+                        # Image
+                        dummyLabel = QLabel(self.availableDevices)
+                        image = QPixmap(f"{src_restore_icon}")
+                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        dummyLabel.move(7, 7)
+                        dummyLabel.setPixmap(image)
 
-                    ################################################################################
-                    # Auto checked this choosed external device
-                    ################################################################################
-                    if text == self.iniHDName:
-                        self.availableDevices.setChecked(True)
+                        ################################################################################
+                        # Auto checked this choosed external device
+                        ################################################################################
+                        if text == self.iniHDName:
+                            self.availableDevices.setChecked(True)
 
-                    ################################################################################
-                    # Add widgets and Layouts
-                    ################################################################################
-                    # Vertical layout
-                    self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+                        ################################################################################
+                        # Add widgets and Layouts
+                        ################################################################################
+                        # Vertical layout
+                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+            except FileNotFoundError:
+                pass
 
         elif not device_location():
             print("Found inside run")
-            # If x device is removed or unmounted, remove from screen
-            for output in os.listdir(f'{run}/{userName}'):
-                # No spaces and special characters allowed
-                if "'" not in output and " " not in output:
-                    self.captureDevices.append(output)
+            try:
+                # If x device is removed or unmounted, remove from screen
+                for output in os.listdir(f'{run}/{userName}'):
+                    # No spaces and special characters allowed
+                    if "'" not in output and " " not in output:
+                        self.captureDevices.append(output)
 
-                    # Avaliables external  devices
-                    self.availableDevices = QPushButton(self.whereFrame)
-                    self.availableDevices.setFont(QFont('Ubuntu', 12))
-                    self.availableDevices.setText(f"{output}")
-                    self.availableDevices.setFixedSize(440, 60)
-                    self.availableDevices.setCheckable(True)
-                    self.availableDevices.setAutoExclusive(True)
-                    text = self.availableDevices.text()
-                    self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-                    
-                    # Image
-                    label = QLabel(self.availableDevices)
-                    image = QPixmap(f"{src_restore_icon}")
-                    image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                    label.move(7, 7)
-                    label.setPixmap(image)
+                        # Avaliables external  devices
+                        self.availableDevices = QPushButton(self.whereFrame)
+                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setText(f"{output}")
+                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setCheckable(True)
+                        self.availableDevices.setAutoExclusive(True)
+                        text = self.availableDevices.text()
+                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+                        
+                        # Image
+                        label = QLabel(self.availableDevices)
+                        image = QPixmap(f"{src_restore_icon}")
+                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        label.move(7, 7)
+                        label.setPixmap(image)
 
-                    ################################################################################
-                    # Auto checked this choosed external device
-                    ################################################################################
-                    if text == self.iniHDName:
-                        self.availableDevices.setChecked(True)
+                        ################################################################################
+                        # Auto checked this choosed external device
+                        ################################################################################
+                        if text == self.iniHDName:
+                            self.availableDevices.setChecked(True)
 
-                    ################################################################################
-                    # Add widgets and Layouts
-                    ################################################################################
-                    # Vertical layout
-                    self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
-
-        else:
-            print("No device found.")
-            pass
+                        ################################################################################
+                        # Add widgets and Layouts
+                        ################################################################################
+                        # Vertical layout
+                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+            except FileNotFoundError:
+                pass
 
     def on_use_disk_clicked(self):
         ################################################################################
