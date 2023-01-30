@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 from setup import *
+from device_location import *
+from package_manager import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -278,7 +280,6 @@ class OPTIONS(QWidget):
 
         else:
             exit()
-            # widget.setCurrentWidget(main6)
 
 
 class CHOOSEDEVICE(QWidget):
@@ -356,44 +357,36 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         # Search external inside media
         ################################################################################
-        try:
-            if os.listdir(f'{media}/{userName}'):
-                self.foundInMedia = True
-                self.show_on_screen(media)
+        device_location()
 
-            else:
-                for i in range(len(self.captureDevices)):
-                    item = self.devicesAreaLayout.itemAt(i)
-                    widget = item.widget()
-                    widget.deleteLater()
-                    i -= 1
+        ################################################################################
+        # Search external inside media
+        ################################################################################
+        try:
+            # If devices found inside media
+            if device_location():
+                self.show_on_screen()
                 
         except FileNotFoundError:
             try:
-                if os.listdir(f'{run}/{userName}'):
-                    self.foundInMedia = False
-                    self.show_on_screen(run)
-                else:
-                    for i in range(len(self.captureDevices)):
-                        item = self.devicesAreaLayout.itemAt(i)
-                        widget = item.widget()
-                        widget.deleteLater()
-                        i -= 1
+                # If devices found inside run/media
+                if not device_location():
+                    self.show_on_screen()
                     
             except Exception:
                 print("No device found...")
                 pass
 
-        self.show_on_screen(None)
+        self.show_on_screen()
 
-    def show_on_screen(self, location):
+    def show_on_screen(self):
         ################################################################################
         # Check source
         ################################################################################
-        if self.foundInMedia:
-            self.foundWhere = media
-        else:
-            self.foundWhere = run
+        if device_location():
+            location = f"{media}"
+        elif not device_location():
+            location = f"{run}"
 
         ################################################################################
         # Show available files
@@ -437,19 +430,6 @@ class CHOOSEDEVICE(QWidget):
                             "}")
 
                         self.devicesAreaLayout.addWidget(self.availableDevices)
-            
-                    # If x device is removed or unmounted, remove from screen
-                    # for output in self.captureDevices:
-                    #     if output not in os.listdir(f'{location}/{userName}'):
-                    #         # Current output index
-                    #         index = self.captureDevices.index(output)
-                    #         # Remove from list
-                    #         self.captureDevices.remove(output)             
-                    #         # Delete from screen
-                    #         item = self.devicesAreaLayout.itemAt(index)
-                    #         widget = item.widget()
-                    #         widget.deleteLater()
-                    #         index -= 1
 
         except Exception:
             pass
@@ -468,48 +448,32 @@ class CHOOSEDEVICE(QWidget):
         self.locationBackup = output
         self.continueButton.setEnabled(True)
         
-        # If user has clicked on one device
-        # if self.availableDevices.isChecked():
-        #     self.outputBox = output
-        #     # Enable use disk button
-        #     self.continueButton.setEnabled(True)
-        # else:
-        #     # If deselected, empty self.outputBox
-        #     self.outputBox = ""
-        #     # Disable use disk button
-        #     self.continueButton.setEnabled(False)
-
     def on_continue_clicked(self):
-        # Enable continue button
-        # self.continueButton.setEnabled(True)
         ################################################################################
-        # Adapt external name is it has space in the name
+        # Get Users Package Manager
         ################################################################################
-        # if " " in self.outputBox:
-        #     self.outputBox = str(self.outputBox.replace(" ", "\ ")).strip()
-
-        ################################################################################
-        # Get user's ox
-        ################################################################################
-        userPackageManager = os.popen(getUserPackageManager)
-        userPackageManager = userPackageManager.read().strip().lower()
-
+        get_package_manager()
         ################################################################################
         # Update INI file
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            if "ubuntu" or "debian" in userPackageManager:
+            if str(supportedDEBPackageManager) in get_package_manager():
                 # Save user's os name
-                config.set(f'INFO', 'packageManager', 'deb')
-            
-            elif "fedora" or "opensuse" in userPackageManager:
+                config.set(f'INFO', 'packageManager', f'{debFolderName}')
+
+            elif str(supportedRPMPackageManager) in get_package_manager():
                 # Save user's os name
-                config.set(f'INFO', 'packageManager', 'rpm')
+                config.set(f'INFO', 'packageManager', f'{rpmFolderName}')
 
             # Update INI file
-            config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.locationBackup}')
+            if device_location():
+                config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.locationBackup}')
+
+            elif not device_location():
+                config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.locationBackup}')
+
             config.set('EXTERNAL', 'name', f'{self.locationBackup}')
             config.write(configfile)
 
@@ -534,6 +498,7 @@ class PREBACKUP(QWidget):
         self.read_ini_file()
 
     def read_ini_file(self):
+        self.iniUserPackageManager = config['INFO']['packagemanager']
         self.widgets()
 
     def widgets(self):
@@ -542,16 +507,10 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Restore widget
         self.optionskWidget = QWidget()
-        # self.optionskWidget.setFixedSize(340, 300)
-        # self.optionskWidget.setStyleSheet("""
-        # border: 1px solid blue;
-        # """)
 
         self.scrollOptions = QScrollArea(self)
         self.scrollOptions.setFixedSize(370, 300)
-        # self.scrollOptions.setFixedHeight(300)
         self.scrollOptions.setWidgetResizable(True)
-        # self.scrollOptions.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scrollOptions.setWidget(self.optionskWidget)
 
         # Vertical base layout
@@ -622,7 +581,7 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Get folder size
-            if packageManager == "rpm":
+            if packageManager == rpmFolderName:
                 self.applicationSize = os.popen(f"du -hs {iniExternalLocation}/"
                     f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}")
                 self.applicationSize = self.applicationSize.read().strip("\t")
@@ -630,7 +589,7 @@ class PREBACKUP(QWidget):
                 self.applicationSize = self.applicationSize.replace(f"{iniExternalLocation}"
                     f"/{baseFolderName}/{applicationFolderName}/{rpmFolderName}", "").replace("\t", "")
             
-            elif packageManager == "deb":
+            elif packageManager == debFolderName:
                 self.applicationSize = os.popen(f"du -hs {iniExternalLocation}/"
                     f"{baseFolderName}/{applicationFolderName}/{debFolderName}")
                 self.applicationSize = self.applicationSize.read().strip("\t")
@@ -867,15 +826,15 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Check inside backup flatpak data (var)
         # There is not need to check (share) inside External
-        # If Var is empty, just pass this options
+        # If Var is empty, just pass skip options
         ################################################################################
         try:
             dummyList = []
-            if packageManager == "rpm":
+            if packageManager == rpmFolderName:
                 for outputRPM in os.listdir(f"{rpmMainFolder}/"):
                     dummyList.append(outputRPM)
 
-            elif packageManager == "deb":
+            elif packageManager == debFolderName:
                 for outputDeb in os.listdir(f"{debMainFolder}/"):
                     dummyList.append(outputDeb)
             
@@ -944,9 +903,6 @@ class PREBACKUP(QWidget):
     def enable_system_settings(self):
         dummyList = []
         try:
-            # # Find user's DE type
-            # userPackageManager = os.popen(getUserDE)
-            # userPackageManager = userPackageManager.read().strip().lower()
             # Check if a wallpaper has been backup
             for output in os.listdir(f"{wallpaperMainFolder}/"):
                 dummyList.append(output)
@@ -999,16 +955,39 @@ class PREBACKUP(QWidget):
                 # Add names to list
                 self.optionsAddedList.append("packages")
 
-                # Add checboxes dinamically
-                for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                    f"{applicationFolderName}/{debFolderName}/"):
-                    dummyCheckBox = QCheckBox()
-                    dummyCheckBox.setText((exclude.split("_")[0]).capitalize())
-                    dummyCheckBox.setChecked(True)
-                    self.countOfDebList.append(exclude)
-                    dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
+                # DEP
+                if self.iniUserPackageManager == debFolderName:
+                    for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{debFolderName}/"):
+                        # Exclude
+                        exclude = (exclude.split("_")[0])
+                        exclude = (exclude.split("-")[0])
+                        # CHeckbox
+                        dummyCheckBox = QCheckBox()
+                        dummyCheckBox.setText(exclude.capitalize())
+                        dummyCheckBox.setChecked(True)
+                        self.countOfDebList.append(exclude)
+                        dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
 
-                    self.selectAppsLayout.addWidget(dummyCheckBox)
+                        self.selectAppsLayout.addWidget(dummyCheckBox)
+                # RPM
+                elif self.iniUserPackageManager == rpmFolderName:
+                    for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                        f"{applicationFolderName}/{rpmFolderName}/"):
+                        # Exclude
+                        exclude = (exclude.split("_")[0])
+                        exclude = (exclude.split("-")[0])
+                        # CHeckbox
+                        dummyCheckBox = QCheckBox()
+                        dummyCheckBox.setText(exclude.capitalize())
+                        dummyCheckBox.setChecked(True)
+                        self.countOfDebList.append(exclude)
+                        dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
+
+                        self.selectAppsLayout.addWidget(dummyCheckBox)
+                else:
+                    pass
+
             else:
                 config.set('RESTORE', 'applications_packages', 'false')
                 # Disable names
@@ -1042,14 +1021,13 @@ class PREBACKUP(QWidget):
                 # Enable continue button
                 self.continueButton.setEnabled(True)
                 # Add names to list if not already there
-                # if "flatpak" not in self.optionsAddedList:
                 self.optionsAddedList.append("flatpak")
+
             else:
                 config.set('RESTORE', 'applications_flatpak_names', 'false')
                 # Disable data checkbox
                 self.flatpakCheckBox.setChecked(False)
                 # Disable flatpak if in list
-                # if "flatpak" in self.optionsAddedList:
                 self.optionsAddedList.remove("flatpak")
 
             # Write to INI file
@@ -1197,19 +1175,10 @@ class PREBACKUP(QWidget):
             # Enable continue button
             self.continueButton.setEnabled(True)
 
-        # print("Len deb list:",len(self.countOfDebList))
-        # print("Len exclude list:",len(self.excludeAppList))
-        # print("Len options list:",len(self.optionsAddedList))
-        # print("Count options:",(self.optionsAddedList))
-        # print(bool(self.applicationPackagesCheckBox.isChecked()))
-        # print((self.excludeAppList))
-
 
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
-        self.outputBox = ()
-
         self.widgets()
 
     def widgets(self):
@@ -1434,7 +1403,6 @@ class BACKUPSCREEN(QWidget):
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
-
         self.widgets()
             
     def widgets(self):

@@ -571,14 +571,12 @@ class BACKUP:
                 oneMore = False
                 with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
                     file = file.readlines()
-
                     # Strips the newline character
                     for line in file:
                         line = line.strip()
                         if oneMore:
                             line = line.replace("Image=", "").replace("file://", "")
                             self.getWallpaper = str(line)
-                            print(self.getWallpaper)
                             break
 
                         if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:

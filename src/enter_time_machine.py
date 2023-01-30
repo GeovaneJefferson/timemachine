@@ -48,11 +48,7 @@ class ENTERTIMEMACHINE(QWidget):
     def widgets(self):
         # Base vertical layout
         baseV = QVBoxLayout()
-        # baseV.setAlignment(QtCore.Qt.AlignVCenter)
-        # baseV.setContentsMargins(20, 20, 20, 20)
-        
         baseH = QHBoxLayout()
-        # baseH.setContentsMargins(20, 20, 20, 20)
 
         ################################################################################
         # Left widget
@@ -60,14 +56,9 @@ class ENTERTIMEMACHINE(QWidget):
         # Folders widget
         self.widgetLeft = QWidget()
         self.widgetLeft.setFixedWidth(200)
-        # self.widgetLeft.setStyleSheet(
-        #     """
-        #         border: 1px solid black;
-        #     """)
 
         self.foldersLayout = QVBoxLayout(self.widgetLeft)
         self.foldersLayout.setAlignment(QtCore.Qt.AlignLeft)
-        #self.foldersLayout.setContentsMargins(10, 20, 10, 20)
         self.foldersLayout.setSpacing(5)
         
         ################################################################################
@@ -108,10 +99,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         widgetUpDown = QWidget()
         widgetUpDown.setFixedWidth(120)
-        # widgetUpDown.setStyleSheet(
-        #    """
-        #         border: 1px solid black;
-        #     """)
 
         # UpDown layout
         self.upDownLayout = QVBoxLayout(widgetUpDown)
@@ -161,10 +148,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         widgetRight = QWidget()
         widgetRight.setFixedWidth(120)
-        # widgetRight.setStyleSheet(
-        #     """
-        #         border: 1px solid black;
-        #     """)
 
         # Times layout
         self.timesLayout = QVBoxLayout(widgetRight)
@@ -210,9 +193,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         baseH.addWidget(self.widgetLeft)
         baseH.addLayout(baseV)
-        # baseH.addWidget(self.scrollForFolders)
-        # baseH.addWidget(self.scrollForFolders)
-        # baseH.addWidget(self.scrollForFiles)
         baseH.addWidget(widgetUpDown)
         baseH.addWidget(widgetRight)
 
@@ -224,8 +204,6 @@ class ENTERTIMEMACHINE(QWidget):
         self.upDownLayout.addWidget(self.afterGrayDate, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.upDownLayout.addStretch()
         
-        # baseV.addWidget(self.currentLocation)
-        # baseV.addLayout(baseH)
         baseV.addWidget(self.scrollForFolders)
         baseV.addWidget(self.scrollForFiles, 1)
         self.restoreLayout.addWidget(self.restoreButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
@@ -601,21 +579,6 @@ class ENTERTIMEMACHINE(QWidget):
             self.afterGrayDate.setText("")
         
     def add_to_restore(self, output, getDate, getTime):
-        ################################################################################
-        # Check for spaces inside output and sort them
-        ################################################################################
-        # TODO
-        # if not "." in output:
-        #     self.extra1 = output
-            
-        #     if output in self.filesToRestore:
-        #         self.filesToRestore.remove(output)  
-
-        #     for _ in range(1):
-        #         self.clean_stuff_on_screen("clean_files")
-
-        #     self.show_on_screen()
-
         if not " " in output:
             if not output in self.filesToRestore:  # Check if output is already inside list
                 self.filesToRestore.append(output)  # Add output to the list files to restore
@@ -639,7 +602,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
-
             # Restore label + filesToRestore and self.filesToRestoreWithSpace lenght
             self.restoreButton.setText(f"Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})")
 
