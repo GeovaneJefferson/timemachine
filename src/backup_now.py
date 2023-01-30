@@ -105,8 +105,8 @@ class BACKUP:
         print("Backing up wallpaper...")
         # Get Wallaper
         user_wallpaper()
-        print(f"{copyCPCMD} {str(user_wallpaper)} {self.wallpaperMainFolder}/")
-        sub.run(f"{copyCPCMD} {str(user_wallpaper)} {self.wallpaperMainFolder}/", shell=True) 
+        print(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/")
+        sub.run(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/", shell=True) 
        
         # Condition
         if self.iniAllowFlatpakNames == "true":
