@@ -763,7 +763,7 @@ class MAIN(QMainWindow):
         mainDevices.show()
 
     def backup_now_clicked(self):
-        sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
+        sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
         # self.setMinimumSize(800, 550)
