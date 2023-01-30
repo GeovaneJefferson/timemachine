@@ -59,7 +59,7 @@ while True:
     if app.iniAutomaticallyBackup == "true":
         app.read_ini_files()
         app.search_downloads()
-        time.sleep(10)
+        time.sleep(30)
     else:
         break
     

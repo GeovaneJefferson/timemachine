@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from check_connection import *
 
 ################################################################################
 ## Signal
@@ -80,43 +81,10 @@ class CLI:
         self.check_connection()
 
     def check_connection(self):
-        ################################################################################
-        # Check for external in media/
-        ################################################################################
-        try:
-            # Check for user backup device inside Media
-            os.listdir(f'{media}/{userName}/{self.iniHDName}')
-            print(f'Devices found inside {media}')
+        is_connected(self.iniHDName)
+
+        if is_connected(self.iniHDName):
             self.check_the_date()
-
-        except FileNotFoundError:
-            ################################################################################
-            # Check for external in run/
-            ################################################################################
-            try:
-                # Check for user backup device inside Run
-                os.listdir(f'{run}/{userName}/{self.iniHDName}')
-                print(f"Devices found inside {run}")
-                self.check_the_date()
-
-            except FileNotFoundError as error:
-                print(error)
-                ################################################################################
-                # No saved backup device was found inside Media or Run
-                # Write error to INI File
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'notification_id', "2")
-                    config.set('INFO', 'notification_add_info', f"{error}")
-                    config.write(configfile)
-
-                print("No external device found.")
-                print(f"Please, connect the external device, so next time, "
-                    f"{appName} will be able to backup.")
-
-        # self.check_the_date()
 
     def check_the_date(self):
         print("Checking dates...")
@@ -148,7 +116,6 @@ class CLI:
 
             else:
                 print("No back up for today.")
-                # self.no_backup()
 
     def check_the_mode(self):
         print("Checking mode...")
@@ -215,8 +182,6 @@ class CLI:
         print("Updating INI file...")
         print("Exiting...")
 
-    # def signal_exit(self, *args):
-    #     signal_exit()
 
 main = CLI()
 # Exit program if auto_backup is false
@@ -240,12 +205,6 @@ while True:
             break
 
     except Exception as error:
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_add_info', f"{error}")
-            config.write(configfile)
-    
         break
     
 exit()

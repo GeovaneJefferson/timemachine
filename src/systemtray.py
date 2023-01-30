@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from check_connection import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -7,7 +8,6 @@ timer = QtCore.QTimer()
 
 class APP:
     def __init__(self):
-        self.connected = None
         self.iniUI()
 
     def iniUI(self):
@@ -51,11 +51,6 @@ class APP:
         self.backupNowButton.setFont(QFont(item))
         self.backupNowButton.triggered.connect(self.backup_now)
 
-        # Skip this backup
-        # self.skipThisBackup = QAction("Skip This Backup")
-        # self.skipThisBackup.setFont(QFont(item))
-        # self.skipThisBackup.triggered.connect(self.skip_backup)
-
         # Browse Time Machine Backups button
         self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
         self.browseTimeMachineBackupsButton.setFont(QFont(item))
@@ -84,9 +79,6 @@ class APP:
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
 
-        # Tray
-        # self.tray.setIcon(QIcon(src_system_bar_icon))
-        
         ################################################################################
         # Check ini
         ################################################################################
@@ -95,9 +87,6 @@ class APP:
         self.updates()
         
         self.app.exec()
-
-        # # App exec
-        # self.app.exec()
     
     def updates(self):
         print("System tray is running...")
@@ -141,56 +130,20 @@ class APP:
 
     def check_connection(self):
         ################################################################################
-        # External availability
+        # Check Connection 
         ################################################################################
-        if self.iniBackupNow == "false":
-            try:
-                os.listdir(f"{media}/{userName}/{self.iniHDName}")
-                # Devices was found
-                self.connected = True
-
-            except FileNotFoundError:
-                try:
-                    os.listdir(f"{run}/{userName}/{self.iniHDName}")
-                    # Devices was found
-                    self.connected = True
-
-                except FileNotFoundError:
-                    try:
-                        # Devices was not found
-                        self.connected = False
-
-                    except Exception as error:
-                        print(error)
-                        pass
-
-        # Condition
-        self.conditions()
-
-    def conditions(self):
-        # If backup device is registered
+        is_connected(self.iniHDName)
+        # User has registered a device name
         if self.iniHDName != "None":
             # If backup device is connected
-            if self.connected:
-                # Read ini file befora write
-                if self.iniNotificationID != "0":
-                    # If usb is connected, change notification id to 0 (White color)
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('INFO', 'notification_id', '0')
-                        config.write(configfile)
-
+            if is_connected(self.iniHDName):
+                print("Device is conencted.")
                 # Is not backing up now
                 if self.iniBackupNow == "false":
                     # White color
                     self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Show backup now button
-                    # self.backupNowButton.setVisible(True)
-                    # Show backup now button
                     self.backupNowButton.setEnabled(True)
-                    # Hide skip this backup
-                    # self.skipThisBackup.setVisible(False)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
                     # Update last backup information
@@ -200,27 +153,15 @@ class APP:
                 else:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
-                    # Hide backup now button
-                    # self.backupNowButton.setVisible(False)
-                    # Show skip this backup
-                    # self.skipThisBackup.setVisible(True)
-                    # Update last backup information
                     self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
         
             else:
+                print("Device is not connected.")
+                self.tray.setIcon(QIcon(src_system_bar_error_icon))
                 # Hide backup now button
                 self.backupNowButton.setEnabled(False)
                 # Hide Enter In Time Machine
                 self.browseTimeMachineBackupsButton.setEnabled(False)
-
-                # Read ini file befora write
-                if self.iniNotificationID != "2":
-                    # Change system tray color to red, because not backup device was found or mounted
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('INFO', 'notification_id', '2')
-                        config.write(configfile)
 
                 # If backup device is not connected and automatically if ON
                 if self.iniAutomaticallyBackup == "true":
@@ -243,12 +184,6 @@ class APP:
         else:
             # Update last backup information
             self.iniLastBackupInformation.setText('First, select a backup device.')
-
-            # If backup device is not registered
-            # Hide skip this backup
-            # self.skipThisBackup.setVisible(False)
-            # Show backup now button
-            # self.backupNowButton.setVisible(True)
             # Disable backup now button
             self.backupNowButton.setEnabled(False)
             # Disable enter in time machine button
@@ -256,19 +191,7 @@ class APP:
 
     def backup_now(self):
         sub.Popen(f"python3 {src_backup_now}", shell=True)
-   
-    # def skip_backup(self):
-    #     # Skip this backup
-    #     config = configparser.ConfigParser()
-    #     config.read(src_user_config)
-    #     with open(src_user_config, 'w', encoding='utf8') as configfile:
-    #         config.set('BACKUP', 'skip_this_backup', 'true')
-    #         config.write(configfile)
-        
-        # Hide skip this backup
-        # self.skipThisBackup.setVisible(False)
-        # Show backup now button
-        # self.backupNowButton.setVisible(True)
+
 
 if __name__ == '__main__':
     main = APP()
