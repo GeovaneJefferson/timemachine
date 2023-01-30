@@ -190,7 +190,7 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def backup_now(self):
-        sub.Popen(f"python3 {src_backup_now}", shell=True)
+        sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
 
 
 if __name__ == '__main__':
