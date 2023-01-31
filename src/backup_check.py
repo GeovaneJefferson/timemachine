@@ -171,8 +171,8 @@ class CLI:
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
-        # Call backup now
-        sub.run(f"python3 {src_backup_now}", shell=True)
+        # Call prepare backup
+        sub.run(f"python3 {src_prepare_backup_py}", shell=True)
 
     def no_backup(self):
         print("No backup for today.")
