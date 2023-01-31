@@ -370,36 +370,39 @@ class MAIN(QMainWindow):
         self.connection()
 
     def connection(self):
-        is_connected(self.iniHDName)
-        if is_connected(self.iniHDName):
-            ################################################################################
-            # External status
-            ################################################################################
-            self.externalStatusLabel.setText("Status: Connected")
-            self.externalStatusLabel.setStyleSheet('color: green')
-            try:
-                # Clean notification info
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    config.set('INFO', 'notification_add_info', ' ')
-                    config.write(configfile)
+        try:
+            is_connected(self.iniHDName)
+            if is_connected(self.iniHDName):
+                ################################################################################
+                # External status
+                ################################################################################
+                self.externalStatusLabel.setText("Status: Connected")
+                self.externalStatusLabel.setStyleSheet('color: green')
+                try:
+                    # Clean notification info
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
+                        config.set('INFO', 'notification_add_info', ' ')
+                        config.write(configfile)
 
-            except Exception as error:
-                print(Exception)
-                print("Main Window error!")
-                pass
+                except Exception as error:
+                    print(Exception)
+                    print("Main Window error!")
+                    pass
 
-            self.get_size_informations()
+                self.get_size_informations()
 
-        elif not is_connected(self.iniHDName):
-            # Disable backup now button
-            self.backupNowButton.setEnabled(False)       
-            # Disconnected     
-            self.externalStatusLabel.setText("Status: Disconnected")
-            self.externalStatusLabel.setStyleSheet('color: red')
-            self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
-            self.externalSizeLabel.setText("No information available")
+            elif not is_connected(self.iniHDName):
+                # Disable backup now button
+                self.backupNowButton.setEnabled(False)       
+                # Disconnected     
+                self.externalStatusLabel.setText("Status: Disconnected")
+                self.externalStatusLabel.setStyleSheet('color: red')
+                self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
+                self.externalSizeLabel.setText("No information available")
+        except:
+            pass
 
         self.condition()
 
