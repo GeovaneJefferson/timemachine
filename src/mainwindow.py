@@ -368,9 +368,6 @@ class MAIN(QMainWindow):
         self.connection()
 
     def connection(self):
-        print("##########################################################")
-        print(self.iniHDName)
-        print("##########################################################")
         if self.iniHDName != "None":
             if is_connected(self.iniHDName):
                 ################################################################################
@@ -390,6 +387,7 @@ class MAIN(QMainWindow):
                     print(Exception)
                     print("Main Window error!")
                     pass
+                
             self.get_size_informations()
 
         elif not is_connected(self.iniHDName):
