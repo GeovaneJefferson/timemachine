@@ -21,15 +21,19 @@ class CHECKER:
         self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
 
     def search_downloads(self):
-        # Read Downloads folder for .deb
-        for debs in os.listdir(self.debMainFolder):
-            self.detectedPackagesDebList.append(debs)
+        try:
+            # Read Downloads folder for .deb
+            for debs in os.listdir(self.debMainFolder):
+                self.detectedPackagesDebList.append(debs)
+        except:
+            pass
+        try:
+            # Read Downloads folder for .rpm
+            for rpms in os.listdir(self.rpmMainFolder):
+                self.detectedPackagesRPMList.append(rpms)
+        except:
+            pass
 
-        # Read Downloads folder for .rpm
-        for rpms in os.listdir(self.rpmMainFolder):
-            self.detectedPackagesRPMList.append(rpms)
-    
-        print(self.detectedPackagesDebList)
         for output in os.listdir(self.downloadLoc):
             if output.endswith(".deb"):
                 # Check if has not been already back up
