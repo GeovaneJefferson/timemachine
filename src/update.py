@@ -7,10 +7,11 @@ def update_app():
         sub.run(
             f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
     # Update
-    sub.run("git stash; git pull",shell=True)
+    os.popen("git stash; git pull")
     # Delete the old ini file inside "ini" folder
     sub.run(f"rm {src_user_config}", shell=True)
     # Restore the copy to inside "ini" folder
+    print("Restorin ini file pos updateing...")
     sub.run(
         f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
     # Delete the copy
@@ -20,4 +21,6 @@ def update_app():
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
     # Exit the application to reload the new settings
     exit()
+
+update_app()
 
