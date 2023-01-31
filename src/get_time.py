@@ -27,9 +27,3 @@ def today_date():
     todayDate = datetime.now()
     todayDate = todayDate.strftime("%d-%m-%y")
     return todayDate
-    
-
-
-
-print(get_date_time())
-print(get_date())
