@@ -15,10 +15,10 @@ def update_app():
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
     print(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}")
     # Delete the copy
-    sub.run(f"rm {src_user_config}", shell=True)
+    sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
 
     # Re-open app
-    # sub.Popen(f"python3 {src_main_window_py}", shell=True)
+    sub.Popen(f"python3 {src_main_window_py}", shell=True)
     # Exit the application to reload the new settings
     exit()
 
