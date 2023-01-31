@@ -433,32 +433,33 @@ class MAIN(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None" and is_connected(self.iniHDName):  
-            # Show backup button if no back up is been made
-            if self.iniBackupNow == "false":
-                # Enable backup now button
-                self.backupNowButton.setEnabled(True)
-                # Enable auto checkbox
-                self.automaticallyCheckBox.setEnabled(True)                
-                # Enable System tray
-                self.showInSystemTrayCheckBox.setEnabled(True)
+        try:
+            if is_connected(self.iniHDName):
+                if self.iniHDName != "None":  
+                    # Show backup button if no back up is been made
+                    if self.iniBackupNow == "false":
+                        # Enable backup now button
+                        self.backupNowButton.setEnabled(True)
+                        # Enable auto checkbox
+                        self.automaticallyCheckBox.setEnabled(True)                
+                        # Enable System tray
+                        self.showInSystemTrayCheckBox.setEnabled(True)
 
-            else:
-                # Disable backup now button
-                self.backupNowButton.setEnabled(False)
-                # Disable auto checkbox
-                self.automaticallyCheckBox.setEnabled(False)
-                # Disable System tray
-                self.showInSystemTrayCheckBox.setEnabled(False)
+                    else:
+                        # Disable backup now button
+                        self.backupNowButton.setEnabled(False)
+                        # Disable auto checkbox
+                        self.automaticallyCheckBox.setEnabled(False)
+                        # Disable System tray
+                        self.showInSystemTrayCheckBox.setEnabled(False)
 
-        else:
-            # Set external name
-            self.externalNameLabel.setText("<h1>None</h1>")
-            # Enable backup now button
-            self.backupNowButton.setEnabled(False)
-            # Enable auto checkbox
-            # self.automaticallyCheckBox.setEnabled(False)
-      
+                else:
+                    # Set external name
+                    self.externalNameLabel.setText("<h1>None</h1>")
+                    # Enable backup now button
+                    self.backupNowButton.setEnabled(False)
+        except:
+            pass
         self.set_external_name()
 
     def set_external_name(self):
