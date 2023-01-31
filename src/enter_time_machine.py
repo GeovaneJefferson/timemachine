@@ -493,10 +493,14 @@ class ENTERTIMEMACHINE(QWidget):
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
 
                     count += 1
-
                     # If filesButtomX if higher than scroll width, go to the next column
                     horizontal += 1
-                    if count %3 == 0:
+                    if self.scrollForFiles.width() <=800:
+                        dimension = 3
+                    elif self.scrollForFiles.width() <=1440:
+                        dimension = 6
+
+                    if count %dimension == 0:
                         # Reset counts
                         count = 0
                         # Reset horizontal
@@ -826,6 +830,7 @@ if __name__ == '__main__':
     # Windows settings
     main.setWindowTitle(f"Browser {appName} Backups")
     main.setWindowIcon(QIcon(src_backup_icon))
-    main.setFixedSize(1280, 720)
+    main.resize(1280, 720)
+    main.showMaximized()
     
     app.exit(app.exec())
