@@ -791,7 +791,6 @@ class MAIN(QMainWindow):
                 # Make a copy a move to /src
                 sub.run(
                     f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
-
             # Update
             os.popen("git stash; git pull")
             # Updated sucessfully message
