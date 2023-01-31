@@ -370,8 +370,9 @@ class MAIN(QMainWindow):
         self.connection()
 
     def connection(self):
+        print("Checking connection")
         try:
-            is_connected(self.iniHDName)
+            # is_connected(self.iniHDName)
             if is_connected(self.iniHDName):
                 ################################################################################
                 # External status
