@@ -370,40 +370,38 @@ class MAIN(QMainWindow):
         self.connection()
 
     def connection(self):
-        print("Checking connection")
-        try:
-            # is_connected(self.iniHDName)
-            if is_connected(self.iniHDName):
-                ################################################################################
-                # External status
-                ################################################################################
-                self.externalStatusLabel.setText("Status: Connected")
-                self.externalStatusLabel.setStyleSheet('color: green')
-                try:
-                    # Clean notification info
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('INFO', 'notification_add_info', ' ')
-                        config.write(configfile)
+        print("###################")
+        print(is_connected(self.iniHDName))
+        print("###################")
+        if is_connected(self.iniHDName):
+            ################################################################################
+            # External status
+            ################################################################################
+            self.externalStatusLabel.setText("Status: Connected")
+            self.externalStatusLabel.setStyleSheet('color: green')
+            try:
+                # Clean notification info
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
+                    config.set('INFO', 'notification_add_info', ' ')
+                    config.write(configfile)
 
-                except Exception as error:
-                    print(Exception)
-                    print("Main Window error!")
-                    pass
+            except Exception as error:
+                print(Exception)
+                print("Main Window error!")
+                pass
 
-                self.get_size_informations()
+            self.get_size_informations()
 
-            elif not is_connected(self.iniHDName):
-                # Disable backup now button
-                self.backupNowButton.setEnabled(False)       
-                # Disconnected     
-                self.externalStatusLabel.setText("Status: Disconnected")
-                self.externalStatusLabel.setStyleSheet('color: red')
-                self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
-                self.externalSizeLabel.setText("No information available")
-        except:
-            pass
+        elif not is_connected(self.iniHDName):
+            # Disable backup now button
+            self.backupNowButton.setEnabled(False)       
+            # Disconnected     
+            self.externalStatusLabel.setText("Status: Disconnected")
+            self.externalStatusLabel.setStyleSheet('color: red')
+            self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
+            self.externalSizeLabel.setText("No information available")
 
         self.condition()
 
@@ -433,40 +431,37 @@ class MAIN(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        try:
-            if is_connected(self.iniHDName):
-                if self.iniHDName != "None":  
-                    # Show backup button if no back up is been made
-                    if self.iniBackupNow == "false":
-                        # Enable backup now button
-                        self.backupNowButton.setEnabled(True)
-                        # Enable auto checkbox
-                        self.automaticallyCheckBox.setEnabled(True)                
-                        # Enable System tray
-                        self.showInSystemTrayCheckBox.setEnabled(True)
+        if self.iniHDName != "None" and is_connected(self.iniHDName):  
+            # Show backup button if no back up is been made
+            if self.iniBackupNow == "false":
+                # Enable backup now button
+                self.backupNowButton.setEnabled(True)
+                # Enable auto checkbox
+                self.automaticallyCheckBox.setEnabled(True)                
+                # Enable System tray
+                self.showInSystemTrayCheckBox.setEnabled(True)
 
-                    else:
-                        # Disable backup now button
-                        self.backupNowButton.setEnabled(False)
-                        # Disable auto checkbox
-                        self.automaticallyCheckBox.setEnabled(False)
-                        # Disable System tray
-                        self.showInSystemTrayCheckBox.setEnabled(False)
+            else:
+                # Disable backup now button
+                self.backupNowButton.setEnabled(False)
+                # Disable auto checkbox
+                self.automaticallyCheckBox.setEnabled(False)
+                # Disable System tray
+                self.showInSystemTrayCheckBox.setEnabled(False)
 
-                else:
-                    # Set external name
-                    self.externalNameLabel.setText("<h1>None</h1>")
-                    # Enable backup now button
-                    self.backupNowButton.setEnabled(False)
-        except:
-            pass
+        else:
+            # Set external name
+            self.externalNameLabel.setText("<h1>None</h1>")
+            # Enable backup now button
+            self.backupNowButton.setEnabled(False)
+            # Enable auto checkbox
+            # self.automaticallyCheckBox.setEnabled(False)
+      
         self.set_external_name()
 
     def set_external_name(self):
-        try:
-            self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
-        except:
-            pass
+        self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
+
         self.set_external_last_backup()
 
     def set_external_last_backup(self):
