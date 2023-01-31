@@ -2,6 +2,7 @@ from setup import *
 
 def get_date_time():
     global dateDay, dateMonth, dateYear, dayName, currentHour, currentMinute
+    global dateTime
 
     dateTime = datetime.now()
     dateDay = dateTime.strftime("%d")
@@ -21,6 +22,14 @@ def get_date():
 def latest_time_info():
     lastestTimeInfo = f'{dayName}, {currentHour}:{currentMinute}'
     return lastestTimeInfo
+
+def today_date():
+    todayDate = datetime.now()
+    todayDate = todayDate.strftime("%d-%m-%y")
+    return todayDate
+    
+
+
 
 print(get_date_time())
 print(get_date())

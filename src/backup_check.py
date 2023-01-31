@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 from setup import *
 from check_connection import *
+from get_time import *
 
 ################################################################################
 ## Signal
@@ -124,16 +125,12 @@ class CLI:
             dateFolders.append(output)
             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
-        # Get folders inside the backup folder, and check the last backup date
-        todayDate = datetime.now()
-        todayDate = todayDate.strftime("%d-%m-%y")
-
         # One time per day
         if self.iniOneTimePerDay == "true":
             # If current time is higher than time to backup
             if self.totalCurrentTime > self.totalNextTime:
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
-                if todayDate not in dateFolders:
+                if today_date() not in dateFolders:
                     # Call backup now
                     self.call_backup_now()
 
@@ -205,6 +202,7 @@ while True:
             break
 
     except Exception as error:
+        print(error)
         break
     
 exit()
