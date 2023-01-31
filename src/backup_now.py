@@ -444,8 +444,11 @@ class BACKUP:
                 config.set('INFO', 'oldest', f'{oldestList[0]}')
             except:
                 pass
-            # Update last backup time
-            config.set('INFO', 'latest', f'{str(latest_time_info())}')
+            try:
+                # Update last backup time
+                config.set('INFO', 'latest', f'{str(latest_time_info())}')
+            except:
+                pass
             # Change system tray color to white (Normal)
             config.set('INFO', 'notification_id', "0")
             # Reset Main Window information
