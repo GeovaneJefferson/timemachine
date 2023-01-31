@@ -355,10 +355,8 @@ class MAIN(QMainWindow):
             # Times
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
-
             # Current information about an error
             self.iniExtraInformation = config['INFO']['notification_add_info']
-            
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
 
@@ -370,6 +368,7 @@ class MAIN(QMainWindow):
         self.connection()
 
     def connection(self):
+        print(self.iniHDName)
         if self.iniHDName != "none":
             if is_connected(self.iniHDName):
                 ################################################################################
