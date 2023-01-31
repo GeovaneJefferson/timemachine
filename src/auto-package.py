@@ -19,7 +19,7 @@ class CHECKER:
         self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
         self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
         self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
-
+   
     def search_downloads(self):
         try:
             # Read Downloads folder for .deb
@@ -60,12 +60,12 @@ class CHECKER:
 app = CHECKER()
 
 while True:
+    app.read_ini_files()
     if app.iniAutomaticallyBackup == "true":
-        app.read_ini_files()
         app.search_downloads()
         time.sleep(30)
     else:
         break
-    
+
 print("Auto backup is off...")
 exit()
