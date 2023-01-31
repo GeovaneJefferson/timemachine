@@ -387,7 +387,7 @@ class MAIN(QMainWindow):
                     print(Exception)
                     print("Main Window error!")
                     pass
-                
+
             self.get_size_informations()
 
         elif not is_connected(self.iniHDName):
@@ -775,7 +775,7 @@ class MAIN(QMainWindow):
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
             updateAvailable = QPushButton()
-            updateAvailable.setText("   Update Available    ")
+            updateAvailable.setText("  Update Available  ")
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
             
@@ -790,15 +790,7 @@ class MAIN(QMainWindow):
                 sub.run(
                     f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
             # Update
-            os.popen("git stash; git pull")
-            # Updated sucessfully message
-            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-            f'{appName} will be restarted.\n',
-            QMessageBox.Ok)
-
-            if updatesWasInstalled == QMessageBox.Ok:
-                QMessageBox.Close
-
+            sub.run("git stash; git pull",shell=True)
             # Delete the old ini file inside "ini" folder
             sub.run(f"rm {src_user_config}", shell=True)
             # Restore the copy to inside "ini" folder
