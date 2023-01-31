@@ -463,8 +463,10 @@ class MAIN(QMainWindow):
         self.set_external_name()
 
     def set_external_name(self):
-        self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
-
+        try:
+            self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
+        except:
+            pass
         self.set_external_last_backup()
 
     def set_external_last_backup(self):
