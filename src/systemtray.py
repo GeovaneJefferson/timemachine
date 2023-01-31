@@ -80,7 +80,7 @@ class APP:
         self.tray.setContextMenu(self.menu)
 
         ################################################################################
-        # Check ini
+        # Read Ini File
         ################################################################################
         timer.timeout.connect(self.updates)
         timer.start(2000)  # update every x second
