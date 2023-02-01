@@ -1,17 +1,14 @@
 from setup import *
 
+dateTime = datetime.now()
+dateDay = dateTime.strftime("%d")
+dateMonth = dateTime.strftime("%m")
+dateYear = dateTime.strftime("%y")
+dayName = dateTime.strftime("%a")
+currentHour = dateTime.strftime("%H")
+currentMinute = dateTime.strftime("%M")
+
 def get_date_time():
-    global dateDay, dateMonth, dateYear, dayName, currentHour, currentMinute
-    global dateTime
-
-    dateTime = datetime.now()
-    dateDay = dateTime.strftime("%d")
-    dateMonth = dateTime.strftime("%m")
-    dateYear = dateTime.strftime("%y")
-    dayName = dateTime.strftime("%a")
-    currentHour = dateTime.strftime("%H")
-    currentMinute = dateTime.strftime("%M")
-
     timeFolder = f"{dateDay}-{dateMonth}-{dateYear}/{currentHour}-{currentMinute}"
     return timeFolder
 
