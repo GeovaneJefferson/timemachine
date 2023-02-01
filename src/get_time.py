@@ -21,6 +21,5 @@ def latest_time_info():
     return lastestTimeInfo
 
 def today_date():
-    todayDate = datetime.now()
-    todayDate = todayDate.strftime("%d-%m-%y")
+    todayDate = dateTime.strftime("%d-%m-%y")
     return todayDate
