@@ -351,42 +351,18 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
-        self.check_connection()
-
-    def check_connection(self):
-        ################################################################################
-        # Search external inside media
-        ################################################################################
-        device_location()
-
-        ################################################################################
-        # Search external inside media
-        ################################################################################
-        try:
-            # If devices found inside media
-            if device_location():
-                self.show_on_screen()
-                
-        except FileNotFoundError:
-            try:
-                # If devices found inside run/media
-                if not device_location():
-                    self.show_on_screen()
-                    
-            except Exception:
-                print("No device found...")
-                pass
-
         self.show_on_screen()
 
     def show_on_screen(self):
         ################################################################################
-        # Check source
+        # Search external inside media
         ################################################################################
         if device_location():
             location = f"{media}"
         elif not device_location():
             location = f"{run}"
+        else:
+            location = None
 
         ################################################################################
         # Show available files
@@ -449,10 +425,6 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setEnabled(True)
         
     def on_continue_clicked(self):
-        ################################################################################
-        # Get Users Package Manager
-        ################################################################################
-        get_package_manager()
         ################################################################################
         # Update INI file
         ################################################################################
