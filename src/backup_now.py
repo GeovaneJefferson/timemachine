@@ -446,7 +446,7 @@ class BACKUP:
                 pass
             try:
                 # Update last backup time
-                config.set('INFO', 'latest', f'{str(latest_time_info())}')
+                config.set('INFO', 'latest', f'{latest_time_info()}')
             except:
                 pass
             # Change system tray color to white (Normal)
