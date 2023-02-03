@@ -1,9 +1,14 @@
 from setup import *
 
+homeFolderToBeBackup=[]
+homeFolderToBackupSizeList=[]
+flatpakVarSizeList=[]
+flatpakVarToBeBackup=[]
+flatpakLocaloBeBackup=[]
+flatpakLocalSizeList=[]
 
 def get_folders():
     try:
-        global homeFolderToBeBackup
         config = configparser.ConfigParser()
         config.read(src_user_config)
         iniFolders = config.options('FOLDER')
@@ -11,7 +16,6 @@ def get_folders():
         ################################################################################
         # Get Backup Folders
         ################################################################################
-        homeFolderToBeBackup=[]
         for output in iniFolders:  # Get folders size before back up to external
             # Capitalize first letter
             output = output.capitalize()
@@ -24,16 +28,15 @@ def get_folders():
 
             # Add output inside homeFolderToBeBackup
             homeFolderToBeBackup.append(output)
+            # Sort them
+            homeFolderToBeBackup.sort()
         
         return homeFolderToBeBackup 
     except:
         pass
 
 def home_folders_size():
-    global homeFolderToBackupSizeList
-
     try:
-        homeFolderToBackupSizeList=[]
         for output in homeFolderToBeBackup:
             # Get folder size
             getSize = os.popen(f"du -s {homeUser}/{output}")
@@ -52,11 +55,6 @@ def flatpak_var_size():
         ################################################################################
         # Get flatpak (var/app) folders size
         ################################################################################
-        global flatpakVarSizeList
-        global flatpakVarToBeBackup
-
-        flatpakVarSizeList=[]
-        flatpakVarToBeBackup=[]
         for output in os.listdir(src_flatpak_var_location):  # Get folders size before back up to external
             getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
             getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
@@ -88,11 +86,6 @@ def flatpak_local_size():
         ################################################################################
         # Get flatpak (.local/share/flatpak) folders size
         ################################################################################
-        global flatpakLocaloBeBackup
-        global flatpakLocalSizeList
-        
-        flatpakLocaloBeBackup=[]
-        flatpakLocalSizeList=[]
         for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
             # Get size of flatpak folder inside var/app/
             getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
