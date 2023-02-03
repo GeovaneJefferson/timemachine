@@ -2,15 +2,11 @@
 from setup import *
 from device_location import *
 from package_manager import *
+from get_backup_dates import *
+from get_backup_times import *
 
 # QTimer
 timer = QtCore.QTimer()
-
-################################################################
-# Window management
-################################################################
-windowXSize = 900
-windowYSize = 600
 
 ################################################################################
 # Read file
@@ -277,7 +273,6 @@ class OPTIONS(QWidget):
         if self.outputBox == "restore":
             widget.addWidget(main3) 
             widget.setCurrentIndex(widget.currentIndex()+1)
-
         else:
             exit()
 
@@ -313,14 +308,14 @@ class CHOOSEDEVICE(QWidget):
         self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.description.setText(f"Select a {appName} " 
-            "backup disk to transfer it's information to this PC.")
+            "backup disk to retore it's information to this PC.")
 
         # More description
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.moreDescription.setText(f"Make sure that your External device " 
-            f"with a {appName}'s backup is connected to this PC.")
+            f"with a {appName}'s backup is already connected to this PC.")
 
         ################################################################################
         # Devices Area
@@ -459,6 +454,7 @@ class PREBACKUP(QWidget):
         self.optionsAddedList = []
         self.excludeAppList = []
         self.countOfDebList = []
+        self.countOfRPMList = []
         self.alreadySelectApps = False
         self.excludeAppsLoc = (f"{iniExternalLocation}/{baseFolderName}/"
                 f"{applicationFolderName}/{src_exclude_applications}")
@@ -509,7 +505,7 @@ class PREBACKUP(QWidget):
         self.description = QLabel()
         self.description.setFont(QFont("Arial", 11))
         self.description.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.description.setText("Please select the items you wish to transfer to this PC.")
+        self.description.setText("Please select the items you wish to restore to this PC.")
         
         ################################################################################
         # Application checkbox (DATA)
@@ -702,28 +698,29 @@ class PREBACKUP(QWidget):
         # Files & Folders checkbox
         ################################################################################
         try:
-            # Get available dates inside TMB
-            dateFolders = []
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{backupFolderName}"):
-                if not "." in output:
-                    dateFolders.append(output)
-                    dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+
+            # # Get available dates inside TMB
+            # dateFolders = []
+            # for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+            #     f"{backupFolderName}"):
+            #     if not "." in output:
+            #         dateFolders.append(output)
+            #         dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
             # Get time inside date
-            timeFolder = []
-            for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
-                f"{backupFolderName}/{dateFolders[0]}/"):
-                timeFolder.append(output)
-                timeFolder.sort(reverse=True)
+            # timeFolder = []
+            # for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+            #     f"{backupFolderName}/{get_backup_date()[0]}/"):
+            #     timeFolder.append(output)
+            #     timeFolder.sort(reverse=True)
 
             # Get folder size
             self.fileAndFoldersFolderSize = os.popen(f"du -hs {iniExternalLocation}/"
-                f"{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}")
+                f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.strip("\n")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
-                f"/{baseFolderName}/{backupFolderName}/{dateFolders[0]}/{timeFolder[0]}", "")
+                f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}", "")
 
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
@@ -947,9 +944,8 @@ class PREBACKUP(QWidget):
                     for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/"):
                         # Exclude
-                        exclude = (exclude.split("_")[0])
-                        exclude = (exclude.split("-")[0])
-                        # CHeckbox
+                        exclude = exclude.split("_")[0].split("-")[0]
+                        # Checkbox
                         dummyCheckBox = QCheckBox()
                         dummyCheckBox.setText(exclude.capitalize())
                         dummyCheckBox.setChecked(True)
@@ -1136,7 +1132,7 @@ class PREBACKUP(QWidget):
             self.excludeAppList.remove(exclude)
         
         # if user deselect all app, application check to False
-        if len(self.excludeAppList) == len(self.countOfDebList):
+        if len(self.excludeAppList) == len(self.countOfDebList) or len(self.excludeAppList) == len(self.countOfRPMList):
             self.applicationPackagesCheckBox.setChecked(False)
             # Clean optionsAddedList
             self.optionsAddedList.clear()
@@ -1447,13 +1443,13 @@ if __name__ == '__main__':
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
 
-    widget.addWidget(main)   
-    widget.setCurrentWidget(main)   
+    widget.addWidget(main4)   
+    widget.setCurrentWidget(main4)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
-    widget.setFixedSize(windowXSize, windowYSize)
+    widget.setFixedSize(900,600)
     widget.show()
 
     app.exit(app.exec())
