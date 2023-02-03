@@ -15,6 +15,11 @@ class CLI:
     def __init__(self):
         # Variables
         self.isSystemTrayActivated = None
+        # Auto Packages
+        self.downloadLoc = f"{homeUser}/Downloads"
+        # Auto Packages List
+        self.detectedPackagesDebList = []
+        self.detectedPackagesRPMList = []
 
     def updates(self):
         try:
@@ -58,7 +63,10 @@ class CLI:
 
             # Check date inside backup folder
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-
+            # Auto Packages Ini Settings
+            self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
+            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
+   
         except KeyError as error:
             print(error)
             print("Backup checker KeyError!")
@@ -82,10 +90,52 @@ class CLI:
         self.check_connection()
 
     def check_connection(self):
-        is_connected(self.iniHDName)
-
         if is_connected(self.iniHDName):
-            self.check_the_date()
+            # Activate Auto Packages
+            self.search_downloads()
+
+    ################################################################################
+    # Auto Packages
+    ################################################################################
+    def search_downloads(self):
+        print("Searching new packages to be backup...")
+        try:
+            # Read Downloads folder for .deb
+            for debs in os.listdir(self.debMainFolder):
+                self.detectedPackagesDebList.append(debs)
+        except:
+            pass
+        try:
+            # Read Downloads folder for .rpm
+            for rpms in os.listdir(self.rpmMainFolder):
+                self.detectedPackagesRPMList.append(rpms)
+        except:
+            pass
+
+        for output in os.listdir(self.downloadLoc):
+            if output.endswith(".deb"):
+                # Check if has not been already back up
+                if output not in self.detectedPackagesDebList:
+                    # Back up DEB
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.debMainFolder}", shell=True)
+                else:
+                    print(f"{output} is already back up.")
+
+            elif output.endswith(".rpm"):
+                # Check if has not been already back up
+                if output not in self.detectedPackagesRPMList:
+                    # Back up DEB
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.rpmMainFolder}", shell=True)
+                else:
+                    print(f"{output} is already back up.")
+            else:
+                print("No package to be backup...")
+
+        # Clean list
+        self.detectedPackagesDebList.clear()
+        self.detectedPackagesRPMList.clear()
+        
+        self.check_the_date()
 
     def check_the_date(self):
         print("Checking dates...")

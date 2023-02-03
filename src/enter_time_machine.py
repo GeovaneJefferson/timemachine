@@ -41,7 +41,6 @@ class ENTERTIMEMACHINE(QWidget):
 
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
-        self.darkMode = config['MODE']['dark_mode']
 
         self.widgets()
 
@@ -224,9 +223,8 @@ class ENTERTIMEMACHINE(QWidget):
         # Sort folders alphabetically
         dummyList = []
         for folder in self.iniFolder:
-            if not "." in folder:    
-                dummyList.append(folder)
-                dummyList.sort()
+            dummyList.append(folder)
+            dummyList.sort()
 
         # Get available folders from INI file
         alreadyAdded = False
@@ -292,6 +290,7 @@ class ENTERTIMEMACHINE(QWidget):
             print("Backup devices was not found...")
             exit()
         
+        # asyncio.run(self.get_time())
         self.get_time()
 
     def get_time(self):
@@ -364,8 +363,9 @@ class ENTERTIMEMACHINE(QWidget):
         except:
             pass
 
+        # task = asyncio.create_task(self.show_on_screen())
         self.show_on_screen()
-    
+
     def show_on_screen(self):
         # Clean screen
         for _ in range(1):
