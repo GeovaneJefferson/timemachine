@@ -11,7 +11,7 @@ def update_app():
     os.popen("git stash; git pull")
 
     # Restore the copy to inside "ini" folder
-    print("Deleting backup user.ini")
+    print("Restoring user.ini from backup location")
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
 
     # Delete the copy
