@@ -17,7 +17,7 @@ def update_app():
     sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {homeUser}/.local/share/timemachine/src/ini/",shell=True)
 
     # Delete the copy
-    sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
+    # sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
 
     # Re-open app
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
