@@ -21,7 +21,6 @@ def update_app():
 
     # Re-open app
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
-    # Exit the application to reload the new settings
     exit()
 
 update_app()
