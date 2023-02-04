@@ -20,7 +20,6 @@ def update_app():
     # Delete the copy
     # sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
 
-
     # Re-open app
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
     exit()
