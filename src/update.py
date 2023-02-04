@@ -23,4 +23,5 @@ def update_app():
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
     exit()
 
+
 update_app()
