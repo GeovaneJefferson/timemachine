@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 from setup import *
+from prepare_backup import *
+from get_user_wallpaper import *
 
 ################################################################################
 ## Signal
@@ -11,7 +13,6 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class BACKUP:
     def __init__(self):
-        pass
         self.read_ini_file()
 
     def read_ini_file(self):
@@ -82,516 +83,12 @@ class BACKUP:
                 config.set('BACKUP', 'backup_now', "true")
                 config.write(configfile)
                 
-            self.create_base_folders()
-
         except KeyError as error:
             print(error)
             exit()
 
-    def create_base_folders(self):
-        try:
-            ################################################################################
-            # Create TMB (Base)
-            ################################################################################
-            if not os.path.exists(self.createBaseFolder):
-                sub.run(f"{createCMDFolder} {self.createBaseFolder}", shell=True)
-
-            ################################################################################
-            # Create backup folder
-            ################################################################################
-            if not os.path.exists(self.createBackupFolder):
-                print("TMB folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.createBackupFolder}", shell=True)
-
-            ################################################################################
-            # Create Application folder
-            ################################################################################
-            if not os.path.exists(self.applicationMainFolder):
-                print("Application folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)
-
-            ################################################################################
-            # Create Icon folder
-            ################################################################################
-            if not os.path.exists(self.iconsMainFolder):
-                print("Icon folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.iconsMainFolder}", shell=True)
-
-            ################################################################################
-            # Create Cursor folder
-            ################################################################################
-            if not os.path.exists(self.cursorMainFolder):
-                print("Cursor folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.cursorMainFolder}", shell=True)
-            
-            ################################################################################
-            # Create Theme folder
-            ################################################################################
-            if not os.path.exists(self.themeMainFolder):
-                print("Theme folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.themeMainFolder}", shell=True)
-
-            ################################################################################
-            # Create RPM folder (Folder to manual place rpms apps)
-            ################################################################################
-            if not os.path.exists(self.rpmMainFolder):
-                sub.run(f"{createCMDFolder} {self.rpmMainFolder}", shell=True)   
-            
-            ################################################################################
-            # Create Deb folder (Folder to manual place deb apps)
-            ################################################################################
-            if not os.path.exists(self.debMainFolder):
-                sub.run(f"{createCMDFolder} {self.debMainFolder}", shell=True)   
-
-        except FileNotFoundError as error:
-            error_trying_to_backup(error)
-
-        self.get_system_settings_size()
-    
-    def get_system_settings_size(self):
-        self.iconInside = False
-        self.themeInside = False
-
-        print("Checking size of System Settings...")
-     
-        self.systemSettingsFolderToBackupSizeList=[]
-     
-        # Get current use icon by user
-        userCurrentGnomeIcon = os.popen(getUserIcon)
-        userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
-        userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
-
-        ################################################################################
-        # Get icon folders size
-        ################################################################################
-        # Try to find the current icon inside /usr/share/icons
-        try:
-            # Get folder size fomr /usr/share/icons
-            getIconSize = os.popen(f"du -s /usr/share/icons/{userCurrentGnomeIcon}")
-            getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{userCurrentGnomeIcon}", "").replace("\t", "")
-            getIconSize = int(getIconSize)
-            self.iconInside = True
-
-        except:
-            try:
-                # If can not be found inside /usr/share/icons, try .icons in Home
-                # Get folder size
-                getIconSize = os.popen(f"du -s {homeUser}/.icons/{userCurrentGnomeIcon}")
-                getIconSize = getIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{userCurrentGnomeIcon}", "").replace("\t", "")
-                getIconSize = int(getIconSize)
-                self.iconInside = True
-
-            except:
-                pass
-
-        ################################################################################
-        # Get theme folders size
-        ################################################################################
-        # Get current use theme by user
-        userCurrentTheme = os.popen(getUserTheme)
-        userCurrentTheme = userCurrentTheme.read().strip()
-        userCurrentTheme = userCurrentTheme.replace("'", "")
-
-        # Try to find the current icon inside /usr/share/icons
-        try:
-            # Get folder size fomr /usr/share/icons
-            getThemeSize = os.popen(f"du -s /usr/share/themes/{userCurrentTheme}")
-            getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"/usr/share/themes/{userCurrentTheme}", "").replace("\t", "")
-            getThemeSize = int(getThemeSize)
-            self.themeInside = True
-
-        except:
-            try:
-                # If can not be found inside /usr/share/icons, try .icons in Home
-                # Get folder size
-                getThemeSize = os.popen(f"du -s {homeUser}/.themes/{userCurrentTheme}")
-                getThemeSize = getThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{userCurrentTheme}", "").replace("\t", "")
-                getThemeSize = int(getThemeSize)
-                self.themeInside = True
-
-            except:
-                pass
-
-        
-        # Check if Time Machine found icon and/or theme to be backup
-        if self.iconInside:
-            # Add icon size to list
-            self.systemSettingsFolderToBackupSizeList.append(getIconSize)
-        
-        if self.themeInside:
-            # Add theme size to list
-            self.systemSettingsFolderToBackupSizeList.append(getThemeSize)
-
-        if self.iconInside or self.themeInside:
-            # Sum of system settings
-            self.totalSystemSettingsFolderToBackupSize = int(sum(self.systemSettingsFolderToBackupSizeList))
-        
-        self.get_home_folders_size()
-
-    def get_home_folders_size(self):
-        print("Checking size of Home folders...")
-        ################################################################################
-        # Get folders size
-        ################################################################################
-        self.homeFolderToBackupSizeList=[]
-        self.homeFolderToBeBackup=[]
-        for output in self.iniFolders:  # Get folders size before back up to external
-            # Capitalize first letter
-            output = output.capitalize()
-            # Can output be found inside Users Home?
-            try:
-                os.listdir(f"{homeUser}/{output}")
-            except:
-                # Lower output first letter
-                output = output.lower() # Lower output first letter
-            # Get folder size
-            getSize = os.popen(f"du -s {homeUser}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{homeUser}/{output}", "").replace("\t", "")
-            getSize = int(getSize)
-
-            # Add to list
-            self.homeFolderToBackupSizeList.append(getSize)
-            # Add output inside self.homeFolderToBeBackup
-            self.homeFolderToBeBackup.append(output)
-
-        self.calculate_home_folders()
-
-    def calculate_home_folders(self):
-        print("Calculating Home folders...")
-        ################################################################################
-        # Get external maximum size
-        ################################################################################
-        self.externalMaxSize = os.popen(f"df --output=size {self.iniExternalLocation}")
-        self.externalMaxSize = self.externalMaxSize.read().strip().replace("1K-blocks", "").replace("Size", "").replace(
-            "\n", "").replace(" ", "")
-        self.externalMaxSize = int(self.externalMaxSize)
-
-        ################################################################################
-        # Get external used space
-        ################################################################################
-        self.usedSpace = os.popen(f"df --output=used {self.iniExternalLocation}")
-        self.usedSpace = self.usedSpace.read().strip().replace("1K-blocks", "").replace("Used", "").replace(
-            "\n", "").replace(" ", "")
-        self.usedSpace = int(self.usedSpace)
-
-        ################################################################################
-        # Calculattions
-        ################################################################################
-        # Sum of all folders (from INI file) to be backup
-        self.totalHomeFoldersToBackupSize = sum(self.homeFolderToBackupSizeList)
-        # Calculate free space
-        self.freeSpace = int(self.externalMaxSize - self.usedSpace)
-
-        # If user allowed backup Flatpak Data, calculate flatpaks folders size
-        # Backup Flatpaks Data will auto enable "allow Flatpaks names".
-        if self.iniAllowFlatpakData == "false":
-            self.condition_to_continue()
-        else:
-          self.calculate_flatpak_folders()
-
-    def calculate_flatpak_folders(self):
-        print("Checking size of folders (Flatpak)...")
-        try:
-            ################################################################################
-            # Get flatpak (var/app) folders size
-            ################################################################################
-            self.flatpakVarSizeList=[]
-            self.flatpakLocalSizeList=[]
-            self.flatpakVarToBeBackup=[]
-            self.flatpakLocaloBeBackup=[]
-            for output in os.listdir(src_flatpak_var_location):  # Get folders size before back up to external
-                # Get size of flatpak folder inside var/app/
-                print(f"du -s {src_flatpak_var_location}/{output}")
-
-                getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
-                getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
-                getSize = int(getSize)
-
-                ################################################################################
-                # Add to list
-                # If current folder (output inside var/app) is not higher than X MB
-                # Add to list to be backup
-                ################################################################################
-                # Add to self.flatpakVarSizeList KBytes size of the current output (folder inside var/app)
-                # inside external device
-                self.flatpakVarSizeList.append(getSize)
-                # Add current output (folder inside var/app) to be backup later
-                self.flatpakVarToBeBackup.append(f"{src_flatpak_var_location}/{output}")
-
-            ################################################################################
-            # Get flatpak (.local/share/flatpak) folders size
-            ################################################################################
-            for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
-                # Get size of flatpak folder inside var/app/
-                getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
-                getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
-                getSize = int(getSize)
-
-                # Add to list to be backup
-                self.flatpakVarSizeList.append(getSize)
-                # Add current output (folder inside var/app) to be backup later
-                self.flatpakLocaloBeBackup.append(f"{src_flatpak_local_location}/{output}")
-
-        except ValueError as error:
-            print(error)
-            exit()
-
-        self.condition_to_continue()
-    
-    def condition_to_continue(self):
-        # This will check if Home + Flatpaks folders to backup has enough space to continue
-        # with the backup process.
-        print("Checking folders conditions (size)...")
-        while True:
-            ################################################################################
-            # Home conditions to continue with the backup
-            ################################################################################
-            # Home + Icon + Theme + aditional number, just for safety
-
-            if (self.totalHomeFoldersToBackupSize + 
-                self.totalSystemSettingsFolderToBackupSize + 1500000 >= 
-                self.freeSpace):
-
-                print("Not enough space for new backup")
-                print("Old folders will be deleted, to make space for the new ones.")
-                print("Please wait...")
-
-                ################################################################################
-                # Get available dates inside TMB
-                # Delete based in Dates
-                ################################################################################
-                try:
-                    dateFolders = []
-                    for output in os.listdir(self.checkDateInsideBackupFolder):
-                        if not "." in output:
-                            dateFolders.append(output)
-                            dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-
-                    ################################################################################
-                    # Delete oldest folders
-                    ################################################################################
-                    # Only deletes if exist more than one date folder inside
-                    # Will return to the top, if free space is not enought, so app can delete more old folders
-                    if len(dateFolders) > 1:
-                        ################################################################################
-                        # Write to INI file
-                        ################################################################################
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_add_info', "Deleting old backups...")
-                            config.write(configfile)
-
-                        # Action
-                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
-                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
-                        
-                        # First try to clean .Trash inside the external device
-                        print(f"Deleting .trash too...")
-                        sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
-
-                        # Return to calculate all folders to be backup
-                        self.get_system_settings_size()
-                
-                    else:
-                        # Set notification_id to 2
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', "2")
-                            # Turn backup now OFF
-                            config.set('BACKUP', 'backup_now', 'false')
-                            config.set('INFO', 'notification_add_info', "Please, manual delete file(s)/folder(s) inside "
-                                    f"your backup device, to make space for {appName}'s backup!")
-                            config.write(configfile)
-
-                        print(f"Please, manual delete file(s)/folder(s) inside your backup device, to make space for {appName}'s "
-                        "backup!")
-                        exit()
-
-                except FileNotFoundError as error:
-                    print("Error trying to delete old backups!")
-                    print(error)
-                    exit()
-
-            else:
-                print("enough space to continue...")
-
-                if self.iniAllowFlatpakData == "true":
-                    print("AllowFlatpakData is enabled!")
-                    ################################################################################
-                    # Flatpaks conditions to continue with the backup
-                    ################################################################################
-                    # Sum Home folder + Flapatk var/app/ + Flapatk .local/share/flatpak
-                    homePlusSystemSettingsPlusFlatpakToBackupSize = sum(
-                        self.homeFolderToBackupSizeList + 
-                        self.systemSettingsFolderToBackupSizeList +
-                        self.flatpakVarSizeList + 
-                        self.flatpakLocalSizeList)
-
-                    ################################################################################
-                    # Condition
-                    ################################################################################
-                    # Total fodlers to backup: HOme + flatpak(var/app) + flatpak + (.local/share/flatpak)
-                    # FreSpace = External device free space
-
-                    if homePlusSystemSettingsPlusFlatpakToBackupSize >= self.freeSpace:
-                        # If Home folders to backup is good to continue, then check flatpaks folders
-                        print("External has space enough to backup Home folders,")
-                        # External devices has not space enough to backup FLatpaks folders
-                        print(f"but not Flatpaks folders.")
-
-                        # Calculate KBytes to MB or GB
-                        spaceNeeded = homePlusSystemSettingsPlusFlatpakToBackupSize
-                        # Condition
-                        if len(str(spaceNeeded)) <= 6:
-                            spaceNeeded = spaceNeeded / 1000 # Convert to MB
-                            print(f"Total Space (Home + Flatpaks) needed: {(spaceNeeded):.1f} MB")
-                            addToNotificationInfo = f"{(spaceNeeded):.1f} MB"
-
-                        elif len(str(spaceNeeded)) > 6:
-                            spaceNeeded = spaceNeeded / 1000000 # Convert to GB
-                            print(f"Total Space (Home + Flatpaks) needed: {(spaceNeeded):.1f} GB")
-                            addToNotificationInfo = f"{(spaceNeeded):.1f} GB"
-
-                        else:
-                            print(f"Total Space (Home + Flatpaks) needed: {spaceNeeded} KB")
-                            addToNotificationInfo = f"{spaceNeeded} KB"
-
-                        # Send notification to user telling the error
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('INFO', 'notification_id', "2")
-                            config.set('INFO', 'notification_add_info', f"Space needed: {addToNotificationInfo}")
-                            config.write(configfile)
-
-                        # Signal
-                        signal_exit()
-
-                    else:
-                        break
-
-                else:
-                    print("External has space enough to backup Home + Flatpaks installed names.")
-                    print("External has space enough to continue.")
-                    self.create_pre_folders_inside_external()
-
-        self.create_pre_folders_inside_external()
-
-    def create_pre_folders_inside_external(self):
-        print("Creating pre folders...")
-        try:
-            ################################################################################
-            # Create folder with DATE
-            ################################################################################
-            print("Creating folder with date...")
-            if not os.path.exists(self.dateFolder):
-                sub.run(f"{createCMDFolder} {self.dateFolder}", shell=True)  # Create folder with date
-
-            ################################################################################
-            # Create folder with TIME
-            ################################################################################
-            print("Creating folder with time...")
-            if not os.path.exists(self.timeFolder):
-                sub.run(f"{createCMDFolder} {self.timeFolder}", shell=True)
-
-            ################################################################################
-            # Create application folder
-            ################################################################################
-            if self.iniAllowFlatpakData == "true":
-                # Create inside external "Var" Folder
-                if not os.path.exists(self.applicationVarFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationVarFolder}", shell=True)  
-
-                # Create inside external "Local" Folder
-                if not os.path.exists(self.applicationLocalFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  
-
-            ################################################################################
-            # Create flatpak text
-            ################################################################################
-            if not os.path.exists(self.flatpakTxtFile):
-                print("Flatpak file was created.")
-                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)   
-
-            ################################################################################
-            # Create wallpaper folder
-            ################################################################################
-            if not os.path.exists(self.wallpaperMainFolder):
-                sub.run(f"{createCMDFolder} {self.wallpaperMainFolder}", shell=True)   
-
-        except FileNotFoundError as error:
-            # Call error function 
-            error_trying_to_backup(error)
-
-        self.get_user_background()
-
-    def get_user_background(self):
-        ################################################################################
-        # Detect color scheme
-        ################################################################################
-        getColorScheme = os.popen(detectThemeMode)
-        getColorScheme = getColorScheme.read().strip().replace("'", "")
-            
-        # Check if user DE is in the supported list
-        count = 0
-        for _ in supportedOS:
-            if supportedOS[count] == self.iniUserOS:
-                # Light theme
-                if getColorScheme == "prefer-light":
-                    # Get current wallpaper
-                    self.getWallpaper = os.popen(getGnomeWallpaper)
-                    self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
-                
-                else:
-                    # Get current wallpaper (Dark)
-                    self.getWallpaper = os.popen(getGnomeWallpaperDark)
-                    self.getWallpaper = self.getWallpaper.read().strip().replace("file://", "").replace("'", "")
-            
-                # If it has comma
-                if "," in self.getWallpaper:
-                    self.getWallpaper = str(self.getWallpaper.replace(",", "\, "))
-                
-                # Remove spaces if exist
-                if " " in self.getWallpaper:
-                    self.getWallpaper = str(self.getWallpaper.replace(" ", "\ "))
-                
-                # Remove / at the end if exist
-                if self.getWallpaper.endswith("/"):
-                    self.getWallpaper = str(self.getWallpaper.rsplit("/", 1))
-                    self.getWallpaper = "".join(str(self.getWallpaper))
-                    self.getWallpaper = str(self.getWallpaper.strip().replace("[", "").replace("'", ""))
-                    self.getWallpaper = str(self.getWallpaper.replace("]", "").replace(",", ""))
-                
-                # After one supported item was found, go to self.backup_user_wallpaper()
-                self.backup_user_wallpaper()
-
-            elif self.iniUserOS == "kde":
-                oneMore = False
-                with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
-                    file = file.readlines()
-
-                    # Strips the newline character
-                    for line in file:
-                        line = line.strip()
-                        if oneMore:
-                            line = line.replace("Image=", "").replace("file://", "")
-                            self.getWallpaper = str(line)
-                            print(self.getWallpaper)
-                            break
-
-                        if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
-                            oneMore = True
-
-                # After one supported item was found, go to self.backup_user_wallpaper()
-                self.backup_user_wallpaper()
-
-            else:
-                count += 1
-
-        print("No supported DE found to back up the wallpaper.")
-        self.write_flatpak_file()
+        # Continue
+        self.backup_user_wallpaper()
 
     def backup_user_wallpaper(self):
         # Replace wallpaper inside the folder, only allow 1
@@ -606,12 +103,15 @@ class BACKUP:
                 sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
         print("Backing up wallpaper...")
-        print(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/")
-        sub.run(f"{copyCPCMD} {self.getWallpaper} {self.wallpaperMainFolder}/", shell=True) 
+        # Get Wallaper
+        user_wallpaper()
+        print(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/")
+        sub.run(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/", shell=True) 
        
         # Condition
         if self.iniAllowFlatpakNames == "true":
             self.write_flatpak_file()
+        
         else:
             self.getMode()
     
@@ -644,7 +144,6 @@ class BACKUP:
                 config.set('INFO', 'notification_add_info', f"Read-only, {error}")
             exit()
 
-
         self.getMode()
 
     def getMode(self):
@@ -674,7 +173,7 @@ class BACKUP:
             # Start Home backup
             ################################################################################
             # Backup all (user.ini true folders)
-            for output in self.homeFolderToBeBackup:
+            for output in get_folders():
                 ###############################################################################
                 # Write current save file name to INI file
                 # so it can be show on main window (mainwindow.py)
@@ -709,7 +208,7 @@ class BACKUP:
             # Start Flatpak (var/app) backup
             ################################################################################
             count = 0
-            for output in self.flatpakVarToBeBackup: # For folders inside self.flatpakVarToBeBackup
+            for output in str(flatpak_var_list()):
                 ###############################################################################
                 # Write current save file name to INI file
                 # so it can be show on main window (gui.py)
@@ -726,21 +225,16 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyCPCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
-                
-                # print(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}")
-                # sub.run(f"{copyRsyncCMD} {(self.flatpakVarToBeBackup[count])} {self.applicationVarFolder}", shell=True)
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
+                print(f"{copyCPCMD} {(str(flatpak_var_list())[count])} {self.applicationVarFolder}")
+                sub.run(f"{copyCPCMD} {(str(flatpak_var_list())[count])} {self.applicationVarFolder}", shell=True)
+
                 count += 1
 
             ################################################################################
             # Start Flatpak (.local/share/flatpak) backup
             ################################################################################
             count = 0
-            for output in self.flatpakLocaloBeBackup: # For folders inside self.flatpakLocalToBeBackup
+            for output in str(flatpak_local_list()):
                 ###############################################################################
                 # Write current save file name to INI file
                 # so it can be show on main window (gui.py)
@@ -757,11 +251,9 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}")
-                sub.run(f"{copyRsyncCMD} {(self.flatpakLocaloBeBackup[count])} {self.applicationLocalFolder}", shell=True)
-                ###############################################################################
-                # Copy the Flatpak var/app folders
-                ###############################################################################
+                print(f"{copyRsyncCMD} {(str(flatpak_local_list())[count])} {self.applicationLocalFolder}")
+                sub.run(f"{copyRsyncCMD} {(str(flatpak_local_list())[count])} {self.applicationLocalFolder}", shell=True)
+
                 count += 1
 
         except FileNotFoundError as error:
@@ -797,28 +289,15 @@ class BACKUP:
             config.set('INFO', 'feedback_status', f"Backing up: icons")
             config.write(configfile)
 
-        # Get users /usr/share/icons
-        # Try to find the current icon inside /usr/share/icons
-        # If folder is empty, use CP to copy
-        # if not insideIconFolder:
-        #     try:
-        #         # USR/SHARE
-        #         os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
-        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
-        #     except:
-        #         # .THEMES
-        #         sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
-        #     else:
-        #         pass
-
-        # else:
         try:
             # USR/SHARE
             os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
             sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
+       
         except: 
             # Try to find the current icon inside /home/user/.icons
             sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
+      
         else:
             pass
 
@@ -852,25 +331,6 @@ class BACKUP:
             config.set('INFO', 'feedback_status', f"Backing up: cursor")
             config.write(configfile)
 
-        # Get users /usr/share/icons
-        # Try to find the current cursor inside /usr/share/icons
-        # If folder is empty, use CP to copy
-        # if not insidecursorFolder:
-        #     try:
-        #         # USR/SHARE
-        #         # Try to find
-        #         os.listdir(f"/usr/share/icons/{userCurrentcursor}/")
-        #         sub.run(f"{copyCPCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
-
-        #     except:
-        #         try:
-        #             # .Icons
-        #             # Try to find
-        #             sub.run(f"{copyCPCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
-
-        #         except:
-        #             pass
-        # else:
         try:
             # USR/SHARE/ICONS
             # Try to find
@@ -922,34 +382,18 @@ class BACKUP:
         ################################################################################
         if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
             f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
-
             try:
                 sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
-                print("Gnome-shell folder inside external, was created.")
             
             except Exception as error:
                 pass
 
-        # Get users /usr/share/theme
-        # Try to find the current theme inside /usr/share/theme
-        # If folder is empty, use CP to copy
-        # if not insideThemeFolder:
-        #     try:
-        #         # USR/SHARE
-        #         os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
-        #         sub.run(f"{copyCPCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-        #     except:
-        #         # .THEMES
-        #         sub.run(f"{copyCPCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
-        #     else:
-        #         pass
-
-        # else:
         try:
             # USR/SHARE
             os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
             sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+        
         except:
             # .THEMES
             sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
@@ -966,17 +410,21 @@ class BACKUP:
                 sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
                     f"{self.iniExternalLocation}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
+        
         except:
             pass
 
         self.end_backup()
 
     def end_backup(self):
-        # Get oldest backup info
-        oldestList = []
-        for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
-            oldestList.append(oldestOutput)
-        
+        try:
+            # Get oldest backup info
+            oldestList = []
+            for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
+                oldestList.append(oldestOutput)
+        except:
+            pass
+
         print("Ending backup...")
         ################################################################################
         # Set backup_now to "false", backup_running to "false" and Update "last backup"
@@ -988,15 +436,19 @@ class BACKUP:
         ################################################################################
         # Get user.ini
         ################################################################################
-        # self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
-            
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
-            # Update oldest backup time
-            config.set('INFO', 'oldest', f'{oldestList[0]}')
-            # Update last backup time
-            config.set('INFO', 'latest', f'{self.dayName}, {self.currentHour}:{self.currentMinute}')
+            try:
+                # Update oldest backup time
+                config.set('INFO', 'oldest', f'{oldestList[0]}')
+            except:
+                pass
+            try:
+                # Update last backup time
+                config.set('INFO', 'latest', f'{latest_time_info()}')
+            except:
+                pass
             # Change system tray color to white (Normal)
             config.set('INFO', 'notification_id', "0")
             # Reset Main Window information
@@ -1017,31 +469,6 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
         exit()
 
-    # def skip_backup(self):
-    #     print("Skipping this backup...")
-    #     try:
-    #         config = configparser.ConfigParser()
-    #         config.read(src_user_config)
-
-    #         ################################################################################
-    #         # Get user.ini
-    #         ################################################################################
-    #         self.iniSkipThisBackup = config['BACKUP']['skip_this_backup']
-            
-    #         if self.iniSkipThisBackup == "true":
-    #             # End the backup
-    #             self.end_backup()
-
-    #         time.sleep(1)
-
-    #     except KeyError:
-    #         # Return to the top
-    #         self.skip_backup()
-
 
 if __name__ == '__main__':
     main = BACKUP()
-
-    # Thread(target = main.read_ini_file).start()
-    # # Keep watching for stop this backup
-    # Thread(target = main.skip_backup).start()

@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 from setup import *
+from check_connection import *
+from get_time import *
 
 ################################################################################
 ## Signal
@@ -13,6 +15,11 @@ class CLI:
     def __init__(self):
         # Variables
         self.isSystemTrayActivated = None
+        # Auto Packages
+        self.downloadLoc = f"{homeUser}/Downloads"
+        # Auto Packages List
+        self.detectedPackagesDebList = []
+        self.detectedPackagesRPMList = []
 
     def updates(self):
         try:
@@ -56,7 +63,10 @@ class CLI:
 
             # Check date inside backup folder
             self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-
+            # Auto Packages Ini Settings
+            self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
+            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
+   
         except KeyError as error:
             print(error)
             print("Backup checker KeyError!")
@@ -80,43 +90,52 @@ class CLI:
         self.check_connection()
 
     def check_connection(self):
-        ################################################################################
-        # Check for external in media/
-        ################################################################################
+        if is_connected(self.iniHDName):
+            # Activate Auto Packages
+            self.search_downloads()
+
+    ################################################################################
+    # Auto Packages
+    ################################################################################
+    def search_downloads(self):
+        print("Searching new packages to be backup...")
         try:
-            # Check for user backup device inside Media
-            os.listdir(f'{media}/{userName}/{self.iniHDName}')
-            print(f'Devices found inside {media}')
-            self.check_the_date()
+            # Read Downloads folder for .deb
+            for debs in os.listdir(self.debMainFolder):
+                self.detectedPackagesDebList.append(debs)
+        except:
+            pass
+        try:
+            # Read Downloads folder for .rpm
+            for rpms in os.listdir(self.rpmMainFolder):
+                self.detectedPackagesRPMList.append(rpms)
+        except:
+            pass
 
-        except FileNotFoundError:
-            ################################################################################
-            # Check for external in run/
-            ################################################################################
-            try:
-                # Check for user backup device inside Run
-                os.listdir(f'{run}/{userName}/{self.iniHDName}')
-                print(f"Devices found inside {run}")
-                self.check_the_date()
+        for output in os.listdir(self.downloadLoc):
+            if output.endswith(".deb"):
+                # Check if has not been already back up
+                if output not in self.detectedPackagesDebList:
+                    # Back up DEB
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.debMainFolder}", shell=True)
+                else:
+                    print(f"{output} is already back up.")
 
-            except FileNotFoundError as error:
-                print(error)
-                ################################################################################
-                # No saved backup device was found inside Media or Run
-                # Write error to INI File
-                ################################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'notification_id', "2")
-                    config.set('INFO', 'notification_add_info', f"{error}")
-                    config.write(configfile)
+            elif output.endswith(".rpm"):
+                # Check if has not been already back up
+                if output not in self.detectedPackagesRPMList:
+                    # Back up DEB
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.rpmMainFolder}", shell=True)
+                else:
+                    print(f"{output} is already back up.")
+            else:
+                print("No package to be backup...")
 
-                print("No external device found.")
-                print(f"Please, connect the external device, so next time, "
-                    f"{appName} will be able to backup.")
-
-        # self.check_the_date()
+        # Clean list
+        self.detectedPackagesDebList.clear()
+        self.detectedPackagesRPMList.clear()
+        
+        self.check_the_date()
 
     def check_the_date(self):
         print("Checking dates...")
@@ -148,7 +167,6 @@ class CLI:
 
             else:
                 print("No back up for today.")
-                # self.no_backup()
 
     def check_the_mode(self):
         print("Checking mode...")
@@ -157,16 +175,12 @@ class CLI:
             dateFolders.append(output)
             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
-        # Get folders inside the backup folder, and check the last backup date
-        todayDate = datetime.now()
-        todayDate = todayDate.strftime("%d-%m-%y")
-
         # One time per day
         if self.iniOneTimePerDay == "true":
             # If current time is higher than time to backup
             if self.totalCurrentTime > self.totalNextTime:
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
-                if todayDate not in dateFolders:
+                if today_date() not in dateFolders:
                     # Call backup now
                     self.call_backup_now()
 
@@ -207,16 +221,14 @@ class CLI:
             config.set('BACKUP', 'backup_now', 'true')
             config.write(configfile)
 
-        # Call backup now
-        sub.run(f"python3 {src_backup_now}", shell=True)
+        # Call prepare backup
+        sub.run(f"python3 {src_prepare_backup_py}", shell=True)
 
     def no_backup(self):
         print("No backup for today.")
         print("Updating INI file...")
         print("Exiting...")
 
-    # def signal_exit(self, *args):
-    #     signal_exit()
 
 main = CLI()
 # Exit program if auto_backup is false
@@ -240,12 +252,7 @@ while True:
             break
 
     except Exception as error:
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_add_info', f"{error}")
-            config.write(configfile)
-    
+        print(error)
         break
     
 exit()

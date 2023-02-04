@@ -1,5 +1,11 @@
 #! /usr/bin/python3
 from setup import *
+from check_connection import *
+from device_location import *
+from package_manager import *
+from get_user_de import *
+from get_home_folders import *
+
 
 # QTimer
 timer = QtCore.QTimer()
@@ -8,8 +14,6 @@ timer = QtCore.QTimer()
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
-        self.deviceCanBeFound = False
-
         self.iniUI()
 
     def iniUI(self):
@@ -351,10 +355,8 @@ class MAIN(QMainWindow):
             # Times
             self.currentTime = self.currentHour + self.currentMinute
             self.backupTime = self.iniNextHour + self.iniNextMinute
-
             # Current information about an error
             self.iniExtraInformation = config['INFO']['notification_add_info']
-            
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
 
@@ -363,56 +365,41 @@ class MAIN(QMainWindow):
             print("Main window KeyError!")
             pass
             
-        self.check_connection()
+        self.connection()
 
-    def check_connection(self):
-         ################################################################################
-        # External availability
-        ################################################################################
-        try:
-            os.listdir(f"{media}/{userName}/{self.iniHDName}")  # Check if external can be found
-            self.deviceCanBeFound = True
-            self.connected_connection()
+    def connection(self):
+        if self.iniHDName != "None":
+            if is_connected(self.iniHDName):
+                ################################################################################
+                # External status
+                ################################################################################
+                self.externalStatusLabel.setText("Status: Connected")
+                self.externalStatusLabel.setStyleSheet('color: green')
+                try:
+                    # Clean notification info
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w', encoding='utf8') as configfile:
+                        config.set('INFO', 'notification_add_info', ' ')
+                        config.write(configfile)
 
-        except FileNotFoundError:
-            try:
-                os.listdir(f"{run}/{userName}/{self.iniHDName}") 
-                self.deviceCanBeFound = True
-                self.connected_connection()
+                except Exception as error:
+                    print(Exception)
+                    print("Main Window error!")
+                    pass
 
-            except FileNotFoundError:
-                # Disable backup now button
-                self.backupNowButton.setEnabled(False)       
-                # Disconnected     
-                self.externalStatusLabel.setText("Status: Disconnected")
-                self.externalStatusLabel.setStyleSheet('color: red')
-                self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
-                self.externalSizeLabel.setText("No information available")
-                self.deviceCanBeFound = False
+            self.get_size_informations()
+
+        elif not is_connected(self.iniHDName):
+            # Disable backup now button
+            self.backupNowButton.setEnabled(False)       
+            # Disconnected     
+            self.externalStatusLabel.setText("Status: Disconnected")
+            self.externalStatusLabel.setStyleSheet('color: red')
+            self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
+            self.externalSizeLabel.setText("No information available")
 
         self.condition()
-
-    def connected_connection(self):
-        ################################################################################
-        # External status
-        ################################################################################
-        self.externalStatusLabel.setText("Status: Connected")
-        self.externalStatusLabel.setStyleSheet('color: green')
-        
-        try:
-            # Clean notification info
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set('INFO', 'notification_add_info', ' ')
-                config.write(configfile)
-
-        except Exception as error:
-            print(Exception)
-            print("Main Window error!")
-            pass
-
-        self.get_size_informations()
 
     def get_size_informations(self):
         ################################################################################
@@ -440,7 +427,7 @@ class MAIN(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None" and self.deviceCanBeFound:  
+        if self.iniHDName != "None" and is_connected(self.iniHDName):  
             # Show backup button if no back up is been made
             if self.iniBackupNow == "false":
                 # Enable backup now button
@@ -720,9 +707,6 @@ class MAIN(QMainWindow):
 
                     # Backup checker
                     sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-                    # Start auto package back up 
-                    sub.Popen(f"python3 {src_package_backup_py}", shell=True)
-                    
                     # Set checker running to true
                     with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('BACKUP', 'checker_running', "true")
@@ -751,20 +735,19 @@ class MAIN(QMainWindow):
                 if self.showInSystemTrayCheckBox.isChecked():
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
-
                     print("System tray was successfully enabled!")
 
                 else:
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
-
                     print("System tray was successfully disabled!")
 
             ################################################################################
             # Call system tray
             # System tray can check if is not already runnnig
             ################################################################################
-            sub.Popen(f"python3 {src_system_tray}", shell=True)
+            if self.iniSystemTray == "false":
+                sub.Popen(f"python3 {src_system_tray}", shell=True)
 
         except:
             pass
@@ -775,7 +758,7 @@ class MAIN(QMainWindow):
         mainDevices.show()
 
     def backup_now_clicked(self):
-        sub.Popen(f"python3 {src_backup_now}", shell=True)
+        sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
         # self.setMinimumSize(800, 550)
@@ -789,7 +772,7 @@ class MAIN(QMainWindow):
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
             updateAvailable = QPushButton()
-            updateAvailable.setText("   Update Available    ")
+            updateAvailable.setText("  Update Available  ")
             updateAvailable.adjustSize()
             updateAvailable.clicked.connect(self.on_update_button_clicked)
             
@@ -797,30 +780,15 @@ class MAIN(QMainWindow):
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
 
     def on_update_button_clicked(self):
-        try:
-            os.popen("git stash; git pull")
-            
-            # Updated sucessfully message
-            updatesWasInstalled = QMessageBox.question(self, 'Updated successfully', 
-            f'{appName} will be restarted.\n',
-            QMessageBox.Ok)
-
-            if updatesWasInstalled == QMessageBox.Ok:
-                QMessageBox.Close
-
-        except:
-            QMessageBox.Close
-            
-        # Re-open app
-        sub.Popen(f"python3 {src_main_window_py}", shell=True)
-        # Exit the application to reload the new settings
+        ################################################################################
+        # Call update and Exit
+        ################################################################################
+        sub.Popen(f"python3 {src_update_py}",shell=True)
         exit()
-
 
 class EXTERNAL(QWidget):
     def __init__(self):
         super(EXTERNAL, self).__init__()
-        self.foundInMedia = None
         self.chooseDevice = ()
         self.captureDevices = []
 
@@ -865,7 +833,6 @@ class EXTERNAL(QWidget):
         self.scroll.setFixedSize(460, 280)
         self.scroll.move(20, 40)
         self.scroll.setWidgetResizable(True)
-        # self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setWidget(self.whereFrame)
 
         # Vertical layout V
@@ -897,134 +864,105 @@ class EXTERNAL(QWidget):
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
 
-        # Update
-        timer.timeout.connect(self.check_connection)
-        timer.start(2000) # Update every x seconds
         self.check_connection()
 
     def check_connection(self):
         ################################################################################
         # Search external inside media
         ################################################################################
-        print("Searching for backup devices...")
-        try:
-            if len(os.listdir(f'{media}/{userName}')) != 0:
-                # print("Found device(s) inside Run")
-                self.foundInMedia = True
-                self.where(media)
+        device_location()
 
-            else:
-                try:
-                    for i in range(len(self.captureDevices)):
-                        item = self.verticalLayout.itemAt(i)
-                        widget = item.widget()
-                        widget.deleteLater()
-                        i -= 1
-                except AttributeError as error:
-                    pass
-
-        except FileNotFoundError:
+        if device_location():
+            print("Found inside media")
             try:
-                if len(os.listdir(f'{run}/{userName}')) != 0:
-                    # print("Found device(s) inside Run")
-                    self.foundInMedia = False
-                    self.where(run)
+                # Add buttons and images for each external
+                for output in os.listdir(f'{media}/{userName}'):
+                    # No spaces and special characters allowed
+                    if output not in self.captureDevices and "'" not in output and " " not in output:
+                        # print(output)
+                        # If device is in list, display to user just on time per device
+                        self.captureDevices.append(output)
 
-                else:
-                    try:
-                        # print(self.captureDevices)
-                        # print(len(self.captureDevices))
-                        for i in range(len(self.captureDevices)):
-                            item = self.verticalLayout.itemAt(i)
-                            widget = item.widget()
-                            widget.deleteLater()
-                            i -= 1
-                    except AttributeError as error:
-                        pass
+                        # Avaliables external  devices
+                        self.availableDevices = QPushButton(self.whereFrame)
+                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setText(f"{output}")
+                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setCheckable(True)
+                        self.availableDevices.setAutoExclusive(True)
+                        text = self.availableDevices.text()
+                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+                        
+                        # Image
+                        dummyLabel = QLabel(self.availableDevices)
+                        image = QPixmap(f"{src_restore_icon}")
+                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        dummyLabel.move(7, 7)
+                        dummyLabel.setPixmap(image)
 
-            except:
-                self.captureDevices.clear()
+                        ################################################################################
+                        # Auto checked this choosed external device
+                        ################################################################################
+                        if text == self.iniHDName:
+                            self.availableDevices.setChecked(True)
+
+                        ################################################################################
+                        # Add widgets and Layouts
+                        ################################################################################
+                        # Vertical layout
+                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+            except FileNotFoundError:
                 pass
 
-    def where(self, location):
-        # Gettíng devices locations
-        if self.foundInMedia:
-            self.foundWhere = media
-        else:
-            self.foundWhere = run
+        elif not device_location():
+            print("Found inside run")
+            try:
+                # If x device is removed or unmounted, remove from screen
+                for output in os.listdir(f'{run}/{userName}'):
+                    # No spaces and special characters allowed
+                    if "'" not in output and " " not in output:
+                        self.captureDevices.append(output)
 
-        self.show_on_screen(location)
+                        # Avaliables external  devices
+                        self.availableDevices = QPushButton(self.whereFrame)
+                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setText(f"{output}")
+                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setCheckable(True)
+                        self.availableDevices.setAutoExclusive(True)
+                        text = self.availableDevices.text()
+                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+                        
+                        # Image
+                        label = QLabel(self.availableDevices)
+                        image = QPixmap(f"{src_restore_icon}")
+                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        label.move(7, 7)
+                        label.setPixmap(image)
 
-    def show_on_screen(self, location):
-        # print("Showing available devices")
-        ################################################################################
-        # Add buttons and images for each external
-        ################################################################################
-        # If not already in list, add
-        for output in os.listdir(f'{location}/{userName}'):
-            # No spaces and special characters allowed
-            if output not in self.captureDevices and "'" not in output and " " not in output:
-                # print(output)
-                # If device is in list, display to user just on time per device
-                self.captureDevices.append(output)
+                        ################################################################################
+                        # Auto checked this choosed external device
+                        ################################################################################
+                        if text == self.iniHDName:
+                            self.availableDevices.setChecked(True)
 
-                # Avaliables external  devices
-                self.availableDevices = QPushButton(self.whereFrame)
-                self.availableDevices.setFont(QFont('Ubuntu', 12))
-                self.availableDevices.setText(f"{output}")
-                self.availableDevices.setFixedSize(440, 60)
-                self.availableDevices.setCheckable(True)
-                self.availableDevices.setAutoExclusive(True)
-                text = self.availableDevices.text()
-                self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-                
-                # Image
-                dummyLabel = QLabel(self.availableDevices)
-                image = QPixmap(f"{src_restore_icon}")
-                image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                dummyLabel.move(7, 7)
-                dummyLabel.setPixmap(image)
-
-                ################################################################################
-                # Auto checked this choosed external device
-                ################################################################################
-                if text == self.iniHDName:
-                    self.availableDevices.setChecked(True)
-
-                ################################################################################
-                # Add widgets and Layouts
-                ################################################################################
-                # Vertical layout
-                self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
-
-            # If x device is removed or unmounted, remove from screen
-            for output in self.captureDevices:
-                if output not in os.listdir(f'{location}/{userName}'):
-                    # Current output index
-                    index = self.captureDevices.index(output)
-                    # Remove from list
-                    self.captureDevices.remove(output)             
-                    # Delete from screen
-                    item = self.verticalLayout.itemAt(index)
-                    widget = item.widget()
-                    widget.deleteLater()
-                    index -= 1
+                        ################################################################################
+                        # Add widgets and Layouts
+                        ################################################################################
+                        # Vertical layout
+                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+            except FileNotFoundError:
+                pass
 
     def on_use_disk_clicked(self):
         ################################################################################
-        # Get user's packagemanager
+        # Get Users Package Manager
         ################################################################################
-        userPackageManager = os.popen(getUserPackageManager)
-        userPackageManager = userPackageManager.read().strip().lower()
-
+        get_package_manager()
         ################################################################################
-        # Get users DE
+        # Get Users DE (Gnome, KDE etc.)
         ################################################################################
-        userDE = os.popen(getUserDE)
-        userDE = userDE.read().strip().lower()
-        
-        # print(userDE)
-        # print(userPackageManager)
+        get_user_de()
         ################################################################################
         # Update INI file
         ################################################################################
@@ -1032,15 +970,15 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if "ubuntu" in userPackageManager:
-                    # Save user's os name
-                    config.set('INFO', 'packageManager', 'deb')
+                if "ubuntu" in get_package_manager():
+                    print("Ubuntu")
+                    config.set('INFO', 'packageManager', f'{debFolderName}')
                 
-                elif "fedora" in userPackageManager:
-                    # Save user's os name
-                    config.set('INFO', 'packageManager', 'rpm')
+                elif "fedora" in get_package_manager():
+                    print("Fedora")
+                    config.set('INFO', 'packageManager', f'{rpmFolderName}')
 
-                config.set(f'INFO', 'os',  f'{userDE}')
+                config.set('INFO', 'os',  f'{get_user_de()}')
                 config.write(configfile)
 
             ################################################################################
@@ -1049,7 +987,13 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set(f'EXTERNAL', 'hd', f'{self.foundWhere}/{userName}/{self.chooseDevice}')
+                # If inside media
+                if device_location():
+                    config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
+                # If inside run/media
+                elif not device_location():
+                    config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
+                
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
 
@@ -1396,38 +1340,6 @@ class OPTION(QMainWindow):
         """)
         self.allowFlatpakDataCheckBox.clicked.connect(self.on_allow__flatpak_data_clicked)
 
-
-        ################################################################################
-        # Apparence widget
-        ################################################################################
-        # self.apparenceWidget = QWidget(self)
-        # self.apparenceWidget.setGeometry(285, 320, 390, 90)
- 
-        # # Reset layout
-        # self.apparenceLayout = QVBoxLayout(self.apparenceWidget)
-        # self.apparenceLayout.setSpacing(0)
-
-        # # Reset title
-        # self.resetTitle = QLabel()
-        # self.resetTitle.setFont(QFont("Ubuntu", 5))
-        # self.resetTitle.setText("<h1>Apparence:</h1>")
-        # self.resetTitle.adjustSize()
-        # self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
-
-        # # Reset label text
-        # self.resetText = QLabel()
-        # self.resetText.setFont(QFont("Ubuntu", 10))
-        # self.resetText.setText('Choose White or Dark theme.')
-        # self.resetText.adjustSize()
-
-        ################################################################################
-        # Apparence button
-        ################################################################################
-        # self.apparenceButton = QPushButton()
-        # self.apparenceButton.setFont(QFont("Ubuntu", 10))
-        # self.apparenceButton.adjustSize()
-        # self.apparenceButton.clicked.connect(self.on_apparence_button_clicked)
-
         ################################################################################
         # Reset widget
         ################################################################################
@@ -1531,7 +1443,7 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
-        self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        # self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         
         self.setLayout(self.leftLayout)
@@ -1539,18 +1451,20 @@ class OPTION(QMainWindow):
         self.get_folders()
 
     def get_folders(self):
+        ################################################################################
+        # Read Ini File
+        ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
         getIniFolders = config.options('FOLDER')
-        # Sort folders alphabetically
-        dummyList = []
-        for folder in getHomeFolders:
-            if not "." in folder:    
-                dummyList.append(folder)
-                dummyList.sort()
-
-        # Get USER home folders
-        for folder in dummyList:
+        ################################################################################
+        # Get Home Folders and Sort them alphabetically
+        ################################################################################
+        get_home_folders()
+        ################################################################################
+        # Add On Screen
+        ################################################################################
+        for folder in get_home_folders():
             # Hide hidden folder
             if not "." in folder:   
                 # Checkboxes
@@ -2114,32 +2028,6 @@ if __name__ == '__main__':
     widget.setWindowTitle(appName)
     widget.setWindowIcon(QIcon(src_backup_icon))
     widget.setFixedSize(700, 450)
-
-    # if main.darkMode == "true":
-    #     mainOpitions.apparenceButton.setText("White")
-
-    #     app.setStyle("Fusion")
-    #     dark_palette = QPalette()
-    #     dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.WindowText, Qt.white)
-    #     dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    #     dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    #     dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    #     dark_palette.setColor(QPalette.Text, Qt.white)
-    #     dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    #     dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    #     dark_palette.setColor(QPalette.BrightText, Qt.red)
-    #     dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    #     dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    #     dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-    #     app.setPalette(dark_palette)
-    #     app.setStyleSheet(
-    #         "QToolTip { color: #ffffff;"
-    #         "background-color: #2a82da;"
-    #         "border: 1px solid white; }")
-    # else:
-    #     mainOpitions.apparenceButton.setText("Dark")    
 
     app.exit(app.exec())
         

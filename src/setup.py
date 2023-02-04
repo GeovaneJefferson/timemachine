@@ -7,6 +7,7 @@ import shutil
 import time
 import sys
 import signal
+import asyncio
 
 from threading import Thread
 from pathlib import Path
@@ -46,17 +47,18 @@ varFolderName = "var"
 localFolderName = "share"
 flatpakTxt = "flatpak.txt"
 
-rpmFolderName = "rpm"
 debFolderName = "deb"
+rpmFolderName = "rpm"
 
 # CMD commands
 copyRsyncCMD = "rsync -avr --exclude={'cache','.cache'}"
-copyCPCMD = "cp -Lrv"
+copyCPCMD = "cp -rv"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 getFlatpaks = "flatpak list --columns=app --app"
 installRPM = "sudo rpm -ivh --replacepkgs"
 installDEB = "sudo dpkg -i"
+flatpakInstallCommand = "flatpak install --system --noninteractive --assumeyes --or-update"
 
 # DE
 supportedOS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
@@ -67,7 +69,7 @@ getUserPackageManager = "cat /etc/os-release"
 
 ################################################################################
 # GNOME
-#################################################################################
+################################################################################
 detectThemeMode = "gsettings get org.gnome.desktop.interface color-scheme"
 
 getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
@@ -137,10 +139,11 @@ src_migration_assistant_96px = f"{homeUser}/.local/share/timemachine/src/icons/m
 src_migration_assistant_clean_128px = f"{homeUser}/.local/share/timemachine/src/icons/migration_assistant_clean_128px.svg"
 src_backup_now = f"{homeUser}/.local/share/timemachine/src/backup_now.py"
 src_backup_check = f"{homeUser}/.local/share/timemachine/src/desktop/backup_check.desktop"
-# src_restore_small_icon = f"{homeUser}/.local/share/timemachine/src/icons/restore_46px.svg"
 src_main_window_py = f"{homeUser}/.local/share/timemachine/src/mainwindow.py"
 src_enter_time_machine_py = f"{homeUser}/.local/share/timemachine/src/enter_time_machine.py"
 src_package_backup_py = f"{homeUser}/.local/share/timemachine/src/auto-package.py"
+src_prepare_backup_py = f"{homeUser}/.local/share/timemachine/src/prepare_backup.py"
+src_update_py = f"{homeUser}/.local/share/timemachine/src/update.py"
 
 src_system_tray = f"{homeUser}/.local/share/timemachine/src/systemtray.py"
 src_system_bar_icon = f"{homeUser}/.local/share/timemachine/src/icons/systemtrayicon.png"

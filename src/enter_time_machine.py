@@ -41,18 +41,13 @@ class ENTERTIMEMACHINE(QWidget):
 
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
-        self.darkMode = config['MODE']['dark_mode']
 
         self.widgets()
 
     def widgets(self):
         # Base vertical layout
         baseV = QVBoxLayout()
-        # baseV.setAlignment(QtCore.Qt.AlignVCenter)
-        # baseV.setContentsMargins(20, 20, 20, 20)
-        
         baseH = QHBoxLayout()
-        # baseH.setContentsMargins(20, 20, 20, 20)
 
         ################################################################################
         # Left widget
@@ -60,14 +55,9 @@ class ENTERTIMEMACHINE(QWidget):
         # Folders widget
         self.widgetLeft = QWidget()
         self.widgetLeft.setFixedWidth(200)
-        # self.widgetLeft.setStyleSheet(
-        #     """
-        #         border: 1px solid black;
-        #     """)
 
         self.foldersLayout = QVBoxLayout(self.widgetLeft)
         self.foldersLayout.setAlignment(QtCore.Qt.AlignLeft)
-        #self.foldersLayout.setContentsMargins(10, 20, 10, 20)
         self.foldersLayout.setSpacing(5)
         
         ################################################################################
@@ -108,10 +98,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         widgetUpDown = QWidget()
         widgetUpDown.setFixedWidth(120)
-        # widgetUpDown.setStyleSheet(
-        #    """
-        #         border: 1px solid black;
-        #     """)
 
         # UpDown layout
         self.upDownLayout = QVBoxLayout(widgetUpDown)
@@ -161,10 +147,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         widgetRight = QWidget()
         widgetRight.setFixedWidth(120)
-        # widgetRight.setStyleSheet(
-        #     """
-        #         border: 1px solid black;
-        #     """)
 
         # Times layout
         self.timesLayout = QVBoxLayout(widgetRight)
@@ -210,9 +192,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         baseH.addWidget(self.widgetLeft)
         baseH.addLayout(baseV)
-        # baseH.addWidget(self.scrollForFolders)
-        # baseH.addWidget(self.scrollForFolders)
-        # baseH.addWidget(self.scrollForFiles)
         baseH.addWidget(widgetUpDown)
         baseH.addWidget(widgetRight)
 
@@ -224,8 +203,6 @@ class ENTERTIMEMACHINE(QWidget):
         self.upDownLayout.addWidget(self.afterGrayDate, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
         self.upDownLayout.addStretch()
         
-        # baseV.addWidget(self.currentLocation)
-        # baseV.addLayout(baseH)
         baseV.addWidget(self.scrollForFolders)
         baseV.addWidget(self.scrollForFiles, 1)
         self.restoreLayout.addWidget(self.restoreButton, 0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
@@ -246,9 +223,8 @@ class ENTERTIMEMACHINE(QWidget):
         # Sort folders alphabetically
         dummyList = []
         for folder in self.iniFolder:
-            if not "." in folder:    
-                dummyList.append(folder)
-                dummyList.sort()
+            dummyList.append(folder)
+            dummyList.sort()
 
         # Get available folders from INI file
         alreadyAdded = False
@@ -314,6 +290,7 @@ class ENTERTIMEMACHINE(QWidget):
             print("Backup devices was not found...")
             exit()
         
+        # asyncio.run(self.get_time())
         self.get_time()
 
     def get_time(self):
@@ -386,8 +363,9 @@ class ENTERTIMEMACHINE(QWidget):
         except:
             pass
 
+        # task = asyncio.create_task(self.show_on_screen())
         self.show_on_screen()
-    
+
     def show_on_screen(self):
         # Clean screen
         for _ in range(1):
@@ -431,7 +409,17 @@ class ENTERTIMEMACHINE(QWidget):
                     # Text
                     ################################################################################
                     text = QLabel(self.filesResult)
-                    text.setText(output.capitalize())
+
+                    # Short strings
+                    countStrings = len(output)
+                    recentEndswith = output.split(".")[-1]
+
+                    # Label
+                    if countStrings < 20:            
+                        text.setText(f"{(output.capitalize())}")
+                    else:
+                        text.setText(f"{(output[:20].capitalize())}...{recentEndswith}")
+
                     text.setFont(QFont("Ubuntu", 11))
                     text.move(10, filesButtomY-25)
 
@@ -505,10 +493,14 @@ class ENTERTIMEMACHINE(QWidget):
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
 
                     count += 1
-
                     # If filesButtomX if higher than scroll width, go to the next column
                     horizontal += 1
-                    if count %3 == 0:
+                    if self.scrollForFiles.width() <=800:
+                        dimension = 3
+                    elif self.scrollForFiles.width() <=1440:
+                        dimension = 6
+
+                    if count %dimension == 0:
                         # Reset counts
                         count = 0
                         # Reset horizontal
@@ -591,21 +583,6 @@ class ENTERTIMEMACHINE(QWidget):
             self.afterGrayDate.setText("")
         
     def add_to_restore(self, output, getDate, getTime):
-        ################################################################################
-        # Check for spaces inside output and sort them
-        ################################################################################
-        # TODO
-        # if not "." in output:
-        #     self.extra1 = output
-            
-        #     if output in self.filesToRestore:
-        #         self.filesToRestore.remove(output)  
-
-        #     for _ in range(1):
-        #         self.clean_stuff_on_screen("clean_files")
-
-        #     self.show_on_screen()
-
         if not " " in output:
             if not output in self.filesToRestore:  # Check if output is already inside list
                 self.filesToRestore.append(output)  # Add output to the list files to restore
@@ -629,7 +606,6 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
-
             # Restore label + filesToRestore and self.filesToRestoreWithSpace lenght
             self.restoreButton.setText(f"Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})")
 
@@ -854,6 +830,7 @@ if __name__ == '__main__':
     # Windows settings
     main.setWindowTitle(f"Browser {appName} Backups")
     main.setWindowIcon(QIcon(src_backup_icon))
-    main.setFixedSize(1280, 720)
+    main.resize(1280, 720)
+    main.showMaximized()
     
     app.exit(app.exec())

@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from get_user_de import *
 
 # Read ini file
 config = configparser.ConfigParser()
@@ -79,7 +80,6 @@ class RESTORE:
             self.apply_users_saved_wallpaper()
 
     def get_home_backup_folders(self):
-        print("home")
         self.iniFoldersList = []
         # Get available folders from INI file
         for output in self.iniFolder:
@@ -205,9 +205,10 @@ class RESTORE:
         print("Restoring users wallpaper...")
         dummyList = []
         try:
-            # Find user's DE type
-            self.userPackageManager = os.popen(getUserDE)
-            self.userPackageManager = self.userPackageManager.read().strip().lower()
+            ################################################################################
+            # Get users Package Manager
+            ################################################################################
+            get_user_de()
 
             # Check if a wallpaper can be found
             for wallpaper in os.listdir(f"{self.wallpaperMainFolder}/"):
@@ -228,7 +229,7 @@ class RESTORE:
                     count = 0
                     for _ in supportedOS:
                         # Activate wallpaper option
-                        if supportedOS[count] in self.userPackageManager:
+                        if supportedOS[count] in str(get_user_de):
                             # Detect color scheme
                             getColorScheme = os.popen(detectThemeMode)
                             getColorScheme = getColorScheme.read().strip().replace("'", "")
@@ -256,7 +257,7 @@ class RESTORE:
                             sub.run(f"{zoomGnomeWallpaper}", shell=True)
                             ################################################################
 
-                        elif self.userPackageManager == "kde":
+                        elif str(get_user_de) == "kde":
                             print("Restoring users wallpaper (KDE)...")
                             # Apply to KDE desktop
                             os.popen("""
@@ -290,7 +291,6 @@ class RESTORE:
 
     def restore_icons(self):
         print("Restoring icon...")
-
         try:
             self.somethingToRestoreInIcon = []
             # Check for icon to be restored
@@ -299,13 +299,6 @@ class RESTORE:
             
             # # If has something to restore
             if self.somethingToRestoreInIcon:
-            #     config = configparser.ConfigParser()
-            #     config.read(src_user_config)
-            #     with open(src_user_config, 'w') as configfile:
-            #         # Write to INI file saved icon name
-            #         config.set('INFO', 'icon', f'{self.somethingToRestoreInIcon[0]}')
-            #         config.write(configfile)
-
                 ################################################################################
                 # Create .icons inside home user
                 ################################################################################
@@ -322,7 +315,7 @@ class RESTORE:
                 count = 0
                 for _ in supportedOS:
                     # Activate wallpaper option
-                    if supportedOS[count] in self.userPackageManager:
+                    if supportedOS[count] in str(get_user_de):
                         # Continue only if has a theme inside to restore
                         # Apply icon
                         print(f"Applying {setUserIcon} {icon}")
@@ -353,13 +346,6 @@ class RESTORE:
 
         # If has something to restore
         if self.somethingToRestoreInCursor:
-            # config = configparser.ConfigParser()
-            # config.read(src_user_config)
-            # with open(src_user_config, 'w') as configfile:
-            #     # Write to INI file saved icon name
-            #     config.set('INFO', 'cursor', f'{self.somethingToRestoreInCursor[0]}')
-            #     config.write(configfile)
-                
             # Copy icon from the backup to .icon folder
             sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
 
@@ -369,7 +355,7 @@ class RESTORE:
             count = 0
             for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedOS[count] in self.userPackageManager:
+                if supportedOS[count] in str(get_user_de):
                     # Continue only if has a theme inside to restore
                     # Apply cursor
                     print(f"Applying {setUserCursor} {cursor}")
@@ -397,13 +383,6 @@ class RESTORE:
 
         # If has something to restore
         if self.somethingToRestoreInTheme:
-            # config = configparser.ConfigParser()
-            # config.read(src_user_config)
-            # with open(src_user_config, 'w') as configfile:
-            #     # Write to INI file saved theme name
-            #     config.set('INFO', 'theme', f'{self.somethingToRestoreInTheme[0]}')
-            #     config.write(configfile)
-
             ################################################################################
             # Create .themes inside home user
             ################################################################################
@@ -421,7 +400,7 @@ class RESTORE:
             count = 0
             for _ in supportedOS:
                 # Activate wallpaper option
-                if supportedOS[count] in self.userPackageManager:
+                if supportedOS[count] in str(get_user_de):
                     # Continue only if has a theme inside to restore
                     # Apply theme
                     print(f"Applying {setUserTheme} {theme}")
@@ -460,7 +439,7 @@ class RESTORE:
 
         print("Installing applications packages...")
         try:             
-            if self.packageManager == "rpm":
+            if self.packageManager == f"{rpmFolderName}":
                 ################################################################################
                 # Restore RPMS
                 ################################################################################
@@ -475,15 +454,13 @@ class RESTORE:
                         sub.run(f"{installRPM} {self.iniExternalLocation}/{baseFolderName}/"
                             f"{applicationFolderName}/{rpmFolderName}/{output}", shell=True)
             
-            elif self.packageManager == "deb":
+            elif self.packageManager == f"{debFolderName}":
                 ################################################################################
                 # Restore DEBS
                 ################################################################################
                 for output in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}"):
 
-                    print(output)
-                    print(dummyExcludeAppsList)
                     # Install only if output if not in the exclude app list
                     if output not in str(dummyExcludeAppsList):
                         print(f"{installDEB} {self.iniExternalLocation}/{baseFolderName}/"
@@ -522,7 +499,7 @@ class RESTORE:
                             config.write(configfile)
 
                         ###############################################################################
-                        sub.run(f"flatpak install --system --noninteractive --assumeyes --or-update {output}", shell=True)
+                        sub.run(f"{flatpakInstallCommand} {output}", shell=True)
                         ###############################################################################
                 
                 # Got to flatpak DATA
