@@ -52,7 +52,7 @@ rpmFolderName = "rpm"
 
 # CMD commands
 copyRsyncCMD = "rsync -avr --exclude={'cache','.cache'}"
-copyCPCMD = "cp -Lrv"
+copyCPCMD = "cp -rv"
 createCMDFolder = "mkdir"
 createCMDFile = "touch"
 getFlatpaks = "flatpak list --columns=app --app"
