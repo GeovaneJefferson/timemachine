@@ -781,7 +781,7 @@ class MAIN(QMainWindow):
 
     def on_update_button_clicked(self):
         ################################################################################
-        # Close and Call Update.py
+        # Call update and Exit
         ################################################################################
         sub.Popen(f"python3 {src_update_py}",shell=True)
         exit()
