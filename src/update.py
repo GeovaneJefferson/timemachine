@@ -14,7 +14,7 @@ def update_app():
     os.popen("git stash; git pull")
 
     # Restore the copy to inside "ini" folder
-    sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {homeUser}/.local/share/timemachine/src/ini/",shell=True)
+    sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {homeUser}/.local/share/timemachine/src/ini/",shell=True)
 
     # Delete the copy
     sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
