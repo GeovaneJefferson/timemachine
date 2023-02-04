@@ -14,7 +14,8 @@ def update_app():
     # sub.run(f"rm {src_user_config}", shell=True)
 
     # Restore the copy to inside "ini" folder
-    sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {homeUser}/Documents",shell=True)
+    # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+    sub.run(f"cp -rv {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
 
     # Delete the copy
     # sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
