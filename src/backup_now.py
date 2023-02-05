@@ -208,7 +208,7 @@ class BACKUP:
             # Start Flatpak (var/app) backup
             ################################################################################
             count = 0
-            for output in str(flatpak_var_list()):
+            for output in flatpak_var_list():
                 ###############################################################################
                 # Write current save file name to INI file
                 # so it can be show on main window (gui.py)
@@ -225,8 +225,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyCPCMD} {(str(flatpak_var_list())[count])} {self.applicationVarFolder}")
-                sub.run(f"{copyCPCMD} {(str(flatpak_var_list())[count])} {self.applicationVarFolder}", shell=True)
+                print(f"{copyCPCMD} {flatpak_var_list()[count]} {self.applicationVarFolder}")
+                sub.run(f"{copyCPCMD} {flatpak_var_list()[count]} {self.applicationVarFolder}", shell=True)
 
                 count += 1
 
@@ -234,7 +234,7 @@ class BACKUP:
             # Start Flatpak (.local/share/flatpak) backup
             ################################################################################
             count = 0
-            for output in str(flatpak_local_list()):
+            for output in flatpak_local_list():
                 ###############################################################################
                 # Write current save file name to INI file
                 # so it can be show on main window (gui.py)
@@ -251,8 +251,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {(str(flatpak_local_list())[count])} {self.applicationLocalFolder}")
-                sub.run(f"{copyRsyncCMD} {(str(flatpak_local_list())[count])} {self.applicationLocalFolder}", shell=True)
+                print(f"{copyRsyncCMD} {flatpak_local_list()[count]} {self.applicationLocalFolder}")
+                sub.run(f"{copyRsyncCMD} {flatpak_local_list()[count]} {self.applicationLocalFolder}", shell=True)
 
                 count += 1
 
