@@ -1333,7 +1333,7 @@ class OPTION(QMainWindow):
         self.allowFlatpakDataCheckBox = QCheckBox()
         self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
         self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
-            "(* Will increase backup time)")
+            "")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
             border: transparent;
