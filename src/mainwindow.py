@@ -1017,7 +1017,6 @@ class EXTERNAL(QWidget):
         mainDevices.close()
         main.setEnabled(True)
 
-
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
