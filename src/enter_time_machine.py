@@ -409,11 +409,9 @@ class ENTERTIMEMACHINE(QWidget):
                     # Text
                     ################################################################################
                     text = QLabel(self.filesResult)
-
                     # Short strings
                     countStrings = len(output)
                     recentEndswith = output.split(".")[-1]
-
                     # Label
                     if countStrings < 20:            
                         text.setText(f"{(output.capitalize())}")
@@ -489,8 +487,10 @@ class ENTERTIMEMACHINE(QWidget):
                     
                     else:
                         # Folders
-                        print(output)
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
+                        # Avoid space if is not a file, by removing 1
+                        horizontal -= 1
+                        vertical =- 1
 
                     count += 1
                     # If filesButtomX if higher than scroll width, go to the next column
