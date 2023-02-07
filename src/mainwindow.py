@@ -219,7 +219,7 @@ class MAIN(QMainWindow):
             "• Local HOME snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
             "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Wallpaper, Theme, Icon and cursor\n\n"
+            "• Wallpaper, Theme, Icon and cursor theme\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -843,7 +843,7 @@ class EXTERNAL(QWidget):
         
         # Info 
         self.notAllowed = QLabel(self)
-        self.notAllowed.setText("Diveces with space(s) and/or special characters will not be visible.")
+        self.notAllowed.setText("Devices with space(s) and/or special characters will not be visible.")
         self.notAllowed.setFont(item)
         self.notAllowed.move(20,20)
 
