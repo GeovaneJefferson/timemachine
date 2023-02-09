@@ -218,8 +218,8 @@ class MAIN(QMainWindow):
         self.descriptionText.setText(
             "• Local HOME snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
-            "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Wallpaper, Theme, Icon and cursor theme\n\n"
+            "• Applications '.deb and .rpm' + Flatpaks\n"
+            "• Wallpaper, Theme, Icon and Cursor theme\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -1321,7 +1321,7 @@ class OPTION(QMainWindow):
         # Flatpak Name checkbox
         self.allowFlatpakNamesCheckBox = QCheckBox()
         self.allowFlatpakNamesCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks apps names")
+        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks")
         self.allowFlatpakNamesCheckBox.adjustSize()
         self.allowFlatpakNamesCheckBox.setStyleSheet("""
             border: transparent;
@@ -1331,7 +1331,7 @@ class OPTION(QMainWindow):
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
         self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks Data " 
             "")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
