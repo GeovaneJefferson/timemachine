@@ -276,7 +276,6 @@ class OPTIONS(QWidget):
         else:
             exit()
 
-
 class CHOOSEDEVICE(QWidget):
     def __init__(self):
         super().__init__()
@@ -929,9 +928,8 @@ class PREBACKUP(QWidget):
                     for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/"):
                         # Exclude
-                        exclude = (exclude.split("_")[0])
-                        exclude = (exclude.split("-")[0])
-                        # CHeckbox
+                        # exclude = exclude.split("_")[0].split("-")[0]
+                        # Checkbox
                         dummyCheckBox = QCheckBox()
                         dummyCheckBox.setText(exclude.capitalize())
                         dummyCheckBox.setChecked(True)
@@ -944,7 +942,7 @@ class PREBACKUP(QWidget):
                     for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/"):
                         # Exclude
-                        exclude = exclude.split("_")[0].split("-")[0]
+                        # exclude = exclude.split("_")[0].split("-")[0]
                         # Checkbox
                         dummyCheckBox = QCheckBox()
                         dummyCheckBox.setText(exclude.capitalize())
@@ -1143,7 +1141,6 @@ class PREBACKUP(QWidget):
             # Enable continue button
             self.continueButton.setEnabled(True)
 
-
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
@@ -1193,7 +1190,7 @@ class BACKUPSCREEN(QWidget):
         # Automatically reboot
         self.autoReboot = QCheckBox()
         self.autoReboot.setFont(QFont("Arial", 10))
-        self.autoReboot.setText('Automatically reboot after restoring is done.') 
+        self.autoReboot.setText('Automatically reboot after restoring is done. (Recommended)') 
         self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
@@ -1367,7 +1364,6 @@ class BACKUPSCREEN(QWidget):
 
             config.write(configfile)
 
-        
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
@@ -1442,14 +1438,12 @@ if __name__ == '__main__':
     main4 = PREBACKUP()
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
-
+    # Add Widget
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   
-
     # Window settings
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
     widget.setFixedSize(900,600)
     widget.show()
-
     app.exit(app.exec())
