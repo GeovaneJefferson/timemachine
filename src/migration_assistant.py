@@ -66,8 +66,8 @@ flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
 
 class WELCOMESCREEN(QWidget):
-    def __init__(self, parent=None):
-        super(WELCOMESCREEN, self).__init__(parent)
+    def __init__(self):
+        super(WELCOMESCREEN, self).__init__()
         self.widgets()
 
     def widgets(self):
@@ -297,7 +297,7 @@ class CHOOSEDEVICE(QWidget):
         # Title
         self.title = QLabel()
         self.title.setFont(QFont("Arial Bold", 28))
-        self.title.setText("Transfer information to this pc")
+        self.title.setText("Restore information to this pc")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
