@@ -2,6 +2,7 @@
 from setup import *
 from prepare_backup import *
 from get_user_wallpaper import *
+from update import backup_ini_file
 
 ################################################################################
 ## Signal
@@ -464,8 +465,9 @@ class BACKUP:
         ################################################################################
         # Backup Ini File
         ################################################################################
-        print("Backuping up user.ini file...")
-        sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
+        print("Backing up user.ini file...")
+        backup_ini_file(False)
+        # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
 
         ################################################################################
         # After backup is done
