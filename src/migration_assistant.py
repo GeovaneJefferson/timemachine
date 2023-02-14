@@ -1443,8 +1443,8 @@ if __name__ == '__main__':
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
 
-    widget.addWidget(main4)   
-    widget.setCurrentWidget(main4)   
+    widget.addWidget(main)   
+    widget.setCurrentWidget(main)   
 
     # Window settings
     widget.setWindowTitle("Migration Assistant")
