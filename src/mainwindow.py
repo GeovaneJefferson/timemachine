@@ -5,7 +5,7 @@ from device_location import *
 from package_manager import *
 from get_user_de import *
 from get_home_folders import *
-
+from update import restore_ini_file, backup_ini_file
 
 # QTimer
 timer = QtCore.QTimer()
@@ -371,7 +371,8 @@ class MAIN(QMainWindow):
             print("")
 
             # Restore the copy to inside "ini" folder
-            sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+            restore_ini_file(False)
+            # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
             
             self.timeOut += 1
 
@@ -804,7 +805,9 @@ class MAIN(QMainWindow):
         ################################################################################
         # Call update and Exit
         ################################################################################
-        sub.Popen(f"python3 {src_update_py}",shell=True)
+        # Set to True, so it will call others function to update propely
+        backup_ini_file(True)
+        # sub.Popen(f"python3 {src_update_py}",shell=True)
         exit()
 
 class EXTERNAL(QWidget):
@@ -1013,12 +1016,9 @@ class EXTERNAL(QWidget):
             ################################################################################
             # Backup Ini File
             ################################################################################
-            print("")
-            print("Ini File is empty!")
-            print("Restoring user.ini from backup location")
-            print("")
             print("Backup user.ini file")
-            sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
+            backup_ini_file(False)
+            # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
             
             # Close Window
             main.setEnabled(True)
