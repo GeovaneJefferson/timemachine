@@ -1,5 +1,8 @@
 #! /usr/bin/python3
 from setup import *
+from get_backup_folders import *
+from get_backup_dates import *
+from get_backup_times import *
 
 config = configparser.ConfigParser()
 config.read(src_user_config)
@@ -11,13 +14,12 @@ class ENTERTIMEMACHINE(QWidget):
         # Variables
         self.filesToRestore = []
         self.filesToRestoreWithSpace = []
-        self.extra1 = ""
 
         # Folders
         self.currentFolder = str()
         
         # Times
-        self.d = []
+        self.timeFolders = []
         self.countForTime = 0
         self.excludeTimeList = []
 
@@ -38,10 +40,7 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-
         self.iniExternalLocation = config['EXTERNAL']['hd']
-        self.iniFolder = config.options('FOLDER')
-
         self.widgets()
 
     def widgets(self):
@@ -77,12 +76,6 @@ class ENTERTIMEMACHINE(QWidget):
         self.scrollForFiles.setWidgetResizable(True)
         self.scrollForFiles.setWidget(widgetCenterForFiles)
         
-        # Show loading label
-        self.loadingLabel = QLabel(self.scrollForFiles)
-        self.loadingLabel.move(365, 300)
-        self.loadingLabel.setText("<h1>Loading...</h1>")
-        self.loadingLabel.setFont(QFont("Ubuntu", 10))
-
         # Folders Layout
         self.foldersLayoutHorizontal = QHBoxLayout(widgetCenterForFolders)
         self.foldersLayoutHorizontal.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
@@ -209,114 +202,75 @@ class ENTERTIMEMACHINE(QWidget):
         baseV.addLayout(self.restoreLayout)
         
         self.setLayout(baseH)
-
-        self.get_folders()
+        self.add_backup_folders()
     
-    def get_folders(self):
-        # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders")
-
-        ################################################################################
-        # GET FOLDERS
-        ################################################################################
-        # Sort folders alphabetically
-        dummyList = []
-        for folder in self.iniFolder:
-            dummyList.append(folder)
-            dummyList.sort()
-
-        # Get available folders from INI file
+    def add_backup_folders(self):
         alreadyAdded = False
-        for output in dummyList:
-            # Capitalize first letter
-            output = output.capitalize()
-            # Can output be found inside Users Home?
-            try:
-                os.listdir(f"{homeUser}/{output}")
-            except:
-                # Lower output first letter
-                output = output.lower() # Lower output first letter
 
+        # Start by cleaning screen
+        self.clean_stuff_on_screen("clean_folders")
+        print("Getting backups folder (left Side)...")
+        
+        # Add Stretch
+        self.foldersLayout.addStretch()
+
+        # Add Backup Folders
+        for backupFolders in get_folders():
             ################################################################################
             # Create folders buttons
             ################################################################################
             self.foldersOnScreen = QPushButton()
-            self.foldersOnScreen.setText(output)
+            self.foldersOnScreen.setText(backupFolders)
             self.foldersOnScreen.setFont(QFont("Ubuntu", 12))
             self.foldersOnScreen.setFixedSize(140, 34)
             self.foldersOnScreen.setCheckable(True)
             self.foldersOnScreen.setAutoExclusive(True)
             # self.foldersOnScreen.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
-            self.foldersOnScreen.clicked.connect(lambda *args, folder=output: self.change_folder(folder))
-            self.foldersLayout.addWidget(self.foldersOnScreen)
-
+            self.foldersOnScreen.clicked.connect(lambda *args, folder=backupFolders: self.change_folder(folder))
+            self.foldersLayout.addWidget(self.foldersOnScreen,0,QtCore.Qt.AlignTop)
+            ################################################################################
+            # Auto Check The Current Folder
+            ################################################################################
             if not alreadyAdded:
                 # Auto check the first folder
                 self.foldersOnScreen.setChecked(True)
                 # Auto select the first folder
-                self.currentFolder = output
+                self.currentFolder = backupFolders
                 alreadyAdded = True 
-        
-        # Add space
+                
+        # Add Stretch
         self.foldersLayout.addStretch()
-
         self.get_date()
 
     def get_date(self):
-        # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_files")
-        
-        try:
-            if not self.alreadyGotDateList:
-                for output in os.listdir(f"{self.iniExternalLocation}/"
-                        f"{baseFolderName}/{backupFolderName}"):
-                    # Hide hidden outputs
-                    if "." not in output:
-                        self.dateFolders.append(output)
-                        self.dateFolders.sort(
-                            reverse=True, 
-                            key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-                        self.alreadyGotDateList = True
-
-        except FileNotFoundError as error:
-            # Set notification_id to 2
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "2")
-                config.set('INFO', 'notification_add_info', f"{error}")
-                config.write(configfile)
-
-            print("Backup devices was not found...")
-            exit()
-        
-        # asyncio.run(self.get_time())
+        get_backup_date()
         self.get_time()
-
+    
     def get_time(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_time")
-
         ################################################################################
         # If inside the external "date folders" has not "time folder", pass to avoid display error :D
         ################################################################################
         try:
-            # Clear list
-            self.d.clear()
+            # Clean Times On Screen
+            self.clean_stuff_on_screen("clean_time")
+            # Clean Time List
+            self.timeFolders.clear()
+            get_backup_time()
+
             for getTime in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{backupFolderName}/"
-                    f"{self.dateFolders[(self.countForDate)]}/"):
+                    f"{get_backup_date(self.countForDate)}/"):
 
                 # Add to list
-                self.d.append(getTime)
+                # self.timeFolders.append(getTime)
                 # Sort reverse=True
-                self.d.sort(reverse=True)
+                # self.timeFolders.sort(reverse=True)
 
                 # Only add time button if self.currentFolder can be found inside current date and time
                 if os.path.exists(f"{self.iniExternalLocation}/"
                         f"{baseFolderName}/{backupFolderName}/"
-                        f"{self.dateFolders[(self.countForDate)]}/"
+                        f"{get_backup_date(self.countForDate)}/"
                         f"{getTime}/{self.currentFolder}"):
 
                     ################################################################################
@@ -347,21 +301,7 @@ class ENTERTIMEMACHINE(QWidget):
             # Add to self.countForDate
             self.countForDate += 1
             # Return to Date
-            self.get_date()
-
-        try:
-            # Current folder that user is on
-            print("")
-            print("Date available: ", self.dateFolders)
-            print("Time available: ", self.d)
-            print("Current date: ", self.dateFolders[self.countForDate])
-            print("Current time: ", self.d[self.countForTime])
-            print("Current folder:", self.currentFolder)
-            print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                    f"/{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
-                    f"{self.currentFolder}")
-        except:
-            pass
+            # self.get_date()
 
         # task = asyncio.create_task(self.show_on_screen())
         self.show_on_screen()
@@ -369,7 +309,6 @@ class ENTERTIMEMACHINE(QWidget):
     def show_on_screen(self):
         # Clean screen
         self.clean_stuff_on_screen("clean_files")
-
         # Show available files
         try:
             filesButtomX = 220
@@ -385,13 +324,9 @@ class ENTERTIMEMACHINE(QWidget):
                 ".png", ".jpg", ".jpeg", 
                 ".webp", ".gif", ".svg")
             for output in os.listdir(f"{self.iniExternalLocation}/"
-                    f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
-                    f"{self.d[self.countForTime]}/{self.currentFolder}"):
-            
-            # for output in os.listdir(f"{self.iniExternalLocation}/"
-            #     f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
-            #     f"{self.d[self.countForTime]}/{self.currentFolder}/{self.extra1}"):
-            
+                    f"{baseFolderName}/{backupFolderName}/{get_backup_date()[self.countForDate]}/"
+                    f"{get_backup_time()[self.countForTime]}/{self.currentFolder}"):
+
                 # Only show files and hide hidden outputs
                 if not output.startswith("."):
                     print("     Files: ", output)
@@ -401,16 +336,18 @@ class ENTERTIMEMACHINE(QWidget):
                     self.filesResult.setIconSize(QtCore.QSize(64, 64))
                     self.filesResult.clicked.connect(
                             lambda *, output=output: self.add_to_restore(
-                                output, self.dateFolders[self.countForDate],
-                                self.d[self.countForTime]))
+                                output, get_backup_date()[self.countForDate],
+                                get_backup_time()[self.countForTime]))
 
                     ################################################################################
                     # Text
                     ################################################################################
                     text = QLabel(self.filesResult)
+
                     # Short strings
                     countStrings = len(output)
                     recentEndswith = output.split(".")[-1]
+
                     # Label
                     if countStrings < 20:            
                         text.setText(f"{(output.capitalize())}")
@@ -425,7 +362,7 @@ class ENTERTIMEMACHINE(QWidget):
                         scaledHTML = 'width:"100%" height="250"'
                         self.filesResult.setToolTip(
                             f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                            f"/{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
+                            f"/{get_backup_date()[self.countForDate]}/{get_backup_time()[self.countForTime]}/"
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     ################################################################################
@@ -440,43 +377,38 @@ class ENTERTIMEMACHINE(QWidget):
                         "background-repeat: no-repeat;"
                         "}")
 
+                    # TODO CASE
+                    # match output:
+                    #     case pattern-1:
+                    #          action-1
+                    
                     if output.endswith(imagePrefix):
                         scaledHTML = 'width:"100%" height="80"'
                         image.setText(
                             f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                            f"{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
+                            f"{get_backup_date()[self.countForDate]}/{get_backup_time()[self.countForTime]}/"
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     elif output.endswith(".txt"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
-
                     elif output.endswith(".pdf"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/pdf.png"))
-
                     elif output.endswith(".py"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/py.png"))
-
                     elif output.endswith(".cpp"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/cpp.png"))
-
                     elif output.endswith(".sh"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
-
                     elif output.endswith(".blend"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/blend.png"))
-
                     elif output.endswith(".excel"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
-
                     elif output.endswith(".mp4"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
-
                     elif output.endswith(".iso"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
-                    
                     elif not output.endswith(".")and "." not in output:
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
-
                     else:
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
 
@@ -487,9 +419,6 @@ class ENTERTIMEMACHINE(QWidget):
                     else:
                         # Folders
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
-                        # Avoid space if is not a file, by removing 1
-                        horizontal -= 1
-                        vertical =- 1
 
                     count += 1
                     # If filesButtomX if higher than scroll width, go to the next column
@@ -509,15 +438,9 @@ class ENTERTIMEMACHINE(QWidget):
 
         except FileNotFoundError as error:
             print("")
-            print(f"Current info {self.currentFolder}/{self.dateFolders[self.countForDate]}/"
-                f"{self.d[self.countForTime]}")
-            print("Change time...")
-            print("INDEX TIME:", self.d.index(self.d[self.countForTime]) + 1)
-            print("ITEM INSIDE:", len(self.d))
-
             # Change time if inside the timeList has more then 1 item
             # and is not at the end of the time list
-            if len(self.d) > 1 and not len(self.d) == self.d.index(self.d[self.countForTime]) + 1:
+            if len(self.timeFolders) > 1 and not len(self.timeFolders) == self.timeFolders.index(get_backup_time()[self.countForTime]) + 1:
                 # Add to
                 self.countForTime += 1
                 # Go back to get_time
@@ -529,14 +452,12 @@ class ENTERTIMEMACHINE(QWidget):
                 self.countForDate += 1
                 self.countForTime = 0
         
-        self.loadingLabel.setVisible(False)
-
         self.up_down()
-
+        
     def up_down(self):
         try:
             # Date Index
-            self.dateIndex = self.dateFolders.index(self.dateFolders[self.countForDate])
+            self.dateIndex = get_backup_date().index(get_backup_date()[self.countForDate])
             ################################################################################
             # Up settings
             # If clicked on up, go back in time
@@ -568,208 +489,20 @@ class ENTERTIMEMACHINE(QWidget):
         self.currentLocation.setText(f"<h1>{self.currentFolder}</h1>")
 
         # Update date label
-        self.dateLabel.setText(f"{self.dateFolders[(self.countForDate)]}")
+        # self.dateLabel.setText(f"{self.dateFolders[(self.countForDate)]}")
+        self.dateLabel.setText(f"{get_backup_date()[self.countForDate]}")
         # Update before gray date
         if self.upButton.isEnabled():
-            self.beforeGrayDate.setText(f"{self.dateFolders[(self.countForDate) + 1]}")
+            self.beforeGrayDate.setText(f"{get_backup_date()[self.countForDate + 1]}")
         else:
             self.beforeGrayDate.setText("")
 
         # Update after gray date
         if self.downButton.isEnabled():
-            self.afterGrayDate.setText(f"{self.dateFolders[(self.countForDate) - 1]}")
+            self.afterGrayDate.setText(f"{get_backup_date()[self.countForDate - 1]}")
         else:
             self.afterGrayDate.setText("")
         
-    def add_to_restore(self, output, getDate, getTime):
-        if not " " in output:
-            if not output in self.filesToRestore:  # Check if output is already inside list
-                self.filesToRestore.append(output)  # Add output to the list files to restore
-
-            else:
-                self.filesToRestore.remove(output)  # Remove item if already in list
-
-        else:
-            if not output in self.filesToRestoreWithSpace:  # Check if output is already inside list
-                self.filesToRestoreWithSpace.append(output)  # Add output to the list files to restore
-
-            else:
-                self.filesToRestoreWithSpace.remove(output)  # Remove item if already in list
-
-        print("")
-        print("No spaces list   : ", self.filesToRestore)
-        print("with spaces list : ", self.filesToRestoreWithSpace)
-
-        ################################################################################
-        # Enable/Disable functions if item(s) is/are selected
-        ################################################################################
-        if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
-            self.restoreButton.setEnabled(True)
-            # Restore label + filesToRestore and self.filesToRestoreWithSpace lenght
-            self.restoreButton.setText(f"Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})")
-
-            # Hide up function if 1 or more items is/are selected
-            # Up
-            self.upButton.setEnabled(False)
-
-            # Hide down function if 1 or more items is/are selected
-            # Down
-            self.downButton.setEnabled(False)
-
-            # Hide time functions from TimeVLayout if 1 or more items is/are selected
-            for i in range(self.timesLayout.count()):
-                item = self.timesLayout.itemAt(i)
-                widget = item.widget()
-                widget.setEnabled(False)  # Disable function
-                i -= 1
-
-            try:
-                # Hide folders functions from foldersVLayout if 1 or more items is/are selected
-                for i in range(self.foldersLayout.count()):
-                    item = self.foldersLayout.itemAt(i)
-                    widget = item.widget()
-                    widget.setEnabled(False)  # Disable function
-                    i -= 1
-            except:
-                pass
-
-        else:
-            # Disable restore button
-            self.restoreButton.setEnabled(False)
-            # Set self.filesToRestore length
-            self.restoreButton.setText("Restore")
-            
-            # Show time functions from TimeVLayout if 1 or more items is/are selected
-            for i in range(self.timesLayout.count()):
-                item = self.timesLayout.itemAt(i)
-                widget = item.widget()
-                widget.setEnabled(True)
-                i -= 1
-            
-            # Show folders functions from foldersVLayout if 1 or more items is/are selected
-            try:
-                for i in range(self.foldersLayout.count()):
-                    item = self.foldersLayout.itemAt(i)
-                    widget = item.widget()
-                    widget.setEnabled(True)  
-                    i -= 1
-            except:
-                pass
-            
-            ################################################################################
-            # Reactivate buttons
-            ################################################################################
-            ################################################################################
-            # Up settings
-            # If clicked on up, go back in time
-            ################################################################################
-            # 0 = The latest date available
-            if self.dateIndex == 0: 
-                self.downButton.setEnabled(False)
-            else:
-                self.downButton.setEnabled(True)
-
-            ################################################################################
-            # Down settings
-            # If clicked on down, go forward in time
-            ################################################################################
-            if self.dateIndex + 1  == len(self.dateFolders):
-                self.upButton.setEnabled(False)
-
-            else:
-                self.upButton.setEnabled(True)
-
-        ################################################################################
-        # Connection restore button
-        ################################################################################
-        self.restoreButton.clicked.connect(lambda *args: self.start_restore(getDate, getTime))
-
-    def start_restore(self, getDate, getTime):
-        ################################################################################
-        # Restore files without spaces
-        ################################################################################
-        print("Your files are been restored...")
-        try:
-            count = 0
-            for _ in self.filesToRestore:
-                sub.run(
-                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
-                    f"{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/",
-                    shell=True)
-                
-                # Add to count
-                count += 1
-
-            ################################################################################
-            # Restore files with spaces
-            ################################################################################
-            count = 0
-            for _ in self.filesToRestoreWithSpace:
-                sub.run(
-                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
-                    f"{self.filesToRestoreWithSpace[count]} {homeUser}/"
-                    f"{self.currentFolder}/", shell=True)
-
-                # Add to count
-                count += 1
-
-        except:
-            print("Error trying to restore files from external device...")
-            exit()
-
-        """
-        After restore is done, open the item restore folder. 
-        If is not opened already.
-        """        
-        if not self.folderAlreadyOpened:
-            self.folderAlreadyOpened = True
-            # Open folder manager
-            print(f"Opening {homeUser}/{self.currentFolder}...")
-            sub.Popen(f"xdg-open {homeUser}/{self.currentFolder}",shell=True)
-            exit()
-
-    def change_date_up(self):
-        # Clean screen
-        self.clean_stuff_on_screen("clean_time")
-
-        self.countForTime = 0
-        self.countForDate += 1
-        # Return to get_date
-        self.get_date()
-
-    def change_date_down(self):
-        # Clean screen
-        self.clean_stuff_on_screen("times")
-
-        self.countForTime = 0
-        self.countForDate -= 1
-        # Return to get_date
-        self.get_date()
-
-    def change_time(self, getTime):
-        # Clean screen
-        self.clean_stuff_on_screen("clean_files")
-        # Index of the getTime
-        self.countForTime = self.d.index(getTime)
-        # Return to getDate
-        self.show_on_screen()
-
-    def change_folder(self, folder):
-        # Set loading label to False
-        self.loadingLabel.setVisible(True)
-        # Update self.currentFolder
-        self.currentFolder = folder
-        # Reset date
-        self.countForDate = 0
-        # Reset time
-        self.countForTime = 0
-        # Clean screen
-        self.clean_stuff_on_screen("clean_files")
-        # Return to getDate
-        self.get_date()
-
     def clean_stuff_on_screen(self, exec):
         ################################################################################
         # Update screen files by removing items before show the new ones
@@ -812,14 +545,41 @@ class ENTERTIMEMACHINE(QWidget):
         except:
             pass
 
+    def change_date_up(self):
+        # Clean screen
+        self.clean_stuff_on_screen("clean_time")
+
+        self.countForTime = 0
+        self.countForDate += 1
+        self.get_date()
+
+    def change_date_down(self):
+        # Clean screen
+        self.clean_stuff_on_screen("clean_time")
+
+        self.countForTime = 0
+        self.countForDate -= 1
+        self.get_date()
+
+    def change_folder(self, folder):
+        print(f"Clicked on {folder}")
+        # Update self.currentFolder
+        self.currentFolder = folder
+        # Reset date
+        self.countForDate = 0
+        # Reset time
+        self.countForTime = 0
+        # Clean screen
+        self.clean_stuff_on_screen("clean_files")
+        # Return to getDate
+        self.get_date()
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = ENTERTIMEMACHINE()
     main.show()
-    # Windows settings
     main.setWindowTitle(f"Browser {appName} Backups")
     main.setWindowIcon(QIcon(src_backup_icon))
     main.resize(1280, 720)
-    main.showMaximized()
-    
+    # main.showMaximized()
     app.exit(app.exec())

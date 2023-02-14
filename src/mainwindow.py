@@ -302,8 +302,7 @@ class MAIN(QMainWindow):
         self.setLayout(self.leftLayout)
        
         # Check for update
-        for _ in range(1):
-            self.check_for_updates()
+        self.check_for_updates()
 
         # Update
         timer.timeout.connect(self.read_ini_file)
@@ -1458,9 +1457,6 @@ class OPTION(QMainWindow):
         getIniFolders = config.options('FOLDER')
         ################################################################################
         # Get Home Folders and Sort them alphabetically
-        ################################################################################
-        get_home_folders()
-        ################################################################################
         # Add On Screen
         ################################################################################
         for folder in get_home_folders():
