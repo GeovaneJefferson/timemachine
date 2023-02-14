@@ -977,14 +977,6 @@ class EXTERNAL(QWidget):
 
     def on_use_disk_clicked(self):
         ################################################################################
-        # Get Users Package Manager
-        ################################################################################
-        get_package_manager()
-        ################################################################################
-        # Get Users DE (Gnome, KDE etc.)
-        ################################################################################
-        get_user_de()
-        ################################################################################
         # Update INI file
         ################################################################################
         try:
@@ -1017,7 +1009,18 @@ class EXTERNAL(QWidget):
                 
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
-
+            
+            ################################################################################
+            # Backup Ini File
+            ################################################################################
+            print("")
+            print("Ini File is empty!")
+            print("Restoring user.ini from backup location")
+            print("")
+            print("Backup user.ini file")
+            sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
+            
+            # Close Window
             main.setEnabled(True)
             self.close()
 
@@ -1489,7 +1492,7 @@ class OPTION(QMainWindow):
                 self.foldersCheckbox.setText(folder)
                 self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
                 self.foldersCheckbox.adjustSize()
-                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"
