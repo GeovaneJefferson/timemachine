@@ -462,6 +462,12 @@ class BACKUP:
             config.write(configfile)
 
         ################################################################################
+        # Backup Ini File
+        ################################################################################
+        print("Backuping up user.ini file...")
+        sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
+
+        ################################################################################
         # After backup is done
         ################################################################################
         print("Backup is done!")

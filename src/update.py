@@ -15,8 +15,8 @@ def update_app():
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
 
     # Delete the copy
-    print("Deleting backup user.ini")
-    sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
+    # print("Deleting backup user.ini")
+    # sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
 
     # Re-open app
     print(f"Starting {src_main_window_py}")
