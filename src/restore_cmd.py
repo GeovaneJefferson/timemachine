@@ -427,9 +427,8 @@ class RESTORE:
 
         # Exclude application location
         self.excludeAppsLoc = (f"{self.iniExternalLocation}/{baseFolderName}/"
-        f"{applicationFolderName}/{src_exclude_applications}")
+                f"{applicationFolderName}/{src_exclude_applications}")
 
-        dummyExcludeAppsList = []
         # Read exclude applications from .exclude-application.txt
         config = configparser.ConfigParser()
         config.read(src_user_config)
