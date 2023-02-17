@@ -189,6 +189,12 @@ class CLI:
                 else:
                     print(f"{appName} has already made a backup for today.")
                     print("Time to back up has passed")
+                    # Reset time left
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('SCHEDULE', 'time_left', 'None')
+                        config.write(configfile)
 
             elif self.totalCurrentTime == self.totalNextTime:
                 self.call_backup_now()
@@ -201,7 +207,6 @@ class CLI:
                 firstLetter.append(str(calculateTimeLeft))
                 # Remove first letter
                 calculateTimeLeft = str(calculateTimeLeft).removeprefix(firstLetter[0][0])
-
                 # Minutes calculation
                 if int(calculateTimeLeft) < 59:
                     # Write time left, so main window can get it
@@ -210,7 +215,6 @@ class CLI:
                     with open(src_user_config, 'w') as configfile:
                         config.set('SCHEDULE', 'time_left', f'in {calculateTimeLeft} minutes...')
                         config.write(configfile)
-
 
                 # Clean list
                 firstLetter.clear()
