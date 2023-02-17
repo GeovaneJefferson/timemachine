@@ -152,7 +152,7 @@ class APP:
                     if get_backup_date()[0] == today_date():
                         # Update last backup information
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                            f'Today, {get_latest_backup_time()[0]}')
+                            f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
                     else:
                         # Update last backup information
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
