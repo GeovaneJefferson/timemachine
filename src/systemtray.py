@@ -148,15 +148,8 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
-
-                    # Get todays date, if backup was today, wirte "Today"
-                    dateTime = datetime.now()
-                    today = dateTime.strftime("%a")
-                   
-                    # search inside backup time folders
-
                     # search inside backup folder, if today date inside, wirte Today
-                    if get_backup_date()[0] == today_date():
+                    if str(get_backup_date()[0] == today_date()):
                         # Update last backup information
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
                             f'Today, {get_latest_backup_time()}')
