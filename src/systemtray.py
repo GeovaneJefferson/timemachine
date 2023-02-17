@@ -2,6 +2,7 @@
 from setup import *
 from check_connection import *
 from get_backup_times import *
+from get_backup_dates import *
 from get_time import *
 
 # QTimer
