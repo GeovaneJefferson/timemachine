@@ -34,7 +34,7 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.6 dev"
+appVersion = "v1.1.7 dev"
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
