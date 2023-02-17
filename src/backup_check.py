@@ -208,15 +208,14 @@ class CLI:
                 # Remove First Number str()
                 if firstLetter[0][0] == "1":
                     calculeTimeLeft = str(calculeTimeLeft).removeprefix(firstLetter[0][0])
-
-                # Minutes calculation
-                if int(calculateTimeLeft) < 59:
-                    # Write time left, so main window can get it
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('SCHEDULE', 'time_left', f'in {calculateTimeLeft} minutes...')
-                        config.write(configfile)
+                    # Minutes calculation
+                    if int(calculateTimeLeft) < 59:
+                        # Write time left, so main window can get it
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('SCHEDULE', 'time_left', f'in {calculateTimeLeft} minutes...')
+                            config.write(configfile)
 
                 # Clean list
                 firstLetter.clear()
