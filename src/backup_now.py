@@ -472,7 +472,7 @@ class BACKUP:
         ################################################################################
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
-        time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
+        time.sleep(60)  # Wait x, so if it finish fast, won't repeat the backup
         exit()
 
 
