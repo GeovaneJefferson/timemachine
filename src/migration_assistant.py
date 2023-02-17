@@ -715,11 +715,11 @@ class PREBACKUP(QWidget):
 
             # Get folder size
             self.fileAndFoldersFolderSize = os.popen(f"du -hs {iniExternalLocation}/"
-                f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}")
+                f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.strip("\n")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
-                f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}", "")
+                f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}", "")
 
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
