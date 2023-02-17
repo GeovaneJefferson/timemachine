@@ -5,6 +5,7 @@ from device_location import *
 from package_manager import *
 from get_user_de import *
 from get_home_folders import *
+from get_size import *
 from update import restore_ini_file, backup_ini_file
 
 # QTimer
@@ -429,19 +430,7 @@ class MAIN(QMainWindow):
         # Get external size values
         ################################################################################
         try:
-            # Get external max size
-            externalMaxSize = os.popen(f"df --output=size -h {self.iniExternalLocation}")
-            externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace(
-                "Size", "").replace("\n", "").replace(" ", "")
-            externalMaxSize = str(externalMaxSize)
-
-            # Get external usded size
-            usedSpace = os.popen(f"df --output=used -h {self.iniExternalLocation}")
-            usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace(
-                "Used", "").replace("\n", "").replace(" ", "")
-            usedSpace = str(usedSpace)
-
-            self.externalSizeLabel.setText(f"{usedSpace} of {externalMaxSize} available")
+            self.externalSizeLabel.setText(f"{get_disk_used_size()} of {get_disk_max_size()} available")
 
         except:
             self.externalSizeLabel.setText("No information available")
@@ -850,6 +839,7 @@ class EXTERNAL(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         self.iniHDName = config['EXTERNAL']['name']
+        self.iniExternalLocation = config['EXTERNAL']['hd']
 
         self.widgets()
 
@@ -903,8 +893,6 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Search external inside media
         ################################################################################
-        device_location()
-
         if device_location():
             print("Found inside media")
             try:
@@ -927,12 +915,27 @@ class EXTERNAL(QWidget):
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
                         # Image
-                        dummyLabel = QLabel(self.availableDevices)
+                        icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
                         image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                        dummyLabel.move(7, 7)
-                        dummyLabel.setPixmap(image)
+                        icon.move(7, 7)
+                        icon.setPixmap(image)
+                        
+                        # Free Space Label
+                        freeSpaceLabel = QLabel(self.availableDevices)
+                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
+                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
+                        
+                        if self.iniExternalLocation == self.availableDevices.text():
+                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                            freeSpaceLabel.adjustSize()
 
+                        # For other devices
+                        else:
+                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                            freeSpaceLabel.adjustSize()
+                            
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
@@ -967,12 +970,27 @@ class EXTERNAL(QWidget):
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
                         # Image
-                        label = QLabel(self.availableDevices)
+                        icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
                         image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                        label.move(7, 7)
-                        label.setPixmap(image)
+                        icon.move(7, 7)
+                        icon.setPixmap(image)
+                        
+                        # Free Space Label
+                        freeSpaceLabel = QLabel(self.availableDevices)
+                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
+                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
+                        
+                        if self.iniExternalLocation == self.availableDevices.text():
+                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                            freeSpaceLabel.adjustSize()
 
+                        # For other devices
+                        else:
+                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                            freeSpaceLabel.adjustSize()
+                            
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
