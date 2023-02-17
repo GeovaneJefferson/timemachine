@@ -207,7 +207,7 @@ class CLI:
                 firstLetter.append(str(calculateTimeLeft))
                 # Remove First Number str()
                 if firstLetter[0][0] == "1":
-                    calculeTimeLeft = str(calculeTimeLeft).removeprefix(firstLetter[0][0])
+                    calculateTimeLeft = str(calculateTimeLeft).removeprefix(firstLetter[0][0])
                     # Minutes calculation
                     if int(calculateTimeLeft) < 59:
                         # Write time left, so main window can get it
