@@ -17,7 +17,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.currentFolder = str()
         
         # Times
-        self.d = []
+        self.timeFolders = []
         self.countForTime = 0
         self.excludeTimeList = []
 
@@ -303,15 +303,15 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         try:
             # Clear list
-            self.d.clear()
+            self.timeFolders.clear()
             for getTime in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{backupFolderName}/"
                     f"{self.dateFolders[(self.countForDate)]}/"):
 
                 # Add to list
-                self.d.append(getTime)
+                self.timeFolders.append(getTime)
                 # Sort reverse=True
-                self.d.sort(reverse=True)
+                self.timeFolders.sort(reverse=True)
 
                 # Only add time button if self.currentFolder can be found inside current date and time
                 if os.path.exists(f"{self.iniExternalLocation}/"
@@ -353,12 +353,12 @@ class ENTERTIMEMACHINE(QWidget):
             # Current folder that user is on
             print("")
             print("Date available: ", self.dateFolders)
-            print("Time available: ", self.d)
+            print("Time available: ", self.timeFolders)
             print("Current date: ", self.dateFolders[self.countForDate])
-            print("Current time: ", self.d[self.countForTime])
+            print("Current time: ", self.timeFolders[self.countForTime])
             print("Current folder:", self.currentFolder)
             print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                    f"/{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
+                    f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
                     f"{self.currentFolder}")
         except:
             pass
@@ -368,7 +368,8 @@ class ENTERTIMEMACHINE(QWidget):
 
     def show_on_screen(self):
         # Clean screen
-        self.clean_stuff_on_screen("clean_files")
+        for _ in range(1):
+            self.clean_stuff_on_screen("clean_files")
 
         # Show available files
         try:
@@ -386,11 +387,11 @@ class ENTERTIMEMACHINE(QWidget):
                 ".webp", ".gif", ".svg")
             for output in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
-                    f"{self.d[self.countForTime]}/{self.currentFolder}"):
+                    f"{self.timeFolders[self.countForTime]}/{self.currentFolder}"):
             
             # for output in os.listdir(f"{self.iniExternalLocation}/"
             #     f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
-            #     f"{self.d[self.countForTime]}/{self.currentFolder}/{self.extra1}"):
+            #     f"{self.timeFolders[self.countForTime]}/{self.currentFolder}/{self.extra1}"):
             
                 # Only show files and hide hidden outputs
                 if not output.startswith("."):
@@ -402,15 +403,17 @@ class ENTERTIMEMACHINE(QWidget):
                     self.filesResult.clicked.connect(
                             lambda *, output=output: self.add_to_restore(
                                 output, self.dateFolders[self.countForDate],
-                                self.d[self.countForTime]))
+                                self.timeFolders[self.countForTime]))
 
                     ################################################################################
                     # Text
                     ################################################################################
                     text = QLabel(self.filesResult)
+
                     # Short strings
                     countStrings = len(output)
                     recentEndswith = output.split(".")[-1]
+
                     # Label
                     if countStrings < 20:            
                         text.setText(f"{(output.capitalize())}")
@@ -425,7 +428,7 @@ class ENTERTIMEMACHINE(QWidget):
                         scaledHTML = 'width:"100%" height="250"'
                         self.filesResult.setToolTip(
                             f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                            f"/{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
+                            f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     ################################################################################
@@ -444,12 +447,11 @@ class ENTERTIMEMACHINE(QWidget):
                         scaledHTML = 'width:"100%" height="80"'
                         image.setText(
                             f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                            f"{self.dateFolders[self.countForDate]}/{self.d[self.countForTime]}/"
+                            f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     elif output.endswith(".txt"):
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-generic.png"))
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
 
                     elif output.endswith(".pdf"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/pdf.png"))
@@ -461,37 +463,25 @@ class ENTERTIMEMACHINE(QWidget):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/cpp.png"))
 
                     elif output.endswith(".sh"):
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/application-x-executable.png"))
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
 
                     elif output.endswith(".blend"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/blend.png"))
 
                     elif output.endswith(".excel"):
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/x-office-spreadsheet.png"))
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
 
                     elif output.endswith(".mp4"):
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/video-x-generic.png"))
-                    
-                    elif output.endswith(".mp3"):
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/audio-x-generic.png"))
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
 
                     elif output.endswith(".iso"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
                     
-                    elif output.endswith(".exe"):
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-script.png"))
-                    
                     elif not output.endswith(".")and "." not in output:
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/512x512/places/folder.png"))
-                        
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
+
                     else:
-                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
-                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-preview.png"))
+                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
 
                     # Only show files and hide hidden outputs
                     if not output.startswith(".") and "." in output:
@@ -499,19 +489,14 @@ class ENTERTIMEMACHINE(QWidget):
                     
                     else:
                         # Folders
+                        print(output)
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
-                        ##############
-                        # Avoid space if is not a file, by removing 1
-                        ##############
-                        # horizontal -= 1
-                        # vertical =- 1
 
                     count += 1
                     # If filesButtomX if higher than scroll width, go to the next column
                     horizontal += 1
                     if self.scrollForFiles.width() <=800:
                         dimension = 3
-                    
                     elif self.scrollForFiles.width() <=1440:
                         dimension = 6
 
@@ -526,14 +511,14 @@ class ENTERTIMEMACHINE(QWidget):
         except FileNotFoundError as error:
             print("")
             print(f"Current info {self.currentFolder}/{self.dateFolders[self.countForDate]}/"
-                f"{self.d[self.countForTime]}")
+                f"{self.timeFolders[self.countForTime]}")
             print("Change time...")
-            print("INDEX TIME:", self.d.index(self.d[self.countForTime]) + 1)
-            print("ITEM INSIDE:", len(self.d))
+            print("INDEX TIME:", self.timeFolders.index(self.timeFolders[self.countForTime]) + 1)
+            print("ITEM INSIDE:", len(self.timeFolders))
 
             # Change time if inside the timeList has more then 1 item
             # and is not at the end of the time list
-            if len(self.d) > 1 and not len(self.d) == self.d.index(self.d[self.countForTime]) + 1:
+            if len(self.timeFolders) > 1 and not len(self.timeFolders) == self.timeFolders.index(self.timeFolders[self.countForTime]) + 1:
                 # Add to
                 self.countForTime += 1
                 # Go back to get_time
@@ -748,7 +733,8 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_date_up(self):
         # Clean screen
-        self.clean_stuff_on_screen("clean_time")
+        for _ in range(1):
+            self.clean_stuff_on_screen("times")
 
         self.countForTime = 0
         self.countForDate += 1
@@ -757,7 +743,8 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_date_down(self):
         # Clean screen
-        self.clean_stuff_on_screen("times")
+        for _ in range(1):
+            self.clean_stuff_on_screen("times")
 
         self.countForTime = 0
         self.countForDate -= 1
@@ -766,23 +753,31 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_time(self, getTime):
         # Clean screen
-        self.clean_stuff_on_screen("clean_files")
+        for _ in range(1):
+            self.clean_stuff_on_screen("clean_files")
+
         # Index of the getTime
-        self.countForTime = self.d.index(getTime)
+        index = self.timeFolders.index(getTime)
+        # Add to
+        self.countForTime = index
         # Return to getDate
         self.show_on_screen()
 
     def change_folder(self, folder):
         # Set loading label to False
         self.loadingLabel.setVisible(True)
+
         # Update self.currentFolder
         self.currentFolder = folder
         # Reset date
         self.countForDate = 0
         # Reset time
         self.countForTime = 0
+
         # Clean screen
-        self.clean_stuff_on_screen("clean_files")
+        for _ in range(1):
+            self.clean_stuff_on_screen("clean_files")
+
         # Return to getDate
         self.get_date()
 
