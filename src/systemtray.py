@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 from setup import *
 from check_connection import *
+from get_backup_dates import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -145,10 +146,25 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
+
+                    # Get todays date, if backup was today, wirte "Today"
+                    dateTime = datetime.now()
+                    todayDate = dateTime.strftime("%d-%m-%y")
+                    today = dateTime.strftime("%a")
+                    
+                    # Time
+                    currentHour = dateTime.strftime("%H")
+                    currentMinute = dateTime.strftime("%M")
+                    
+                    # search inside backup folder, if today date inside, wirte Today
+                    if get_backup_date()[0] == todayDate:
+                        # Update last backup information
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                            f'Today, {currentHour}:{currentMinute}')
+                        
                     # Update last backup information
                     self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
                         f'{self.iniLastBackup}')
-
                 else:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
