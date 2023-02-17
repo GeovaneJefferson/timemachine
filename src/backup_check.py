@@ -205,8 +205,10 @@ class CLI:
                 calculateTimeLeft = int(self.totalNextTime) - int(self.totalCurrentTime) + 60
                 # Add to list and get first number str() to remove it after
                 firstLetter.append(str(calculateTimeLeft))
-                # Remove first letter
-                calculateTimeLeft = str(calculateTimeLeft).removeprefix(firstLetter[0][0])
+                # Remove First Number str()
+                if firstLetter[0][0] == "1":
+                    calculeTimeLeft = str(calculeTimeLeft).removeprefix(firstLetter[0][0])
+
                 # Minutes calculation
                 if int(calculateTimeLeft) < 59:
                     # Write time left, so main window can get it
@@ -219,8 +221,8 @@ class CLI:
                 # Clean list
                 firstLetter.clear()
         else:
-            print("Multiple time per day")
-
+            # Multiple time per day
+            print("Mode: Multiple time per day")
             if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
                 if self.iniBackupNow == "false":
                     self.call_backup_now()
