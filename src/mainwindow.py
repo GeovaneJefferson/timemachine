@@ -351,6 +351,7 @@ class MAIN(QMainWindow):
             self.iniNextBackupFri = config['SCHEDULE']['fri']
             self.iniNextBackupSat = config['SCHEDULE']['sat']
             self.everytime = config['SCHEDULE']['everytime']
+            self.iniTimeLeft = config['SCHEDULE']['time_left']
 
             # Times
             self.currentTime = self.currentHour + self.currentMinute
@@ -496,11 +497,14 @@ class MAIN(QMainWindow):
         ################################################################################
         # Status for automaticallyCheckBox
         ################################################################################
-        # if self.iniNextBackup != "":
-        #     self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
         if self.automaticallyCheckBox.isChecked():
             if self.oneTimeMode == "true":
-                self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+                # Check if time left has value to set here
+                if self.iniTimeLeft != "None":
+                    self.nextBackupLabel.setText(f"Next Backup: {self.iniTimeLeft}")
+                else:
+                    # None time left value, so, show next date to backup
+                    self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
             else:
                 if self.everytime == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")

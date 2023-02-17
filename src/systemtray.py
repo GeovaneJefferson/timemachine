@@ -132,7 +132,6 @@ class APP:
         ################################################################################
         # Check Connection 
         ################################################################################
-        is_connected(self.iniHDName)
         # User has registered a device name
         if self.iniHDName != "None":
             # If backup device is connected
@@ -147,7 +146,7 @@ class APP:
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
                     # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
                         f'{self.iniLastBackup}')
 
                 else:
