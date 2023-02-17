@@ -161,10 +161,10 @@ class APP:
                         # Update last backup information
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
                             f'Today, {currentHour}:{currentMinute}')
-                        
-                    # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                        f'{self.iniLastBackup}')
+                    else:
+                        # Update last backup information
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                            f'{self.iniLastBackup}')
                 else:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
