@@ -214,8 +214,7 @@ class ENTERTIMEMACHINE(QWidget):
     
     def get_folders(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_folders")
+        self.clean_stuff_on_screen("clean_folders")
 
         ################################################################################
         # GET FOLDERS
@@ -265,8 +264,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def get_date(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_files")
+        self.clean_stuff_on_screen("clean_files")
         
         try:
             if not self.alreadyGotDateList:
@@ -295,8 +293,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def get_time(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_time")
+        self.clean_stuff_on_screen("clean_time")
 
         ################################################################################
         # If inside the external "date folders" has not "time folder", pass to avoid display error :D
@@ -349,27 +346,26 @@ class ENTERTIMEMACHINE(QWidget):
             # Return to Date
             self.get_date()
 
-        try:
-            # Current folder that user is on
-            print("")
-            print("Date available: ", self.dateFolders)
-            print("Time available: ", self.timeFolders)
-            print("Current date: ", self.dateFolders[self.countForDate])
-            print("Current time: ", self.timeFolders[self.countForTime])
-            print("Current folder:", self.currentFolder)
-            print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-                    f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-                    f"{self.currentFolder}")
-        except:
-            pass
+        # try:
+        #     # Current folder that user is on
+        #     print("")
+        #     print("Date available: ", self.dateFolders)
+        #     print("Time available: ", self.timeFolders)
+        #     print("Current date: ", self.dateFolders[self.countForDate])
+        #     print("Current time: ", self.timeFolders[self.countForTime])
+        #     print("Current folder:", self.currentFolder)
+        #     print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+        #             f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+        #             f"{self.currentFolder}")
+        # except:
+        #     pass
 
         # task = asyncio.create_task(self.show_on_screen())
         self.show_on_screen()
 
     def show_on_screen(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_files")
+        self.clean_stuff_on_screen("clean_files")
 
         # Show available files
         try:
@@ -733,8 +729,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_date_up(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("times")
+        self.clean_stuff_on_screen("times")
 
         self.countForTime = 0
         self.countForDate += 1
@@ -743,8 +738,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_date_down(self):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("times")
+        self.clean_stuff_on_screen("times")
 
         self.countForTime = 0
         self.countForDate -= 1
@@ -753,8 +747,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def change_time(self, getTime):
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_files")
+        self.clean_stuff_on_screen("clean_files")
 
         # Index of the getTime
         index = self.timeFolders.index(getTime)
@@ -775,8 +768,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.countForTime = 0
 
         # Clean screen
-        for _ in range(1):
-            self.clean_stuff_on_screen("clean_files")
+        self.clean_stuff_on_screen("clean_files")
 
         # Return to getDate
         self.get_date()
