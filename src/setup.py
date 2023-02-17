@@ -67,6 +67,9 @@ supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
 getUserPackageManager = "cat /etc/os-release"
 
+# Theme
+iconThemeName = "Adwaita"
+
 ################################################################################
 # GNOME
 ################################################################################

@@ -239,6 +239,9 @@ class PREPAREBACKUP:
 
     def calculate_home_folders(self):
         print("Checking size of Home folders and size...")
+        # TODO
+        # Maybe remove get_folder() and home_folders_size()...
+        # TODO
         ################################################################################
         # Get Home
         ################################################################################

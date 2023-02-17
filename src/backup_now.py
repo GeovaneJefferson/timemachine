@@ -458,8 +458,8 @@ class BACKUP:
             config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
-            # Skip this backup section
-            # config.set('BACKUP', 'skip_this_backup', 'false')
+            # Time left to None
+            config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
 
         ################################################################################
@@ -467,8 +467,6 @@ class BACKUP:
         ################################################################################
         print("Backing up user.ini file...")
         backup_ini_file(False)
-        # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
-
         ################################################################################
         # After backup is done
         ################################################################################

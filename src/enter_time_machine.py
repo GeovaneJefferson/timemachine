@@ -448,7 +448,8 @@ class ENTERTIMEMACHINE(QWidget):
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
                     elif output.endswith(".txt"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-generic.png"))
 
                     elif output.endswith(".pdf"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/pdf.png"))
@@ -460,25 +461,37 @@ class ENTERTIMEMACHINE(QWidget):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/cpp.png"))
 
                     elif output.endswith(".sh"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/application-x-executable.png"))
 
                     elif output.endswith(".blend"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/blend.png"))
 
                     elif output.endswith(".excel"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/x-office-spreadsheet.png"))
 
                     elif output.endswith(".mp4"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/video-x-generic.png"))
+                    
+                    elif output.endswith(".mp3"):
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/audio-x-generic.png"))
 
                     elif output.endswith(".iso"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
                     
+                    elif output.endswith(".exe"):
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-script.png"))
+                    
                     elif not output.endswith(".")and "." not in output:
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
-
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/512x512/places/folder.png"))
+                        
                     else:
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
+                        # self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
+                        self.filesResult.setIcon(QIcon(f"/usr/share/icons/{iconThemeName}/48x48/mimetypes/text-x-preview.png"))
 
                     # Only show files and hide hidden outputs
                     if not output.startswith(".") and "." in output:
@@ -487,15 +500,18 @@ class ENTERTIMEMACHINE(QWidget):
                     else:
                         # Folders
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
+                        ##############
                         # Avoid space if is not a file, by removing 1
-                        horizontal -= 1
-                        vertical =- 1
+                        ##############
+                        # horizontal -= 1
+                        # vertical =- 1
 
                     count += 1
                     # If filesButtomX if higher than scroll width, go to the next column
                     horizontal += 1
                     if self.scrollForFiles.width() <=800:
                         dimension = 3
+                    
                     elif self.scrollForFiles.width() <=1440:
                         dimension = 6
 

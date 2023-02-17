@@ -5,7 +5,6 @@ def backup_ini_file(updateNow):
     # Make a copy and move to /src
     print("Backup user.ini file")
     sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/timemachine/src",shell=True)
-    
     if updateNow:
         update_git(updateNow)
 
@@ -15,6 +14,7 @@ def update_git(updateNow):
     if updateNow:
         restore_ini_file(updateNow)
 
+# Maybe delete src/ini file, then restore the backup one
 def restore_ini_file(updateNow):
     print("Restoring user.ini from backup location")
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
