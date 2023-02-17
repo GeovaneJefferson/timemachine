@@ -23,3 +23,7 @@ def latest_time_info():
 def today_date():
     todayDate = dateTime.strftime("%d-%m-%y")
     return todayDate
+
+def current_time():
+    currentTime = dateTime.strftime("%H:%M")
+    return currentTime
