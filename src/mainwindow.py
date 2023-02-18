@@ -805,7 +805,6 @@ class MAIN(QMainWindow):
         ################################################################################
         # Set to True, so it will call others function to update propely
         backup_ini_file(True)
-        # sub.Popen(f"python3 {src_update_py}",shell=True)
         exit()
 
 class EXTERNAL(QWidget):
