@@ -13,10 +13,9 @@ def update_git(updateNow):
         restore_ini_file(updateNow)
 
 def delete_ini_file():
-    sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
+    sub.run(f"rm -f {src_user_config}", shell=True)
 
 def restore_ini_file(updateNow):
-    print(f"OUTPUT: {copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}")
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
     if updateNow:
         open_app(updateNow)
