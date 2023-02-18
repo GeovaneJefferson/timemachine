@@ -20,7 +20,8 @@ def delete_ini_file():
 
 def restore_ini_file(updateNow):
     print("Restoring user.ini from backup location")
-    sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+    # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+    sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {homeUser}/Documents",shell=True)
     if updateNow:
         open_app(updateNow)
 
