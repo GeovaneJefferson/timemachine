@@ -148,18 +148,23 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
-                    try:
-                        # search inside backup folder, if today date inside, wirte Today
-                        if get_backup_date()[0] == today_date():
-                            # Update last backup information
-                            self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                                f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
-                        else:
-                            # Update last backup information
-                            self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                                f'{self.iniLastBackup}')
-                    except:
-                        pass
+                    # try:
+                    #     # search inside backup folder, if today date inside, wirte Today
+                    #     if get_backup_date()[0] == today_date():
+                    #         # Update last backup information
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                    #             f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
+                    #     else:
+                    #         # Update last backup information
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                    #             f'{self.iniLastBackup}')
+                    # except:
+                    #     pass
+                    
+                    # Update last backup information
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                        f'{self.iniLastBackup}')
+
                 else:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
