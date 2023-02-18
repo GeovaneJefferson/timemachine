@@ -14,20 +14,17 @@ def update_git(updateNow):
     if updateNow:
         restore_ini_file(updateNow)
 
-# Maybe delete src/ini file, then restore the backup one
+def delete_ini_file():
+    print("Deleting backup user.ini")
+    sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
+
 def restore_ini_file(updateNow):
     print("Restoring user.ini from backup location")
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
     if updateNow:
         open_app(updateNow)
 
-# def delete_ini_file():
-    # Delete the copy
-    # print("Deleting backup user.ini")
-    # sub.run(f"rm {homeUser}/.local/share/{appNameClose}/src/user.ini ", shell=True)
-
 def open_app(updateNow):
-    # Re-open app
     print(f"Starting {src_main_window_py}")
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
     exit()
