@@ -10,10 +10,12 @@ def backup_ini_file(updateNow):
 def update_git(updateNow):
     os.popen("git stash; git pull")
     if updateNow:
-        restore_ini_file(updateNow)
+        delete_ini_file(updateNow)
 
-def delete_ini_file():
+def delete_ini_file(updateNow):
     sub.run(f"rm -f {src_user_config}", shell=True)
+    if updateNow:
+        restore_ini_file(updateNow)
 
 def restore_ini_file(updateNow):
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
