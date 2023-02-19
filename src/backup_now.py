@@ -2,6 +2,7 @@
 from setup import *
 from prepare_backup import *
 from get_user_wallpaper import *
+from update import backup_ini_file
 
 ################################################################################
 ## Signal
@@ -457,16 +458,21 @@ class BACKUP:
             config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
-            # Skip this backup section
-            # config.set('BACKUP', 'skip_this_backup', 'false')
+            # Time left to None
+            config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
 
+        ################################################################################
+        # Backup Ini File
+        ################################################################################
+        print("Backing up user.ini file...")
+        backup_ini_file(False)
         ################################################################################
         # After backup is done
         ################################################################################
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
-        time.sleep(60)  # Wait x, so if finish fast, won't repeat the backup :D
+        time.sleep(60)  # Wait x, so if it finish fast, won't repeat the backup
         exit()
 
 

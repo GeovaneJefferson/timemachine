@@ -34,7 +34,7 @@ githubHome = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 appName = "Time Machine"
 appNameClose = "timemachine"
-appVersion = "v1.1.5"
+appVersion = "v1.1.6"
 baseFolderName = "TMB"
 backupFolderName = "backups"
 applicationFolderName = "applications"
@@ -66,6 +66,9 @@ supportedDEBPackageManager = ["debian", "ubuntu"]
 supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
 getUserPackageManager = "cat /etc/os-release"
+
+# Theme
+iconThemeName = "Adwaita"
 
 ################################################################################
 # GNOME

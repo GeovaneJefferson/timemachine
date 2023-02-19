@@ -1,6 +1,9 @@
 #! /usr/bin/python3
 from setup import *
 from check_connection import *
+from get_backup_times import *
+from get_backup_dates import *
+from get_time import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -132,7 +135,6 @@ class APP:
         ################################################################################
         # Check Connection 
         ################################################################################
-        is_connected(self.iniHDName)
         # User has registered a device name
         if self.iniHDName != "None":
             # If backup device is connected
@@ -146,8 +148,21 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
+                    # try:
+                    #     # search inside backup folder, if today date inside, wirte Today
+                    #     if get_backup_date()[0] == today_date():
+                    #         # Update last backup information
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                    #             f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
+                    #     else:
+                    #         # Update last backup information
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                    #             f'{self.iniLastBackup}')
+                    # except:
+                    #     pass
+                    
                     # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{(self.iniHDName)}":\n'
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
                         f'{self.iniLastBackup}')
 
                 else:

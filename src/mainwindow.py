@@ -5,7 +5,8 @@ from device_location import *
 from package_manager import *
 from get_user_de import *
 from get_home_folders import *
-
+from get_size import *
+from update import restore_ini_file, backup_ini_file
 
 # QTimer
 timer = QtCore.QTimer()
@@ -14,6 +15,7 @@ timer = QtCore.QTimer()
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
+        self.timeOut = 0
         self.iniUI()
 
     def iniUI(self):
@@ -218,8 +220,8 @@ class MAIN(QMainWindow):
         self.descriptionText.setText(
             "• Local HOME snapshots as space permits\n"
             "• Hourly, Daily or Weekly backups\n"
-            "• Flatpaks Data and/or only Flatpaks installed names\n"
-            "• Wallpaper, Theme, Icon and cursor\n\n"
+            "• Applications '.deb and .rpm' + Flatpaks\n"
+            "• Wallpaper, Theme, Icon and Cursor theme\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -302,8 +304,7 @@ class MAIN(QMainWindow):
         self.setLayout(self.leftLayout)
        
         # Check for update
-        for _ in range(1):
-            self.check_for_updates()
+        self.check_for_updates()
 
         # Update
         timer.timeout.connect(self.read_ini_file)
@@ -351,6 +352,7 @@ class MAIN(QMainWindow):
             self.iniNextBackupFri = config['SCHEDULE']['fri']
             self.iniNextBackupSat = config['SCHEDULE']['sat']
             self.everytime = config['SCHEDULE']['everytime']
+            self.iniTimeLeft = config['SCHEDULE']['time_left']
 
             # Times
             self.currentTime = self.currentHour + self.currentMinute
@@ -360,14 +362,36 @@ class MAIN(QMainWindow):
             # Current backup information
             self.iniCurrentBackupInfo = config['INFO']['feedback_status']
 
-        except KeyError as keyError:
-            print(keyError)
-            print("Main window KeyError!")
-            pass
+        except KeyError:
+            """
+            If ini file is empty, restore the backup one
+            Backup one is generate every Backup.
+            """
+            print("")
+            print("Ini File is empty!")
+            print("Restoring user.ini from backup location")
+            print("")
+
+            # Restore the copy to inside "ini" folder
+            restore_ini_file(False)
+            # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+            
+            self.timeOut += 1
+
+            if self.timeOut == 1:
+                self.read_ini_file()
+            else:
+                print("")
+                print("Error restoring ini file!")
+                print("")
+                exit()
             
         self.connection()
 
     def connection(self):
+        # Reset timeOut
+        self.timeOut = 0
+
         if self.iniHDName != "None":
             if is_connected(self.iniHDName):
                 ################################################################################
@@ -406,19 +430,7 @@ class MAIN(QMainWindow):
         # Get external size values
         ################################################################################
         try:
-            # Get external max size
-            externalMaxSize = os.popen(f"df --output=size -h {self.iniExternalLocation}")
-            externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace(
-                "Size", "").replace("\n", "").replace(" ", "")
-            externalMaxSize = str(externalMaxSize)
-
-            # Get external usded size
-            usedSpace = os.popen(f"df --output=used -h {self.iniExternalLocation}")
-            usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace(
-                "Used", "").replace("\n", "").replace(" ", "")
-            usedSpace = str(usedSpace)
-
-            self.externalSizeLabel.setText(f"{usedSpace} of {externalMaxSize} available")
+            self.externalSizeLabel.setText(f"{get_disk_used_size()} of {get_disk_max_size()} available")
 
         except:
             self.externalSizeLabel.setText("No information available")
@@ -465,6 +477,11 @@ class MAIN(QMainWindow):
         # Last backup label
         ################################################################################
         if self.iniLastBackup != "":
+            
+            # If today date
+            # if self.ini
+            self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
+
             self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
             self.oldestBackupLabel.setText(f"Oldest Backup: {self.iniOldestBackup}")
 
@@ -474,11 +491,14 @@ class MAIN(QMainWindow):
         ################################################################################
         # Status for automaticallyCheckBox
         ################################################################################
-        # if self.iniNextBackup != "":
-        #     self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
         if self.automaticallyCheckBox.isChecked():
             if self.oneTimeMode == "true":
-                self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+                # Check if time left has value to set here
+                if self.iniTimeLeft != "None":
+                    self.nextBackupLabel.setText(f"Next Backup: {self.iniTimeLeft}")
+                else:
+                    # None time left value, so, show next date to backup
+                    self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
             else:
                 if self.everytime == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
@@ -783,7 +803,8 @@ class MAIN(QMainWindow):
         ################################################################################
         # Call update and Exit
         ################################################################################
-        sub.Popen(f"python3 {src_update_py}",shell=True)
+        # Set to True, so it will call others function to update propely
+        backup_ini_file(True)
         exit()
 
 class EXTERNAL(QWidget):
@@ -817,6 +838,7 @@ class EXTERNAL(QWidget):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         self.iniHDName = config['EXTERNAL']['name']
+        self.iniExternalLocation = config['EXTERNAL']['hd']
 
         self.widgets()
 
@@ -843,7 +865,7 @@ class EXTERNAL(QWidget):
         
         # Info 
         self.notAllowed = QLabel(self)
-        self.notAllowed.setText("Diveces with space(s) and/or special characters will not be visible.")
+        self.notAllowed.setText("Devices with space(s) and/or special characters will not be visible.")
         self.notAllowed.setFont(item)
         self.notAllowed.move(20,20)
 
@@ -870,8 +892,6 @@ class EXTERNAL(QWidget):
         ################################################################################
         # Search external inside media
         ################################################################################
-        device_location()
-
         if device_location():
             print("Found inside media")
             try:
@@ -894,12 +914,27 @@ class EXTERNAL(QWidget):
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
                         # Image
-                        dummyLabel = QLabel(self.availableDevices)
+                        icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
                         image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                        dummyLabel.move(7, 7)
-                        dummyLabel.setPixmap(image)
+                        icon.move(7, 7)
+                        icon.setPixmap(image)
+                        
+                        # Free Space Label
+                        freeSpaceLabel = QLabel(self.availableDevices)
+                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
+                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
+                        
+                        if self.iniExternalLocation == self.availableDevices.text():
+                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                            freeSpaceLabel.adjustSize()
 
+                        # For other devices
+                        else:
+                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                            freeSpaceLabel.adjustSize()
+                            
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
@@ -934,12 +969,27 @@ class EXTERNAL(QWidget):
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
                         # Image
-                        label = QLabel(self.availableDevices)
+                        icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
                         image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                        label.move(7, 7)
-                        label.setPixmap(image)
+                        icon.move(7, 7)
+                        icon.setPixmap(image)
+                        
+                        # Free Space Label
+                        freeSpaceLabel = QLabel(self.availableDevices)
+                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
+                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
+                        
+                        if self.iniExternalLocation == self.availableDevices.text():
+                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                            freeSpaceLabel.adjustSize()
 
+                        # For other devices
+                        else:
+                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                            freeSpaceLabel.adjustSize()
+                            
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
@@ -955,14 +1005,6 @@ class EXTERNAL(QWidget):
                 pass
 
     def on_use_disk_clicked(self):
-        ################################################################################
-        # Get Users Package Manager
-        ################################################################################
-        get_package_manager()
-        ################################################################################
-        # Get Users DE (Gnome, KDE etc.)
-        ################################################################################
-        get_user_de()
         ################################################################################
         # Update INI file
         ################################################################################
@@ -996,7 +1038,15 @@ class EXTERNAL(QWidget):
                 
                 config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
                 config.write(configfile)
-
+            
+            ################################################################################
+            # Backup Ini File
+            ################################################################################
+            print("Backup user.ini file")
+            backup_ini_file(False)
+            # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
+            
+            # Close Window
             main.setEnabled(True)
             self.close()
 
@@ -1016,7 +1066,6 @@ class EXTERNAL(QWidget):
     def on_button_cancel_clicked(self):
         mainDevices.close()
         main.setEnabled(True)
-
 
 class OPTION(QMainWindow):
     def __init__(self):
@@ -1322,7 +1371,7 @@ class OPTION(QMainWindow):
         # Flatpak Name checkbox
         self.allowFlatpakNamesCheckBox = QCheckBox()
         self.allowFlatpakNamesCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks apps names")
+        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks")
         self.allowFlatpakNamesCheckBox.adjustSize()
         self.allowFlatpakNamesCheckBox.setStyleSheet("""
             border: transparent;
@@ -1332,7 +1381,7 @@ class OPTION(QMainWindow):
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
         self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
-        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks data " 
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks Data " 
             "")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
@@ -1459,9 +1508,6 @@ class OPTION(QMainWindow):
         getIniFolders = config.options('FOLDER')
         ################################################################################
         # Get Home Folders and Sort them alphabetically
-        ################################################################################
-        get_home_folders()
-        ################################################################################
         # Add On Screen
         ################################################################################
         for folder in get_home_folders():
@@ -1472,7 +1518,7 @@ class OPTION(QMainWindow):
                 self.foldersCheckbox.setText(folder)
                 self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
                 self.foldersCheckbox.adjustSize()
-                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/timemachine/src/icons/folder.png"))
+                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"

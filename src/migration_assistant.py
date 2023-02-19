@@ -66,8 +66,8 @@ flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
 
 class WELCOMESCREEN(QWidget):
-    def __init__(self, parent=None):
-        super(WELCOMESCREEN, self).__init__(parent)
+    def __init__(self):
+        super(WELCOMESCREEN, self).__init__()
         self.widgets()
 
     def widgets(self):
@@ -276,7 +276,6 @@ class OPTIONS(QWidget):
         else:
             exit()
 
-
 class CHOOSEDEVICE(QWidget):
     def __init__(self):
         super().__init__()
@@ -297,7 +296,7 @@ class CHOOSEDEVICE(QWidget):
         # Title
         self.title = QLabel()
         self.title.setFont(QFont("Arial Bold", 28))
-        self.title.setText("Transfer information to this pc")
+        self.title.setText("Restore information to this pc")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
@@ -716,11 +715,11 @@ class PREBACKUP(QWidget):
 
             # Get folder size
             self.fileAndFoldersFolderSize = os.popen(f"du -hs {iniExternalLocation}/"
-                f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}")
+                f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.strip("\n")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
-                f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_backup_time()[0]}", "")
+                f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}", "")
 
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
@@ -929,9 +928,8 @@ class PREBACKUP(QWidget):
                     for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/"):
                         # Exclude
-                        exclude = (exclude.split("_")[0])
-                        exclude = (exclude.split("-")[0])
-                        # CHeckbox
+                        # exclude = exclude.split("_")[0].split("-")[0]
+                        # Checkbox
                         dummyCheckBox = QCheckBox()
                         dummyCheckBox.setText(exclude.capitalize())
                         dummyCheckBox.setChecked(True)
@@ -944,7 +942,7 @@ class PREBACKUP(QWidget):
                     for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/"):
                         # Exclude
-                        exclude = exclude.split("_")[0].split("-")[0]
+                        # exclude = exclude.split("_")[0].split("-")[0]
                         # Checkbox
                         dummyCheckBox = QCheckBox()
                         dummyCheckBox.setText(exclude.capitalize())
@@ -1143,7 +1141,6 @@ class PREBACKUP(QWidget):
             # Enable continue button
             self.continueButton.setEnabled(True)
 
-
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
@@ -1193,7 +1190,7 @@ class BACKUPSCREEN(QWidget):
         # Automatically reboot
         self.autoReboot = QCheckBox()
         self.autoReboot.setFont(QFont("Arial", 10))
-        self.autoReboot.setText('Automatically reboot after restoring is done.') 
+        self.autoReboot.setText('Automatically reboot after restoring is done. (Recommended)') 
         self.autoReboot.clicked.connect(self.auto_reboot_clicked)
 
         # Restoring description
@@ -1367,7 +1364,6 @@ class BACKUPSCREEN(QWidget):
 
             config.write(configfile)
 
-        
 class START_RESTORING(QWidget):
     def __init__(self):
         super().__init__()
@@ -1442,14 +1438,12 @@ if __name__ == '__main__':
     main4 = PREBACKUP()
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
-
-    widget.addWidget(main4)   
-    widget.setCurrentWidget(main4)   
-
+    # Add Widget
+    widget.addWidget(main)   
+    widget.setCurrentWidget(main)   
     # Window settings
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
     widget.setFixedSize(900,600)
     widget.show()
-
     app.exit(app.exec())

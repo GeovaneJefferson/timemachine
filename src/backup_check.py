@@ -105,6 +105,7 @@ class CLI:
                 self.detectedPackagesDebList.append(debs)
         except:
             pass
+        
         try:
             # Read Downloads folder for .rpm
             for rpms in os.listdir(self.rpmMainFolder):
@@ -171,6 +172,7 @@ class CLI:
     def check_the_mode(self):
         print("Checking mode...")
         dateFolders = []
+        firstLetter = []
         for output in os.listdir(self.checkDateInsideBackupFolder):
             dateFolders.append(output)
             dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
@@ -187,16 +189,48 @@ class CLI:
                 else:
                     print(f"{appName} has already made a backup for today.")
                     print("Time to back up has passed")
+                    # Reset time left
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('SCHEDULE', 'time_left', 'None')
+                        config.write(configfile)
 
             elif self.totalCurrentTime == self.totalNextTime:
                 self.call_backup_now()
 
             else:
                 print("Waiting for the right time to backup...")
+                # Calculate tine left to backup and so it on the main window as info
+                calculateTimeLeft = int(self.totalNextTime) - int(self.totalCurrentTime) + 60
+                # Add to list and get first number str() to remove it after
+                firstLetter.append(str(calculateTimeLeft))
+                # Remove First Number str()
+                if firstLetter[0][0] == "1":
+                    calculateTimeLeft = str(calculateTimeLeft).removeprefix(firstLetter[0][0])
+                    # Minutes calculation
+                    if int(calculateTimeLeft) < 59:
+                        # Write time left, so main window can get it
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('SCHEDULE', 'time_left', f'in {calculateTimeLeft} minutes...')
+                            config.write(configfile)
+                
+                # Pass changing time left
+                else:
+                    # Write time left, so main window can get it
+                    config = configparser.ConfigParser()
+                    config.read(src_user_config)
+                    with open(src_user_config, 'w') as configfile:
+                        config.set('SCHEDULE', 'time_left', 'None')
+                        config.write(configfile)
 
+                # Clean list
+                firstLetter.clear()
         else:
-            print("Multiple time per day")
-
+            # Multiple time per day
+            print("Mode: Multiple time per day")
             if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
                 if self.iniBackupNow == "false":
                     self.call_backup_now()
@@ -213,12 +247,11 @@ class CLI:
                 print("Waiting for the right time to backup...")
 
     def call_backup_now(self):
-        print("Back up will start shortly...")
-
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'true')
+            config.set('SCHEDULE', 'time_left', 'Backing up...')
             config.write(configfile)
 
         # Call prepare backup

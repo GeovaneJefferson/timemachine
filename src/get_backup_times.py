@@ -6,7 +6,7 @@ config.read(src_user_config)
 iniExternalLocation = config['EXTERNAL']['hd']
 
 timeFolder = []
-def get_backup_time():
+def get_latest_backup_time():
     try:
         for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
                 f"{backupFolderName}/{get_backup_date()[0]}/"):
