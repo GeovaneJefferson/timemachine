@@ -1,8 +1,10 @@
 from setup import *
 
 def backup_ini_file(updateNow):
-    # Check if ini file exist and can be found
-    # Make a copy and move to /src
+    """
+    Check if ini file exist and can be found
+    Make a copy and move to /src
+    """
     sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
     if updateNow:
         update_git(updateNow)
