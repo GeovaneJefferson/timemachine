@@ -105,7 +105,6 @@ class BACKUP:
         
         print("Backing up wallpaper...")
         # Get Wallaper
-        user_wallpaper()
         print(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/")
         sub.run(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/", shell=True) 
        
@@ -175,18 +174,20 @@ class BACKUP:
             ################################################################################
             # Backup all (user.ini true folders)
             for output in get_folders():
+                """
+                Write current save file name to INI file
+                so it can be show on main window (mainwindow.py)
+                This way, user will have a feedback to what
+                is happening.
+                Write current folder been backup to INI file
+                """
                 ###############################################################################
-                # Write current save file name to INI file
-                # so it can be show on main window (mainwindow.py)
-                # This way, user will have a feedback to what
-                # is happening.
-                # Write current folder been backup to INI file
-                ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
+                self.update_feedback_status(output)
+                # config = configparser.ConfigParser()
+                # config.read(src_user_config)
+                # with open(src_user_config, 'w') as configfile:
+                #     config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                #     config.write(configfile)
 
                 ###############################################################################
                 # Copy the Home files/folders
@@ -217,11 +218,12 @@ class BACKUP:
                 # is happening.
                 # Write current folder been backup to INI file
                 ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
+                self.update_feedback_status(output)
+                # config = configparser.ConfigParser()
+                # config.read(src_user_config)
+                # with open(src_user_config, 'w') as configfile:
+                #     config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                #     config.write(configfile)
 
                 ###############################################################################
                 # Copy the Flatpak var/app folders
@@ -243,11 +245,12 @@ class BACKUP:
                 # is happening.
                 # Write current folder been backup to INI file
                 ###############################################################################
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w') as configfile:
-                    config.set('INFO', 'feedback_status', f"Backing up: {output}")
-                    config.write(configfile)
+                self.update_feedback_status(output)
+                # config = configparser.ConfigParser()
+                # config.read(src_user_config)
+                # with open(src_user_config, 'w') as configfile:
+                #     config.set('INFO', 'feedback_status', f"Backing up: {output}")
+                #     config.write(configfile)
 
                 ###############################################################################
                 # Copy the Flatpak var/app folders
@@ -287,8 +290,10 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             # Save icon information
             config.set('INFO', 'icon', f"{userCurrentGnomeIcon}")
-            config.set('INFO', 'feedback_status', f"Backing up: icons")
+            # config.set('INFO', 'feedback_status', f"Backing up: icons")
             config.write(configfile)
+
+        self.update_feedback_status(userCurrentGnomeIcon)
 
         try:
             # USR/SHARE
@@ -329,8 +334,10 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             # Save cursor information
             config.set('INFO', 'cursor', f"{userCurrentcursor}")
-            config.set('INFO', 'feedback_status', f"Backing up: cursor")
+            # config.set('INFO', 'feedback_status', f"Backing up: cursor")
             config.write(configfile)
+
+        self.update_feedback_status(userCurrentcursor)
 
         try:
             # USR/SHARE/ICONS
@@ -373,8 +380,10 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             # Save theme information
             config.set('INFO', 'theme', f"{userCurrentTheme}")
-            config.set('INFO', 'feedback_status', f"Backing up: theme")
+            # config.set('INFO', 'feedback_status', f"Backing up: theme")
             config.write(configfile)
+        
+        self.update_feedback_status(userCurrentTheme)
 
         ################################################################################
         # Try to find the current theme inside /home/user/.theme
@@ -455,13 +464,15 @@ class BACKUP:
             # Reset Main Window information
             config.set('INFO', 'notification_add_info', "")
             # Clean current back up folder from Main Window
-            config.set('INFO', 'feedback_status', "")
+            # config.set('INFO', 'feedback_status', "")
             # Set checker runner to False
             config.set('BACKUP', 'checker_running', "true")
             # Time left to None
             config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
-
+        
+        # Clean current back up folder from Main Window
+        self.update_feedback_status("")
         ################################################################################
         # Backup Ini File
         ################################################################################
@@ -475,6 +486,14 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if it finish fast, won't repeat the backup
         exit()
 
+
+    def update_feedback_status(self,output):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            # Save theme information
+            config.set('INFO', 'feedback_status', f"Backing up: {output}")
+            config.write(configfile)
 
 if __name__ == '__main__':
     main = BACKUP()
