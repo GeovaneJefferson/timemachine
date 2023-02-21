@@ -492,7 +492,10 @@ class BACKUP:
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             # Save theme information
-            config.set('INFO', 'feedback_status', f"Backing up: {output}")
+            if output == "":
+                config.set('INFO', 'feedback_status', "")
+            else:
+                config.set('INFO', 'feedback_status', f"Backing up: {output}")
             config.write(configfile)
 
 if __name__ == '__main__':
