@@ -58,13 +58,13 @@ class MAIN(QMainWindow):
 
         # App name
         self.appName = QLabel()
-        self.appName.setFont(QFont("Ubuntu", 5))
+        self.appName.setFont(QFont(mainFont,smallFontSize))
         self.appName.setText(f"<h1>{appName}</h1>")
         self.appName.adjustSize()
 
         # Automatically checkbox
         self.automaticallyCheckBox = QCheckBox()
-        self.automaticallyCheckBox.setFont(QFont("Ubuntu", 10))
+        self.automaticallyCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.automaticallyCheckBox.setText("Back Up Automatically")
         self.automaticallyCheckBox.adjustSize()
         self.automaticallyCheckBox.setStyleSheet("""
@@ -95,7 +95,7 @@ class MAIN(QMainWindow):
 
         # Select disk button
         self.selectDiskButton = QPushButton(self)
-        self.selectDiskButton.setFont(QFont("Ubuntu", 10))
+        self.selectDiskButton.setFont(QFont(mainFont,normalFontSize))
         self.selectDiskButton.setText("  Select Backup Disk...  ")
         self.selectDiskButton.adjustSize()
         self.selectDiskButton.clicked.connect(self.select_external_clicked)
@@ -118,7 +118,7 @@ class MAIN(QMainWindow):
         # Set external name
         ################################################################################
         self.externalNameLabel = QLabel()
-        self.externalNameLabel.setFont(QFont("Ubuntu", 6))
+        self.externalNameLabel.setFont(QFont(mainFont, 6))
         # self.externalNameLabel.setFixedSize(350, 80)
         self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
@@ -183,7 +183,7 @@ class MAIN(QMainWindow):
         ################################################################################
         self.backupNowButton = QPushButton(self)
         self.backupNowButton.setText("  Back Up Now  ")
-        self.backupNowButton.setFont(QFont("Ubuntu", 10))
+        self.backupNowButton.setFont(QFont(mainFont,normalFontSize))
         self.backupNowButton.adjustSize()
         # self.backupNowButton.move(420, 162)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
@@ -243,7 +243,7 @@ class MAIN(QMainWindow):
         # Options button
         self.optionsButton = QPushButton()
         self.optionsButton.setText("Options...")
-        self.optionsButton.setFont(QFont("Ubuntu", 10))
+        self.optionsButton.setFont(QFont(mainFont,normalFontSize))
         # self.optionsButton.setFixedSize(80, 28)
         self.optionsButton.adjustSize()
         self.optionsButton.clicked.connect(self.on_options_clicked)
@@ -251,7 +251,7 @@ class MAIN(QMainWindow):
         # Help button
         self.helpButton = QPushButton()
         self.helpButton.setText("?")
-        self.helpButton.setFont(QFont("Ubuntu", 10))
+        self.helpButton.setFont(QFont(mainFont,normalFontSize))
         self.helpButton.setFixedSize(24, 24)
         self.helpButton.setToolTip("Help")
         self.helpButton.clicked.connect(
@@ -922,7 +922,7 @@ class EXTERNAL(QWidget):
                         
                         # Free Space Label
                         freeSpaceLabel = QLabel(self.availableDevices)
-                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setFont(QFont(mainFont, 8))
                         freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
                         freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
@@ -977,7 +977,7 @@ class EXTERNAL(QWidget):
                         
                         # Free Space Label
                         freeSpaceLabel = QLabel(self.availableDevices)
-                        freeSpaceLabel.setFont(QFont("Ubuntu", 8))
+                        freeSpaceLabel.setFont(QFont(mainFont, 8))
                         freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
                         freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
@@ -1012,8 +1012,8 @@ class EXTERNAL(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if "ubuntu" in get_package_manager():
-                    print("Ubuntu")
+                if mainFont in get_package_manager():
+                    print(mainFont)
                     config.set('INFO', 'packageManager', f'{debFolderName}')
                 
                 elif "fedora" in get_package_manager():
@@ -1088,7 +1088,7 @@ class OPTION(QMainWindow):
     def widgets(self):
         # Apps version
         version = QLabel(self)
-        version.setFont(QFont("Ubuntu", 4))
+        version.setFont(QFont(mainFont, 4))
         version.setText(f"<h1>{appVersion}</h1>")
         version.setFixedSize(80, 20)
         version.move(290, 410)
@@ -1114,7 +1114,7 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left title
         self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont("Ubuntu", 5))
+        self.leftTitle.setFont(QFont(mainFont,smallFontSize))
         self.leftTitle.setText("<h1>Folders to be back up:</h1>")
         self.leftTitle.adjustSize()
 
@@ -1143,7 +1143,7 @@ class OPTION(QMainWindow):
 
         # Days to run title
         self.daysToRunTitle = QLabel()
-        self.daysToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.daysToRunTitle.setFont(QFont(mainFont,smallFontSize))
         self.daysToRunTitle.setText("<h1>Days to run:</h1>")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.daysToRunTitle.adjustSize()
@@ -1155,7 +1155,7 @@ class OPTION(QMainWindow):
         # Checkboxes
         ################################################################################
         self.sunCheckBox = QCheckBox()
-        self.sunCheckBox.setFont(QFont("Ubuntu", 10))
+        self.sunCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.sunCheckBox.setText("Sun")
         self.sunCheckBox.clicked.connect(self.on_check_sun_clicked)
         self.sunCheckBox.setStyleSheet("""
@@ -1163,7 +1163,7 @@ class OPTION(QMainWindow):
         """)
 
         self.monCheckBox = QCheckBox()
-        self.monCheckBox.setFont(QFont("Ubuntu", 10))
+        self.monCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.monCheckBox.setText("Mon")
         self.monCheckBox.clicked.connect(self.on_check_mon_clicked)
         self.monCheckBox.setStyleSheet("""
@@ -1171,7 +1171,7 @@ class OPTION(QMainWindow):
         """)
 
         self.tueCheckBox = QCheckBox()
-        self.tueCheckBox.setFont(QFont("Ubuntu", 10))
+        self.tueCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.tueCheckBox.setText("Tue")
         self.tueCheckBox.clicked.connect(self.on_check_tue_clicked)
         self.tueCheckBox.setStyleSheet("""
@@ -1179,7 +1179,7 @@ class OPTION(QMainWindow):
         """)
 
         self.wedCheckBox = QCheckBox()
-        self.wedCheckBox.setFont(QFont("Ubuntu", 10))
+        self.wedCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.wedCheckBox.setText("Wed")
         self.wedCheckBox.clicked.connect(self.on_check_wed_clicked)
         self.wedCheckBox.setStyleSheet("""
@@ -1187,7 +1187,7 @@ class OPTION(QMainWindow):
         """)
 
         self.thuCheckBox = QCheckBox()
-        self.thuCheckBox.setFont(QFont("Ubuntu", 10))
+        self.thuCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.thuCheckBox.setText("Thu")
         self.thuCheckBox.clicked.connect(self.on_check_thu_clicked)
         self.thuCheckBox.setStyleSheet("""
@@ -1195,7 +1195,7 @@ class OPTION(QMainWindow):
         """)
 
         self.friCheckBox = QCheckBox()
-        self.friCheckBox.setFont(QFont("Ubuntu", 10))
+        self.friCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.friCheckBox.setText("Fri")
         self.friCheckBox.clicked.connect(self.on_check_fri_clicked)
         self.friCheckBox.setStyleSheet("""
@@ -1203,7 +1203,7 @@ class OPTION(QMainWindow):
         """)
 
         self.satCheckBox = QCheckBox()
-        self.satCheckBox.setFont(QFont("Ubuntu", 10))
+        self.satCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.satCheckBox.setText("Sat")
         self.satCheckBox.clicked.connect(self.on_check_sat_clicked)
         self.satCheckBox.setStyleSheet("""
@@ -1224,7 +1224,7 @@ class OPTION(QMainWindow):
 
         # Time to run title
         self.timeToRunTitle = QLabel(self.timeToRunWidget)
-        self.timeToRunTitle.setFont(QFont("Ubuntu", 5))
+        self.timeToRunTitle.setFont(QFont(mainFont,smallFontSize))
         self.timeToRunTitle.setText("<h1>Time to run:</h1>")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.timeToRunTitle.adjustSize()
@@ -1240,7 +1240,7 @@ class OPTION(QMainWindow):
 
         # Radio buttons
         self.oneTimePerDayRadio = QRadioButton()
-        self.oneTimePerDayRadio.setFont(QFont("Ubuntu", 10))
+        self.oneTimePerDayRadio.setFont(QFont(mainFont,normalFontSize))
         self.oneTimePerDayRadio.setText("One time per day")
         self.oneTimePerDayRadio.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimePerDayRadio.adjustSize()
@@ -1253,7 +1253,7 @@ class OPTION(QMainWindow):
         self.oneTimePerDayRadio.clicked.connect(self.on_frequency_clicked)
 
         self.moreTimePerDayRadio = QRadioButton()
-        self.moreTimePerDayRadio.setFont(QFont("Ubuntu", 10))
+        self.moreTimePerDayRadio.setFont(QFont(mainFont,normalFontSize))
         self.moreTimePerDayRadio.setToolTip(
             "Back up will be execute every x hours.\n"
             "This will produce a time folder inside your backup device.\n"
@@ -1269,7 +1269,7 @@ class OPTION(QMainWindow):
 
         # Spinbox Hours
         self.hoursSpinBox = QSpinBox()
-        self.hoursSpinBox.setFont(QFont("Ubuntu", 14))
+        self.hoursSpinBox.setFont(QFont(mainFont, 14))
         self.hoursSpinBox.setFixedSize(50, 30)
         self.hoursSpinBox.setFrame(False)
         self.hoursSpinBox.setMinimum(0)
@@ -1282,7 +1282,7 @@ class OPTION(QMainWindow):
 
         # : between hours and minutes
         self.betweenHoursAndMinutesLabel = QLabel()
-        self.betweenHoursAndMinutesLabel.setFont(QFont("Ubuntu", 18))
+        self.betweenHoursAndMinutesLabel.setFont(QFont(mainFont, 18))
         self.betweenHoursAndMinutesLabel.setText(":")
         self.betweenHoursAndMinutesLabel.setStyleSheet("""
             border-color: transparent;
@@ -1290,7 +1290,7 @@ class OPTION(QMainWindow):
 
         # Hours title
         self.hoursTitle = QLabel()
-        self.hoursTitle.setFont(QFont("Ubuntu", 4))
+        self.hoursTitle.setFont(QFont(mainFont, 4))
         self.hoursTitle.setText("<h1>Hours</h1>")
         self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
@@ -1300,7 +1300,7 @@ class OPTION(QMainWindow):
 
         # Minutes title
         self.minutesTitle = QLabel()
-        self.minutesTitle.setFont(QFont("Ubuntu", 4))
+        self.minutesTitle.setFont(QFont(mainFont, 4))
         self.minutesTitle.setText("<h1>Minutes</h1>")
         self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
@@ -1309,7 +1309,7 @@ class OPTION(QMainWindow):
 
         # Spinbox Hours
         self.minutesSpinBox = QSpinBox()
-        self.minutesSpinBox.setFont(QFont("Ubuntu", 14))
+        self.minutesSpinBox.setFont(QFont(mainFont, 14))
         self.minutesSpinBox.setFixedSize(50, 30)
         self.minutesSpinBox.setFrame(False)
         self.minutesSpinBox.setStyleSheet(
@@ -1327,7 +1327,7 @@ class OPTION(QMainWindow):
         self.multipleTimePerDayComboBox = QComboBox()
         self.multipleTimePerDayComboBox.setFrame(True)
         self.multipleTimePerDayComboBox.setFixedSize(132, 28)
-        self.multipleTimePerDayComboBox.setFont(QFont("Ubuntu", 10))
+        self.multipleTimePerDayComboBox.setFont(QFont(mainFont,normalFontSize))
         self.multipleTimePerDayComboBox.setStyleSheet(
         "QComboBox"
             "{"
@@ -1360,7 +1360,7 @@ class OPTION(QMainWindow):
 
         # Notification title
         self.flatpakTitle = QLabel()
-        self.flatpakTitle.setFont(QFont("Ubuntu", 5))
+        self.flatpakTitle.setFont(QFont(mainFont,smallFontSize))
         self.flatpakTitle.setText("<h1>Flatpak Settings:</h1>")
         self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
@@ -1370,7 +1370,7 @@ class OPTION(QMainWindow):
 
         # Flatpak Name checkbox
         self.allowFlatpakNamesCheckBox = QCheckBox()
-        self.allowFlatpakNamesCheckBox.setFont(QFont("Ubuntu", 10))
+        self.allowFlatpakNamesCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks")
         self.allowFlatpakNamesCheckBox.adjustSize()
         self.allowFlatpakNamesCheckBox.setStyleSheet("""
@@ -1380,7 +1380,7 @@ class OPTION(QMainWindow):
         
         # Flatpak Data checkbox
         self.allowFlatpakDataCheckBox = QCheckBox()
-        self.allowFlatpakDataCheckBox.setFont(QFont("Ubuntu", 10))
+        self.allowFlatpakDataCheckBox.setFont(QFont(mainFont,normalFontSize))
         self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks Data " 
             "")
         self.allowFlatpakDataCheckBox.adjustSize()
@@ -1401,14 +1401,14 @@ class OPTION(QMainWindow):
         
         # Reset title
         self.resetTitle = QLabel()
-        self.resetTitle.setFont(QFont("Ubuntu", 5))
+        self.resetTitle.setFont(QFont(mainFont,smallFontSize))
         self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
         # Reset label text
         self.resetText = QLabel()
-        self.resetText.setFont(QFont("Ubuntu", 10))
+        self.resetText.setFont(QFont(mainFont,normalFontSize))
         self.resetText.setText('If something seems broken, click on "Reset", to reset settings.')
         self.resetText.adjustSize()
 
@@ -1416,7 +1416,7 @@ class OPTION(QMainWindow):
         # Fix button
         ################################################################################
         self.fixButton = QPushButton()
-        self.fixButton.setFont(QFont("Ubuntu", 10))
+        self.fixButton.setFont(QFont(mainFont,normalFontSize))
         self.fixButton.setText("Reset")
         self.fixButton.adjustSize()
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
@@ -1434,7 +1434,7 @@ class OPTION(QMainWindow):
         # Donate buton
         self.donateButton = QPushButton()
         self.donateButton.setText("Donate")
-        self.donateButton.setFont(QFont("Ubuntu", 10))
+        self.donateButton.setFont(QFont(mainFont,normalFontSize))
         self.donateButton.adjustSize()
         self.donateButton.clicked.connect(self.donate_clicked)
 
@@ -1443,7 +1443,7 @@ class OPTION(QMainWindow):
         ################################################################################
         self.saveButton = QPushButton()
         self.saveButton.adjustSize()
-        self.saveButton.setFont(QFont("Ubuntu", 10))
+        self.saveButton.setFont(QFont(mainFont,normalFontSize))
         self.saveButton.setText("Back")
         self.saveButton.clicked.connect(self.on_save_button_clicked)
 
@@ -1516,7 +1516,7 @@ class OPTION(QMainWindow):
                 # Checkboxes
                 self.foldersCheckbox = QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
-                self.foldersCheckbox.setFont(QFont("Ubuntu", 10))
+                self.foldersCheckbox.setFont(QFont(mainFont,normalFontSize))
                 self.foldersCheckbox.adjustSize()
                 # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
@@ -2077,4 +2077,4 @@ if __name__ == '__main__':
 
     app.exit(app.exec())
         
-        
+

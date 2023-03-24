@@ -9,14 +9,14 @@ def device_location():
         print(f"Searching inside {media}")
         if len(os.listdir(f'{media}/{userName}')) != 0:
             print(f"Devices found inside {media}")
-            return True
+            return f"{media}"
 
     except FileNotFoundError:
         try:
             print(f"Searching inside {run}")
             if len(os.listdir(f'{run}/{userName}')) != 0:
                 print(f"Devices found inside {run}")
-                return False
+                return f"{run}"
         
         except:
             return None

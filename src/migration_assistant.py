@@ -65,14 +65,18 @@ cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
 flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
 
-class WELCOMESCREEN(QWidget):
+class WELCOMESCREEN(QMainWindow):
     def __init__(self):
+        print("Welcome Screen")
         super(WELCOMESCREEN, self).__init__()
         self.widgets()
 
     def widgets(self):
+        baseWidget = QWidget(self)
+        baseWidget.setFixedSize(900,600)
+
         # Title layout
-        self.titlelLayout = QVBoxLayout()
+        self.titlelLayout = QVBoxLayout(baseWidget)
         self.titlelLayout.setSpacing(20)
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
         
@@ -125,159 +129,13 @@ class WELCOMESCREEN(QWidget):
         self.setLayout(self.titlelLayout)
 
     def on_continueButton_clicked(self):
+        main3 = CHOOSEDEVICE()
         widget.addWidget(main3) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
-
-class OPTIONS(QWidget):
+class CHOOSEDEVICE(QMainWindow):
     def __init__(self):
-        super().__init__()
-        self.outputBox = ()
-        self.initUI()
-
-    def initUI(self):
-        ################################################################################
-        # Layouts
-        ################################################################################
-        # Vertical layout
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setSpacing(20)
-        self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-
-        # Grid layout
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setSpacing(20)
-        self.gridLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-
-        # Title
-        self.title = QLabel()
-        self.title.setFont(QFont("Arial", 18))
-        self.title.setText("Apps & Data")
-        self.title.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.title.setStyleSheet("""
-        font-weight: Bold;
-        """)
-
-        # Question
-        self.question = QLabel()
-        self.question.setFont(QFont("Arial", 24))
-        self.question.setAlignment(QtCore.Qt.AlignHCenter)
-        self.question.setText("What are you planning to do?")
-        self.question.setStyleSheet("""
-        font-weight: Bold;
-        """)
-
-        # Description
-        self.description = QLabel()
-        self.description.setFont(QFont("Arial", 11))
-        self.description.setAlignment(QtCore.Qt.AlignHCenter)
-        self.description.setText(
-            f"If you already have back up with {appName}\n"
-            "You can use the restore option.")
-
-        ################################################################################
-        # Restore from
-        ################################################################################
-        imagePosX = 38
-        imagePosy = 20
-        self.restoreOption = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_96px}')
-        image = QLabel(self.restoreOption)
-        image.setPixmap(pixmap)
-        image.setFixedSize(pixmap.width(),pixmap.height())
-        image.move(imagePosX, imagePosy)
-        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.restoreOption.setText(
-            "\n\n\n\n\n\n\n\nRestore\n"
-            f"from {appName}")
-        self.restoreOption.setFont(QFont("Arial", 11))
-        self.restoreOption.setCheckable(True)
-        self.restoreOption.setAutoExclusive(True)
-        self.restoreOption.setFixedSize(200, 200)
-        self.restoreOption.setStyleSheet("""
-            font: bold;
-        """)
-        self.restoreOption.clicked.connect(lambda *args: self.on_device_clicked("restore"))
-
-        ################################################################################
-        # Set up as new
-        ################################################################################
-        self.startAsNew = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_96px}')
-        image = QLabel(self.startAsNew)
-        image.setPixmap(pixmap)
-        image.setFixedSize(pixmap.width(),pixmap.height())
-        image.move(imagePosX, imagePosy)
-        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.startAsNew.setFont(QFont("Arial", 11))
-        self.startAsNew.setText(
-            "\n\n\n\n\n\n\nSet Up as New")
-        self.startAsNew.setCheckable(True)
-        self.startAsNew.setAutoExclusive(True)
-        self.startAsNew.setFixedSize(200, 200)
-        self.startAsNew.setStyleSheet("""
-            font: bold;
-        """)
-        self.startAsNew.clicked.connect(lambda *args: self.on_device_clicked("new"))
-       
-        ################################################################################
-        # Buttons
-        ################################################################################
-        # Back button
-        self.backButton = QPushButton(self)
-        self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Arial", 10))
-        self.backButton.adjustSize()
-        self.backButton.move(700, 555)
-        self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
-
-        # Continue button
-        self.continueButton = QPushButton(self)
-        self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Arial", 10))
-        self.continueButton.adjustSize()
-        self.continueButton.move(800, 555)
-        self.continueButton.setEnabled(False)
-        self.continueButton.clicked.connect(self.on_continue_clicked)
-
-        ################################################################################
-        # Add layout and widgets
-        ################################################################################
-        self.verticalLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.question, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.description, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-
-        # Grid layout
-        self.gridLayout.addWidget(self.restoreOption, 1, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.startAsNew, 1, 1)
-        self.verticalLayout.addLayout(self.gridLayout, 0)
-        
-        self.setLayout(self.verticalLayout)
-
-    def on_device_clicked(self, output):
-        # Add output to self.outputBox
-        self.outputBox = output
-        # Enable or disable continue button
-        if self.restoreOption.isChecked() or self.startAsNew.isChecked():
-            # Enable continue
-            self.continueButton.setEnabled(True)
-
-        else:
-            # Clean self.ouputBox
-            self.outputBox = ""
-            # Disable continue
-            self.continueButton.setEnabled(False)
-    
-    def on_continue_clicked(self):
-        # If user clicked on restore from...
-        if self.outputBox == "restore":
-            widget.addWidget(main3) 
-            widget.setCurrentIndex(widget.currentIndex()+1)
-        else:
-            exit()
-
-class CHOOSEDEVICE(QWidget):
-    def __init__(self):
+        print("Choose Device")
         super().__init__()
         self.foundInMedia = None
         self.outputBox = ()
@@ -289,7 +147,10 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         # Layouts
         ################################################################################
-        self.verticalLayout = QVBoxLayout()
+        baseWidget = QWidget(self)
+        baseWidget.setFixedSize(900,600)
+
+        self.verticalLayout = QVBoxLayout(baseWidget)
         self.verticalLayout.setSpacing(20)
         self.verticalLayout.setContentsMargins(20, 20, 20, 20)
 
@@ -345,28 +206,23 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
+        self.search_devices()
+    
+    def search_devices(self):
+        timer.timeout.connect(self.show_on_screen)
+        timer.start(1000) 
         self.show_on_screen()
 
     def show_on_screen(self):
         ################################################################################
-        # Search external inside media
-        ################################################################################
-        if device_location():
-            location = f"{media}"
-        elif not device_location():
-            location = f"{run}"
-        else:
-            location = None
-
-        ################################################################################
         # Show available files
         ################################################################################
         try:
-            for output in os.listdir(f"{location}/{userName}/"):
+            for output in os.listdir(f"{device_location()}/{userName}/"):
                 # Only show disk the have baseFolderName inside
-                if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
+                if baseFolderName in os.listdir(f"{device_location()}/{userName}/{output}/"):
                     if output not in self.captureDevices:   
-                        # os.listdir(f"{location}/{userName}/{baseFolderName}")
+                        # os.listdir(f"{device_location()}/{userName}/{baseFolderName}")
                         # If device is in list, display to user just on time per device
                         self.captureDevices.append(output)
 
@@ -434,21 +290,23 @@ class CHOOSEDEVICE(QWidget):
                 config.set(f'INFO', 'packageManager', f'{rpmFolderName}')
 
             # Update INI file
-            if device_location():
-                config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.locationBackup}')
+            # if device_location():
+            config.set(f'EXTERNAL', 'hd', f'{device_location()}/{userName}/{self.locationBackup}')
 
-            elif not device_location():
-                config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.locationBackup}')
+            # elif not device_location():
+            #     config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.locationBackup}')
 
             config.set('EXTERNAL', 'name', f'{self.locationBackup}')
             config.write(configfile)
 
         # Go to next window 
+        main4 = PREBACKUP()
         widget.addWidget(main4) 
         widget.setCurrentIndex(widget.currentIndex()+1)
-
-class PREBACKUP(QWidget):
+        
+class PREBACKUP(QMainWindow):
     def __init__(self):
+        print("PRE BACKUP")
         super().__init__()
         self.optionsAddedList = []
         self.excludeAppList = []
@@ -472,10 +330,13 @@ class PREBACKUP(QWidget):
         ################################################################################
         # Layouts
         ################################################################################
-        # Restore widget
-        self.optionskWidget = QWidget()
+        baseWidget = QWidget(self)
+        baseWidget.setFixedSize(900,600)
 
-        self.scrollOptions = QScrollArea(self)
+        # Restore widget
+        self.optionskWidget = QWidget(baseWidget)
+
+        self.scrollOptions = QScrollArea(baseWidget)
         self.scrollOptions.setFixedSize(370, 300)
         self.scrollOptions.setWidgetResizable(True)
         self.scrollOptions.setWidget(self.optionskWidget)
@@ -777,13 +638,13 @@ class PREBACKUP(QWidget):
             config.read(src_user_config)
             with open(f"{flatpakTxtFile}", 'r') as output:
                 output = output.read()
-                # If is  not empty, enable these boxes
-                if output != "":
-                    self.flatpakCheckBox.setEnabled(True)
+                # # If is  not empty, enable these boxes
+                # if output != "":
+                #     self.flatpakCheckBox.setEnabled(True)
 
-                else:
-                    # Disable these boxes
-                    self.flatpakCheckBox.setEnabled(False)  
+                # else:
+                #     # Disable these boxes
+                #     self.flatpakCheckBox.setEnabled(False)  
 
         except FileNotFoundError:
             pass
@@ -1119,6 +980,7 @@ class PREBACKUP(QWidget):
                         configfile.write(f"{apps}\n")
             
         # Change current index
+        # main5 = BACKUPSCREEN()
         widget.addWidget(main5)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
@@ -1141,7 +1003,7 @@ class PREBACKUP(QWidget):
             # Enable continue button
             self.continueButton.setEnabled(True)
 
-class BACKUPSCREEN(QWidget):
+class BACKUPSCREEN(QMainWindow):
     def __init__(self):
         super().__init__()
         self.widgets()
@@ -1346,6 +1208,7 @@ class BACKUPSCREEN(QWidget):
             config.write(configfile)
 
         # Change screen
+        # main6 = START_RESTORING()
         widget.addWidget(main6)
         # Call restore python
         sub.Popen(f"python3 {src_restore_cmd}", shell=True)
@@ -1364,7 +1227,7 @@ class BACKUPSCREEN(QWidget):
 
             config.write(configfile)
 
-class START_RESTORING(QWidget):
+class START_RESTORING(QMainWindow):
     def __init__(self):
         super().__init__()
         self.widgets()
@@ -1433,11 +1296,10 @@ if __name__ == '__main__':
     widget = QStackedWidget()
 
     main = WELCOMESCREEN()
-    main2 = OPTIONS()
-    main3 = CHOOSEDEVICE()
-    main4 = PREBACKUP()
-    main5 = BACKUPSCREEN()
-    main6 = START_RESTORING()
+    # main3 = CHOOSEDEVICE()
+    # main4 = PREBACKUP()
+    # main5 = BACKUPSCREEN()
+    # main6 = START_RESTORING()
     # Add Widget
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   

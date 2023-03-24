@@ -59,8 +59,8 @@ def user_wallpaper():
                     if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
                         oneMore = True
 
-            # After one supported item was found, go to backup_user_wallpaper()
-            return getWallpaper
+                # After one supported item was found, go to backup_user_wallpaper()
+                return getWallpaper
 
         else:
             count += 1

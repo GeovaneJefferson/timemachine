@@ -15,7 +15,7 @@ from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint)
-from PySide6.QtGui import (QFont, QPixmap, QIcon, QMovie, QAction,
+from PySide6.QtGui import (QFont, QPixmap , QIcon, QMovie, QAction,
                             QPalette, QColor)
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
-                            QSystemTrayIcon, QMenu, QStackedWidget, QProgressBar)
+                            QSystemTrayIcon, QMenu, QStackedWidget)
 
 ################################################################################
 ## Variables
@@ -98,6 +98,11 @@ setUserCursor = "gsettings set org.gnome.desktop.interface cursor-theme"
 # Locations
 media = "/media"
 run = "/run/media"
+
+# Fonts
+mainFont = "Ubuntu"
+normalFontSize = 10
+smallFontSize = 5
 
 ################################################################################
 ## Fonts
