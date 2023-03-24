@@ -1,0 +1,11 @@
+[Desktop Entry]
+ Version=1.0
+ Type=Application
+ Name=Time Machine
+ Comment=Backup your files
+ Icon=/home/macbook/.local/share/timemachine/src/icons/backup_128px.png
+ Exec=python3 /home/macbook/.local/share/timemachine/src/mainwindow.py
+ Path=/home/macbook/.local/share/timemachine/
+ Categories=System
+ StartupWMClass=mainwindow.py
+ Terminal=false

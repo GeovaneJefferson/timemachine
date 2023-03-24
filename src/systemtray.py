@@ -207,6 +207,5 @@ class APP:
     def backup_now(self):
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
 
-
 if __name__ == '__main__':
     main = APP()

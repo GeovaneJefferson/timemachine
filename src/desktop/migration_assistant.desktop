@@ -1,0 +1,11 @@
+[Desktop Entry]
+ Version=1.0
+ Type=Application
+ Name=Migration Assistant
+ Comment=Restore settings from a Time Machine backup
+ Icon=/home/macbook/.local/share/timemachine/src/icons/migration_assistant_96px.png
+ Exec=python3 /home/macbook/.local/share/timemachine/src/call_migration_assistant.py
+ Path=/home/macbook/.local/share/timemachine/src/
+ Categories=System
+ StartupWMClass=migration_assistant.py
+ Terminal=true
