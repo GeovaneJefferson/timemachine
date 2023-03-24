@@ -54,13 +54,11 @@ def user_wallpaper():
                     if oneMore:
                         line = line.replace("Image=", "").replace("file://", "")
                         getWallpaper = str(line)
-                        break
+                        # After one supported item was found, go to backup_user_wallpaper()
+                        return getWallpaper
 
                     if line == "[Containments][1][Wallpaper][org.kde.image][General]" and not oneMore:
                         oneMore = True
-
-                # After one supported item was found, go to backup_user_wallpaper()
-                return getWallpaper
 
         else:
             count += 1
