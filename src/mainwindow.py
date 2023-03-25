@@ -479,15 +479,13 @@ class MAIN(QMainWindow):
         # Last backup label
         ################################################################################
         if self.iniLastBackup != "":
-            
-            # If today date
-            # if self.ini
             self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
 
             self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
             self.oldestBackupLabel.setText(f"Oldest Backup: {self.iniOldestBackup}")
 
-        self.load_time_backup()
+
+        self.load_current_backup_folder()
 
     def load_time_backup(self):
         ################################################################################

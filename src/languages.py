@@ -19,7 +19,7 @@ def determine_days_language():
         return list
     
     # DK
-    if iniSystemLanguage == 'dk_DK':
+    elif iniSystemLanguage == 'dk_DK':
         list.append("Søn")
         list.append("Man")
         list.append("Tir")
@@ -27,4 +27,15 @@ def determine_days_language():
         list.append("Tor")
         list.append("Fre")
         list.append("Lør")
+        return list
+    
+    else:
+        # ENG
+        list.append("Sun")
+        list.append("Mon")
+        list.append("Tue")
+        list.append("Wed")
+        list.append("Thu")
+        list.append("Fru")
+        list.append("sat")
         return list
