@@ -387,7 +387,11 @@ class MAIN(QMainWindow):
                 print("Error restoring ini file!")
                 print("")
                 exit()
-            
+        
+        timer.timeout.connect(self.connection)
+        timer.start(3000)  # update every x second
+        self.connection()
+        
         self.connection()
 
     def connection(self):
