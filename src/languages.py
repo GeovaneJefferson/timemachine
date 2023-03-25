@@ -8,7 +8,7 @@ def determine_days_language():
     iniSystemLanguage = config['INFO']['language']
 
     # ENG
-    if iniSystemLanguage == 'en_US':
+    if iniSystemLanguage == 'en':
         list.append("Sun")
         list.append("Mon")
         list.append("Tue")
@@ -19,7 +19,7 @@ def determine_days_language():
         return list
     
     # DK
-    elif iniSystemLanguage == 'dk_DK':
+    elif iniSystemLanguage == 'dk':
         list.append("Søn")
         list.append("Man")
         list.append("Tir")
