@@ -201,7 +201,7 @@ class MAIN(QMainWindow):
         # Top line widget
         ################################################################################
         topLineWidget = QWidget(self)
-        topLineWidget.setGeometry(240,30,440,160)
+        topLineWidget.setGeometry(240,30,440,1)
         topLineWidget.setStyleSheet("""
             border-top:1px solid rgba(14,14,14,0.1);
         """)
