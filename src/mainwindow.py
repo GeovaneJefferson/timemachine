@@ -1013,14 +1013,13 @@ class EXTERNAL(QWidget):
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if mainFont in get_package_manager():
-                    print(mainFont)
                     config.set('INFO', 'packageManager', f'{debFolderName}')
                 
                 elif "fedora" in get_package_manager():
-                    print("Fedora")
                     config.set('INFO', 'packageManager', f'{rpmFolderName}')
 
                 config.set('INFO', 'os',  f'{get_user_de()}')
+                config.set('INFO', 'language',  f'en')
                 config.write(configfile)
 
             ################################################################################
@@ -2013,6 +2012,7 @@ class OPTION(QMainWindow):
                     config.set('SCHEDULE', 'everytime', '60')
 
                     # Info section
+                    config.set('INFO', 'language', 'None')
                     config.set('INFO', 'os', 'None')
                     config.set('INFO', 'packageManager', 'None')
                     config.set('INFO', 'icon', 'None')
