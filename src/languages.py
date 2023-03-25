@@ -40,6 +40,17 @@ def determine_days_language():
         list.append("Sáb")
         return list
     
+    # PT
+    elif iniSystemLanguage == 'pt':
+        list.append("Dom")
+        list.append("Seg")
+        list.append("Ter")
+        list.append("Qua")
+        list.append("Qui")
+        list.append("Sex")
+        list.append("Sáb")
+        return list
+    
     else:
         # ENG
         list.append("Sun")
