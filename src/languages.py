@@ -29,6 +29,17 @@ def determine_days_language():
         list.append("Lør")
         return list
     
+    # ES
+    elif iniSystemLanguage == 'es':
+        list.append("Dom")
+        list.append("Lun")
+        list.append("Mart")
+        list.append("Miérc")
+        list.append("Juev")
+        list.append("Vier")
+        list.append("Sáb")
+        return list
+    
     else:
         # ENG
         list.append("Sun")
