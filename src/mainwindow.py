@@ -5,6 +5,8 @@ from device_location import *
 from package_manager import *
 from get_user_de import *
 from get_home_folders import *
+from get_system_language import system_language
+from languages import determine_days_language
 from get_size import *
 from update import restore_ini_file, backup_ini_file
 
@@ -518,138 +520,138 @@ class MAIN(QMainWindow):
 
     def load_dates(self):
         # Days to run
-        if self.dayName == "Sun":
+        if self.dayName == str(determine_days_language()[0]):
             if self.iniNextBackupSun == "true" and self.currentHour <= self.iniNextHour and self.currentMinute <= self.iniNextMinute:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
 
-        if self.dayName == "Mon":
+        if self.dayName == str(determine_days_language()[1]):
             if self.iniNextBackupMon == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
 
-        if self.dayName == "Tue":
+        if self.dayName == str(determine_days_language()[2]):
             if self.iniNextBackupTue == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
 
-        if self.dayName == "Wed":
+        if self.dayName == str(determine_days_language()[3]):
             if self.iniNextBackupWed == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
 
-        if self.dayName == "Thu":
+        if self.dayName == str(determine_days_language()[4]):
             if self.iniNextBackupThu == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
 
-        if self.dayName == "Fri":
+        if self.dayName == str(determine_days_language()[5]):
             if self.iniNextBackupFri == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
                 elif self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
 
-        if self.dayName == "Sat":
+        if self.dayName == str(determine_days_language()[6]):
             if self.iniNextBackupSat == "true" and self.currentTime < self.backupTime:
                 self.nextDay = "Today"
             else:
                 if self.iniNextBackupSun == "true":
-                    self.nextDay = "Sun"
+                    self.nextDay = str(determine_days_language()[0])
                 elif self.iniNextBackupMon == "true":
-                    self.nextDay = "Mon"
+                    self.nextDay = str(determine_days_language()[1])
                 elif self.iniNextBackupTue == "true":
-                    self.nextDay = "Tue"
+                    self.nextDay = str(determine_days_language()[2])
                 elif self.iniNextBackupWed == "true":
-                    self.nextDay = "Wed"
+                    self.nextDay = str(determine_days_language()[3])
                 elif self.iniNextBackupThu == "true":
-                    self.nextDay = "Thu"
+                    self.nextDay = str(determine_days_language()[4])
                 elif self.iniNextBackupFri == "true":
-                    self.nextDay = "Fri"
+                    self.nextDay = str(determine_days_language()[5])
                 elif self.iniNextBackupSat == "true":
-                    self.nextDay = "Sat"
+                    self.nextDay = str(determine_days_language()[6])
         try:
             # Save next backup to user.ini
             config = configparser.ConfigParser()
@@ -920,20 +922,20 @@ class EXTERNAL(QWidget):
                         icon.move(7, 7)
                         icon.setPixmap(image)
                         
-                        # Free Space Label
-                        freeSpaceLabel = QLabel(self.availableDevices)
-                        freeSpaceLabel.setFont(QFont(mainFont, 8))
-                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
-                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
+                        # # Free Space Label
+                        # freeSpaceLabel = QLabel(self.availableDevices)
+                        # freeSpaceLabel.setFont(QFont(mainFont, 8))
+                        # freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
+                        # freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
-                        if self.iniExternalLocation == self.availableDevices.text():
-                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
-                            freeSpaceLabel.adjustSize()
+                        # if self.iniExternalLocation == self.availableDevices.text():
+                        #     freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                        #     freeSpaceLabel.adjustSize()
 
-                        # For other devices
-                        else:
-                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
-                            freeSpaceLabel.adjustSize()
+                        # # For other devices
+                        # else:
+                        #     freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                        #     freeSpaceLabel.adjustSize()
                             
                         ################################################################################
                         # Auto checked this choosed external device
@@ -946,6 +948,7 @@ class EXTERNAL(QWidget):
                         ################################################################################
                         # Vertical layout
                         self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+           
             except FileNotFoundError:
                 pass
 
@@ -1019,7 +1022,7 @@ class EXTERNAL(QWidget):
                     config.set('INFO', 'packageManager', f'{rpmFolderName}')
 
                 config.set('INFO', 'os',  f'{get_user_de()}')
-                config.set('INFO', 'language',  f'en')
+                config.set('INFO', 'language',  f'{str(system_language())}')
                 config.write(configfile)
 
             ################################################################################
