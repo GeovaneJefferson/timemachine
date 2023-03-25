@@ -4,6 +4,7 @@ from device_location import *
 from package_manager import *
 from get_backup_dates import *
 from get_backup_times import *
+from stylesheet import *
 
 # QTimer
 timer = QtCore.QTimer()
@@ -113,6 +114,7 @@ class WELCOMESCREEN(QWidget):
         self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
+        self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continueButton_clicked)
         # self.continueButton.clicked.connect(lambda: widget.setCurrentIndex(widget.currentIndex()+1))
 
@@ -127,7 +129,6 @@ class WELCOMESCREEN(QWidget):
     def on_continueButton_clicked(self):
         widget.addWidget(main3) 
         widget.setCurrentIndex(widget.currentIndex()+1)
-
 
 class OPTIONS(QWidget):
     def __init__(self):
@@ -229,6 +230,7 @@ class OPTIONS(QWidget):
         self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
+        self.backButton.setStyleSheet(buttonStylesheet)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button
@@ -238,6 +240,7 @@ class OPTIONS(QWidget):
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
+        self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continue_clicked)
 
         ################################################################################
@@ -334,6 +337,7 @@ class CHOOSEDEVICE(QWidget):
         self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
+        self.backButton.setStyleSheet(buttonStylesheet)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
         
         # Continue button
@@ -343,6 +347,7 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
+        self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
         self.show_on_screen()
@@ -463,7 +468,7 @@ class PREBACKUP(QWidget):
             sub.run(f"rm -rf {self.excludeAppsLoc}", shell=True)
             
         self.read_ini_file()
-
+  
     def read_ini_file(self):
         self.iniUserPackageManager = config['INFO']['packagemanager']
         self.widgets()
@@ -526,6 +531,7 @@ class PREBACKUP(QWidget):
         self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
+        self.backButton.setStyleSheet(buttonStylesheet)
         self.backButton.clicked.connect(self.on_back_button_clicked())
 
         # Continue button
@@ -534,6 +540,8 @@ class PREBACKUP(QWidget):
         self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
         self.continueButton.move(800, 555)
+        self.continueButton.setStyleSheet(buttonStylesheet)
+
         if not self.optionsAddedList:
             self.continueButton.setEnabled(False)
         self.continueButton.clicked.connect(self.on_continue_button_clicked)
@@ -777,13 +785,17 @@ class PREBACKUP(QWidget):
             config.read(src_user_config)
             with open(f"{flatpakTxtFile}", 'r') as output:
                 output = output.read()
-                # If is  not empty, enable these boxes
-                if output != "":
-                    self.flatpakCheckBox.setEnabled(True)
+                # TODO
+                try:
+                    # If is  not empty, enable these boxes
+                    if output != "":
+                        self.flatpakCheckBox.setEnabled(True)
 
-                else:
-                    # Disable these boxes
-                    self.flatpakCheckBox.setEnabled(False)  
+                    else:
+                        # Disable these boxes
+                        self.flatpakCheckBox.setEnabled(False)  
+                except:
+                    pass
 
         except FileNotFoundError:
             pass
@@ -1285,6 +1297,7 @@ class BACKUPSCREEN(QWidget):
         self.backButton.setFont(QFont("Arial", 10))
         self.backButton.adjustSize()
         self.backButton.move(700, 555)
+        self.backButton.setStyleSheet(buttonStylesheet)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button

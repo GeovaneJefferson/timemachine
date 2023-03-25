@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from stylesheet import *
 from check_connection import *
 from device_location import *
 from package_manager import *
@@ -32,15 +33,17 @@ class MAIN(QMainWindow):
         self.widgets()
 
     def widgets(self):
+        leftBackgroundColor = QWidget(self)
+        leftBackgroundColor.setGeometry(0,0,220,self.height()) 
+        leftBackgroundColor.setStyleSheet("""
+            background-color:rgba(240, 241, 243, 1);
+            border-right:1px solid rgba(14,14,14,0.1);
+         """)
         ################################################################################
         # Left Widget
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 200, 410) 
-        # border-right: 1px solid rgb(68, 69, 70);
-        self.leftWidget.setStyleSheet("""
-            border-right: 1px solid rgb(198, 198, 198);
-        """)
 
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
@@ -78,7 +81,7 @@ class MAIN(QMainWindow):
         # Right Widget
         ################################################################################
         self.rightWidget = QWidget(self)
-        self.rightWidget.setGeometry(240, 40, 170, 154)
+        self.rightWidget.setGeometry(240, 40, 120, 154)
 
         # Right layout
         self.rightLayout = QVBoxLayout(self.rightWidget)
@@ -98,8 +101,10 @@ class MAIN(QMainWindow):
         # Select disk button
         self.selectDiskButton = QPushButton(self)
         self.selectDiskButton.setFont(QFont(mainFont,normalFontSize))
-        self.selectDiskButton.setText("  Select Backup Disk...  ")
+        self.selectDiskButton.setText("   Select Disk...   ")
         self.selectDiskButton.adjustSize()
+        self.selectDiskButton.setFixedHeight(22)
+        self.selectDiskButton.setStyleSheet(buttonStylesheet)
         self.selectDiskButton.clicked.connect(self.select_external_clicked)
 
         ################################################################################
@@ -107,8 +112,8 @@ class MAIN(QMainWindow):
         ################################################################################
         self.farRightWidget = QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(412, 40, 280, 154)
-
+        self.farRightWidget.setGeometry(360, 40, 280, 154)
+        
         # Right widget
         self.farRightLayout = QVBoxLayout(self.farRightWidget)
         self.farRightLayout.setSpacing(0)
@@ -184,22 +189,31 @@ class MAIN(QMainWindow):
         # Backup now button
         ################################################################################
         self.backupNowButton = QPushButton(self)
-        self.backupNowButton.setText("  Back Up Now  ")
+        self.backupNowButton.setText("   Back Up Now   ")
         self.backupNowButton.setFont(QFont(mainFont,normalFontSize))
         self.backupNowButton.adjustSize()
-        # self.backupNowButton.move(420, 162)
+        self.backupNowButton.setFixedHeight(22)
+        self.backupNowButton.setStyleSheet(buttonStylesheet)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
 
+        ################################################################################
+        # Top line widget
+        ################################################################################
+        topLineWidget = QWidget(self)
+        topLineWidget.setGeometry(240,30,440,160)
+        topLineWidget.setStyleSheet("""
+            border-top:1px solid rgba(14,14,14,0.1);
+        """)
         ################################################################################
         # Description
         ################################################################################
         self.descriptionWidget = QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
-        # self.descriptionWidget.setStyleSheet("""
-        #     border-top: 1px solid rgb(198, 198, 198);
-        #     border-bottom: 1px solid rgb(198, 198, 198);
-        # """)
+        self.descriptionWidget.setStyleSheet("""
+            border-top:1px solid rgba(14,14,14,0.1);
+        """)
+
 
         # Description Layout
         self.descriptionLayout = QVBoxLayout(self.descriptionWidget)
@@ -244,18 +258,20 @@ class MAIN(QMainWindow):
 
         # Options button
         self.optionsButton = QPushButton()
-        self.optionsButton.setText("Options...")
+        self.optionsButton.setText("   Options...   ")
         self.optionsButton.setFont(QFont(mainFont,normalFontSize))
-        # self.optionsButton.setFixedSize(80, 28)
+        self.optionsButton.setFixedHeight(22)
         self.optionsButton.adjustSize()
+        self.optionsButton.setStyleSheet(buttonStylesheet)
         self.optionsButton.clicked.connect(self.on_options_clicked)
 
         # Help button
         self.helpButton = QPushButton()
         self.helpButton.setText("?")
         self.helpButton.setFont(QFont(mainFont,normalFontSize))
-        self.helpButton.setFixedSize(24, 24)
+        self.helpButton.setFixedSize(24,24)
         self.helpButton.setToolTip("Help")
+        self.helpButton.setStyleSheet(buttonStylesheet)
         self.helpButton.clicked.connect(
             lambda: sub.Popen(f"xdg-open {githubHome}", shell=True))
         
@@ -878,16 +894,20 @@ class EXTERNAL(QWidget):
         self.cancelButton.setFont(item)
         self.cancelButton.setText("Cancel")
         self.cancelButton.adjustSize()
+        self.cancelButton.setFixedHeight(22)
         self.cancelButton.move(300, 340)
+        self.cancelButton.setStyleSheet(buttonStylesheet)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
         # Use this device
         self.useDiskButton = QPushButton(self)
         self.useDiskButton.setFont(item)
         self.useDiskButton.setText("Use Disk")
+        self.useDiskButton.setFixedHeight(22)
         self.useDiskButton.adjustSize()
         self.useDiskButton.move(400, 340)
         self.useDiskButton.setEnabled(False)
+        self.useDiskButton.setStyleSheet(useDiskButtonStylesheet)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
 
         self.check_connection()
@@ -1421,8 +1441,10 @@ class OPTION(QMainWindow):
         ################################################################################
         self.fixButton = QPushButton()
         self.fixButton.setFont(QFont(mainFont,normalFontSize))
-        self.fixButton.setText("Reset")
+        self.fixButton.setText("   Reset   ")
         self.fixButton.adjustSize()
+        self.fixButton.setFixedHeight(22)
+        self.fixButton.setStyleSheet(buttonStylesheet)
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
@@ -1446,9 +1468,11 @@ class OPTION(QMainWindow):
         # Save button
         ################################################################################
         self.saveButton = QPushButton()
-        self.saveButton.adjustSize()
         self.saveButton.setFont(QFont(mainFont,normalFontSize))
-        self.saveButton.setText("Back")
+        self.saveButton.setText("   Back   ")
+        self.saveButton.adjustSize()
+        self.saveButton.setFixedHeight(22)
+        self.saveButton.setStyleSheet(buttonStylesheet)
         self.saveButton.clicked.connect(self.on_save_button_clicked)
 
         ################################################################################
@@ -2078,7 +2102,7 @@ if __name__ == '__main__':
     # Window title name
     widget.setWindowTitle(appName)
     widget.setWindowIcon(QIcon(src_backup_icon))
-    widget.setFixedSize(700, 450)
+    widget.setFixedSize(700,450)
 
     app.exit(app.exec())
         
