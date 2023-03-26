@@ -10,7 +10,7 @@ def backup_ini_file(updateNow):
         update_git(updateNow)
 
 def update_git(updateNow):
-    os.popen("git stash; git pull")
+    sub.run("git stash; git pull",shell=True)
     if updateNow:
         delete_ini_file(updateNow)
 
@@ -22,9 +22,9 @@ def delete_ini_file(updateNow):
 def restore_ini_file(updateNow):
     sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
     if updateNow:
-        open_app(updateNow)
+        open_app()
 
-def open_app(updateNow):
+def open_app():
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
     exit()
 
