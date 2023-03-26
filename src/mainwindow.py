@@ -473,8 +473,6 @@ class MAIN(QMainWindow):
         timer.start(3000)  # update every x second
         self.connection()
         
-        self.connection()
-
     def connection(self):
         # Reset timeOut
         self.timeOut = 0
