@@ -4,6 +4,7 @@ from check_connection import *
 from get_backup_times import *
 from get_backup_dates import *
 from get_time import *
+from read_ini_file import UPDATEINIFILE
 
 # QTimer
 timer = QtCore.QTimer()
@@ -93,34 +94,12 @@ class APP:
     
     def updates(self):
         print("System tray is running...")
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # Backup now
-            self.iniBackupNow = config['BACKUP']['backup_now']
-            # Automatically backup
-            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            # INI HD Name
-            self.iniHDName = config['EXTERNAL']['name']
-            # INI system tray
-            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-            # INI last backup
-            self.iniLastBackup = config['INFO']['latest']
-            # Current backup information
-            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-            # Notification id
-            self.iniNotificationID = config['INFO']['notification_id']
-
-        except KeyError as error:
-            print(error)
-            print("System Tray KeyError!")
-            pass
         
         self.system_tray_manager()
 
     def system_tray_manager(self):
         try:
-            if self.iniSystemTray == "false":
+            if str(mainIniFile.ini_system_tray()) == "false":
                 print("Exiting system tray...")
                 exit()
                 
@@ -136,12 +115,12 @@ class APP:
         # Check Connection 
         ################################################################################
         # User has registered a device name
-        if self.iniHDName != "None":
+        if str(mainIniFile.ini_hd_name()) != "None":
             # If backup device is connected
-            if is_connected(self.iniHDName):
+            if is_connected(str(mainIniFile.ini_hd_name())):
                 print("Device is conencted.")
                 # Is not backing up now
-                if self.iniBackupNow == "false":
+                if str(mainIniFile.ini_backup_now()) == "false":
                     # White color
                     self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Show backup now button
@@ -152,23 +131,23 @@ class APP:
                     #     # search inside backup folder, if today date inside, wirte Today
                     #     if get_backup_date()[0] == today_date():
                     #         # Update last backup information
-                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
                     #             f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
                     #     else:
                     #         # Update last backup information
-                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                    #             f'{self.iniLastBackup}')
+                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
+                    #             f'{str(mainIniFile.ini_lastest_backup())}')
                     # except:
                     #     pass
                     
                     # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{self.iniHDName}":\n'
-                        f'{self.iniLastBackup}')
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
+                        f'{str(mainIniFile.ini_lastest_backup())}')
 
                 else:
                     # Blue color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
-                    self.iniLastBackupInformation.setText(f"{(self.iniCurrentBackupInfo)}")
+                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
         
             else:
                 print("Device is not connected.")
@@ -179,7 +158,7 @@ class APP:
                 self.browseTimeMachineBackupsButton.setEnabled(False)
 
                 # If backup device is not connected and automatically if ON
-                if self.iniAutomaticallyBackup == "true":
+                if str(mainIniFile.ini_automatically_backup()) == "true":
                     # Change system tray red color
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
@@ -208,4 +187,5 @@ class APP:
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
 
 if __name__ == '__main__':
+    mainIniFile = UPDATEINIFILE()
     main = APP()

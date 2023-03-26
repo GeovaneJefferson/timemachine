@@ -1,18 +1,21 @@
 from setup import *
-config = configparser.ConfigParser()
-config.read(src_user_config)
-iniExternalLocation = config['EXTERNAL']['hd']
+from read_ini_file import UPDATEINIFILE
+
 
 def get_disk_max_size():
+    mainIniFile = UPDATEINIFILE()
+
     # Get external max size
-    externalMaxSize = os.popen(f"df --output=size -h {iniExternalLocation}")
+    externalMaxSize = os.popen(f"df --output=size -h {str(mainIniFile.ini_external_location())}")
     externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace(
         "Size", "").replace("\n", "").replace(" ", "")
     return str(externalMaxSize)
 
 def get_disk_used_size():
+    mainIniFile = UPDATEINIFILE()
+
     # Get external usded size
-    usedSpace = os.popen(f"df --output=used -h {iniExternalLocation}")
+    usedSpace = os.popen(f"df --output=used -h {str(mainIniFile.ini_external_location())}")
     usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace(
         "Used", "").replace("\n", "").replace(" ", "")
 
