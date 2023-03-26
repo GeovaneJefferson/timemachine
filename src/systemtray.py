@@ -87,7 +87,7 @@ class APP:
         # Read Ini File
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every x second
+        timer.start(2000)  # update every x second
         self.updates()
         
         self.app.exec()
