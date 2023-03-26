@@ -12,6 +12,7 @@ timer = QtCore.QTimer()
 
 class APP:
     def __init__(self):
+        self.color = str()
         self.iniUI()
 
     def iniUI(self):
@@ -116,13 +117,11 @@ class APP:
         ################################################################################
         # User has registered a device name
         if str(mainIniFile.ini_hd_name()) != "None":
-            # If backup device is connected
             if is_connected(str(mainIniFile.ini_hd_name())):
-                print("Device is conencted.")
-                # Is not backing up now
                 if str(mainIniFile.ini_backup_now()) == "false":
-                    # White color
-                    self.tray.setIcon(QIcon(src_system_bar_icon))
+                    self.change_color("White")
+                    # # White color
+                    # self.tray.setIcon(QIcon(src_system_bar_icon))
                     # Show backup now button
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
@@ -145,13 +144,15 @@ class APP:
                         f'{str(mainIniFile.ini_lastest_backup())}')
 
                 else:
-                    # Blue color
-                    self.tray.setIcon(QIcon(src_system_bar_run_icon))
+                    self.change_color("Blue")
+                    # # Blue color
+                    # self.tray.setIcon(QIcon(src_system_bar_run_icon))
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
         
             else:
-                print("Device is not connected.")
-                self.tray.setIcon(QIcon(src_system_bar_error_icon))
+                self.change_color("Red")
+                # Red color
+                # self.tray.setIcon(QIcon(src_system_bar_error_icon))
                 # Hide backup now button
                 self.backupNowButton.setEnabled(False)
                 # Hide Enter In Time Machine
@@ -159,8 +160,9 @@ class APP:
 
                 # If backup device is not connected and automatically if ON
                 if str(mainIniFile.ini_automatically_backup()) == "true":
-                    # Change system tray red color
-                    self.tray.setIcon(QIcon(src_system_bar_error_icon))
+                    self.change_color("Red")
+                    # # Change system tray red color
+                    # self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
                 else:
                     # Read ini file befora write
@@ -172,8 +174,9 @@ class APP:
                             config.set('INFO', 'notification_add_info', ' ')
                             config.write(configfile)
             
-                        # Change system tray white color
-                        self.tray.setIcon(QIcon(src_system_bar_icon))
+                        self.change_color("White")
+                        # # Change system tray white color
+                        # self.tray.setIcon(QIcon(src_system_bar_icon))
 
         else:
             # Update last backup information
@@ -185,6 +188,19 @@ class APP:
 
     def backup_now(self):
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
+
+    def change_color(self,color):
+        if self.color != color:
+            print("Changing color")
+            if color == "Blue":
+                self.color = "Blue"
+                self.tray.setIcon(QIcon(src_system_bar_run_icon))
+            elif color == "White":
+                self.color = "White"
+                self.tray.setIcon(QIcon(src_system_bar_icon))
+            elif color == "Red":
+                self.color = "Red"
+                self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
