@@ -1,6 +1,5 @@
 from setup import *
 
-
 def is_connected(iniHDName):
     ################################################################################
     # External availability

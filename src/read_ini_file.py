@@ -65,8 +65,10 @@ class UPDATEINIFILE:
         config = configparser.ConfigParser()
         config.read(src_user_config)
         self.iniNextBackup = config['INFO']['next']
-        return self.iniNextBackup
-
+        if self.iniNextBackup != "":
+            return self.iniNextBackup
+        return "None"
+    
     def ini_one_time_mode(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -170,7 +172,7 @@ class UPDATEINIFILE:
         config.read(src_user_config)
         self.iniCurrentBackupInfo = config['INFO']['feedback_status']
         return self.iniCurrentBackupInfo
-    
+        
     def ini_allow_flatpak_names(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)

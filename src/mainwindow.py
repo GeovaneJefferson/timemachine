@@ -402,7 +402,6 @@ class MAIN(QMainWindow):
         self.read_ini_file()
         
     def read_ini_file(self):
-        self.nextDay = None
         pass
         # except KeyError:
         #     """
@@ -524,7 +523,7 @@ class MAIN(QMainWindow):
         # if self.iniLastBackup != "":
         #     self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
     
-        self.load_current_backup_folder()
+        self.load_time_backup()
 
     def load_time_backup(self):
         ################################################################################
@@ -532,12 +531,9 @@ class MAIN(QMainWindow):
         ################################################################################
         if self.automaticallyCheckBox.isChecked():
             if str(mainIniFile.ini_one_time_mode()) == "true":
-                # Check if time left has value to set here
                 if str(mainIniFile.ini_time_left()) != "None":
-                    print("a")
                     self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_time_left())}")
                 else:
-                    print("b")
                     self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_next_backup())}")
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
@@ -554,12 +550,19 @@ class MAIN(QMainWindow):
         else:
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
-        self.load_dates()
-
+        # self.load_dates()
+        self.load_current_backup_folder()
+    
+    # TODO
     def load_dates(self):
+        print(str(mainIniFile.day_name()))
+        print(str(determine_days_language()[0]))
+        print(str(mainIniFile.ini_next_backup_sun()))
+
+
         # Days to run
         if str(mainIniFile.day_name()) == str(determine_days_language()[0]):
-            if str(mainIniFile.ini_next_backup_sun()) == "true" and str(mainIniFile.current_hour()) <= str(mainIniFile.ini_next_hour()) and str(mainIniFile.current_minute()) <= str(mainIniFile.ini_next_minute()):
+            if str(mainIniFile.ini_next_backup_sun()) == "true" and int(mainIniFile.current_hour()) <= int(mainIniFile.ini_next_hour()) and int(mainIniFile.current_minute()) <= int(mainIniFile.ini_next_minute()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_mon()) == "true":
@@ -578,7 +581,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[0])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[1]):
-            if str(mainIniFile.ini_next_backup_mon()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_mon()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_tue()) == "true":
@@ -597,7 +600,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[1])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[2]):
-            if str(mainIniFile.ini_next_backup_tue()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_tue()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_wed()) == "true":
@@ -616,7 +619,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[2])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[3]):
-            if str(mainIniFile.ini_next_backup_wed()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_wed()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_thu()) == "true":
@@ -635,7 +638,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[3])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[4]):
-            if str(mainIniFile.ini_next_backup_thu()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_thu()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_fri()) == "true":
@@ -654,7 +657,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[4])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[5]):
-            if str(mainIniFile.ini_next_backup_fri()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_fri()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_sat()) == "true":
@@ -673,7 +676,7 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[5])
 
         if str(mainIniFile.day_name()) == str(determine_days_language()[6]):
-            if str(mainIniFile.ini_next_backup_sat()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
+            if str(mainIniFile.ini_next_backup_sat()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
                 if str(mainIniFile.ini_next_backup_sun()) == "true":
@@ -690,6 +693,9 @@ class MAIN(QMainWindow):
                     self.nextDay = str(determine_days_language()[5])
                 elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
+        else:
+            self.nextDay = "None"
+
         try:
             # Save next backup to user.ini
             config = configparser.ConfigParser()
@@ -697,11 +703,11 @@ class MAIN(QMainWindow):
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 config.set('INFO', 'next', f'{self.nextDay}, {str(mainIniFile.ini_next_hour())}:{str(mainIniFile.ini_next_minute())}')
                 config.write(configfile)
-        
         except:
             pass
 
         self.load_current_backup_folder()
+    # TODO
 
     def load_current_backup_folder(self):
         # Current backup folder been backup
