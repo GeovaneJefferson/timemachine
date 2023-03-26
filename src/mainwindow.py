@@ -905,6 +905,7 @@ class MAIN(QMainWindow):
                         image = QPixmap(f"{src_restore_icon}")
                         image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
                         icon.move(7, 7)
+                        icon.setStyleSheet(transparentBackground)
                         icon.setPixmap(image)
                         
                         # # Free Space Label

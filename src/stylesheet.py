@@ -129,6 +129,6 @@ clouds = ("""
 
 transparentBackground = ("""
     background-color:0px;
-    border-radius:9px;
+    border-radius:0px;
     border:0px solid rgba(51,51,51,1);
         """)
