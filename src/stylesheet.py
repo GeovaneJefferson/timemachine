@@ -37,23 +37,6 @@ normalText = ("""
         color:white;
         """)
 
-widgetStylesheet = ("""
-    background-color:rgba(40,40,40,1);
-    border-radius:10px;
-    border:1px solid rgb(51,51,51);
-    """)
-
-weatherWidgetStylesheet = ("""
-    background-color:rgb(29,148,255);
-    border-radius:10px;
-    border:0px solid rgb(51,51,51);
-    """)
-
-settingsWidgetStylesheet = ("""
-    background-color:rgb(40,40,40);
-    border-radius:10px;
-    """)
-
 buttonStylesheet = (
    "QPushButton"
         "{"
@@ -102,7 +85,8 @@ useDiskButtonStylesheet = (
         "}"
     "QPushButton:hover"
         "{"
-            "background-color:rgba(245,245,245,1);"
+            # "background-color:rgba(245,245,245,1);"
+            "color:rgba(223,222,223,1);"
         "}"
     "QPushButton:disabled "
         "{"
@@ -111,40 +95,29 @@ useDiskButtonStylesheet = (
             "border:0px;"
         "}")
 
-buttonSystemTrayStylesheet = (
+availableDeviceButtonStylesheet = (
    "QPushButton"
         "{"
+            "border-radius:6px;"
+            "background-color:rgb(255,255,255);"
+            "border:1px solid rgba(14,14,14,0.2);"
+            "color:black;"
+        "}"
+    "QPushButton:hover"
+        "{"
+            "background-color:rgba(76,75,78,1);"
+        "}"
+    "QPushButton:checked  "
+        "{"
+            "background-color:rgba(110,109,112,1);"
+            "color:rgba(223,222,223,1);"
             "border:0px;"
-            "border-radius:5px;"
-        "}"
-    "QPushButton:Hover"
+        "}"  
+    "QPushButton:unchecked "
         "{"
-            "background-color:rgb(128,128,128);"
+            "background-color:rgba(255,255,255,0);"
+            "color:rgba(223,222,223,1);"
             "border:0px;"
-        "}")
-
-disconnectButtonSystemTrayStylesheet = (
-    "QPushButton"
-        "{"
-            "background-color:rgb(128,128,128);"
-            "border-radius:5px;"
-
-        "}"
-   "QPushButton:Hover"
-        "{"
-            "background-color:rgb(222,72,21);"
-            "border-radius:5px;"
-        "}")
-
-closeButtonStylesheet = (
-    "QPushButton"
-        "{"
-            "border-radius: 8px;"
-            "background-color: transparent;"
-        "}"
-        "QPushButton:hover"
-        "{"
-            "background-color: transparent;"
         "}")
 
 # WEATHER WIDGETS COLOR
@@ -154,26 +127,8 @@ clouds = ("""
     border:0px solid rgba(51,51,51,1);
         """)
 
-snow = ("""
+transparentBackground = ("""
+    background-color:0px;
     border-radius:9px;
-    border:0px solid rgba(230,230,230,1);
-        """)
-
-rain = ("""
-    background-color:rgba(144,153,161,1);
-    border-radius:9px;
-    border:0px solid rgb(144,153,161);
-        """)
-
-sunny = ("""
-    background-color:rgba(242,242,122,1);
-    border-radius:9px;
-    border:0px solid rgb(144,153,161);
-        """)
-
-clear = ("""
-    background-color:gray;
-    border-radius:9px;
-    border:0px solid rgb(51,51,51);
-    color:white;
+    border:0px solid rgba(51,51,51,1);
         """)

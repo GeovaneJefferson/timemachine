@@ -19,6 +19,9 @@ class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
         self.timeOut = 0
+        self.chooseDevice = ()
+        self.captureDevices = []
+
         self.iniUI()
 
     def iniUI(self):
@@ -105,8 +108,8 @@ class MAIN(QMainWindow):
         self.selectDiskButton.adjustSize()
         self.selectDiskButton.setFixedHeight(22)
         self.selectDiskButton.setStyleSheet(buttonStylesheet)
-        self.selectDiskButton.clicked.connect(self.select_external_clicked)
-
+        self.selectDiskButton.clicked.connect(self.external_open_animation)
+       
         ################################################################################
         # Far right Widget
         ################################################################################
@@ -285,7 +288,69 @@ class MAIN(QMainWindow):
             border-color: transparent;
         """)
         self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
+        
+        ################################################################################
+        # External Window
+        ################################################################################
+        self.externalWindow = QWidget(self)
+        self.externalWindow.setFixedSize(400,280)
+        self.externalWindow.move(self.width()/4,-300)
+        self.externalWindow.show()
+        self.externalWindow.setStyleSheet(
+        "QWidget"
+            "{"
+                "background-color:rgba(240,241,243,1);"
+                "border:1px solid rgba(14,14,14,0.1);"
+                "border-radius:6px;"
+            "}")
 
+        # Frame
+        self.whereFrame = QFrame(self.externalWindow)
+        self.whereFrame.setFixedSize(self.externalWindow.width()-60,self.externalWindow.height())
+        self.whereFrame.move(20,40)
+
+        # Scroll
+        self.scroll = QScrollArea(self.externalWindow)
+        self.scroll.resize(360,180)
+        self.scroll.move(20,40)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setWidget(self.whereFrame)
+        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+
+        # Vertical layout V
+        self.verticalLayout = QVBoxLayout(self.whereFrame)
+        self.verticalLayout.setContentsMargins(5, 5, 5, 5)
+        self.verticalLayout.setSpacing(10)
+        self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        
+        # Info 
+        self.notAllowed = QLabel(self.externalWindow)
+        self.notAllowed.setText("Devices with space(s) and/or special characters will be hide.")
+        self.notAllowed.setFont(item)
+        self.notAllowed.move(20,20)
+        self.notAllowed.setStyleSheet(transparentBackground)
+
+        # Cancel button
+        self.cancelButton = QPushButton(self.externalWindow)
+        self.cancelButton.setFont(item)
+        self.cancelButton.setText("   Cancel   ")
+        self.cancelButton.adjustSize()
+        self.cancelButton.setFixedHeight(22)
+        self.cancelButton.move(self.externalWindow.width()-190, self.externalWindow.height()-40)
+        self.cancelButton.setStyleSheet(buttonStylesheet)
+        self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
+
+        # Use this device
+        self.useDiskButton = QPushButton(self.externalWindow)
+        self.useDiskButton.setFont(item)
+        self.useDiskButton.setText("   Use Disk   ")
+        self.useDiskButton.setFixedHeight(22)
+        self.useDiskButton.adjustSize()
+        self.useDiskButton.move(300,self.externalWindow.height()-40)
+        self.useDiskButton.setEnabled(False)
+        self.useDiskButton.setStyleSheet(useDiskButtonStylesheet)
+        self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
+        
         ################################################################################
         # Add widgets and Layouts
         ################################################################################
@@ -317,7 +382,7 @@ class MAIN(QMainWindow):
         self.optionsLayout.addStretch()
         self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
         self.optionsLayout.addWidget(self.helpButton, 0, Qt.AlignRight | Qt.AlignVCenter)
-
+        
         # Set Layouts
         self.setLayout(self.leftLayout)
        
@@ -328,7 +393,7 @@ class MAIN(QMainWindow):
         timer.timeout.connect(self.read_ini_file)
         timer.start(1000) # Update every x seconds
         self.read_ini_file()
-
+        
     def read_ini_file(self):
         print("Main window is running...")
         try:
@@ -792,16 +857,10 @@ class MAIN(QMainWindow):
         except:
             pass
 
-    def select_external_clicked(self):
-        self.setEnabled(False)
-        # mainDevices = EXTERNAL()
-        mainDevices.show()
-
     def backup_now_clicked(self):
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
-        # self.setMinimumSize(800, 550)
         widget.setCurrentWidget(mainOpitions)
 
     def check_for_updates(self):
@@ -827,89 +886,16 @@ class MAIN(QMainWindow):
         backup_ini_file(True)
         exit()
 
-class EXTERNAL(QWidget):
-    def __init__(self):
-        super(EXTERNAL, self).__init__()
-        self.chooseDevice = ()
-        self.captureDevices = []
-
-        self.iniUI()
-
-    def iniUI(self):
-        windowXSize = 500
-        windowYSize = 380
-
-        self.setWindowIcon(QIcon(src_backup_icon))
-        self.setFixedSize(windowXSize, windowYSize)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-
-        ################################################################################
-        # Center window
-        ################################################################################
-        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-        fg = self.frameGeometry()
-        fg.moveCenter(centerPoint)
-        self.move(fg.topLeft().x(), fg.topLeft().y())
-
-        self.read_ini_file()
-
-    def read_ini_file(self):
-        # Read INI file
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniHDName = config['EXTERNAL']['name']
-        self.iniExternalLocation = config['EXTERNAL']['hd']
-
-        self.widgets()
-
-    def widgets(self):
-        ################################################################################
-        # Frame
-        ################################################################################
-        self.whereFrame = QFrame()
-        self.whereFrame.setFixedSize(440, 280)
-        self.whereFrame.move(20, 40)
-
-        # Scroll
-        self.scroll = QScrollArea(self)
-        self.scroll.setFixedSize(460, 280)
-        self.scroll.move(20, 40)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.whereFrame)
-
-        # Vertical layout V
-        self.verticalLayout = QVBoxLayout(self.whereFrame)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(10)
-        self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        
-        # Info 
-        self.notAllowed = QLabel(self)
-        self.notAllowed.setText("Devices with space(s) and/or special characters will not be visible.")
-        self.notAllowed.setFont(item)
-        self.notAllowed.move(20,20)
-
-        # Cancel button
-        self.cancelButton = QPushButton(self)
-        self.cancelButton.setFont(item)
-        self.cancelButton.setText("Cancel")
-        self.cancelButton.adjustSize()
-        self.cancelButton.setFixedHeight(22)
-        self.cancelButton.move(300, 340)
-        self.cancelButton.setStyleSheet(buttonStylesheet)
-        self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
-
-        # Use this device
-        self.useDiskButton = QPushButton(self)
-        self.useDiskButton.setFont(item)
-        self.useDiskButton.setText("Use Disk")
-        self.useDiskButton.setFixedHeight(22)
-        self.useDiskButton.adjustSize()
-        self.useDiskButton.move(400, 340)
-        self.useDiskButton.setEnabled(False)
-        self.useDiskButton.setStyleSheet(useDiskButtonStylesheet)
-        self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
-
+    ################################################################################
+    # EXTERNAL
+    ################################################################################
+    def external_open_animation(self):
+        self.anim = QPropertyAnimation(self.externalWindow, b"pos")
+        self.anim.setEasingCurve(QEasingCurve.InOutCubic)
+        self.anim.setEndValue(QPoint(160,0))
+        self.anim.setDuration(500)
+        self.anim.start()
+    
         self.check_connection()
 
     def check_connection(self):
@@ -917,7 +903,6 @@ class EXTERNAL(QWidget):
         # Search external inside media
         ################################################################################
         if device_location():
-            print("Found inside media")
             try:
                 # Add buttons and images for each external
                 for output in os.listdir(f'{media}/{userName}'):
@@ -931,9 +916,10 @@ class EXTERNAL(QWidget):
                         self.availableDevices = QPushButton(self.whereFrame)
                         self.availableDevices.setFont(QFont('Ubuntu', 12))
                         self.availableDevices.setText(f"{output}")
-                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
                         self.availableDevices.setCheckable(True)
                         self.availableDevices.setAutoExclusive(True)
+                        self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
                         text = self.availableDevices.text()
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
@@ -962,6 +948,7 @@ class EXTERNAL(QWidget):
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
+                        
                         if text == self.iniHDName:
                             self.availableDevices.setChecked(True)
 
@@ -975,7 +962,6 @@ class EXTERNAL(QWidget):
                 pass
 
         elif not device_location():
-            print("Found inside run")
             try:
                 # If x device is removed or unmounted, remove from screen
                 for output in os.listdir(f'{run}/{userName}'):
@@ -987,9 +973,10 @@ class EXTERNAL(QWidget):
                         self.availableDevices = QPushButton(self.whereFrame)
                         self.availableDevices.setFont(QFont('Ubuntu', 12))
                         self.availableDevices.setText(f"{output}")
-                        self.availableDevices.setFixedSize(440, 60)
+                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
                         self.availableDevices.setCheckable(True)
                         self.availableDevices.setAutoExclusive(True)
+                        self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
                         text = self.availableDevices.text()
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
@@ -1006,6 +993,11 @@ class EXTERNAL(QWidget):
                         freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
                         freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        self.iniHDName = config['EXTERNAL']['name']
+                        self.iniExternalLocation = config['EXTERNAL']['hd']
+
                         if self.iniExternalLocation == self.availableDevices.text():
                             freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
                             freeSpaceLabel.adjustSize()
@@ -1071,8 +1063,9 @@ class EXTERNAL(QWidget):
             # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
             
             # Close Window
-            main.setEnabled(True)
-            self.close()
+            self.external_close_animation()
+            # main.setEnabled(True)
+            # self.close()
 
         except:
             pass
@@ -1088,9 +1081,15 @@ class EXTERNAL(QWidget):
             self.useDiskButton.setEnabled(False)
 
     def on_button_cancel_clicked(self):
-        mainDevices.close()
-        main.setEnabled(True)
-
+        self.external_close_animation()
+    
+    def external_close_animation(self):
+        self.anim = QPropertyAnimation(self.externalWindow, b"pos")
+        self.anim.setEasingCurve(QEasingCurve.InOutCubic)
+        self.anim.setEndValue(QPoint(160,-300))
+        self.anim.setDuration(500)
+        self.anim.start()
+    
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
@@ -2091,7 +2090,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ####################
     main = MAIN()
-    mainDevices = EXTERNAL()
     mainOpitions = OPTION()
     ####################
     widget = QStackedWidget()
