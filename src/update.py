@@ -10,7 +10,7 @@ def backup_ini_file(updateNow):
         update_git(updateNow)
 
 def update_git(updateNow):
-    sub.run("git stash; git pull",shell=True)
+    os.popen("git stash; git pull")
     if updateNow:
         delete_ini_file(updateNow)
 
