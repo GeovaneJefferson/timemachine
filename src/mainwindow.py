@@ -245,8 +245,9 @@ class MAIN(QMainWindow):
         self.descriptionText = QLabel()
         self.descriptionText.setFont(item)
         self.descriptionText.setText(
-            "• Local HOME snapshots as space permits\n"
-            "• Hourly, Daily or Weekly backups\n"
+            "• Local snapshots as space permits\n"
+            "• Hourly backups for the past 24 hours\n"
+            "• Daily backups for the past mounths\n"
             "• Applications '.deb and .rpm' + Flatpaks\n"
             "• Wallpaper, Theme, Icon and Cursor theme\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
