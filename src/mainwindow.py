@@ -533,11 +533,12 @@ class MAIN(QMainWindow):
         if self.automaticallyCheckBox.isChecked():
             if str(mainIniFile.ini_one_time_mode()) == "true":
                 # Check if time left has value to set here
-                if self.iniTimeLeft != "None":
-                    self.nextBackupLabel.setText(f"Next Backup: {self.iniTimeLeft}")
+                if str(mainIniFile.ini_time_left()) != "None":
+                    print("a")
+                    self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_time_left())}")
                 else:
-                    # None time left value, so, show next date to backup
-                    self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
+                    print("b")
+                    self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_next_backup())}")
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
