@@ -49,6 +49,7 @@ class MAIN(QMainWindow):
             background-color:rgba(240, 241, 243, 1);
             border-right:1px solid rgba(14,14,14,0.1);
          """)
+        
         ################################################################################
         # Left Widget
         ################################################################################
@@ -299,6 +300,16 @@ class MAIN(QMainWindow):
         ################################################################################
         # External Window
         ################################################################################
+        self.externalBackgroundShadow = QWidget(self)
+        self.externalBackgroundShadow.setFixedSize(700,self.height())
+        self.externalBackgroundShadow.move(0,0)
+        self.externalBackgroundShadow.setVisible(False)
+        self.externalBackgroundShadow.setStyleSheet(
+        "QWidget"
+            "{"
+                "background-color:rgba(14,14,14,0.4);"
+            "}")
+        
         self.externalWindow = QWidget(self)
         self.externalWindow.setFixedSize(400,280)
         self.externalWindow.move(self.width()/4,-300)
@@ -852,6 +863,8 @@ class MAIN(QMainWindow):
     # EXTERNAL
     ################################################################################
     def external_open_animation(self):
+        self.externalBackgroundShadow.setVisible(True)
+
         self.anim = QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,0))
@@ -1041,6 +1054,8 @@ class MAIN(QMainWindow):
         self.external_close_animation()
     
     def external_close_animation(self):
+        self.externalBackgroundShadow.setVisible(False)
+
         self.anim = QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,-300))
@@ -2015,13 +2030,13 @@ if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
     main = MAIN()
     mainOpitions = OPTION()
-    ####################
+
     widget = QStackedWidget()
     widget.addWidget(main)   
     widget.addWidget(mainOpitions) 
     widget.setCurrentWidget(main)   
     widget.show()
-    # Window title name
+
     widget.setWindowTitle(appName)
     widget.setWindowIcon(QIcon(src_backup_icon))
     widget.setFixedSize(700,450)
