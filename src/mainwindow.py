@@ -355,7 +355,7 @@ class MAIN(QMainWindow):
         self.cancelButton.setText("   Cancel   ")
         self.cancelButton.adjustSize()
         self.cancelButton.setFixedHeight(22)
-        self.cancelButton.move(self.externalWindow.width()-190, self.externalWindow.height()-40)
+        self.cancelButton.move(self.externalWindow.width()-170, self.externalWindow.height()-40)
         self.cancelButton.setStyleSheet(buttonStylesheet)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
