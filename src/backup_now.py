@@ -427,13 +427,13 @@ class BACKUP:
         self.end_backup()
 
     def end_backup(self):
-        try:
-            # Get oldest backup info
-            oldestList = []
-            for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
-                oldestList.append(oldestOutput)
-        except:
-            pass
+        # try:
+        #     # Get oldest backup info
+        #     oldestList = []
+        #     for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
+        #         oldestList.append(oldestOutput)
+        # except:
+        #     pass
 
         print("Ending backup...")
         ################################################################################
@@ -442,18 +442,14 @@ class BACKUP:
         ###############################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        
-        ################################################################################
-        # Get user.ini
-        ################################################################################
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
-            try:
-                # Update oldest backup time
-                config.set('INFO', 'oldest', f'{oldestList[0]}')
-            except:
-                pass
+            # try:
+            #     # Update oldest backup time
+            #     config.set('INFO', 'oldest', f'{oldestList[0]}')
+            # except:
+            #     pass
             try:
                 # Update last backup time
                 config.set('INFO', 'latest', f'{latest_time_info()}')

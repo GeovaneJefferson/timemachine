@@ -9,6 +9,9 @@ from get_home_folders import *
 from get_system_language import system_language
 from languages import determine_days_language
 from get_size import *
+from read_ini_file import UPDATEINIFILE
+from get_oldest_backup_date import oldest_backup_date
+from get_latest_backup_date import latest_backup_date
 from update import restore_ini_file, backup_ini_file
 
 # QTimer
@@ -19,9 +22,13 @@ class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
         self.timeOut = 0
+
         self.chooseDevice = ()
         self.captureDevices = []
 
+        self.oldestList = []
+        self.lastList = []
+        
         self.iniUI()
 
     def iniUI(self):
@@ -391,94 +398,44 @@ class MAIN(QMainWindow):
 
         # Update
         timer.timeout.connect(self.read_ini_file)
-        timer.start(1000) # Update every x seconds
+        timer.start(3000) # Update every x seconds
         self.read_ini_file()
         
     def read_ini_file(self):
-        print("Main window is running...")
-        try:
-            ################################################################################
-            # Read INI file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+        self.nextDay = None
+        pass
+        # except KeyError:
+        #     """
+        #     If ini file is empty, restore the backup one
+        #     Backup one is generate every Backup.
+        #     """
+        #     print("")
+        #     print("Ini File is empty!")
+        #     print("Restoring user.ini from backup location")
+        #     print("")
 
-            # Get current hour, minutes
-            now = datetime.now()
-            self.dayName = now.strftime("%a")
-            self.currentHour = now.strftime("%H")
-            self.currentMinute = now.strftime("%M")
-
-            # INI file
-            self.iniHDName = config['EXTERNAL']['name']
-            self.iniExternalLocation = config['EXTERNAL']['hd']
-            self.iniBackupNow = config['BACKUP']['backup_now']
-            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-            self.iniOldestBackup = config['INFO']['oldest']
-            self.iniLastBackup = config['INFO']['latest']
-            self.iniNextBackup = config['INFO']['next']
-
-            # Mode
-            self.oneTimeMode = config['MODE']['one_time_mode']
-            self.darkMode = config['MODE']['dark_mode']
-
-            # Dates
-            self.nextDay = "None"
-            self.iniNextHour = config['SCHEDULE']['hours']
-            self.iniNextMinute = config['SCHEDULE']['minutes']
-            self.iniNextBackupSun = config['SCHEDULE']['sun']
-            self.iniNextBackupMon = config['SCHEDULE']['mon']
-            self.iniNextBackupTue = config['SCHEDULE']['tue']
-            self.iniNextBackupWed = config['SCHEDULE']['wed']
-            self.iniNextBackupThu = config['SCHEDULE']['thu']
-            self.iniNextBackupFri = config['SCHEDULE']['fri']
-            self.iniNextBackupSat = config['SCHEDULE']['sat']
-            self.everytime = config['SCHEDULE']['everytime']
-            self.iniTimeLeft = config['SCHEDULE']['time_left']
-
-            # Times
-            self.currentTime = self.currentHour + self.currentMinute
-            self.backupTime = self.iniNextHour + self.iniNextMinute
-            # Current information about an error
-            self.iniExtraInformation = config['INFO']['notification_add_info']
-            # Current backup information
-            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-
-        except KeyError:
-            """
-            If ini file is empty, restore the backup one
-            Backup one is generate every Backup.
-            """
-            print("")
-            print("Ini File is empty!")
-            print("Restoring user.ini from backup location")
-            print("")
-
-            # Restore the copy to inside "ini" folder
-            restore_ini_file(False)
-            # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+        #     # Restore the copy to inside "ini" folder
+        #     restore_ini_file(False)
+        #     # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
             
-            self.timeOut += 1
+        #     self.timeOut += 1
 
-            if self.timeOut == 1:
-                self.read_ini_file()
-            else:
-                print("")
-                print("Error restoring ini file!")
-                print("")
-                exit()
-        
-        timer.timeout.connect(self.connection)
-        timer.start(3000)  # update every x second
+        #     if self.timeOut == 1:
+        #         self.read_ini_file()
+        #     else:
+        #         print("")
+        #         print("Error restoring ini file!")
+        #         print("")
+        #         exit()
+    
         self.connection()
         
     def connection(self):
         # Reset timeOut
         self.timeOut = 0
 
-        if self.iniHDName != "None":
-            if is_connected(self.iniHDName):
+        if str(mainIniFile.ini_hd_name()) != "None":
+            if is_connected(str(mainIniFile.ini_hd_name())):
                 ################################################################################
                 # External status
                 ################################################################################
@@ -495,11 +452,11 @@ class MAIN(QMainWindow):
                 except Exception as error:
                     print(Exception)
                     print("Main Window error!")
-                    pass
+                    exit()
 
             self.get_size_informations()
 
-        elif not is_connected(self.iniHDName):
+        elif not is_connected(str(mainIniFile.ini_hd_name())):
             # Disable backup now button
             self.backupNowButton.setEnabled(False)       
             # Disconnected     
@@ -524,9 +481,9 @@ class MAIN(QMainWindow):
 
     def condition(self):
         # User has select a backup device
-        if self.iniHDName != "None" and is_connected(self.iniHDName):  
+        if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             # Show backup button if no back up is been made
-            if self.iniBackupNow == "false":
+            if str(mainIniFile.ini_backup_now()) == "false":
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
                 # Enable auto checkbox
@@ -553,21 +510,20 @@ class MAIN(QMainWindow):
         self.set_external_name()
 
     def set_external_name(self):
-        self.externalNameLabel.setText(f"<h1>{self.iniHDName}</h1>")
+        self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
 
+        self.set_external_oldest_backup()
+
+    def set_external_oldest_backup(self):
+        self.oldestBackupLabel.setText(f"Oldest Backup: {oldest_backup_date()}")
+      
         self.set_external_last_backup()
 
     def set_external_last_backup(self):
-        ################################################################################
-        # Last backup label
-        ################################################################################
-        if self.iniLastBackup != "":
-            self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
-
-            self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
-            self.oldestBackupLabel.setText(f"Oldest Backup: {self.iniOldestBackup}")
-
-
+        self.lastestBackupLabel.setText(f"Oldest Backup: {latest_backup_date()}")
+        # if self.iniLastBackup != "":
+        #     self.lastestBackupLabel.setText(f"Lastest Backup: {self.iniLastBackup}")
+    
         self.load_current_backup_folder()
 
     def load_time_backup(self):
@@ -575,7 +531,7 @@ class MAIN(QMainWindow):
         # Status for automaticallyCheckBox
         ################################################################################
         if self.automaticallyCheckBox.isChecked():
-            if self.oneTimeMode == "true":
+            if str(mainIniFile.ini_one_time_mode()) == "true":
                 # Check if time left has value to set here
                 if self.iniTimeLeft != "None":
                     self.nextBackupLabel.setText(f"Next Backup: {self.iniTimeLeft}")
@@ -583,15 +539,15 @@ class MAIN(QMainWindow):
                     # None time left value, so, show next date to backup
                     self.nextBackupLabel.setText(f"Next Backup: {self.iniNextBackup}")
             else:
-                if self.everytime == "60":
+                if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
                     self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-                elif self.everytime == "120":
+                elif str(mainIniFile.ini_everytime()) == "120":
                     self.nextBackupLabel.setText("Next Backup: Every 2 hours")
                     self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
 
-                elif self.everytime == "240":
+                elif str(mainIniFile.ini_everytime()) == "240":
                     self.nextBackupLabel.setText("Next Backup: Every 4 hours")
                     self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
         else:
@@ -601,144 +557,144 @@ class MAIN(QMainWindow):
 
     def load_dates(self):
         # Days to run
-        if self.dayName == str(determine_days_language()[0]):
-            if self.iniNextBackupSun == "true" and self.currentHour <= self.iniNextHour and self.currentMinute <= self.iniNextMinute:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[0]):
+            if str(mainIniFile.ini_next_backup_sun()) == "true" and str(mainIniFile.current_hour()) <= str(mainIniFile.ini_next_hour()) and str(mainIniFile.current_minute()) <= str(mainIniFile.ini_next_minute()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupMon == "true":
+                if str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
 
-        if self.dayName == str(determine_days_language()[1]):
-            if self.iniNextBackupMon == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[1]):
+            if str(mainIniFile.ini_next_backup_mon()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupTue == "true":
+                if str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
 
-        if self.dayName == str(determine_days_language()[2]):
-            if self.iniNextBackupTue == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[2]):
+            if str(mainIniFile.ini_next_backup_tue()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupWed == "true":
+                if str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
 
-        if self.dayName == str(determine_days_language()[3]):
-            if self.iniNextBackupWed == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[3]):
+            if str(mainIniFile.ini_next_backup_wed()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupThu == "true":
+                if str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
 
-        if self.dayName == str(determine_days_language()[4]):
-            if self.iniNextBackupThu == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[4]):
+            if str(mainIniFile.ini_next_backup_thu()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupFri == "true":
+                if str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
 
-        if self.dayName == str(determine_days_language()[5]):
-            if self.iniNextBackupFri == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[5]):
+            if str(mainIniFile.ini_next_backup_fri()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupSat == "true":
+                if str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
-                elif self.iniNextBackupSun == "true":
+                elif str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
 
-        if self.dayName == str(determine_days_language()[6]):
-            if self.iniNextBackupSat == "true" and self.currentTime < self.backupTime:
+        if str(mainIniFile.day_name()) == str(determine_days_language()[6]):
+            if str(mainIniFile.ini_next_backup_sat()) == "true" and str(mainIniFile.current_time()) < str(mainIniFile.backup_time()):
                 self.nextDay = "Today"
             else:
-                if self.iniNextBackupSun == "true":
+                if str(mainIniFile.ini_next_backup_sun()) == "true":
                     self.nextDay = str(determine_days_language()[0])
-                elif self.iniNextBackupMon == "true":
+                elif str(mainIniFile.ini_next_backup_mon()) == "true":
                     self.nextDay = str(determine_days_language()[1])
-                elif self.iniNextBackupTue == "true":
+                elif str(mainIniFile.ini_next_backup_tue()) == "true":
                     self.nextDay = str(determine_days_language()[2])
-                elif self.iniNextBackupWed == "true":
+                elif str(mainIniFile.ini_next_backup_wed()) == "true":
                     self.nextDay = str(determine_days_language()[3])
-                elif self.iniNextBackupThu == "true":
+                elif str(mainIniFile.ini_next_backup_thu()) == "true":
                     self.nextDay = str(determine_days_language()[4])
-                elif self.iniNextBackupFri == "true":
+                elif str(mainIniFile.ini_next_backup_fri()) == "true":
                     self.nextDay = str(determine_days_language()[5])
-                elif self.iniNextBackupSat == "true":
+                elif str(mainIniFile.ini_next_backup_sat()) == "true":
                     self.nextDay = str(determine_days_language()[6])
         try:
             # Save next backup to user.ini
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set('INFO', 'next', f'{self.nextDay}, {self.iniNextHour}:{self.iniNextMinute}')
+                config.set('INFO', 'next', f'{self.nextDay}, {str(mainIniFile.ini_next_hour())}:{str(mainIniFile.ini_next_minute())}')
                 config.write(configfile)
         
         except:
@@ -748,16 +704,16 @@ class MAIN(QMainWindow):
 
     def load_current_backup_folder(self):
         # Current backup folder been backup
-        self.currentBackUpLabel.setText(self.iniCurrentBackupInfo)
+        self.currentBackUpLabel.setText(str(mainIniFile.ini_current_backup_information()))
         # Auto adjustSize for current backup folder
         self.currentBackUpLabel.adjustSize()
 
         self.load_extra_information()
 
     def load_extra_information(self):
-        if self.iniExtraInformation != "":
+        if str(mainIniFile.ini_extra_information()) != "":
             # Information about an error message
-            self.extraInformationLabel.setText(self.iniExtraInformation)
+            self.extraInformationLabel.setText(str(mainIniFile.ini_extra_information()))
             # Auto adjustSize label
             self.extraInformationLabel.adjustSize()
             # Show label
@@ -771,14 +727,14 @@ class MAIN(QMainWindow):
         ################################################################################
         # Auto backup
         ################################################################################
-        # if self.iniHDName == "None":
+        # if str(mainIniFile.ini_hd_name()) == "None":
         #     # Disable automatically backup checkbox
         #     self.automaticallyCheckBox.setEnabled(False)
         # else:
         #     # Enable automatically backup checkbox
         #     self.automaticallyCheckBox.setEnabled(True)
 
-        if self.iniAutomaticallyBackup == "true":
+        if str(mainIniFile.ini_automatically_backup()) == "true":
             self.automaticallyCheckBox.setChecked(True)
         else:
             self.automaticallyCheckBox.setChecked(False)
@@ -789,7 +745,7 @@ class MAIN(QMainWindow):
         ################################################################################
         # System tray
         ################################################################################
-        if self.iniSystemTray == "true":
+        if str(mainIniFile.ini_system_tray()) == "true":
             self.showInSystemTrayCheckBox.setChecked(True)
 
         else:
@@ -849,7 +805,7 @@ class MAIN(QMainWindow):
             # Call system tray
             # System tray can check if is not already runnnig
             ################################################################################
-            if self.iniSystemTray == "false":
+            if str(mainIniFile.ini_system_tray()) == "false":
                 sub.Popen(f"python3 {src_system_tray}", shell=True)
 
         except:
@@ -947,7 +903,7 @@ class MAIN(QMainWindow):
                         # Auto checked this choosed external device
                         ################################################################################
                         
-                        if text == self.iniHDName:
+                        if text == str(mainIniFile.ini_hd_name()):
                             self.availableDevices.setChecked(True)
 
                         ################################################################################
@@ -991,12 +947,7 @@ class MAIN(QMainWindow):
                         freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
                         freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        self.iniHDName = config['EXTERNAL']['name']
-                        self.iniExternalLocation = config['EXTERNAL']['hd']
-
-                        if self.iniExternalLocation == self.availableDevices.text():
+                        if str(mainIniFile.ini_external_location()) == self.availableDevices.text():
                             freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
                             freeSpaceLabel.adjustSize()
 
@@ -1008,7 +959,7 @@ class MAIN(QMainWindow):
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
-                        if text == self.iniHDName:
+                        if text == str(mainIniFile.ini_hd_name()):
                             self.availableDevices.setChecked(True)
 
                         ################################################################################
@@ -1561,71 +1512,42 @@ class OPTION(QMainWindow):
         self.dates()
 
     def dates(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        ################################################################################
-        # Read INI file
-        ################################################################################
-        sun = config['SCHEDULE']['sun']
-        mon = config['SCHEDULE']['mon']
-        tue = config['SCHEDULE']['tue']
-        wed = config['SCHEDULE']['wed']
-        thu = config['SCHEDULE']['thu']
-        fri = config['SCHEDULE']['fri']
-        sat = config['SCHEDULE']['sat']
-
         ################################################################################
         # Dates
         # Check each dates
         ################################################################################
-        if sun == "true":
+        if str(mainIniFile.ini_next_backup_sun()) == "true":
             self.sunCheckBox.setChecked(True)
 
-        if mon == "true":
+        if str(mainIniFile.ini_next_backup_mon()) == "true":
             self.monCheckBox.setChecked(True)
 
-        if tue == "true":
+        if str(mainIniFile.ini_next_backup_tue()) == "true":
             self.tueCheckBox.setChecked(True)
 
-        if wed == "true":
+        if str(mainIniFile.ini_next_backup_wed()) == "true":
             self.wedCheckBox.setChecked(True)
 
-        if thu == "true":
+        if str(mainIniFile.ini_next_backup_thu()) == "true":
             self.thuCheckBox.setChecked(True)
 
-        if fri == "true":
+        if str(mainIniFile.ini_next_backup_fri()) == "true":
             self.friCheckBox.setChecked(True)
 
-        if sat == "true":
+        if str(mainIniFile.ini_next_backup_sat()) == "true":
             self.satCheckBox.setChecked(True)
 
         self.time_to_run()
 
     def time_to_run(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        # Time
-        iniEverytime = config['SCHEDULE']['everytime']
-        # Mode
-        iniOneTimePerDay = config['MODE']['one_time_mode']
-        iniMultipleTimePerDay = config['MODE']['more_time_mode']
-
-        ################################################################################
-        # One time per day
-        ################################################################################
-        # Hours
-        hrs = int(config['SCHEDULE']['hours'])
-        self.hoursSpinBox.setValue(hrs)
-
-        # Minutes
-        min = int(config['SCHEDULE']['minutes'])
-        self.minutesSpinBox.setValue(min)
+        self.hoursSpinBox.setValue(int(mainIniFile.ini_next_hour()))
+        self.minutesSpinBox.setValue(int(mainIniFile.ini_next_minute()))
 
         ################################################################################
         # Get info from INI file
         # One time per day
         ################################################################################
-        if iniOneTimePerDay == "true":
+        if str(mainIniFile.ini_one_time_mode()) == "true":
             self.multipleTimePerDayComboBox.setEnabled(False)
             self.hoursSpinBox.setEnabled(True)
             self.minutesSpinBox.setEnabled(True)
@@ -1641,7 +1563,7 @@ class OPTION(QMainWindow):
             self.satCheckBox.setEnabled(True)
         
         # Multiple time per day
-        elif iniMultipleTimePerDay == "true":
+        elif str(mainIniFile.ini_multiple_time_mode()) == "true":
             self.hoursSpinBox.setEnabled(False)
             self.minutesSpinBox.setEnabled(False)
             self.multipleTimePerDayComboBox.setEnabled(True)
@@ -1659,32 +1581,27 @@ class OPTION(QMainWindow):
         ################################################################################
         # Multiple time per day
         ################################################################################
-        if iniEverytime == "60":
+        if str(mainIniFile.ini_everytime()) == "60":
             self.multipleTimePerDayComboBox.setCurrentIndex(0)
 
-        elif iniEverytime == "120":
+        elif str(mainIniFile.ini_everytime()) == "120":
             self.multipleTimePerDayComboBox.setCurrentIndex(1)
 
-        elif iniEverytime == "240":
+        elif str(mainIniFile.ini_everytime()) == "240":
             self.multipleTimePerDayComboBox.setCurrentIndex(2)
 
         self.flatpak_settings()
 
     def flatpak_settings(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
-        self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
-
         ################################################################################
         # Flatpak settings
         ################################################################################
         # Flatpak names
-        if self.iniAllowFlatpakNames == "true":
+        if str(mainIniFile.ini_allow_flatpak_names()) == "true":
             self.allowFlatpakNamesCheckBox.setChecked(True)
 
         # Flatpak data
-        if self.iniAllowFlatpakData == "true":
+        if str(mainIniFile.ini_allow_flatpak_data()) == "true":
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
@@ -2087,6 +2004,7 @@ class OPTION(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ####################
+    mainIniFile = UPDATEINIFILE()
     main = MAIN()
     mainOpitions = OPTION()
     ####################
