@@ -17,11 +17,14 @@ class UPDATEINIFILE:
         return self.currentMinute
 
     def ini_hd_name(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniHDName = config['EXTERNAL']['name']
-        return self.iniHDName
-    
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            self.iniHDName = config['EXTERNAL']['name']
+            return self.iniHDName
+        except:
+            pass
+
     def ini_external_location(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
