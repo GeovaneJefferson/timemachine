@@ -183,4 +183,3 @@ class UPDATEINIFILE:
     def create_backup_folder(self):
         self.createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
         return self.createBackupFolder
-                             

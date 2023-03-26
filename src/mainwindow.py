@@ -788,6 +788,14 @@ class MAIN(QMainWindow):
 
     def system_tray_clicked(self):
         try:
+            ################################################################################
+            # Call system tray
+            # System tray can check if is not already runnnig
+            ################################################################################
+            if str(mainIniFile.ini_system_tray()) == "false":
+                print("Starting system tray...")
+                sub.Popen(f"python3 {src_system_tray}", shell=True)
+           
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
@@ -800,13 +808,6 @@ class MAIN(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
                     print("System tray was successfully disabled!")
-
-            ################################################################################
-            # Call system tray
-            # System tray can check if is not already runnnig
-            ################################################################################
-            if str(mainIniFile.ini_system_tray()) == "false":
-                sub.Popen(f"python3 {src_system_tray}", shell=True)
 
         except:
             pass
