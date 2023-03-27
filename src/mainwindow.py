@@ -706,7 +706,7 @@ class MAIN(QMainWindow):
             self.nextDay = "None"
 
         try:
-            info = nextDay + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
+            info = self.nextDay + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
             # Save next backup to user.ini
             config = configparser.ConfigParser()
             config.read(src_user_config)
