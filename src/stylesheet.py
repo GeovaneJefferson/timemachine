@@ -109,7 +109,7 @@ availableDeviceButtonStylesheet = (
         "}"
     "QPushButton:checked  "
         "{"
-            "background-color:rgba(110,109,112,1);"
+            "background-color:rgba(110,109,112,0.6);"
             "color:rgba(223,222,223,1);"
             "border:0px;"
         "}"  
@@ -119,6 +119,13 @@ availableDeviceButtonStylesheet = (
             "color:rgba(223,222,223,1);"
             "border:0px;"
         "}")
+
+externalWindowbackground =( 
+        "QWidget"
+            "{"
+                "background-color:white;"
+            "}")
+
 
 # WEATHER WIDGETS COLOR
 clouds = ("""

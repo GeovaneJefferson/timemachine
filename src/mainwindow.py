@@ -21,7 +21,7 @@ timer = QtCore.QTimer()
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
-        self.theme = False
+        self.theme = True
         self.timeOut = 0
 
         self.chooseDevice = ()
@@ -310,7 +310,7 @@ class MAIN(QMainWindow):
         self.externalBackgroundShadow.setStyleSheet(
         "QWidget"
             "{"
-                "background-color:rgba(14,14,14,0.4);"
+                "background-color:rgba(14,14,14,0.6);"
             "}")
         
         self.externalWindow = QWidget(self)
@@ -336,7 +336,8 @@ class MAIN(QMainWindow):
         self.scroll.move(20,40)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.whereFrame)
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll.setStyleSheet(externalWindowbackground)
 
         # Vertical layout V
         self.verticalLayout = QVBoxLayout(self.whereFrame)
@@ -346,7 +347,7 @@ class MAIN(QMainWindow):
         
         # Info 
         self.notAllowed = QLabel(self.externalWindow)
-        self.notAllowed.setText("Devices with space(s) and/or special characters will be hide.")
+        self.notAllowed.setText("Devices with space(s) and/or special characters will be hidden.")
         self.notAllowed.setFont(item)
         self.notAllowed.move(20,20)
         self.notAllowed.setStyleSheet(transparentBackground)
