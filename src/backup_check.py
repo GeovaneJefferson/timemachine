@@ -2,6 +2,8 @@
 from setup import *
 from check_connection import *
 from get_time import *
+from get_backup_dates import get_backup_date
+from read_ini_file import UPDATEINIFILE
 
 ################################################################################
 ## Signal
@@ -15,64 +17,28 @@ class CLI:
     def __init__(self):
         # Variables
         self.isSystemTrayActivated = None
+
         # Auto Packages
         self.downloadLoc = f"{homeUser}/Downloads"
+
         # Auto Packages List
         self.detectedPackagesDebList = []
         self.detectedPackagesRPMList = []
+ 
+        self.debMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
+        self.rpmMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
+
 
     def updates(self):
         try:
             print("Updating...")
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
+            # get date folders inside backup device
+            get_backup_date()
 
-            # INI file
-            self.iniHDName = config['EXTERNAL']['name']
-            self.iniExternalLocation = config['EXTERNAL']['hd']
-            self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-            self.iniLatestDate = config['INFO']['latest']
-
-            # Dates
-            self.iniScheduleSun = config['SCHEDULE']['sun']
-            self.iniScheduleMon = config['SCHEDULE']['mon']
-            self.iniScheduleTue = config['SCHEDULE']['tue']
-            self.iniScheduleWed = config['SCHEDULE']['wed']
-            self.iniScheduleThu = config['SCHEDULE']['thu']
-            self.iniScheduleFri = config['SCHEDULE']['fri']
-            self.iniScheduleSat = config['SCHEDULE']['sat']
-
-            self.iniBackupNow = config['BACKUP']['backup_now']
-            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            self.iniOneTimePerDay = config['MODE']['one_time_mode']
-            self.iniMultipleTimePerDay = config['MODE']['more_time_mode']
-            self.iniEverytime = config['SCHEDULE']['everytime']
-            self.iniNextHour = config['SCHEDULE']['hours']
-            self.ininextMinute = config['SCHEDULE']['minutes']
-
-            # Day
-            self.dayName = datetime.now()
-            self.dayName = self.dayName.strftime("%a")
-
-            # Time
-            now = datetime.now()
-            self.currentHour = now.strftime("%H")
-            self.currentMinute = now.strftime("%M")
-            self.totalCurrentTime = self.currentHour + self.currentMinute
-            self.totalNextTime = self.iniNextHour + self.ininextMinute
-
-            # Check date inside backup folder
-            self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # Auto Packages Ini Settings
-            self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
-            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
-   
         except KeyError as error:
             print(error)
             print("Backup checker KeyError!")
-            # Wait x seconds and try again
-            time.sleep(5)
-            self.updates()
+            exit()
 
         self.is_system_tray_running()
 
@@ -80,17 +46,15 @@ class CLI:
         ################################################################################
         # Prevent multiples system tray running
         ################################################################################
-        if self.iniSystemTray == "true":
+        if str(mainIniFile.ini_system_tray()) == "true":
             if self.isSystemTrayActivated != None:
-                # Call system tray
                 sub.Popen(f"python3 {src_system_tray}", shell=True)
-                # Set sysmtem activated to True
                 self.isSystemTrayActivated = True
 
         self.check_connection()
 
     def check_connection(self):
-        if is_connected(self.iniHDName):
+        if is_connected(str(mainIniFile.ini_hd_name())):
             # Activate Auto Packages
             self.search_downloads()
 
@@ -141,29 +105,29 @@ class CLI:
     def check_the_date(self):
         print("Checking dates...")
         # Is Multiple time per day enabled?
-        if self.iniMultipleTimePerDay == "true":
+        if str(mainIniFile.ini_multiple_time_mode()) == "true":
             self.check_the_mode()
 
         else:
-            if self.dayName == "Sun" and self.iniScheduleSun == "true":
+            if str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[0])) and str(mainIniFile.ini_next_backup_sun()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Mon" and self.iniScheduleMon == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[1])) and str(mainIniFile.ini_next_backup_mon()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Tue" and self.iniScheduleTue == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[2])) and str(mainIniFile.ini_next_backup_tue()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Wed" and self.iniScheduleWed == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[3])) and str(mainIniFile.ini_next_backup_wed()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Thu" and self.iniScheduleThu == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[4])) and str(mainIniFile.ini_next_backup_thu()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Fri" and self.iniScheduleFri == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[5])) and str(mainIniFile.ini_next_backup_fri()) == "true":
                 self.check_the_mode()
 
-            elif self.dayName == "Sat" and self.iniScheduleSat == "true":
+            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[6])) and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode()
 
             else:
@@ -171,18 +135,14 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
-        dateFolders = []
         firstLetter = []
-        for output in os.listdir(self.checkDateInsideBackupFolder):
-            dateFolders.append(output)
-            dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-
+  
         # One time per day
-        if self.iniOneTimePerDay == "true":
+        if str(mainIniFile.ini_one_time_mode()) == "true":
             # If current time is higher than time to backup
-            if self.totalCurrentTime > self.totalNextTime:
+            if int(mainIniFile.current_time()) > int(mainIniFile.backup_time()):
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
-                if today_date() not in dateFolders:
+                if today_date() not in get_backup_date():
                     # Call backup now
                     self.call_backup_now()
 
@@ -196,13 +156,13 @@ class CLI:
                         config.set('SCHEDULE', 'time_left', 'None')
                         config.write(configfile)
 
-            elif self.totalCurrentTime == self.totalNextTime:
+            elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time()):
                 self.call_backup_now()
 
             else:
                 print("Waiting for the right time to backup...")
                 # Calculate tine left to backup and so it on the main window as info
-                calculateTimeLeft = int(self.totalNextTime) - int(self.totalCurrentTime) + 60
+                calculateTimeLeft = int(mainIniFile.backup_time()) - int(mainIniFile.current_time()) + 60
                 # Add to list and get first number str() to remove it after
                 firstLetter.append(str(calculateTimeLeft))
                 # Remove First Number str()
@@ -230,17 +190,16 @@ class CLI:
                 firstLetter.clear()
         else:
             # Multiple time per day
-            print("Mode: Multiple time per day")
-            if self.iniEverytime == '60' and self.totalCurrentTime in timeModeHours60:
-                if self.iniBackupNow == "false":
+            if str(mainIniFile.everytime()) == '60' and str(mainIniFile.current_time()) in timeModeHours60:
+                if str(mainIniFile.ini_backup_now()) == "false":
                     self.call_backup_now()
 
-            elif self.iniEverytime == '120' and self.totalCurrentTime in timeModeHours120:
-                if self.iniBackupNow == "false":
+            elif str(mainIniFile.everytime()) == '120' and str(mainIniFile.current_time()) in timeModeHours120:
+                if str(mainIniFile.ini_backup_now()) == "false":
                     self.call_backup_now()
 
-            elif self.iniEverytime == '240' and self.totalCurrentTime in timeModeHours240:
-                if self.iniBackupNow == "false":
+            elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
+                if str(mainIniFile.ini_backup_now()) == "false":
                     self.call_backup_now()
 
             else:
@@ -254,7 +213,6 @@ class CLI:
             config.set('SCHEDULE', 'time_left', 'Backing up...')
             config.write(configfile)
 
-        # Call prepare backup
         sub.run(f"python3 {src_prepare_backup_py}", shell=True)
 
     def no_backup(self):
@@ -263,6 +221,7 @@ class CLI:
         print("Exiting...")
 
 
+mainIniFile = UPDATEINIFILE()
 main = CLI()
 # Exit program if auto_backup is false
 while True:
@@ -273,7 +232,7 @@ while True:
     # Prevent multiples backup checker running
     ################################################################################
     try:
-        if main.iniAutomaticallyBackup == "false":
+        if str(mainIniFile.ini_automatically_backup()) == "false":
             print("Exiting backup checker...")
             # Turn backup now to OFF
             config = configparser.ConfigParser()
