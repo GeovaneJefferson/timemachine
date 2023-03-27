@@ -105,7 +105,7 @@ availableDeviceButtonStylesheet = (
         "}"
     "QPushButton:hover"
         "{"
-            "background-color:rgba(76,75,78,1);"
+            "background-color:rgba(76,75,78,0.6);"
         "}"
     "QPushButton:checked  "
         "{"
