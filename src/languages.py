@@ -1,63 +1,63 @@
 from setup import *
 
-list = []
+languageList = []
 
-def determine_days_language():
+def determine_days_language(lang):
     config = configparser.ConfigParser()
     config.read(src_user_config)
     iniSystemLanguage = config['INFO']['language']
 
     # ENG
-    if iniSystemLanguage == 'en':
-        list.append("Sun")
-        list.append("Mon")
-        list.append("Tue")
-        list.append("Wed")
-        list.append("Thu")
-        list.append("Fru")
-        list.append("sat")
-        return list
+    if lang == 'en':
+        languageList.append("Sun")
+        languageList.append("Mon")
+        languageList.append("Tue")
+        languageList.append("Wed")
+        languageList.append("Thu")
+        languageList.append("Fru")
+        languageList.append("sat")
+        return languageList
     
     # DK
-    elif iniSystemLanguage == 'dk':
-        list.append("Søn")
-        list.append("Man")
-        list.append("Tir")
-        list.append("Ons")
-        list.append("Tor")
-        list.append("Fre")
-        list.append("Lør")
-        return list
+    elif lang == 'dk':
+        languageList.append("Søn")
+        languageList.append("Man")
+        languageList.append("Tir")
+        languageList.append("Ons")
+        languageList.append("Tor")
+        languageList.append("Fre")
+        languageList.append("Lør")
+        return languageList
     
     # ES
-    elif iniSystemLanguage == 'es':
-        list.append("Dom")
-        list.append("Lun")
-        list.append("Mart")
-        list.append("Miérc")
-        list.append("Juev")
-        list.append("Vier")
-        list.append("Sáb")
-        return list
+    elif lang == 'es':
+        languageList.append("Dom")
+        languageList.append("Lun")
+        languageList.append("Mart")
+        languageList.append("Miérc")
+        languageList.append("Juev")
+        languageList.append("Vier")
+        languageList.append("Sáb")
+        return languageList
     
     # PT
-    elif iniSystemLanguage == 'pt':
-        list.append("Dom")
-        list.append("Seg")
-        list.append("Ter")
-        list.append("Qua")
-        list.append("Qui")
-        list.append("Sex")
-        list.append("Sáb")
-        return list
+    elif lang == 'pt':
+        languageList.append("Dom")
+        languageList.append("Seg")
+        languageList.append("Ter")
+        languageList.append("Qua")
+        languageList.append("Qui")
+        languageList.append("Sex")
+        languageList.append("Sáb")
+        return languageList
     
     else:
         # ENG
-        list.append("Sun")
-        list.append("Mon")
-        list.append("Tue")
-        list.append("Wed")
-        list.append("Thu")
-        list.append("Fru")
-        list.append("sat")
-        return list
+        languageList.append("Sun")
+        languageList.append("Mon")
+        languageList.append("Tue")
+        languageList.append("Wed")
+        languageList.append("Thu")
+        languageList.append("Fru")
+        languageList.append("sat")
+        return languageList
