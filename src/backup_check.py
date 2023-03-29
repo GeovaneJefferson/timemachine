@@ -145,6 +145,8 @@ class CLI:
             if int(mainIniFile.current_time()) > int(mainIniFile.backup_time()):
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
 
+                today_date()
+                get_backup_date()
                 if today_date() not in get_backup_date():
                     # Call backup now
                     self.call_backup_now()
