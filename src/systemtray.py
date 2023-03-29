@@ -69,16 +69,16 @@ class APP:
             lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
 
         # Add all to menu
-        self.menu.addAction(self.dummyLine)
+        # self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.iniLastBackupInformation)
 
-        self.menu.addAction(self.dummyLine2)
+        # self.menu.addAction(self.dummyLine2)
         # self.menu.addAction(self.skipThisBackup)
 
         self.menu.addAction(self.backupNowButton)
         self.menu.addAction(self.browseTimeMachineBackupsButton)
         
-        self.menu.addAction(self.dummyLine3)
+        # self.menu.addAction(self.dummyLine3)
         self.menu.addAction(self.openTimeMachine)
         
         # Adding options to the System Tray
