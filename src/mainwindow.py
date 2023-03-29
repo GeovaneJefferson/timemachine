@@ -498,6 +498,10 @@ class MAIN(QMainWindow):
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             # Show backup button if no back up is been made
             if str(mainIniFile.ini_backup_now()) == "false":
+                # Disable select disk button
+                self.selectDiskButton.setEnabled(True)
+                # Disable options button
+                self.optionsButton.setEnabled(True)
                 # Enable backup now button
                 self.backupNowButton.setEnabled(True)
                 # Enable auto checkbox
@@ -506,6 +510,10 @@ class MAIN(QMainWindow):
                 self.showInSystemTrayCheckBox.setEnabled(True)
 
             else:
+                # Disable select disk button
+                self.selectDiskButton.setEnabled(False)
+                # Disable options button
+                self.optionsButton.setEnabled(False)
                 # Disable backup now button
                 self.backupNowButton.setEnabled(False)
                 # Disable auto checkbox
