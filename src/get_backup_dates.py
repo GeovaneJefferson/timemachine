@@ -6,6 +6,7 @@ dateFolders = []
 def get_backup_date():
     mainIniFile = UPDATEINIFILE()
     try:
+        dateFolders.clear()
         for output in os.listdir(f"{str(mainIniFile.create_backup_folder())}"):
             # Hide hidden outputs
             if "." not in output:
