@@ -7,6 +7,7 @@ timeFolder = []
 def get_latest_backup_time():
     mainIniFile = UPDATEINIFILE()
     try:
+        timeFolder.clear()
         for output in os.listdir(f"{str(mainIniFile.create_backup_folder())}/{get_backup_date()[0]}/"):
             timeFolder.append(output)
             timeFolder.sort(reverse=True)
