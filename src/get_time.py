@@ -1,29 +1,28 @@
 from setup import *
+from read_ini_file import UPDATEINIFILE
 
-dateTime = datetime.now()
-dateDay = dateTime.strftime("%d")
-dateMonth = dateTime.strftime("%m")
-dateYear = dateTime.strftime("%y")
-dayName = dateTime.strftime("%a")
-currentHour = dateTime.strftime("%H")
-currentMinute = dateTime.strftime("%M")
 
 def get_date_time():
-    timeFolder = f"{dateDay}-{dateMonth}-{dateYear}/{currentHour}-{currentMinute}"
+    mainIniFile = UPDATEINIFILE()
+    timeFolder = f"{str(mainIniFile.day_name())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}/{str(mainIniFile.current_hour())}-{str(mainIniFile.current_minute())}"
     return timeFolder
 
 def get_date():
-    dateFolder = f"{dateDay}-{dateMonth}-{dateYear}"
+    mainIniFile = UPDATEINIFILE()
+    dateFolder = f"{str(mainIniFile.day_name())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}"
     return dateFolder
 
 def latest_time_info():
-    lastestTimeInfo = f'{dayName}, {currentHour}:{currentMinute}'
+    mainIniFile = UPDATEINIFILE()
+    lastestTimeInfo = f'{str(mainIniFile.day_name())}, {str(mainIniFile.current_hour())}:{str(mainIniFile.current_minute())}'
     return lastestTimeInfo
 
 def today_date():
+    dateTime = datetime.now()
     todayDate = dateTime.strftime("%d-%m-%y")
     return todayDate
 
 def current_time():
+    dateTime = datetime.now()
     currentTime = dateTime.strftime("%H:%M")
     return currentTime

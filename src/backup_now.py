@@ -335,11 +335,11 @@ class BACKUP:
         try:
             # USR/SHARE
             os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
-            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {str(mainIniFile_theme_main_folder())}", shell=True)
+            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {str(mainIniFile.theme_main_folder())}", shell=True)
         
         except:
             # .THEMES
-            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {str(mainIniFile_theme_main_folder())}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {str(mainIniFile.theme_main_folder())}", shell=True)
         else:
             pass
 
