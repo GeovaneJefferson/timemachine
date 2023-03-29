@@ -150,8 +150,6 @@ class CLI:
                     self.call_backup_now()
 
                 else:
-                    print("today date", today_date())
-                    print("get backup dates", get_backup_date())
                     print(f"{appName} has already made a backup for today.")
                     
                     # Reset time left
