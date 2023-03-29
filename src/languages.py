@@ -3,10 +3,6 @@ from setup import *
 languageList = []
 
 def determine_days_language(lang):
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    iniSystemLanguage = config['INFO']['language']
-
     # ENG
     if lang == 'en':
         languageList.append("Sun")
