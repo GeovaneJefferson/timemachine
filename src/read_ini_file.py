@@ -254,7 +254,7 @@ class UPDATEINIFILE:
         return dateFolder
 
     def time_folder_format(self):
-        timeFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_minute(()))}"
+        timeFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_hour())}"
         return timeFolder
 
     def flatpak_txt_location(self):
