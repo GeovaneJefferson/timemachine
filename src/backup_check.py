@@ -3,6 +3,8 @@ from setup import *
 from check_connection import *
 from get_time import *
 from get_backup_dates import get_backup_date
+from get_system_language import system_language
+from languages import determine_days_language
 from read_ini_file import UPDATEINIFILE
 
 ################################################################################
@@ -109,25 +111,25 @@ class CLI:
             self.check_the_mode()
 
         else:
-            if str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[0])) and str(mainIniFile.ini_next_backup_sun()) == "true":
+            if str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[0])) and str(mainIniFile.ini_next_backup_sun()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[1])) and str(mainIniFile.ini_next_backup_mon()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[1])) and str(mainIniFile.ini_next_backup_mon()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[2])) and str(mainIniFile.ini_next_backup_tue()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[2])) and str(mainIniFile.ini_next_backup_tue()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[3])) and str(mainIniFile.ini_next_backup_wed()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[3])) and str(mainIniFile.ini_next_backup_wed()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[4])) and str(mainIniFile.ini_next_backup_thu()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[4])) and str(mainIniFile.ini_next_backup_thu()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[5])) and str(mainIniFile.ini_next_backup_fri()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[5])) and str(mainIniFile.ini_next_backup_fri()) == "true":
                 self.check_the_mode()
 
-            elif str(mainIniFile.day_name()) == str(determine_days_language(str(system_language())[6])) and str(mainIniFile.ini_next_backup_sat()) == "true":
+            elif str(mainIniFile.day_name()) in str(determine_days_language(str(system_language())[6])) and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode()
 
             else:
