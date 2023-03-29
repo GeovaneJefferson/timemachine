@@ -208,7 +208,11 @@ class UPDATEINIFILE:
     def backup_time(self):
         backupTime = int(self.ini_next_hour()) + int(self.ini_next_minute())
         return backupTime
-        
+    
+    def create_base_folder(self):
+        createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}"
+        return createBackupFolder
+
     def create_backup_folder(self):
         createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
         return createBackupFolder
@@ -216,6 +220,10 @@ class UPDATEINIFILE:
     def wallpaper_main_folder(self):
         wallpaperMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}"
         return wallpaperMainFolder
+    
+    def application_main_folder(self):
+        applicationMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}"
+        return applicationMainFolder
 
     def application_var_folder(self):
         applicationVarFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{varFolderName}"

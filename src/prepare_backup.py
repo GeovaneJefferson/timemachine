@@ -2,7 +2,9 @@
 from setup import *
 from get_backup_folders import *
 from get_time import *
+from get_backup_dates import get_backup_date
 from get_user_wallpaper import *
+from read_ini_file import UPDATEINIFILE
 
 ################################################################################
 ## Signal
@@ -21,66 +23,6 @@ class PREPAREBACKUP:
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-
-            # Get hour, minute
-            self.dateTime = datetime.now()
-            self.dateDay = self.dateTime.strftime("%d")
-            self.dateMonth = self.dateTime.strftime("%m")
-            self.dateYear = self.dateTime.strftime("%y")
-            self.dayName = self.dateTime.strftime("%a")
-            self.currentHour = self.dateTime.strftime("%H")
-            self.currentMinute = self.dateTime.strftime("%M")
-
-            ################################################################################
-            # Get user.ini
-            ################################################################################
-            self.iniExternalLocation = config['EXTERNAL']['hd']
-            self.iniFolders = config.options('FOLDER')
-            self.iniBackupNow = config['BACKUP']['backup_now']
-            self.iniOneTimePerDay = config['MODE']['one_time_mode']
-            self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
-            self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
-            self.iniUserOS = config['INFO']['os']
-
-            # Base folder
-            self.createBaseFolder = f"{self.iniExternalLocation}/{baseFolderName}"
-            # Backup folder
-            self.createBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # Wallpaper main folder
-            self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
-            # Application main folder
-            self.applicationMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
-            # Application main Var folder
-            self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
-            # Application main Local folder
-            self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
-            # Check date inside backup folder
-            self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # Icons users folder
-            self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-            # Cursor users folder
-            self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
-            # Themes users folder
-            self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
-            # Gnome-shell users folder
-            self.gnomeShellMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
-            
-            # PACKAGES
-            # RPM main folder
-            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
-            # DEB main folder
-            self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
-
-            # Time folder
-            self.timeFolder = f"{self.createBackupFolder}/{str(get_date_time())}"
-            # Date folder
-            self.dateFolder = f"{self.createBackupFolder}/{str(get_date())}"
-            # Flatpak txt file
-            self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-            
-            # Set backup now to True
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 config.set('BACKUP', 'backup_now', "true")
                 config.write(configfile)
@@ -96,56 +38,56 @@ class PREPAREBACKUP:
             ################################################################################
             # Create TMB (Base)
             ################################################################################
-            if not os.path.exists(self.createBaseFolder):
-                print(f"{createCMDFolder} {self.createBaseFolder}")
-                sub.run(f"{createCMDFolder} {self.createBaseFolder}", shell=True)
+            if not os.path.exists(str(mainIniFile.create_base_folder())):
+                print(f"{createCMDFolder} {str(mainIniFile.create_base_folder())}")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.create_base_folder())}", shell=True)
 
             ################################################################################
             # Create backup folder
             ################################################################################
-            if not os.path.exists(self.createBackupFolder):
+            if not os.path.exists(str(mainIniFile.create_backup_folder())):
                 print("TMB folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.createBackupFolder}", shell=True)
+                sub.run(f"{createCMDFolder} {mainIniFile.create_backup_folder()}", shell=True)
 
             ################################################################################
             # Create Application folder
             ################################################################################
-            if not os.path.exists(self.applicationMainFolder):
+            if not os.path.exists(str(mainIniFile.application_main_folder())):
                 print("Application folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.applicationMainFolder}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.application_main_folder())}", shell=True)
 
             ################################################################################
             # Create Icon folder
             ################################################################################
-            if not os.path.exists(self.iconsMainFolder):
+            if not os.path.exists(str(mainIniFile.icon_main_folder())):
                 print("Icon folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.iconsMainFolder}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}", shell=True)
 
             ################################################################################
             # Create Cursor folder
             ################################################################################
-            if not os.path.exists(self.cursorMainFolder):
+            if not os.path.exists(str(mainIniFile.cursor_main_folder())):
                 print("Cursor folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.cursorMainFolder}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}", shell=True)
             
             ################################################################################
             # Create Theme folder
             ################################################################################
-            if not os.path.exists(self.themeMainFolder):
+            if not os.path.exists(str(mainIniFile.theme_main_folder())):
                 print("Theme folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {self.themeMainFolder}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.theme_main_folder())}", shell=True)
 
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)
             ################################################################################
-            if not os.path.exists(self.rpmMainFolder):
-                sub.run(f"{createCMDFolder} {self.rpmMainFolder}", shell=True)   
+            if not os.path.exists(str(mainIniFile.rpm_main_folder())):
+                sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}", shell=True)   
             
             ################################################################################
             # Create Deb folder (Folder to manual place deb apps)
             ################################################################################
-            if not os.path.exists(self.debMainFolder):
-                sub.run(f"{createCMDFolder} {self.debMainFolder}", shell=True)   
+            if not os.path.exists(str(mainIniFile.deb_main_folder())):
+                sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}", shell=True)   
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
@@ -240,7 +182,7 @@ class PREPAREBACKUP:
     def calculate_home_folders(self):
         print("Checking size of Home folders and size...")
 
-        if self.iniAllowFlatpakData == "true":
+        if str(mainIniFile.ini_allow_flatpak_data()) == "true":
             self.calculate_flatpak_folders()
         else:
             self.condition_to_continue()
@@ -272,18 +214,12 @@ class PREPAREBACKUP:
                 # Delete based in Dates
                 ################################################################################
                 try:
-                    dateFolders = []
-                    for output in os.listdir(self.checkDateInsideBackupFolder):
-                        if not "." in output:
-                            dateFolders.append(output)
-                            dateFolders.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-
                     ################################################################################
                     # Delete oldest folders
                     ################################################################################
                     # Only deletes if exist more than one date folder inside
                     # Will return to the top, if free space is not enought, so app can delete more old folders
-                    if len(dateFolders) > 1:
+                    if len(get_backup_date()) > 1:
                         ################################################################################
                         # Write to INI file
                         ################################################################################
@@ -294,12 +230,11 @@ class PREPAREBACKUP:
                             config.write(configfile)
 
                         # Action
-                        print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}...")
-                        sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/{dateFolders[-1]}", shell=True)
+                        print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}...")
+                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}", shell=True)
                         
-                        # First try to clean .Trash inside the external device
-                        # print(f"Deleting .trash too...")
-                        # sub.run(f"rm -rf {self.iniExternalLocation}/.Trash-1000", shell=True)
+                        print(f"Deleting .trash...")
+                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/.Trash-1000", shell=True)
 
                         # Return to calculate all folders to be backup
                         self.calculate_home_folders()
@@ -327,7 +262,7 @@ class PREPAREBACKUP:
 
             else:
                 print("enough space to continue...")
-                if self.iniAllowFlatpakData == "true":
+                if str(mainIniFile.ini_allow_flatpak_data()) == "true":
                     ################################################################################
                     # Flatpaks conditions to continue with the backup
                     ################################################################################
@@ -395,40 +330,40 @@ class PREPAREBACKUP:
             # Create folder with DATE
             ################################################################################
             print("Creating folder with date...")
-            if not os.path.exists(self.dateFolder):
-                sub.run(f"{createCMDFolder} {self.dateFolder}", shell=True)  # Create folder with date
+            if not os.path.exists(str(mainIniFile.date_folder_format())):
+                sub.run(f"{createCMDFolder} {str(mainIniFile.date_folder_format())}", shell=True)  # Create folder with date
 
             ################################################################################
             # Create folder with TIME
             ################################################################################
             print("Creating folder with time...")
-            if not os.path.exists(self.timeFolder):
-                sub.run(f"{createCMDFolder} {self.timeFolder}", shell=True)
+            if not os.path.exists(str(mainIniFile.time_folder_format())):
+                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}", shell=True)
 
             ################################################################################
             # Create application folder
             ################################################################################
-            if self.iniAllowFlatpakData == "true":
+            if str(mainIniFile.ini_allow_flatpak_data()) == "true":
                 # Create inside external "Var" Folder
-                if not os.path.exists(self.applicationVarFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationVarFolder}", shell=True)  
+                if not os.path.exists(str(mainIniFile.application_var_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_var_folder())}", shell=True)  
 
                 # Create inside external "Local" Folder
-                if not os.path.exists(self.applicationLocalFolder):
-                    sub.run(f"{createCMDFolder} {self.applicationLocalFolder}", shell=True)  
+                if not os.path.exists(str(mainIniFile.application_local_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_local_folder())}", shell=True)  
 
             ################################################################################
             # Create flatpak text
             ################################################################################
-            if not os.path.exists(self.flatpakTxtFile):
+            if not os.path.exists(str(mainIniFile.flatpak_txt_location())):
                 print("Flatpak file was created.")
-                sub.run(f"{createCMDFile} {self.flatpakTxtFile}", shell=True)   
+                sub.run(f"{createCMDFile} {str(mainIniFile.flatpak_txt_location())}", shell=True)   
 
             ################################################################################
             # Create wallpaper folder
             ################################################################################
-            if not os.path.exists(self.wallpaperMainFolder):
-                sub.run(f"{createCMDFolder} {self.wallpaperMainFolder}", shell=True)   
+            if not os.path.exists(str(mainIniFile.wallpaper_main_folder())):
+                sub.run(f"{createCMDFolder} {str(mainIniFile.wallpaper_main_folder())}", shell=True)   
 
         except FileNotFoundError as error:
             # Call error function 
@@ -440,5 +375,6 @@ class PREPAREBACKUP:
 
 
 if __name__ == '__main__':
+    mainIniFile = UPDATEINIFILE()
     main = PREPAREBACKUP()
 

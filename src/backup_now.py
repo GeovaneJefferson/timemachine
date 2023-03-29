@@ -92,7 +92,8 @@ class BACKUP:
         try:
             # Multiple times per day
             if str(mainIniFile.ini_multiple_time_mode()) == "true":
-                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}", shell=True)  # Create folder with date and time
+                # Create folder with date and time
+                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}", shell=True)  
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
