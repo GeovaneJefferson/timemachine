@@ -260,3 +260,6 @@ class UPDATEINIFILE:
     def flatpak_txt_location(self):
         flatpakTxtFile = f"{str(self.ini_external_location())}/{baseFolderName}/{flatpakTxt}"
         return flatpakTxtFile
+
+if __name__ == '__main__':
+    pass
