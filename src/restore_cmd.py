@@ -300,15 +300,15 @@ class RESTORE:
             # # If has something to restore
             if self.somethingToRestoreInIcon:
                 ################################################################################
-                # Create .icons inside home user
+                # Create .local/share/.icons inside home user
                 ################################################################################
-                if not os.path.exists(f"{homeUser}/.icons"):
-                    print("Creating .icons inside home user...")
-                    print(f"{createCMDFolder} {homeUser}/.icons")
-                    sub.run(f"{createCMDFolder} {homeUser}/.icons", shell=True)   
+                if not os.path.exists(f"{homeUser}/.local/share/icons"):
+                    print("Creating .local/share/icons inside home user...")
+                    print(f"{createCMDFolder} {homeUser}.local/share/icons")
+                    sub.run(f"{createCMDFolder} {homeUser}.local/share/icons", shell=True)   
 
-                # Copy icon from the backup to .icon folder
-                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}/.icons/", shell=True)
+                # Copy icon from the backup to local/share/icons folder
+                sub.run(f"{copyRsyncCMD} {self.iconsMainFolder}/ {homeUser}.local/share/icons", shell=True)
                 
                 # Check if user DE is in the supported list
                 ################################################################
@@ -347,11 +347,9 @@ class RESTORE:
         # If has something to restore
         if self.somethingToRestoreInCursor:
             # Copy icon from the backup to .icon folder
-            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}/.icons/", shell=True)
+            sub.run(f"{copyRsyncCMD} {self.cursorMainFolder}/ {homeUser}.local/share/icons", shell=True)
 
             # Check if user DE is in the supported list
-            ################################################################
-            print("Checking support...")
             count = 0
             for _ in supportedOS:
                 # Activate wallpaper option
@@ -387,13 +385,12 @@ class RESTORE:
             # Create .themes inside home user
             ################################################################################
             if not os.path.exists(f"{homeUser}/.themes"):
-                print("Creating .themes inside home user...")
-                sub.run(f"{createCMDFolder} {homeUser}/.themes", shell=True)   
+                print("Creating .local/share/themes inside home user...")
+                sub.run(f"{createCMDFolder} {homeUser}/.local/share/themes", shell=True)   
 
             # Copy theme from the backup to .theme folder
-            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.themes/", shell=True)
-                            # Check if user DE is in the supported list
-            ################################################################
+            sub.run(f"{copyRsyncCMD} {self.themeMainFolder}/ {homeUser}/.local/share/themes", shell=True)
+            # Check if user DE is in the supported list
             """
             lookandfeeltool -a theme name or location (KDE)
             """
