@@ -1,5 +1,7 @@
 from setup import *
 
+now = datetime.now()
+
 class UPDATEINIFILE:
     def ini_hd_name(self):
         try:
@@ -173,3 +175,88 @@ class UPDATEINIFILE:
         config.read(src_user_config)
         self.iniFolders = config.options('FOLDER')
         return self.iniFolders
+    
+
+    def day_name(self):
+        self.dayName = now.strftime("%a")
+        return self.dayName
+
+    def current_date(self):
+        self.dateDay = now.strftime("%d")
+        return self.dateDay
+
+    def current_month(self):
+        self.dateMonth = now.strftime("%m")
+        return self.dateMonth
+
+    def current_year(self):
+        self.dateYear = now.strftime("%y")
+        return self.dateYear
+
+    def current_hour(self):
+        self.currentHour = now.strftime("%H")
+        return self.currentHour
+
+    def current_minute(self):
+        self.currentMinute = now.strftime("%M")
+        return self.currentMinute
+
+    def current_time(self):
+        currentTime = int(self.current_hour()) + int(self.current_minute())
+        return currentTime
+
+    def backup_time(self):
+        backupTime = int(self.ini_next_hour()) + int(self.ini_next_minute())
+        return backupTime
+        
+    def create_backup_folder(self):
+        createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
+        return createBackupFolder
+
+    def wallpaper_main_folder(self):
+        wallpaperMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}"
+        return wallpaperMainFolder
+
+    def application_var_folder(self):
+        applicationVarFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
+        return applicationVarFolder
+
+    def application_local_folder(self):
+        applicationLocalFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+        return applicationLocalFolder
+
+    def icon_main_folder(self):
+        iconsMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{iconFolderName}"
+        return iconsMainFolder
+
+    def cursor_main_folder(self):
+        cursorMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{cursorFolderName}"
+        return cursorMainFolder
+
+    def theme_main_folder(self):
+        themeMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
+        return themeMainFolder
+
+    def gnomeshell_main_folder(self):
+        gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
+        return gnomeShellMainFolder
+
+    def rpm_main_folder(self):
+        rpmMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
+        return rpmMainFolder
+
+    def deb_main_folder(self):
+        debMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
+        return debMainFolder
+
+    def date_folder_format(self):
+        dateFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
+        return dateFolder
+
+    def time_folder_format(self):
+        timeFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_minute(()))}"
+        return timeFolder
+
+    def flatpak_txt_location(self):
+        flatpakTxtFile = f"{str(self.ini_external_location())}/{baseFolderName}/{flatpakTxt}"
+        return flatpakTxtFile
