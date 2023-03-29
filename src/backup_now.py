@@ -234,11 +234,12 @@ class BACKUP:
             sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {str(mainIniFile.icon_main_folder())}", shell=True)
        
         except: 
-            # Try to find the current icon inside /home/user/.icons
+            # .icons
             sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {str(mainIniFile.icon_main_folder())}", shell=True)
       
         else:
-            pass
+            # .local/share/icons
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/{userCurrentGnomeIcon} {str(mainIniFile.icon_main_folder())}", shell=True)
 
         self.backup_cursor()
 
@@ -284,7 +285,8 @@ class BACKUP:
                 sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {str(mainIniFile.cursor_main_folder())}", shell=True)
 
             except:
-                pass
+                # .local/share/icons
+                sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/{userCurrentcursor} {str(mainIniFile.cursor_main_folder())}", shell=True)
 
         self.backup_theme()
 
@@ -341,7 +343,8 @@ class BACKUP:
             # .THEMES
             sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {str(mainIniFile.theme_main_folder())}", shell=True)
         else:
-            pass
+            # .local/share/themes
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/{userCurrentTheme} {str(mainIniFile.theme_main_folder())}", shell=True)
 
         ################################################################################
         # Get gnome-shell with the current theme name
