@@ -167,6 +167,9 @@ src_restore_cmd = f"{homeUser}/.local/share/timemachine/src/restore_cmd.py"
 # .Exclude-applications
 src_exclude_applications = ".exclude-applications.txt"
 
+# Now
+now = datetime.now()
+
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")
@@ -192,3 +195,88 @@ def error_trying_to_backup(error):
 
     print(error)
     exit()
+
+
+def day_name(self):
+    dayName = now.strftime("%a")
+    return dayName
+
+def current_date(self):
+    dateDay = now.strftime("%d")
+    return dateDay
+
+def current_month(self):
+    dateMonth = now.strftime("%m")
+    return dateMonth
+
+def current_year(self):
+    dateYear = now.strftime("%y")
+    return dateYear
+
+def current_hour(self):
+    currentHour = now.strftime("%H")
+    return currentHour
+
+def current_minute(self):
+    currentMinute = now.strftime("%M")
+    return currentMinute
+
+def current_time(self):
+    currentTime = int(current_hour()) + int(current_minute())
+    return currentTime
+
+def backup_time(self):
+    backupTime = int(ini_next_hour()) + int(ini_next_minute())
+    return backupTime
+    
+def create_backup_folder(self):
+    createBackupFolder = f"{str(ini_external_location())}/{baseFolderName}/{backupFolderName}"
+    return createBackupFolder
+
+def wallpaper_main_folder(self):
+    wallpaperMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}"
+    return wallpaperMainFolder
+
+def application_var_folder(self):
+    applicationVarFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
+    return applicationVarFolder
+
+def application_local_folder(self):
+    applicationLocalFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
+    return applicationLocalFolder
+
+def icon_main_folder(self):
+    iconsMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{iconFolderName}"
+    return iconsMainFolder
+
+def cursor_main_folder(self):
+    cursorMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{cursorFolderName}"
+    return cursorMainFolder
+
+def theme_main_folder(self):
+    themeMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}"
+    return themeMainFolder
+
+def gnomeshell_main_folder(self):
+    gnomeShellMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
+    return gnomeShellMainFolder
+
+def rpm_main_folder(self):
+    rpmMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
+    return rpmMainFolder
+
+def deb_main_folder(self):
+    debMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
+    return debMainFolder
+
+def date_folder_format(self):
+    dateFolder = f"{str(mainIniFile.create_backup_folder())}/{str(mainIniFile.current_date())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}"
+    return dateFolder
+
+def time_folder_format(self):
+    timeFolder = f"{str(mainIniFile.create_backup_folder())}/{str(mainIniFile.current_date())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}/{str(mainIniFile.current_hour())}-{str(mainIniFile.current_minute(()))}"
+    return timeFolder
+
+def flatpak_txt_location(self):
+    flatpakTxtFile = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{flatpakTxt}"
+    return flatpakTxtFile

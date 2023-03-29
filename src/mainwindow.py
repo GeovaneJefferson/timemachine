@@ -864,14 +864,14 @@ class MAIN(QMainWindow):
     # EXTERNAL
     ################################################################################
     def external_open_animation(self):
-        self.externalBackgroundShadow.setVisible(True)
-
         self.anim = QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,0))
         self.anim.setDuration(500)
         self.anim.start()
     
+        self.externalBackgroundShadow.setVisible(True)
+
         self.check_connection()
 
     def check_connection(self):
@@ -1056,13 +1056,13 @@ class MAIN(QMainWindow):
         self.external_close_animation()
     
     def external_close_animation(self):
-        self.externalBackgroundShadow.setVisible(False)
-
         self.anim = QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,-300))
         self.anim.setDuration(500)
         self.anim.start()
+        
+        self.externalBackgroundShadow.setVisible(False)
     
 class OPTION(QMainWindow):
     def __init__(self):

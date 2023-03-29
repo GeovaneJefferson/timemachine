@@ -1,13 +1,12 @@
 from setup import *
-config = configparser.ConfigParser()
-config.read(src_user_config)
-iniExternalLocation = config['EXTERNAL']['hd']
+from read_ini_file import UPDATEINIFILE
+
 
 dateFolders = []
 def get_backup_date():
+    mainIniFile = UPDATEINIFILE()
     try:
-        for output in os.listdir(f"{iniExternalLocation}/"
-                f"{baseFolderName}/{backupFolderName}"):
+        for output in os.listdir(f"{str(create_backup_folder())}"):
             # Hide hidden outputs
             if "." not in output:
                 dateFolders.append(output)

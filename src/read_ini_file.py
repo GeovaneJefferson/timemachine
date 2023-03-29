@@ -1,21 +1,6 @@
 from setup import *
 
 class UPDATEINIFILE:
-    def __init__(self):
-        self.now = datetime.now()
-
-    def day_name(self):
-        self.dayName = self.now.strftime("%a")
-        return self.dayName
-
-    def current_hour(self):
-        self.currentHour = self.now.strftime("%H")
-        return self.currentHour
-
-    def current_minute(self):
-        self.currentMinute = self.now.strftime("%M")
-        return self.currentMinute
-
     def ini_hd_name(self):
         try:
             config = configparser.ConfigParser()
@@ -153,14 +138,6 @@ class UPDATEINIFILE:
         self.iniTimeLeft = config['SCHEDULE']['time_left']
         return self.iniTimeLeft
                                                      
-    def current_time(self):
-        self.currentTime = int(self.current_hour()) + int(self.current_minute())
-        return self.currentTime
-
-    def backup_time(self):
-        self.backupTime = int(self.ini_next_hour()) + int(self.ini_next_minute())
-        return self.backupTime
-    
     def ini_extra_information(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -184,7 +161,15 @@ class UPDATEINIFILE:
         config.read(src_user_config)
         self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
         return self.iniAllowFlatpakData
+    
+    def ini_user_os(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniUserOS = config['INFO']['os']
+        return self.iniUserOS
 
-    def create_backup_folder(self):
-        self.createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
-        return self.createBackupFolder
+    def ini_folders(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniFolders = config.options('FOLDER')
+        return self.iniFolders

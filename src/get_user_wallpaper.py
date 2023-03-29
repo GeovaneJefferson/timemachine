@@ -1,9 +1,8 @@
 from setup import *
+from read_ini_file import UPDATEINIFILE
 
 def user_wallpaper():
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    iniUserOS = config['INFO']['os']
+    mainIniFile = UPDATEINIFILE()
 
     ################################################################################
     # Detect color scheme
@@ -14,7 +13,7 @@ def user_wallpaper():
     # Check if user DE is in the supported list
     count = 0
     for _ in supportedOS:
-        if supportedOS[count] == iniUserOS:
+        if supportedOS[count] == str(mainIniFile.ini_user_os()):
             # Light theme
             if getColorScheme == "prefer-light":
                 # Get current wallpaper
@@ -44,7 +43,7 @@ def user_wallpaper():
             # After one supported item was found, go to backup_user_wallpaper()
             return getWallpaper
 
-        elif iniUserOS == "kde":
+        elif str(mainIniFile.ini_user_os()) == "kde":
             oneMore = False
             with open(f"{homeUser}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
                 file = file.readlines()

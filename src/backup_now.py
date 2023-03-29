@@ -3,6 +3,7 @@ from setup import *
 from prepare_backup import *
 from get_user_wallpaper import *
 from update import backup_ini_file
+from read_ini_file import UPDATEINIFILE
 
 ################################################################################
 ## Signal
@@ -14,69 +15,10 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class BACKUP:
     def __init__(self):
-        self.read_ini_file()
+        self.begin_settings()
 
-    def read_ini_file(self):
+    def begin_settings(self):
         try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-
-            # Get hour, minute
-            self.dateTime = datetime.now()
-            self.dateDay = self.dateTime.strftime("%d")
-            self.dateMonth = self.dateTime.strftime("%m")
-            self.dateYear = self.dateTime.strftime("%y")
-            self.dayName = self.dateTime.strftime("%a")
-            self.currentHour = self.dateTime.strftime("%H")
-            self.currentMinute = self.dateTime.strftime("%M")
-
-            ################################################################################
-            # Get user.ini
-            ################################################################################
-            self.iniExternalLocation = config['EXTERNAL']['hd']
-            self.iniFolders = config.options('FOLDER')
-            self.iniBackupNow = config['BACKUP']['backup_now']
-            self.iniOneTimePerDay = config['MODE']['one_time_mode']
-            self.iniAllowFlatpakNames = config['BACKUP']['allow_flatpak_names']
-            self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
-            self.iniUserOS = config['INFO']['os']
-
-            # Base folder
-            self.createBaseFolder = f"{self.iniExternalLocation}/{baseFolderName}"
-            # Backup folder
-            self.createBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # Wallpaper main folder
-            self.wallpaperMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
-            # Application main folder
-            self.applicationMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
-            # Application main Var folder
-            self.applicationVarFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
-            # Application main Local folder
-            self.applicationLocalFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
-            # Check date inside backup folder
-            self.checkDateInsideBackupFolder = f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-            # Icons users folder
-            self.iconsMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-            # Cursor users folder
-            self.cursorMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
-            # Themes users folder
-            self.themeMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}"
-            # Gnome-shell users folder
-            self.gnomeShellMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
-            
-            # PACKAGES
-            # RPM main folder
-            self.rpmMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
-            # DEB main folder
-            self.debMainFolder = f"{self.iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
-
-            # Date folder
-            self.dateFolder = f"{self.createBackupFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}"
-            # Time folder
-            self.timeFolder = f"{self.createBackupFolder}/{self.dateDay}-{self.dateMonth}-{self.dateYear}/{self.currentHour}-{self.currentMinute}"
-            # Flatpak txt file
-            self.flatpakTxtFile = f"{self.iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
-            
             # Set backup now to True
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -93,23 +35,19 @@ class BACKUP:
 
     def backup_user_wallpaper(self):
         # Replace wallpaper inside the folder, only allow 1
-        # If is not empty
-        insideWallpaperFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/")
-        # If it has image inside the folder
-        if insideWallpaperFolder:
-            print("Image(s) found inside.")
+        if os.listdir(f"{str(mainIniFile.wallpaper_main_folder())}"):
             # Delete all image inside wallpaper folder
-            for image in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/"):
-                print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}...")
-                sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
+            for image in os.listdir(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}/"):
+                print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}/{image}...")
+                sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
         
         print("Backing up wallpaper...")
         # Get Wallaper
-        print(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/")
-        sub.run(f"{copyCPCMD} {user_wallpaper()} {self.wallpaperMainFolder}/", shell=True) 
+        print(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/")
+        sub.run(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/", shell=True) 
        
         # Condition
-        if self.iniAllowFlatpakNames == "true":
+        if str(mainIniFile.ini_allow_flatpak_names()) == "true":
             self.write_flatpak_file()
         
         else:
@@ -123,7 +61,7 @@ class BACKUP:
             # Get user installed flatpaks
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(self.flatpakTxtFile, 'w') as configfile:  
+            with open(str(mainIniFile.flatpak_txt_location()), 'w') as configfile:  
                 for output in os.popen(getFlatpaks):
                     dummyList.append(output)
                     # Write USER installed flatpak to flatpak.txt inside external device
@@ -152,14 +90,9 @@ class BACKUP:
         # Type of backup (One or Multiple times per day)
         ################################################################################
         try:
-            # One time per day
-            if self.iniOneTimePerDay == "true":
-                print("Mode: One time per day")
-
-            # Multiple time per day
-            else:
-                print("Mode: Multiple time per day")
-                sub.run(f"{createCMDFolder} {self.timeFolder}", shell=True)  # Create folder with date and time
+            # Multiple times per day
+            if str(mainIniFile.ini_multiple_time_mode()) == "true":
+                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}", shell=True)  # Create folder with date and time
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
@@ -192,13 +125,13 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Home files/folders
                 ###############################################################################
-                print(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}")
-                sub.run(f"{copyCPCMD} {homeUser}/{output} {self.timeFolder}", shell=True)
+                print(f"{copyCPCMD} {homeUser}/{output} {str(mainIniFile.time_folder_format())}")
+                sub.run(f"{copyCPCMD} {homeUser}/{output} {str(mainIniFile.time_folder_format())}",shell=True)
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
 
-        if self.iniAllowFlatpakData == "true":
+        if str(mainIniFile.ini_allow_flatpak_data()) == "true":
             self.backup_flatpak_data()
         else:
             self.backup_icons()
@@ -228,8 +161,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyCPCMD} {flatpak_var_list()[count]} {self.applicationVarFolder}")
-                sub.run(f"{copyCPCMD} {flatpak_var_list()[count]} {self.applicationVarFolder}", shell=True)
+                print(f"{copyCPCMD} {flatpak_var_list()[count]} {str(mainIniFile.application_var_folder())}")
+                sub.run(f"{copyCPCMD} {flatpak_var_list()[count]} {str(mainIniFile.application_var_folder())}", shell=True)
 
                 count += 1
 
@@ -255,8 +188,8 @@ class BACKUP:
                 ###############################################################################
                 # Copy the Flatpak var/app folders
                 ###############################################################################
-                print(f"{copyRsyncCMD} {flatpak_local_list()[count]} {self.applicationLocalFolder}")
-                sub.run(f"{copyRsyncCMD} {flatpak_local_list()[count]} {self.applicationLocalFolder}", shell=True)
+                print(f"{copyRsyncCMD} {flatpak_local_list()[count]} {str(mainIniFile.application_local_folder())}")
+                sub.run(f"{copyRsyncCMD} {flatpak_local_list()[count]} {str(mainIniFile.application_local_folder())}", shell=True)
 
                 count += 1
 
@@ -276,14 +209,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        insideIconFolder = os.listdir(f"{self.iconsMainFolder}/")
+        insideIconFolder = os.listdir(f"{str(mainIniFile.icon_main_folder())}/")
         # Delete all image inside .icons folder
         if insideIconFolder:
-            for icon in os.listdir(f"{self.iconsMainFolder}/"):
+            for icon in os.listdir(f"{str(mainIniFile.icon_main_folder())}/"):
                 # If is not the same name, remove it, and backup the new one
                 if icon != userCurrentGnomeIcon:
-                    print(f"Deleting {self.iconsMainFolder}/{icon}...")
-                    sub.run(f"rm -rf {self.iconsMainFolder}/{icon}", shell=True)
+                    print(f"Deleting {str(mainIniFile.icon_main_folder())}/{icon}...")
+                    sub.run(f"rm -rf {str(mainIniFile.icon_main_folder())}/{icon}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -298,11 +231,11 @@ class BACKUP:
         try:
             # USR/SHARE
             os.listdir(f"/usr/share/icons/{userCurrentGnomeIcon}")
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentGnomeIcon} {str(mainIniFile.icon_main_folder())}", shell=True)
        
         except: 
             # Try to find the current icon inside /home/user/.icons
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {self.iconsMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentGnomeIcon} {str(mainIniFile.icon_main_folder())}", shell=True)
       
         else:
             pass
@@ -320,14 +253,14 @@ class BACKUP:
         ################################################################################
         # Only one cursor inside the backup folder
         ################################################################################
-        insidecursorFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/")
+        insidecursorFolder = os.listdir(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{cursorFolderName}/")
         if insidecursorFolder:
             # Delete all cursors inside wallpaper folder
-            for cursor in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/"):
+            for cursor in os.listdir(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{cursorFolderName}/"):
                 # If is not the same name, remove it, and backup the new one
                 if cursor != userCurrentcursor:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
+                    print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{cursorFolderName}/{cursor}...")
+                    sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{cursorFolderName}/{cursor}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -343,12 +276,12 @@ class BACKUP:
             # USR/SHARE/ICONS
             # Try to find
             os.listdir(f"/usr/share/icons/{userCurrentcursor}")
-            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} /usr/share/icons/{userCurrentcursor} {str(mainIniFile.cursor_main_folder())}", shell=True)
 
         except: 
             try:
                 # Try to find the current cursor inside /home/user/.icons
-                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {self.cursorMainFolder}", shell=True)
+                sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{userCurrentcursor} {str(mainIniFile.cursor_main_folder())}", shell=True)
 
             except:
                 pass
@@ -366,14 +299,14 @@ class BACKUP:
         ################################################################################
         # Only one icon inside the backup folder
         ################################################################################
-        insideThemeFolder = os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/")
+        insideThemeFolder = os.listdir(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}/")
         if insideThemeFolder:
             # Delete all theme inside wallpaper folder
-            for theme in os.listdir(f"{self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/"):
+            for theme in os.listdir(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}/"):
                 # If is not the same name, remove it, and backup the new one
                 if theme != userCurrentTheme:
-                    print(f"Deleting {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}...")
-                    sub.run(f"rm -rf {self.iniExternalLocation}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
+                    print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}/{theme}...")
+                    sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{themeFolderName}/{theme}", shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -390,10 +323,10 @@ class BACKUP:
         ################################################################################
         # Create gnome-shell inside theme current theme folder
         ################################################################################
-        if not os.path.exists(f"{self.iniExternalLocation}/{baseFolderName}/"
+        if not os.path.exists(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/"
             f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}"):
             try:
-                sub.run(f"{createCMDFolder} {self.iniExternalLocation}/{baseFolderName}/"
+                sub.run(f"{createCMDFolder} {str(mainIniFile.ini_external_location())}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
             
             except Exception as error:
@@ -402,11 +335,11 @@ class BACKUP:
         try:
             # USR/SHARE
             os.listdir(f"/usr/share/themes/{userCurrentTheme}/")
-            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} /usr/share/themes/{userCurrentTheme} {str(mainIniFile_theme_main_folder())}", shell=True)
         
         except:
             # .THEMES
-            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {self.themeMainFolder}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/{userCurrentTheme} {str(mainIniFile_theme_main_folder())}", shell=True)
         else:
             pass
 
@@ -418,7 +351,7 @@ class BACKUP:
             if insideGnomeShellThemeFolder:
                 print("Backing up theme gnome-shell...")
                 sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{userCurrentTheme}/ "
-                    f"{self.iniExternalLocation}/{baseFolderName}/"
+                    f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/"
                     f"{themeFolderName}/{userCurrentTheme}/{gnomeShellFolder}", shell=True)
         
         except:
@@ -430,7 +363,7 @@ class BACKUP:
         # try:
         #     # Get oldest backup info
         #     oldestList = []
-        #     for oldestOutput in os.listdir(f"{self.createBackupFolder}"):
+        #     for oldestOutput in os.listdir(f"{str(mainIniFile.create_backup_folder())}"):
         #         oldestList.append(oldestOutput)
         # except:
         #     pass
@@ -445,11 +378,6 @@ class BACKUP:
         with open(src_user_config, 'w') as configfile:
             # Set backup now to False
             config.set('BACKUP', 'backup_now', 'false')
-            # try:
-            #     # Update oldest backup time
-            #     config.set('INFO', 'oldest', f'{oldestList[0]}')
-            # except:
-            #     pass
             try:
                 # Update last backup time
                 config.set('INFO', 'latest', f'{latest_time_info()}')
@@ -495,4 +423,5 @@ class BACKUP:
             config.write(configfile)
 
 if __name__ == '__main__':
+    mainIniFile = UPDATEINIFILE()
     main = BACKUP()

@@ -1,4 +1,5 @@
 from setup import *
+from read_ini_file import UPDATEINIFILE
 
 homeFolderToBeBackup=[]
 homeFolderToBackupSizeList=[]
@@ -8,15 +9,12 @@ flatpakLocaloBeBackup=[]
 flatpakLocalSizeList=[]
 
 def get_folders():
+    mainIniFile = UPDATEINIFILE()
     try:
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        iniFolders = config.options('FOLDER')
-
         ################################################################################
         # Get Backup Folders
         ################################################################################
-        for output in iniFolders:  # Get folders size before back up to external
+        for output in mainIniFile.ini_folders():  # Get folders size before back up to external
             # Capitalize first letter
             output = output.capitalize()
             # Can output be found inside Users Home?
@@ -108,17 +106,14 @@ def flatpak_local_list():
         pass
 
 def total_home_folders_to_backup():
+    mainIniFile = UPDATEINIFILE()
     global freeSpace
-
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    iniExternalLocation = config['EXTERNAL']['hd']
 
     print("Calculating Home folders...")
     ################################################################################
     # Get external maximum size
     ################################################################################
-    externalMaxSize = os.popen(f"df --output=size {iniExternalLocation}")
+    externalMaxSize = os.popen(f"df --output=size {str(mainIniFile.ini_external_location())}")
     externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace("Size", "").replace(
         "\n", "").replace(" ", "")
     externalMaxSize = int(externalMaxSize)
@@ -126,7 +121,7 @@ def total_home_folders_to_backup():
     ################################################################################
     # Get external used space
     ################################################################################
-    usedSpace = os.popen(f"df --output=used {iniExternalLocation}")
+    usedSpace = os.popen(f"df --output=used {str(mainIniFile.ini_external_location())}")
     usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace("Used", "").replace(
         "\n", "").replace(" ", "")
     usedSpace = int(usedSpace)
