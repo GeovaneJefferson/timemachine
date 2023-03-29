@@ -239,17 +239,6 @@ class PREPAREBACKUP:
 
     def calculate_home_folders(self):
         print("Checking size of Home folders and size...")
-        # TODO
-        # Maybe remove get_folder() and home_folders_size()...
-        # TODO
-        ################################################################################
-        # Get Home
-        ################################################################################
-        get_folders()
-        ################################################################################
-        # Get Home Size
-        ################################################################################
-        home_folders_size()
 
         if self.iniAllowFlatpakData == "true":
             self.calculate_flatpak_folders()
@@ -258,22 +247,6 @@ class PREPAREBACKUP:
 
     def calculate_flatpak_folders(self):
         print("Checking size of folders (Flatpak)...")
-        ################################################################################
-        # Get Flatpak Var Folder Size
-        ################################################################################
-        flatpak_var_size()
-        ################################################################################
-        # Get Flatpak Var Folder list
-        ################################################################################
-        flatpak_var_list()
-        ################################################################################
-        # Get Flatpak Local Folder size
-        ################################################################################
-        flatpak_local_size()
-        ################################################################################
-        # Get Flatpak Local Folder list
-        ################################################################################
-        flatpak_local_list()
 
         self.condition_to_continue()
     

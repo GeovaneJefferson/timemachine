@@ -9,7 +9,7 @@ def get_date_time():
 
 def get_date():
     mainIniFile = UPDATEINIFILE()
-    dateFolder = f"{str(mainIniFile.day_name())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}"
+    dateFolder = f"{str(mainIniFile.current_date())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}"
     return dateFolder
 
 def latest_time_info():
