@@ -718,7 +718,6 @@ class MAIN(QMainWindow):
             pass
 
         self.load_current_backup_folder()
-    # TODO
 
     def load_current_backup_folder(self):
         # Current backup folder been backup
@@ -858,7 +857,7 @@ class MAIN(QMainWindow):
         ################################################################################
         # Set to True, so it will call others function to update propely
         backup_ini_file(True)
-        exit()
+        # exit()
 
     ################################################################################
     # EXTERNAL
