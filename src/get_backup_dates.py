@@ -16,6 +16,7 @@ def get_backup_date():
 
         return dateFolders
 
-    except:
+    except Exception as error:
+        print(error)
         print("Error trying to get backup dates!")
         pass
