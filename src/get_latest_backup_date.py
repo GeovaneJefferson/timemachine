@@ -13,7 +13,10 @@ def latest_backup_date():
 
         lastestList.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
-        return lastestList[0]
+        if lastestList[0] == f"{mainIniFile.current_date()}-{mainIniFile.current_month()}-{mainIniFile.current_year()}": 
+            return "Today"
+        else:
+            return lastestList[0]
 
     except:
         pass
