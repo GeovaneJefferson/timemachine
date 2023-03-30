@@ -52,9 +52,7 @@ class UPDATEINIFILE:
         config = configparser.ConfigParser()
         config.read(src_user_config)
         self.iniNextBackup = config['INFO']['next']
-        if self.iniNextBackup != "":
-            return self.iniNextBackup
-        return "None"
+        return self.iniNextBackup
     
     def ini_one_time_mode(self):
         config = configparser.ConfigParser()
