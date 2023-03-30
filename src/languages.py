@@ -10,7 +10,7 @@ def determine_days_language(lang):
         languageList.append("Tue")
         languageList.append("Wed")
         languageList.append("Thu")
-        languageList.append("Fri")
+        languageList.append("Fru")
         languageList.append("sat")
         return languageList
     
@@ -54,6 +54,6 @@ def determine_days_language(lang):
         languageList.append("Tue")
         languageList.append("Wed")
         languageList.append("Thu")
-        languageList.append("Fru")
+        languageList.append("Fri")
         languageList.append("sat")
         return languageList
