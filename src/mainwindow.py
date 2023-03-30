@@ -542,10 +542,7 @@ class MAIN(QMainWindow):
         self.set_external_last_backup()
 
     def set_external_last_backup(self):
-        if latest_backup_date() == f"{mainIniFile.current_date()}-{mainIniFile.current_month()}-{mainIniFile.current_year()}": 
-            self.lastestBackupLabel.setText(f"Lastest Backup: Today")
-        else:
-            self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date()}")
+        self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date()}")
 
         self.load_time_backup()
 
