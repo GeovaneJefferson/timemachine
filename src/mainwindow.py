@@ -322,7 +322,7 @@ class MAIN(QMainWindow):
             "{"
                 "background-color:rgba(240,241,243,1);"
                 "border:1px solid rgba(14,14,14,0.1);"
-                "border-radius:6px;"
+                "border-radius:2px;"
             "}")
 
         # Frame
