@@ -318,14 +318,14 @@ class RESTORE:
                     if supportedOS[count] in str(get_user_de):
                         # Continue only if has a theme inside to restore
                         # Apply icon
-                        print(f"Applying {setUserIcon} {icon}")
+                        print(f"Applying {setUserIconCMD} {icon}")
                         try:
                             # USR/SHARE
                             os.listdir(f"/usr/share/icons/{icon}/")
-                            sub.run(f"{setUserIcon} {icon}", shell=True)
+                            sub.run(f"{setUserIconCMD} {icon}", shell=True)
                         except:
                             # .icons
-                            sub.run(f"{setUserIcon} {icon}", shell=True)
+                            sub.run(f"{setUserIconCMD} {icon}", shell=True)
                         else:
                             pass
 
@@ -356,15 +356,15 @@ class RESTORE:
                 if supportedOS[count] in str(get_user_de):
                     # Continue only if has a theme inside to restore
                     # Apply cursor
-                    print(f"Applying {setUserCursor} {cursor}")
+                    print(f"Applying {setUserCursorCMD} {cursor}")
                     try:
                         # USR/SHARE
                         os.listdir(f"/usr/share/icons/{cursor}/")
-                        sub.run(f"{setUserCursor} {cursor}", shell=True)
+                        sub.run(f"{setUserCursorCMD} {cursor}", shell=True)
                     except:
                         try:
                             # .cursor
-                            sub.run(f"{setUserCursor} {cursor}", shell=True)
+                            sub.run(f"{setUserCursorCMD} {cursor}", shell=True)
                         except:
                             pass
 
@@ -400,14 +400,14 @@ class RESTORE:
                 if supportedOS[count] in str(get_user_de):
                     # Continue only if has a theme inside to restore
                     # Apply theme
-                    print(f"Applying {setUserTheme} {theme}")
+                    print(f"Applying {setUserThemeCMD} {theme}")
                     try:
                         # USR/SHARE
                         os.listdir(f"/usr/share/themes/{theme}/")
-                        sub.run(f"{setUserTheme} {theme}", shell=True)
+                        sub.run(f"{setUserThemeCMD} {theme}", shell=True)
                     except:
                         # .cursor
-                        sub.run(f"{setUserTheme} {theme}", shell=True)
+                        sub.run(f"{setUserThemeCMD} {theme}", shell=True)
                     else:
                         pass
 

@@ -84,16 +84,16 @@ setGnomeWallpaperDark = "gsettings set org.gnome.desktop.background picture-uri-
 zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
 
 # Icon
-getUserIcon = "gsettings get org.gnome.desktop.interface icon-theme"
-setUserIcon = "gsettings set org.gnome.desktop.interface icon-theme"
+getUserIconCMD = "gsettings get org.gnome.desktop.interface icon-theme"
+setUserIconCMD = "gsettings set org.gnome.desktop.interface icon-theme"
 
 # Theme
-getUserTheme = "gsettings get org.gnome.desktop.interface gtk-theme"
-setUserTheme = "gsettings set org.gnome.desktop.interface gtk-theme"
+getUserThemeCMD = "gsettings get org.gnome.desktop.interface gtk-theme"
+setUserThemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 
 # cursor
-getUserCursor = "gsettings get org.gnome.desktop.interface cursor-theme"
-setUserCursor = "gsettings set org.gnome.desktop.interface cursor-theme"
+getUserCursorCMD = "gsettings get org.gnome.desktop.interface cursor-theme"
+setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
 
 # Locations
 media = "/media"

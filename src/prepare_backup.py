@@ -99,7 +99,7 @@ class PREPAREBACKUP:
         self.iconInside = False
 
         # Get current use icon by user
-        userCurrentGnomeIcon = os.popen(getUserIcon)
+        userCurrentGnomeIcon = os.popen(getUserIconCMD)
         userCurrentGnomeIcon = userCurrentGnomeIcon.read().strip()
         userCurrentGnomeIcon = userCurrentGnomeIcon.replace("'", "")
 
@@ -138,7 +138,7 @@ class PREPAREBACKUP:
             # Get theme folders size
             ################################################################################
             # Get current use theme by user
-            userCurrentTheme = os.popen(getUserTheme)
+            userCurrentTheme = os.popen(getUserThemeCMD)
             userCurrentTheme = userCurrentTheme.read().strip()
             userCurrentTheme = userCurrentTheme.replace("'", "")
 
