@@ -132,7 +132,7 @@ timeModeHours240 = ['0000', '0400', '0800', '1200', '1600', '2000']
 fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 # # Home location
-src_applciations_location = f"{homeUser}/.local/share/applications/"
+src_applications_location = f"{homeUser}/.local/share/applications/"
 src_autostart_folder = f"{homeUser}/.config/autostart"
 src_flatpak_var_location = f"{homeUser}/.var/app"
 src_flatpak_local_location = f"{homeUser}/.local/share/flatpak"

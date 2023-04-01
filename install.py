@@ -127,8 +127,8 @@ class CLI:
                 sub.run(f"{createCMDFolder} {src_autostart_folder}", shell=True)
 
             # Create applications folder
-            if not os.path.exists(src_applciations_location):
-                sub.run(f"{createCMDFolder} {src_applciations_location}", shell=True)
+            if not os.path.exists(src_applications_location):
+                sub.run(f"{createCMDFolder} {src_applications_location}", shell=True)
 
             ################################################################################
             # Copy all .desktop
