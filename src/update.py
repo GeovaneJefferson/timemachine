@@ -10,8 +10,7 @@ def backup_ini_file(updateNow):
         update_git(updateNow)
 
 def update_git(updateNow):
-    os.popen(f"cd /{homeUser}/.local/share/{appNameClose}/src/; git stash; git pull")
-    # os.popen("git pull")
+    os.popen(f"cd /{homeUser}/.local/share/{appNameClose}/; git stash; git pull")
     if updateNow:
         delete_ini_file(updateNow)
 
