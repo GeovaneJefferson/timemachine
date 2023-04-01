@@ -1,8 +1,12 @@
 import subprocess as sub
 import os
+import sys
 import pathlib
 import shutil
 from pathlib import Path
+sys.path.insert(1, 'src/')
+from setup import *
+
 
 
 class CLI:
@@ -19,47 +23,29 @@ class CLI:
         # Extra: Flathub
         self.installFlathub = "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
-        # Folders
-        self.home_user = str(Path.home())
-        self.getCurrentLocation = pathlib.Path().resolve()  # Current folder
-
-        # Terminal commands
-        self.createCmd = "mkdir"
-
-        # Default
-        # Current folder
+        self.getCurrentLocation = pathlib.Path().resolve() 
         self.src_backup_check = "src/desktop/backup_check.desktop"
-        self.src_timemachine_desktop = "src/desktop/timemachine.desktop"
+        self.src_timemachine_desktop = f"src/desktop/{appNameClose}.desktop"
         self.src_migration_assistant = "src/desktop/migration_assistant.desktop"
-
-        # Destination folder
-        self.dst_folder_timemachine = f"{self.home_user}/.local/share/timemachine"
-        self.dst_timemachine_desktop = f"{self.home_user}/.local/share/applications/timemachine.desktop"
-        self.dst_migration_assistant = f"{self.home_user}/.local/share/applications/migration_assistant.desktop"
-        self.restore_icon = f"{self.home_user}/.local/share/timemachine/src/icons/restore_48.png"
-        self.create_autostart_folder = f"{self.home_user}/.config/autostart"
 
         self.check_system()
 
     def check_system(self):
-        # Check User system (Ubuntu, Opensuse etc.)
-        output = os.popen("cat /etc/os-release")  # uname -v
-        output = output.read()
+        usersDistro = os.popen("cat /etc/os-release").read()
 
-        # Types of systems
-        if "ubuntu" in output:
+        if "ubuntu" in usersDistro:
             self.requirements("ubuntu")
 
-        elif "debian" in output:
+        elif "debian" in usersDistro:
             self.requirements("debian")
 
-        elif "opensuse" in output:
+        elif "opensuse" in usersDistro:
             self.requirements("opensuse")
 
-        elif "fedora" in output:
+        elif "fedora" in usersDistro:
             self.requirements("fedora")
 
-        elif "arch" in output:
+        elif "arch" in usersDistro:
             self.requirements("arch")
 
         else:
@@ -67,42 +53,37 @@ class CLI:
             print("Please, Contact the developer :D")
             exit()
 
-    def requirements(self, user_os):
+    def requirements(self,user_os):
         print(f"Users OS: {(user_os.capitalize())}")
         ################################################################################
         # Install pip (Ubuntu)
         ################################################################################
         try:
             print("Installing all the dependencies...")
-            # Ubuntu
             if user_os == "ubuntu":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
                 sub.run(f"sudo apt -y install {self.installPip}", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
             
-            # Debian
             elif user_os == "debian":
                 print("")
                 sub.run(f"sudo apt -y update", shell=True)
                 sub.run(f"sudo apt -y install {self.installPip}", shell=True)
                 sub.run(f"sudo apt -y install {self.installDependencies}", shell=True)
 
-            # Opensuse
             elif user_os == "opensuse":
                 print("")
                 sub.run(f"sudo zypper -y update", shell=True)
                 sub.run(f"sudo zypper -y install {self.installPip}", shell=True)
                 sub.run(f"sudo zypper -y install {self.installDependencies}", shell=True)
 
-            # Fedora
             elif user_os == "fedora":
                 print("")
                 sub.run(f"sudo dnf -y update", shell=True)
                 sub.run(f"sudo dnf -y install {self.installPip}", shell=True)
                 sub.run(f"sudo dnf -y install {self.installDependencies}", shell=True)
 
-            # Arch
             elif user_os == "arch":
                 print("")
                 # sub.run(f"sudo pacman -S {self.installDependenciesArch}", shell=True)
@@ -117,8 +98,13 @@ class CLI:
             sub.run(f"pip install {self.installPipPackages}", shell=True)
 
         except:
+            print("")
             print("Error trying to install dependencies!")
-            exit()
+            print("Yóu need to manually install all dependencies:\n",
+                "* python3-pip or python-pip\n",
+                "* PySide6.")
+            print("")
+            pass
 
         # Install flathub
         try:
@@ -126,6 +112,10 @@ class CLI:
             sub.run(f"sudo {self.installFlathub}", shell=True)
 
         except:
+            print("")
+            print("Error trying to install Flathub!")
+            print("Yóu need to manually install Flathub.")
+            print("")
             pass
 
         self.begin_to_install()
@@ -133,12 +123,12 @@ class CLI:
     def begin_to_install(self):
         try:
             # Create autostart folder if necessary
-            if not os.path.exists(self.create_autostart_folder):
-                sub.run(f"{self.createCmd} {self.create_autostart_folder}", shell=True)
+            if not os.path.exists(src_autostart_folder):
+                sub.run(f"{createCMDFolder} {src_autostart_folder}", shell=True)
 
             # Create applications folder
-            if not os.path.exists(f"{self.home_user}/.local/share/applications/"):
-                sub.run(f"{self.createCmd} {self.home_user}/.local/share/applications/", shell=True)
+            if not os.path.exists(src_applciations_location):
+                sub.run(f"{createCMDFolder} {src_applciations_location}", shell=True)
 
             ################################################################################
             # Copy all .desktop
@@ -148,12 +138,12 @@ class CLI:
                 writer.write(
                     f"[Desktop Entry]\n "
                     f"Type=Application\n "
-                    f"Exec=/bin/python3 {self.home_user}/.local/share/timemachine/src/at_boot.py\n"
+                    f"Exec=/bin/python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n"
                     f"Hidden=false\n "
                     f"NoDisplay=false\n "
                     f"Name=Time Machine\n "
-                    f"Comment=Backup your files\n "
-                    f"Icon={self.restore_icon}")
+                    f"Comment={appName}'s manager before boot.\n "
+                    f"Icon={src_restore_icon_48px}")
 
             ################################################################################
             # Time Machine entry .desktop
@@ -163,13 +153,13 @@ class CLI:
                     f"[Desktop Entry]\n "
                     f"Version=1.0\n "
                     f"Type=Application\n "
-                    f"Name=Time Machine\n "
-                    f"Comment=Backup your files\n "
-                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/backup_128px.png\n "
-                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/mainwindow.py\n "
-                    f"Path={self.home_user}/.local/share/timemachine/\n "
+                    f"Name={appName}\n "
+                    f"Comment=Backup your files with {appName}\n "
+                    f"Icon={src_backup_icon}\n "
+                    f"Exec=python3 {src_main_window_py}\n "
+                    f"Path={homeUser}/.local/share/{appNameClose}/\n "
                     f"Categories=System\n "
-                    f"StartupWMClass=mainwindow.py\n "
+                    f"StartupWMClass={(src_main_window_py).split('/')[-1]}\n "
                     f"Terminal=false")
 
             ################################################################################
@@ -181,12 +171,12 @@ class CLI:
                     f"Version=1.0\n "
                     f"Type=Application\n "
                     f"Name=Migration Assistant\n "
-                    f"Comment=Restore settings from a Time Machine backup\n "
-                    f"Icon={self.home_user}/.local/share/timemachine/src/icons/migration_assistant_96px.png\n "
-                    f"Exec=python3 {self.home_user}/.local/share/timemachine/src/call_migration_assistant.py\n "
-                    f"Path={self.home_user}/.local/share/timemachine/src/\n "
+                    f"Comment=Restore files/folders etc. from a {appName}'s backup\n "
+                    f"Icon={src_migration_assistant_96px}\n "
+                    f"Exec=python3 {src_call_migration_assistant_py}\n "
+                    f"Path={homeUser}/.local/share/{appNameClose}/src/\n "
                     f"Categories=System\n "
-                    f"StartupWMClass=migration_assistant.py\n "
+                    f"StartupWMClass={(src_migration_assistant_py).split('/')[-1]}\n "
                     f"Terminal=true")
 
             ################################################################################
@@ -194,25 +184,25 @@ class CLI:
             # Copy current folder to destination folder
             ################################################################################
             shutil.copytree(self.getCurrentLocation,
-                            self.dst_folder_timemachine)
+                            src_folder_timemachine)
 
             ################################################################################
             # Copy .desktop and .timemachine.desktop to destination folder
             ################################################################################
             shutil.copy(self.src_timemachine_desktop,
-                        self.dst_timemachine_desktop)
+                        src_timemachine_desktop)
 
             ################################################################################
             # Copy migration_assistant.desktop to destination folder
             ################################################################################
             shutil.copy(self.src_migration_assistant,
-                        self.dst_migration_assistant)
+                        src_migration_assistant_desktop)
 
-            print("Program was installed!")
+            print("Program was successfully installed!")
 
         except FileNotFoundError:
-            print("Error trying install Time Machine")
+            print(f"Error trying install {appName}!")
             exit()
 
 
-app = CLI()
+main = CLI()
