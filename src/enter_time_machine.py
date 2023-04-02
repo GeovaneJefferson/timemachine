@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from setup import *
+from stylesheet import *
 
 config = configparser.ConfigParser()
 config.read(src_user_config)
@@ -110,6 +111,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.upButton.setText("ʌ")
         self.upButton.setFont(QFont("Ubuntu", 11))
         self.upButton.setFixedSize(38, 38)
+        self.upButton.setStyleSheet(buttonStylesheet)
         self.upButton.clicked.connect(self.change_date_up)
 
         # Down button
@@ -117,6 +119,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.downButton.setText("v")
         self.downButton.setFont(QFont("Ubuntu", 11))
         self.downButton.setFixedSize(38, 38)
+        self.downButton.setStyleSheet(buttonStylesheet)
         self.downButton.clicked.connect(self.change_date_down)
 
         # Before gray date
@@ -178,13 +181,15 @@ class ENTERTIMEMACHINE(QWidget):
         self.cancelButton.setFont(QFont("Ubuntu", 14))
         self.cancelButton.setFixedSize(120, 34)
         self.cancelButton.setEnabled(True)
+        self.cancelButton.setStyleSheet(buttonStylesheet)
         self.cancelButton.clicked.connect(lambda x: exit())
 
         # Restore button
         self.restoreButton = QPushButton()
-        self.restoreButton.setText("Restore")
+        self.restoreButton.setText("   Restore   ")
         self.restoreButton.setFont(QFont("Ubuntu", 14))
         self.restoreButton.adjustSize()
+        self.restoreButton.setStyleSheet(buttonStylesheet)
         self.restoreButton.setEnabled(False)
 
         ################################################################################
@@ -246,6 +251,7 @@ class ENTERTIMEMACHINE(QWidget):
             self.foldersOnScreen.setFixedSize(140, 34)
             self.foldersOnScreen.setCheckable(True)
             self.foldersOnScreen.setAutoExclusive(True)
+            self.foldersOnScreen.setStyleSheet(buttonStylesheet)
             # self.foldersOnScreen.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
             self.foldersOnScreen.clicked.connect(lambda *args, folder=output: self.change_folder(folder))
             self.foldersLayout.addWidget(self.foldersOnScreen)
@@ -329,6 +335,7 @@ class ENTERTIMEMACHINE(QWidget):
                     self.timeButton.setFixedSize(100, 34)
                     self.timeButton.setCheckable(True)
                     self.timeButton.setAutoExclusive(True)
+                    self.timeButton.setStyleSheet(buttonStylesheet)
                     self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.change_time(getTime))
 
                     ################################################################################
@@ -396,6 +403,7 @@ class ENTERTIMEMACHINE(QWidget):
                     self.filesResult.setCheckable(True)
                     self.filesResult.setFixedSize(filesButtomX, filesButtomY)
                     self.filesResult.setIconSize(QtCore.QSize(64, 64))
+                    self.filesResult.setStyleSheet(buttonStylesheet)
                     self.filesResult.clicked.connect(
                             lambda *, output=output: self.add_to_restore(
                                 output, self.dateFolders[self.countForDate],
@@ -603,7 +611,7 @@ class ENTERTIMEMACHINE(QWidget):
         if len(self.filesToRestore) or len(self.filesToRestoreWithSpace) >= 1:  # If something inside list
             self.restoreButton.setEnabled(True)
             # Restore label + filesToRestore and self.filesToRestoreWithSpace lenght
-            self.restoreButton.setText(f"Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})")
+            self.restoreButton.setText(f"   Restore({len(self.filesToRestore) + len(self.filesToRestoreWithSpace)})   ")
 
             # Hide up function if 1 or more items is/are selected
             # Up
@@ -634,7 +642,7 @@ class ENTERTIMEMACHINE(QWidget):
             # Disable restore button
             self.restoreButton.setEnabled(False)
             # Set self.filesToRestore length
-            self.restoreButton.setText("Restore")
+            self.restoreButton.setText("   Restore   ")
             
             # Show time functions from TimeVLayout if 1 or more items is/are selected
             for i in range(self.timesLayout.count()):

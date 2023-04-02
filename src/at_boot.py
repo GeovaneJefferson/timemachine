@@ -11,6 +11,8 @@ class BOOT:
         self.system_tray()
 
     def system_tray(self):
+        mainIniFile = UPDATEINIFILE()
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
@@ -31,5 +33,4 @@ class BOOT:
         exit()
 
 
-mainIniFile = UPDATEINIFILE()
 main = BOOT()
