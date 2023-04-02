@@ -25,10 +25,13 @@ class UPDATEINIFILE:
         return self.iniBackupNow
 
     def ini_automatically_backup(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-        return self.iniAutomaticallyBackup
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
+            return self.iniAutomaticallyBackup
+        except:
+            pass
 
     def ini_system_tray(self):
         config = configparser.ConfigParser()
@@ -145,10 +148,13 @@ class UPDATEINIFILE:
         return self.iniExtraInformation
 
     def ini_current_backup_information(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-        return self.iniCurrentBackupInfo
+        try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
+            return self.iniCurrentBackupInfo
+        except:
+            pass
         
     def ini_allow_flatpak_names(self):
         config = configparser.ConfigParser()
