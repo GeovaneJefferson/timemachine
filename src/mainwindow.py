@@ -13,6 +13,7 @@ from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date
 from update import restore_ini_file, backup_ini_file
+from determine_next_backup import get_next_backup
 
 # QTimer
 timer = QtCore.QTimer()
@@ -546,144 +547,8 @@ class MAIN(QMainWindow):
         self.load_dates()
     
     def load_dates(self):
-        # SUN
-        if str(mainIniFile.day_name()) == determine_days_language(str(system_language())[0]):
-            if str(mainIniFile.ini_next_backup_sun()) == "true" and int(mainIniFile.current_hour()) <= int(mainIniFile.ini_next_hour()) and int(mainIniFile.current_minute()) <= int(mainIniFile.ini_next_minute()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-        # MON
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[1]:
-            if str(mainIniFile.ini_next_backup_mon()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-        # TUE
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[2]:
-            if str(mainIniFile.ini_next_backup_tue()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-        # WED
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[3]:
-            if str(mainIniFile.ini_next_backup_wed()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-        # TUE
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[4]:
-            if str(mainIniFile.ini_next_backup_thu()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-        # FRI
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[5]:
-            if str(mainIniFile.ini_next_backup_fri()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-                elif str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-        # SAT
-        elif str(mainIniFile.day_name()) == determine_days_language(str(system_language()))[6]:
-            if str(mainIniFile.ini_next_backup_sat()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
-                self.nextDay = "Today"
-            else:
-                if str(mainIniFile.ini_next_backup_sun()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[0]
-                elif str(mainIniFile.ini_next_backup_mon()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[1]
-                elif str(mainIniFile.ini_next_backup_tue()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[2]
-                elif str(mainIniFile.ini_next_backup_wed()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[3]
-                elif str(mainIniFile.ini_next_backup_thu()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[4]
-                elif str(mainIniFile.ini_next_backup_fri()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[5]
-                elif str(mainIniFile.ini_next_backup_sat()) == "true":
-                    self.nextDay = determine_days_language(str(system_language()))[6]
-        else:
-            self.nextDay = "None"
-
         try:
-            info = self.nextDay + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
+            info = str(get_next_backup()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
             # Save next backup to user.ini
             config = configparser.ConfigParser()
             config.read(src_user_config)
