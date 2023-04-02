@@ -1,8 +1,8 @@
 from setup import *
 
 def users_cursor_name():
-    getUserCursorCMD = os.popen(getUserCursorCMD)
-    getUserCursorCMD = getUserCursorCMD.read().strip()
-    getUserCursorCMD = getUserCursorCMD.replace("'", "")
+    userCursorName = os.popen(getUserCursorCMD)
+    userCursorName = userCursorName.read().strip()
+    userCursorName = userCursorName.replace("'", "")
 
-    return getUserCursorCMD
+    return userCursorName

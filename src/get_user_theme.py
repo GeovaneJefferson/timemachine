@@ -1,8 +1,8 @@
 from setup import *
 
 def users_theme_name():
-    userCurrentTheme = os.popen(getUserThemeCMD)
-    userCurrentTheme = userCurrentTheme.read().strip()
-    userCurrentTheme = userCurrentTheme.replace("'", "")
+    userThemeName = os.popen(getUserThemeCMD)
+    userThemeName = userThemeName.read().strip()
+    userThemeName = userThemeName.replace("'", "")
 
-    return userCurrentTheme
+    return userThemeName
