@@ -7,6 +7,11 @@ def backup_ini_file(updateNow):
     """
     sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
     if updateNow:
+        delete_pycache_(updateNow)
+
+def delete_pycache_(updateNow):
+    sub.run(f"rm -rf {src_pycache}", shell=True)
+    if updateNow:
         update_git(updateNow)
 
 def update_git(updateNow):
