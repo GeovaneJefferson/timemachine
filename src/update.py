@@ -10,7 +10,7 @@ def backup_ini_file(updateNow):
         delete_pycache_(updateNow)
 
 def delete_pycache_(updateNow):
-    print("Deleting __pycache___...")
+    print(f"Deleting {src_pycache}")
     sub.run(f"rm -rf {src_pycache}", shell=True)
     if updateNow:
         update_git(updateNow)
