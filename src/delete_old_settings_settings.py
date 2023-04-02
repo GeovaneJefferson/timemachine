@@ -1,7 +1,11 @@
 from setup import *
 from get_user_icon import users_icon_name
+from get_user_cursor import users_cursor_name
+from get_user_theme import users_theme_name
+from read_ini_file import UPDATEINIFILE
 
 def delete_old_settings_settings(x):
+    mainIniFile = UPDATEINIFILE()
     if x == "Icon":
         if os.listdir(f"{str(mainIniFile.icon_main_folder())}/"):
             for icon in os.listdir(f"{str(mainIniFile.icon_main_folder())}/"):
@@ -20,7 +24,7 @@ def delete_old_settings_settings(x):
         if os.listdir(f"{str(mainIniFile.cursor_main_folder())}/"):
             for cursor in os.listdir(f"{str(mainIniFile.cursor_main_folder())}/"):
                 # If is not the same name, remove it, and backup the new one
-                if cursor != userCurrentcursor:
+                if cursor != users_cursor_name():
                     print(f"Deleting {str(mainIniFile.cursor_main_folder())}/{cursor}...")
                     sub.run(f"rm -rf {str(mainIniFile.cursor_main_folder())}/{cursor}", shell=True)
         

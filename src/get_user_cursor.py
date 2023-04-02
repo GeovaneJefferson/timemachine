@@ -1,8 +1,8 @@
 from setup import *
 
 def users_cursor_name():
-    userCurrentcursor = os.popen(getUserCursorCMD)
-    userCurrentcursor = userCurrentcursor.read().strip()
-    userCurrentcursor = userCurrentcursor.replace("'", "")
+    getUserCursorCMD = os.popen(getUserCursorCMD)
+    getUserCursorCMD = getUserCursorCMD.read().strip()
+    getUserCursorCMD = getUserCursorCMD.replace("'", "")
 
-    return userCurrentcursor
+    return getUserCursorCMD

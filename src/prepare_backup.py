@@ -45,9 +45,9 @@ class PREPAREBACKUP:
             ################################################################################
             # Create backup folder
             ################################################################################
-            if not os.path.exists(str(mainIniFile.create_backup_folder())):
+            if not os.path.exists(str(mainIniFile.backup_folder_name())):
                 print("TMB folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {mainIniFile.create_backup_folder()}", shell=True)
+                sub.run(f"{createCMDFolder} {mainIniFile.backup_folder_name()}", shell=True)
 
             ################################################################################
             # Create Application folder

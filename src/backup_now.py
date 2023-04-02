@@ -6,7 +6,7 @@ from update import backup_ini_file
 from read_ini_file import UPDATEINIFILE
 from get_user_icon import users_icon_name
 from get_user_cursor import users_cursor_name
-from get_theme_cursor import users_theme_name
+from get_user_theme import users_theme_name
 from delete_old_settings_settings import delete_old_settings_settings
 
 ################################################################################
@@ -163,7 +163,7 @@ class BACKUP:
 
     def backup_cursor(self):
         delete_old_settings_settings("Cursor")
-        self.update_feedback_status(userCurrentcursor)
+        self.update_feedback_status(users_cursor_name())
 
         try:
             os.listdir(f"/usr/share/icons/{users_cursor_name()}")

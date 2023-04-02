@@ -211,7 +211,7 @@ class UPDATEINIFILE:
         createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}"
         return createBackupFolder
 
-    def create_backup_folder(self):
+    def backup_folder_name(self):
         createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
         return createBackupFolder
 
@@ -256,11 +256,11 @@ class UPDATEINIFILE:
         return debMainFolder
 
     def date_folder_format(self):
-        dateFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
+        dateFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
         return dateFolder
 
     def time_folder_format(self):
-        timeFolder = f"{str(self.create_backup_folder())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_hour())}"
+        timeFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_hour())}"
         return timeFolder
 
     def flatpak_txt_location(self):
