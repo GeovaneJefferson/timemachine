@@ -3,6 +3,7 @@ from setup import *
 languageList = []
 
 def determine_days_language(lang):
+    languageList.clear()
     # ENG
     if lang == 'en':
         languageList.append("Sun")

@@ -418,30 +418,6 @@ class MAIN(QMainWindow):
         
     def read_ini_file(self):
         pass
-        # except KeyError:
-        #     """
-        #     If ini file is empty, restore the backup one
-        #     Backup one is generate every Backup.
-        #     """
-        #     print("")
-        #     print("Ini File is empty!")
-        #     print("Restoring user.ini from backup location")
-        #     print("")
-
-        #     # Restore the copy to inside "ini" folder
-        #     restore_ini_file(False)
-        #     # sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
-            
-        #     self.timeOut += 1
-
-        #     if self.timeOut == 1:
-        #         self.read_ini_file()
-        #     else:
-        #         print("")
-        #         print("Error restoring ini file!")
-        #         print("")
-        #         exit()
-    
         self.connection()
         
     def connection(self):
