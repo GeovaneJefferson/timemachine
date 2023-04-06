@@ -395,6 +395,7 @@ class PREBACKUP(QWidget):
             ################################################################################
             self.applicationPackagesCheckBox = QCheckBox()
             self.applicationPackagesCheckBox.setText(f" Applications "
+                "                              "
                 f"                              {self.applicationSize}")
             self.applicationPackagesCheckBox.setFont(fontSize11px)
             self.applicationPackagesCheckBox.adjustSize()
@@ -431,7 +432,8 @@ class PREBACKUP(QWidget):
 
                 self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
-                    f"                                  {flatpaksToBeInstalled} Apps")
+                    "                                  "
+                    f"                               {flatpaksToBeInstalled} Apps")
                 self.flatpakCheckBox.setFont(fontSize11px)
                 self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/application-vnd.flatpak.ref.svg"))
                 self.flatpakCheckBox.setIconSize(QtCore.QSize(32,32))
@@ -507,7 +509,8 @@ class PREBACKUP(QWidget):
 
             self.systemSettingsCheckBox = QCheckBox()
             self.systemSettingsCheckBox.setText(" System Settings"
-                f"               {self.systemSettingsFolderSize}")
+                "                               "
+                f"                              {self.systemSettingsFolderSize}")
             self.systemSettingsCheckBox.setFont(fontSize11px)
             self.systemSettingsCheckBox.adjustSize()
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
@@ -541,7 +544,8 @@ class PREBACKUP(QWidget):
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
             self.fileAndFoldersCheckBox.setText(" Files and Folders"
-                f"                        {self.fileAndFoldersFolderSize}")
+                "                               "
+                f"                      {self.fileAndFoldersFolderSize}")
             self.fileAndFoldersCheckBox.setFont(fontSize11px)
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/text-x-generic.svg"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(32,32))
@@ -1230,12 +1234,12 @@ if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
     # main2 = CHOOSEDEVICE()
-    # main4 = PREBACKUP()
+    main4 = PREBACKUP()
     # main5 = BACKUPSCREEN()
     # main6 = START_RESTORING()
 
-    widget.addWidget(main)   
-    widget.setCurrentWidget(main)   
+    widget.addWidget(main4)   
+    widget.setCurrentWidget(main4)   
 
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
