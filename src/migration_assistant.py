@@ -1259,10 +1259,10 @@ if __name__ == '__main__':
     # main2 = CHOOSEDEVICE()
     # main4 = PREBACKUP()
     # main5 = BACKUPSCREEN()
-    main6 = START_RESTORING()
+    # main6 = START_RESTORING()
 
-    widget.addWidget(main6)   
-    widget.setCurrentWidget(main6)   
+    widget.addWidget(main)   
+    widget.setCurrentWidget(main)   
 
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
