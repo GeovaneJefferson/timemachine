@@ -9,3 +9,5 @@ def get_home_folders():
             homeFoldersList.sort()
     
     return homeFoldersList
+if __name__ == '__main__':
+    pass

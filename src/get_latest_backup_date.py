@@ -1,11 +1,13 @@
 from setup import *
-from read_ini_file import *
+from read_ini_file import UPDATEINIFILE
 
 lastestList = []
 
 def latest_backup_date_label():
+    from get_backup_time import get_latest_backup_time
+    mainIniFile = UPDATEINIFILE()
+
     try:
-        mainIniFile = UPDATEINIFILE()
         lastestList.clear()
 
         for dateList in os.listdir(str(mainIniFile.backup_folder_name())):
@@ -15,7 +17,8 @@ def latest_backup_date_label():
         lastestList.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         if lastestList[0] == f"{mainIniFile.current_date()}-{mainIniFile.current_month()}-{mainIniFile.current_year()}": 
-            return "Today"
+            x = str(get_latest_backup_time()[0]).replace("-",":")
+            return f"Today, {x}"
         else:
             return lastestList[0]
 
@@ -23,8 +26,9 @@ def latest_backup_date_label():
         pass
 
 def latest_backup_date():
+    mainIniFile = UPDATEINIFILE()
+
     try:
-        mainIniFile = UPDATEINIFILE()
         lastestList.clear()
 
         for dateList in os.listdir(str(mainIniFile.backup_folder_name())):
@@ -36,3 +40,5 @@ def latest_backup_date():
 
     except:
         pass
+if __name__ == '__main__':
+    pass

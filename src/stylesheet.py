@@ -1,6 +1,10 @@
 from setup import *
+# Button
+buttonHeightSize = 24
+
 # Font
 mainFont = "Ubuntu"
+
 titleFont = "Ubuntu"
 titleFontSize = 10
 titleFontSizeCompact = 8
@@ -9,7 +13,10 @@ temperatureFont = "Ubuntu"
 temperatureFontSize = 22
 temperatureSmallFontSize = 9
 
-fontSizeSmall = QFont(mainFont,11)
+fontSize11px = QFont(mainFont,11)
+fontSize24px = QFont(mainFont,24)
+
+buttonFontSize = QFont(mainFont,10)
 
 
 newsFont = "Ubuntu"
@@ -40,6 +47,12 @@ normalText = ("""
         border:transparent;
         background-color:transparent;
         color:white;
+        """)
+
+whiteBox = ("""
+        background-color:white;
+        color:black;
+        border:0px;
         """)
 
 separetorLine = ("""
@@ -108,29 +121,29 @@ useDiskButtonStylesheet = (
             "border:0px;"
         "}")
 
-availableDeviceButtonStylesheet = (
+availableDeviceButtonStylesheet  = (
    "QPushButton"
         "{"
             "border-radius:6px;"
             "background-color:rgb(255,255,255);"
             "border:1px solid rgba(14,14,14,0.2);"
             "color:black;"
+            "padding-left:45px;"
+            "text-align:left;"
         "}"
     "QPushButton:hover"
         "{"
-            "background-color:rgba(76,75,78,0.6);"
+            "background-color:rgba(245,245,245,1);"
         "}"
-    "QPushButton:checked  "
+    "QPushButton:disabled"
         "{"
-            "background-color:rgba(110,109,112,0.6);"
+            "background-color:rgb(255,255,255);"
             "color:rgba(223,222,223,1);"
             "border:0px;"
-        "}"  
-    "QPushButton:unchecked "
+        "}"
+    "QPushButton:checked"
         "{"
-            "background-color:rgba(255,255,255,0);"
-            "color:rgba(223,222,223,1);"
-            "border:0px;"
+            "background-color:rgba(213,213,213,1);"
         "}")
 
 externalWindowbackground =( 
@@ -152,3 +165,6 @@ transparentBackground = ("""
     border-radius:0px;
     border:0px solid rgba(51,51,51,1);
         """)
+
+if __name__ == '__main__':
+    pass

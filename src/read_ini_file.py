@@ -1,12 +1,13 @@
 from setup import *
 
 now = datetime.now()
+config = configparser.ConfigParser()
+config.read(src_user_config)
+
 
 class UPDATEINIFILE:
     def ini_hd_name(self):
         try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
             self.iniHDName = config['EXTERNAL']['name']
             return self.iniHDName
         except:
@@ -301,7 +302,9 @@ class UPDATEINIFILE:
         return self.iniApplicationsPackages
     
     def get_backup_home_folders(self):
-        getbackupHomeFolders = f"{mainIniFile.backup_folder_name()}/{latest_backup_date()}"
+        from get_latest_backup_date import latest_backup_date
+
+        getbackupHomeFolders = f"{self.backup_folder_name()}/{latest_backup_date()}"
         return getbackupHomeFolders
     
     def ini_restoring_is_running(self):

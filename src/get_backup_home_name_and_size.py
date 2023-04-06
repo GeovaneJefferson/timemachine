@@ -1,5 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
+from get_latest_backup_date import latest_backup_date
+from get_backup_time import get_latest_backup_time
 
 homeFolderToBeRestore=[]
 homeFolderToRestoreSizeList=[]
@@ -26,7 +28,6 @@ def get_backup_home_folders_name():
                         f"{latest_backup_date()}/{get_latest_backup_time()}/", "").replace("\t", "")
                 getSize = int(getSize)
                 
-                print("Getting folders size...")
                 homeFolderToRestoreSizeList.append(getSize)
             except:
                 pass
@@ -38,3 +39,6 @@ def get_backup_home_folders_name():
 
 def get_backup_folders_size():
     return homeFolderToRestoreSizeList
+
+if __name__ == '__main__':
+    pass

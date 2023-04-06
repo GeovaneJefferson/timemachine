@@ -12,4 +12,5 @@ def users_kde_plasma_style_name():
 
     return line.strip().split(" ")[1]
 
-print(users_kde_plasma_style_name())
+if __name__ == '__main__':
+    pass

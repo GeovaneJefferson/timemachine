@@ -138,3 +138,6 @@ def total_home_folders_to_backup():
 
 def free_space_home_folders():
     return freeSpace
+
+if __name__ == '__main__':
+    pass

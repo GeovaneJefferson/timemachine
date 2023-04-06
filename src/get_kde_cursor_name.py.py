@@ -12,4 +12,5 @@ def users_kde_cursor_name():
 
     return line.strip().split(" ")[1]
 
-print(users_kde_cursor_name())
+if __name__ == '__main__':
+    pass

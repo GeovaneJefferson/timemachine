@@ -21,3 +21,6 @@ def get_backup_date():
         print(error)
         print("Error trying to get backup dates!")
         pass
+    
+if __name__ == '__main__':
+    pass

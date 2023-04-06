@@ -44,3 +44,5 @@ def restore_backup_flatpaks_data():
             self.flatpakLocaloBeRestore=[]
     except:
         pass
+if __name__ == '__main__':
+    pass

@@ -33,3 +33,6 @@ def get_available_devices_size(device):
         "Used", "").replace("\n", "").replace(" ", "")
 
     return usedSpace+"/"+externalMaxSize
+
+if __name__ == '__main__':
+    pass

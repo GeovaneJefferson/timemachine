@@ -1,7 +1,7 @@
 from setup import *
 
 
-def get_package_manager():
+def package_manager():
     userPackageManager = os.popen(getUserPackageManager).read().strip().lower()
     if "ubuntu" in userPackageManager:
         return "deb"

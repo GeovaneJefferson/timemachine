@@ -117,7 +117,7 @@ class MAIN(QMainWindow):
         self.selectDiskButton.setFont(QFont(mainFont,normalFontSize))
         self.selectDiskButton.setText("   Select Disk...   ")
         self.selectDiskButton.adjustSize()
-        self.selectDiskButton.setFixedHeight(22)
+        self.selectDiskButton.setFixedHeight(buttonHeightSize)
         self.selectDiskButton.setStyleSheet(buttonStylesheet)
         self.selectDiskButton.clicked.connect(self.external_open_animation)
        
@@ -206,7 +206,7 @@ class MAIN(QMainWindow):
         self.backupNowButton.setText("   Back Up Now   ")
         self.backupNowButton.setFont(QFont(mainFont,normalFontSize))
         self.backupNowButton.adjustSize()
-        self.backupNowButton.setFixedHeight(22)
+        self.backupNowButton.setFixedHeight(buttonHeightSize)
         self.backupNowButton.setStyleSheet(buttonStylesheet)
         self.backupNowButton.clicked.connect(self.backup_now_clicked)
         self.backupNowButton.setEnabled(False)        
@@ -275,7 +275,7 @@ class MAIN(QMainWindow):
         self.optionsButton = QPushButton()
         self.optionsButton.setText("   Options...   ")
         self.optionsButton.setFont(QFont(mainFont,normalFontSize))
-        self.optionsButton.setFixedHeight(22)
+        self.optionsButton.setFixedHeight(buttonHeightSize)
         self.optionsButton.adjustSize()
         self.optionsButton.setStyleSheet(buttonStylesheet)
         self.optionsButton.clicked.connect(self.on_options_clicked)
@@ -352,24 +352,33 @@ class MAIN(QMainWindow):
         self.notAllowed.setFont(item)
         self.notAllowed.move(20,20)
         self.notAllowed.setStyleSheet(transparentBackground)
+        
+        ################################################################################
+        # Buttons
+        ################################################################################
+        widgetButton = QWidget(self.externalWindow)
+        widgetButton.setFixedSize(self.externalWindow.width()-10,58)
+        widgetButton.move(5,220)
+        widgetButton.setStyleSheet("""border:0px;""")
 
+        widgetButtonLayout = QHBoxLayout(widgetButton)
+        widgetButtonLayout.setSpacing(10)
+        
         # Cancel button
-        self.cancelButton = QPushButton(self.externalWindow)
+        self.cancelButton = QPushButton()
         self.cancelButton.setFont(item)
         self.cancelButton.setText("   Cancel   ")
         self.cancelButton.adjustSize()
-        self.cancelButton.setFixedHeight(22)
-        self.cancelButton.move(self.externalWindow.width()-170, self.externalWindow.height()-40)
+        self.cancelButton.setFixedHeight(buttonHeightSize)
         self.cancelButton.setStyleSheet(buttonStylesheet)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
         # Use this device
-        self.useDiskButton = QPushButton(self.externalWindow)
+        self.useDiskButton = QPushButton()
         self.useDiskButton.setFont(item)
         self.useDiskButton.setText("   Use Disk   ")
-        self.useDiskButton.setFixedHeight(22)
+        self.useDiskButton.setFixedHeight(buttonHeightSize)
         self.useDiskButton.adjustSize()
-        self.useDiskButton.move(300,self.externalWindow.height()-40)
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.setStyleSheet(useDiskButtonStylesheet)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
@@ -406,13 +415,14 @@ class MAIN(QMainWindow):
         self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
         self.optionsLayout.addWidget(self.helpButton, 0, Qt.AlignRight | Qt.AlignVCenter)
         
-        # Set Layouts
+        widgetButtonLayout.addStretch()
+        widgetButtonLayout.addWidget(self.cancelButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+        widgetButtonLayout.addWidget(self.useDiskButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+
         self.setLayout(self.leftLayout)
-       
-        # Check for update
+
         self.check_for_updates()
 
-        # Update
         timer.timeout.connect(self.connection)
         timer.start(3000) 
         self.connection()
@@ -716,15 +726,13 @@ class MAIN(QMainWindow):
                 for output in os.listdir(f'{media}/{userName}'):
                     # No spaces and special characters allowed
                     if output not in self.captureDevices and "'" not in output and " " not in output:
-                        # print(output)
-                        # If device is in list, display to user just on time per device
                         self.captureDevices.append(output)
 
                         # Avaliables external  devices
                         self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setFont(fontSize11px)
                         self.availableDevices.setText(f"{output}")
-                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
+                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,50)
                         self.availableDevices.setCheckable(True)
                         self.availableDevices.setAutoExclusive(True)
                         self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
@@ -734,26 +742,11 @@ class MAIN(QMainWindow):
                         # Image
                         icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
-                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
-                        icon.move(7, 7)
+                        image = image.scaled(36,36,QtCore.Qt.KeepAspectRatio)
+                        icon.move(7,7)
                         icon.setStyleSheet(transparentBackground)
                         icon.setPixmap(image)
-                        
-                        # # Free Space Label
-                        # freeSpaceLabel = QLabel(self.availableDevices)
-                        # freeSpaceLabel.setFont(QFont(mainFont, 8))
-                        # freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
-                        # freeSpaceLabel.move(self.availableDevices.width()-80, 40)
-                        
-                        # if self.iniExternalLocation == self.availableDevices.text():
-                        #     freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
-                        #     freeSpaceLabel.adjustSize()
-
-                        # # For other devices
-                        # else:
-                        #     freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
-                        #     freeSpaceLabel.adjustSize()
-                            
+      
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
@@ -780,7 +773,7 @@ class MAIN(QMainWindow):
 
                         # Avaliables external  devices
                         self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(QFont('Ubuntu', 12))
+                        self.availableDevices.setFont(fontSize11px)
                         self.availableDevices.setText(f"{output}")
                         self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
                         self.availableDevices.setCheckable(True)
@@ -833,10 +826,10 @@ class MAIN(QMainWindow):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if mainFont in get_package_manager():
+                if mainFont in package_manager():
                     config.set('INFO', 'packageManager', f'{debFolderName}')
                 
-                elif "fedora" in get_package_manager():
+                elif "fedora" in package_manager():
                     config.set('INFO', 'packageManager', f'{rpmFolderName}')
 
                 config.set('INFO', 'os',  f'{get_user_de()}')
@@ -1248,7 +1241,7 @@ class OPTION(QMainWindow):
         self.fixButton.setFont(QFont(mainFont,normalFontSize))
         self.fixButton.setText("   Reset   ")
         self.fixButton.adjustSize()
-        self.fixButton.setFixedHeight(22)
+        self.fixButton.setFixedHeight(buttonHeightSize)
         self.fixButton.setStyleSheet(buttonStylesheet)
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
@@ -1276,7 +1269,7 @@ class OPTION(QMainWindow):
         self.saveButton.setFont(QFont(mainFont,normalFontSize))
         self.saveButton.setText("   Back   ")
         self.saveButton.adjustSize()
-        self.saveButton.setFixedHeight(22)
+        self.saveButton.setFixedHeight(buttonHeightSize)
         self.saveButton.setStyleSheet(buttonStylesheet)
         self.saveButton.clicked.connect(self.on_save_button_clicked)
 
