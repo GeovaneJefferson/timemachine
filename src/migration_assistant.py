@@ -204,11 +204,11 @@ class CHOOSEDEVICE(QWidget):
                         # Image
                         image = QLabel(self.availableDevices)
                         image.setFixedSize(96, 96)
-                        image.move(38,30)
+                        image.move(42,30)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
-                                f"background-image: url({src_monitor_icon});"
+                                f"background-image: url({src_restore_icon});"
                                 "background-repeat: no-repeat;"
                                 "background-color: transparent;"
                             "}")
