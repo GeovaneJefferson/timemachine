@@ -25,6 +25,8 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
                             QSystemTrayIcon, QMenu, QStackedWidget)
 
+timer = QtCore.QTimer()
+
 ################################################################################
 ## Variables
 ################################################################################
@@ -61,7 +63,7 @@ installDEB = "sudo dpkg -i"
 flatpakInstallCommand = "flatpak install --system --noninteractive --assumeyes --or-update"
 
 # DE
-supportedOS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop"]
+supportedOS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop", "kde"]
 supportedDEBPackageManager = ["debian", "ubuntu"]
 supportedRPMPackageManager = ["fedora", "opensuse"]
 getUserDE = "echo $XDG_CURRENT_DESKTOP"
@@ -94,6 +96,19 @@ setUserThemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 # cursor
 getUserCursorCMD = "gsettings get org.gnome.desktop.interface cursor-theme"
 setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
+
+# KDE
+# Cursor
+getKDEUserCursorCMD = "plasma-apply-cursortheme --list-themes"
+setKDEUserCursorCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
+
+# Color Scheme
+getKDEUserColorSchemeCMD = "plasma-apply-colorscheme --list-schemes"
+# setKDEUserColorSchemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
+
+# Plasma Style
+getKDEUserPlasmaStyleCMD = "plasma-apply-desktoptheme --list-themes"
+# setKDEUserColorSchemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 
 # Locations
 media = "/media"

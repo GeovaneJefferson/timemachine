@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 from setup import *
 from check_connection import *
-from get_backup_times import *
-from get_backup_dates import *
+from get_backup_time import *
+from get_backup_date import *
 from get_time import *
 from read_ini_file import UPDATEINIFILE
 

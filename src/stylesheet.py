@@ -1,4 +1,6 @@
+from setup import *
 # Font
+mainFont = "Ubuntu"
 titleFont = "Ubuntu"
 titleFontSize = 10
 titleFontSizeCompact = 8
@@ -6,6 +8,9 @@ titleFontSizeCompact = 8
 temperatureFont = "Ubuntu"
 temperatureFontSize = 22
 temperatureSmallFontSize = 9
+
+fontSizeSmall = QFont(mainFont,11)
+
 
 newsFont = "Ubuntu"
 newsFontSize = 10
@@ -37,6 +42,10 @@ normalText = ("""
         color:white;
         """)
 
+separetorLine = ("""
+        border-top:1px solid rgba(14,14,14,0.1);
+        """)
+
 buttonStylesheet = (
    "QPushButton"
         "{"
@@ -49,11 +58,15 @@ buttonStylesheet = (
         "{"
             "background-color:rgba(245,245,245,1);"
         "}"
-    "QPushButton:disabled "
+    "QPushButton:disabled"
         "{"
             "background-color:rgb(255,255,255);"
             "color:rgba(223,222,223,1);"
             "border:0px;"
+        "}"
+    "QPushButton:checked"
+        "{"
+            "background-color:rgba(213,213,213,1);"
         "}")
 
 buttonStylesheetDark = (

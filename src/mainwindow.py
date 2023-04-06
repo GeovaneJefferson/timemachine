@@ -11,7 +11,7 @@ from languages import determine_days_language
 from get_size import *
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
-from get_latest_backup_date import latest_backup_date
+from get_latest_backup_date import latest_backup_date_label
 from update import restore_ini_file, backup_ini_file
 from determine_next_backup import get_next_backup
 
@@ -183,7 +183,7 @@ class MAIN(QMainWindow):
 
         # Status Status
         self.externalStatusLabel = QLabel()
-        self.externalStatusLabel.setFont(QFont('DejaVu Sans', 10))
+        self.externalStatusLabel.setFont(item)
         self.externalStatusLabel.setText("Status:")
         self.externalStatusLabel.setFixedSize(200, 18)
 
@@ -413,12 +413,8 @@ class MAIN(QMainWindow):
         self.check_for_updates()
 
         # Update
-        timer.timeout.connect(self.read_ini_file)
-        timer.start(3000) # Update every x seconds
-        self.read_ini_file()
-        
-    def read_ini_file(self):
-        pass
+        timer.timeout.connect(self.connection)
+        timer.start(3000) 
         self.connection()
         
     def connection(self):
@@ -426,12 +422,15 @@ class MAIN(QMainWindow):
         self.timeOut = 0
 
         if str(mainIniFile.ini_hd_name()) != "None":
+            self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
+            
             if is_connected(str(mainIniFile.ini_hd_name())):
                 ################################################################################
                 # External status
                 ################################################################################
                 self.externalStatusLabel.setText("Status: Connected")
                 self.externalStatusLabel.setStyleSheet('color: green')
+
                 try:
                     # Clean notification info
                     config = configparser.ConfigParser()
@@ -445,19 +444,20 @@ class MAIN(QMainWindow):
                     print("Main Window error!")
                     exit()
 
-            self.get_size_informations()
+                self.get_size_informations()
 
-        elif not is_connected(str(mainIniFile.ini_hd_name())):
-            # Disable backup now button
-            self.backupNowButton.setEnabled(False)       
-            # Disconnected     
-            self.externalStatusLabel.setText("Status: Disconnected")
-            self.externalStatusLabel.setStyleSheet('color: red')
-            self.externalStatusLabel.setAlignment(QtCore.Qt.AlignTop)
-            self.externalSizeLabel.setText("No information available")
-
-        self.condition()
-
+            else:
+                self.backupNowButton.setEnabled(False)       
+                # Disconnected     
+                self.externalStatusLabel.setText("Status: Disconnected")
+                self.externalStatusLabel.setStyleSheet('color: red')
+                self.externalSizeLabel.setText("No information available")
+        
+        # No device registered
+        else:
+            self.externalNameLabel.setText("<h1>None</h1>")
+            self.backupNowButton.setEnabled(False)
+      
     def get_size_informations(self):
         ################################################################################
         # Get external size values
@@ -471,7 +471,6 @@ class MAIN(QMainWindow):
         self.condition()
 
     def condition(self):
-        # User has select a backup device
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             # Show backup button if no back up is been made
             if str(mainIniFile.ini_backup_now()) == "false":
@@ -499,14 +498,7 @@ class MAIN(QMainWindow):
             self.externalNameLabel.setText("<h1>None</h1>")
             # Enable backup now button
             self.backupNowButton.setEnabled(False)
-            # Enable auto checkbox
-            # self.automaticallyCheckBox.setEnabled(False)
       
-        self.set_external_name()
-
-    def set_external_name(self):
-        self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
-
         self.set_external_oldest_backup()
 
     def set_external_oldest_backup(self):
@@ -515,7 +507,7 @@ class MAIN(QMainWindow):
         self.set_external_last_backup()
 
     def set_external_last_backup(self):
-        self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date()}")
+        self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date_label()}")
 
         self.load_time_backup()
 

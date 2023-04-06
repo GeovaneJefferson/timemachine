@@ -1,69 +1,12 @@
 #! /usr/bin/python3
 from setup import *
-from device_location import *
-from package_manager import *
-from get_backup_dates import *
-from get_backup_times import *
+from device_location import device_location
+from package_manager import get_package_manager
+from get_backup_date import get_backup_date
+from get_backup_time import get_latest_backup_time
+from restore_cmd import RESTORE
+from read_ini_file import UPDATEINIFILE
 from stylesheet import *
-
-# QTimer
-timer = QtCore.QTimer()
-
-################################################################################
-# Read file
-################################################################################
-config = configparser.ConfigParser()
-config.read(src_user_config)
-
-# Read INI file
-iniExternalName = config['EXTERNAL']['name']
-iniExternalLocation = config['EXTERNAL']['hd']
-iniHDName = config['EXTERNAL']['name']
-iniApplicationsPackages = config['RESTORE']['applications_packages']
-iniApplicationData = config['RESTORE']['applications_data']
-iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-
-iniIsRestoreRunning = config['RESTORE']['is_restore_running']
-iniApplicationsPackages = config['RESTORE']['applications_packages']
-iniApplicationData = config['RESTORE']['applications_data']
-iniFilesAndsFolders = config['RESTORE']['files_and_folders']
-# Current backup information
-iniCurrentBackupInfo = config['INFO']['feedback_status']
-# Get current notification ID
-iniNotificationID = config['INFO']['notification_id']
-# INFO
-packageManager = config['INFO']['packageManager']
-
-# Base folder
-createBaseFolder = f"{iniExternalLocation}/{baseFolderName}"
-# Backup folder
-createBackupFolder = f"{iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-# Wallpaper main folder
-wallpaperMainFolder = f"{iniExternalLocation}/{baseFolderName}/{wallpaperFolderName}"
-# Application main folder
-applicationMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}"
-# Application main Var folder
-applicationVarFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
-# Application main Local folder
-applicationLocalFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
-# Check date inside backup folder
-checkDateInsideBackupFolder = f"{iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-
-# PACKAGES
-# RPM main folder
-rpmMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
-# DEB main folder
-debMainFolder = f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
-
-# Icons users folder
-iconsMainFolder = f"{iniExternalLocation}/{baseFolderName}/{iconFolderName}"
-# Themes users folder
-themeMainFolder = f"{iniExternalLocation}/{baseFolderName}/{themeFolderName}"
-# Cursosr users folder
-cursorMainFolder = f"{iniExternalLocation}/{baseFolderName}/{cursorFolderName}"
-
-# Flatpak txt file
-flatpakTxtFile = f"{iniExternalLocation}/{baseFolderName}/{flatpakTxt}"
 
 
 class WELCOMESCREEN(QWidget):
@@ -108,15 +51,22 @@ class WELCOMESCREEN(QWidget):
         ################################################################################
         # Buttons
         ################################################################################
+        widgetButton = QWidget(self)
+        widgetButton.setFixedSize(900,60)
+        widgetButton.move(0,600-widgetButton.height())
+        widgetButton.setStyleSheet(separetorLine)
+
+        widgetButtonLayout = QHBoxLayout(widgetButton)
+        widgetButtonLayout.setSpacing(10)
+        
         # Continue button
-        self.continueButton = QPushButton(self)
-        self.continueButton.setText("Continue")
+        self.continueButton = QPushButton()
+        self.continueButton.setFixedHeight(22)
+        self.continueButton.setText("   Continue   ")
         self.continueButton.setFont(QFont("Arial", 10))
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 555)
         self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continueButton_clicked)
-        # self.continueButton.clicked.connect(lambda: widget.setCurrentIndex(widget.currentIndex()+1))
 
         ###########################################################################
         # Add layouts and widgets
@@ -124,160 +74,14 @@ class WELCOMESCREEN(QWidget):
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.titlelLayout.addWidget(image, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+
+        widgetButtonLayout.addWidget(self.continueButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+
         self.setLayout(self.titlelLayout)
 
     def on_continueButton_clicked(self):
         widget.addWidget(main3) 
         widget.setCurrentIndex(widget.currentIndex()+1)
-
-class OPTIONS(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.outputBox = ()
-        self.initUI()
-
-    def initUI(self):
-        ################################################################################
-        # Layouts
-        ################################################################################
-        # Vertical layout
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setSpacing(20)
-        self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-
-        # Grid layout
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setSpacing(20)
-        self.gridLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-
-        # Title
-        self.title = QLabel()
-        self.title.setFont(QFont("Arial", 18))
-        self.title.setText("Apps & Data")
-        self.title.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.title.setStyleSheet("""
-        font-weight: Bold;
-        """)
-
-        # Question
-        self.question = QLabel()
-        self.question.setFont(QFont("Arial", 24))
-        self.question.setAlignment(QtCore.Qt.AlignHCenter)
-        self.question.setText("What are you planning to do?")
-        self.question.setStyleSheet("""
-        font-weight: Bold;
-        """)
-
-        # Description
-        self.description = QLabel()
-        self.description.setFont(QFont("Arial", 11))
-        self.description.setAlignment(QtCore.Qt.AlignHCenter)
-        self.description.setText(
-            f"If you already have back up with {appName}\n"
-            "You can use the restore option.")
-
-        ################################################################################
-        # Restore from
-        ################################################################################
-        imagePosX = 38
-        imagePosy = 20
-        self.restoreOption = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_96px}')
-        image = QLabel(self.restoreOption)
-        image.setPixmap(pixmap)
-        image.setFixedSize(pixmap.width(),pixmap.height())
-        image.move(imagePosX, imagePosy)
-        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.restoreOption.setText(
-            "\n\n\n\n\n\n\n\nRestore\n"
-            f"from {appName}")
-        self.restoreOption.setFont(QFont("Arial", 11))
-        self.restoreOption.setCheckable(True)
-        self.restoreOption.setAutoExclusive(True)
-        self.restoreOption.setFixedSize(200, 200)
-        self.restoreOption.setStyleSheet("""
-            font: bold;
-        """)
-        self.restoreOption.clicked.connect(lambda *args: self.on_device_clicked("restore"))
-
-        ################################################################################
-        # Set up as new
-        ################################################################################
-        self.startAsNew = QPushButton()
-        pixmap = QPixmap(f'{src_migration_assistant_96px}')
-        image = QLabel(self.startAsNew)
-        image.setPixmap(pixmap)
-        image.setFixedSize(pixmap.width(),pixmap.height())
-        image.move(imagePosX, imagePosy)
-        # pixmap = pixmap.scaled(50, 50, QtCore.Qt.KeepAspectRatio)
-        self.startAsNew.setFont(QFont("Arial", 11))
-        self.startAsNew.setText(
-            "\n\n\n\n\n\n\nSet Up as New")
-        self.startAsNew.setCheckable(True)
-        self.startAsNew.setAutoExclusive(True)
-        self.startAsNew.setFixedSize(200, 200)
-        self.startAsNew.setStyleSheet("""
-            font: bold;
-        """)
-        self.startAsNew.clicked.connect(lambda *args: self.on_device_clicked("new"))
-       
-        ################################################################################
-        # Buttons
-        ################################################################################
-        # Back button
-        self.backButton = QPushButton(self)
-        self.backButton.setText("Back")
-        self.backButton.setFont(QFont("Arial", 10))
-        self.backButton.adjustSize()
-        self.backButton.move(700, 555)
-        self.backButton.setStyleSheet(buttonStylesheet)
-        self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
-
-        # Continue button
-        self.continueButton = QPushButton(self)
-        self.continueButton.setText("Continue")
-        self.continueButton.setFont(QFont("Arial", 10))
-        self.continueButton.adjustSize()
-        self.continueButton.move(800, 555)
-        self.continueButton.setEnabled(False)
-        self.continueButton.setStyleSheet(buttonStylesheet)
-        self.continueButton.clicked.connect(self.on_continue_clicked)
-
-        ################################################################################
-        # Add layout and widgets
-        ################################################################################
-        self.verticalLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.question, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.description, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-
-        # Grid layout
-        self.gridLayout.addWidget(self.restoreOption, 1, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.startAsNew, 1, 1)
-        self.verticalLayout.addLayout(self.gridLayout, 0)
-        
-        self.setLayout(self.verticalLayout)
-
-    def on_device_clicked(self, output):
-        # Add output to self.outputBox
-        self.outputBox = output
-        # Enable or disable continue button
-        if self.restoreOption.isChecked() or self.startAsNew.isChecked():
-            # Enable continue
-            self.continueButton.setEnabled(True)
-
-        else:
-            # Clean self.ouputBox
-            self.outputBox = ""
-            # Disable continue
-            self.continueButton.setEnabled(False)
-    
-    def on_continue_clicked(self):
-        # If user clicked on restore from...
-        if self.outputBox == "restore":
-            widget.addWidget(main3) 
-            widget.setCurrentIndex(widget.currentIndex()+1)
-        else:
-            exit()
 
 class CHOOSEDEVICE(QWidget):
     def __init__(self):
@@ -299,7 +103,7 @@ class CHOOSEDEVICE(QWidget):
         # Title
         self.title = QLabel()
         self.title.setFont(QFont("Arial Bold", 28))
-        self.title.setText("Restore information to this pc")
+        self.title.setText("Restore information to this PC")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
@@ -316,7 +120,7 @@ class CHOOSEDEVICE(QWidget):
         self.moreDescription = QLabel()
         self.moreDescription.setFont(QFont("Arial", 11))
         self.moreDescription.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.moreDescription.setText(f"Make sure that your External device " 
+        self.moreDescription.setText(f"Make sure that your Backup external device " 
             f"with a {appName}'s backup is already connected to this PC.")
 
         ################################################################################
@@ -331,25 +135,37 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         # Buttons
         ################################################################################
+        widgetButton = QWidget(self)
+        widgetButton.setFixedSize(900,60)
+        widgetButton.move(0,600-widgetButton.height())
+        widgetButton.setStyleSheet(separetorLine)
+
+        widgetButtonLayout = QHBoxLayout(widgetButton)
+        widgetButtonLayout.setSpacing(10)
+        
         # Back button
-        self.backButton = QPushButton(self)
-        self.backButton.setText("Back")
+        self.backButton = QPushButton()
+        self.backButton.setText("   Back   ")
         self.backButton.setFont(QFont("Arial", 10))
+        self.backButton.setFixedHeight(22)
         self.backButton.adjustSize()
-        self.backButton.move(700, 555)
         self.backButton.setStyleSheet(buttonStylesheet)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
-        
+
         # Continue button
-        self.continueButton = QPushButton(self)
-        self.continueButton.setText("Continue")
+        self.continueButton = QPushButton()
+        self.continueButton.setText("   Continue  ")
         self.continueButton.setFont(QFont("Arial", 10))
+        self.continueButton.setFixedHeight(22)
         self.continueButton.adjustSize()
-        self.continueButton.move(800, 555)
         self.continueButton.setEnabled(False)
         self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
+        widgetButtonLayout.addStretch()
+        widgetButtonLayout.addWidget(self.backButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+        widgetButtonLayout.addWidget(self.continueButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+
         self.show_on_screen()
 
     def show_on_screen(self):
@@ -371,37 +187,29 @@ class CHOOSEDEVICE(QWidget):
                 # Only show disk the have baseFolderName inside
                 if baseFolderName in os.listdir(f"{location}/{userName}/{output}/"):
                     if output not in self.captureDevices:   
-                        # os.listdir(f"{location}/{userName}/{baseFolderName}")
-                        # If device is in list, display to user just on time per device
                         self.captureDevices.append(output)
 
                         self.availableDevices = QPushButton(self.devicesAreadWidget)
                         self.availableDevices.setCheckable(True)
                         self.availableDevices.setAutoExclusive(True)
-                        self.availableDevices.setFixedSize(180, 180)
-                        self.availableDevices.setText(output)
-                        self.availableDevices.setFont(QFont("Arial", 12))
+                        self.availableDevices.setFixedSize(140,140)
+                        self.availableDevices.setText(f"\n\n\n\n\n{output}")
+                        self.availableDevices.setFont(fontSizeSmall)
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(
                             lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setStyleSheet(
-                            "QPushButton"
-                            "{"
-                                "text-align: bottom;"
-                                "padding-bottom: 25px;"
-                                "font: bold;"
-                            "}")
-                        
+                        self.availableDevices.setStyleSheet(buttonStylesheet)
+           
                         # Image
                         image = QLabel(self.availableDevices)
                         image.setFixedSize(96, 96)
-                        image.move(58, 35)
+                        image.move(42,30)
                         image.setStyleSheet(
                             "QLabel"
                             "{"
-                            f"background-image: url({src_restore_icon});"
-                            "background-repeat: no-repeat;"
-                            "background-color: transparent;"
+                                f"background-image: url({src_restore_icon});"
+                                "background-repeat: no-repeat;"
+                                "background-color: transparent;"
                             "}")
 
                         self.devicesAreaLayout.addWidget(self.availableDevices)
@@ -416,7 +224,7 @@ class CHOOSEDEVICE(QWidget):
         self.verticalLayout.addWidget(self.description)
         self.verticalLayout.addWidget(self.devicesAreadWidget, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.verticalLayout.addWidget(self.moreDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-
+        
         self.setLayout(self.verticalLayout)
 
     def on_device_clicked(self, output):
@@ -460,7 +268,15 @@ class PREBACKUP(QWidget):
         self.countOfDebList = []
         self.countOfRPMList = []
         self.alreadySelectApps = False
-        self.excludeAppsLoc = (f"{iniExternalLocation}/{baseFolderName}/"
+        
+        self.restoreHome = None
+        self.restoreApplicationsPackages = None
+        self.restoreFlatpaksPrograms = None
+        self.restoreFlatpaksData = None
+        self.restoreSystemSettings = None
+        self.reboot = None
+
+        self.excludeAppsLoc = (f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
                 f"{applicationFolderName}/{src_exclude_applications}")
         
         # Delete .exclude-applications.txt first
@@ -470,7 +286,6 @@ class PREBACKUP(QWidget):
         self.read_ini_file()
   
     def read_ini_file(self):
-        self.iniUserPackageManager = config['INFO']['packagemanager']
         self.widgets()
 
     def widgets(self):
@@ -556,20 +371,20 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Get folder size
-            if packageManager == rpmFolderName:
-                self.applicationSize = os.popen(f"du -hs {iniExternalLocation}/"
+            if mainIniFile.ini_package_manager() == rpmFolderName:
+                self.applicationSize = os.popen(f"du -hs {mainIniFile.ini_external_location()}/"
                     f"{baseFolderName}/{applicationFolderName}/{rpmFolderName}")
                 self.applicationSize = self.applicationSize.read().strip("\t")
                 self.applicationSize = self.applicationSize.strip("\n")
-                self.applicationSize = self.applicationSize.replace(f"{iniExternalLocation}"
+                self.applicationSize = self.applicationSize.replace(f"{mainIniFile.ini_external_location()}"
                     f"/{baseFolderName}/{applicationFolderName}/{rpmFolderName}", "").replace("\t", "")
             
-            elif packageManager == debFolderName:
-                self.applicationSize = os.popen(f"du -hs {iniExternalLocation}/"
+            elif mainIniFile.ini_package_manager() == debFolderName:
+                self.applicationSize = os.popen(f"du -hs {mainIniFile.ini_external_location()}/"
                     f"{baseFolderName}/{applicationFolderName}/{debFolderName}")
                 self.applicationSize = self.applicationSize.read().strip("\t")
                 self.applicationSize = self.applicationSize.strip("\n")
-                self.applicationSize = self.applicationSize.replace(f"{iniExternalLocation}"
+                self.applicationSize = self.applicationSize.replace(f"{mainIniFile.ini_external_location()}"
                     f"/{baseFolderName}/{applicationFolderName}/{debFolderName}", "")
  
             ################################################################################
@@ -602,7 +417,7 @@ class PREBACKUP(QWidget):
             ################################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(flatpakTxtFile, "r") as read_file:
+            with open(mainIniFile.flatpak_txt_location(), "r") as read_file:
                 flatpaksToBeInstalled = len(read_file.readlines())
 
                 self.flatpakCheckBox = QCheckBox()
@@ -623,8 +438,8 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Get flatpak data size
-            self.flatpakDataSize = os.popen(f"du -hs {iniExternalLocation}/{baseFolderName}/{applicationFolderName}")
-            self.flatpakDataSize = self.flatpakDataSize.read().strip("\t").strip("\n").replace(f"{iniExternalLocation}/{baseFolderName}/{applicationFolderName}", "").replace("\t", "")
+            self.flatpakDataSize = os.popen(f"du -hs {mainIniFile.ini_external_location()}/{baseFolderName}/{applicationFolderName}")
+            self.flatpakDataSize = self.flatpakDataSize.read().strip("\t").strip("\n").replace(f"{mainIniFile.ini_external_location()}/{baseFolderName}/{applicationFolderName}", "").replace("\t", "")
         
  
             # Application size information
@@ -645,10 +460,10 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             # Icons size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {iconsMainFolder} 2>/dev/null")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {mainIniFile.icon_main_folder()} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{iconsMainFolder}", "")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{mainIniFile.icon_main_folder()}", "")
             dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
 
             # Theme size
@@ -708,7 +523,7 @@ class PREBACKUP(QWidget):
 
             # # Get available dates inside TMB
             # dateFolders = []
-            # for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+            # for output in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
             #     f"{backupFolderName}"):
             #     if not "." in output:
             #         dateFolders.append(output)
@@ -716,17 +531,17 @@ class PREBACKUP(QWidget):
 
             # Get time inside date
             # timeFolder = []
-            # for output in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+            # for output in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
             #     f"{backupFolderName}/{get_backup_date()[0]}/"):
             #     timeFolder.append(output)
             #     timeFolder.sort(reverse=True)
 
             # Get folder size
-            self.fileAndFoldersFolderSize = os.popen(f"du -hs {iniExternalLocation}/"
+            self.fileAndFoldersFolderSize = os.popen(f"du -hs {mainIniFile.ini_external_location()}/"
                 f"{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.read().strip("\t")
             self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.strip("\n")
-            self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{iniExternalLocation}"
+            self.fileAndFoldersFolderSize = self.fileAndFoldersFolderSize.replace(f"{mainIniFile.ini_external_location()}"
                 f"/{baseFolderName}/{backupFolderName}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}", "")
 
             # Files and Folders checkbox        
@@ -783,7 +598,7 @@ class PREBACKUP(QWidget):
             # Look for flatpakTxt inside external device
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            with open(f"{flatpakTxtFile}", 'r') as output:
+            with open(f"{mainIniFile.flatpak_txt_location()}", 'r') as output:
                 output = output.read()
                 # TODO
                 try:
@@ -810,12 +625,12 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             dummyList = []
-            if packageManager == rpmFolderName:
-                for outputRPM in os.listdir(f"{rpmMainFolder}/"):
+            if mainIniFile.ini_package_manager() == rpmFolderName:
+                for outputRPM in os.listdir(f"{mainIniFile.rpm_main_folder()}/"):
                     dummyList.append(outputRPM)
 
-            elif packageManager == debFolderName:
-                for outputDeb in os.listdir(f"{debMainFolder}/"):
+            elif mainIniFile.ini_package_manager() == debFolderName:
+                for outputDeb in os.listdir(f"{mainIniFile.deb_main_folder()}/"):
                     dummyList.append(outputDeb)
             
             # If has something inside
@@ -841,7 +656,7 @@ class PREBACKUP(QWidget):
         ################################################################################
         try:
             dummyList = []
-            for output in os.listdir(f"{applicationVarFolder}/"):
+            for output in os.listdir(f"{mainIniFile.application_var_folder()}/"):
                 dummyList.append(output)
 
             if dummyList:
@@ -863,7 +678,7 @@ class PREBACKUP(QWidget):
         try:
             dummyList = []
             # Check inside backup folder 
-            for output in os.listdir(f"{createBackupFolder}/"):
+            for output in os.listdir(f"{mainIniFile.backup_folder_name()}/"):
                 dummyList.append(output)
 
             if dummyList:
@@ -884,19 +699,19 @@ class PREBACKUP(QWidget):
         dummyList = []
         try:
             # Check if a wallpaper has been backup
-            for output in os.listdir(f"{wallpaperMainFolder}/"):
+            for output in os.listdir(f"{mainIniFile.wallpaper_main_folder()}/"):
                 dummyList.append(output)
 
             # Check if icon has been backup
-            for output in os.listdir(f"{iconsMainFolder}/"):
+            for output in os.listdir(f"{mainIniFile.icon_main_folder()}/"):
                 dummyList.append(output)
 
             # Check if theme has been backup
-            for output in os.listdir(f"{themeMainFolder}/"):
+            for output in os.listdir(f"{mainIniFile.theme_main_folder()}/"):
                 dummyList.append(output)
             
             # Check if cursor has been backup
-            for output in os.listdir(f"{cursorMainFolder}/"):
+            for output in os.listdir(f"{mainIniFile.cursor_main_folder()}/"):
                 dummyList.append(output)
 
             # Check if user DE is in the supported list
@@ -937,7 +752,7 @@ class PREBACKUP(QWidget):
 
                 # DEP
                 if self.iniUserPackageManager == debFolderName:
-                    for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                    for exclude in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
                         f"{applicationFolderName}/{debFolderName}/"):
                         # Exclude
                         # exclude = exclude.split("_")[0].split("-")[0]
@@ -951,7 +766,7 @@ class PREBACKUP(QWidget):
                         self.selectAppsLayout.addWidget(dummyCheckBox)
                 # RPM
                 elif self.iniUserPackageManager == rpmFolderName:
-                    for exclude in os.listdir(f"{iniExternalLocation}/{baseFolderName}/"
+                    for exclude in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
                         f"{applicationFolderName}/{rpmFolderName}/"):
                         # Exclude
                         # exclude = exclude.split("_")[0].split("-")[0]
@@ -986,113 +801,79 @@ class PREBACKUP(QWidget):
             self.allow_to_continue()
 
     def on_flatpak_clicked(self):
-        ################################################################################
-        # Write to INI file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.flatpakCheckBox.isChecked():
-                config.set('RESTORE', 'applications_flatpak_names', 'true')
-                # Activate flatpak checkbox
-                self.flatpakCheckBox.setChecked(True)
-                # Enable continue button
-                self.continueButton.setEnabled(True)
-                # Add names to list if not already there
-                self.optionsAddedList.append("flatpak")
 
-            else:
-                config.set('RESTORE', 'applications_flatpak_names', 'false')
-                # Disable data checkbox
-                self.flatpakCheckBox.setChecked(False)
-                # Disable flatpak if in list
-                self.optionsAddedList.remove("flatpak")
+        if self.flatpakCheckBox.isChecked():
+            self.restoreFlatpaksPrograms = True
+            # Activate flatpak checkbox
+            self.flatpakCheckBox.setChecked(True)
+            # Enable continue button
+            self.continueButton.setEnabled(True)
+            # Add names to list if not already there
+            self.optionsAddedList.append("flatpak")
 
-            # Write to INI file
-            config.write(configfile)
-            # Allow continue?
-            self.allow_to_continue()
+        else:
+            self.restoreFlatpaksPrograms = False
+            # Disable data checkbox
+            self.flatpakCheckBox.setChecked(False)
+            # Disable flatpak if in list
+            self.optionsAddedList.remove("flatpak")
+
+        self.allow_to_continue()
 
     def on_applications_data_clicked(self):
-        # If user allow app to back up data, auto activate
-        # backup flatpaks name too.
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.flatpakDataCheckBox.isChecked():
-                config.set('RESTORE', 'applications_flatpak_names', 'true')
-                config.set('RESTORE', 'applications_data', 'true')
-                # Activate flatpak DATA checkbox
-                self.flatpakDataCheckBox.setChecked(True)
-                # Enable continue button
-                self.continueButton.setEnabled(True)
-                # Add data to list if not already there
-                # if "data" not in self.optionsAddedList:
-                self.optionsAddedList.append("data")
-                # Auto enable flatpak to list
-                self.optionsAddedList.append("flatpak")
-            else:
-                config.set('RESTORE', 'applications_data', 'false')
-                # Disable flatpak DATA checkbox
-                self.flatpakDataCheckBox.setChecked(False)
-                # Disable data if in list
-                # if "data" in self.optionsAddedList:
-                self.optionsAddedList.remove("data")
+        if self.flatpakDataCheckBox.isChecked():
+            self.restoreFlatpaksPrograms = True
+            self.restoreFlatpaksData = True
+            # Activate flatpak DATA checkbox
+            self.flatpakDataCheckBox.setChecked(True)
+            # Enable continue button
+            self.continueButton.setEnabled(True)
+            # Add data to list if not already there
+            # if "data" not in self.optionsAddedList:
+            self.optionsAddedList.append("data")
+            # Auto enable flatpak to list
+            self.optionsAddedList.append("flatpak")
+        else:
+            self.restoreFlatpaksPrograms = False
+            self.restoreFlatpaksData = False
+            # Disable flatpak DATA checkbox
+            self.flatpakDataCheckBox.setChecked(False)
+            # Disable data if in list
+            # if "data" in self.optionsAddedList:
+            self.optionsAddedList.remove("data")
 
-            # Write to INI file
-            config.write(configfile)
-            # Allow continue?
-            self.allow_to_continue()
-  
+        self.allow_to_continue()
+
     def on_files_and_folders_clicked(self):
-        ################################################################################
-        # Write to INI file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.fileAndFoldersCheckBox.isChecked():
-                config.set('RESTORE', 'files_and_folders', 'true')
-                # Enable continue button
-                self.continueButton.setEnabled(True)
-                # Add files to list
-                self.optionsAddedList.append("files")
-            else:
-                config.set('RESTORE', 'files_and_folders', 'false')
-                # Disable continue button
-                self.continueButton.setEnabled(False)
-                # if "files" in self.optionsAddedList:
-                self.optionsAddedList.remove("files")
+        if self.fileAndFoldersCheckBox.isChecked():
+            self.restoreHome = True
+            # Enable continue button
+            self.continueButton.setEnabled(True)
+            # Add files to list
+            self.optionsAddedList.append("files")
+        else:
+            self.restoreHome = False
+            # Disable continue button
+            self.continueButton.setEnabled(False)
+            # if "files" in self.optionsAddedList:
+            self.optionsAddedList.remove("files")
 
-            # Write to INI file
-            config.write(configfile)
-            # Allow continue?
-            self.allow_to_continue()
+        self.allow_to_continue()
   
     def on_system_settings_clicked(self):
-        ################################################################################
-        # Write to INI file
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if self.systemSettingsCheckBox.isChecked():
-                config.set('RESTORE', 'system_settings', 'true')
-                # Enable continue button
-                self.continueButton.setEnabled(True)
-                # Add system_settings to list
-                self.optionsAddedList.append("system_settings")
-            else:
-                config.set('RESTORE', 'system_settings', 'false')
-                # Disable continue button
-                self.continueButton.setEnabled(False)
-                if "system_settings" in self.optionsAddedList:
-                    self.optionsAddedList.remove("system_settings")
+        if self.systemSettingsCheckBox.isChecked():
+            self.restoreSystemSettings = True
+            # Enable continue button
+            self.continueButton.setEnabled(True)
+            # Add system_settings to list
+            self.optionsAddedList.append("system_settings")
+        else:
+            self.restoreSystemSettings = False
+            # Disable continue button
+            self.continueButton.setEnabled(False)
+            if "system_settings" in self.optionsAddedList:
+                self.optionsAddedList.remove("system_settings")
 
-            # Write to INI file
-            config.write(configfile)
-            
-        # Allow continue?
         self.allow_to_continue()
 
     def allow_to_continue(self):
@@ -1266,7 +1047,7 @@ class BACKUPSCREEN(QWidget):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             # Add userName 
-            self.externalDeviceName.setText(iniExternalName)
+            self.externalDeviceName.setText(mainIniFile.ini_hd_name())
             self.externalDeviceName.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.externalDeviceName.adjustSize()
         
@@ -1333,16 +1114,16 @@ class BACKUPSCREEN(QWidget):
 
     def read_ini_file(self):
         try:
-            self.externalDeviceName.setText(iniExternalName)
+            self.externalDeviceName.setText(mainIniFile.ini_hd_name())
 
             ################################################################################
             # Update widgets
             ################################################################################
             # if restoring is running
-            if iniIsRestoreRunning == "true":
+            if mainIniFile.ini_restoring_is_running() == "true":
                 # Show restoring description
                 self.whileRestoringDescription.setText(f'Transferring '
-                    f"{iniCurrentBackupInfo} to the user {userName}...") 
+                    f"{mainIniFile.ini_current_backup_information()} to the user {userName}...") 
                 # Hide more description
                 self.moreDescription.hide()
                 # Show restoring description
@@ -1360,22 +1141,25 @@ class BACKUPSCREEN(QWidget):
 
         # Change screen
         widget.addWidget(main6)
+
         # Call restore python
-        sub.Popen(f"python3 {src_restore_cmd}", shell=True)
+        mainRestore = RESTORE()
+        mainRestore.begin_settings(
+            self.restoreHome,
+            self.restoreApplicationsPackages,
+            self.restoreFlatpaksPrograms,
+            self.restoreFlatpaksData,
+            self.restoreSystemSettings,
+            self.reboot)
+        
         widget.showFullScreen()
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def auto_reboot_clicked(self):
-        # Automatically reboot after done
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w', encoding='utf8') as configfile:  
-            if self.autoReboot.isChecked():
-                config.set('INFO', 'auto_reboot', 'true')
-            else:
-                config.set('INFO', 'auto_reboot', 'false')
-
-            config.write(configfile)
+        if self.autoReboot.isChecked():
+            self.reboot = True
+        else:
+            self.reboot = False
 
 class START_RESTORING(QWidget):
     def __init__(self):
@@ -1445,18 +1229,19 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     widget = QStackedWidget()
 
+    mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
-    main2 = OPTIONS()
     main3 = CHOOSEDEVICE()
     main4 = PREBACKUP()
     main5 = BACKUPSCREEN()
     main6 = START_RESTORING()
-    # Add Widget
+
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   
-    # Window settings
+
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
     widget.setFixedSize(900,600)
     widget.show()
+
     app.exit(app.exec())

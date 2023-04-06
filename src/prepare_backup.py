@@ -2,7 +2,7 @@
 from setup import *
 from get_backup_folders import *
 from get_time import *
-from get_backup_dates import get_backup_date
+from get_backup_date import get_backup_date
 from get_user_wallpaper import *
 from read_ini_file import UPDATEINIFILE
 

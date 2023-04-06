@@ -168,6 +168,18 @@ class UPDATEINIFILE:
         self.iniAllowFlatpakData = config['BACKUP']['allow_flatpak_data']
         return self.iniAllowFlatpakData
     
+    def ini_files_and_folders(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniFilesAndsFolders = config['RESTORE']['files_and_folders']
+        return self.iniFilesAndsFolders
+    
+    def ini_system_settings(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        self.iniSystemSettings = config['RESTORE']['system_settings']
+        return self.iniSystemSettings
+    
     def ini_user_os(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -180,7 +192,6 @@ class UPDATEINIFILE:
         self.iniFolders = config.options('FOLDER')
         return self.iniFolders
     
-
     def day_name(self):
         self.dayName = now.strftime("%a")
         return self.dayName
@@ -272,6 +283,30 @@ class UPDATEINIFILE:
     def flatpak_txt_location(self):
         flatpakTxtFile = f"{str(self.ini_external_location())}/{baseFolderName}/{flatpakTxt}"
         return flatpakTxtFile
+    
+    def exclude_apps_location(self):
+        excludeAppsLoc = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{src_exclude_applications}"
+        return excludeAppsLoc
+    
+    def ini_package_manager(self):
+        self.packageManager = config['INFO']['packageManager']
+        return self.packageManager
+    
+    def ini_automatically_reboot(self):
+        self.iniAutoReboot = config['INFO']['auto_reboot']
+        return self.iniAutoReboot
+    
+    def ini_applications_packages(self):
+        self.iniApplicationsPackages = config['RESTORE']['applications_packages']
+        return self.iniApplicationsPackages
+    
+    def get_backup_home_folders(self):
+        getbackupHomeFolders = f"{mainIniFile.backup_folder_name()}/{latest_backup_date()}"
+        return getbackupHomeFolders
+    
+    def ini_restoring_is_running(self):
+        iniIsRestoreRunning = config['RESTORE']['is_restore_running']
+        return iniIsRestoreRunning
 
 if __name__ == '__main__':
     pass
