@@ -1174,13 +1174,22 @@ class START_RESTORING(QWidget):
         self.titlelLayout.setSpacing(20)
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
         
-        # Welcome
+        self.settingsUP = QLabel()
+        self.settingsUP.setFont(QFont("Arial", 28))
+        self.settingsUP.setText("Setting Up Your PC...")
+        self.settingsUP.setAlignment(QtCore.Qt.AlignHCenter)
+        self.settingsUP.setStyleSheet("""
+        font-weight: Bold;
+        color:gray;
+        """)
+
         self.title = QLabel()
-        self.title.setFont(QFont("Arial", 28))
+        self.title.setFont(QFont("Arial", 16))
         self.title.setText("This may take a few minutes...")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
+        color:gray;
         """)
 
         # More description
@@ -1193,11 +1202,25 @@ class START_RESTORING(QWidget):
         self.moreDescription.setStyleSheet("""
         color: gray;
         """)
-
+        
+        # Image       
+        image = QLabel()
+        image.setFixedSize(320,320)
+        image.setStyleSheet(
+            "QLabel"
+            "{"
+            f"background-image: url({src_settings_up_icon});"
+            "background-repeat: no-repeat;"
+            "background-color: transparent;"
+            "background-position: center;"
+            "}")
+        
         ###########################################################################
         # Add layouts and widgets
         ################################################################################
         self.titlelLayout.addStretch()
+        self.titlelLayout.addWidget(self.settingsUP, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.titlelLayout.addWidget(image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.titlelLayout.addStretch()
@@ -1234,12 +1257,12 @@ if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
     # main2 = CHOOSEDEVICE()
-    main4 = PREBACKUP()
+    # main4 = PREBACKUP()
     # main5 = BACKUPSCREEN()
-    # main6 = START_RESTORING()
+    main6 = START_RESTORING()
 
-    widget.addWidget(main4)   
-    widget.setCurrentWidget(main4)   
+    widget.addWidget(main6)   
+    widget.setCurrentWidget(main6)   
 
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
