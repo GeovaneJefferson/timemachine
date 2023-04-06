@@ -912,7 +912,8 @@ class OPTION(QMainWindow):
         version = QLabel(self)
         version.setFont(QFont(mainFont, 4))
         version.setText(f"<h1>{appVersion}</h1>")
-        version.setFixedSize(80, 20)
+        version.adjustSize()
+        # version.setFixedSize(80, 20)
         version.move(290, 410)
 
         ################################################################################
@@ -1746,7 +1747,6 @@ class OPTION(QMainWindow):
             # Mode section
             # True = Dark, White = False
             if main.darkMode == "true":
-                print("HERE")
                 print((main.darkMode))
 
                 config.set('MODE', 'dark_mode', 'false')

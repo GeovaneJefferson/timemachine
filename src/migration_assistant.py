@@ -80,6 +80,7 @@ class WELCOMESCREEN(QWidget):
         self.setLayout(self.titlelLayout)
 
     def on_continueButton_clicked(self):
+        main2 = CHOOSEDEVICE()
         widget.addWidget(main2) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
@@ -256,6 +257,7 @@ class CHOOSEDEVICE(QWidget):
             config.set('EXTERNAL', 'name', f'{self.locationBackup}')
             config.write(configfile)
 
+        main4 = PREBACKUP()
         widget.addWidget(main4) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
@@ -418,24 +420,26 @@ class PREBACKUP(QWidget):
         except:
             pass
 
-        ################################################################################
-        # Flatpak checkbox (names)
-        ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(mainIniFile.flatpak_txt_location(), "r") as read_file:
-            flatpaksToBeInstalled = len(read_file.readlines())
+        try:
+            ################################################################################
+            # Flatpak checkbox (names)
+            ################################################################################
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(mainIniFile.flatpak_txt_location(), "r") as read_file:
+                flatpaksToBeInstalled = len(read_file.readlines())
 
-            self.flatpakCheckBox = QCheckBox()
-            self.flatpakCheckBox.setText(f" Flatpak "
-                f"                                  {flatpaksToBeInstalled} Apps")
-            self.flatpakCheckBox.setFont(fontSize11px)
-            self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/application-vnd.flatpak.ref.svg"))
-            self.flatpakCheckBox.setIconSize(QtCore.QSize(32,32))
-            self.flatpakCheckBox.setToolTip("This will reinstall: \n"
-                "* All flatpak applications")
-            self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
-
+                self.flatpakCheckBox = QCheckBox()
+                self.flatpakCheckBox.setText(f" Flatpak "
+                    f"                                  {flatpaksToBeInstalled} Apps")
+                self.flatpakCheckBox.setFont(fontSize11px)
+                self.flatpakCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/application-vnd.flatpak.ref.svg"))
+                self.flatpakCheckBox.setIconSize(QtCore.QSize(32,32))
+                self.flatpakCheckBox.setToolTip("This will reinstall: \n"
+                    "* All flatpak applications")
+                self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
+        except:
+            pass
         ################################################################################
         # Flatpaks DATA checkbox
         ################################################################################
@@ -905,7 +909,7 @@ class PREBACKUP(QWidget):
                     for apps in self.excludeAppList:  
                         configfile.write(f"{apps}\n")
             
-        # Change current index
+        main5 = BACKUPSCREEN()
         widget.addWidget(main5)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
@@ -1133,7 +1137,7 @@ class BACKUPSCREEN(QWidget):
             config.set('RESTORE', 'is_restore_running', 'true')
             config.write(configfile)
 
-        # Change screen
+        main6 = START_RESTORING()
         widget.addWidget(main6)
 
         # Call restore python
@@ -1225,10 +1229,10 @@ if __name__ == '__main__':
 
     mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
-    main2 = CHOOSEDEVICE()
-    main4 = PREBACKUP()
-    main5 = BACKUPSCREEN()
-    main6 = START_RESTORING()
+    # main2 = CHOOSEDEVICE()
+    # main4 = PREBACKUP()
+    # main5 = BACKUPSCREEN()
+    # main6 = START_RESTORING()
 
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   
