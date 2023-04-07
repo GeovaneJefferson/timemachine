@@ -26,8 +26,7 @@ class WELCOMESCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            # f"background-image: url({src_migration_assistant_96px});"
-            f"background-image: url(/home/macbook/Dropbox/python/g1625.png);"
+            f"background-image: url({src_migration_assistant_212px});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
