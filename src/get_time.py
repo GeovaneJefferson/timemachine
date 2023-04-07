@@ -26,3 +26,6 @@ def current_time():
     dateTime = datetime.now()
     currentTime = dateTime.strftime("%H:%M")
     return currentTime
+
+if __name__ == '__main__':
+    pass
