@@ -8,6 +8,8 @@ config.read(src_user_config)
 class UPDATEINIFILE:
     def ini_hd_name(self):
         try:
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
             self.iniHDName = config['EXTERNAL']['name']
             return self.iniHDName
         except:

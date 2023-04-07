@@ -7,12 +7,12 @@ from package_manager import *
 from get_user_de import *
 from get_home_folders import *
 from get_system_language import system_language
-from languages import determine_days_language
+# from languages import determine_days_language
 from get_size import *
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
-from update import restore_ini_file, backup_ini_file
+from update import backup_ini_file
 from determine_next_backup import get_next_backup
 
 # QTimer
@@ -424,13 +424,14 @@ class MAIN(QMainWindow):
 
         self.setLayout(self.leftLayout)
 
-        self.check_for_updates()
+        # self.check_for_updates()
 
         timer.timeout.connect(self.connection)
-        timer.start(3000) 
+        timer.start(2000) 
         self.connection()
         
     def connection(self):
+        print("Updating...")
         # Reset timeOut
         self.timeOut = 0
 
@@ -461,16 +462,21 @@ class MAIN(QMainWindow):
 
             else:
                 self.backupNowButton.setEnabled(False)       
-                # Disconnected     
                 self.externalStatusLabel.setText("Status: Disconnected")
                 self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalSizeLabel.setText("No information available")
         
         # No device registered
         else:
+            self.externalSizeLabel.setText("No information available")
+            
             self.externalNameLabel.setText("<h1>None</h1>")
+            
+            self.externalStatusLabel.setText("Status: None")
+            self.externalStatusLabel.setStyleSheet('color:gray')
+            
             self.backupNowButton.setEnabled(False)
-      
+
     def get_size_informations(self):
         ################################################################################
         # Get external size values
@@ -487,29 +493,17 @@ class MAIN(QMainWindow):
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             # Show backup button if no back up is been made
             if str(mainIniFile.ini_backup_now()) == "false":
-                # Disable select disk button
                 self.selectDiskButton.setEnabled(True)
-                # Enable backup now button
                 self.backupNowButton.setEnabled(True)
-                # Enable auto checkbox
                 self.automaticallyCheckBox.setEnabled(True)                
-                # Enable System tray
                 self.showInSystemTrayCheckBox.setEnabled(True)
-
             else:
-                # Disable select disk button
                 self.selectDiskButton.setEnabled(False)
-                # Disable backup now button
                 self.backupNowButton.setEnabled(False)
-                # Disable auto checkbox
                 self.automaticallyCheckBox.setEnabled(False)
-                # Disable System tray
                 self.showInSystemTrayCheckBox.setEnabled(False)
-
         else:
-            # Set external name
             self.externalNameLabel.setText("<h1>None</h1>")
-            # Enable backup now button
             self.backupNowButton.setEnabled(False)
       
         self.set_external_oldest_backup()
@@ -522,12 +516,9 @@ class MAIN(QMainWindow):
     def set_external_last_backup(self):
         self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date_label()}")
 
-        self.load_time_backup()
+        self.automatically_backup_checkbox()
 
-    def load_time_backup(self):
-        ################################################################################
-        # Status for automaticallyCheckBox
-        ################################################################################
+    def automatically_backup_checkbox(self):
         if self.automaticallyCheckBox.isChecked():
             if str(mainIniFile.ini_one_time_mode()) == "true":
                 if str(mainIniFile.ini_time_left()) != "None":
@@ -537,15 +528,15 @@ class MAIN(QMainWindow):
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
-                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
+                    self.nextBackupLabel.setFont(buttonFontSize)
 
                 elif str(mainIniFile.ini_everytime()) == "120":
                     self.nextBackupLabel.setText("Next Backup: Every 2 hours")
-                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
+                    self.nextBackupLabel.setFont(buttonFontSize)
 
                 elif str(mainIniFile.ini_everytime()) == "240":
                     self.nextBackupLabel.setText("Next Backup: Every 4 hours")
-                    self.nextBackupLabel.setFont(QFont('DejaVu Sans', 10))
+                    self.nextBackupLabel.setFont(buttonFontSize)
         else:
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
@@ -737,7 +728,10 @@ class MAIN(QMainWindow):
                         self.availableDevices.setText(f"{output}")
                         self.availableDevices.setFixedSize(self.whereFrame.width()-20,50)
                         self.availableDevices.setCheckable(True)
-                        self.availableDevices.setAutoExclusive(True)
+
+                        if str(mainIniFile.ini_hd_name()) != "None":
+                            self.availableDevices.setAutoExclusive(True)
+    
                         self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
                         text = self.availableDevices.text()
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
@@ -866,6 +860,9 @@ class MAIN(QMainWindow):
             self.external_close_animation()
             # main.setEnabled(True)
             # self.close()
+        
+            self.get_size_informations()
+
 
         except:
             pass
@@ -1067,7 +1064,7 @@ class OPTION(QMainWindow):
         # Radio buttons
         self.oneTimePerDayRadio = QRadioButton()
         self.oneTimePerDayRadio.setFont(QFont(mainFont,normalFontSize))
-        self.oneTimePerDayRadio.setText("One time per day")
+        self.oneTimePerDayRadio.setText("At:")
         self.oneTimePerDayRadio.setToolTip("One single back up will be execute every selected day(s) and time.")
         self.oneTimePerDayRadio.adjustSize()
         self.oneTimePerDayRadio.setStyleSheet(
@@ -1086,7 +1083,7 @@ class OPTION(QMainWindow):
             "Fx: 12-12-12/10-00\n"
             "10-00, is the time of the back up (10:00).")
 
-        self.moreTimePerDayRadio.setText("Multiple times per day")
+        self.moreTimePerDayRadio.setText("Every:")
         self.moreTimePerDayRadio.adjustSize()
         self.moreTimePerDayRadio.setStyleSheet("""
             border-color: transparent;
@@ -1148,11 +1145,7 @@ class OPTION(QMainWindow):
         self.multipleTimePerDayComboBox.setFrame(True)
         self.multipleTimePerDayComboBox.setFixedSize(132, 28)
         self.multipleTimePerDayComboBox.setFont(QFont(mainFont,normalFontSize))
-        self.multipleTimePerDayComboBox.setStyleSheet(
-        "QComboBox"
-            "{"
-                "border: 0px solid transparent;"
-            "}")
+        self.multipleTimePerDayComboBox.setStyleSheet(timeBox)
 
         multipleTimerPerDayComboBoxList = [
             "Every 1 hour",
@@ -1766,6 +1759,10 @@ class OPTION(QMainWindow):
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resetConfirmation == QMessageBox.Yes:
             try:
+                
+                main.lastestBackupLabel.setText("Latest Backup: None")
+                main.oldestBackupLabel.setText("Oldest Backup: None")
+
                 # Reset settings
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
@@ -1832,7 +1829,7 @@ class OPTION(QMainWindow):
 
                     # Write to INI file
                     config.write(configfile)
-
+            
             except:
                 pass
 

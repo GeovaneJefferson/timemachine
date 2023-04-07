@@ -63,13 +63,12 @@ separetorLine = ("""
         """)
 
 timeBox = (
-    "QSpinBox"
-    "{"
-        "border-color: transparent;"
-        "border:1px solid rgba(14,14,14,0.2);"
-        "border-radius:4px;"
-    "}")
-
+    """
+        border-color: transparent;
+        border:1px solid rgba(14,14,14,0.2);
+        border-radius:4px;
+    """)
+ 
 
 buttonStylesheet = (
    "QPushButton"
