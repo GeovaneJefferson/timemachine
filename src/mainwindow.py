@@ -184,8 +184,11 @@ class MAIN(QMainWindow):
         # Status Status
         self.externalStatusLabel = QLabel()
         self.externalStatusLabel.setFont(item)
-        self.externalStatusLabel.setText("Status:")
+        self.externalStatusLabel.setText("Status: None")
         self.externalStatusLabel.setFixedSize(200, 18)
+        self.externalStatusLabel.setStyleSheet("""
+            color: gray;
+            """)
 
         ################################################################################
         # Extra information about an error
@@ -1099,9 +1102,7 @@ class OPTION(QMainWindow):
         self.hoursSpinBox.setSingleStep(1)
         self.hoursSpinBox.setMaximum(23)
         self.hoursSpinBox.valueChanged.connect(self.label_hours_changed)
-        self.hoursSpinBox.setStyleSheet("""
-            border-color: transparent;
-            """)
+        self.hoursSpinBox.setStyleSheet(timeBox)
 
         # : between hours and minutes
         self.betweenHoursAndMinutesLabel = QLabel()
@@ -1135,11 +1136,7 @@ class OPTION(QMainWindow):
         self.minutesSpinBox.setFont(QFont(mainFont, 14))
         self.minutesSpinBox.setFixedSize(50, 30)
         self.minutesSpinBox.setFrame(False)
-        self.minutesSpinBox.setStyleSheet(
-        "QSpinBox"
-            "{"
-                "border: 0px solid transparent;"
-            "}")
+        self.minutesSpinBox.setStyleSheet(timeBox)
 
         self.minutesSpinBox.setMinimum(0)
         self.minutesSpinBox.setSingleStep(1)
