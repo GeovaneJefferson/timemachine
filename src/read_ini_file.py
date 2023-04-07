@@ -1,5 +1,4 @@
 from setup import *
-from get_time import latest_time_info
 
 now = datetime.now()
 config = configparser.ConfigParser()
