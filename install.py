@@ -172,7 +172,7 @@ class CLI:
                     f"Type=Application\n "
                     f"Name=Migration Assistant\n "
                     f"Comment=Restore files/folders etc. from a {appName}'s backup\n "
-                    f"Icon={src_migration_assistant_96px}\n "
+                    f"Icon={src_migration_assistant_212px}\n "
                     f"Exec=python3 {src_call_migration_assistant_py}\n "
                     f"Path={homeUser}/.local/share/{appNameClose}/src/\n "
                     f"Categories=System\n "

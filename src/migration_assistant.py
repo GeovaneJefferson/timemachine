@@ -22,11 +22,12 @@ class WELCOMESCREEN(QWidget):
         
         # Image       
         image = QLabel()
-        image.setFixedSize(140, 140)
+        image.setFixedSize(212,212)
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_migration_assistant_96px});"
+            # f"background-image: url({src_migration_assistant_96px});"
+            f"background-image: url(/home/macbook/Dropbox/python/g1625.png);"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -37,8 +38,10 @@ class WELCOMESCREEN(QWidget):
         self.title.setFont(QFont("Arial", 34))
         self.title.setText("Migration Assistant")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
-        self.title.setStyleSheet("""
-        font-weight: Bold;
+        self.title.setStyleSheet(
+        """
+            font-weight: Bold;
+            color:gray;
         """)
 
        # More description
@@ -108,6 +111,7 @@ class CHOOSEDEVICE(QWidget):
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
+        color:gray;
         """)
 
         # Description
@@ -317,6 +321,7 @@ class PREBACKUP(QWidget):
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
             font-weight: Bold;
+            color:gray;
         """)
 
         # Description
@@ -967,6 +972,7 @@ class BACKUPSCREEN(QWidget):
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
         font-weight: Bold;
+        color:gray;
         """)
 
         # Description
@@ -1199,9 +1205,6 @@ class START_RESTORING(QWidget):
         self.moreDescription.setText(
             "Don't turn off your PC.\n"
             "This window will automatically close after restoring is done.") 
-        self.moreDescription.setStyleSheet("""
-        color: gray;
-        """)
         
         # Image       
         image = QLabel()
@@ -1265,7 +1268,7 @@ if __name__ == '__main__':
     widget.setCurrentWidget(main)   
 
     widget.setWindowTitle("Migration Assistant")
-    widget.setWindowIcon(QIcon(src_migration_assistant_96px)) 
+    widget.setWindowIcon(QIcon(src_migration_assistant_212px)) 
     widget.setFixedSize(900,600)
     widget.show()
 
