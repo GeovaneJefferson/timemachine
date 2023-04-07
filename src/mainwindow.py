@@ -519,12 +519,14 @@ class MAIN(QMainWindow):
         self.automatically_backup_checkbox()
 
     def automatically_backup_checkbox(self):
-        if self.automaticallyCheckBox.isChecked():
+        if mainIniFile.ini_automatically_backup() == 'true':
             if str(mainIniFile.ini_one_time_mode()) == "true":
                 if str(mainIniFile.ini_time_left()) != "None":
+
                     self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_time_left())}")
                 else:
-                    self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_next_backup())}")
+                    self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
+                    
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
@@ -544,7 +546,7 @@ class MAIN(QMainWindow):
     
     def load_dates(self):
         try:
-            info = str(get_next_backup()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
+            info = str(get_next_backup().capitalize()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
             # Save next backup to user.ini
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -1805,8 +1807,8 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
                     config.set('INFO', 'cursor', 'None')
-                    config.set('INFO', 'oldest', 'None')
-                    config.set('INFO', 'latest', 'None')
+                    # config.set('INFO', 'oldest', 'None')
+                    # config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
                     config.set('INFO', 'notification_id', '0')
                     config.set('INFO', 'feedback_status', ' ')

@@ -31,34 +31,30 @@ class UPDATEINIFILE:
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-            return self.iniAutomaticallyBackup
+            return config['BACKUP']['auto_backup']
         except:
             pass
 
     def ini_system_tray(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-        return self.iniSystemTray
+        return config['SYSTEMTRAY']['system_tray']
     
-    def ini_oldest_backup(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniOldestBackup = config['INFO']['oldest']
-        return self.iniOldestBackup
+    # def ini_oldest_backup(self):
+    #     config = configparser.ConfigParser()
+    #     config.read(src_user_config)
+    #     return config['INFO']['oldest']   
+
+    # def ini_lastest_backup(self):
+    #     config = configparser.ConfigParser()
+    #     config.read(src_user_config)
+    #     return config['INFO']['latest']
     
-    def ini_lastest_backup(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniLastBackup = config['INFO']['latest']
-        return self.iniLastBackup
-    
-    def ini_next_backup(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.iniNextBackup = config['INFO']['next']
-        return self.iniNextBackup
+    # def ini_next_backup(self):
+    #     config = configparser.ConfigParser()
+    #     config.read(src_user_config)
+    #     self.iniNextBackup = config['INFO']['next']
+    #     return self.iniNextBackup
     
     def ini_one_time_mode(self):
         config = configparser.ConfigParser()
@@ -72,23 +68,21 @@ class UPDATEINIFILE:
         self.iniMultipleTimePerDay = config['MODE']['more_time_mode']
         return self.iniMultipleTimePerDay
     
-    def ini_dark_mode(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        self.darkMode = config['MODE']['dark_mode']
-        return self.darkMode
+    # def ini_dark_mode(self):
+    #     config = configparser.ConfigParser()
+    #     config.read(src_user_config)
+    #     self.darkMode = config['MODE']['dark_mode']
+    #     return self.darkMode
      
     def ini_next_hour(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniNextHour = config['SCHEDULE']['hours']
-        return self.iniNextHour
+        return config['SCHEDULE']['hours']
      
     def ini_next_minute(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniNextMinute = config['SCHEDULE']['minutes']
-        return self.iniNextMinute
+        return config['SCHEDULE']['minutes']
     
     def ini_next_backup_sun(self):
         config = configparser.ConfigParser()

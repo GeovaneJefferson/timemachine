@@ -4,6 +4,7 @@ from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
 from get_time import *
+from get_latest_backup_date import latest_backup_date_label
 from read_ini_file import UPDATEINIFILE
 
 # QTimer
@@ -141,7 +142,7 @@ class APP:
                     
                     # Update last backup information
                     self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
-                        f'{str(mainIniFile.ini_lastest_backup())}')
+                        f'{str(latest_backup_date_label())}')
 
                 else:
                     self.change_color("Blue")

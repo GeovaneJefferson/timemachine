@@ -219,11 +219,11 @@ class BACKUP:
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'false')
-            try:
-                # Update last backup time
-                config.set('INFO', 'latest', f'{latest_time_info()}')
-            except:
-                pass
+            # try:
+            #     # Update last backup time
+            #     config.set('INFO', 'latest', f'{latest_time_info()}')
+            # except:
+            #     pass
             # Change system tray color to white (Normal)
             config.set('INFO', 'notification_id', "0")
             # Reset Main Window information
