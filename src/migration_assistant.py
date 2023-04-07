@@ -34,7 +34,7 @@ class WELCOMESCREEN(QWidget):
         
         # Welcome
         self.title = QLabel()
-        self.title.setFont(QFont("Arial", 34))
+        self.title.setFont(migrationAssistantTitle)
         self.title.setText("Migration Assistant")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet(
@@ -105,7 +105,7 @@ class CHOOSEDEVICE(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Arial Bold", 28))
+        self.title.setFont(migrationAssistantTitle)
         self.title.setText("Restore information to this PC")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
@@ -315,7 +315,7 @@ class PREBACKUP(QWidget):
 
         # Title
         self.title = QLabel()
-        self.title.setFont(fontSize24px)
+        self.title.setFont(migrationAssistantTitle)
         self.title.setText("Select the information to restore")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
@@ -966,7 +966,7 @@ class BACKUPSCREEN(QWidget):
         ################################################################################
         # Title
         self.title = QLabel()
-        self.title.setFont(QFont("Arial", 28))
+        self.title.setFont(migrationAssistantTitle)
         self.title.setText("Transferring Your information")
         self.title.setAlignment(QtCore.Qt.AlignHCenter)
         self.title.setStyleSheet("""
@@ -1180,7 +1180,7 @@ class START_RESTORING(QWidget):
         self.titlelLayout.setContentsMargins(20, 20, 20, 20)
         
         self.settingsUP = QLabel()
-        self.settingsUP.setFont(QFont("Arial", 28))
+        self.settingsUP.setFont(migrationAssistantTitle)
         self.settingsUP.setText("Setting Up Your PC...")
         self.settingsUP.setAlignment(QtCore.Qt.AlignHCenter)
         self.settingsUP.setStyleSheet("""

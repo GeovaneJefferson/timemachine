@@ -13,7 +13,8 @@ from threading import Thread
 from pathlib import Path
 from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtCore import (Qt, QSize, QRect, QPropertyAnimation,
+from PySide6.QtCore import (
+    Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint)
 from PySide6.QtGui import (QFont, QPixmap , QIcon, QMovie, QAction,
                             QPalette, QColor)
