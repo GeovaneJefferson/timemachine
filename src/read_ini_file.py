@@ -280,7 +280,7 @@ class UPDATEINIFILE:
         return dateFolder
 
     def time_folder_format(self):
-        timeFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_hour())}"
+        timeFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_minute())}"
         return timeFolder
 
     def flatpak_txt_location(self):
