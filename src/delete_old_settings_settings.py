@@ -1,6 +1,6 @@
 from setup import *
 from get_user_icon import users_icon_name
-from users_cursor_name import users_cursor_name
+from get_users_cursor_name import users_cursor_name
 from get_user_theme import users_theme_name
 from get_kde_color_scheme import get_kde_color_scheme
 from read_ini_file import UPDATEINIFILE

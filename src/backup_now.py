@@ -5,7 +5,7 @@ from get_user_wallpaper import *
 from update import backup_ini_file
 from read_ini_file import UPDATEINIFILE
 from get_user_icon import users_icon_name
-from users_cursor_name import users_cursor_name
+from get_users_cursor_name import users_cursor_name
 from get_user_theme import users_theme_name
 from get_user_de import get_user_de
 from delete_old_settings_settings import delete_old_settings

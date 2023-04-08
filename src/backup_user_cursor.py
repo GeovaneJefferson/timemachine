@@ -1,7 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from delete_old_settings_settings import delete_old_settings
-from users_cursor_name import users_cursor_name
+from get_users_cursor_name import users_cursor_name
 
 def backup_user_cursor():
     mainIniFile = UPDATEINIFILE()
