@@ -98,6 +98,9 @@ class BACKUP:
         config = configparser.ConfigParser()
         config.read(f"{mainIniFile.restore_settings_location()}")
         with open(f"{mainIniFile.restore_settings_location()}", 'w') as configfile:
+            if not config.has_section('INFO'):
+                config.add_section('INFO')
+
             config.set('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
             if get_user_de() == 'kde':
                 config.set('INFO', 'icon', f'{get_kde_icon_name()}')
