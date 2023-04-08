@@ -35,23 +35,23 @@ class APP:
 
         # Ini last backup information
         self.iniLastBackupInformation = QAction()
-        self.iniLastBackupInformation.setFont(QFont(buttonFontSize))
+        self.iniLastBackupInformation.setFont(QFont(mainFont,buttonFontSize))
         self.iniLastBackupInformation.setEnabled(False)
 
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
-        self.backupNowButton.setFont(QFont(buttonFontSize))
+        self.backupNowButton.setFont(QFont(mainFont,buttonFontSize))
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
         self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
-        self.browseTimeMachineBackupsButton.setFont(QFont(buttonFontSize))
+        self.browseTimeMachineBackupsButton.setFont(QFont(mainFont,buttonFontSize))
         self.browseTimeMachineBackupsButton.triggered.connect(
             lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
 
         # Open Time Machine button
         self.openTimeMachine = QAction(f"Open {appName}")
-        self.openTimeMachine.setFont(QFont(buttonFontSize))
+        self.openTimeMachine.setFont(QFont(mainFont,buttonFontSize))
         self.openTimeMachine.triggered.connect(
             lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
 
