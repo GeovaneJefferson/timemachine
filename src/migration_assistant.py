@@ -26,7 +26,7 @@ class WELCOMESCREEN(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_migration_assistant_212px});"
+            f"background-image: url({src_migration_assistant_icon_212px});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1267,7 +1267,7 @@ if __name__ == '__main__':
     widget.setCurrentWidget(main)   
 
     widget.setWindowTitle("Migration Assistant")
-    widget.setWindowIcon(QIcon(src_migration_assistant_212px)) 
+    widget.setWindowIcon(QIcon(src_migration_assistant_icon_212px)) 
     widget.setFixedSize(900,600)
     widget.show()
 

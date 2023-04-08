@@ -53,9 +53,9 @@ def flatpak_var_size():
         ################################################################################
         # Get flatpak (var/app) folders size
         ################################################################################
-        for output in os.listdir(src_flatpak_var_location):  # Get folders size before back up to external
-            getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
+        for output in os.listdir(src_flatpak_var_folder_location):  # Get folders size before back up to external
+            getSize = os.popen(f"du -s {src_flatpak_var_folder_location}/{output}")
+            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_folder_location}/{output}", "").replace("\t", "")
             getSize = int(getSize)
             ################################################################################
             # Add to list
@@ -66,7 +66,7 @@ def flatpak_var_size():
             # inside external device
             flatpakVarSizeList.append(getSize)
             # Add current output (folder inside var/app) to be backup later
-            flatpakVarToBeBackup.append(f"{src_flatpak_var_location}/{output}")
+            flatpakVarToBeBackup.append(f"{src_flatpak_var_folder_location}/{output}")
         
         return flatpakVarSizeList
     except:
@@ -75,6 +75,7 @@ def flatpak_var_size():
 
 def flatpak_var_list():
     try:
+        flatpak_var_size()
         return flatpakVarToBeBackup
     except:
         pass
@@ -84,16 +85,16 @@ def flatpak_local_size():
         ################################################################################
         # Get flatpak (.local/share/flatpak) folders size
         ################################################################################
-        for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
+        for output in os.listdir(src_flatpak_local_folder_location):  # Get .local/share/flatpak size before back up to external
             # Get size of flatpak folder inside var/app/
-            getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
+            getSize = os.popen(f"du -s {src_flatpak_local_folder_location}/{output}")
+            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_folder_location}/{output}", "").replace("\t", "")
             getSize = int(getSize)
 
             # Add to list to be backup
             flatpakLocalSizeList.append(getSize)
             # Add current output (folder inside var/app) to be backup later
-            flatpakLocaloBeBackup.append(f"{src_flatpak_local_location}/{output}")
+            flatpakLocaloBeBackup.append(f"{src_flatpak_local_folder_location}/{output}")
 
         return flatpakLocalSizeList
     except:
@@ -101,6 +102,7 @@ def flatpak_local_size():
 
 def flatpak_local_list():
     try:
+        flatpak_local_size()
         return flatpakLocaloBeBackup
     except:
         pass
@@ -137,6 +139,7 @@ def total_home_folders_to_backup():
     return totalHomeFoldersToBackupSize
 
 def free_space_home_folders():
+    total_home_folders_to_backup()
     return freeSpace
 
 if __name__ == '__main__':

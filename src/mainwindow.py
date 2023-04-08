@@ -615,7 +615,7 @@ class MAIN(QMainWindow):
                 if self.automaticallyCheckBox.isChecked():
                     if not os.path.exists(src_backup_check_desktop):
                         # Copy .desktop to user folder (Autostart .desktop)
-                        shutil.copy(src_backup_check, src_backup_check_desktop)  
+                        shutil.copy(src_backup_check_desktop, src_backup_check_desktop)  
 
                     config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
@@ -650,7 +650,7 @@ class MAIN(QMainWindow):
             ################################################################################
             if str(mainIniFile.ini_system_tray()) == "false":
                 print("Starting system tray...")
-                sub.Popen(f"python3 {src_system_tray}", shell=True)
+                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
            
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -1807,6 +1807,7 @@ class OPTION(QMainWindow):
                     config.set('INFO', 'icon', 'None')
                     config.set('INFO', 'theme', 'None')
                     config.set('INFO', 'cursor', 'None')
+                    config.set('INFO', 'colortheme', 'None')
                     # config.set('INFO', 'oldest', 'None')
                     # config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')

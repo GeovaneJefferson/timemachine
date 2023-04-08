@@ -256,6 +256,12 @@ class UPDATEINIFILE:
     def theme_main_folder(self):
         themeMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
         return themeMainFolder
+    
+    def color_scheme_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}/{colorSchemeName}"
+    
+    def plasma_style_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}/{desktopThemeName}"
 
     def gnomeshell_main_folder(self):
         gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"

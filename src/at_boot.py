@@ -20,7 +20,7 @@ class BOOT:
             config.write(configfile)
 
         if str(mainIniFile.ini_system_tray()) == "true":
-            sub.Popen(f"python3 {src_system_tray}", shell=True)
+            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
         # If external devices has already been saved inside INI file
         if str(mainIniFile.ini_hd_name()) != "None":

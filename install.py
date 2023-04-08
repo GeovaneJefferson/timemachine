@@ -123,8 +123,8 @@ class CLI:
     def begin_to_install(self):
         try:
             # Create autostart folder if necessary
-            if not os.path.exists(src_autostart_folder):
-                sub.run(f"{createCMDFolder} {src_autostart_folder}", shell=True)
+            if not os.path.exists(src_autostart_folder_location):
+                sub.run(f"{createCMDFolder} {src_autostart_folder_location}", shell=True)
 
             # Create applications folder
             if not os.path.exists(src_applications_location):
@@ -172,7 +172,7 @@ class CLI:
                     f"Type=Application\n "
                     f"Name=Migration Assistant\n "
                     f"Comment=Restore files/folders etc. from a {appName}'s backup\n "
-                    f"Icon={src_migration_assistant_212px}\n "
+                    f"Icon={src_migration_assistant_icon_212px}\n "
                     f"Exec=python3 {src_call_migration_assistant_py}\n "
                     f"Path={homeUser}/.local/share/{appNameClose}/src/\n "
                     f"Categories=System\n "

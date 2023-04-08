@@ -12,9 +12,9 @@ def restore_backup_flatpaks_data():
         self.flatpakVarToBeRestore=[]
         self.flatpakLocaloBeRestore=[]
         
-        for output in os.listdir(src_flatpak_var_location): 
-            getSize = os.popen(f"du -s {src_flatpak_var_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_location}/{output}", "").replace("\t", "")
+        for output in os.listdir(src_flatpak_var_folder_location): 
+            getSize = os.popen(f"du -s {src_flatpak_var_folder_location}/{output}")
+            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_folder_location}/{output}", "").replace("\t", "")
             getSize = int(getSize)
 
             ################################################################################
@@ -26,21 +26,21 @@ def restore_backup_flatpaks_data():
             # inside external device
             self.flatpakVarSizeList.append(getSize)
             # Add current output (folder inside var/app) to be backup later
-            self.flatpakVarToBeRestore.append(f"{src_flatpak_var_location}/{output}")
+            self.flatpakVarToBeRestore.append(f"{src_flatpak_var_folder_location}/{output}")
         
         ################################################################################
         # Get flatpak (.local/share/flatpak) folders size
         ################################################################################
-        for output in os.listdir(src_flatpak_local_location):  # Get .local/share/flatpak size before back up to external
+        for output in os.listdir(src_flatpak_local_folder_location):  # Get .local/share/flatpak size before back up to external
             # Get size of flatpak folder inside var/app/
-            getSize = os.popen(f"du -s {src_flatpak_local_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_location}/{output}", "").replace("\t", "")
+            getSize = os.popen(f"du -s {src_flatpak_local_folder_location}/{output}")
+            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_folder_location}/{output}", "").replace("\t", "")
             getSize = int(getSize)
 
             # Add to list to be backup
             self.flatpakVarSizeList.append(getSize)
             # Add current output (folder inside var/app) to be backup later
-            self.flatpakLocaloBeRestore.append(f"{src_flatpak_local_location}/{output}")
+            self.flatpakLocaloBeRestore.append(f"{src_flatpak_local_folder_location}/{output}")
             self.flatpakLocaloBeRestore=[]
     except:
         pass

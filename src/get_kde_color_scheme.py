@@ -1,6 +1,6 @@
 from setup import *
 
-def users_kde_color_scheme_name():
+def get_kde_color_scheme():
     userKDEColorSchemeName = os.popen(getKDEUserColorSchemeCMD)
 
     count = 0

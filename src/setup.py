@@ -45,6 +45,8 @@ wallpaperFolderName = "wallpaper"
 iconFolderName = "icon"
 themeFolderName = "theme"
 cursorFolderName = "cursor"
+colorSchemeName = "color-schemes"
+desktopThemeName = "desktoptheme"
 gnomeShellFolder = "gnome-shell"
 varFolderName = "var"
 localFolderName = "share"
@@ -98,7 +100,9 @@ setUserThemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 getUserCursorCMD = "gsettings get org.gnome.desktop.interface cursor-theme"
 setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
 
+################################################################################
 # KDE
+################################################################################
 # Cursor
 getKDEUserCursorCMD = "plasma-apply-cursortheme --list-themes"
 setKDEUserCursorCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
@@ -128,13 +132,6 @@ topicTitle = QFont("DeJaVu Sans", 10.5)
 item = QFont("Ubuntu", 10)
 
 ################################################################################
-## Locations
-################################################################################
-homeUser = str(Path.home())
-userName = getpass.getuser()
-getHomeFolders = os.listdir(homeUser)
-
-################################################################################
 ## Times
 ################################################################################
 timeModeHours60 = ['0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
@@ -144,32 +141,33 @@ timeModeHours120 = ['0000', '0200', '0400', '0600', '0800', '1000', '1200', '140
                        '1600', '1800', '2000', '2200']
 timeModeHours240 = ['0000', '0400', '0800', '1200', '1600', '2000']
 
-# Fix time
+################################################################################
+## FIX
+################################################################################# 
 fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-# # Home location
-src_applications_location = f"{homeUser}/.local/share/applications/"
-src_autostart_folder = f"{homeUser}/.config/autostart"
-src_flatpak_var_location = f"{homeUser}/.var/app"
-src_flatpak_local_location = f"{homeUser}/.local/share/flatpak"
+################################################################################
+## LOCATION
+################################################################################
+homeUser = str(Path.home())
+userName = getpass.getuser()
+getHomeFolders = os.listdir(homeUser)
+
+src_applications_location = f"{homeUser}/.local/share/applications"
+src_autostart_folder_location = f"{homeUser}/.config/autostart"
+src_flatpak_var_folder_location = f"{homeUser}/.var/app"
+src_flatpak_local_folder_location = f"{homeUser}/.local/share/flatpak"
+
+# KDE
+src_color_scheme_folder_location = f"{homeUser}/.local/share/color-schemes"
+src_plasma_style_folder_location = f"{homeUser}/.local/share/plasma/desktoptheme"
+
+################################################################################
+## PY
+################################################################################
 src_options_py = f"{homeUser}/.local/share/{appNameClose}/src/options.py"
 src_schedule_py = f"{homeUser}/.local/share/{appNameClose}/src/schedule.py"
 src_backup_check_py = f"{homeUser}/.local/share/{appNameClose}/src/backup_check.py"
-src_backup_check_desktop = f"{homeUser}/.config/autostart/backup_check.desktop"
-src_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
-src_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
-src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
-src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
-src_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg"
-src_monitor_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/applications-system.svg"
-src_settings_up_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/laptop-symbolic.svg"
-src_restore_icon_48px = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_48.png"
-src_backup_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/backup_128px.png"
-src_migration_assistant_212px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_212px.png"
-src_migration_assistant_clean_128px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_clean_128px.svg"
-src_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
-src_backup_now = f"{homeUser}/.local/share/{appNameClose}/src/backup_now.py"
-src_backup_check = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
 src_main_window_py = f"{homeUser}/.local/share/{appNameClose}/src/mainwindow.py"
 src_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/migration_assistant.py"
 src_call_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/call_migration_assistant.py"
@@ -177,18 +175,46 @@ src_enter_time_machine_py = f"{homeUser}/.local/share/{appNameClose}/src/enter_t
 src_package_backup_py = f"{homeUser}/.local/share/{appNameClose}/src/auto-package.py"
 src_prepare_backup_py = f"{homeUser}/.local/share/{appNameClose}/src/prepare_backup.py"
 src_update_py = f"{homeUser}/.local/share/{appNameClose}/src/update.py"
+src_backup_now_py = f"{homeUser}/.local/share/{appNameClose}/src/backup_now.py"
+src_system_tray_py = f"{homeUser}/.local/share/{appNameClose}/src/systemtray.py"
+src_notification_py = f"{homeUser}/.local/share/{appNameClose}/src/notification.py"
+src_search_for_devices_py = f"{homeUser}/.local/share/{appNameClose}/src/search_for_devices.py"
+src_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/migration_assistant.py"
+src_restore_cmd_py = f"{homeUser}/.local/share/{appNameClose}/src/restore_cmd.py"
 
-src_system_tray = f"{homeUser}/.local/share/{appNameClose}/src/systemtray.py"
+################################################################################
+## Desktop
+################################################################################
+src_backup_check_desktop = f"{homeUser}/.config/autostart/backup_check.desktop"
+src_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
+src_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
+src_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
+
+################################################################################
+## Config
+################################################################################
+src_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
+src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
+src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
+
+################################################################################
+## Icons
+################################################################################
+src_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg"
+src_restore_icon_48px = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_48.png"
+src_monitor_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/applications-system.svg"
+src_settings_up_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/laptop-symbolic.svg"
+src_backup_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/backup_128px.png"
+src_migration_assistant_icon_212px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_212px.png"
+src_migration_assistant_clean_icon_128px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_clean_128px.svg"
 src_system_bar_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayicon.png"
 src_system_bar_run_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrun.png"
 src_system_bar_error_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconerror.png"
 src_system_bar_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrestore.png"
 
-src_notification = f"{homeUser}/.local/share/{appNameClose}/src/notification.py"
-src_search_for_devices = f"{homeUser}/.local/share/{appNameClose}/src/search_for_devices.py"
-src_migration_assistant = f"{homeUser}/.local/share/{appNameClose}/src/migration_assistant.py"
-src_restore_cmd = f"{homeUser}/.local/share/{appNameClose}/src/restore_cmd.py"
-
+################################################################################
+## TXT
+################################################################################
 # .Exclude-applications
 src_exclude_applications = ".exclude-applications.txt"
 

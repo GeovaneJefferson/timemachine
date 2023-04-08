@@ -15,7 +15,7 @@ def restore_backup_flatpaks_data():
 				config.write(configfile)
 
 			# Restore flatpak data (var) folders from external device
-			sub.run(f"{copyRsyncCMD} {mainIniFile.application_var_folder()}/{output} {src_flatpak_var_location}", shell=True)
+			sub.run(f"{copyRsyncCMD} {mainIniFile.application_var_folder()}/{output} {src_flatpak_var_folder_location}", shell=True)
 	except:
 		pass
 
@@ -28,7 +28,7 @@ def restore_backup_flatpaks_data():
 				config.write(configfile)
 
             # Restore flatpak data (Local) folders from external device
-			sub.run(f"{copyRsyncCMD} {mainIniFile.application_local_folder()}/{output} {src_flatpak_local_location}", shell=True)
+			sub.run(f"{copyRsyncCMD} {mainIniFile.application_local_folder()}/{output} {src_flatpak_local_folder_location}", shell=True)
 	except:
 		pass
             

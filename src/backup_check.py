@@ -50,7 +50,7 @@ class CLI:
         ################################################################################
         if str(mainIniFile.ini_system_tray()) == "true":
             if self.isSystemTrayActivated != None:
-                sub.Popen(f"python3 {src_system_tray}", shell=True)
+                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
                 self.isSystemTrayActivated = True
 
         self.check_connection()

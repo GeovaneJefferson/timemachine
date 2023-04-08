@@ -17,9 +17,9 @@ signal.signal(signal.SIGTERM, signal_exit)
 class PREPAREBACKUP:
     def __init__(self):
         print("Preparing the backup...")
-        self.read_ini_file()
+        self.begin_settings()
 
-    def read_ini_file(self):
+    def begin_settings(self):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -40,54 +40,68 @@ class PREPAREBACKUP:
             ################################################################################
             if not os.path.exists(str(mainIniFile.create_base_folder())):
                 print(f"{createCMDFolder} {str(mainIniFile.create_base_folder())}")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.create_base_folder())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.create_base_folder())}",shell=True)
 
             ################################################################################
             # Create backup folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.backup_folder_name())):
                 print("TMB folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {mainIniFile.backup_folder_name()}", shell=True)
+                sub.run(f"{createCMDFolder} {mainIniFile.backup_folder_name()}",shell=True)
 
             ################################################################################
             # Create Application folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.application_main_folder())):
                 print("Application folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.application_main_folder())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.application_main_folder())}",shell=True)
 
             ################################################################################
             # Create Icon folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.icon_main_folder())):
                 print("Icon folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}",shell=True)
 
             ################################################################################
             # Create Cursor folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.cursor_main_folder())):
                 print("Cursor folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}",shell=True)
             
             ################################################################################
             # Create Theme folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.theme_main_folder())):
                 print("Theme folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.theme_main_folder())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.theme_main_folder())}",shell=True)
 
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)
             ################################################################################
             if not os.path.exists(str(mainIniFile.rpm_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}", shell=True)   
+                sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}",shell=True)   
             
             ################################################################################
             # Create Deb folder (Folder to manual place deb apps)
             ################################################################################
             if not os.path.exists(str(mainIniFile.deb_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}", shell=True)   
+                sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}",shell=True)   
+            
+            ################################################################################
+            # Create Color Scheme folder
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.color_scheme_main_folder())):
+                print("Color scheme folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.color_scheme_main_folder())}",shell=True)
+            
+            ################################################################################
+            # Create Plasma Style folder
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.plasma_style_main_folder())):
+                print("Plasma Style folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)
@@ -231,10 +245,10 @@ class PREPAREBACKUP:
 
                         # Action
                         print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}...")
-                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}", shell=True)
+                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}",shell=True)
                         
                         print(f"Deleting .trash...")
-                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/.Trash-1000", shell=True)
+                        sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/.Trash-1000",shell=True)
 
                         # Return to calculate all folders to be backup
                         self.calculate_home_folders()
@@ -331,14 +345,14 @@ class PREPAREBACKUP:
             ################################################################################
             print("Creating folder with date...")
             if not os.path.exists(str(mainIniFile.date_folder_format())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.date_folder_format())}", shell=True)  # Create folder with date
+                sub.run(f"{createCMDFolder} {str(mainIniFile.date_folder_format())}",shell=True)  # Create folder with date
 
             ################################################################################
             # Create folder with TIME
             ################################################################################
             print("Creating folder with time...")
             if not os.path.exists(str(mainIniFile.time_folder_format())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}", shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.time_folder_format())}",shell=True)
 
             ################################################################################
             # Create application folder
@@ -346,31 +360,31 @@ class PREPAREBACKUP:
             if str(mainIniFile.ini_allow_flatpak_data()) == "true":
                 # Create inside external "Var" Folder
                 if not os.path.exists(str(mainIniFile.application_var_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_var_folder())}", shell=True)  
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_var_folder())}",shell=True)  
 
                 # Create inside external "Local" Folder
                 if not os.path.exists(str(mainIniFile.application_local_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_local_folder())}", shell=True)  
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.application_local_folder())}",shell=True)  
 
             ################################################################################
             # Create flatpak text
             ################################################################################
             if not os.path.exists(str(mainIniFile.flatpak_txt_location())):
                 print("Flatpak file was created.")
-                sub.run(f"{createCMDFile} {str(mainIniFile.flatpak_txt_location())}", shell=True)   
+                sub.run(f"{createCMDFile} {str(mainIniFile.flatpak_txt_location())}",shell=True)   
 
             ################################################################################
             # Create wallpaper folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.wallpaper_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.wallpaper_main_folder())}", shell=True)   
+                sub.run(f"{createCMDFolder} {str(mainIniFile.wallpaper_main_folder())}",shell=True)   
 
         except FileNotFoundError as error:
             # Call error function 
             error_trying_to_backup(error)
 
         # Run prepare_backup first
-        sub.Popen(f"python3 {src_backup_now}",shell=True)
+        sub.Popen(f"python3 {src_backup_now_py}",shell=True)
         exit()
 
 
