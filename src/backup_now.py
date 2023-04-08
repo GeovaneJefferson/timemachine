@@ -66,7 +66,7 @@ class BACKUP:
       
         backup_user_icons()
         
-        backup_user_cursor()
+        # backup_user_cursor()
 
         backup_user_theme()
 

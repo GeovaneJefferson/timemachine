@@ -10,10 +10,10 @@ def backup_user_cursor():
 
     try:
         os.listdir(f"/usr/share/icons/{users_cursor_name()}")
-        sub.run(f"{copyRsyncCMD} /usr/share/icons/{users_cursor_name()} {str(mainIniFile.cursor_main_folder())}", shell=True)
+        sub.run(f"{copyRsyncCMD} /usr/share/icons/{users_cursor_name()} {str(mainIniFile.icon_main_folder())}", shell=True)
     except: 
         try:
             os.listdir(f"{homeUser}/icons/{users_cursor_name()}")
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/ {str(mainIniFile.icon_main_folder())}", shell=True)
         except FileNotFoundError:
-            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/ {str(mainIniFile.icon_main_folder())}", shell=True)
