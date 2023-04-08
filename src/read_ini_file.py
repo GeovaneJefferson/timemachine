@@ -39,7 +39,10 @@ class UPDATEINIFILE:
         config = configparser.ConfigParser()
         config.read(src_user_config)
         return config['SYSTEMTRAY']['system_tray']
-    
+   
+    def exclude_appsications_location(self):
+        return f"{self.ini_external_location()}/{baseFolderName}/{applicationFolderName}/{src_exclude_applications}"
+   
     # def ini_oldest_backup(self):
     #     config = configparser.ConfigParser()
     #     config.read(src_user_config)

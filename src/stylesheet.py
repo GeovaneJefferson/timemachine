@@ -11,18 +11,13 @@ temperatureSmallFontSize = 9
 
 # Button
 buttonHeightSize = 24
-buttonFontSize = mainFont,10
+buttonFontSize = 10
 
 # Migration Assistant
-migrationAssistantTitle = mainFont,28
+migrationAssistantTitle = 28
 
-fontSize11px = mainFont,11
-fontSize24px = mainFont,24
-
-
-
-newsFont = "Ubuntu"
-newsFontSize = 10
+fontSize11px = 11
+fontSize24px = 24
 
 boldText = ("""
         font-weight: bold;
@@ -115,9 +110,8 @@ useDiskButtonStylesheet = (
    "QPushButton"
         "{"
             "border-radius:6px;"
-            "background-color:rgba(21, 100, 220, 1);"
-            "border:1px solid rgba(14,14,14,0.2);"
-            "color:rgba(225, 234, 248, 1);"
+            "background-color:rgba(75,145,247,1);"
+            "color:white;"
         "}"
     "QPushButton:hover"
         "{"

@@ -5,6 +5,7 @@ from get_backup_time import get_latest_backup_time
 
 homeFolderToBeRestore=[]
 homeFolderToRestoreSizeList=[]
+homeFolderToRestoreSizeListPretty=[]
 
 def get_backup_home_folders_name():
     mainIniFile = UPDATEINIFILE()
@@ -23,22 +24,36 @@ def get_backup_home_folders_name():
             homeFolderToBeRestore.append(output)
     
             try:
-                getSize = os.popen(f"du -s {mainIniFile.backup_folder_name()}/{latest_backup_date()}/{get_latest_backup_time()}/")
+                getSize = os.popen(f"du -s {mainIniFile.backup_folder_name()}/{latest_backup_date()}/{(get_latest_backup_time()[0])}/")
                 getSize = getSize.read().strip("\t").strip("\n").replace(f"{mainIniFile.backup_folder_name()}/"
-                        f"{latest_backup_date()}/{get_latest_backup_time()}/", "").replace("\t", "")
+                        f"{latest_backup_date()}/{(get_latest_backup_time()[0])}/", "").replace("\t", "")
                 getSize = int(getSize)
                 
                 homeFolderToRestoreSizeList.append(getSize)
             except:
                 pass
-    
+           
+            try:
+                getSize = os.popen(f"du -hs {mainIniFile.backup_folder_name()}/{latest_backup_date()}/{(get_latest_backup_time()[0])}/")
+                getSize = getSize.read().strip("\t").strip("\n").replace(f"{mainIniFile.backup_folder_name()}/"
+                        f"{latest_backup_date()}/{(get_latest_backup_time()[0])}/", "").replace("\t", "")
+                
+                homeFolderToRestoreSizeListPretty.append(getSize)
+            except:
+                pass
+
         return homeFolderToBeRestore
     
     except:
         pass
 
 def get_backup_folders_size():
-    return homeFolderToRestoreSizeList
+    get_backup_home_folders_name()
+    return homeFolderToRestoreSizeList[0]
+
+def get_backup_folders_size_pretty():
+    get_backup_home_folders_name()
+    return homeFolderToRestoreSizeListPretty[0]
 
 if __name__ == '__main__':
     pass
