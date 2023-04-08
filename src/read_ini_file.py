@@ -99,8 +99,7 @@ class UPDATEINIFILE:
     def ini_next_backup_tue(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniNextBackupTue = config['SCHEDULE']['tue']
-        return self.iniNextBackupTue
+        return config['SCHEDULE']['tue']
 
     def ini_next_backup_wed(self):
         config = configparser.ConfigParser()
