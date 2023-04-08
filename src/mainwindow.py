@@ -726,7 +726,7 @@ class MAIN(QMainWindow):
 
                         # Avaliables external  devices
                         self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(fontSize11px)
+                        self.availableDevices.setFont(QFont(mainFont,fontSize11px))
                         self.availableDevices.setText(f"{output}")
                         self.availableDevices.setFixedSize(self.whereFrame.width()-20,50)
                         self.availableDevices.setCheckable(True)
@@ -772,7 +772,7 @@ class MAIN(QMainWindow):
 
                         # Avaliables external  devices
                         self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(fontSize11px)
+                        self.availableDevices.setFont(QFont(mainFont,fontSize11px))
                         self.availableDevices.setText(f"{output}")
                         self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
                         self.availableDevices.setCheckable(True)
