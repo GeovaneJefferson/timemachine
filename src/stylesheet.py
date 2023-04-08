@@ -1,15 +1,7 @@
 from setup import *
-# Button
-buttonHeightSize = 24
-buttonFontSize = QFont(mainFont,10)
-
-# Migration Assistant
-migrationAssistantTitle = QFont(mainFont,28)
 
 # Font
 mainFont = "Ubuntu"
-
-titleFont = "Ubuntu"
 titleFontSize = 10
 titleFontSizeCompact = 8
 
@@ -17,8 +9,15 @@ temperatureFont = "Ubuntu"
 temperatureFontSize = 22
 temperatureSmallFontSize = 9
 
-fontSize11px = QFont(mainFont,11)
-fontSize24px = QFont(mainFont,24)
+# Button
+buttonHeightSize = 24
+buttonFontSize = mainFont,10
+
+# Migration Assistant
+migrationAssistantTitle = mainFont,28
+
+fontSize11px = mainFont,11
+fontSize24px = mainFont,24
 
 
 
@@ -177,5 +176,3 @@ transparentBackground = ("""
     border:0px solid rgba(51,51,51,1);
         """)
 
-if __name__ == '__main__':
-    pass

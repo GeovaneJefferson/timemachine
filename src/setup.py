@@ -9,7 +9,7 @@ import sys
 import signal
 import asyncio
 
-from threading import Thread
+from stylesheet import *
 from pathlib import Path
 from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui

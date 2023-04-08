@@ -1,14 +1,12 @@
 #! /usr/bin/python3
 from setup import *
+from stylesheet import *
 from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
 from get_time import *
 from get_latest_backup_date import latest_backup_date_label
 from read_ini_file import UPDATEINIFILE
-
-# QTimer
-timer = QtCore.QTimer()
 
 
 class APP:
@@ -37,50 +35,37 @@ class APP:
 
         # Ini last backup information
         self.iniLastBackupInformation = QAction()
-        self.iniLastBackupInformation.setFont(QFont(item))
+        self.iniLastBackupInformation.setFont(QFont(buttonFontSize))
         self.iniLastBackupInformation.setEnabled(False)
-
-        # Line
-        self.dummyLine = QAction("――――――――――――――")
-        self.dummyLine.setEnabled(False)
-      
-        # Line2
-        self.dummyLine2 = QAction("――――――――――――――")
-        self.dummyLine2.setEnabled(False)
-
-        # Line3
-        self.dummyLine3 = QAction("――――――――――――――")
-        self.dummyLine3.setEnabled(False)
 
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
-        self.backupNowButton.setFont(QFont(item))
+        self.backupNowButton.setFont(QFont(buttonFontSize))
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
         self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
-        self.browseTimeMachineBackupsButton.setFont(QFont(item))
+        self.browseTimeMachineBackupsButton.setFont(QFont(buttonFontSize))
         self.browseTimeMachineBackupsButton.triggered.connect(
             lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
 
         # Open Time Machine button
         self.openTimeMachine = QAction(f"Open {appName}")
-        self.openTimeMachine.setFont(QFont(item))
+        self.openTimeMachine.setFont(QFont(buttonFontSize))
         self.openTimeMachine.triggered.connect(
             lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.iniLastBackupInformation)
-
-        # self.menu.addAction(self.dummyLine2)
-        # self.menu.addAction(self.skipThisBackup)
+        self.menu.addSeparator()
 
         self.menu.addAction(self.backupNowButton)
         self.menu.addAction(self.browseTimeMachineBackupsButton)
+        self.menu.addSeparator()
         
-        # self.menu.addAction(self.dummyLine3)
         self.menu.addAction(self.openTimeMachine)
+        self.menu.addSeparator()
         
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)

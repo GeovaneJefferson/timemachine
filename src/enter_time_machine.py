@@ -220,6 +220,7 @@ class ENTERTIMEMACHINE(QWidget):
     def get_folders(self):
         # Clean screen
         self.clean_stuff_on_screen("clean_folders")
+        self.foldersLayout.addStretch()
 
         ################################################################################
         # GET FOLDERS
