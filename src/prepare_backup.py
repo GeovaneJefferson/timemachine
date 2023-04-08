@@ -102,6 +102,13 @@ class PREPAREBACKUP:
             if not os.path.exists(str(mainIniFile.plasma_style_main_folder())):
                 print("Plasma Style folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
+            
+            ################################################################################
+            # Create restore_settings.ini
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.restore_settings_location())):
+                print("Restore Settings ini inside external, was created.")
+                sub.run(f"{createCMDFile} {str(mainIniFile.restore_settings_location())}",shell=True)
 
         except FileNotFoundError as error:
             error_trying_to_backup(error)

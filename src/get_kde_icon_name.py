@@ -1,11 +1,11 @@
 from setup import *
 
-def get_kde_color_scheme():
+def get_kde_icon_name():
     config = configparser.ConfigParser()
     config.read(f"{homeUser}/.config/kdedefaults/kdeglobals")
-    colorscheme = config['General']['ColorScheme']
+    icon = config['Icons']['Theme']
     
-    return colorscheme    
+    return icon    
     # count = 0
     # for line in os.popen(getKDEUserColorSchemeCMD):
     #     # print(f"{count}: {line.strip()}")

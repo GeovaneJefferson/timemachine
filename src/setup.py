@@ -51,6 +51,7 @@ gnomeShellFolder = "gnome-shell"
 varFolderName = "var"
 localFolderName = "share"
 flatpakTxt = "flatpak.txt"
+restoreSettingsIni = "restore_settings.ini"
 
 debFolderName = "deb"
 rpmFolderName = "rpm"
@@ -105,15 +106,10 @@ setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
 ################################################################################
 # Cursor
 getKDEUserCursorCMD = "plasma-apply-cursortheme --list-themes"
-setKDEUserCursorCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
-
 # Color Scheme
 getKDEUserColorSchemeCMD = "plasma-apply-colorscheme --list-schemes"
-# setKDEUserColorSchemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
-
 # Plasma Style
 getKDEUserPlasmaStyleCMD = "plasma-apply-desktoptheme --list-themes"
-# setKDEUserColorSchemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 
 # Locations
 media = "/media"
@@ -195,6 +191,7 @@ src_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/
 ################################################################################
 src_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
 src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
+src_user_restore_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/settings.ini"
 src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
 
 ################################################################################

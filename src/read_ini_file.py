@@ -290,6 +290,9 @@ class UPDATEINIFILE:
     def exclude_apps_location(self):
         excludeAppsLoc = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{src_exclude_applications}"
         return excludeAppsLoc
+
+    def restore_settings_location(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}"
     
     def ini_package_manager(self):
         self.packageManager = config['INFO']['packageManager']

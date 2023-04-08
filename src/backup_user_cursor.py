@@ -6,13 +6,14 @@ from users_cursor_name import users_cursor_name
 def backup_user_cursor():
     mainIniFile = UPDATEINIFILE()
 
-    delete_old_settings("Cursor")
+    # delete_old_settings("Cursor")
 
     try:
         os.listdir(f"/usr/share/icons/{users_cursor_name()}")
         sub.run(f"{copyRsyncCMD} /usr/share/icons/{users_cursor_name()} {str(mainIniFile.cursor_main_folder())}", shell=True)
     except: 
         try:
-            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/{users_cursor_name()} {str(mainIniFile.cursor_main_folder())}", shell=True)
+            os.listdir(f"{homeUser}/icons/{users_cursor_name()}")
+            sub.run(f"{copyRsyncCMD} {homeUser}/.icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)
         except:
-            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/{users_cursor_name()} {str(mainIniFile.cursor_main_folder())}", shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)

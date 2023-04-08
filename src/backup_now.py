@@ -16,6 +16,10 @@ from backup_user_icons import backup_user_icons
 from backup_user_cursor import backup_user_cursor
 from backup_user_theme import backup_user_theme
 from backup_user_color_scheme import backup_user_color_scheme
+from get_kde_color_scheme import get_kde_color_scheme
+from get_kde_cursor_name import users_kde_cursor_name
+from get_kde_icon_name import get_kde_icon_name
+from get_user_wallpaper import user_wallpaper
 from backup_user_flatpak_applications_name import backup_flatpak_applications_name
 
 
@@ -91,7 +95,23 @@ class BACKUP:
             config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
         
-        self.update_feedback_status("")
+        config = configparser.ConfigParser()
+        config.read(src_user_restore_config)
+        with open(src_user_restore_config, 'w') as configfile:
+            config.set('INFO', 'wallpaper', f'{user_wallpaper()}')
+            if get_user_de() == 'kde':
+                config.set('INFO', 'icon', f'{get_kde_icon_name()}')
+                config.set('INFO', 'cursor', f'{users_kde_cursor_name()}')
+                config.set('INFO', 'colortheme', f'{get_kde_color_scheme()}')
+            else:
+                config.set('INFO', 'icon', f'{users_icon_name()}')
+                config.set('INFO', 'theme', f'{users_theme_name()}')
+                config.set('INFO', 'cursor', f'{users_cursor_name()}')
+                config.set('INFO', 'colortheme', f'None')
+
+            config.write(configfile)
+        
+        # self.update_feedback_status("")
         backup_ini_file(False)
 
         print("Backup is done!")

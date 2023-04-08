@@ -1,4 +1,5 @@
 from setup import *
+from get_user_de import get_user_de
 
 def users_icon_name():
     userIconName = os.popen(getUserIconCMD)
