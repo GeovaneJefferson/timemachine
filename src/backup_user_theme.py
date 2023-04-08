@@ -12,22 +12,22 @@ def backup_user_theme():
     # Create gnome-shell inside theme current theme folder
     ################################################################################
     if not os.path.exists(f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/"
-        f"{themeFolderName}/{users_theme_name()}/{gnomeShellFolder}"):
+        f"{gtkThemeFolderName}/{users_theme_name()}/{gnomeShellFolder}"):
         try:
             sub.run(f"{createCMDFolder} {str(mainIniFile.ini_external_location())}/{baseFolderName}/"
-                f"{themeFolderName}/{users_theme_name()}/{gnomeShellFolder}",shell=True)
+                f"{gtkThemeFolderName}/{users_theme_name()}/{gnomeShellFolder}",shell=True)
         except Exception as error:
             pass
 
     try:
         os.listdir(f"/usr/share/themes/{users_theme_name()}/")
-        sub.run(f"{copyRsyncCMD} /usr/share/themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
+        sub.run(f"{copyRsyncCMD} /usr/share/themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
     except:
         try:
             os.listdir(f"{homeUser}/icons/{users_theme_name()}")
-            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
         except:
-            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
 
     ################################################################################
     # Get gnome-shell with the current theme name
@@ -36,6 +36,9 @@ def backup_user_theme():
         if os.listdir(f"/usr/share/gnome-shell/theme/{users_theme_name()}/"):
             sub.run(f"{copyRsyncCMD} /usr/share/gnome-shell/theme/{users_theme_name()}/ "
                 f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/"
-                f"{themeFolderName}/{users_theme_name()}/{gnomeShellFolder}",shell=True)
+                f"{gtkThemeFolderName}/{users_theme_name()}/{gnomeShellFolder}",shell=True)
     except:
         pass
+
+if __name__ == '__main__':
+    pass

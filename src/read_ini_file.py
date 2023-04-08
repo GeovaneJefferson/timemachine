@@ -252,9 +252,11 @@ class UPDATEINIFILE:
         cursorMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{cursorFolderName}"
         return cursorMainFolder
 
+    def gtk_theme_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}"
+    
     def theme_main_folder(self):
-        themeMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
-        return themeMainFolder
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
     
     def color_scheme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{colorSchemeName}"
@@ -263,7 +265,7 @@ class UPDATEINIFILE:
         return f"{str(self.ini_external_location())}/{baseFolderName}/{desktopThemeName}"
 
     def gnomeshell_main_folder(self):
-        gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}/{gnomeShellFolder}"
+        gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}/{gnomeShellFolder}"
         return gnomeShellMainFolder
 
     def rpm_main_folder(self):

@@ -36,12 +36,12 @@ def delete_old_settings(x):
             config.write(configfile)
 
     elif x == "Theme":
-        if os.listdir(f"{str(mainIniFile.theme_main_folder())}/"):
-            for theme in os.listdir(f"{str(mainIniFile.theme_main_folder())}/"):
+        if os.listdir(f"{str(mainIniFile.gtk_theme_main_folder())}/"):
+            for theme in os.listdir(f"{str(mainIniFile.gtk_theme_main_folder())}/"):
                 # If is not the same name, remove it, and backup the new one
                 if theme != users_theme_name():
-                    print(f"Deleting {mainIniFile.theme_main_folder()}/{theme}...")
-                    sub.run(f"rm -rf {mainIniFile.theme_main_folder()}/{theme}",shell=True)
+                    print(f"Deleting {mainIniFile.gtk_theme_main_folder()}/{theme}...")
+                    sub.run(f"rm -rf {mainIniFile.gtk_theme_main_folder()}/{theme}",shell=True)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)

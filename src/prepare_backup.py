@@ -63,19 +63,19 @@ class PREPAREBACKUP:
                 print("Icon folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}",shell=True)
 
-            ################################################################################
-            # Create Cursor folder
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.cursor_main_folder())):
-                print("Cursor folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}",shell=True)
+            # ################################################################################
+            # # Create Cursor folder
+            # ################################################################################
+            # if not os.path.exists(str(mainIniFile.cursor_main_folder())):
+            #     print("Cursor folder inside external, was created.")
+            #     sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}",shell=True)
             
             ################################################################################
             # Create Theme folder
             ################################################################################
-            if not os.path.exists(str(mainIniFile.theme_main_folder())):
+            if not os.path.exists(str(mainIniFile.gtk_theme_main_folder())):
                 print("Theme folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.theme_main_folder())}",shell=True)
+                sub.run(f"{createCMDFolder} {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
 
             ################################################################################
             # Create RPM folder (Folder to manual place rpms apps)

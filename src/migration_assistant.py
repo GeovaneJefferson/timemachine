@@ -480,10 +480,10 @@ class PREBACKUP(QWidget):
             dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
 
             # Theme size
-            self.systemSettingsFolderSize = os.popen(f"du -hs {themeFolderName} 2>/dev/null")
+            self.systemSettingsFolderSize = os.popen(f"du -hs {gtkThemeFolderName} 2>/dev/null")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.read().strip("\t")
             self.systemSettingsFolderSize = self.systemSettingsFolderSize.strip("\n")
-            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{themeFolderName}", "")
+            self.systemSettingsFolderSize = self.systemSettingsFolderSize.replace(f"{gtkThemeFolderName}", "")
             dummySystemSettingsSizeList.append(self.systemSettingsFolderSize)
         
             # Cursor size
@@ -713,7 +713,7 @@ class PREBACKUP(QWidget):
                 dummyList.append(output)
 
             # Check if theme has been backup
-            for output in os.listdir(f"{mainIniFile.theme_main_folder()}/"):
+            for output in os.listdir(f"{mainIniFile.gtk_theme_main_folder()}/"):
                 dummyList.append(output)
             
             # Check if cursor has been backup

@@ -10,7 +10,7 @@ def restore_backup_theme():
     print("Restoring theme...")
     try:
         # Check for theme to be restored
-        for theme in os.listdir(f"{mainIniFile.theme_main_folder()}/"):
+        for theme in os.listdir(f"{mainIniFile.gtk_theme_main_folder()}/"):
             somethingToRestoreInTheme.append(theme)
 
         # If has something to restore
@@ -21,7 +21,7 @@ def restore_backup_theme():
             if not os.path.exists(f"{homeUser}/.local/share/themes"):
                 sub.run(f"{createCMDFolder} {homeUser}/.local/share/themes", shell=True)   
 
-            sub.run(f"{copyRsyncCMD} {mainIniFile.theme_main_folder()}/ {homeUser}/.local/share/themes", shell=True)
+            sub.run(f"{copyRsyncCMD} {mainIniFile.gtk_theme_main_folder()}/ {homeUser}/.local/share/themes", shell=True)
 
             if get_user_de() != 'kde': 
                 try:

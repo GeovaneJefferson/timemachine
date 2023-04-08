@@ -47,7 +47,9 @@ class BACKUP:
             print(error)
             exit()
 
-        # First backup user wallpaper
+        self.start_backup()
+
+    def start_backup(self):
         backup_user_wallpaper()
         
         if str(mainIniFile.ini_allow_flatpak_names()) == "true":
