@@ -15,5 +15,5 @@ def backup_user_cursor():
         try:
             os.listdir(f"{homeUser}/icons/{users_cursor_name()}")
             sub.run(f"{copyRsyncCMD} {homeUser}/.icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)
-        except:
+        except FileNotFoundError:
             sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/icons/ {str(mainIniFile.cursor_main_folder())}", shell=True)

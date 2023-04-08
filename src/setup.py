@@ -191,7 +191,6 @@ src_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/
 ################################################################################
 src_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
 src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
-src_user_restore_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/settings.ini"
 src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
 
 ################################################################################

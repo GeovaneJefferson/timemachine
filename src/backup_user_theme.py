@@ -23,10 +23,11 @@ def backup_user_theme():
         os.listdir(f"/usr/share/themes/{users_theme_name()}/")
         sub.run(f"{copyRsyncCMD} /usr/share/themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
     except:
-        os.listdir(f"{homeUser}/icons/{users_theme_name()}")
-        sub.run(f"{copyRsyncCMD} {homeUser}/.themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
-    else:
-        sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
+        try:
+            os.listdir(f"{homeUser}/icons/{users_theme_name()}")
+            sub.run(f"{copyRsyncCMD} {homeUser}/.themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
+        except:
+            sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/ {str(mainIniFile.theme_main_folder())}",shell=True)
 
     ################################################################################
     # Get gnome-shell with the current theme name

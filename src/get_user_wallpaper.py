@@ -61,4 +61,3 @@ def user_wallpaper():
 
         else:
             count += 1
-
