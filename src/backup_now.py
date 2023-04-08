@@ -105,11 +105,14 @@ class BACKUP:
             if get_user_de() == 'kde':
                 config.set('INFO', 'icon', f'{get_kde_icon_name()}')
                 config.set('INFO', 'cursor', f'{users_kde_cursor_name()}')
+                config.set('INFO', 'gtktheme', f'{users_theme_name()}')
+                config.set('INFO', 'theme', f'None')
                 config.set('INFO', 'colortheme', f'{get_kde_color_scheme()}')
             else:
                 config.set('INFO', 'icon', f'{users_icon_name()}')
-                config.set('INFO', 'theme', f'{users_theme_name()}')
                 config.set('INFO', 'cursor', f'{users_cursor_name()}')
+                config.set('INFO', 'gtktheme', f'{users_theme_name()}')
+                config.set('INFO', 'theme', f'None')
                 config.set('INFO', 'colortheme', f'None')
 
             config.write(configfile)

@@ -6,3 +6,5 @@ def users_theme_name():
     userThemeName = userThemeName.replace("'", "")
 
     return userThemeName
+
+print(users_theme_name())

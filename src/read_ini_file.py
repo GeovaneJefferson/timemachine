@@ -315,6 +315,37 @@ class UPDATEINIFILE:
     def ini_restoring_is_running(self):
         iniIsRestoreRunning = config['RESTORE']['is_restore_running']
         return iniIsRestoreRunning
+    
+    def ini_info_wallpaper(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['wallpaper']
+
+    def ini_info_icon(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['icon']
+
+    def ini_info_cursor(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['cursor']
+
+    def ini_info_colortheme(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['colortheme']
+
+    def ini_info_gtktheme(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['gtktheme']
+
+    def ini_info_theme(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['theme']
+
 
 if __name__ == '__main__':
     pass

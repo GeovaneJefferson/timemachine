@@ -50,7 +50,7 @@ def restore_backup_wallpaper():
                     sub.run(f"{zoomGnomeWallpaper}", shell=True)
                     ################################################################
 
-                elif str(get_user_de()) == "kde":
+                elif get_user_de() == "kde":
                     print("Restoring users wallpaper (KDE)...")
                     # Apply to KDE desktop
                     os.popen("""

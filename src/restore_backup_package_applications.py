@@ -9,7 +9,7 @@ def restore_backup_package_applications():
 
     config = configparser.ConfigParser()
     config.read(src_user_config)
-    with open(f"{exclude_apps_location()}", 'r') as readExclude:
+    with open(f"{mainIniFile.exclude_apps_location()}", 'r') as readExclude:
         readExclude = readExclude.read().split("\n")
         dummyExcludeAppsList.append(f"{readExclude}")
 

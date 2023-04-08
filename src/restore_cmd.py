@@ -89,7 +89,6 @@ class RESTORE:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
-                # Set auto rebooting to false
                 config.set('RESTORE', 'is_restore_running', 'false')
                 config.write(configfile)
 

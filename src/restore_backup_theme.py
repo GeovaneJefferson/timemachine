@@ -23,14 +23,11 @@ def restore_backup_theme():
 
             sub.run(f"{copyRsyncCMD} {mainIniFile.theme_main_folder()}/ {homeUser}/.local/share/themes", shell=True)
 
-            for count in range(len(supportedOS)):
-                if supportedOS[count] in str(get_user_de()):
-                    try:
-                        os.listdir(f"/usr/share/themes/{theme}/")
-                        sub.run(f"{setUserThemeCMD} {theme}", shell=True)
-                    except:
-                        sub.run(f"{setUserThemeCMD} {theme}", shell=True)
-                    else:
-                        pass
+            if get_user_de() != 'kde': 
+                try:
+                    os.listdir(f"/usr/share/themes/{mainIniFile.ini_info_gtktheme()}/")
+                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                except:
+                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
     except:
         pass
