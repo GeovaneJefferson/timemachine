@@ -264,8 +264,8 @@ class CHOOSEDEVICE(QWidget):
             config.set('EXTERNAL', 'name', f'{self.locationBackup}')
             config.write(configfile)
 
-        main4 = PREBACKUP()
-        widget.addWidget(main4) 
+        main3 = PREBACKUP()
+        widget.addWidget(main3) 
         widget.setCurrentIndex(widget.currentIndex()+1)
 
 class PREBACKUP(QWidget):
@@ -659,6 +659,8 @@ class PREBACKUP(QWidget):
             self.alreadySelectApps = False
 
         if self.applicationPackagesCheckBox.isChecked():
+            self.restoreApplicationsPackages = True
+        
             # Activate data checkbox
             self.applicationPackagesCheckBox.setChecked(True)
             # Enable continue button
@@ -695,6 +697,8 @@ class PREBACKUP(QWidget):
 
                     self.selectAppsLayout.addWidget(dummyCheckBox)
         else:
+            self.restoreApplicationsPackages = False
+
             # if "packages" in self.hasItensInsideToContinueList:
             self.hasItensInsideToContinueList.remove("packages")
             self.excludeAppList.clear()
@@ -711,6 +715,7 @@ class PREBACKUP(QWidget):
     def on_flatpak_clicked(self):
         if self.flatpakCheckBox.isChecked():
             self.restoreFlatpaksPrograms = True
+
             # Activate flatpak checkbox
             self.flatpakCheckBox.setChecked(True)
             # Enable continue button
@@ -719,6 +724,7 @@ class PREBACKUP(QWidget):
             self.hasItensInsideToContinueList.append("flatpak")
         else:
             self.restoreFlatpaksPrograms = False
+
             # Disable data checkbox
             self.flatpakCheckBox.setChecked(False)
             # Disable flatpak if in list
@@ -730,6 +736,7 @@ class PREBACKUP(QWidget):
         if self.flatpakDataCheckBox.isChecked():
             self.restoreFlatpaksPrograms = True
             self.restoreFlatpaksData = True
+
             # Activate flatpak DATA checkbox
             self.flatpakDataCheckBox.setChecked(True)
             # Enable continue button
@@ -742,6 +749,7 @@ class PREBACKUP(QWidget):
         else:
             self.restoreFlatpaksPrograms = False
             self.restoreFlatpaksData = False
+
             # Disable flatpak DATA checkbox
             self.flatpakDataCheckBox.setChecked(False)
             # Disable data if in list
@@ -753,12 +761,14 @@ class PREBACKUP(QWidget):
     def on_files_and_folders_clicked(self):
         if self.fileAndFoldersCheckBox.isChecked():
             self.restoreHome = True
+
             # Enable continue button
             self.continueButton.setEnabled(True)
             # Add files to list
             self.hasItensInsideToContinueList.append("files")
         else:
             self.restoreHome = False
+
             # Disable continue button
             self.continueButton.setEnabled(False)
             # if "files" in self.hasItensInsideToContinueList:
@@ -769,13 +779,12 @@ class PREBACKUP(QWidget):
     def on_system_settings_clicked(self):
         if self.systemSettingsCheckBox.isChecked():
             self.restoreSystemSettings = True
-            # Enable continue button
+
             self.continueButton.setEnabled(True)
-            # Add system_settings to list
             self.hasItensInsideToContinueList.append("system_settings")
         else:
             self.restoreSystemSettings = False
-            # Disable continue button
+
             self.continueButton.setEnabled(False)
             if "system_settings" in self.hasItensInsideToContinueList:
                 self.hasItensInsideToContinueList.remove("system_settings")
@@ -785,10 +794,8 @@ class PREBACKUP(QWidget):
     def allow_to_continue(self):
         # If self.hasItensInsideToContinueList is not empty, allow it
         if len(self.hasItensInsideToContinueList) > 0:
-            # Enable continue button
             self.continueButton.setEnabled(True)
         else:
-            # Disable continue button
             self.continueButton.setEnabled(False)
 
     def on_back_button_clicked(self):
@@ -817,8 +824,8 @@ class PREBACKUP(QWidget):
                     for apps in self.excludeAppList:  
                         configfile.write(f"{apps}\n")
             
-        main5 = BACKUPSCREEN()
-        widget.addWidget(main5)
+        main4 = BACKUPSCREEN()
+        widget.addWidget(main4)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def exclude_apps(self, exclude):
@@ -1061,8 +1068,8 @@ class BACKUPSCREEN(QWidget):
             config.set('RESTORE', 'is_restore_running', 'true')
             config.write(configfile)
 
-        main6 = START_RESTORING()
-        widget.addWidget(main6)
+        main5 = START_RESTORING()
+        widget.addWidget(main5)
 
         # Call restore python
         mainRestore = RESTORE()
@@ -1174,9 +1181,9 @@ if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
     # main2 = CHOOSEDEVICE()
-    # main4 = PREBACKUP()
-    # main5 = BACKUPSCREEN()
-    # main6 = START_RESTORING()
+    # main3 = PREBACKUP()
+    # main4 = BACKUPSCREEN()
+    # main5 = START_RESTORING()
 
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   
