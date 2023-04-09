@@ -522,12 +522,10 @@ class MAIN(QMainWindow):
     def automatically_backup_checkbox(self):
         if mainIniFile.ini_automatically_backup() == 'true':
             if str(mainIniFile.ini_one_time_mode()) == "true":
-                if str(mainIniFile.ini_time_left()) != "None":
-
+                if str(calculate_time_left_to_backup()) != "None":
                     self.nextBackupLabel.setText(f"Next Backup: {calculate_time_left_to_backup()}")
                 else:
                     self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
-                    
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
