@@ -13,6 +13,7 @@ from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
 from update import backup_ini_file
+from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 
 # QTimer
@@ -521,9 +522,9 @@ class MAIN(QMainWindow):
     def automatically_backup_checkbox(self):
         if mainIniFile.ini_automatically_backup() == 'true':
             if str(mainIniFile.ini_one_time_mode()) == "true":
-                if str(mainIniFile.ini_time_left()) != "None":
+                if str(mainIniFile.ini_time_left()) != None:
 
-                    self.nextBackupLabel.setText(f"Next Backup: {str(mainIniFile.ini_time_left())}")
+                    self.nextBackupLabel.setText(f"Next Backup: {calculate_time_left_to_backup()}")
                 else:
                     self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
                     

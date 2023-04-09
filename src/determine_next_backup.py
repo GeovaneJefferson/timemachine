@@ -28,7 +28,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[0]
     # MON
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[1]:
-        if str(mainIniFile.ini_next_backup_mon()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_mon()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_tue()) == "true":
@@ -47,7 +47,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[1]
     # TUE
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[2]:
-        if str(mainIniFile.ini_next_backup_tue()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_tue()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_wed()) == "true":
@@ -66,7 +66,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[2]
     # WED
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[3]:
-        if str(mainIniFile.ini_next_backup_wed()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_wed()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_thu()) == "true":
@@ -85,7 +85,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[3]
     # TUE
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[4]:
-        if str(mainIniFile.ini_next_backup_thu()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_thu()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_fri()) == "true":
@@ -104,7 +104,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[4]
     # FRI
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[5]:
-        if str(mainIniFile.ini_next_backup_fri()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_fri()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_sat()) == "true":
@@ -123,7 +123,7 @@ def get_next_backup():
                return determine_days_language(str(system_language()))[5]
     # SAT
     elif str(mainIniFile.day_name()) == determine_days_language(system_language())[6]:
-        if str(mainIniFile.ini_next_backup_sat()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time()):
+        if str(mainIniFile.ini_next_backup_sat()) == "true" and int(mainIniFile.current_time()) < int(mainIniFile.backup_time_military()):
            return "Today"
         else:
             if str(mainIniFile.ini_next_backup_sun()) == "true":

@@ -216,11 +216,10 @@ class UPDATEINIFILE:
         return self.currentMinute
 
     def current_time(self):
-        currentTime = int(self.current_hour()) + int(self.current_minute())
-        return currentTime
+        return f"{self.current_hour()}{self.current_minute()}" 
 
-    def backup_time(self):
-        backupTime = int(self.ini_next_hour()) + int(self.ini_next_minute())
+    def backup_time_military(self):
+        backupTime = f"{str(self.ini_next_hour())}{str(self.ini_next_minute())}"
         return backupTime
     
     def create_base_folder(self):

@@ -5,6 +5,7 @@ from get_time import *
 from get_backup_date import get_backup_date
 from get_system_language import system_language
 from languages import determine_days_language
+from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 
 ################################################################################
@@ -133,7 +134,6 @@ class CLI:
                 self.check_the_mode()
 
             else:
-
                 print("No back up for today.")
 
     def check_the_mode(self):
@@ -143,7 +143,7 @@ class CLI:
         # One time per day
         if str(mainIniFile.ini_one_time_mode()) == "true":
             # If current time is higher than time to backup
-            if int(mainIniFile.current_time()) > int(mainIniFile.backup_time()):
+            if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
                 # If todays date can not be found inside the backup device's folders, backup was not made today.
 
                 if today_date() not in get_backup_date():
@@ -160,38 +160,14 @@ class CLI:
                         config.set('SCHEDULE', 'time_left', 'None')
                         config.write(configfile)
 
-            elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time()):
+            elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
                 self.call_backup_now()
 
             else:
                 print("Waiting for the right time to backup...")
-                # Calculate tine left to backup and so it on the main window as info
-                calculateTimeLeft = int(mainIniFile.backup_time()) - int(mainIniFile.current_time()) + 60
-                # Add to list and get first number str() to remove it after
-                firstLetter.append(str(calculateTimeLeft))
-                # Remove First Number str()
-                if firstLetter[0][0] == "1":
-                    calculateTimeLeft = str(calculateTimeLeft).removeprefix(firstLetter[0][0])
-                    # Minutes calculation
-                    if int(calculateTimeLeft) < 59:
-                        # Write time left, so main window can get it
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('SCHEDULE', 'time_left', f'in {calculateTimeLeft} minutes...')
-                            config.write(configfile)
-                
-                # Pass changing time left
-                else:
-                    # Write time left, so main window can get it
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('SCHEDULE', 'time_left', 'None')
-                        config.write(configfile)
-
-                # Clean list
-                firstLetter.clear()
+                # TODO
+                calculate_time_left_to_backup()
+             
         else:
             # Multiple time per day
             if str(mainIniFile.everytime()) == '60' and str(mainIniFile.current_time()) in timeModeHours60:
@@ -214,7 +190,6 @@ class CLI:
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'true')
-            config.set('SCHEDULE', 'time_left', 'Backing up...')
             config.write(configfile)
 
         sub.run(f"python3 {src_prepare_backup_py}", shell=True)
