@@ -53,7 +53,12 @@ def get_backup_folders_size():
 
 def get_backup_folders_size_pretty():
     get_backup_home_folders_name()
-    return homeFolderToRestoreSizeListPretty[0]
-
+    try:
+        return homeFolderToRestoreSizeListPretty[0]
+    except IndexError:
+        print("No backup's folder found.")
+        return None
+    
 if __name__ == '__main__':
+    print(get_backup_folders_size_pretty())
     pass

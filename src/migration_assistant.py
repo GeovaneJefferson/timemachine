@@ -170,6 +170,14 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setStyleSheet(buttonStylesheet)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
+        # Refresh button
+        # self.refreshButton = QPushButton()
+        # self.refreshButton.setFixedSize(28,28)
+        # self.refreshButton.setIcon(QIcon())
+        # self.refreshButton.setIconSize(QtCore.QSize(22,22))
+        # self.refreshButton.setStyleSheet(buttonStylesheet)
+        # self.refreshButton.clicked.connect(self.show_on_screen)
+        
         widgetButtonLayout.addStretch()
         widgetButtonLayout.addWidget(self.backButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
         widgetButtonLayout.addWidget(self.continueButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
@@ -177,6 +185,8 @@ class CHOOSEDEVICE(QWidget):
         self.show_on_screen()
 
     def show_on_screen(self):
+        print("Searching devices...")
+  
         ################################################################################
         # Search external inside media
         ################################################################################
@@ -186,7 +196,7 @@ class CHOOSEDEVICE(QWidget):
             location = f"{run}"
         else:
             location = None
-
+        
         ################################################################################
         # Show available files
         ################################################################################
@@ -230,9 +240,10 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         self.verticalLayout.addWidget(self.title)
         self.verticalLayout.addWidget(self.description)
-        self.verticalLayout.addWidget(self.devicesAreadWidget, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.verticalLayout.addWidget(self.moreDescription, 2, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        
+        self.verticalLayout.addWidget(self.devicesAreadWidget,0,QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        # self.verticalLayout.addWidget(self.refreshButton, 0,QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.moreDescription,1,QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+
         self.setLayout(self.verticalLayout)
 
     def on_device_clicked(self, output):
@@ -483,16 +494,21 @@ class PREBACKUP(QWidget):
         try:
             # Files and Folders checkbox        
             self.fileAndFoldersCheckBox = QCheckBox()
-            self.fileAndFoldersCheckBox.setText(" Files and Folders"
-                "                               "
-                f"                      {get_backup_folders_size_pretty()}")
+            if get_backup_folders_size_pretty() != None:
+                self.fileAndFoldersCheckBox.setText(" Files and Folders"
+                    "                               "
+                    f"                      {get_backup_folders_size_pretty()}")
+            else:
+                self.fileAndFoldersCheckBox.setText(" Files and Folders ")
+                
             self.fileAndFoldersCheckBox.setFont(QFont(mainFont,fontSize11px))
             self.fileAndFoldersCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/text-x-generic.svg"))
             self.fileAndFoldersCheckBox.setIconSize(QtCore.QSize(32,32))
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
                 "* All recents back up files and folders")
             self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
-        except:
+        except Exception as error:
+            print("Files and Folders",error)
             pass
         
         ################################################################################
@@ -1187,7 +1203,6 @@ if __name__ == '__main__':
 
     widget.addWidget(main)   
     widget.setCurrentWidget(main)   
-
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_icon_212px)) 
     widget.setFixedSize(900,600)
