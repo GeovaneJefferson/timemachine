@@ -4,8 +4,8 @@ from get_kde_icon_name import get_kde_icon_name
 
 def users_icon_name():
     if get_user_de() == 'kde':
-        get_kde_icon_name()
-        
+        return get_kde_icon_name()
+
     else:
         userIconName = os.popen(getUserIconCMD)
         userIconName = userIconName.read().strip()
