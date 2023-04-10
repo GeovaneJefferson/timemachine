@@ -15,7 +15,7 @@ def latest_backup_date_label():
                 lastestList.append(dateList)
 
         lastestList.sort(reverse=True, key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-        
+
         if lastestList[0] == f"{mainIniFile.current_date()}-{mainIniFile.current_month()}-{mainIniFile.current_year()}": 
             x = str(get_latest_backup_time()[0]).replace("-",":")
             return f"Today, {x}"
@@ -45,6 +45,6 @@ def latest_backup_date():
 
     except:
         pass
+
 if __name__ == '__main__':
-    print(latest_backup_date_label())
     pass
