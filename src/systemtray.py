@@ -25,9 +25,9 @@ class APP:
     def begin_settings(self):
         # Detect dark theme
         if self.app.palette().window().color().getRgb()[0] < 55:
-            self.systemBarIconStylesheetDetector = src_system_bar_icon
-        else:
             self.systemBarIconStylesheetDetector = src_system_bar_white_icon
+        else:
+            self.systemBarIconStylesheetDetector = src_system_bar_icon
 
         self.widget()
 
