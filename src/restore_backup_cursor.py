@@ -14,7 +14,7 @@ def restore_backup_cursor():
             somethingToRestoreInCursor.append(cursor)
 
         if somethingToRestoreInCursor:
-            sub.run(f"{copyRsyncCMD} {mainIniFile.cursor_main_folder()}/ {homeUser}.local/share/icons",shell=True)
+            sub.run(f"{copyRsyncCMD} {mainIniFile.cursor_main_folder()}/ {homeUser}/.local/share/icons",shell=True)
             
             if get_user_de() != 'kde': 
                 try:

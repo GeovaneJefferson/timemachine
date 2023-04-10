@@ -30,36 +30,39 @@ class RESTORE:
 
         self.begin_settings()
 
-    def begin_settings(
-        self,
-        restoreHome,
-        restoreApplicationsPackages,
-        restoreFlatpaksPrograms,
-        restoreFlatpaksData,
-        restoreSystemSettings,
-        reboot):
+    def begin_settings(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+
+        isRunning = config['RESTORE']['is_restore_running']
+        restoreHome = config['RESTORE']['files_and_folders']
+        restoreApplicationsPackages = config['RESTORE']['applications_packages']
+        restoreFlatpaksPrograms = config['RESTORE']['applications_flatpak_names']
+        restoreFlatpaksData = config['RESTORE']['applications_data']
+        restoreSystemSettings = config['RESTORE']['system_settings']
+        reboot = config['INFO']['auto_reboot']
 
         # First change the wallpaper
-        if restoreSystemSettings:
+        if restoreSystemSettings == 'true':
             restore_backup_wallpaper()
         
-        if restoreHome:
+        if restoreHome == 'true':
             restore_backup_home()
 
-        if restoreApplicationsPackages:
+        if restoreApplicationsPackages == 'true':
             restore_backup_package_applications()
        
-        if restoreFlatpaksPrograms:
+        if restoreFlatpaksPrograms == 'true':
             restore_backup_flatpaks_applications()
         
-        if restoreFlatpaksData:
+        if restoreFlatpaksData == 'true':
             restore_backup_flatpaks_data()
         
-        if restoreSystemSettings:
+        if restoreSystemSettings == 'true':
             restore_backup_icons()
             restore_backup_cursor()
             restore_backup_theme()
-
+        
         self.end_backup(reboot)
 
     def end_backup(self,reboot):
@@ -75,6 +78,13 @@ class RESTORE:
             config.set('INFO', 'feedback_status', "")
 
             config.set('RESTORE', 'is_restore_running', "false")
+            config.set('RESTORE', 'files_and_folders', "false")
+            config.set('RESTORE', 'applications_packages', "false")
+            config.set('RESTORE', 'applications_flatpak_names', "false")
+            config.set('RESTORE', 'applications_data', "false")
+            config.set('RESTORE', 'system_settings', "false")
+            config.set('RESTORE', 'is_restore_running', "false")
+
             config.write(configfile)
 
         ################################################################################
@@ -82,7 +92,7 @@ class RESTORE:
         ################################################################################
         print("Restoring is done!")
 
-        if reboot:
+        if reboot ==  'true':
             ###############################################################################
             # Update INI file
             ###############################################################################
@@ -90,6 +100,7 @@ class RESTORE:
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 config.set('RESTORE', 'is_restore_running', 'false')
+                config.set('INFO', 'auto_reboot', 'false')
                 config.write(configfile)
 
             sub.run("sudo reboot", shell=True)

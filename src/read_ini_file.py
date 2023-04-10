@@ -18,8 +18,7 @@ class UPDATEINIFILE:
     def ini_external_location(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniExternalLocation = config['EXTERNAL']['hd']
-        return self.iniExternalLocation
+        return config['EXTERNAL']['hd']
 
     def ini_backup_now(self):
         config = configparser.ConfigParser()
@@ -351,4 +350,6 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
+    mainIniFile = UPDATEINIFILE()
+    print(mainIniFile.ini_info_icon())
     pass

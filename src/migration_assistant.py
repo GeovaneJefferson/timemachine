@@ -319,12 +319,19 @@ class PREBACKUP(QWidget):
         self.countOfRPMList = []
         self.alreadySelectApps = False
         
-        self.restoreHome = None
-        self.restoreApplicationsPackages = None
-        self.restoreFlatpaksPrograms = None
-        self.restoreFlatpaksData = None
-        self.restoreSystemSettings = None
-        self.reboot = None
+        self.restoreHome = bool()
+        self.restoreApplicationsPackages = bool()
+        self.restoreFlatpaksPrograms = bool()
+        self.restoreFlatpaksData = bool()
+        self.restoreSystemSettings = bool()
+        self.reboot = bool()
+
+        self.itensToRestore = {
+            'restoreHome': bool(),
+            'restoreApplicationsPackages': bool(),
+            'restoreFlatpaksPrograms': bool(),
+            'restoreFlatpaksData': bool(),
+            'reboot': bool()}
 
         # Delete .exclude-applications.txt first
         if os.path.exists(mainIniFile.exclude_appsications_location()):
@@ -526,6 +533,7 @@ class PREBACKUP(QWidget):
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/preferences-system.svg"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(34,34))
             self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
+
         except:
             pass
 
@@ -717,15 +725,16 @@ class PREBACKUP(QWidget):
         else:
             self.scrollShowMoreApps.setFixedHeight(0)
             self.alreadySelectApps = False
-
-        if self.applicationPackagesCheckBox.isChecked():
-            self.restoreApplicationsPackages = True
         
-            # Activate data checkbox
+        if self.applicationPackagesCheckBox.isChecked():
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile: 
+                config.set('RESTORE', 'applications_packages', 'true')
+                config.write(configfile)
+
             self.applicationPackagesCheckBox.setChecked(True)
-            # Enable continue button
             self.continueButton.setEnabled(True)
-            # Add names to list
             self.hasItensInsideToContinueList.append("packages")
 
             # DEP
@@ -757,11 +766,15 @@ class PREBACKUP(QWidget):
 
                     self.selectAppsLayout.addWidget(dummyCheckBox)
         else:
-            self.restoreApplicationsPackages = False
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile: 
+                config.set('RESTORE', 'applications_packages', 'false')
+                config.write(configfile)
 
-            # if "packages" in self.hasItensInsideToContinueList:
             self.hasItensInsideToContinueList.remove("packages")
             self.excludeAppList.clear()
+
             # Remove applications checkboxes
             for i in range(self.selectAppsLayout.count()):
                 item = self.selectAppsLayout.itemAt(i)
@@ -769,85 +782,86 @@ class PREBACKUP(QWidget):
                 widget.deleteLater()
                 i -= 1
 
-            self.allow_to_continue()
+        self.allow_to_continue()
 
     # TODO
     def on_flatpak_clicked(self):
-        if self.flatpakCheckBox.isChecked():
-            self.restoreFlatpaksPrograms = True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile: 
+            if self.flatpakCheckBox.isChecked():
+                config.set('RESTORE', 'applications_flatpak_names', 'true')
 
-            # Activate flatpak checkbox
-            self.flatpakCheckBox.setChecked(True)
-            # Enable continue button
-            self.continueButton.setEnabled(True)
-            # Add names to list if not already there
-            self.hasItensInsideToContinueList.append("flatpak")
-        else:
-            self.restoreFlatpaksPrograms = False
+                self.flatpakCheckBox.setChecked(True)
+                self.continueButton.setEnabled(True)
+                self.hasItensInsideToContinueList.append("flatpak")
+            else:
+                config.set('RESTORE', 'applications_flatpak_names', 'false')
 
-            # Disable data checkbox
-            self.flatpakCheckBox.setChecked(False)
-            # Disable flatpak if in list
-            self.hasItensInsideToContinueList.remove("flatpak")
+                self.flatpakCheckBox.setChecked(False)
+                self.hasItensInsideToContinueList.remove("flatpak")
+            
+            config.write(configfile)
 
         self.allow_to_continue()
 
     def on_applications_data_clicked(self):
-        if self.flatpakDataCheckBox.isChecked():
-            self.restoreFlatpaksPrograms = True
-            self.restoreFlatpaksData = True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            if self.flatpakDataCheckBox.isChecked():
+                config.set('RESTORE', 'applications_data', 'true')
 
-            # Activate flatpak DATA checkbox
-            self.flatpakDataCheckBox.setChecked(True)
-            # Enable continue button
-            self.continueButton.setEnabled(True)
-            # Add data to list if not already there
-            # if "data" not in self.hasItensInsideToContinueList:
-            self.hasItensInsideToContinueList.append("data")
-            # Auto enable flatpak to list
-            self.hasItensInsideToContinueList.append("flatpak")
-        else:
-            self.restoreFlatpaksPrograms = False
-            self.restoreFlatpaksData = False
+                self.flatpakDataCheckBox.setChecked(True)
+                self.continueButton.setEnabled(True)
+                self.hasItensInsideToContinueList.append("data")
+                self.hasItensInsideToContinueList.append("flatpak")
+            else:
+                config.set('RESTORE', 'applications_data', 'false')
+                self.restoreFlatpaksPrograms = False
+                self.restoreFlatpaksData = False
 
-            # Disable flatpak DATA checkbox
-            self.flatpakDataCheckBox.setChecked(False)
-            # Disable data if in list
-            # if "data" in self.hasItensInsideToContinueList:
-            self.hasItensInsideToContinueList.remove("data")
+                self.flatpakDataCheckBox.setChecked(False)
+                self.hasItensInsideToContinueList.remove("data")
+            
+            config.write(configfile)
 
         self.allow_to_continue()
 
     def on_files_and_folders_clicked(self):
-        if self.fileAndFoldersCheckBox.isChecked():
-            self.restoreHome = True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            if self.fileAndFoldersCheckBox.isChecked():
+                config.set('RESTORE', 'files_and_folders', 'true')
 
-            # Enable continue button
-            self.continueButton.setEnabled(True)
-            # Add files to list
-            self.hasItensInsideToContinueList.append("files")
-        else:
-            self.restoreHome = False
+                self.continueButton.setEnabled(True)
+                self.hasItensInsideToContinueList.append("files")
+            else:
+                config.set('RESTORE', 'files_and_folders', 'false')
+                self.continueButton.setEnabled(False)
+                self.hasItensInsideToContinueList.remove("files")
 
-            # Disable continue button
-            self.continueButton.setEnabled(False)
-            # if "files" in self.hasItensInsideToContinueList:
-            self.hasItensInsideToContinueList.remove("files")
-
+            config.write(configfile)
+            
         self.allow_to_continue()
   
     def on_system_settings_clicked(self):
-        if self.systemSettingsCheckBox.isChecked():
-            self.restoreSystemSettings = True
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w', encoding='utf8') as configfile:  
+            if self.systemSettingsCheckBox.isChecked():
+                config.set('RESTORE', 'system_settings', 'true')
 
-            self.continueButton.setEnabled(True)
-            self.hasItensInsideToContinueList.append("system_settings")
-        else:
-            self.restoreSystemSettings = False
-
-            self.continueButton.setEnabled(False)
-            if "system_settings" in self.hasItensInsideToContinueList:
-                self.hasItensInsideToContinueList.remove("system_settings")
+                self.continueButton.setEnabled(True)
+                self.hasItensInsideToContinueList.append("system_settings")
+            else:
+                config.set('RESTORE', 'system_settings', 'false')
+                self.continueButton.setEnabled(False)
+                if "system_settings" in self.hasItensInsideToContinueList:
+                    self.hasItensInsideToContinueList.remove("system_settings")
+            
+            config.write(configfile)
 
         self.allow_to_continue()
 
@@ -910,7 +924,6 @@ class PREBACKUP(QWidget):
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
-
         self.begin_settings()
 
     def begin_settings(self):
@@ -1139,28 +1152,28 @@ class BACKUPSCREEN(QWidget):
         with open(src_user_config, 'w', encoding='utf8') as configfile:  
             config.set('RESTORE', 'is_restore_running', 'true')
             config.write(configfile)
-
+        
+        sub.Popen(f"python3 {src_restore_cmd_py}",shell=True)
         main5 = START_RESTORING()
         widget.addWidget(main5)
-
-        # Call restore python
-        mainRestore = RESTORE()
-        mainRestore.begin_settings(
-            self.restoreHome,
-            self.restoreApplicationsPackages,
-            self.restoreFlatpaksPrograms,
-            self.restoreFlatpaksData,
-            self.restoreSystemSettings,
-            self.reboot)
         
         widget.showFullScreen()
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def auto_reboot_clicked(self):
         if self.autoReboot.isChecked():
-            self.reboot = True
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile:  
+                config.set('INFO', 'auto_reboot', 'true')
+                config.write(configfile)
         else:
-            self.reboot = False
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile:  
+                config.set('INFO', 'auto_reboot', 'false')
+                config.write(configfile)
+
 
 class START_RESTORING(QWidget):
     def __init__(self):
