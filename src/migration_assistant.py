@@ -24,10 +24,12 @@ class WELCOMESCREEN(QWidget):
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+            self.separatorstylesheetDetector = separetorLineDark
         else:
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
             self.buttonStylesheetDetector = buttonStylesheet
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+            self.separatorstylesheetDetector = separetorLine
 
         self.widgets()
 
@@ -73,7 +75,7 @@ class WELCOMESCREEN(QWidget):
         widgetButton = QWidget(self)
         widgetButton.setFixedSize(900,60)
         widgetButton.move(0,600-widgetButton.height())
-        widgetButton.setStyleSheet(separetorLine)
+        widgetButton.setStyleSheet(self.separatorstylesheetDetector)
 
         widgetButtonLayout = QHBoxLayout(widgetButton)
         widgetButtonLayout.setSpacing(10)
@@ -115,13 +117,13 @@ class CHOOSEDEVICE(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+            self.separatorstylesheetDetector = separetorLineDark
+            self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
         else:
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
             self.buttonStylesheetDetector = buttonStylesheet
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+            self.separatorstylesheetDetector = separetorLine
+            self.availableDeviceButtonDetector = availableDeviceButtonStylesheet
 
         self.widgets()
 
@@ -172,7 +174,7 @@ class CHOOSEDEVICE(QWidget):
         widgetButton = QWidget(self)
         widgetButton.setFixedSize(900,60)
         widgetButton.move(0,600-widgetButton.height())
-        widgetButton.setStyleSheet(separetorLine)
+        widgetButton.setStyleSheet(self.separatorstylesheetDetector)
 
         widgetButtonLayout = QHBoxLayout(widgetButton)
         widgetButtonLayout.setSpacing(10)
@@ -242,7 +244,7 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(
                             lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setStyleSheet(self.buttonStylesheetDetector)
+                        self.availableDevices.setStyleSheet(self.availableDeviceButtonDetector)
            
                         # Image
                         image = QLabel(self.availableDevices)
@@ -273,9 +275,12 @@ class CHOOSEDEVICE(QWidget):
         self.setLayout(self.verticalLayout)
 
     def on_device_clicked(self, output):
-        self.locationBackup = output
-        self.continueButton.setEnabled(True)
-        
+        if self.availableDevices.isChecked():
+            self.locationBackup = output
+            self.continueButton.setEnabled(True)
+        else:
+            self.continueButton.setEnabled(False)
+            
     def on_continue_clicked(self):
         ################################################################################
         # Update INI file
@@ -330,13 +335,13 @@ class PREBACKUP(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+            self.separatorstylesheetDetector = separetorLineDark
+            self.applicationBackgroundBoxDetector = leftBackgroundColorStylesheetDark
         else:
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
             self.buttonStylesheetDetector = buttonStylesheet
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+            self.separatorstylesheetDetector = separetorLine
+            self.applicationBackgroundBoxDetector = leftBackgroundColorStylesheet
 
         self.widgets()
 
@@ -351,7 +356,7 @@ class PREBACKUP(QWidget):
         self.scrollOptions.setFixedSize(420,260)
         self.scrollOptions.setWidgetResizable(True)
         self.scrollOptions.setWidget(self.optionskWidget)
-        self.scrollOptions.setStyleSheet(whiteBox)
+        self.scrollOptions.setStyleSheet(self.applicationBackgroundBoxDetector)
 
         # Vertical base layout
         self.verticalLayout = QVBoxLayout()
@@ -397,7 +402,7 @@ class PREBACKUP(QWidget):
         widgetButton = QWidget(self)
         widgetButton.setFixedSize(900,60)
         widgetButton.move(0,self.height()+60)
-        widgetButton.setStyleSheet(separetorLine)
+        widgetButton.setStyleSheet(self.separatorstylesheetDetector)
 
         self.widgetButtonLayout = QHBoxLayout(widgetButton)
         self.widgetButtonLayout.setSpacing(10)
@@ -912,8 +917,10 @@ class BACKUPSCREEN(QWidget):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
             self.buttonStylesheetDetector = buttonStylesheetDark
+            self.separatorstylesheetDetector = separetorLineDark
         else:
             self.buttonStylesheetDetector = buttonStylesheet
+            self.separatorstylesheetDetector = separetorLine
 
         self.widgets()
 
@@ -1054,7 +1061,7 @@ class BACKUPSCREEN(QWidget):
         widgetButton = QWidget(self)
         widgetButton.setFixedSize(900,60)
         widgetButton.move(0,600-widgetButton.height())
-        widgetButton.setStyleSheet(separetorLine)
+        widgetButton.setStyleSheet(self.separatorstylesheetDetector)
 
         widgetButtonLayout = QHBoxLayout(widgetButton)
         widgetButtonLayout.setSpacing(10)

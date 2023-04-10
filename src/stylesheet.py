@@ -46,14 +46,23 @@ normalText = ("""
         color:white;
         """)
 
-whiteBox = ("""
+applicationBackgroundBox = ("""
         background-color:white;
         color:black;
         border:0px;
         """)
 
+applicationBackgroundBoxDark = ("""
+        background-color:red;
+        border-right:1px solid rgba(14,14,14,0.1);
+        """)
+
 separetorLine = ("""
         border-top:1px solid rgba(14,14,14,0.1);
+        """)
+
+separetorLineDark = ("""
+        border-top:1px solid rgba(110, 109, 112, 1);
         """)
 
 timeBox = (
