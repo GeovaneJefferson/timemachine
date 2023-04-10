@@ -15,7 +15,7 @@ def delete_pycache_(updateNow):
 
 def update_git(updateNow):
     print("Updating...")
-    os.system(f"cd /{homeUser}/.local/share/{appNameClose}/; git stash; git pull")
+    os.popen(f"cd /{homeUser}/.local/share/{appNameClose}/; git stash; git pull")
     if updateNow:
         delete_ini_file(updateNow)
 
