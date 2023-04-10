@@ -693,7 +693,7 @@ class MAIN(QMainWindow):
             updateAvailable = QPushButton()
             updateAvailable.setText("   Update Available   ")
             updateAvailable.adjustSize()
-            updateAvailable.setStyleSheet(buttonStylesheet)
+            updateAvailable.setStyleSheet(self.buttonStylesheetDetector)
             updateAvailable.clicked.connect(self.on_update_button_clicked)
             
             # Show button on screen      
