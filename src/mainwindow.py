@@ -539,15 +539,15 @@ class MAIN(QMainWindow):
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
-                    self.nextBackupLabel.setFont(buttonFontSize)
+                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
 
                 elif str(mainIniFile.ini_everytime()) == "120":
                     self.nextBackupLabel.setText("Next Backup: Every 2 hours")
-                    self.nextBackupLabel.setFont(buttonFontSize)
+                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
 
                 elif str(mainIniFile.ini_everytime()) == "240":
                     self.nextBackupLabel.setText("Next Backup: Every 4 hours")
-                    self.nextBackupLabel.setFont(buttonFontSize)
+                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
         else:
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
@@ -1274,15 +1274,23 @@ class OPTION(QMainWindow):
         self.donateButton.clicked.connect(self.donate_clicked)
 
         ################################################################################
-        # Save button
+        # Button
         ################################################################################
-        self.saveButton = QPushButton()
-        self.saveButton.setFont(QFont(mainFont,normalFontSize))
-        self.saveButton.setText("   Back   ")
-        self.saveButton.adjustSize()
-        self.saveButton.setFixedHeight(buttonHeightSize)
-        self.saveButton.setStyleSheet(self.buttonStylesheetDetector)
-        self.saveButton.clicked.connect(self.on_save_button_clicked)
+        # self.applyButton = QPushButton()
+        # self.applyButton.setFont(QFont(mainFont,normalFontSize))
+        # self.applyButton.setText("   Apply   ")
+        # self.applyButton.adjustSize()
+        # self.applyButton.setFixedHeight(buttonHeightSize)
+        # self.applyButton.setStyleSheet(self.buttonStylesheetDetector)
+        # self.applyButton.clicked.connect(self.on_save_button_clicked)
+
+        self.backButton = QPushButton()
+        self.backButton.setFont(QFont(mainFont,normalFontSize))
+        self.backButton.setText("   Back   ")
+        self.backButton.adjustSize()
+        self.backButton.setFixedHeight(buttonHeightSize)
+        self.backButton.setStyleSheet(self.buttonStylesheetDetector)
+        self.backButton.clicked.connect(self.on_back_button_clicked)
 
         ################################################################################
         # Add widgets and Layouts
@@ -1330,7 +1338,7 @@ class OPTION(QMainWindow):
         # Donate layout
         self.donateAndBackLayout.addStretch()
         # self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.donateAndBackLayout.addWidget(self.saveButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndBackLayout.addWidget(self.backButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         
         self.setLayout(self.leftLayout)
 
@@ -1862,9 +1870,8 @@ class OPTION(QMainWindow):
     def donate_clicked(self):
         sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)
 
-    def on_save_button_clicked(self):
+    def on_back_button_clicked(self):
         widget.setCurrentWidget(main)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
