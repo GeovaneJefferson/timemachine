@@ -46,6 +46,10 @@ class APP:
         self.iniLastBackupInformation = QAction()
         self.iniLastBackupInformation.setFont(QFont(mainFont,buttonFontSize))
         self.iniLastBackupInformation.setEnabled(False)
+        
+        self.iniLastBackupInformation2 = QAction()
+        self.iniLastBackupInformation2.setFont(QFont(mainFont,buttonFontSize))
+        self.iniLastBackupInformation2.setEnabled(False)
 
         # Backup now button
         self.backupNowButton = QAction("Back Up Now")
@@ -67,6 +71,7 @@ class APP:
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.iniLastBackupInformation)
+        self.menu.addAction(self.iniLastBackupInformation2)
         self.menu.addSeparator()
 
         self.menu.addAction(self.backupNowButton)
@@ -135,9 +140,8 @@ class APP:
                     #     pass
                     
                     # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
-                        f'{str(latest_backup_date_label())}')
-
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                    self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
                 else:
                     self.change_color("Blue")
                     # # Blue color
