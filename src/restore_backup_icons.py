@@ -11,7 +11,7 @@ def restore_backup_icons():
     try:
         for icon in os.listdir(f"{mainIniFile.icon_main_folder()}/"):
             somethingToRestoreInIcon.append(icon)
-        
+       
         # # If has something to restore
         if somethingToRestoreInIcon:
             ################################################################################
@@ -24,10 +24,14 @@ def restore_backup_icons():
             
             if get_user_de() != 'kde': 
                 try:
-                    # os.listdir(f"/usr/share/icons/{mainIniFile.ini_info_icon()}/")
+                    os.listdir(f"/usr/share/icons/{mainIniFile.ini_info_icon()}/")
                     sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
                 except:
-                    pass
-                    # sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
-    except:
+                    try:
+                        os.listdir(f"{homeUser}/.local/share/icons/{mainIniFile.ini_info_icon()}")
+                        sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
+                    except:
+                        os.listdir(f"{homeUser}/.icons/{mainIniFile.ini_info_icon()}")
+                        sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
+    except:         
         pass

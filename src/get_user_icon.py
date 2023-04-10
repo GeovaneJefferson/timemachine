@@ -11,6 +11,4 @@ def users_icon_name():
         userIconName = userIconName.read().strip()
         userIconName = userIconName.replace("'", "")
 
-    return userIconName
-
-print(users_icon_name())
+    return userIconName 

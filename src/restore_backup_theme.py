@@ -25,9 +25,14 @@ def restore_backup_theme():
 
             if get_user_de() != 'kde': 
                 try:
-                    os.listdir(f"/usr/share/themes/{mainIniFile.ini_info_gtktheme()}/")
+                    os.listdir(f"/usr/share/themes/{mainIniFile.ini_info_gtktheme()}")
                     sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
                 except:
-                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
-    except:
+                    try:
+                        os.listdir(f"{homeUser}/.local/share/themes/{mainIniFile.ini_info_gtktheme()}")
+                        sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    except:
+                        os.listdir(f"{homeUser}/.themes/{mainIniFile.ini_info_gtktheme()}")
+                        sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+    except:     
         pass

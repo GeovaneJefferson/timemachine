@@ -1,16 +1,10 @@
 from setup import *
 from get_user_de import get_user_de
+from get_kde_cursor_name import users_kde_cursor_name
 
 def users_cursor_name():
     if get_user_de() == 'kde':
-        count = 0
-        for line in os.popen(getKDEUserCursorCMD):
-            count += 1
-            # print(f"{count}: {line.strip()}")
-            if "Current theme for this Plasma session" in line:
-                break
-
-        return line.strip().split(" ")[1]
+        return users_kde_cursor_name()
 
     else:
         userCursorName = os.popen(getUserCursorCMD)

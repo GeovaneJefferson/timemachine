@@ -14,16 +14,16 @@ def restore_backup_cursor():
             somethingToRestoreInCursor.append(cursor)
 
         if somethingToRestoreInCursor:
-            sub.run(f"{copyRsyncCMD} {mainIniFile.cursor_main_folder()}/ {homeUser}/.local/share/icons",shell=True)
-            
             if get_user_de() != 'kde': 
                 try:
-                    os.listdir(f"/usr/share/icons/{mainIniFile.ini_info_cursor()}/")
+                    os.listdir(f"/usr/share/icons/{mainIniFile.ini_info_cursor()}")
                     sub.run(f"{setUserCursorCMD} {mainIniFile.ini_info_cursor()}",shell=True)
                 except:
                     try:
+                        os.listdir(f"{homeUser}/.local/share/icons/{mainIniFile.ini_info_cursor()}")
                         sub.run(f"{setUserCursorCMD} {mainIniFile.ini_info_cursor()}",shell=True)
                     except:
-                        pass
+                        os.listdir(f"{homeUser}/.icons/{mainIniFile.ini_info_cursor()}")
+                        sub.run(f"{setUserCursorCMD} {mainIniFile.ini_info_cursor()}",shell=True)
     except:
         pass
