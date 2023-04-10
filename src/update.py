@@ -1,10 +1,8 @@
 from setup import *
 
 def backup_ini_file(updateNow):
-    """
-    Check if ini file exist and can be found
-    Make a copy and move to /src
-    """
+    # Check if ini file exist and can be found
+    # Make a copy and move to /src
     sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
     if updateNow:
         delete_pycache_(updateNow)
@@ -17,7 +15,7 @@ def delete_pycache_(updateNow):
 
 def update_git(updateNow):
     print("Updating...")
-    os.popen(f"cd /{homeUser}/.local/share/{appNameClose}/; git stash; git pull")
+    os.system(f"cd /{homeUser}/.local/share/{appNameClose}/; git stash; git pull")
     if updateNow:
         delete_ini_file(updateNow)
 
