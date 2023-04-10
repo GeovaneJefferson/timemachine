@@ -42,6 +42,15 @@ class ENTERTIMEMACHINE(QWidget):
 
         self.iniExternalLocation = config['EXTERNAL']['hd']
         self.iniFolder = config.options('FOLDER')
+        
+        self.begin_settings()
+
+    def begin_settings(self):
+        # Detect dark theme
+        if app.palette().window().color().getRgb()[0] < 55:
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+        else:
+            self.buttonStylesheetDetector = buttonStylesheet
 
         self.widgets()
 
@@ -111,7 +120,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.upButton.setText("ʌ")
         self.upButton.setFont(QFont("Ubuntu", 11))
         self.upButton.setFixedSize(38, 38)
-        self.upButton.setStyleSheet(buttonStylesheet)
+        self.upButton.setStyleSheet(self.buttonStylesheetDetector)
         self.upButton.clicked.connect(self.change_date_up)
 
         # Down button
@@ -119,7 +128,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.downButton.setText("v")
         self.downButton.setFont(QFont("Ubuntu", 11))
         self.downButton.setFixedSize(38, 38)
-        self.downButton.setStyleSheet(buttonStylesheet)
+        self.downButton.setStyleSheet(self.buttonStylesheetDetector)
         self.downButton.clicked.connect(self.change_date_down)
 
         # Before gray date
@@ -181,7 +190,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.cancelButton.setFont(QFont("Ubuntu", 14))
         self.cancelButton.setFixedSize(120, 34)
         self.cancelButton.setEnabled(True)
-        self.cancelButton.setStyleSheet(buttonStylesheet)
+        self.cancelButton.setStyleSheet(self.buttonStylesheetDetector)
         self.cancelButton.clicked.connect(lambda x: exit())
 
         # Restore button
@@ -189,7 +198,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.restoreButton.setText("   Restore   ")
         self.restoreButton.setFont(QFont("Ubuntu", 14))
         self.restoreButton.adjustSize()
-        self.restoreButton.setStyleSheet(buttonStylesheet)
+        self.restoreButton.setStyleSheet(self.buttonStylesheetDetector)
         self.restoreButton.setEnabled(False)
 
         ################################################################################
@@ -252,7 +261,7 @@ class ENTERTIMEMACHINE(QWidget):
             self.foldersOnScreen.setFixedSize(140, 34)
             self.foldersOnScreen.setCheckable(True)
             self.foldersOnScreen.setAutoExclusive(True)
-            self.foldersOnScreen.setStyleSheet(buttonStylesheet)
+            self.foldersOnScreen.setStyleSheet(self.buttonStylesheetDetector)
             # self.foldersOnScreen.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
             self.foldersOnScreen.clicked.connect(lambda *args, folder=output: self.change_folder(folder))
             self.foldersLayout.addWidget(self.foldersOnScreen)
@@ -336,7 +345,7 @@ class ENTERTIMEMACHINE(QWidget):
                     self.timeButton.setFixedSize(100, 34)
                     self.timeButton.setCheckable(True)
                     self.timeButton.setAutoExclusive(True)
-                    self.timeButton.setStyleSheet(buttonStylesheet)
+                    self.timeButton.setStyleSheet(self.buttonStylesheetDetector)
                     self.timeButton.clicked.connect(lambda *args, getTime=getTime: self.change_time(getTime))
 
                     ################################################################################
@@ -404,7 +413,7 @@ class ENTERTIMEMACHINE(QWidget):
                     self.filesResult.setCheckable(True)
                     self.filesResult.setFixedSize(filesButtomX, filesButtomY)
                     self.filesResult.setIconSize(QtCore.QSize(64, 64))
-                    self.filesResult.setStyleSheet(buttonStylesheet)
+                    self.filesResult.setStyleSheet(self.buttonStylesheetDetector)
                     self.filesResult.clicked.connect(
                             lambda *, output=output: self.add_to_restore(
                                 output, self.dateFolders[self.countForDate],

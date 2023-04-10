@@ -16,6 +16,19 @@ from get_backup_home_name_and_size import get_backup_folders_size_pretty
 class WELCOMESCREEN(QWidget):
     def __init__(self):
         super(WELCOMESCREEN, self).__init__()
+        self.begin_settings()
+
+    def begin_settings(self):
+        # Detect dark theme
+        if app.palette().window().color().getRgb()[0] < 55:
+            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.buttonStylesheetDetector = buttonStylesheetDark
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+        else:
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+            self.buttonStylesheetDetector = buttonStylesheet
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+
         self.widgets()
 
     def widgets(self):
@@ -71,7 +84,7 @@ class WELCOMESCREEN(QWidget):
         self.continueButton.setText("   Continue   ")
         self.continueButton.setFont(QFont(mainFont,buttonFontSize))
         self.continueButton.adjustSize()
-        self.continueButton.setStyleSheet(buttonStylesheet)
+        self.continueButton.setStyleSheet(self.buttonStylesheetDetector)
         self.continueButton.clicked.connect(self.on_continueButton_clicked)
 
         ###########################################################################
@@ -96,6 +109,19 @@ class CHOOSEDEVICE(QWidget):
         self.foundInMedia = None
         self.outputBox = ()
         self.captureDevices = []
+
+        self.begin_settings()
+
+    def begin_settings(self):
+        # Detect dark theme
+        if app.palette().window().color().getRgb()[0] < 55:
+            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.buttonStylesheetDetector = buttonStylesheetDark
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+        else:
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+            self.buttonStylesheetDetector = buttonStylesheet
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
 
         self.widgets()
 
@@ -157,7 +183,7 @@ class CHOOSEDEVICE(QWidget):
         self.backButton.setFont(QFont(mainFont,buttonFontSize))
         self.backButton.setFixedHeight(buttonHeightSize)
         self.backButton.adjustSize()
-        self.backButton.setStyleSheet(buttonStylesheet)
+        self.backButton.setStyleSheet(self.buttonStylesheetDetector)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button
@@ -167,7 +193,7 @@ class CHOOSEDEVICE(QWidget):
         self.continueButton.setFixedHeight(buttonHeightSize)
         self.continueButton.adjustSize()
         self.continueButton.setEnabled(False)
-        self.continueButton.setStyleSheet(buttonStylesheet)
+        self.continueButton.setStyleSheet(self.buttonStylesheetDetector)
         self.continueButton.clicked.connect(self.on_continue_clicked)
         
         # Refresh button
@@ -175,7 +201,7 @@ class CHOOSEDEVICE(QWidget):
         # self.refreshButton.setFixedSize(28,28)
         # self.refreshButton.setIcon(QIcon())
         # self.refreshButton.setIconSize(QtCore.QSize(22,22))
-        # self.refreshButton.setStyleSheet(buttonStylesheet)
+        # self.refreshButton.setStyleSheet(self.buttonStylesheetDetector)
         # self.refreshButton.clicked.connect(self.show_on_screen)
         
         widgetButtonLayout.addStretch()
@@ -216,7 +242,7 @@ class CHOOSEDEVICE(QWidget):
                         self.availableDevices.adjustSize()
                         self.availableDevices.clicked.connect(
                             lambda *args, output=output: self.on_device_clicked(output))
-                        self.availableDevices.setStyleSheet(buttonStylesheet)
+                        self.availableDevices.setStyleSheet(self.buttonStylesheetDetector)
            
                         # Image
                         image = QLabel(self.availableDevices)
@@ -298,7 +324,20 @@ class PREBACKUP(QWidget):
         # Delete .exclude-applications.txt first
         if os.path.exists(mainIniFile.exclude_appsications_location()):
             sub.run(f"rm -rf {mainIniFile.exclude_appsications_location()}",shell=True)
-            
+
+        self.begin_settings()
+
+    def begin_settings(self):
+        # Detect dark theme
+        if app.palette().window().color().getRgb()[0] < 55:
+            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.buttonStylesheetDetector = buttonStylesheetDark
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+        else:
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+            self.buttonStylesheetDetector = buttonStylesheet
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+
         self.widgets()
 
     def widgets(self):
@@ -368,7 +407,7 @@ class PREBACKUP(QWidget):
         self.backButton.setText("   Back   ")
         self.backButton.setFont(QFont(mainFont,buttonFontSize))
         self.backButton.adjustSize()
-        self.backButton.setStyleSheet(buttonStylesheet)
+        self.backButton.setStyleSheet(self.buttonStylesheetDetector)
         self.backButton.setFixedHeight(buttonHeightSize)
         self.backButton.clicked.connect(self.on_back_button_clicked)
 
@@ -378,7 +417,7 @@ class PREBACKUP(QWidget):
         self.continueButton.setFont(QFont(mainFont,buttonFontSize))
         self.continueButton.adjustSize()
         self.continueButton.setFixedHeight(buttonHeightSize)
-        self.continueButton.setStyleSheet(buttonStylesheet)
+        self.continueButton.setStyleSheet(self.buttonStylesheetDetector)
         # No item in the list
         if not self.hasItensInsideToContinueList:
             self.continueButton.setEnabled(False)
@@ -866,6 +905,20 @@ class PREBACKUP(QWidget):
 class BACKUPSCREEN(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.begin_settings()
+
+    def begin_settings(self):
+        # Detect dark theme
+        if app.palette().window().color().getRgb()[0] < 55:
+            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.buttonStylesheetDetector = buttonStylesheetDark
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+        else:
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+            self.buttonStylesheetDetector = buttonStylesheet
+            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+
         self.widgets()
 
     def widgets(self):
@@ -1016,7 +1069,7 @@ class BACKUPSCREEN(QWidget):
         self.backButton.setFont(QFont(mainFont,buttonFontSize))
         self.backButton.adjustSize()
         self.backButton.setFixedHeight(buttonHeightSize)
-        self.backButton.setStyleSheet(buttonStylesheet)
+        self.backButton.setStyleSheet(self.buttonStylesheetDetector)
         self.backButton.clicked.connect(lambda *args: widget.setCurrentIndex(widget.currentIndex()-1))
 
         # Continue button

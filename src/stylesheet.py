@@ -63,6 +63,17 @@ timeBox = (
         border-radius:4px;
     """)
  
+leftBackgroundColorStylesheet = (
+    """
+        background-color:rgba(240, 241, 243, 1);
+        border-right:1px solid rgba(14,14,14,0.1);
+    """)
+
+leftBackgroundColorDarkStylesheet = (
+    """
+        background-color:rgba(45, 45, 45, 1);
+        border-right:1px solid rgba(14,14,14,0.1);
+    """)
 
 buttonStylesheet = (
    "QPushButton"
@@ -101,8 +112,8 @@ buttonStylesheetDark = (
         "}"
     "QPushButton:disabled "
         "{"
-            "background-color:rgb(255,255,255);"
-            "color:rgba(223,222,223,1);"
+            "background-color:rgba(69, 69, 70, 1);"
+            "color:rgba(99, 99, 99, 1);"
             "border:0px;"
         "}")
 
@@ -150,12 +161,22 @@ availableDeviceButtonStylesheet  = (
             "background-color:rgba(213,213,213,1);"
         "}")
 
-externalWindowbackground =( 
+externalWindowbackgroundStylesheet =( 
         "QWidget"
             "{"
                 "background-color:white;"
+                "border:1px solid rgba(14,14,14,0.1);"
+                "border-radius:2px;"
             "}")
 
+externalWindowbackgroundStylesheetDark =( 
+        "QWidget"
+            "{"
+                "background-color:rgba(69, 69, 70, 1);"
+                "border:1px solid rgba(14,14,14,0.1);"
+                "border-radius:2px;"
+                "color:white;"
+            "}")
 
 # WEATHER WIDGETS COLOR
 clouds = ("""
