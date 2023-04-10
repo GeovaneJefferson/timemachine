@@ -24,11 +24,11 @@ class APP:
         
     def begin_settings(self):
         # Detect dark theme
-        if self.app.palette().window().color().getRgb()[0] < 55:
+        if self.app.palette().windowText().color().getRgb()[0] < 55:
             self.systemBarIconStylesheetDetector = src_system_bar_white_icon
         else:
             self.systemBarIconStylesheetDetector = src_system_bar_icon
-
+        
         self.widget()
 
     def widget(self):
@@ -95,7 +95,6 @@ class APP:
     
     def updates(self):
         print("System tray is running...")
-        
         self.system_tray_manager()
 
     def system_tray_manager(self):
@@ -106,7 +105,6 @@ class APP:
                 
         except KeyError as error:
             print(error)
-            print("System Tray (136) KeyError!")
             pass
 
         self.check_connection()
@@ -126,19 +124,6 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
-                    # try:
-                    #     # search inside backup folder, if today date inside, wirte Today
-                    #     if get_backup_date()[0] == today_date():
-                    #         # Update last backup information
-                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
-                    #             f'Today, {str(get_latest_backup_time()[0]).replace("-",":")}')
-                    #     else:
-                    #         # Update last backup information
-                    #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":\n'
-                    #             f'{str(mainIniFile.ini_lastest_backup())}')
-                    # except:
-                    #     pass
-                    
                     # Update last backup information
                     self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
                     self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
