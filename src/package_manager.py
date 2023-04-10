@@ -15,4 +15,3 @@ def package_manager():
         return "pacman"
     else:
         return "None"
-    

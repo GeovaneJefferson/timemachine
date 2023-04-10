@@ -838,12 +838,12 @@ class MAIN(QMainWindow):
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if mainFont in package_manager():
+                if "deb" in package_manager():
                     config.set('INFO', 'packageManager', f'{debFolderName}')
                 
-                elif "fedora" in package_manager():
+                elif "rpm" in package_manager():
                     config.set('INFO', 'packageManager', f'{rpmFolderName}')
-
+                
                 config.set('INFO', 'os',  f'{get_user_de()}')
                 config.set('INFO', 'language',  f'{str(system_language())}')
                 config.write(configfile)

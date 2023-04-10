@@ -12,6 +12,9 @@ def restore_backup_flatpaks_applications():
 
         for output in read_file:
             output = output.strip()
+            
+            config = configparser.ConfigParser()
+            config.read(src_user_config) 
             with open(src_user_config, 'w') as configfile:
                 config.set('INFO', 'feedback_status', f"{output}")
                 config.write(configfile)

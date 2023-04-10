@@ -297,8 +297,7 @@ class UPDATEINIFILE:
         return f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}"
     
     def ini_package_manager(self):
-        self.packageManager = config['INFO']['packageManager']
-        return self.packageManager
+        return config['INFO']['packageManager']
     
     def ini_automatically_reboot(self):
         self.iniAutoReboot = config['INFO']['auto_reboot']
