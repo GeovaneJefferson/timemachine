@@ -205,6 +205,7 @@ src_backup_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/backup_128p
 src_migration_assistant_icon_212px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_212px.png"
 src_migration_assistant_clean_icon_128px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_clean_128px.svg"
 src_system_bar_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayicon.png"
+src_system_bar_white_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtraywhiteicon.png"
 src_system_bar_run_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrun.png"
 src_system_bar_error_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconerror.png"
 src_system_bar_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrestore.png"

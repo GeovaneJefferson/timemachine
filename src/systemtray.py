@@ -19,7 +19,16 @@ class APP:
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(appName)
         self.app.setApplicationName(appName)
-    
+        
+        self.begin_settings()
+        
+    def begin_settings(self):
+        # Detect dark theme
+        if self.app.palette().window().color().getRgb()[0] < 55:
+            self.systemBarIconStylesheetDetector = src_system_bar_icon
+        else:
+            self.systemBarIconStylesheetDetector = src_system_bar_white_icon
+
         self.widget()
 
     def widget(self):
@@ -27,7 +36,7 @@ class APP:
         # Add icon
         ################################################################################
         self.tray = QSystemTrayIcon()
-        self.tray.setIcon(QIcon(src_system_bar_icon))
+        self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
         self.tray.setVisible(True)
 
         # Create a menu
@@ -183,7 +192,7 @@ class APP:
                 self.tray.setIcon(QIcon(src_system_bar_run_icon))
             elif color == "White":
                 self.color = "White"
-                self.tray.setIcon(QIcon(src_system_bar_icon))
+                self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
             elif color == "Red":
                 self.color = "Red"
                 self.tray.setIcon(QIcon(src_system_bar_error_icon))

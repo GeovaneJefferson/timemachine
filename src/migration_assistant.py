@@ -911,13 +911,9 @@ class BACKUPSCREEN(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
             self.buttonStylesheetDetector = buttonStylesheetDark
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
         else:
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
             self.buttonStylesheetDetector = buttonStylesheet
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
 
         self.widgets()
 

@@ -48,7 +48,7 @@ class ENTERTIMEMACHINE(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+            self.buttonStylesheetDetector = buttonStylesheetDark
         else:
             self.buttonStylesheetDetector = buttonStylesheet
 
