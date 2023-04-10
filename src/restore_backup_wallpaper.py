@@ -15,9 +15,13 @@ def restore_backup_wallpaper():
         
         # If has a wallpaper to restore and restoreSystemSettings:
         if someImageInsideList: 
-            # Retore users wallpaper to .local/share/wallpapers
+            # Create wallpapers folders
+            if not os.path.exists(str(mainIniFile.create_base_folder())):
+                sub.run(f"{createCMDFolder} {homeUser}/.local/share/wallpapers/",shell=True)
+
+            # Copy to wallpapers folders
             for image in os.listdir(f"{mainIniFile.wallpaper_main_folder()}/"):
-                sub.run(f"{copyRsyncCMD} {mainIniFile.wallpaper_main_folder()}/{image} {homeUser}/.local/share/wallpapers", shell=True)
+                sub.run(f"{copyRsyncCMD} {mainIniFile.wallpaper_main_folder()}/{image} {homeUser}/.local/share/wallpapers/", shell=True)
 
             # Check if user DE is in the supported list to Automatically apply
             ################################################################
@@ -38,6 +42,10 @@ def restore_backup_wallpaper():
 
                     # Light or Dark wallpaper
                     if getColorScheme == "prefer-light" or getColorScheme == "default":
+                        print()
+                        print(getColorScheme)
+                        print()
+                        
                         # Light theme o default
                         print(f"{setGnomeWallpaper} {homeUser}/.local/share/wallpapers/{image}")
                         sub.run(f"{setGnomeWallpaper} {homeUser}/.local/share/wallpapers/{image}", shell=True)
@@ -67,3 +75,5 @@ def restore_backup_wallpaper():
                             """ % (homeUser, image))
     except:
         pass
+
+restore_backup_wallpaper()
