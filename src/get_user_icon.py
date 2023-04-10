@@ -12,3 +12,5 @@ def users_icon_name():
         userIconName = userIconName.replace("'", "")
 
     return userIconName
+
+print(users_icon_name())

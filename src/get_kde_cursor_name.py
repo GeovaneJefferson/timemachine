@@ -1,16 +1,21 @@
 from setup import *
 
 def users_kde_cursor_name():
-    userKDECursorName = os.popen(getKDEUserCursorCMD)
+    with open(f"{homeUser}/.config/xsettingsd/xsettingsd.conf", "r") as read:
+        read = read.readlines()
+        for count in range(len(read)):
+            if read[count].split()[0] == "Gtk/CursorThemeName":
+                return read[count].split()[1].replace('"','')
 
-    count = 0
-    for line in userKDECursorName:
-        count += 1
-        # print(f"{count}: {line.strip()}")
-        if "Current theme for this Plasma session" in line:
-            break
+    # userKDECursorName = os.popen(getKDEUserCursorCMD)
 
-    return line.strip().split(" ")[1]
+    # count = 0
+    # for line in userKDECursorName:
+    #     count += 1
+    #     if "Current theme for this Plasma session" in line:
+    #         break
+
+    # return line.strip().split(" ")[1]
 
 if __name__ == '__main__':
     pass
