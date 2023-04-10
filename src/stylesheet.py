@@ -65,6 +65,14 @@ separetorLineDark = ("""
         border-top:1px solid rgba(110, 109, 112, 1);
         """)
 
+separetorLineLeftbackground = ("""
+        border-right:1px solid rgba(14,14,14,0.1);
+        """)
+
+separetorLineLeftbackgroundDark = ("""
+        border-right:1px solid rgba(110, 109, 112, 1);
+        """)
+
 timeBox = (
     """
         border-color: transparent;
@@ -140,8 +148,9 @@ useDiskButtonStylesheet = (
         "}"
     "QPushButton:disabled "
         "{"
-            "background-color:rgba(69, 69, 70, 1);"
-            "color:rgba(99, 99, 99, 1);"
+            "background-color:rgb(255,255,255);"
+            "color:rgba(223,222,223,1);"
+            "border:0px;"
         "}")
 
 availableDeviceButtonStylesheet  = (

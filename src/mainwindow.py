@@ -52,6 +52,10 @@ class MAIN(QMainWindow):
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
             # Available devices
             self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
+            # Separator
+            self.separatorstylesheetDetector = separetorLineDark
+            # Separator left background
+            self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackgroundDark
         else:
             # Left background
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
@@ -61,6 +65,10 @@ class MAIN(QMainWindow):
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
             # Available devices
             self.availableDeviceButtonDetector = availableDeviceButtonStylesheet
+            # Separator
+            self.separatorstylesheetDetector = separetorLine
+            # Separator left background
+            self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackground
 
         leftBackgroundColor = QWidget(self)
         leftBackgroundColor.setGeometry(0,0,220,self.height()) 
@@ -74,6 +82,7 @@ class MAIN(QMainWindow):
         ################################################################################
         self.leftWidget = QWidget(self)
         self.leftWidget.setGeometry(20, 20, 200, 410) 
+        self.leftWidget.setStyleSheet(self.separatorLeftBackgroundStylesheetDetector)
 
         # Left layout
         self.leftLayout = QVBoxLayout(self.leftWidget)
@@ -235,18 +244,13 @@ class MAIN(QMainWindow):
         ################################################################################
         topLineWidget = QWidget(self)
         topLineWidget.setGeometry(240,30,440,1)
-        topLineWidget.setStyleSheet("""
-            border-top:1px solid rgba(14,14,14,0.1);
-        """)
+        topLineWidget.setStyleSheet(self.separatorstylesheetDetector)
         ################################################################################
         # Description
         ################################################################################
         self.descriptionWidget = QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
-        self.descriptionWidget.setStyleSheet("""
-            border-top:1px solid rgba(14,14,14,0.1);
-        """)
-
+        self.descriptionWidget.setStyleSheet(self.separatorstylesheetDetector)
 
         # Description Layout
         self.descriptionLayout = QVBoxLayout(self.descriptionWidget)
