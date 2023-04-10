@@ -31,5 +31,4 @@ def calculate_time_left_to_backup():
         return None
 
 if __name__ == '__main__':
-    print(calculate_time_left_to_backup())
     pass
