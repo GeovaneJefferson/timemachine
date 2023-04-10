@@ -75,5 +75,3 @@ def restore_backup_wallpaper():
                             """ % (homeUser, image))
     except:
         pass
-
-restore_backup_wallpaper()
