@@ -21,7 +21,7 @@ class WELCOMESCREEN(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
         else:
@@ -115,7 +115,7 @@ class CHOOSEDEVICE(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
         else:
@@ -330,7 +330,7 @@ class PREBACKUP(QWidget):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
         else:

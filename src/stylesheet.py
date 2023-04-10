@@ -69,7 +69,7 @@ leftBackgroundColorStylesheet = (
         border-right:1px solid rgba(14,14,14,0.1);
     """)
 
-leftBackgroundColorDarkStylesheet = (
+leftBackgroundColorStylesheetDark = (
     """
         background-color:rgba(45, 45, 45, 1);
         border-right:1px solid rgba(14,14,14,0.1);
@@ -114,7 +114,6 @@ buttonStylesheetDark = (
         "{"
             "background-color:rgba(69, 69, 70, 1);"
             "color:rgba(99, 99, 99, 1);"
-            "border:0px;"
         "}")
 
 useDiskButtonStylesheet = (
@@ -122,18 +121,18 @@ useDiskButtonStylesheet = (
         "{"
             "border-radius:6px;"
             "background-color:rgba(75,145,247,1);"
-            "color:white;"
+            "border:1px solid rgba(14,14,14,0.2);"
+            "color:rgba(223, 222, 223, 1);"
         "}"
     "QPushButton:hover"
         "{"
-            # "background-color:rgba(245,245,245,1);"
+            "background-color:rgba(76,75,78,1);"
             "color:rgba(223,222,223,1);"
         "}"
     "QPushButton:disabled "
         "{"
-            "background-color:rgb(255,255,255);"
-            "color:rgba(223,222,223,1);"
-            "border:0px;"
+            "background-color:rgba(69, 69, 70, 1);"
+            "color:rgba(99, 99, 99, 1);"
         "}")
 
 availableDeviceButtonStylesheet  = (
@@ -159,6 +158,32 @@ availableDeviceButtonStylesheet  = (
     "QPushButton:checked"
         "{"
             "background-color:rgba(213,213,213,1);"
+        "}")
+
+availableDeviceButtonStylesheetDark  = (
+   "QPushButton"
+        "{"
+            "border-radius:6px;"
+            "background-color:rgba(110, 109, 112, 1);"
+            "border:1px solid rgba(14,14,14,0.2);"
+            "color:white;"
+            "padding-left:45px;"
+            "text-align:left;"
+        "}"
+    "QPushButton:hover"
+        "{"
+            "background-color:rgba(76,75,78,1);"
+        "}"
+    "QPushButton:disabled"
+        "{"
+            "background-color:rgb(255,255,255);"
+            "color:rgba(223,222,223,1);"
+            "border:0px;"
+        "}"
+    "QPushButton:checked"
+        "{"
+            "background-color:rgba(37, 37, 37, 1);"
+            "border:1px solid rgba(98, 98, 98, 1);"
         "}")
 
 externalWindowbackgroundStylesheet =( 

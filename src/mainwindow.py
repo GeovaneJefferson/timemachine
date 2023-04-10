@@ -44,13 +44,23 @@ class MAIN(QMainWindow):
     def begin_settings(self):
         # Detect dark theme
         if app.palette().window().color().getRgb()[0] < 55:
-            self.leftBackgroundColorDetector = leftBackgroundColorDarkStylesheet
+            # Left background
+            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
+            # Button
             self.buttonStylesheetDetector = buttonStylesheetDark
+            # External window
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+            # Available devices
+            self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
         else:
+            # Left background
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+            # Button
             self.buttonStylesheetDetector = buttonStylesheet
+            # External window
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+            # Available devices
+            self.availableDeviceButtonDetector = availableDeviceButtonStylesheet
 
         leftBackgroundColor = QWidget(self)
         leftBackgroundColor.setGeometry(0,0,220,self.height()) 
@@ -733,7 +743,7 @@ class MAIN(QMainWindow):
                         if str(mainIniFile.ini_hd_name()) != "None":
                             self.availableDevices.setAutoExclusive(True)
     
-                        self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
+                        self.availableDevices.setStyleSheet(self.availableDeviceButtonDetector)
                         text = self.availableDevices.text()
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
