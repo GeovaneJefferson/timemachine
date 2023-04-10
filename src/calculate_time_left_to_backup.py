@@ -4,32 +4,44 @@ from read_ini_file import UPDATEINIFILE
 def calculate_time_left_to_backup():
     mainIniFile = UPDATEINIFILE()
 
-    backupTime = mainIniFile.backup_time_military() 
-    currentTime = f"{mainIniFile.current_hour()}{mainIniFile.current_minute()}" 
-    timeLeft = int(backupTime) - int(currentTime)
 
-    # print("backupTime:",backupTime)
-    # print("currentTime:",currentTime)
-    # print(timeLeft)
-
-    # Fix timer
-    if timeLeft > 59:
-        x = timeLeft-59
-        timeLeft = int(timeLeft-59) + x
-
-    if 0 < timeLeft < 59:
-        # Write time left, so main window can get it
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('SCHEDULE', 'time_left', f'in {timeLeft} minutes...')
-            config.write(configfile)
-            
-        return f"Approx. in {timeLeft} minutes..."
+    backupHour = mainIniFile.ini_next_hour() 
+    currentBackupHour = mainIniFile.current_hour() 
     
-    else:
-        return None
+    backupMinute = mainIniFile.ini_next_minute() 
+    currentBackupMinute = mainIniFile.current_minute() 
+
+    # Different Hour
+    if int(backupHour) - int(currentBackupHour) == 1:
+        timeLeft = 59 - int(currentBackupMinute) + int(backupMinute) 
+        if not timeLeft < 0:
+            if not timeLeft > 59:
+                # Write time left, so main window can get it
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('SCHEDULE', 'time_left', f'in {timeLeft} minutes...')
+                    config.write(configfile)
+                    
+                return f"Approx. in {timeLeft} minutes..."
+            
+    # Same Hour
+    elif  int(backupHour) - int(currentBackupHour) == 0:
+        timeLeft = int(backupMinute) - int(currentBackupMinute) 
+        if not timeLeft < 0:
+            if not timeLeft > 59:
+                # Write time left, so main window can get it
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w') as configfile:
+                    config.set('SCHEDULE', 'time_left', f'in {timeLeft} minutes...')
+                    config.write(configfile)
+                    
+                return f"Approx. in {timeLeft} minutes..."
+            
+
+    return None
+
 
 if __name__ == '__main__':
-    print(calculate_time_left_to_backup())
     pass
