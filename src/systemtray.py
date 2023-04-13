@@ -134,34 +134,21 @@ class APP:
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
         
             else:
-                self.change_color("Red")
-                # Red color
-                # self.tray.setIcon(QIcon(src_system_bar_error_icon))
-                # Hide backup now button
-                self.backupNowButton.setEnabled(False)
-                # Hide Enter In Time Machine
-                self.browseTimeMachineBackupsButton.setEnabled(False)
-
-                # If backup device is not connected and automatically if ON
                 if str(mainIniFile.ini_automatically_backup()) == "true":
                     self.change_color("Red")
-                    # # Change system tray red color
-                    # self.tray.setIcon(QIcon(src_system_bar_error_icon))
-
+                    self.change_color("Red")
+                    self.backupNowButton.setEnabled(False)
+                    self.browseTimeMachineBackupsButton.setEnabled(False)
                 else:
-                    # Read ini file befora write
-                    if self.iniNotificationID != " ":
-                        # Clean notification add info, because auto backup is not enabled
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w', encoding='utf8') as configfile:
-                            config.set('INFO', 'notification_add_info', ' ')
-                            config.write(configfile)
-            
-                        self.change_color("White")
-                        # # Change system tray white color
-                        # self.tray.setIcon(QIcon(src_system_bar_icon))
-
+                    self.change_color("White")
+                    
+                    # if self.iniNotificationID != " ":
+                    #     # Clean notification add info, because auto backup is not enabled
+                    #     config = configparser.ConfigParser()
+                    #     config.read(src_user_config)
+                    #     with open(src_user_config, 'w', encoding='utf8') as configfile:
+                    #         config.set('INFO', 'notification_add_info', ' ')
+                    #         config.write(configfile)
         else:
             # Update last backup information
             self.iniLastBackupInformation.setText('First, select a backup device.')
