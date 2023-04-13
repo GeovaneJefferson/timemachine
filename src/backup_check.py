@@ -138,7 +138,6 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
-        firstLetter = []
   
         # One time per day
         if str(mainIniFile.ini_one_time_mode()) == "true":

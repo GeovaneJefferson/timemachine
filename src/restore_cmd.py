@@ -10,6 +10,9 @@ from restore_backup_flatpaks_data import restore_backup_flatpaks_data
 from restore_backup_icons import restore_backup_icons
 from restore_backup_cursor import restore_backup_cursor
 from restore_backup_theme import restore_backup_theme
+from restore_backup_kde_globals import restore_backup_kde_globals
+from restore_kde_global_shortcut_src import restore_kde_global_shortcut_src
+from restore_kde_kwinrc import restore_kde_kwinrc
 
 
 ################################################################################
@@ -34,7 +37,7 @@ class RESTORE:
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
-        isRunning = config['RESTORE']['is_restore_running']
+        # isRunning = config['RESTORE']['is_restore_running']
         restoreHome = config['RESTORE']['files_and_folders']
         restoreApplicationsPackages = config['RESTORE']['applications_packages']
         restoreFlatpaksPrograms = config['RESTORE']['applications_flatpak_names']
@@ -62,6 +65,12 @@ class RESTORE:
             restore_backup_icons()
             restore_backup_cursor()
             restore_backup_theme()
+
+            # Only for kde
+            if get_user_de() == 'kde':
+                restore_backup_kde_globals()
+                restore_kde_global_shortcut_src()
+                restore_kde_kwinrc()
         
         self.end_backup(reboot)
 

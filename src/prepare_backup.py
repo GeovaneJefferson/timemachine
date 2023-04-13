@@ -104,6 +104,27 @@ class PREPAREBACKUP:
                 sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
             
             ################################################################################
+            # Create KdeGlobals
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.kde_globals_main_folder())):
+                print("KDE Globals folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.kde_globals_main_folder())}",shell=True)
+            
+            ################################################################################
+            # Create KGlobalShortcut Src
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.kglobal_shortcut_src_main_folder())):
+                print("KGlobal Shortcut Src folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.kglobal_shortcut_src_main_folder())}",shell=True)
+            
+            ################################################################################
+            # Create KdeKwinRc Src
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.kde_kwinrc_main_folder())):
+                print("KWinRc Src folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.kde_kwinrc_main_folder())}",shell=True)
+            
+            ################################################################################
             # Create restore_settings.ini
             ################################################################################
             if not os.path.exists(str(mainIniFile.restore_settings_location())):

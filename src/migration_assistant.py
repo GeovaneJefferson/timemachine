@@ -317,7 +317,12 @@ class PREBACKUP(QWidget):
         self.excludeAppList = []
         self.countOfDebList = []
         self.countOfRPMList = []
-        self.alreadySelectApps = False
+
+        self.alreadyShowingApplicationInformation = False
+        self.alreadyShowingFlatpakInformation = False
+        self.alreadyShowingFlatpakDataInformation = False
+        self.alreadyShowingFilesAndSoldersInformation = False
+        self.alreadyShowingSystemSettingsInformation = False
         
         self.restoreHome = bool()
         self.restoreApplicationsPackages = bool()
@@ -453,7 +458,21 @@ class PREBACKUP(QWidget):
             "This will reinstall: \n"
             "* All backup's deb packages.")
         self.applicationPackagesCheckBox.clicked.connect(self.on_application_clicked)
-     
+        
+        ################################################################################
+        # More informations about
+        ################################################################################
+        baseWidgetForMoreInformation = QWidget()
+
+        self.showMoreApplicationInformationWidget = QScrollArea()
+        self.showMoreApplicationInformationWidget.setFixedHeight(0)
+        self.showMoreApplicationInformationWidget.setWidgetResizable(True)
+        self.showMoreApplicationInformationWidget.setWidget(baseWidgetForMoreInformation)
+
+        self.showMoreApplicationInformationLayout = QVBoxLayout(baseWidgetForMoreInformation)
+        self.showMoreApplicationInformationLayout.setSpacing(5)
+
+        ################################################################################
         if get_packages_size() != "None":
             # Application size information
             self.applicationSizeInformation = QLabel()
@@ -484,6 +503,20 @@ class PREBACKUP(QWidget):
                 self.flatpakCheckBox.setToolTip("This will reinstall: \n"
                     "* All flatpak applications")
                 self.flatpakCheckBox.clicked.connect(self.on_flatpak_clicked)
+
+            ################################################################################
+            # More informations about
+            ################################################################################
+            baseWidgetForMoreInformation = QWidget()
+
+            self.showMoreFlatpakInformationWidget = QScrollArea()
+            self.showMoreFlatpakInformationWidget.setFixedHeight(0)
+            self.showMoreFlatpakInformationWidget.setWidgetResizable(True)
+            self.showMoreFlatpakInformationWidget.setWidget(baseWidgetForMoreInformation)
+
+            self.showMoreFlatpakInformationLayout = QVBoxLayout(baseWidgetForMoreInformation)
+            self.showMoreFlatpakInformationLayout.setSpacing(5)
+
         except:
             pass
         
@@ -503,6 +536,20 @@ class PREBACKUP(QWidget):
             self.applicationSizeInformation.setText(f"{self.flatpakDataSize}")
             self.applicationSizeInformation.setFont(QFont(mainFont,buttonFontSize))
             self.applicationSizeInformation.adjustSize()
+            
+            ################################################################################
+            # More informations about
+            ################################################################################
+            baseWidgetForMoreInformation = QWidget()
+
+            self.showMoreFlatpakDataInformationWidget = QScrollArea()
+            self.showMoreFlatpakDataInformationWidget.setFixedHeight(0)
+            self.showMoreFlatpakDataInformationWidget.setWidgetResizable(True)
+            self.showMoreFlatpakDataInformationWidget.setWidget(baseWidgetForMoreInformation)
+
+            self.showMoreFlatpakDataInformationLayout = QVBoxLayout(baseWidgetForMoreInformation)
+            self.showMoreFlatpakDataInformationLayout.setSpacing(5)
+
         except:
             pass
         
@@ -533,6 +580,19 @@ class PREBACKUP(QWidget):
             self.systemSettingsCheckBox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/preferences-system.svg"))
             self.systemSettingsCheckBox.setIconSize(QtCore.QSize(34,34))
             self.systemSettingsCheckBox.clicked.connect(self.on_system_settings_clicked)
+            
+            ################################################################################
+            # More informations about
+            ################################################################################
+            baseWidgetForMoreInformation = QWidget()
+
+            self.showMoreSystemSettingsInformationWidget = QScrollArea()
+            self.showMoreSystemSettingsInformationWidget.setFixedHeight(0)
+            self.showMoreSystemSettingsInformationWidget.setWidgetResizable(True)
+            self.showMoreSystemSettingsInformationWidget.setWidget(baseWidgetForMoreInformation)
+
+            self.showMoreSystemSettingsInformationLayout = QVBoxLayout(baseWidgetForMoreInformation)
+            self.showMoreSystemSettingsInformationLayout.setSpacing(5)
 
         except:
             pass
@@ -559,36 +619,44 @@ class PREBACKUP(QWidget):
             self.fileAndFoldersCheckBox.setToolTip("This will restore: \n"
                 "* All recents back up files and folders")
             self.fileAndFoldersCheckBox.clicked.connect(self.on_files_and_folders_clicked)
+
+            ################################################################################
+            # More informations about
+            ################################################################################
+            baseWidgetForMoreInformation = QWidget()
+
+            self.showMoreFileAndFoldersInformationWidget = QScrollArea()
+            self.showMoreFileAndFoldersInformationWidget.setFixedHeight(0)
+            self.showMoreFileAndFoldersInformationWidget.setWidgetResizable(True)
+            self.showMoreFileAndFoldersInformationWidget.setWidget(baseWidgetForMoreInformation)
+
+            self.showMoreFileAndFoldersInformationLayout = QVBoxLayout(baseWidgetForMoreInformation)
+            self.showMoreFileAndFoldersInformationLayout.setSpacing(5)
+
         except Exception as error:
             print("Files and Folders",error)
             pass
         
         ################################################################################
-        # Add layouts and widgets
-        ################################################################################
-        self.baseAppsWidget = QWidget()
-
-        self.scrollShowMoreApps = QScrollArea()
-        self.scrollShowMoreApps.setFixedHeight(0)
-        self.scrollShowMoreApps.setWidgetResizable(True)
-        # self.scrollShowMoreApps.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scrollShowMoreApps.setWidget(self.baseAppsWidget)
-
-        ################################################################################
-        self.selectAppsLayout = QVBoxLayout(self.baseAppsWidget)
-        self.selectAppsLayout.setSpacing(5)
-
         self.verticalLayout.addWidget(self.title)
         self.verticalLayout.addWidget(self.description)
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.scrollOptions, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
         self.verticalLayoutForOptions.addWidget(self.applicationPackagesCheckBox)
-        self.verticalLayoutForOptions.addWidget(self.scrollShowMoreApps)
-        self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.showMoreApplicationInformationWidget)
+
+        # self.verticalLayoutForOptions.addWidget(self.flatpakCheckBox)
+        # self.verticalLayoutForOptions.addWidget(self.showMoreApplicationInformationWidget)
+        
         self.verticalLayoutForOptions.addWidget(self.flatpakDataCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.showMoreFlatpakDataInformationWidget)
+        
         self.verticalLayoutForOptions.addWidget(self.fileAndFoldersCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.showMoreFileAndFoldersInformationWidget)
+        
         self.verticalLayoutForOptions.addWidget(self.systemSettingsCheckBox)
+        self.verticalLayoutForOptions.addWidget(self.showMoreSystemSettingsInformationWidget)
         self.verticalLayout.addStretch(5)
         
         self.widgetButtonLayout.addStretch()
@@ -719,12 +787,12 @@ class PREBACKUP(QWidget):
 
     def on_application_clicked(self):
         # Open applications checkboxes
-        if not self.alreadySelectApps:
-            self.scrollShowMoreApps.setFixedHeight(240)
-            self.alreadySelectApps = True
+        if not self.alreadyShowingApplicationInformation:
+            self.showMoreApplicationInformationWidget.setFixedHeight(240)
+            self.alreadyShowingApplicationInformation = True
         else:
-            self.scrollShowMoreApps.setFixedHeight(0)
-            self.alreadySelectApps = False
+            self.showMoreApplicationInformationWidget.setFixedHeight(0)
+            self.alreadyShowingApplicationInformation = False
         
         if self.applicationPackagesCheckBox.isChecked():
             config = configparser.ConfigParser()
@@ -739,8 +807,7 @@ class PREBACKUP(QWidget):
 
             # DEP
             if package_manager() == debFolderName:
-                for exclude in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
-                    f"{applicationFolderName}/{debFolderName}/"):
+                for exclude in os.listdir(f"{mainIniFile.deb_main_folder()}"):
                     # Exclude
                     # exclude = exclude.split("_")[0].split("-")[0]
                     # Checkbox
@@ -750,11 +817,10 @@ class PREBACKUP(QWidget):
                     self.countOfDebList.append(exclude)
                     dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
 
-                    self.selectAppsLayout.addWidget(dummyCheckBox)
+                    self.showMoreApplicationInformationLayout.addWidget(dummyCheckBox)
             # RPM
             elif package_manager() == rpmFolderName:
-                for exclude in os.listdir(f"{mainIniFile.ini_external_location()}/{baseFolderName}/"
-                    f"{applicationFolderName}/{rpmFolderName}/"):
+                for exclude in os.listdir(f"{mainIniFile.rpm_main_folder()}"):
                     # Exclude
                     # exclude = exclude.split("_")[0].split("-")[0]
                     # Checkbox
@@ -764,7 +830,7 @@ class PREBACKUP(QWidget):
                     self.countOfDebList.append(exclude)
                     dummyCheckBox.clicked.connect(lambda *args, exclude=exclude: self.exclude_apps(exclude))
 
-                    self.selectAppsLayout.addWidget(dummyCheckBox)
+                    self.showMoreApplicationInformationLayout.addWidget(dummyCheckBox)
         else:
             config = configparser.ConfigParser()
             config.read(src_user_config)
@@ -776,8 +842,8 @@ class PREBACKUP(QWidget):
             self.excludeAppList.clear()
 
             # Remove applications checkboxes
-            for i in range(self.selectAppsLayout.count()):
-                item = self.selectAppsLayout.itemAt(i)
+            for i in range(self.showMoreApplicationInformationLayout.count()):
+                item = self.showMoreApplicationInformationLayout.itemAt(i)
                 widget = item.widget()
                 widget.deleteLater()
                 i -= 1
@@ -786,6 +852,14 @@ class PREBACKUP(QWidget):
 
     # TODO
     def on_flatpak_clicked(self):
+        # # Open flatpak checkboxes
+        # if not self.alreadyShowingFlatpakInformation:
+        #     self.showMoreFlatpakInformationWidget.setFixedHeight(240)
+        #     self.alreadyShowingFlatpakInformation = True
+        # else:
+        #     self.showMoreFlatpakInformationWidget.setFixedHeight(0)
+        #     self.alreadyShowingFlatpakInformation = False
+        
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w', encoding='utf8') as configfile: 
@@ -806,6 +880,14 @@ class PREBACKUP(QWidget):
         self.allow_to_continue()
 
     def on_applications_data_clicked(self):
+        # # Open flatpak data checkboxes
+        # if not self.alreadyShowingFlatpakDataInformation:
+        #     self.showMoreFlatpakDataInformationWidget.setFixedHeight(240)
+        #     self.alreadyShowingFlatpakDataInformation = True
+        # else:
+        #     self.showMoreFlatpakDataInformationWidget.setFixedHeight(0)
+        #     self.alreadyShowingFlatpakDataInformation = False
+        
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w', encoding='utf8') as configfile:  
@@ -829,6 +911,14 @@ class PREBACKUP(QWidget):
         self.allow_to_continue()
 
     def on_files_and_folders_clicked(self):
+        # # Open files and folder checkboxes
+        # if not self.alreadyShowingFilesAndSoldersInformation:
+        #     self.showMoreFileAndFoldersInformationWidget.setFixedHeight(240)
+        #     self.alreadyShowingFilesAndSoldersInformation = True
+        # else:
+        #     self.showMoreFileAndFoldersInformationWidget.setFixedHeight(0)
+        #     self.alreadyShowingFilesAndSoldersInformation = False
+        
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w', encoding='utf8') as configfile:  
@@ -847,6 +937,14 @@ class PREBACKUP(QWidget):
         self.allow_to_continue()
   
     def on_system_settings_clicked(self):
+        # # Open system settings checkboxe
+        # if not self.alreadyShowingSystemSettingsInformation:
+        #     self.showMoreSystemSettingsInformationWidget.setFixedHeight(240)
+        #     self.alreadyShowingSystemSettingsInformation = True
+        # else:
+        #     self.showMoreSystemSettingsInformationWidget.setFixedHeight(0)
+        #     self.alreadyShowingSystemSettingsInformation = False
+        
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w', encoding='utf8') as configfile:  
@@ -873,10 +971,14 @@ class PREBACKUP(QWidget):
             self.continueButton.setEnabled(False)
 
     def on_back_button_clicked(self):
-       widget.setCurrentIndex(widget.currentIndex()-1)
+        widget.setCurrentIndex(widget.currentIndex()-1)
 
-       self.alreadySelectApps = False
-
+        self.alreadyShowingApplicationInformation = False
+        self.alreadyShowingFlatpakInformation = False
+        self.alreadyShowingFlatpakDataInformation = False
+        self.alreadyShowingFilesAndSoldersInformation = False
+        self.alreadyShowingSystemSettingsInformation = False
+        
     def on_continue_button_clicked(self):
         if self.applicationPackagesCheckBox.isChecked() == True:
             # Write applications exclude list .exclude-application.txt
@@ -1266,12 +1368,12 @@ if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
     main = WELCOMESCREEN()
     # main2 = CHOOSEDEVICE()
-    # main3 = PREBACKUP()
+    main3 = PREBACKUP()
     # main4 = BACKUPSCREEN()
     # main5 = START_RESTORING()
 
-    widget.addWidget(main)   
-    widget.setCurrentWidget(main)   
+    widget.addWidget(main3)   
+    widget.setCurrentWidget(main3)   
     widget.setWindowTitle("Migration Assistant")
     widget.setWindowIcon(QIcon(src_migration_assistant_icon_212px)) 
     widget.setFixedSize(900,600)

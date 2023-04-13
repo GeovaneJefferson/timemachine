@@ -8,19 +8,18 @@ from get_user_icon import users_icon_name
 from get_users_cursor_name import users_cursor_name
 from get_user_theme import users_theme_name
 from get_user_de import get_user_de
-from delete_old_settings_settings import delete_old_settings
 from backup_user_wallpaper import backup_user_wallpaper
 from backup_user_home import backup_user_home
 from backup_user_flatpak_data import backup_user_flatpak_data
 from backup_user_icons import backup_user_icons
-from backup_user_cursor import backup_user_cursor
 from backup_user_theme import backup_user_theme
-from backup_user_color_scheme import backup_user_color_scheme
-from get_kde_color_scheme import get_kde_color_scheme
-from get_kde_cursor_name import users_kde_cursor_name
-from get_kde_icon_name import get_kde_icon_name
+from get_kde_gtk_cursor_name import users_kde_gtk_cursor_name
+from get_kde_gtk_icon_name import get_kde_gtk_icon_name
 from get_user_wallpaper import user_wallpaper
 from backup_user_flatpak_applications_name import backup_flatpak_applications_name
+from backup_kde_globals_file import backup_kde_globals_file
+from backup_kde_kglobal_shortcuts_src import backup_kde_kglobal_shortcuts_src
+from backup_kde_kwinrc import backup_kde_kwinrc
 
 
 ################################################################################
@@ -66,14 +65,15 @@ class BACKUP:
         if str(mainIniFile.ini_allow_flatpak_data()) == "true":
             backup_user_flatpak_data()
       
+        # For both Gnome and Kde
         backup_user_icons()
-        
-        # backup_user_cursor()
-
         backup_user_theme()
-
+        
+        # Only for Kde
         if get_user_de() == 'kde':
-            backup_user_color_scheme()
+            backup_kde_globals_file()
+            backup_kde_kglobal_shortcuts_src()
+            backup_kde_kwinrc()
 
         self.end_backup()
 
@@ -99,11 +99,10 @@ class BACKUP:
 
             config.set('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
             if get_user_de() == 'kde':
-                config.set('INFO', 'icon', f'{get_kde_icon_name()}')
-                config.set('INFO', 'cursor', f'{users_kde_cursor_name()}')
+                config.set('INFO', 'icon', f'{get_kde_gtk_icon_name()}')
+                config.set('INFO', 'cursor', f'{users_kde_gtk_cursor_name()}')
                 config.set('INFO', 'gtktheme', f'{users_theme_name()}')
                 config.set('INFO', 'theme', f'None')
-                config.set('INFO', 'colortheme', f'{get_kde_color_scheme()}')
             else:
                 config.set('INFO', 'icon', f'{users_icon_name()}')
                 config.set('INFO', 'cursor', f'{users_cursor_name()}')

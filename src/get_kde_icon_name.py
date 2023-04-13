@@ -1,11 +1,19 @@
 from setup import *
 
 def get_kde_icon_name():
-    with open(f"{homeUser}/.config/xsettingsd/xsettingsd.conf", "r") as read:
+    with open(f"{homeUser}/.config/kdeglobals", "r") as read:
         read = read.readlines()
+        
         for count in range(len(read)):
-            if read[count].split()[0] == "Net/IconThemeName":
-                return read[count].split()[1].replace('"','')
+            try:
+                if '[Icons]' in read[count]:
+                    break
+            except:
+                pass 
+
+        return read[count+1].split()[0].replace('Theme=','')
+
 
 if __name__ == '__main__':
+    print(get_kde_icon_name())
     pass

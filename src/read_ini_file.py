@@ -264,18 +264,25 @@ class UPDATEINIFILE:
     
     def plasma_style_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{desktopThemeName}"
+    
+    def kde_globals_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeGlobalsFolderName}"
+
+    def kglobal_shortcut_src_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kGlobalShortcutSrcFolderName}"
+
+    def kde_kwinrc_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kWinRcFolderName}"
 
     def gnomeshell_main_folder(self):
         gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}/{gnomeShellFolder}"
         return gnomeShellMainFolder
 
     def rpm_main_folder(self):
-        rpmMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
-        return rpmMainFolder
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
 
     def deb_main_folder(self):
-        debMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
-        return debMainFolder
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
 
     def date_folder_format(self):
         dateFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
