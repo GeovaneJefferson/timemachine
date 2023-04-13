@@ -13,6 +13,7 @@ from restore_backup_theme import restore_backup_theme
 from restore_backup_kde_globals import restore_backup_kde_globals
 from restore_kde_global_shortcut_src import restore_kde_global_shortcut_src
 from restore_kde_kwinrc import restore_kde_kwinrc
+from restart_kde_session import restart_kde_session
 
 
 ################################################################################
@@ -71,6 +72,7 @@ class RESTORE:
                 restore_backup_kde_globals()
                 restore_kde_global_shortcut_src()
                 restore_kde_kwinrc()
+                restart_kde_session()
         
         self.end_backup(reboot)
 
