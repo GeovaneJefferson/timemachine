@@ -1272,9 +1272,10 @@ class OPTION(QMainWindow):
 
         # Donate buton
         self.donateButton = QPushButton()
-        self.donateButton.setText("Donate")
+        self.donateButton.setText("   Donate   ")
         self.donateButton.setFont(QFont(mainFont,normalFontSize))
-        self.donateButton.adjustSize()
+        self.donateButton.setFixedHeight(buttonHeightSize)
+        self.donateButton.setStyleSheet(self.buttonStylesheetDetector)
         self.donateButton.clicked.connect(self.donate_clicked)
 
         ################################################################################
@@ -1341,7 +1342,7 @@ class OPTION(QMainWindow):
 
         # Donate layout
         self.donateAndBackLayout.addStretch()
-        # self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.backButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         
         self.setLayout(self.leftLayout)
