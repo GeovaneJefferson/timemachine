@@ -139,14 +139,9 @@ class CLI:
     def check_the_mode(self):
         print("Checking mode...")
   
-        # One time per day
         if str(mainIniFile.ini_one_time_mode()) == "true":
-            # If current time is higher than time to backup
             if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
-                # If todays date can not be found inside the backup device's folders, backup was not made today.
-
                 if today_date() not in get_backup_date():
-                    # Call backup now
                     self.call_backup_now()
 
                 else:

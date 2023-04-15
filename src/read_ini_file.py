@@ -23,8 +23,7 @@ class UPDATEINIFILE:
     def ini_backup_now(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniBackupNow = config['BACKUP']['backup_now']
-        return self.iniBackupNow
+        return config['BACKUP']['backup_now']
 
     def ini_automatically_backup(self):
         try:
@@ -356,6 +355,4 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    mainIniFile = UPDATEINIFILE()
-    print(mainIniFile.ini_info_icon())
     pass
