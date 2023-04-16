@@ -148,8 +148,7 @@ class UPDATEINIFILE:
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            self.iniCurrentBackupInfo = config['INFO']['feedback_status']
-            return self.iniCurrentBackupInfo
+            return config['INFO']['feedback_status']
         except:
             pass
         

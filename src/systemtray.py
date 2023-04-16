@@ -132,7 +132,8 @@ class APP:
                 else:
                     self.change_color("Blue")
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-        
+                    self.iniLastBackupInformation2.setText('')
+
             else:
                 if str(mainIniFile.ini_automatically_backup()) == "true":
                     self.change_color("Red")
