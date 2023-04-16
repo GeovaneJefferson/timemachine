@@ -6,6 +6,7 @@ from get_backup_time import *
 from get_backup_date import *
 from get_time import *
 from get_latest_backup_date import latest_backup_date_label
+from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 
 
@@ -118,24 +119,22 @@ class APP:
             if is_connected(str(mainIniFile.ini_hd_name())):
                 if str(mainIniFile.ini_backup_now()) == "false":
                     self.change_color("White")
-                    # # White color
-                    # self.tray.setIcon(QIcon(src_system_bar_icon))
-                    # Show backup now button
                     self.backupNowButton.setEnabled(True)
-                    # Enable enter in time machine button
                     self.browseTimeMachineBackupsButton.setEnabled(True)
-                    # Update last backup information
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                    self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+
+                    if calculate_time_left_to_backup() is not None:
+                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(f'{str(calculate_time_left_to_backup())}\n')
+                    else:
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                
                 else:
                     self.change_color("Blue")
-                    # # Blue color
-                    # self.tray.setIcon(QIcon(src_system_bar_run_icon))
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
         
             else:
                 if str(mainIniFile.ini_automatically_backup()) == "true":
-                    self.change_color("Red")
                     self.change_color("Red")
                     self.backupNowButton.setEnabled(False)
                     self.browseTimeMachineBackupsButton.setEnabled(False)
@@ -150,11 +149,8 @@ class APP:
                     #         config.set('INFO', 'notification_add_info', ' ')
                     #         config.write(configfile)
         else:
-            # Update last backup information
             self.iniLastBackupInformation.setText('First, select a backup device.')
-            # Disable backup now button
             self.backupNowButton.setEnabled(False)
-            # Disable enter in time machine button
             self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def backup_now(self):

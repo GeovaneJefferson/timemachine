@@ -7,7 +7,6 @@ from package_manager import *
 from get_user_de import get_user_de
 from get_home_folders import *
 from get_system_language import system_language
-# from languages import determine_days_language
 from get_size import *
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date

@@ -4,7 +4,6 @@ from read_ini_file import UPDATEINIFILE
 def calculate_time_left_to_backup():
     mainIniFile = UPDATEINIFILE()
 
-
     backupHour = mainIniFile.ini_next_hour() 
     currentBackupHour = mainIniFile.current_hour() 
     
@@ -23,7 +22,7 @@ def calculate_time_left_to_backup():
                     config.set('SCHEDULE', 'time_left', f'in {timeLeft} minutes...')
                     config.write(configfile)
                     
-                return f"Approx. in {timeLeft} minutes..."
+                return f"In Approx. {timeLeft} minutes..."
             
     # Same Hour
     elif  int(backupHour) - int(currentBackupHour) == 0:
@@ -37,7 +36,7 @@ def calculate_time_left_to_backup():
                     config.set('SCHEDULE', 'time_left', f'in {timeLeft} minutes...')
                     config.write(configfile)
                     
-                return f"Approx. in {timeLeft} minutes..."
+                return f"In Approx. {timeLeft} minutes..."
             
 
     return None
