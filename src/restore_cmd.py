@@ -14,6 +14,7 @@ from restore_backup_kde_globals import restore_backup_kde_globals
 from restore_kde_global_shortcut_src import restore_kde_global_shortcut_src
 from restore_kde_kwinrc import restore_kde_kwinrc
 from restart_kde_session import restart_kde_session
+from restore_backup_fonts import restore_backup_fonts
 
 
 ################################################################################
@@ -63,8 +64,9 @@ class RESTORE:
             restore_backup_flatpaks_data()
         
         if restoreSystemSettings == 'true':
-            restore_backup_icons()
             restore_backup_cursor()
+            restore_backup_fonts()
+            restore_backup_icons()
             restore_backup_theme()
 
             # Only for kde

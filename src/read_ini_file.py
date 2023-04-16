@@ -251,6 +251,9 @@ class UPDATEINIFILE:
         cursorMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{cursorFolderName}"
         return cursorMainFolder
 
+    def fonts_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{fontsFolderName}"
+
     def gtk_theme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}"
     
