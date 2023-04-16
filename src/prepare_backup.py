@@ -3,6 +3,8 @@ from setup import *
 from get_backup_folders import *
 from get_time import *
 from get_backup_date import get_backup_date
+from get_user_de import get_user_de
+from package_manager import package_manager
 from get_user_wallpaper import *
 from read_ini_file import UPDATEINIFILE
 
@@ -63,13 +65,6 @@ class PREPAREBACKUP:
                 print("Icon folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}",shell=True)
 
-            # ################################################################################
-            # # Create Cursor folder
-            # ################################################################################
-            # if not os.path.exists(str(mainIniFile.cursor_main_folder())):
-            #     print("Cursor folder inside external, was created.")
-            #     sub.run(f"{createCMDFolder} {str(mainIniFile.cursor_main_folder())}",shell=True)
-            
             ################################################################################
             # Create Theme folder
             ################################################################################
@@ -77,53 +72,59 @@ class PREPAREBACKUP:
                 print("Theme folder inside external, was created.")
                 sub.run(f"{createCMDFolder} {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
 
-            ################################################################################
-            # Create RPM folder (Folder to manual place rpms apps)
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.rpm_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}",shell=True)   
+            if package_manager() == f"{rpmFolderName}": 
+                ################################################################################
+                # Create RPM folder (Folder to manual place rpms apps)
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.rpm_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}",shell=True)   
+            
+            if package_manager() == f"{debFolderName}": 
+                ################################################################################
+                # Create Deb folder (Folder to manual place deb apps)
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.deb_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}",shell=True)   
             
             ################################################################################
-            # Create Deb folder (Folder to manual place deb apps)
+            # KDE OPTIONS
             ################################################################################
-            if not os.path.exists(str(mainIniFile.deb_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}",shell=True)   
-            
-            ################################################################################
-            # Create Color Scheme folder
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.color_scheme_main_folder())):
-                print("Color scheme folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.color_scheme_main_folder())}",shell=True)
-            
-            ################################################################################
-            # Create Plasma Style folder
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.plasma_style_main_folder())):
-                print("Plasma Style folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
-            
-            ################################################################################
-            # Create KdeGlobals
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.kde_globals_main_folder())):
-                print("KDE Globals folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.kde_globals_main_folder())}",shell=True)
-            
-            ################################################################################
-            # Create KGlobalShortcut Src
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.kglobal_shortcut_src_main_folder())):
-                print("KGlobal Shortcut Src folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.kglobal_shortcut_src_main_folder())}",shell=True)
-            
-            ################################################################################
-            # Create KdeKwinRc Src
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.kde_kwinrc_main_folder())):
-                print("KWinRc Src folder inside external, was created.")
-                sub.run(f"{createCMDFolder} {str(mainIniFile.kde_kwinrc_main_folder())}",shell=True)
-            
+            if get_user_de() == 'kde':
+                ################################################################################
+                # Create Color Scheme folder
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.color_scheme_main_folder())):
+                    print("Color scheme folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.color_scheme_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create Plasma Style folder
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.plasma_style_main_folder())):
+                    print("Plasma Style folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create KdeGlobals
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.kde_globals_main_folder())):
+                    print("KDE Globals folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_globals_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create KGlobalShortcut Src
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.kglobal_shortcut_src_main_folder())):
+                    print("KGlobal Shortcut Src folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kglobal_shortcut_src_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create KdeKwinRc Src
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.kde_kwinrc_main_folder())):
+                    print("KWinRc Src folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_kwinrc_main_folder())}",shell=True)
+                
             ################################################################################
             # Create restore_settings.ini
             ################################################################################
