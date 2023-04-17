@@ -21,5 +21,13 @@ def restore_backup_fonts():
                 sub.run(f"{createCMDFolder} {homeUser}/.local/share/fonts", shell=True)   
 
             sub.run(f"{copyRsyncCMD} {mainIniFile.fonts_main_folder()}/ {homeUser}/.local/share/fonts", shell=True)
+            
+            if get_user_de() != 'kde': 
+                try:
+                    os.listdir(f"/usr/share/fonts/{mainIniFile.ini_info_font()}/")
+                    sub.run(f"{setUserFontCMD} {mainIniFile.ini_info_font()}", shell=True)
+                except:
+                    os.listdir(f"{homeUser}/.local/share/fonts/{mainIniFile.ini_info_font()}")
+                    sub.run(f"{setUserFontCMD} {mainIniFile.ini_info_font()}", shell=True)
     except:         
         pass

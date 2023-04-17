@@ -20,6 +20,8 @@ from backup_user_flatpak_applications_name import backup_flatpak_applications_na
 from backup_kde_globals_file import backup_kde_globals_file
 from backup_kde_kglobal_shortcuts_src import backup_kde_kglobal_shortcuts_src
 from backup_kde_kwinrc import backup_kde_kwinrc
+from get_kde_font import FONT
+from get_user_font import get_user_font
 
 
 ################################################################################
@@ -101,11 +103,13 @@ class BACKUP:
             if get_user_de() == 'kde':
                 config.set('INFO', 'icon', f'{get_kde_gtk_icon_name()}')
                 config.set('INFO', 'cursor', f'{users_kde_gtk_cursor_name()}')
+                config.set('INFO', 'font', f'{mainFont.get_kde_font()}, {mainFont.get_kde_font_size()}')
                 config.set('INFO', 'gtktheme', f'{users_theme_name()}')
                 config.set('INFO', 'theme', f'None')
             else:
                 config.set('INFO', 'icon', f'{users_icon_name()}')
                 config.set('INFO', 'cursor', f'{users_cursor_name()}')
+                config.set('INFO', 'font', f'{get_user_font()}')
                 config.set('INFO', 'gtktheme', f'{users_theme_name()}')
                 config.set('INFO', 'theme', f'None')
                 config.set('INFO', 'colortheme', f'None')
@@ -133,4 +137,5 @@ class BACKUP:
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
+    mainFont = FONT()
     main = BACKUP()

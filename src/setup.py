@@ -102,9 +102,15 @@ setUserIconCMD = "gsettings set org.gnome.desktop.interface icon-theme"
 getUserThemeCMD = "gsettings get org.gnome.desktop.interface gtk-theme"
 setUserThemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
 
-# cursor
+# Cursor
 getUserCursorCMD = "gsettings get org.gnome.desktop.interface cursor-theme"
 setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
+
+# Font
+# gsettings set org.gnome.desktop.interface font-name "FreeSans Regular 11"
+getUserFontCMD = "gsettings get org.gnome.desktop.interface font-name"
+# 'FreeSans Regular 11'
+setUserFontCMD = "gsettings get org.gnome.desktop.interface font-name"
 
 ################################################################################
 # KDE

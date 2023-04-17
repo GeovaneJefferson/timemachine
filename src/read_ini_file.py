@@ -339,6 +339,11 @@ class UPDATEINIFILE:
         config = configparser.ConfigParser()
         config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
         return config['INFO']['cursor']
+    
+    def ini_info_font(self):
+        config = configparser.ConfigParser()
+        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
+        return config['INFO']['font']
 
     def ini_info_colortheme(self):
         config = configparser.ConfigParser()

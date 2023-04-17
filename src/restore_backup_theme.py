@@ -28,11 +28,11 @@ def restore_backup_theme():
                     os.listdir(f"/usr/share/themes/{mainIniFile.ini_info_gtktheme()}")
                     sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
                 except:
-                    try:
-                        os.listdir(f"{homeUser}/.local/share/themes/{mainIniFile.ini_info_gtktheme()}")
-                        sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
-                    except:
-                        os.listdir(f"{homeUser}/.themes/{mainIniFile.ini_info_gtktheme()}")
-                        sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    # try:
+                    os.listdir(f"{homeUser}/.local/share/themes/{mainIniFile.ini_info_gtktheme()}")
+                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    # except:
+                    #     os.listdir(f"{homeUser}/.themes/{mainIniFile.ini_info_gtktheme()}")
+                    #     sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
     except:     
         pass

@@ -27,11 +27,11 @@ def restore_backup_icons():
                     os.listdir(f"/usr/share/icons/{mainIniFile.ini_info_icon()}/")
                     sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
                 except:
-                    try:
-                        os.listdir(f"{homeUser}/.local/share/icons/{mainIniFile.ini_info_icon()}")
-                        sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
-                    except:
-                        os.listdir(f"{homeUser}/.icons/{mainIniFile.ini_info_icon()}")
-                        sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
+                    # try:
+                    os.listdir(f"{homeUser}/.local/share/icons/{mainIniFile.ini_info_icon()}")
+                    sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
+                    # except:
+                    #     os.listdir(f"{homeUser}/.icons/{mainIniFile.ini_info_icon()}")
+                    #     sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
     except:         
         pass
