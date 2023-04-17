@@ -105,11 +105,32 @@ class PREPAREBACKUP:
                     sub.run(f"{createCMDFolder} {str(mainIniFile.color_scheme_main_folder())}",shell=True)
                 
                 ################################################################################
-                # Create Plasma Style folder
+                # Create Plasma Folder
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.plasma_style_main_folder())):
-                    print("Plasma Style folder inside external, was created.")
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_style_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.plasma_main_folder())):
+                    print("Plasma folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create Aurorae Folder
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.aurorae_main_folder())):
+                    print("Aurorae folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.aurorae_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create Plasma Notes Folder
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.kde_notes_main_folder())):
+                    print("Plasma Notes folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_notes_main_folder())}",shell=True)
+                
+                ################################################################################
+                # Create Scripts Folder
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.kde_scripts_main_folder())):
+                    print("Kde Scripts folder inside external, was created.")
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_scripts_main_folder())}",shell=True)
                 
                 ################################################################################
                 # Create KdeGlobals

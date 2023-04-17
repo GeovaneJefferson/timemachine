@@ -17,6 +17,7 @@ def backup_user_theme():
             sub.run(f"{createCMDFolder} {str(mainIniFile.ini_external_location())}/{baseFolderName}/"
                 f"{gtkThemeFolderName}/{users_theme_name()}/{gnomeShellFolder}",shell=True)
         except Exception as error:
+            print("Error" + error)
             pass
 
     try:
@@ -24,7 +25,7 @@ def backup_user_theme():
         sub.run(f"{copyRsyncCMD} /usr/share/themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
     except:
         try:
-            os.listdir(f"{homeUser}/icons/{users_theme_name()}")
+            os.listdir(f"{homeUser}/.themes/{users_theme_name()}")
             sub.run(f"{copyRsyncCMD} {homeUser}/.themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
         except:
             sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/themes/ {str(mainIniFile.gtk_theme_main_folder())}",shell=True)

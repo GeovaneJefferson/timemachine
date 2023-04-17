@@ -23,6 +23,10 @@ from backup_kde_kglobal_shortcuts_src import backup_kde_kglobal_shortcuts_src
 from backup_kde_kwinrc import backup_kde_kwinrc
 from get_kde_font import FONT
 from get_user_font import get_user_font
+from backup_kde_plasma_folder import backup_kde_plasma_folder
+from backup_kde_aurorae import backup_kde_aurorae
+from backup_kde_scripts import backup_kde_scripts_folder
+from backup_kde_notes_folder import backup_kde_notes_folder
 
 
 ################################################################################
@@ -70,11 +74,16 @@ class BACKUP:
       
         # For both Gnome and Kde
         backup_user_icons()
-        backup_user_icons()
+        backup_user_fonts()
         backup_user_theme()
         
         # Only for Kde
         if get_user_de() == 'kde':
+            backup_kde_aurorae()
+            backup_kde_plasma_folder()
+            backup_kde_scripts_folder()
+            backup_kde_notes_folder()
+
             backup_kde_globals_file()
             backup_kde_kglobal_shortcuts_src()
             backup_kde_kwinrc()

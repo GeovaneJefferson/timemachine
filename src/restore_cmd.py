@@ -15,6 +15,10 @@ from restore_kde_global_shortcut_src import restore_kde_global_shortcut_src
 from restore_kde_kwinrc import restore_kde_kwinrc
 from restart_kde_session import restart_kde_session
 from restore_backup_fonts import restore_backup_fonts
+from restore_kde_plasma_folder import restore_kde_plasma_folder
+from restore_kde_aurorae_folder import restore_kde_aurorae_folder
+from restore_kde_scripts_folder import restore_kde_scripts_folder
+from restore_kde_notes_folder import restore_kde_notes_folder
 
 
 ################################################################################
@@ -71,9 +75,14 @@ class RESTORE:
 
             # Only for kde
             if get_user_de() == 'kde':
-                restore_backup_kde_globals()
+                restore_kde_plasma_folder()
+                restore_kde_aurorae_folder()
+                restore_kde_scripts_folder()
+                restore_kde_notes_folder()
+                
                 restore_kde_global_shortcut_src()
                 restore_kde_kwinrc()
+                # Restart KDE session
                 restart_kde_session()
         
         self.end_backup(reboot)

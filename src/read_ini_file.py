@@ -263,8 +263,17 @@ class UPDATEINIFILE:
     def color_scheme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{colorSchemeName}"
     
-    def plasma_style_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{desktopThemeName}"
+    def plasma_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{plasmaFolderName}"
+    
+    def aurorae_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{auroraeFolderName}"
+    
+    def kde_scripts_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeScriptsFolderName}"
+    
+    def kde_notes_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeNotesFolderName}"
     
     def kde_globals_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeGlobalsFolderName}"
