@@ -256,6 +256,7 @@ class CHOOSEDEVICE(QWidget):
                                 f"background-image: url({src_restore_icon});"
                                 "background-repeat: no-repeat;"
                                 "background-color: transparent;"
+                                "border-radius:0px solid transparent;"
                             "}")
 
                         self.devicesAreaLayout.addWidget(self.availableDevices)
