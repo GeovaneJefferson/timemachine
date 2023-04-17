@@ -66,6 +66,13 @@ class PREPAREBACKUP:
                 sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}",shell=True)
 
             ################################################################################
+            # Create Font folder
+            ################################################################################
+            if not os.path.exists(str(mainIniFile.fonts_main_folder())):
+                print("Fonts folder inside external, was created.")
+                sub.run(f"{createCMDFolder} {str(mainIniFile.fonts_main_folder())}",shell=True)
+
+            ################################################################################
             # Create Theme folder
             ################################################################################
             if not os.path.exists(str(mainIniFile.gtk_theme_main_folder())):
@@ -79,7 +86,7 @@ class PREPAREBACKUP:
                 if not os.path.exists(str(mainIniFile.rpm_main_folder())):
                     sub.run(f"{createCMDFolder} {str(mainIniFile.rpm_main_folder())}",shell=True)   
             
-            if package_manager() == f"{debFolderName}": 
+            elif package_manager() == f"{debFolderName}": 
                 ################################################################################
                 # Create Deb folder (Folder to manual place deb apps)
                 ################################################################################

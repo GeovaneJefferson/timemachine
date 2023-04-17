@@ -13,6 +13,7 @@ from backup_user_home import backup_user_home
 from backup_user_flatpak_data import backup_user_flatpak_data
 from backup_user_icons import backup_user_icons
 from backup_user_theme import backup_user_theme
+from backup_user_fonts import backup_user_fonts
 from get_kde_gtk_cursor_name import users_kde_gtk_cursor_name
 from get_kde_gtk_icon_name import get_kde_gtk_icon_name
 from get_user_wallpaper import user_wallpaper
@@ -68,6 +69,7 @@ class BACKUP:
             backup_user_flatpak_data()
       
         # For both Gnome and Kde
+        backup_user_icons()
         backup_user_icons()
         backup_user_theme()
         
