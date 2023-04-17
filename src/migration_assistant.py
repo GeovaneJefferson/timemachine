@@ -11,6 +11,7 @@ from get_packages_size import get_packages_size
 from get_system_settings_size import get_system_settings_size
 from package_manager import package_manager
 from get_backup_home_name_and_size import get_backup_folders_size_pretty
+from save_info import save_info
 
 
 class WELCOMESCREEN(QWidget):
@@ -277,7 +278,7 @@ class CHOOSEDEVICE(QWidget):
 
     def on_device_clicked(self, output):
         if self.availableDevices.isChecked():
-            self.locationBackup = output
+            self.chooseDevice = output
             self.continueButton.setEnabled(True)
         else:
             self.continueButton.setEnabled(False)
@@ -286,26 +287,28 @@ class CHOOSEDEVICE(QWidget):
         ################################################################################
         # Update INI file
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            if str(supportedDEBPackageManager) in package_manager():
-                # Save user's os name
-                config.set(f'INFO', 'packageManager', f'{debFolderName}')
+        save_info(self.chooseDevice)
 
-            elif str(supportedRPMPackageManager) in package_manager():
-                # Save user's os name
-                config.set(f'INFO', 'packageManager', f'{rpmFolderName}')
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
+        # with open(src_user_config, 'w') as configfile:
+        #     if str(supportedDEBPackageManager) in package_manager():
+        #         # Save user's os name
+        #         config.set(f'INFO', 'packageManager', f'{debFolderName}')
 
-            # Update INI file
-            if device_location():
-                config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.locationBackup}')
+        #     elif str(supportedRPMPackageManager) in package_manager():
+        #         # Save user's os name
+        #         config.set(f'INFO', 'packageManager', f'{rpmFolderName}')
 
-            elif not device_location():
-                config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.locationBackup}')
+        #     # Update INI file
+        #     if device_location():
+        #         config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
 
-            config.set('EXTERNAL', 'name', f'{self.locationBackup}')
-            config.write(configfile)
+        #     elif not device_location():
+        #         config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
+
+        #     config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
+        #     config.write(configfile)
 
         main3 = PREBACKUP()
         widget.addWidget(main3) 

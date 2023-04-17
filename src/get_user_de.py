@@ -7,3 +7,6 @@ def get_user_de():
         return userDE.split(":")[1]
     else:
         return userDE        
+    
+if __name__ == '__main__':
+    pass

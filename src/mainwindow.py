@@ -14,6 +14,7 @@ from get_latest_backup_date import latest_backup_date_label
 from update import backup_ini_file
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
+from save_info import save_info
 
 
 class MAIN(QMainWindow):
@@ -834,50 +835,40 @@ class MAIN(QMainWindow):
         ################################################################################
         # Update INI file
         ################################################################################
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if "deb" in package_manager():
-                    config.set('INFO', 'packageManager', f'{debFolderName}')
-                
-                elif "rpm" in package_manager():
-                    config.set('INFO', 'packageManager', f'{rpmFolderName}')
-                
-                config.set('INFO', 'os',  f'{get_user_de()}')
-                config.set('INFO', 'language',  f'{str(system_language())}')
-                config.write(configfile)
+        save_info(self.chooseDevice)
 
-            ################################################################################
-            # Update INI file
-            ################################################################################
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                # If inside media
-                if device_location():
-                    config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
-                # If inside run/media
-                elif not device_location():
-                    config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
+        try:
+            # config = configparser.ConfigParser()
+            # config.read(src_user_config)
+            # with open(src_user_config, 'w', encoding='utf8') as configfile:
+            #     if "deb" in package_manager():
+            #         config.set('INFO', 'packageManager', f'{debFolderName}')
                 
-                config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
-                config.write(configfile)
+            #     elif "rpm" in package_manager():
+            #         config.set('INFO', 'packageManager', f'{rpmFolderName}')
+                
+            #     config.set('INFO', 'os',  f'{get_user_de()}')
+            #     config.set('INFO', 'language',  f'{str(system_language())}')
+            #     config.write(configfile)
+
+            # config = configparser.ConfigParser()
+            # config.read(src_user_config)
+            # with open(src_user_config, 'w', encoding='utf8') as configfile:
+            #     if device_location():
+            #         config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
+            #     elif not device_location():
+            #         config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
+                
+            #     config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
+            #     config.write(configfile)
             
             ################################################################################
             # Backup Ini File
             ################################################################################
-            print("Backup user.ini file")
             backup_ini_file(False)
-            # sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
             
-            # Close Window
             self.external_close_animation()
-            # main.setEnabled(True)
-            # self.close()
-        
             self.get_size_informations()
-
 
         except:
             pass

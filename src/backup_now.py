@@ -27,6 +27,7 @@ from backup_kde_plasma_folder import backup_kde_plasma_folder
 from backup_kde_aurorae import backup_kde_aurorae
 from backup_kde_scripts import backup_kde_scripts_folder
 from backup_kde_notes_folder import backup_kde_notes_folder
+from backup_kde_color_scheme import backup_kde_color_scheme
 
 
 ################################################################################
@@ -81,8 +82,9 @@ class BACKUP:
         if get_user_de() == 'kde':
             backup_kde_aurorae()
             backup_kde_plasma_folder()
+            backup_kde_plasma_folder()
             backup_kde_scripts_folder()
-            backup_kde_notes_folder()
+            backup_kde_color_scheme()
 
             backup_kde_globals_file()
             backup_kde_kglobal_shortcuts_src()

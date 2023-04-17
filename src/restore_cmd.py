@@ -19,6 +19,7 @@ from restore_kde_plasma_folder import restore_kde_plasma_folder
 from restore_kde_aurorae_folder import restore_kde_aurorae_folder
 from restore_kde_scripts_folder import restore_kde_scripts_folder
 from restore_kde_notes_folder import restore_kde_notes_folder
+from restore_kde_color_scheme import restore_kde_color_scheme
 
 
 ################################################################################
@@ -78,6 +79,7 @@ class RESTORE:
                 restore_kde_plasma_folder()
                 restore_kde_aurorae_folder()
                 restore_kde_scripts_folder()
+                restore_kde_color_scheme()
                 restore_kde_notes_folder()
                 
                 restore_kde_global_shortcut_src()
