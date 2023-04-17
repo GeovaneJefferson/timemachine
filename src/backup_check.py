@@ -82,20 +82,24 @@ class CLI:
 
         for output in os.listdir(self.downloadLoc):
             if output.endswith(".deb"):
-                # Check if has not been already back up
-                if output not in self.detectedPackagesDebList:
-                    # Back up DEB
+                if output.split("_")[0] in (f"{self.debMainFolder}/{(output).split('_')[0]}"):
+                    # Delete the old version before back up
+                    for deleteOutput in os.listdir(self.debMainFolder):
+                        if deleteOutput.startswith(f"{output.split('_')[0]}"):
+                            sub.run(f"rm -f {self.debMainFolder}/{deleteOutput}",shell=True)
+                    
+                    # Now back up
                     sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.debMainFolder}", shell=True)
-                else:
-                    print(f"{output} is already back up.")
 
             elif output.endswith(".rpm"):
-                # Check if has not been already back up
-                if output not in self.detectedPackagesRPMList:
-                    # Back up DEB
+                if output.split("_")[0] in (f"{self.rpmMainFolder}/{(output).split('_')[0]}"):
+                    # Delete the old version before back up
+                    for deleteOutput in os.listdir(self.rpmMainFolder):
+                        if deleteOutput.startswith(f"{output.split('_')[0]}"):
+                            sub.run(f"rm -f {self.rpmMainFolder}/{deleteOutput}",shell=True)
+                    
+                    # Now back up
                     sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.rpmMainFolder}", shell=True)
-                else:
-                    print(f"{output} is already back up.")
             else:
                 print("No package to be backup...")
 
