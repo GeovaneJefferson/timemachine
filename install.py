@@ -8,7 +8,6 @@ sys.path.insert(1, 'src/')
 from setup import *
 
 
-
 class CLI:
     def __init__(self):
         # Install command
@@ -54,7 +53,7 @@ class CLI:
             exit()
 
     def requirements(self,user_os):
-        print(f"Users OS: {(user_os.capitalize())}")
+        print("Users OS: " + user_os.capitalize())
         ################################################################################
         # Install pip (Ubuntu)
         ################################################################################
@@ -137,13 +136,15 @@ class CLI:
             with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
                 writer.write(
                     f"[Desktop Entry]\n "
+                    f"Name={appName}\n "
+                    f"GenericName=Backup Tool\n "
                     f"Type=Application\n "
-                    f"Exec=/usr/bin/python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n"
+                    f"Exec=python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n"
                     f"Hidden=false\n "
                     f"NoDisplay=false\n "
                     f"Name=Time Machine\n "
                     f"Comment={appName}'s manager before boot.\n "
-                    f"Icon={src_restore_icon_48px}")
+                    f"Icon={src_restore_icon}")
 
             ################################################################################
             # Time Machine entry .desktop

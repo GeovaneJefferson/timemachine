@@ -195,7 +195,7 @@ src_restore_cmd_py = f"{homeUser}/.local/share/{appNameClose}/src/restore_cmd.py
 ################################################################################
 ## Desktop
 ################################################################################
-src_backup_check_desktop = f"{homeUser}/.config/autostart/backup_check.desktop"
+src_autostart_location = f"{homeUser}/.config/autostart/backup_check.desktop"
 src_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
 src_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
 src_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
@@ -211,7 +211,6 @@ src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
 ## Icons
 ################################################################################
 src_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg"
-src_restore_icon_48px = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_48.png"
 src_monitor_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/applications-system.svg"
 src_settings_up_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/laptop-symbolic.svg"
 src_backup_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/backup_128px.png"

@@ -1,7 +1,7 @@
 [Desktop Entry]
  Type=Application
  Exec=/bin/python3 /home/macbook/.local/share/timemachine/src/at_boot.py
-Hidden=false
+ Hidden=false
  NoDisplay=false
  Name=Time Machine
  Comment=Backup your files

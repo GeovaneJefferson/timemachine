@@ -625,9 +625,9 @@ class MAIN(QMainWindow):
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:  
                 if self.automaticallyCheckBox.isChecked():
-                    if not os.path.exists(src_backup_check_desktop):
-                        # Copy .desktop to user folder (Autostart .desktop)
-                        shutil.copy(src_backup_check_desktop, src_backup_check_desktop)  
+                    # if not os.path.exists(src_backup_check_desktop):
+                    # Copy .desktop to user folder (Autostart .desktop)
+                    shutil.copy(src_backup_check_desktop, src_autostart_location)  
 
                     config.set('BACKUP', 'auto_backup', 'true')
                     config.write(configfile)
@@ -642,6 +642,7 @@ class MAIN(QMainWindow):
                     print("Auto backup was successfully activated!")
          
                 else:
+                    sub.run(f"rm -f {src_autostart_location}",shell=True)
                     config.set('BACKUP', 'auto_backup', 'false')
                     config.write(configfile)    
                     
