@@ -56,6 +56,7 @@ def restore_backup_wallpaper():
 
                     # Set wallpaper to Zoom
                     sub.run(f"{zoomGnomeWallpaper}", shell=True)
+                    break
                     ################################################################
 
                 elif get_user_de() == "kde":
@@ -73,5 +74,6 @@ def restore_backup_wallpaper():
                                 d.writeConfig("Image", "file://%s/.local/share/wallpapers/%s");
                         }'
                             """ % (homeUser, image))
+                    break
     except:
         pass

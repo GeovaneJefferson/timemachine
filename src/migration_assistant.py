@@ -570,7 +570,7 @@ class PREBACKUP(QWidget):
             self.systemSettingsCheckBox = QCheckBox()
             self.systemSettingsCheckBox.setText(" System Settings"
                 "                               "
-                f"                   {self.SystemSettingsSizeInformation.text()}")
+                f"                       {self.SystemSettingsSizeInformation.text()}")
             self.systemSettingsCheckBox.setFont(QFont(mainFont,fontSize11px))
             self.systemSettingsCheckBox.adjustSize()
             self.systemSettingsCheckBox.setToolTip("This will restore: \n"
@@ -754,37 +754,60 @@ class PREBACKUP(QWidget):
         self.enable_system_settings()
 
     def enable_system_settings(self):
-        dummyList = []
+        self.system_settings_list = []
         try:
-            # Check if a wallpaper has been backup
             for output in os.listdir(f"{mainIniFile.wallpaper_main_folder()}/"):
-                dummyList.append(output)
+                self.system_settings_list.append(output)
 
-            # Check if icon has been backup
+            if self.system_settings_list:
+                self.activate_system_settings()
+
             for output in os.listdir(f"{mainIniFile.icon_main_folder()}/"):
-                dummyList.append(output)
+                self.system_settings_list.append(output)
 
-            # Check if theme has been backup
+            if self.system_settings_list:
+                self.activate_system_settings()
+
             for output in os.listdir(f"{mainIniFile.gtk_theme_main_folder()}/"):
-                dummyList.append(output)
+                self.system_settings_list.append(output)
             
-            # Check if cursor has been backup
+            if self.system_settings_list:
+                self.activate_system_settings()
+
             for output in os.listdir(f"{mainIniFile.cursor_main_folder()}/"):
-                dummyList.append(output)
+                self.system_settings_list.append(output)
+            
+            if self.system_settings_list:
+                self.activate_system_settings()
 
-            # Check if user DE is in the supported list
-            if dummyList:
-                # Enable systemSettingsCheckBox
-                self.systemSettingsCheckBox.setEnabled(True)
-                
-            else:
-                self.systemSettingsCheckBox.setEnabled(False)  
+            for output in os.listdir(f"{mainIniFile.color_scheme_main_folder()}/"):
+                self.system_settings_list.append(output)
 
-            # Empty list
-            dummyList.clear()
+            if self.system_settings_list:
+                self.activate_system_settings()
 
+            for output in os.listdir(f"{mainIniFile.plasma_main_folder()}/"):
+                self.system_settings_list.append(output)
+
+            if self.system_settings_list:
+                self.activate_system_settings()
+            
+            for output in os.listdir(f"{mainIniFile.aurorae_main_folder()}/"):
+                self.system_settings_list.append(output)
+
+            if self.system_settings_list:
+                self.activate_system_settings()
         except:
             pass
+                
+    def activate_system_settings(self):
+        if self.system_settings_list:
+            self.systemSettingsCheckBox.setEnabled(True)
+        else:
+            self.systemSettingsCheckBox.setEnabled(False)  
+
+        # Empty list
+        self.system_settings_list.clear()
 
     def on_application_clicked(self):
         # Open applications checkboxes
@@ -1276,7 +1299,6 @@ class BACKUPSCREEN(QWidget):
             with open(src_user_config, 'w', encoding='utf8') as configfile:  
                 config.set('INFO', 'auto_reboot', 'false')
                 config.write(configfile)
-
 
 class START_RESTORING(QWidget):
     def __init__(self):
