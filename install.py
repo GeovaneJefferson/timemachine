@@ -184,21 +184,28 @@ class CLI:
             # Copy current Time Machine folder to user
             # Copy current folder to destination folder
             ################################################################################
-            shutil.copytree(self.getCurrentLocation,
-                            src_folder_timemachine)
-
+            try:
+                shutil.copytree(self.getCurrentLocation,
+                                src_folder_timemachine)
+            except FileExistsError:
+                pass
             ################################################################################
             # Copy .desktop and .timemachine.desktop to destination folder
             ################################################################################
-            shutil.copy(self.src_timemachine_desktop,
-                        src_timemachine_desktop)
-
+            try:
+                shutil.copy(self.src_timemachine_desktop,
+                            src_timemachine_desktop)
+            except FileExistsError:
+                pass
             ################################################################################
             # Copy migration_assistant.desktop to destination folder
             ################################################################################
-            shutil.copy(self.src_migration_assistant,
-                        src_migration_assistant_desktop)
-
+            try:
+                shutil.copy(self.src_migration_assistant,
+                            src_migration_assistant_desktop)
+            except FileExistsError:
+                pass
+            
             print("Program was successfully installed!")
 
         except FileNotFoundError:
