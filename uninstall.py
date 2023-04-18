@@ -5,9 +5,9 @@ from setup import *
 
 try:
     sub.run(f"rm -rf {homeUser}/.local/share/{appNameClose}/", shell=True)
-    sub.run(f"rm {src_timemachine_desktop}", shell=True)
-    sub.run(f"rm {src_migration_assistant_desktop}", shell=True)
-    sub.run(f"rm {src_backup_check_desktop}", shell=True)
+    sub.run(f"rm -f {src_timemachine_desktop}", shell=True)
+    sub.run(f"rm -f {src_migration_assistant_desktop}", shell=True)
+    sub.run(f"rm -f {src_backup_check_desktop}", shell=True)
 
 except Exception as error:
     print(error)
