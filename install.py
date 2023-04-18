@@ -129,10 +129,7 @@ class CLI:
             if not os.path.exists(src_applications_location):
                 sub.run(f"{createCMDFolder} {src_applications_location}", shell=True)
 
-            ################################################################################
-            # Copy all .desktop
-            # Backup checker .desktop
-            ################################################################################
+            print("Creating backup_check,desktop in .autostart fodlder...")
             with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
                 writer.write(
                     f"[Desktop Entry]\n "
@@ -146,10 +143,8 @@ class CLI:
                     f"Comment={appName}'s manager before boot.\n "
                     f"Icon={src_restore_icon}")
 
-            ################################################################################
-            # Time Machine entry .desktop
-            ################################################################################
-            with open(self.src_timemachine_desktop, "w") as writer:  # Modify timemachine.desktop and add username to it
+            print(f"Creating {appNameClose}.desktop...")
+            with open(self.src_timemachine_desktop, "w") as writer: 
                 writer.write(
                     f"[Desktop Entry]\n "
                     f"Version=1.0\n "
@@ -163,9 +158,7 @@ class CLI:
                     f"StartupWMClass={(src_main_window_py).split('/')[-1]}\n "
                     f"Terminal=false")
 
-            ################################################################################
-            # Call Migration Assistant entry .desktop
-            ################################################################################
+            print(f"Creating Migration Assistant.desktop...")
             with open(self.src_migration_assistant, "w") as writer:
                 writer.write(
                     f"[Desktop Entry]\n "
@@ -205,7 +198,7 @@ class CLI:
                             src_migration_assistant_desktop)
             except FileExistsError:
                 pass
-            
+
             print("Program was successfully installed!")
 
         except FileNotFoundError:
