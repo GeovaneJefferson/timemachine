@@ -67,7 +67,7 @@ class APP:
         self.openTimeMachine = QAction(f"Open {appName}")
         self.openTimeMachine.setFont(QFont(mainFont,buttonFontSize))
         self.openTimeMachine.triggered.connect(
-            lambda: sub.Popen(f"python3 {src_main_window_py}", shell=True))
+            lambda: sub.Popen(f"python3 {src_main_window_py}",shell=True))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)

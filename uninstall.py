@@ -1,5 +1,5 @@
 import subprocess as sub
-from pathlib import Path
+import sys
 sys.path.insert(1, 'src/')
 from setup import *
 
