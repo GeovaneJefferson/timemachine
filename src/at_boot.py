@@ -25,7 +25,7 @@ class BOOT:
         # If external devices has already been saved inside INI file
         if str(mainIniFile.ini_hd_name()) != "None":
             # If auto backup is activated
-            if str(mainIniFile.ini_automatically_backup()) == "true":
+            if mainIniFile.ini_automatically_backup() == "true":
                 self.call_backup_checker()
 
     def call_backup_checker(self):

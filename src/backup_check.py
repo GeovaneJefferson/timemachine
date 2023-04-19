@@ -28,16 +28,9 @@ class CLI:
         self.detectedPackagesDebList = []
         self.detectedPackagesRPMList = []
  
-        self.debMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"        
-        self.rpmMainFolder = f"{str(mainIniFile.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"        
-
-
     def updates(self):
         try:
-            print("Updating...")
-            # get date folders inside backup device
-            get_backup_date()
-
+            print("Backup Checker is running...")
         except KeyError as error:
             print(error)
             print("Backup checker KeyError!")
@@ -68,38 +61,38 @@ class CLI:
         print("Searching new packages to be backup...")
         try:
             # Read Downloads folder for .deb
-            for debs in os.listdir(self.debMainFolder):
+            for debs in os.listdir(mainIniFile.deb_main_folder()):
                 self.detectedPackagesDebList.append(debs)
         except:
             pass
         
         try:
             # Read Downloads folder for .rpm
-            for rpms in os.listdir(self.rpmMainFolder):
+            for rpms in os.listdir(mainIniFile.rpm_main_folder()):
                 self.detectedPackagesRPMList.append(rpms)
         except:
             pass
 
         for output in os.listdir(self.downloadLoc):
             if output.endswith(".deb"):
-                if output.split("_")[0] in (f"{self.debMainFolder}/{(output).split('_')[0]}"):
+                if output.split("_")[0] in (f"{mainIniFile.deb_main_folder()}/{(output).split('_')[0]}"):
                     # Delete the old version before back up
-                    for deleteOutput in os.listdir(self.debMainFolder):
+                    for deleteOutput in os.listdir(mainIniFile.deb_main_folder()):
                         if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                            sub.run(f"rm -f {self.debMainFolder}/{deleteOutput}",shell=True)
+                            sub.run(f"rm -f {mainIniFile.deb_main_folder()}/{deleteOutput}",shell=True)
                     
                     # Now back up
-                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.debMainFolder}", shell=True)
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {mainIniFile.deb_main_folder()}", shell=True)
 
             elif output.endswith(".rpm"):
-                if output.split("_")[0] in (f"{self.rpmMainFolder}/{(output).split('_')[0]}"):
+                if output.split("_")[0] in (f"{mainIniFile.rpm_main_folder()}/{(output).split('_')[0]}"):
                     # Delete the old version before back up
-                    for deleteOutput in os.listdir(self.rpmMainFolder):
+                    for deleteOutput in os.listdir(mainIniFile.rpm_main_folder()):
                         if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                            sub.run(f"rm -f {self.rpmMainFolder}/{deleteOutput}",shell=True)
+                            sub.run(f"rm -f {mainIniFile.rpm_main_folder()}/{deleteOutput}",shell=True)
                     
                     # Now back up
-                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {self.rpmMainFolder}", shell=True)
+                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {mainIniFile.rpm_main_folder()}", shell=True)
             else:
                 print("No package to be backup...")
 
@@ -200,7 +193,7 @@ class CLI:
 
 mainIniFile = UPDATEINIFILE()
 main = CLI()
-# Exit program if auto_backup is false
+
 while True:
     time.sleep(5)
     main.updates()
@@ -209,9 +202,9 @@ while True:
     # Prevent multiples backup checker running
     ################################################################################
     try:
-        if str(mainIniFile.ini_automatically_backup()) == "false":
+        if mainIniFile.ini_automatically_backup() == "false":
             print("Exiting backup checker...")
-            # Turn backup now to OFF
+
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:

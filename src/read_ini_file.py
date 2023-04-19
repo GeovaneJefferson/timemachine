@@ -371,4 +371,5 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
+    mainIniFile = UPDATEINIFILE()
     pass
