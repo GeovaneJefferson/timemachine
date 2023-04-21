@@ -129,17 +129,15 @@ class CLI:
             if not os.path.exists(src_applications_location):
                 sub.run(f"{createCMDFolder} {src_applications_location}", shell=True)
 
-            print("Creating backup_check,desktop in .autostart fodlder...")
-            with open(self.src_backup_check, "w") as writer:  # Modify backup_check.desktop and add username to it
+            print("Creating backup_check,desktop ...")
+            with open(self.src_backup_check, "w") as writer: 
                 writer.write(
                     f"[Desktop Entry]\n "
-                    f"Name={appName}\n "
-                    f"GenericName=Backup Tool\n "
                     f"Type=Application\n "
                     f"Exec=python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n"
                     f"Hidden=false\n "
                     f"NoDisplay=false\n "
-                    f"Name=Time Machine\n "
+                    f"Name={appNameClose}\n "
                     f"Comment={appName}'s manager before boot.\n "
                     f"Icon={src_restore_icon}")
 
