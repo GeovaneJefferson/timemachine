@@ -134,10 +134,10 @@ class CLI:
                 writer.write(
                     f"[Desktop Entry]\n "
                     f"Type=Application\n "
-                    f"Exec=python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n"
+                    f"Exec=/bin/python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n "
                     f"Hidden=false\n "
                     f"NoDisplay=false\n "
-                    f"Name={appNameClose}\n "
+                    f"Name={appName}\n "
                     f"Comment={appName}'s manager before boot.\n "
                     f"Icon={src_restore_icon}")
 
