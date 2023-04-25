@@ -17,7 +17,7 @@ Missing:
 '''
 somethingToRestoreInKdescripts = []
 
-def restore_kde_scripts_folder():
+async def restore_kde_scripts_folder():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring KDE Scripts...")
@@ -36,3 +36,8 @@ def restore_kde_scripts_folder():
             sub.run(f"{copyRsyncCMD} {mainIniFile.kde_scripts_main_folder()}/ {homeUser}/.local/share/kwin/scripts/", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

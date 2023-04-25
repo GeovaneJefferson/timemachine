@@ -4,7 +4,7 @@ from get_backup_date import get_backup_date
 from get_backup_time import get_latest_backup_time
 
 
-def restore_backup_home():
+async def restore_backup_home():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring Home folders...")
@@ -22,3 +22,8 @@ def restore_backup_home():
         # Restore Home folders
         sub.run(f"{copyRsyncCMD} {mainIniFile.backup_folder_name()}/{get_backup_date()}/{get_latest_backup_time()}/"
             f"{output}/ {homeUser}/{output}/", shell=True)
+    
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

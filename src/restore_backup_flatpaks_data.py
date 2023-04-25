@@ -2,7 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
-def restore_backup_flatpaks_data():
+async def restore_backup_flatpaks_data():
 	mainIniFile = UPDATEINIFILE()
 	
 	print("Restoring flatpaks data...")
@@ -31,4 +31,8 @@ def restore_backup_flatpaks_data():
 			sub.run(f"{copyRsyncCMD} {mainIniFile.application_local_folder()}/{output} {src_flatpak_local_folder_location}", shell=True)
 	except:
 		pass
+
+	return "Task completed: Wallpaper"
             
+if __name__ == '__main__':
+    pass

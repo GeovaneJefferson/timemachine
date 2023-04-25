@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 somethingToRestoreInFonts = []
 
-def restore_backup_fonts():
+async def restore_backup_fonts():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring fonts...")
@@ -31,3 +31,8 @@ def restore_backup_fonts():
                     sub.run(f"{setUserFontCMD} {mainIniFile.ini_info_font()}", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

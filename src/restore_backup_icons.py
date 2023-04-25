@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 somethingToRestoreInIcon = []
 
-def restore_backup_icons():
+async def restore_backup_icons():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring icon...")
@@ -35,3 +35,8 @@ def restore_backup_icons():
                     #     sub.run(f"{setUserIconCMD} {mainIniFile.ini_info_icon()}", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 somethingToRestoreInCursor = []
 
-def restore_backup_cursor():
+async def restore_backup_cursor():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring cursor...")
@@ -27,3 +27,8 @@ def restore_backup_cursor():
                         sub.run(f"{setUserCursorCMD} {mainIniFile.ini_info_cursor()}",shell=True)
     except:
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

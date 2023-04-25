@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 somethingToRestoreInKdeNotes = []
 
-def restore_kde_notes_folder():
+async def restore_kde_notes_folder():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring KDE Notes...")
@@ -21,5 +21,7 @@ def restore_kde_notes_folder():
     except:         
         pass
 
-if __name__ == '__main__': 
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
     pass

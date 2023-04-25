@@ -31,7 +31,7 @@ class UPDATEINIFILE:
             config.read(src_user_config)
             return config['BACKUP']['auto_backup']
         except:
-            pass
+            return "false"
 
     def ini_system_tray(self):
         config = configparser.ConfigParser()
@@ -66,8 +66,7 @@ class UPDATEINIFILE:
     def ini_multiple_time_mode(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniMultipleTimePerDay = config['MODE']['more_time_mode']
-        return self.iniMultipleTimePerDay
+        return config['MODE']['more_time_mode']
     
     # def ini_dark_mode(self):
     #     config = configparser.ConfigParser()

@@ -105,15 +105,12 @@ class APP:
                 exit()
                 
         except KeyError as error:
-            print(error)
+            print(f'System tray log: {error}')
             pass
 
         self.check_connection()
 
     def check_connection(self):
-        ################################################################################
-        # Check Connection 
-        ################################################################################
         # User has registered a device name
         if str(mainIniFile.ini_hd_name()) != "None":
             if is_connected(str(mainIniFile.ini_hd_name())):
@@ -122,12 +119,13 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     self.browseTimeMachineBackupsButton.setEnabled(True)
 
-                    if calculate_time_left_to_backup() != None:
-                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(f'{str(calculate_time_left_to_backup())}\n')
-                    else:
-                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                    # if calculate_time_left_to_backup() != None:
+                    #     print(f'Time left to backup: {calculate_time_left_to_backup()}')
+                    #     self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                    #     self.iniLastBackupInformation2.setText(f'str({calculate_time_left_to_backup()})\n')
+                    # else:
+                    #     self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                    #     self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
                 
                 else:
                     self.change_color("Blue")

@@ -37,7 +37,6 @@ def calculate_time_left_to_backup():
                     config.write(configfile)
                     
                 return f"In Approx. {timeLeft} minutes..."
-            
 
     return None
 

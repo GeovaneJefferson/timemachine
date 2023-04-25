@@ -38,9 +38,10 @@ class RESTORE:
             config.set('RESTORE', 'is_restore_running', "true")
             config.write(configfile)
 
-        self.begin_settings()
+        # self.begin_settings()
+        asyncio.run(self.begin_settings())
 
-    def begin_settings(self):
+    async def begin_settings(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
 
@@ -54,36 +55,37 @@ class RESTORE:
 
         # First change the wallpaper
         if restoreSystemSettings == 'true':
-            restore_backup_wallpaper()
+            await restore_backup_wallpaper()
         
         if restoreHome == 'true':
-            restore_backup_home()
+            await restore_backup_home()
 
         if restoreApplicationsPackages == 'true':
-            restore_backup_package_applications()
+            await restore_backup_package_applications()
        
         if restoreFlatpaksPrograms == 'true':
-            restore_backup_flatpaks_applications()
+            await restore_backup_flatpaks_applications()
         
         if restoreFlatpaksData == 'true':
-            restore_backup_flatpaks_data()
+            await restore_backup_flatpaks_data()
         
         if restoreSystemSettings == 'true':
-            restore_backup_cursor()
-            restore_backup_fonts()
-            restore_backup_icons()
-            restore_backup_theme()
+            await restore_backup_cursor()
+            await restore_backup_fonts()
+            await restore_backup_icons()
+            await restore_backup_theme()
 
             # Only for kde
             if get_user_de() == 'kde':
-                restore_kde_plasma_folder()
-                restore_kde_aurorae_folder()
-                restore_kde_scripts_folder()
-                restore_kde_color_scheme()
-                restore_kde_notes_folder()
+                await restore_kde_plasma_folder()
+                await restore_kde_aurorae_folder()
+                await restore_kde_scripts_folder()
+                await restore_kde_color_scheme()
+                await restore_kde_notes_folder()
                 
-                restore_kde_global_shortcut_src()
-                restore_kde_kwinrc()
+                await restore_kde_global_shortcut_src()
+                await restore_kde_kwinrc()
+                
                 # Restart KDE session
                 restart_kde_session()
         

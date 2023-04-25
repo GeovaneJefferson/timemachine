@@ -17,7 +17,7 @@ Missing:
 '''
 somethingToRestoreInKGlobalShortcutSrc = []
 
-def restore_kde_global_shortcut_src():
+async def restore_kde_global_shortcut_src():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring Kde Globals Shortcuts Src...")
@@ -36,3 +36,8 @@ def restore_kde_global_shortcut_src():
             sub.run(f"{copyRsyncCMD} {mainIniFile.kglobal_shortcut_src_main_folder()}/ {homeUser}/.config", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

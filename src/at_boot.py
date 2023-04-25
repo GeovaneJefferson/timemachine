@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 from setup import *
 from read_ini_file import UPDATEINIFILE
 
@@ -20,12 +19,10 @@ class BOOT:
             config.write(configfile)
 
         if str(mainIniFile.ini_system_tray()) == "true":
-            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+            sub.Popen(f"python3 {src_system_tray_py}",shell=True)
 
-        # If external devices has already been saved inside INI file
         if str(mainIniFile.ini_hd_name()) != "None":
-            # If auto backup is activated
-            if mainIniFile.ini_automatically_backup() == "true":
+            if str(mainIniFile.ini_automatically_backup()) == "true":
                 self.call_backup_checker()
 
     def call_backup_checker(self):

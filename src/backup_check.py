@@ -104,7 +104,6 @@ class CLI:
 
     def check_the_date(self):
         print("Checking dates...")
-        # Is Multiple time per day enabled?
         if str(mainIniFile.ini_multiple_time_mode()) == "true":
             self.check_the_mode()
 
@@ -135,7 +134,6 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
-  
         if str(mainIniFile.ini_one_time_mode()) == "true":
             if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
                 if today_date() not in get_backup_date():

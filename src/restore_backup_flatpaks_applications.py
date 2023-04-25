@@ -2,7 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
-def restore_backup_flatpaks_applications():
+async def restore_backup_flatpaks_applications():
     mainIniFile = UPDATEINIFILE()
 
     print("Installing flatpaks apps...")
@@ -20,3 +20,8 @@ def restore_backup_flatpaks_applications():
                 config.write(configfile)
 
             sub.run(f"{flatpakInstallCommand} {output}", shell=True)
+    
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

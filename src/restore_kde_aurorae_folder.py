@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 
 somethingToRestoreInKDEAurorae = []
 
-def restore_kde_aurorae_folder():
+async def restore_kde_aurorae_folder():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring Kde Aurorae folder...")
@@ -20,5 +20,7 @@ def restore_kde_aurorae_folder():
     except:         
         pass
 
-if __name__ == '__main__': 
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
     pass

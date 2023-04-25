@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 
 dummyExcludeAppsList = []
 
-def restore_backup_package_applications():
+async def restore_backup_package_applications():
     mainIniFile = UPDATEINIFILE()
     print("Installing applications packages...")
 
@@ -44,7 +44,13 @@ def restore_backup_package_applications():
 
         # Add flathub repository
         sub.run("sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo", shell=True)
+        
+        return "Task completed: Wallpaper"
     
     except:
         print("Error trying to install packages...")
         pass
+
+
+if __name__ == '__main__':
+    pass

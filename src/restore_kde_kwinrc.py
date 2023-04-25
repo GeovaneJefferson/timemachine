@@ -17,7 +17,7 @@ Missing:
 '''
 somethingToRestoreInKdeGlobals = []
 
-def restore_kde_kwinrc():
+async def restore_kde_kwinrc():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring KDE kwinrc...")
@@ -36,3 +36,8 @@ def restore_kde_kwinrc():
             sub.run(f"{copyRsyncCMD} {mainIniFile.kde_kwinrc_main_folder()}/ {homeUser}/.config", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

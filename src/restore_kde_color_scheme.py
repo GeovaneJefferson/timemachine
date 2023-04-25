@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 
 somethingInside = []
 
-def restore_kde_color_scheme():
+async def restore_kde_color_scheme():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring KDE Color Scheme...")
@@ -18,6 +18,8 @@ def restore_kde_color_scheme():
             sub.run(f"{copyRsyncCMD} {mainIniFile.color_scheme_main_folder()}/ {homeUser}/.local/share/color-schemes/", shell=True)
     except:         
         pass
+
+    return "Task completed: Wallpaper"
 
 if __name__ == '__main__':
     pass

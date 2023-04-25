@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 
 somethingToRestoreInKDEPlasmaFolder = []
 
-def restore_kde_plasma_folder():
+async def restore_kde_plasma_folder():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring Kde Plasma folder...")
@@ -23,5 +23,8 @@ def restore_kde_plasma_folder():
     except:         
         pass
 
-if __name__ == '__main__': 
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
     pass
+

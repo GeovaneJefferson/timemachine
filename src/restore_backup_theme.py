@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 somethingToRestoreInTheme = []
 
-def restore_backup_theme():
+async def restore_backup_theme():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring theme...")
@@ -36,3 +36,8 @@ def restore_backup_theme():
                     #     sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
     except:     
         pass
+
+    return "Task completed: Wallpaper"
+
+if __name__ == '__main__':
+    pass

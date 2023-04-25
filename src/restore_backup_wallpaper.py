@@ -4,7 +4,7 @@ from get_user_de import get_user_de
 
 someImageInsideList = []
 
-def restore_backup_wallpaper():
+async def restore_backup_wallpaper():
     mainIniFile = UPDATEINIFILE()
 
     print("Restoring users wallpaper...")
@@ -75,5 +75,11 @@ def restore_backup_wallpaper():
                         }'
                             """ % (homeUser, image))
                     break
+        
+        return "Task completed: Wallpaper"
+    
     except:
         pass
+
+if __name__ == '__main__':
+    pass
