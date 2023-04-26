@@ -211,6 +211,9 @@ class UPDATEINIFILE:
         self.currentMinute = now.strftime("%M")
         return self.currentMinute
 
+    def current_second(self):
+        return int(now.strftime("%S"))
+
     def current_time(self):
         return f"{self.current_hour()}{self.current_minute()}" 
 

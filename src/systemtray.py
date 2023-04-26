@@ -13,6 +13,11 @@ from read_ini_file import UPDATEINIFILE
 class APP:
     def __init__(self):
         self.color = str()
+        self.lastestBackup = str()
+        self.timeLeftToBackup = str()
+
+        self.alreadySet = False
+        self.firstStartup = False
         self.iniUI()
 
     def iniUI(self):
@@ -96,6 +101,23 @@ class APP:
     
     def updates(self):
         print("System tray is running...")
+
+        # Only get latest backup information only once, if a new backup is started 
+        if self.firstStartup:
+            self.lastestBackup = f'{str(latest_backup_date_label())}\n'
+            self.firstStartup = False
+
+        # Calculate lastest backup 
+        if mainIniFile.ini_backup_now() == 'true':
+            if not self.alreadySet:
+                self.alreadySet = True
+                self.lastestBackup = f'{str(latest_backup_date_label())}\n'
+        else:
+            self.alreadySet = False
+
+        if mainIniFile.current_second() == 59:
+            self.timeLeftToBackup = f'{calculate_time_left_to_backup()}\n'
+
         self.system_tray_manager()
 
     def system_tray_manager(self):
@@ -119,13 +141,15 @@ class APP:
                     self.backupNowButton.setEnabled(True)
                     self.browseTimeMachineBackupsButton.setEnabled(True)
 
+                    # TODO
                     # if calculate_time_left_to_backup() != None:
-                    #     print(f'Time left to backup: {calculate_time_left_to_backup()}')
-                    #     self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                    #     self.iniLastBackupInformation2.setText(f'str({calculate_time_left_to_backup()})\n')
-                    # else:
-                    #     self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                    #     self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                    if self.timeLeftToBackup != "":
+                        print(f'Time left to backup: {self.timeLeftToBackup}')
+                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+                    else:
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText({self.lastestBackup})
                 
                 else:
                     self.change_color("Blue")
