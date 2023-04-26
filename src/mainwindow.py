@@ -674,22 +674,27 @@ class MAIN(QMainWindow):
 
     def system_tray_clicked(self):
         try:
-            ################################################################################
-            # Call system tray
-            # System tray can check if is not already runnnig
-            ################################################################################
-            print("Starting system tray...")
-            if self.showInSystemTrayCheckBox.isChecked():
-                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+            config = configparser.ConfigParser()
+            config.read(src_user_config)
+            with open(src_user_config, 'w', encoding='utf8') as configfile:
+                if self.showInSystemTrayCheckBox.isChecked():
+                    sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
-            else:
-                pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                    config.set('SYSTEMTRAY', 'system_tray', 'true')
+                    config.write(configfile)
+                    print("System tray was successfully enabled!")
 
-                # send a message to the system tray application
-                os.write(pipe_fd, b"exit")
+                else:
+                    pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
 
-                # close the pipe
-                os.close(pipe_fd)
+                    # send a message to the system tray application
+                    os.write(pipe_fd, b"exit")
+
+                    # close the pipe
+                    os.close(pipe_fd)
+                    config.set('SYSTEMTRAY', 'system_tray', 'false')
+                    config.write(configfile)
+                    print("System tray was successfully disabled!")
 
         except:
             pass
