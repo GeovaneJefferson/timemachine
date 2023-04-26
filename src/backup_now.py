@@ -95,18 +95,18 @@ class BACKUP:
     def end_backup(self):
         print("Ending backup...")
         
-        pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
+        # pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
 
-        # Write the end backup message to the named pipe
-        os.write(pipe_fd, END_BACKUP_MSG)
+        # # Write the end backup message to the named pipe
+        # os.write(pipe_fd, END_BACKUP_MSG)
 
-        # Close the named pipe
-        os.close(pipe_fd)
+        # # Close the named pipe
+        # os.close(pipe_fd)
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            # config.set('BACKUP', 'backup_now', 'false')
+            config.set('BACKUP', 'backup_now', 'false')
             # Change system tray color to white (Normal)
             config.set('INFO', 'notification_id', "0")
             config.set('INFO', 'notification_add_info', "")

@@ -702,11 +702,11 @@ class MAIN(QMainWindow):
             pass
 
     def backup_now_clicked(self):
-        # Open the named pipe for writing
-        pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
+        # # Open the named pipe for writing
+        # pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
 
-        # Write the start backup message to the named pipe
-        os.write(pipe_fd, START_BACKUP_MSG)
+        # # Write the start backup message to the named pipe
+        # os.write(pipe_fd, START_BACKUP_MSG)
 
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
