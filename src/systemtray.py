@@ -229,7 +229,7 @@ class APP:
         self.tray.hide()
 
         # close the named pipe
-        os.close(systemTrayPipeLocation)
+        os.close("/tmp/system_tray.pipe")
         os.unlink(self.pipe_name)
 
         # exit the application

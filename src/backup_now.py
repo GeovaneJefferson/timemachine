@@ -95,7 +95,7 @@ class BACKUP:
     def end_backup(self):
         print("Ending backup...")
         
-        pipe_fd = os.open(backupNowPipeLocation, os.O_WRONLY)
+        pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
 
         # Write the end backup message to the named pipe
         os.write(pipe_fd, END_BACKUP_MSG)
