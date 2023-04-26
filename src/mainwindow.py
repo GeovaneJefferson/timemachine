@@ -499,6 +499,8 @@ class MAIN(QMainWindow):
             
             self.backupNowButton.setEnabled(False)
 
+        self.condition()
+
     def get_size_informations(self):
         ################################################################################
         # Get external size values
