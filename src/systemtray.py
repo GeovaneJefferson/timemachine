@@ -145,7 +145,6 @@ class APP:
         # User has registered a device name
         if str(mainIniFile.ini_hd_name()) != "None":
             if is_connected(str(mainIniFile.ini_hd_name())):
-                pass
                 if str(mainIniFile.ini_backup_now()) == "false":
                     self.change_color("White")
                     self.backupNowButton.setEnabled(True)
