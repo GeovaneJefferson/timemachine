@@ -532,8 +532,10 @@ class MAIN(QMainWindow):
                         self.showInSystemTrayCheckBox.setEnabled(False)
 
             except (OSError, NameError):
-                # Handle errors reading from the named pipe
-                pass
+                self.selectDiskButton.setEnabled(True)
+                self.backupNowButton.setEnabled(True)
+                self.automaticallyCheckBox.setEnabled(True)
+                self.showInSystemTrayCheckBox.setEnabled(True)
 
         else:
             self.externalNameLabel.setText("<h1>None</h1>")
