@@ -164,7 +164,9 @@ class APP:
                     self.change_color("Blue")
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
                     self.iniLastBackupInformation2.setText('')
-
+                    
+                    self.backupNowButton.setEnabled(False)
+                    self.browseTimeMachineBackupsButton.setEnabled(False)
             else:
                 if str(mainIniFile.ini_automatically_backup()) == "true":
                     self.change_color("Red")
@@ -182,6 +184,7 @@ class APP:
                     #         config.write(configfile)
         else:
             self.iniLastBackupInformation.setText('First, select a backup device.')
+            self.iniLastBackupInformation2.setText('')
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
             # return "No Device Registered"
@@ -238,38 +241,38 @@ class APP:
     def check_pipe(self):
         print("Checking pipes...")
         
-        # Check backup now
-        try:
-            backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
+        # # Check backup now
+        # try:
+        #     backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
 
-            if backupNowPipe:
-                data = os.read(backupNowPipe, 1024)
-                if data == START_BACKUP_MSG:
-                    # Set the system tray icon to indicate that backup is in progress
-                    self.change_color("Blue")
+        #     if backupNowPipe:
+        #         data = os.read(backupNowPipe, 1024)
+        #         if data == START_BACKUP_MSG:
+        #             # Set the system tray icon to indicate that backup is in progress
+        #             self.change_color("Blue")
                    
-                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-                    self.iniLastBackupInformation2.setText('')
+        #             self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+        #             self.iniLastBackupInformation2.setText('')
 
-                else:
-                    # Set the system tray icon to indicate that backup is complete
-                    self.change_color("White")
+        #         else:
+        #             # Set the system tray icon to indicate that backup is complete
+        #             self.change_color("White")
                     
-                    self.backupNowButton.setEnabled(True)
-                    self.browseTimeMachineBackupsButton.setEnabled(True)
+        #             self.backupNowButton.setEnabled(True)
+        #             self.browseTimeMachineBackupsButton.setEnabled(True)
 
-                    # if calculate_time_left_to_backup() != None:
-                    if self.timeLeftToBackup != "":
-                        print(f'Time left to backup: {self.timeLeftToBackup}')
-                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
-                    else:
-                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.lastestBackup)
+        #             # if calculate_time_left_to_backup() != None:
+        #             if self.timeLeftToBackup != "":
+        #                 print(f'Time left to backup: {self.timeLeftToBackup}')
+        #                 self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+        #                 self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+        #             else:
+        #                 self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+        #                 self.iniLastBackupInformation2.setText(self.lastestBackup)
 
-        except (OSError, NameError):
-            # Handle errors reading from the named pipe
-            pass
+        # except (OSError, NameError):
+        #     # Handle errors reading from the named pipe
+        #     pass
     
         # Check system tray status
         try:
