@@ -121,6 +121,7 @@ class APP:
                 self.alreadySet = False
 
             if mainIniFile.current_second() == 59:
+                print("Getting time left to backup information...")
                 self.timeLeftToBackup = f'{calculate_time_left_to_backup()}\n'
 
         self.system_tray_manager()
@@ -154,8 +155,7 @@ class APP:
                         self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
                     else:
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText({self.lastestBackup})
-                
+                        self.iniLastBackupInformation2.setText(self.lastestBackup)
                 else:
                     self.change_color("Blue")
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
