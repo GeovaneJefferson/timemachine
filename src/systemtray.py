@@ -146,36 +146,32 @@ class APP:
         if str(mainIniFile.ini_hd_name()) != "None":
             if is_connected(str(mainIniFile.ini_hd_name())):
                 pass
-            #     return "Connected"
-            # else:
-            #     return "Not Connected"
-
-                # if str(mainIniFile.ini_backup_now()) == "false":
-                    # self.change_color("White")
-                    # self.backupNowButton.setEnabled(True)
-                    # self.browseTimeMachineBackupsButton.setEnabled(True)
+                if str(mainIniFile.ini_backup_now()) == "false":
+                    self.change_color("White")
+                    self.backupNowButton.setEnabled(True)
+                    self.browseTimeMachineBackupsButton.setEnabled(True)
 
                     # TODO
-                #     # if calculate_time_left_to_backup() != None:
-                #     if self.timeLeftToBackup != "":
-                #         print(f'Time left to backup: {self.timeLeftToBackup}')
-                #         self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                #         self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
-                #     else:
-                #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                #         self.iniLastBackupInformation2.setText(self.lastestBackup)
-                # else:
-                #     self.change_color("Blue")
-                #     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-                #     self.iniLastBackupInformation2.setText('')
+                    # if calculate_time_left_to_backup() != None:
+                    if self.timeLeftToBackup != "":
+                        print(f'Time left to backup: {self.timeLeftToBackup}')
+                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+                    else:
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(self.lastestBackup)
+                else:
+                    self.change_color("Blue")
+                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+                    self.iniLastBackupInformation2.setText('')
 
-            # else:
-            #     if str(mainIniFile.ini_automatically_backup()) == "true":
-            #         self.change_color("Red")
-            #         self.backupNowButton.setEnabled(False)
-            #         self.browseTimeMachineBackupsButton.setEnabled(False)
-            #     else:
-            #         self.change_color("White")
+            else:
+                if str(mainIniFile.ini_automatically_backup()) == "true":
+                    self.change_color("Red")
+                    self.backupNowButton.setEnabled(False)
+                    self.browseTimeMachineBackupsButton.setEnabled(False)
+                else:
+                    self.change_color("White")
                     
                     # if self.iniNotificationID != " ":
                     #     # Clean notification add info, because auto backup is not enabled
@@ -230,10 +226,10 @@ class APP:
 
         # close the named pipe
         os.close("/tmp/system_tray.pipe")
-        os.unlink(self.pipe_name)
+        os.unlink("/tmp/system_tray.pipe")
 
         # exit the application
-        exit()
+        QtWidgets.QApplication.exit()
     
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:
