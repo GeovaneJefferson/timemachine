@@ -18,16 +18,27 @@ class APP:
 
         self.alreadySet = False
         self.firstStartup = False
-        self.iniUI()
 
+        # Try to acquire a lock for the application
+        lock_file = self.acquire_lock()
+        if lock_file is None:
+            print('Another instance of the application is already running.')
+            sys.exit(1)
+        
+        # create a named pipe
+        if not os.path.exists(systemTrayPipeName):
+            os.mkfifo(systemTrayPipeName)
+        
+        self.iniUI()
+    
     def iniUI(self):
         self.app = QApplication([])
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(appName)
         self.app.setApplicationName(appName)
-        
+
         self.begin_settings()
-        
+
     def begin_settings(self):
         self.firstStartup = True
 
@@ -46,6 +57,7 @@ class APP:
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
         self.tray.setVisible(True)
+        self.tray.activated.connect(self.tray_icon_clicked)
 
         # Create a menu
         self.menu = QMenu()
@@ -112,62 +124,58 @@ class APP:
                 self.firstStartup = False
 
             # Calculate lastest backup 
-            if mainIniFile.ini_backup_now() == 'true':
-                if not self.alreadySet:
-                    self.alreadySet = True
-                    print("Getting latest backup information...")
-                    self.lastestBackup = f'{str(latest_backup_date_label())}\n'
-            else:
-                self.alreadySet = False
+            try:
+                if mainIniFile.ini_backup_now() == 'true':
+                    if not self.alreadySet:
+                        self.alreadySet = True
+                        print("Getting latest backup information...")
+                        self.lastestBackup = f'{str(latest_backup_date_label())}\n'
+                else:
+                    self.alreadySet = False
+            except:
+                pass
 
             if mainIniFile.current_second() == 59:
                 print("Getting time left to backup information...")
                 self.timeLeftToBackup = f'{calculate_time_left_to_backup()}\n'
 
-        self.system_tray_manager()
+        self.is_connected()
 
-    def system_tray_manager(self):
-        try:
-            if str(mainIniFile.ini_system_tray()) == "false":
-                print("Exiting system tray...")
-                exit()
-                
-        except KeyError as error:
-            print(f'System tray log: {error}')
-            pass
-
-        self.check_connection()
-
-    def check_connection(self):
+    def is_connected(self):
         # User has registered a device name
         if str(mainIniFile.ini_hd_name()) != "None":
             if is_connected(str(mainIniFile.ini_hd_name())):
-                if str(mainIniFile.ini_backup_now()) == "false":
-                    self.change_color("White")
-                    self.backupNowButton.setEnabled(True)
-                    self.browseTimeMachineBackupsButton.setEnabled(True)
+                pass
+            #     return "Connected"
+            # else:
+            #     return "Not Connected"
+
+                # if str(mainIniFile.ini_backup_now()) == "false":
+                    # self.change_color("White")
+                    # self.backupNowButton.setEnabled(True)
+                    # self.browseTimeMachineBackupsButton.setEnabled(True)
 
                     # TODO
-                    # if calculate_time_left_to_backup() != None:
-                    if self.timeLeftToBackup != "":
-                        print(f'Time left to backup: {self.timeLeftToBackup}')
-                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
-                    else:
-                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.lastestBackup)
-                else:
-                    self.change_color("Blue")
-                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-                    self.iniLastBackupInformation2.setText('')
+                #     # if calculate_time_left_to_backup() != None:
+                #     if self.timeLeftToBackup != "":
+                #         print(f'Time left to backup: {self.timeLeftToBackup}')
+                #         self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                #         self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+                #     else:
+                #         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                #         self.iniLastBackupInformation2.setText(self.lastestBackup)
+                # else:
+                #     self.change_color("Blue")
+                #     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+                #     self.iniLastBackupInformation2.setText('')
 
-            else:
-                if str(mainIniFile.ini_automatically_backup()) == "true":
-                    self.change_color("Red")
-                    self.backupNowButton.setEnabled(False)
-                    self.browseTimeMachineBackupsButton.setEnabled(False)
-                else:
-                    self.change_color("White")
+            # else:
+            #     if str(mainIniFile.ini_automatically_backup()) == "true":
+            #         self.change_color("Red")
+            #         self.backupNowButton.setEnabled(False)
+            #         self.browseTimeMachineBackupsButton.setEnabled(False)
+            #     else:
+            #         self.change_color("White")
                     
                     # if self.iniNotificationID != " ":
                     #     # Clean notification add info, because auto backup is not enabled
@@ -180,6 +188,9 @@ class APP:
             self.iniLastBackupInformation.setText('First, select a backup device.')
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
+            # return "No Device Registered"
+
+        self.check_pipe()
 
     def backup_now(self):
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
@@ -196,6 +207,89 @@ class APP:
             elif color == "Red":
                 self.color = "Red"
                 self.tray.setIcon(QIcon(src_system_bar_error_icon))
+
+    def get_lock_file_path(self):
+        if sys.platform == 'linux':
+            return f'/tmp/myapp_pipe'
+        elif sys.platform == 'win32':
+            return os.path.join(os.environ['TEMP'], 'myapp_pipe')
+        elif sys.platform == 'darwin':
+            return os.path.join(os.path.expanduser('~/Library/Application Support'), 'myapp_pipe')
+
+    def acquire_lock(self):
+        try:
+            lock_file_path = self.get_lock_file_path()
+            lock_file = open(lock_file_path, 'w')
+            fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return lock_file
+        except (IOError, OSError):
+            return None
+    
+    def exit(self):
+        self.tray.hide()
+
+        # close the named pipe
+        os.close(systemTrayPipeLocation)
+        os.unlink(self.pipe_name)
+
+        # exit the application
+        exit()
+    
+    def tray_icon_clicked(self,reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.tray.contextMenu().exec(QCursor.pos())
+
+    def check_pipe(self):
+        print("Checking pipes...")
+        
+        # Check backup now
+        try:
+            backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
+
+            if backupNowPipe:
+                data = os.read(backupNowPipe, 1024)
+                if data == START_BACKUP_MSG:
+                    # Set the system tray icon to indicate that backup is in progress
+                    self.change_color("Blue")
+                   
+                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+                    self.iniLastBackupInformation2.setText('')
+
+                else:
+                    # Set the system tray icon to indicate that backup is complete
+                    self.change_color("White")
+                    
+                    self.backupNowButton.setEnabled(True)
+                    self.browseTimeMachineBackupsButton.setEnabled(True)
+
+                    # if calculate_time_left_to_backup() != None:
+                    if self.timeLeftToBackup != "":
+                        print(f'Time left to backup: {self.timeLeftToBackup}')
+                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+                    else:
+                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                        self.iniLastBackupInformation2.setText(self.lastestBackup)
+
+        except (OSError, NameError):
+            # Handle errors reading from the named pipe
+            pass
+    
+        # Check system tray status
+        try:
+            systemTrayPipeLocation = os.open("/tmp/system_tray.pipe", os.O_RDONLY | os.O_NONBLOCK)
+
+            if systemTrayPipeLocation:
+                data = os.read(systemTrayPipeLocation, 1024)
+                if data == b"exit":
+                    QtWidgets.QApplication.quit()  # Exit the application
+                else:
+                    # Handle other messages received over the named pipe
+                    pass
+
+        except (OSError, NameError):
+            # Handle errors reading from the named pipe
+            pass
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()

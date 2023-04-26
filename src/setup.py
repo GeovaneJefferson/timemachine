@@ -8,6 +8,7 @@ import time
 import sys
 import signal
 import asyncio
+import fcntl
 
 from stylesheet import *
 from pathlib import Path
@@ -15,9 +16,9 @@ from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
-    QEasingCurve, QPoint)
+    QEasingCurve, QPoint, QSocketNotifier)
 from PySide6.QtGui import (QFont, QPixmap , QIcon, QMovie, QAction,
-                            QPalette, QColor)
+                            QPalette, QColor,QCursor)
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,
@@ -83,6 +84,14 @@ getUserPackageManager = "cat /etc/os-release"
 
 # Theme
 iconThemeName = "Adwaita"
+
+# PIPE location
+START_BACKUP_MSG = "start_backup"
+END_BACKUP_MSG = b"end_backup"
+
+systemTrayPipeName = "/tmp/system_tray.pipe"
+appPipeName = f"/tmp/{appNameClose}.pipe"
+backupNowPipeName = f"/tmp/backup_now.pipe"
 
 ################################################################################
 # GNOME

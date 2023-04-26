@@ -31,6 +31,11 @@ class MAIN(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
+        # Try to acquire a lock for the application
+        lock_file = self.acquire_lock()
+        if lock_file is None:
+            print('Another instance of the application is already running.')
+            sys.exit(1)
         ################################################################################
         # Center window
         ################################################################################
@@ -322,6 +327,7 @@ class MAIN(QMainWindow):
         self.showInSystemTrayCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
+        
         self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
         
         ################################################################################
@@ -447,6 +453,7 @@ class MAIN(QMainWindow):
         
     def connection(self):
         print("Updating...")
+
         # Reset timeOut
         self.timeOut = 0
 
@@ -506,17 +513,26 @@ class MAIN(QMainWindow):
 
     def condition(self):
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
-            # Show backup button if no back up is been made
-            if str(mainIniFile.ini_backup_now()) == "false":
-                self.selectDiskButton.setEnabled(True)
-                self.backupNowButton.setEnabled(True)
-                self.automaticallyCheckBox.setEnabled(True)                
-                self.showInSystemTrayCheckBox.setEnabled(True)
-            else:
-                self.selectDiskButton.setEnabled(False)
-                self.backupNowButton.setEnabled(False)
-                self.automaticallyCheckBox.setEnabled(False)
-                self.showInSystemTrayCheckBox.setEnabled(False)
+            try:
+                backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
+                if backupNowPipe:
+                    data = os.read(backupNowPipe, 1024)
+                    # if str(mainIniFile.ini_backup_now()) == "false":
+                    if data != START_BACKUP_MSG:
+                        self.selectDiskButton.setEnabled(True)
+                        self.backupNowButton.setEnabled(True)
+                        self.automaticallyCheckBox.setEnabled(True)                
+                        self.showInSystemTrayCheckBox.setEnabled(True)
+                    else:
+                        self.selectDiskButton.setEnabled(False)
+                        self.backupNowButton.setEnabled(False)
+                        self.automaticallyCheckBox.setEnabled(False)
+                        self.showInSystemTrayCheckBox.setEnabled(False)
+
+            except (OSError, NameError):
+                # Handle errors reading from the named pipe
+                pass
+
         else:
             self.externalNameLabel.setText("<h1>None</h1>")
             self.backupNowButton.setEnabled(False)
@@ -662,27 +678,29 @@ class MAIN(QMainWindow):
             # Call system tray
             # System tray can check if is not already runnnig
             ################################################################################
-            if str(mainIniFile.ini_system_tray()) == "false":
-                print("Starting system tray...")
+            print("Starting system tray...")
+            if self.showInSystemTrayCheckBox.isChecked():
                 sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-           
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.showInSystemTrayCheckBox.isChecked():
-                    config.set('SYSTEMTRAY', 'system_tray', 'true')
-                    config.write(configfile)
-                    print("System tray was successfully enabled!")
 
-                else:
-                    config.set('SYSTEMTRAY', 'system_tray', 'false')
-                    config.write(configfile)
-                    print("System tray was successfully disabled!")
+            else:
+                pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+
+                # send a message to the system tray application
+                os.write(pipe_fd, b"exit")
+
+                # close the pipe
+                os.close(pipe_fd)
 
         except:
             pass
 
     def backup_now_clicked(self):
+        # Open the named pipe for writing
+        pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
+
+        # Write the start backup message to the named pipe
+        os.write(pipe_fd, START_BACKUP_MSG)
+
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
@@ -895,6 +913,23 @@ class MAIN(QMainWindow):
         
         self.externalBackgroundShadow.setVisible(False)
     
+    def get_lock_file_path(self):
+        if sys.platform == 'linux':
+            return f'/tmp/{appNameClose}.lock'
+        elif sys.platform == 'win32':
+            return os.path.join(os.environ['TEMP'], f'{appNameClose}.lock')
+        elif sys.platform == 'darwin':
+            return os.path.join(os.path.expanduser('~/Library/Application Support'), f'{appNameClose}.lock')
+
+    def acquire_lock(self):
+        try:
+            lock_file_path = self.get_lock_file_path()
+            lock_file = open(lock_file_path, 'w')
+            fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return lock_file
+        except (IOError, OSError):
+            return None
+
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
@@ -1868,6 +1903,8 @@ class OPTION(QMainWindow):
 
     def on_back_button_clicked(self):
         widget.setCurrentWidget(main)
+
+    # async def wait_few_seconds(self):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

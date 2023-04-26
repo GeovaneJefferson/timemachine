@@ -23,8 +23,10 @@ class UPDATEINIFILE:
     def ini_backup_now(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        return config['BACKUP']['backup_now']
-
+        try:
+            return config['BACKUP']['backup_now']
+        except:
+            return "None"
     def ini_automatically_backup(self):
         try:
             config = configparser.ConfigParser()

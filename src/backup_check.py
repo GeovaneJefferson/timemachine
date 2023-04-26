@@ -134,45 +134,42 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
-        if str(mainIniFile.ini_one_time_mode()) == "true":
-            if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
-                if today_date() not in get_backup_date():
+        if str(mainIniFile.ini_backup_now()) == "false":
+            if str(mainIniFile.ini_one_time_mode()) == "true":
+                if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
+                    if today_date() not in get_backup_date():
+                        self.call_backup_now()
+                    else:
+                        print(f"{appName} has already made a backup for today.")
+                        
+                        # Reset time left
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('SCHEDULE', 'time_left', 'None')
+                            config.write(configfile)
+
+                elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
                     self.call_backup_now()
 
                 else:
-                    print(f"{appName} has already made a backup for today.")
-                    
-                    # Reset time left
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w') as configfile:
-                        config.set('SCHEDULE', 'time_left', 'None')
-                        config.write(configfile)
-
-            elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
-                self.call_backup_now()
-
+                    print("Waiting for the right time to backup...")
+                    # TODO
+                    calculate_time_left_to_backup()
+                 
             else:
-                print("Waiting for the right time to backup...")
-                # TODO
-                calculate_time_left_to_backup()
-             
-        else:
-            # Multiple time per day
-            if str(mainIniFile.everytime()) == '60' and str(mainIniFile.current_time()) in timeModeHours60:
-                if str(mainIniFile.ini_backup_now()) == "false":
+                # Multiple time per day
+                if str(mainIniFile.everytime()) == '60' and str(mainIniFile.current_time()) in timeModeHours60:
                     self.call_backup_now()
 
-            elif str(mainIniFile.everytime()) == '120' and str(mainIniFile.current_time()) in timeModeHours120:
-                if str(mainIniFile.ini_backup_now()) == "false":
+                elif str(mainIniFile.everytime()) == '120' and str(mainIniFile.current_time()) in timeModeHours120:
                     self.call_backup_now()
 
-            elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
-                if str(mainIniFile.ini_backup_now()) == "false":
+                elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
                     self.call_backup_now()
 
-            else:
-                print("Waiting for the right time to backup...")
+                else:
+                    print("Waiting for the right time to backup...")
 
     def call_backup_now(self):
         config = configparser.ConfigParser()
