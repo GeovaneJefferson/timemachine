@@ -17,9 +17,9 @@ def delete_pycache_(updateNow):
 def update_git(updateNow):
     print("Updating...")
 
-    sub.run(["git", "stash"])
-    # sub.run(["git", "reset", "--hard"])
-    sub.run(["git", "pull"])
+    sub.Popen(["git", "stash"])
+    # sub.Popen(["git", "reset", "--hard"])
+    sub.Popen(["git", "pull"])
     
     if updateNow:
         delete_ini_file(updateNow)
