@@ -711,9 +711,32 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Connection restore button
         ################################################################################
-        self.restoreButton.clicked.connect(lambda *args: self.start_restore(getDate, getTime))
+        # self.restoreButton.clicked.connect(lambda *args: self.start_restore(getDate, getTime))
+        self.restoreButton.clicked.connect(lambda *args: asyncio.run(self.pre_start_restoring(getDate, getTime)))
+        
+        asyncio.run(self.main())       
 
-    def start_restore(self, getDate, getTime):
+    async def pre_start_restoring(self, getDate, getTime):
+        print("Starting main")
+        task = asyncio.create_task(self.start_restore(getDate, getTime))
+
+        print("Task created")
+        
+        await task
+
+        print("Main finished")
+        """
+        After restore is done, open the item restore folder. 
+        If is not opened already.
+        """        
+        if not self.folderAlreadyOpened:
+            self.folderAlreadyOpened = True
+            # Open folder manager
+            print(f"Opening {homeUser}/{self.currentFolder}...")
+            sub.Popen(f"xdg-open {homeUser}/{self.currentFolder}",shell=True)
+            exit()
+
+    async def start_restore(self, getDate, getTime):
         ################################################################################
         # Restore files without spaces
         ################################################################################
@@ -746,17 +769,6 @@ class ENTERTIMEMACHINE(QWidget):
 
         except:
             print("Error trying to restore files from external device...")
-            exit()
-
-        """
-        After restore is done, open the item restore folder. 
-        If is not opened already.
-        """        
-        if not self.folderAlreadyOpened:
-            self.folderAlreadyOpened = True
-            # Open folder manager
-            print(f"Opening {homeUser}/{self.currentFolder}...")
-            sub.Popen(f"xdg-open {homeUser}/{self.currentFolder}",shell=True)
             exit()
 
     def change_date_up(self):
