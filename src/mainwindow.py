@@ -516,20 +516,20 @@ class MAIN(QMainWindow):
     def condition(self):
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             try:
-                backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
-                if backupNowPipe:
-                    data = os.read(backupNowPipe, 1024)
-                    # if str(mainIniFile.ini_backup_now()) == "false":
-                    if data != START_BACKUP_MSG:
-                        self.selectDiskButton.setEnabled(True)
-                        self.backupNowButton.setEnabled(True)
-                        self.automaticallyCheckBox.setEnabled(True)                
-                        self.showInSystemTrayCheckBox.setEnabled(True)
-                    else:
-                        self.selectDiskButton.setEnabled(False)
-                        self.backupNowButton.setEnabled(False)
-                        self.automaticallyCheckBox.setEnabled(False)
-                        self.showInSystemTrayCheckBox.setEnabled(False)
+                # backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
+                # if backupNowPipe:
+                #     data = os.read(backupNowPipe, 1024)
+                if str(mainIniFile.ini_backup_now()) == "false":
+                # if data != START_BACKUP_MSG:
+                    self.selectDiskButton.setEnabled(True)
+                    self.backupNowButton.setEnabled(True)
+                    self.automaticallyCheckBox.setEnabled(True)                
+                    self.showInSystemTrayCheckBox.setEnabled(True)
+                else:
+                    self.selectDiskButton.setEnabled(False)
+                    self.backupNowButton.setEnabled(False)
+                    self.automaticallyCheckBox.setEnabled(False)
+                    self.showInSystemTrayCheckBox.setEnabled(False)
 
             except (OSError, NameError):
                 self.selectDiskButton.setEnabled(True)
