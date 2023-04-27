@@ -38,4 +38,7 @@ def restore_ini_file(updateNow):
 
 def open_app():
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
+    # Re.open systen tray to close it ;D
+    sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+
     exit()
