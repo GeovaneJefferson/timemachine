@@ -18,7 +18,7 @@ from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint, QSocketNotifier)
 from PySide6.QtGui import (QFont, QPixmap , QIcon, QMovie, QAction,
-                            QPalette, QColor,QCursor)
+                            QPalette, QColor,QCursor,QImage)
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,

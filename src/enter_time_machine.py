@@ -88,8 +88,8 @@ class ENTERTIMEMACHINE(QWidget):
         self.scrollForFiles.setWidget(widgetCenterForFiles)
         
         # Show loading label
-        self.loadingLabel = QLabel(self.scrollForFiles)
-        self.loadingLabel.move(365, 300)
+        self.loadingLabel = QLabel(self)
+        self.loadingLabel.move(0, 0)
         self.loadingLabel.setText("<h1>Loading...</h1>")
         self.loadingLabel.setFont(QFont("Ubuntu", 10))
 
@@ -377,10 +377,21 @@ class ENTERTIMEMACHINE(QWidget):
         # except:
         #     pass
 
-        # task = asyncio.create_task(self.show_on_screen())
-        self.show_on_screen()
+        asyncio.run(self.main())       
 
-    def show_on_screen(self):
+    async def main(self):
+        print("Starting main")
+        self.loadingLabel.setVisible(False)
+        task = asyncio.create_task(self.show_on_screen())
+
+        print("Task created")
+        
+        await task
+        self.loadingLabel.setVisible(False)
+
+        print("Main finished")
+
+    async def show_on_screen(self):
         # Clean screen
         self.clean_stuff_on_screen("clean_files")
 
@@ -439,7 +450,7 @@ class ENTERTIMEMACHINE(QWidget):
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"100%" height="250"'
+                        scaledHTML = 'width:"5%" height="250"'
                         self.filesResult.setToolTip(
                             f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
                             f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
@@ -458,11 +469,16 @@ class ENTERTIMEMACHINE(QWidget):
                         "}")
 
                     if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"100%" height="80"'
-                        image.setText(
-                            f"<img  src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
+                        image = QImage(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
                             f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-                            f"{self.currentFolder}/{output} {scaledHTML}/>")
+                            f"{self.currentFolder}/{output}")
+
+                        # Convert the image to a pixmap and use it
+                        pixmap = QPixmap.fromImage(image)
+                        scaled_pixmap = pixmap.scaled(256, 256, QtCore.Qt.KeepAspectRatio)
+                        # scaled_pixmap = pixmap.scaled(self.filesResult.size(), QtCore.Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        self.filesResult.setIcon(QIcon(scaled_pixmap))
+                        # self.filesResult.setIconSize(image.size())
 
                     elif output.endswith(".txt"):
                         self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
@@ -543,8 +559,6 @@ class ENTERTIMEMACHINE(QWidget):
                 print("Change dates...")
                 self.countForDate += 1
                 self.countForTime = 0
-        
-        self.loadingLabel.setVisible(False)
 
         self.up_down()
 
@@ -771,12 +785,12 @@ class ENTERTIMEMACHINE(QWidget):
         index = self.timeFolders.index(getTime)
         # Add to
         self.countForTime = index
-        # Return to getDate
-        self.show_on_screen()
+
+        asyncio.run(self.main())       
 
     def change_folder(self, folder):
-        # Set loading label to False
         self.loadingLabel.setVisible(True)
+        print(bool(self.loadingLabel.isVisible()))
 
         # Update self.currentFolder
         self.currentFolder = folder
@@ -832,6 +846,7 @@ class ENTERTIMEMACHINE(QWidget):
                     i -= 1
         except:
             pass
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
