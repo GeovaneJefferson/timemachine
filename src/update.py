@@ -8,9 +8,8 @@ def backup_ini_file(updateNow):
         delete_pycache_(updateNow)
 
 def delete_pycache_(updateNow):
-    print("")
     print(f"Deleting {src_pycache}")
-    print("")
+
     sub.run(f"rm -rf {src_pycache}", shell=True)
     if updateNow:
         update_git(updateNow)
@@ -22,14 +21,12 @@ def update_git(updateNow):
     sub.run(["git", "reset", "--hard"])
     sub.run(["git", "pull"])
     
-    # os.popen(f"cd /{homeUser}/.local/share/{appNameClose}/; git reset --hard; git pull")
     if updateNow:
         delete_ini_file(updateNow)
 
 def delete_ini_file(updateNow):
-    print("")
     print("Deleting old ini file...")
-    print("")
+
     sub.run(f"rm -f {src_user_config}", shell=True)
     if updateNow:
         restore_ini_file(updateNow)
