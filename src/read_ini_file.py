@@ -142,8 +142,10 @@ class UPDATEINIFILE:
     def ini_extra_information(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
-        self.iniExtraInformation = config['INFO']['notification_add_info']
-        return self.iniExtraInformation
+        try:
+            return config['INFO']['notification_add_info']
+        except KeyError:
+            return "None"
 
     def ini_current_backup_information(self):
         try:
