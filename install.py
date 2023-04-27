@@ -6,6 +6,8 @@ import shutil
 from pathlib import Path
 sys.path.insert(1, 'src/')
 from setup import *
+from create_backup_checker_desktop import create_backup_checker_desktop
+
 
 
 class CLI:
@@ -121,25 +123,26 @@ class CLI:
 
     def begin_to_install(self):
         try:
-            # Create autostart folder if necessary
-            if not os.path.exists(src_autostart_folder_location):
-                sub.run(f"{createCMDFolder} {src_autostart_folder_location}", shell=True)
+            create_backup_checker_desktop()
+            # # Create autostart folder if necessary
+            # if not os.path.exists(src_autostart_folder_location):
+            #     sub.run(f"{createCMDFolder} {src_autostart_folder_location}", shell=True)
+
+            # print("Creating backup_check.desktop ...")
+            # with open(self.src_backup_check, "w") as writer: 
+            #     writer.write(
+            #         f"[Desktop Entry]\n "
+            #         f"Type=Application\n "
+            #         f"Exec=/bin/python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n "
+            #         f"Hidden=false\n "
+            #         f"NoDisplay=false\n "
+            #         f"Name={appName}\n "
+            #         f"Comment={appName}'s manager before boot.\n "
+            #         f"Icon={src_restore_icon}")
 
             # Create applications folder
             if not os.path.exists(src_applications_location):
                 sub.run(f"{createCMDFolder} {src_applications_location}", shell=True)
-
-            print("Creating backup_check,desktop ...")
-            with open(self.src_backup_check, "w") as writer: 
-                writer.write(
-                    f"[Desktop Entry]\n "
-                    f"Type=Application\n "
-                    f"Exec=/bin/python3 {homeUser}/.local/share/{appNameClose}/src/at_boot.py\n "
-                    f"Hidden=false\n "
-                    f"NoDisplay=false\n "
-                    f"Name={appName}\n "
-                    f"Comment={appName}'s manager before boot.\n "
-                    f"Icon={src_restore_icon}")
 
             print(f"Creating {appNameClose}.desktop...")
             with open(self.src_timemachine_desktop, "w") as writer: 

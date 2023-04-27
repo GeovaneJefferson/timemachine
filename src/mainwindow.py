@@ -15,6 +15,7 @@ from update import backup_ini_file
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 from save_info import save_info
+from create_backup_checker_desktop import create_backup_checker_desktop
 
 
 class MAIN(QMainWindow):
@@ -649,6 +650,7 @@ class MAIN(QMainWindow):
                 if self.automaticallyCheckBox.isChecked():
                     # if not os.path.exists(src_backup_check_desktop):
                     # Copy .desktop to user folder (Autostart .desktop)
+                    create_backup_checker_desktop()
                     shutil.copy(src_backup_check_desktop, src_autostart_location)  
 
                     config.set('BACKUP', 'auto_backup', 'true')
@@ -679,7 +681,6 @@ class MAIN(QMainWindow):
 
     def system_tray_clicked(self):
         try:
-            
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
