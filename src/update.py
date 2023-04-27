@@ -18,7 +18,7 @@ def update_git(updateNow):
     print("Updating...")
 
     sub.run(["git", "stash"])
-    sub.run(["git", "reset", "--hard"])
+    # sub.run(["git", "reset", "--hard"])
     sub.run(["git", "pull"])
     
     if updateNow:
