@@ -108,37 +108,13 @@ class APP:
         # Read Ini File
         ################################################################################
         timer.timeout.connect(self.updates)
-        timer.start(1000)  # update every x second
+        timer.start(2000)  # update every x second
         self.updates()
         
         self.app.exec()
     
     def updates(self):
         print("System tray is running...")
-
-        if mainIniFile.ini_hd_name() != "None":
-            # Only get latest backup information only once, if a new backup is started 
-            if self.firstStartup:
-                print("Getting latest backup information...")
-                self.lastestBackup = f'{str(latest_backup_date_label())}\n'
-                self.firstStartup = False
-
-            # Calculate lastest backup 
-            try:
-                if mainIniFile.ini_backup_now() == 'true':
-                    if not self.alreadySet:
-                        self.alreadySet = True
-                        print("Getting latest backup information...")
-                        self.lastestBackup = f'{str(latest_backup_date_label())}\n'
-                else:
-                    self.alreadySet = False
-            except:
-                pass
-
-            if mainIniFile.current_second() == 59:
-                print("Getting time left to backup information...")
-                self.timeLeftToBackup = f'{calculate_time_left_to_backup()}\n'
-
         self.is_connected()
 
     def is_connected(self):
@@ -151,14 +127,13 @@ class APP:
                     self.browseTimeMachineBackupsButton.setEnabled(True)
 
                     # TODO
-                    # if calculate_time_left_to_backup() != None:
-                    if self.timeLeftToBackup != "":
+                    if calculate_time_left_to_backup() != None:
                         print(f'Time left to backup: {self.timeLeftToBackup}')
                         self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
+                        self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
                     else:
                         self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(self.lastestBackup)
+                        self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
                 else:
                     self.change_color("Blue")
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
@@ -199,9 +174,11 @@ class APP:
             if color == "Blue":
                 self.color = "Blue"
                 self.tray.setIcon(QIcon(src_system_bar_run_icon))
+
             elif color == "White":
                 self.color = "White"
                 self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
+
             elif color == "Red":
                 self.color = "Red"
                 self.tray.setIcon(QIcon(src_system_bar_error_icon))
