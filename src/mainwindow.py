@@ -597,20 +597,21 @@ class MAIN(QMainWindow):
         # Auto adjustSize for current backup folder
         self.currentBackUpLabel.adjustSize()
 
-        self.load_extra_information()
-
-    def load_extra_information(self):
-        if str(mainIniFile.ini_extra_information()) != "":
-            # Information about an error message
-            self.extraInformationLabel.setText(str(mainIniFile.ini_extra_information()))
-            # Auto adjustSize label
-            self.extraInformationLabel.adjustSize()
-            # Show label
-            self.extraInformationLabel.setEnabled(True)
-        else:
-            self.extraInformationLabel.setEnabled(False)
-
+        # self.load_extra_information()
         self.load_automacically_backup()
+
+    # def load_extra_information(self):
+    #     if str(mainIniFile.ini_extra_information()) != "":
+    #         # Information about an error message
+    #         self.extraInformationLabel.setText(str(mainIniFile.ini_extra_information()))
+    #         # Auto adjustSize label
+    #         self.extraInformationLabel.adjustSize()
+    #         # Show label
+    #         self.extraInformationLabel.setEnabled(True)
+    #     else:
+    #         self.extraInformationLabel.setEnabled(False)
+
+    #     self.load_automacically_backup()
 
     def load_automacically_backup(self):
         ################################################################################

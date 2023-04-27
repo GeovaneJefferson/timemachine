@@ -200,19 +200,19 @@ class APP:
         except (IOError, OSError):
             return None
     
-    def exit(self):
-        self.tray.hide()
+    # def exit(self):
+    #     self.tray.hide()
 
-        # close the named pipe
-        os.close("/tmp/system_tray.pipe")
-        os.unlink("/tmp/system_tray.pipe")
+    #     # close the named pipe
+    #     os.close("/tmp/system_tray.pipe")
+    #     os.unlink("/tmp/system_tray.pipe")
 
-        # exit the application
-        QtWidgets.QApplication.exit()
+    #     # exit the application
+    #     QtWidgets.QApplication.exit()
     
-    def tray_icon_clicked(self,reason):
-        if reason == QSystemTrayIcon.Trigger:
-            self.tray.contextMenu().exec(QCursor.pos())
+    # def tray_icon_clicked(self,reason):
+    #     if reason == QSystemTrayIcon.Trigger:
+    #         self.tray.contextMenu().exec(QCursor.pos())
 
     def check_pipe(self):
         print("Checking pipes...")
