@@ -679,6 +679,7 @@ class MAIN(QMainWindow):
 
     def system_tray_clicked(self):
         try:
+            
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
@@ -700,7 +701,6 @@ class MAIN(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
                     print("System tray was successfully disabled!")
-
         except:
             pass
 

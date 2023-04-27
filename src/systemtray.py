@@ -57,7 +57,7 @@ class APP:
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
         self.tray.setVisible(True)
-        self.tray.activated.connect(self.tray_icon_clicked)
+        # self.tray.activated.connect(self.tray_icon_clicked)
 
         # Create a menu
         self.menu = QMenu()
