@@ -200,15 +200,15 @@ class APP:
         except (IOError, OSError):
             return None
     
-    # def exit(self):
-    #     self.tray.hide()
+    def exit(self):
+        self.tray.hide()
 
-    #     # close the named pipe
-    #     os.close("/tmp/system_tray.pipe")
-    #     os.unlink("/tmp/system_tray.pipe")
+        # close the named pipe
+        os.close("/tmp/system_tray.pipe")
+        os.unlink("/tmp/system_tray.pipe")
 
-    #     # exit the application
-    #     QtWidgets.QApplication.exit()
+        # exit the application
+        QtWidgets.QApplication.exit()
     
     # def tray_icon_clicked(self,reason):
     #     if reason == QSystemTrayIcon.Trigger:
@@ -258,6 +258,7 @@ class APP:
                 data = os.read(systemTrayPipeLocation, 1024)
                 if data == b"exit":
                     QtWidgets.QApplication.quit()  # Exit the application
+                    exit()
                 else:
                     # Handle other messages received over the named pipe
                     pass
