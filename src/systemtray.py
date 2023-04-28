@@ -127,13 +127,14 @@ class APP:
                     self.browseTimeMachineBackupsButton.setEnabled(True)
 
                     # TODO
-                    if calculate_time_left_to_backup() != None:
-                        print(f'Time left to backup: {self.timeLeftToBackup}')
-                        self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
-                    else:
-                        self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                        self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                    if mainIniFile.current_second() == 0 or mainIniFile.current_second() == 00:
+                        if calculate_time_left_to_backup() != None:
+                            self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                            self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
+                        else:
+                            self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                            self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                
                 else:
                     self.change_color("Blue")
                     self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
@@ -161,7 +162,6 @@ class APP:
             self.iniLastBackupInformation2.setText('')
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
-            # return "No Device Registered"
 
         self.check_pipe()
 
