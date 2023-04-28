@@ -1833,6 +1833,15 @@ class OPTION(QMainWindow):
                 main.lastestBackupLabel.setText("Latest Backup: None")
                 main.oldestBackupLabel.setText("Oldest Backup: None")
 
+                # Close system tray
+                pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+
+                # send a message to the system tray application
+                os.write(pipe_fd, b"exit")
+
+                # close the pipe
+                os.close(pipe_fd)
+                
                 # Reset settings
                 config = configparser.ConfigParser()
                 config.read(src_user_config)
@@ -1898,7 +1907,6 @@ class OPTION(QMainWindow):
                     config.set('RESTORE', 'files_and_folders', 'false')
                     config.set('RESTORE', 'system_settings', 'false')
 
-                    # Write to INI file
                     config.write(configfile)
             
             except:

@@ -127,7 +127,8 @@ class APP:
                     self.browseTimeMachineBackupsButton.setEnabled(True)
 
                     # TODO
-                    if mainIniFile.current_second() == 0 or mainIniFile.current_second() == 00:
+                    print(mainIniFile.current_second())
+                    if mainIniFile.current_second() == 0:
                         if calculate_time_left_to_backup() != None:
                             self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
                             self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
@@ -137,7 +138,8 @@ class APP:
                 
                 else:
                     self.change_color("Blue")
-                    self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+                    self.iniLastBackupInformation.setText("Backing up...")
+                    # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
                     self.iniLastBackupInformation2.setText('')
                     
                     self.backupNowButton.setEnabled(False)
