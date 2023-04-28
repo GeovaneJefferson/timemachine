@@ -6,6 +6,7 @@ from get_backup_date import get_backup_date
 from get_system_language import system_language
 from languages import determine_days_language
 from calculate_time_left_to_backup import calculate_time_left_to_backup
+from search_download_for_packages import search_download_for_packages
 from read_ini_file import UPDATEINIFILE
 
 ################################################################################
@@ -51,55 +52,17 @@ class CLI:
 
     def check_connection(self):
         if is_connected(str(mainIniFile.ini_hd_name())):
-            # Activate Auto Packages
             self.search_downloads()
+        
+        else:
+            print("Backup device is not connected...")
 
     ################################################################################
     # Auto Packages
     ################################################################################
     def search_downloads(self):
-        print("Searching new packages to be backup...")
-        try:
-            # Read Downloads folder for .deb
-            for debs in os.listdir(mainIniFile.deb_main_folder()):
-                self.detectedPackagesDebList.append(debs)
-        except:
-            pass
-        
-        try:
-            # Read Downloads folder for .rpm
-            for rpms in os.listdir(mainIniFile.rpm_main_folder()):
-                self.detectedPackagesRPMList.append(rpms)
-        except:
-            pass
+        search_download_for_packages()
 
-        for output in os.listdir(self.downloadLoc):
-            if output.endswith(".deb"):
-                if output.split("_")[0] in (f"{mainIniFile.deb_main_folder()}/{(output).split('_')[0]}"):
-                    # Delete the old version before back up
-                    for deleteOutput in os.listdir(mainIniFile.deb_main_folder()):
-                        if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                            sub.run(f"rm -f {mainIniFile.deb_main_folder()}/{deleteOutput}",shell=True)
-                    
-                    # Now back up
-                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {mainIniFile.deb_main_folder()}", shell=True)
-
-            elif output.endswith(".rpm"):
-                if output.split("_")[0] in (f"{mainIniFile.rpm_main_folder()}/{(output).split('_')[0]}"):
-                    # Delete the old version before back up
-                    for deleteOutput in os.listdir(mainIniFile.rpm_main_folder()):
-                        if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                            sub.run(f"rm -f {mainIniFile.rpm_main_folder()}/{deleteOutput}",shell=True)
-                    
-                    # Now back up
-                    sub.run(f"{copyRsyncCMD} {self.downloadLoc}/{output} {mainIniFile.rpm_main_folder()}", shell=True)
-            else:
-                print("No package to be backup...")
-
-        # Clean list
-        self.detectedPackagesDebList.clear()
-        self.detectedPackagesRPMList.clear()
-        
         self.check_the_date()
 
     def check_the_date(self):
@@ -180,10 +143,10 @@ class CLI:
 
         sub.run(f"python3 {src_prepare_backup_py}", shell=True)
 
-    def no_backup(self):
-        print("No backup for today.")
-        print("Updating INI file...")
-        print("Exiting...")
+    # def no_backup(self):
+    #     print("No backup for today.")
+    #     print("Updating INI file...")
+    #     print("Exiting...")
 
 
 mainIniFile = UPDATEINIFILE()
