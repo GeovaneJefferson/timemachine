@@ -685,20 +685,23 @@ class MAIN(QMainWindow):
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.showInSystemTrayCheckBox.isChecked():
-                    sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+
+                    if not os.path.exists("/tmp/system_tray_is_running.txt"):
+                        sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+                        os.mkfifo("/tmp/system_tray_is_running.txt")
 
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
                     print("System tray was successfully enabled!")
 
                 else:
-                    pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                    # pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                    # os.write(pipe_fd, b"exit")
+                    # os.close(pipe_fd)
 
-                    # send a message to the system tray application
-                    os.write(pipe_fd, b"exit")
-
-                    # close the pipe
-                    os.close(pipe_fd)
+                    if os.path.exists("/tmp/system_tray_is_running.txt"):
+                        sub.run("rm /tmp/system_tray_is_running.txt",shell=True)
+                    
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
                     print("System tray was successfully disabled!")
@@ -1833,14 +1836,13 @@ class OPTION(QMainWindow):
                 main.lastestBackupLabel.setText("Latest Backup: None")
                 main.oldestBackupLabel.setText("Oldest Backup: None")
 
-                # Close system tray
-                pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                # # Close system tray
+                # pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                # os.write(pipe_fd, b"exit")
+                # os.close(pipe_fd)
 
-                # send a message to the system tray application
-                os.write(pipe_fd, b"exit")
-
-                # close the pipe
-                os.close(pipe_fd)
+                if os.path.exists("/tmp/system_tray_is_running.txt"):
+                    sub.run("rm /tmp/system_tray_is_running.txt",shell=True)
                 
                 # Reset settings
                 config = configparser.ConfigParser()

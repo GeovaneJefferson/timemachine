@@ -19,16 +19,21 @@ class APP:
         self.alreadySet = False
         self.firstStartup = False
 
-        # Try to acquire a lock for the application
-        lock_file = self.acquire_lock()
-        if lock_file is None:
-            print('Another instance of the application is already running.')
-            sys.exit(1)
+        # # Try to acquire a lock for the application
+        # lock_file = self.acquire_lock()
+        # if lock_file is None:
+        #     print('Another instance of the application is already running.')
+        #     sys.exit(1)
         
-        # create a named pipe
-        if not os.path.exists(systemTrayPipeName):
-            os.mkfifo(systemTrayPipeName)
+        # try:
+        #     # create a named pipe
+        #     if not os.path.exists(systemTrayPipeName):
+        #         os.mkfifo(systemTrayPipeName)
         
+        # except Exception as error:
+        #     with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+        #         writeLog.write(error)
+                
         self.iniUI()
     
     def iniUI(self):
@@ -107,63 +112,73 @@ class APP:
         ################################################################################
         # Read Ini File
         ################################################################################
-        timer.timeout.connect(self.updates)
+        timer.timeout.connect(self.should_be_running)
         timer.start(2000)  # update every x second
-        self.updates()
+        self.should_be_running()
         
         self.app.exec()
     
-    def updates(self):
+    def should_be_running(self):
         print("System tray is running...")
+        
+        if not os.path.exists("/tmp/system_tray_is_running.txt"):
+            exit()
+        
         self.is_connected()
 
     def is_connected(self):
-        # User has registered a device name
-        if str(mainIniFile.ini_hd_name()) != "None":
-            if is_connected(str(mainIniFile.ini_hd_name())):
-                if str(mainIniFile.ini_backup_now()) == "false":
-                    self.change_color("White")
-                    self.backupNowButton.setEnabled(True)
-                    self.browseTimeMachineBackupsButton.setEnabled(True)
+        try:
+            # User has registered a device name
+            if str(mainIniFile.ini_hd_name()) != "None":
+                if is_connected(str(mainIniFile.ini_hd_name())):
+                    if str(mainIniFile.ini_backup_now()) == "false":
+                        self.change_color("White")
+                        self.backupNowButton.setEnabled(True)
+                        self.browseTimeMachineBackupsButton.setEnabled(True)
 
-                    # TODO
-                    print(mainIniFile.current_second())
-                    if mainIniFile.current_second() == 0:
-                        if calculate_time_left_to_backup() != None:
-                            self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                            self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
-                        else:
-                            self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                            self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                        # TODO
+                        if mainIniFile.current_second() == 0:
+                            if calculate_time_left_to_backup() != None:
+                                self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                                self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
+                            else:
+                                self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                                self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
                 
+                    else:
+                        self.change_color("Blue")
+                        self.iniLastBackupInformation.setText("Backing up...")
+                        # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+                        self.iniLastBackupInformation2.setText('')
+                        
+                        self.backupNowButton.setEnabled(False)
+                        self.browseTimeMachineBackupsButton.setEnabled(False)
                 else:
-                    self.change_color("Blue")
-                    self.iniLastBackupInformation.setText("Backing up...")
-                    # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-                    self.iniLastBackupInformation2.setText('')
-                    
-                    self.backupNowButton.setEnabled(False)
-                    self.browseTimeMachineBackupsButton.setEnabled(False)
+                    if str(mainIniFile.ini_automatically_backup()) == "true":
+                        self.change_color("Red")
+                        self.backupNowButton.setEnabled(False)
+                        self.browseTimeMachineBackupsButton.setEnabled(False)
+                    else:
+                        self.change_color("White")
+                        
+                        # if self.iniNotificationID != " ":
+                        #     # Clean notification add info, because auto backup is not enabled
+                        #     config = configparser.ConfigParser()
+                        #     config.read(src_user_config)
+                        #     with open(src_user_config, 'w', encoding='utf8') as configfile:
+                        #         config.set('INFO', 'notification_add_info', ' ')
+                        #         config.write(configfile)
             else:
-                if str(mainIniFile.ini_automatically_backup()) == "true":
-                    self.change_color("Red")
-                    self.backupNowButton.setEnabled(False)
-                    self.browseTimeMachineBackupsButton.setEnabled(False)
-                else:
-                    self.change_color("White")
-                    
-                    # if self.iniNotificationID != " ":
-                    #     # Clean notification add info, because auto backup is not enabled
-                    #     config = configparser.ConfigParser()
-                    #     config.read(src_user_config)
-                    #     with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    #         config.set('INFO', 'notification_add_info', ' ')
-                    #         config.write(configfile)
-        else:
-            self.iniLastBackupInformation.setText('First, select a backup device.')
-            self.iniLastBackupInformation2.setText('')
-            self.backupNowButton.setEnabled(False)
-            self.browseTimeMachineBackupsButton.setEnabled(False)
+                self.iniLastBackupInformation.setText('First, select a backup device.')
+                self.iniLastBackupInformation2.setText('')
+                self.backupNowButton.setEnabled(False)
+                self.browseTimeMachineBackupsButton.setEnabled(False)
+        
+        except Exception as error:
+            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+                writeLog.write(error)
+            
+            exit()
 
         self.check_pipe()
 
@@ -171,19 +186,24 @@ class APP:
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
 
     def change_color(self,color):
-        if self.color != color:
-            print("Changing color")
-            if color == "Blue":
-                self.color = "Blue"
-                self.tray.setIcon(QIcon(src_system_bar_run_icon))
+        try:
+            if self.color != color:
+                print("Changing color")
+                if color == "Blue":
+                    self.color = "Blue"
+                    self.tray.setIcon(QIcon(src_system_bar_run_icon))
 
-            elif color == "White":
-                self.color = "White"
-                self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
+                elif color == "White":
+                    self.color = "White"
+                    self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
 
-            elif color == "Red":
-                self.color = "Red"
-                self.tray.setIcon(QIcon(src_system_bar_error_icon))
+                elif color == "Red":
+                    self.color = "Red"
+                    self.tray.setIcon(QIcon(src_system_bar_error_icon))
+
+        except Exception as error:
+            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+                writeLog.write(error)
 
     def get_lock_file_path(self):
         if sys.platform == 'linux':
@@ -199,17 +219,15 @@ class APP:
             lock_file = open(lock_file_path, 'w')
             fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
             return lock_file
-        except (IOError, OSError):
+        except Exception as error:
+            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+                writeLog.write(error)
+            
+            # Handle errors reading from the named pipe
             return None
     
     def exit(self):
         self.tray.hide()
-
-        # close the named pipe
-        os.close("/tmp/system_tray.pipe")
-        os.unlink("/tmp/system_tray.pipe")
-
-        # exit the application
         QtWidgets.QApplication.exit()
     
     # def tray_icon_clicked(self,reason):
@@ -265,9 +283,12 @@ class APP:
                     # Handle other messages received over the named pipe
                     pass
 
-        except (OSError, NameError):
+        except Exception as error:
+            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+                writeLog.write(error)
+            
             # Handle errors reading from the named pipe
-            pass
+            exit()
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()
