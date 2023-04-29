@@ -122,7 +122,7 @@ class APP:
         print("System tray is running...")
         
         if not os.path.exists("/tmp/system_tray_is_running.txt"):
-            exit()
+            self.exit()
         
         self.is_connected()
 

@@ -20,7 +20,7 @@ signal.signal(signal.SIGTERM, signal_exit)
 class CLI:
     def __init__(self):
         # Variables
-        self.isSystemTrayActivated = None
+        # self.isSystemTrayActivated = None
 
         # Auto Packages
         self.downloadLoc = f"{homeUser}/Downloads"
@@ -37,16 +37,19 @@ class CLI:
             print("Backup checker KeyError!")
             exit()
 
-        self.is_system_tray_running()
+    #     self.is_system_tray_running()
 
-    def is_system_tray_running(self):
-        ################################################################################
-        # Prevent multiples system tray running
-        ################################################################################
-        if str(mainIniFile.ini_system_tray()) == "true":
-            if self.isSystemTrayActivated != None:
-                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-                self.isSystemTrayActivated = True
+    # def is_system_tray_running(self):
+    #     ################################################################################
+    #     # Prevent multiples system tray running
+    #     ################################################################################
+    #     if not os.path.exists("/tmp/system_tray_is_running.txt"):
+    #         self.exit()
+
+        # if str(mainIniFile.ini_system_tray()) == "true":
+        #     if self.isSystemTrayActivated != None:
+        #         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+        #         self.isSystemTrayActivated = True
 
         self.check_connection()
 
