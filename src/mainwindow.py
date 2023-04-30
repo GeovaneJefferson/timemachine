@@ -685,27 +685,28 @@ class MAIN(QMainWindow):
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.showInSystemTrayCheckBox.isChecked():
-
-                    if not os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
-                        os.mkfifo(f"/{src_folder_timemachine}/system_tray_is_running.txt")
-                        sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
+
+                    if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+                        os.mkfifo(f"{src_folder_timemachine}/src/system_tray_is_running.txt")
+                        sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+                    
                     print("System tray was successfully enabled!")
 
                 else:
-                    if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
-                        sub.run(f"rm /{src_folder_timemachine}/system_tray_is_running.txt",shell=True)
-                    
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
+
+                    if os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+                        sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+
                     print("System tray was successfully disabled!")
         except:
             pass
 
     def backup_now_clicked(self):
-        if not os.path.isfile(f"/{src_folder_timemachine}/src/backup_now_is_running.txt"):
+        if not os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
             os.mkfifo(f"/{src_folder_timemachine}/src/backup_now_is_running.txt")
             sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 

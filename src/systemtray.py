@@ -101,8 +101,7 @@ class APP:
     def should_be_running(self):
         print("System tray is running...")
         
-        if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
-            print("here")
+        if not os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
             self.exit()
 
         self.has_connection()
