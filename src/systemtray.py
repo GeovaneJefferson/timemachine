@@ -18,15 +18,13 @@ class APP:
 
         self.alreadySet = False
         self.firstStartup = False
-  
         self.iniUI()
-    
+
     def iniUI(self):
         self.app = QApplication([])
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(appName)
         self.app.setApplicationName(appName)
-
         self.begin_settings()
 
     def begin_settings(self):
@@ -37,7 +35,7 @@ class APP:
             self.systemBarIconStylesheetDetector = src_system_bar_white_icon
         else:
             self.systemBarIconStylesheetDetector = src_system_bar_icon
-        
+
         self.widget()
 
     def widget(self):
@@ -93,73 +91,36 @@ class APP:
         
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
-
-        ################################################################################
-        # Read Ini File
-        ################################################################################
-        timer.timeout.connect(self.should_be_running)
-        timer.start(2000)
-        self.should_be_running()
         
+        timer.timeout.connect(self.should_be_running)
+        timer.start(2000) 
+        self.should_be_running()
+
         self.app.exec()
     
     def should_be_running(self):
         print("System tray is running...")
         
-        if not os.path.exists(f"{src_folder_timemachine}/system_tray_is_running.txt"):
+        if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+            print("here")
             self.exit()
-        
-        self.is_connected()
 
-    def is_connected(self):
+        self.has_connection()
+        
+    def has_connection(self):
         try:
             # User has registered a device name
             if str(mainIniFile.ini_hd_name()) != "None":
                 # Can device be found?
                 if is_connected(str(mainIniFile.ini_hd_name())):
                     # Is backup now running? (chech if file exists)
-                    if os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
-                    # if str(mainIniFile.ini_backup_now()) == "false":
-                        self.change_color("White")
-                        self.backupNowButton.setEnabled(True)
-                        self.browseTimeMachineBackupsButton.setEnabled(True)
-
-                        # TODO
-                        if mainIniFile.current_second() == 0:
-                            if calculate_time_left_to_backup() != None:
-                                self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                                self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
-                            else:
-                                self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                                self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
-                        else:
-                            self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                            self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
-                
-                    else:
-                        self.change_color("Blue")
-                        self.iniLastBackupInformation.setText("Backing up...")
-                        # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-                        self.iniLastBackupInformation2.setText('')
-                        
-                        self.backupNowButton.setEnabled(False)
-                        self.browseTimeMachineBackupsButton.setEnabled(False)
+                    self.set_status_on()
                 else:
-                    if str(mainIniFile.ini_automatically_backup()) == "true":
-                        self.change_color("Red")
-                        self.backupNowButton.setEnabled(False)
-                        self.browseTimeMachineBackupsButton.setEnabled(False)
-                    else:
-                        self.change_color("White")
-                        
-                        # if self.iniNotificationID != " ":
-                        #     # Clean notification add info, because auto backup is not enabled
-                        #     config = configparser.ConfigParser()
-                        #     config.read(src_user_config)
-                        #     with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        #         config.set('INFO', 'notification_add_info', ' ')
-                        #         config.write(configfile)
+                    self.set_status_off()
+                
             else:
+                print("No Device has been saved.")
+
                 self.iniLastBackupInformation.setText('First, select a backup device.')
                 self.iniLastBackupInformation2.setText('')
                 self.backupNowButton.setEnabled(False)
@@ -170,7 +131,52 @@ class APP:
                 writeLog.write(error)
             exit()
 
-        self.check_pipe()
+    def set_status_on(self):
+        print("Device is saved and connected.")
+
+        # Not backing up right now
+        if not os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
+        # if str(mainIniFile.ini_backup_now()) == "false":
+            self.change_color("White")
+            self.backupNowButton.setEnabled(True)
+            self.browseTimeMachineBackupsButton.setEnabled(True)
+
+            # TODO
+            if mainIniFile.current_second() == 0:
+                if calculate_time_left_to_backup() != None:
+                    self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                    self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
+                else:
+                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                    self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+            else:
+                self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+    
+        else:
+            self.change_color("Blue")
+            self.iniLastBackupInformation.setText("Backing up...")
+            # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+            self.iniLastBackupInformation2.setText('')
+            
+            self.backupNowButton.setEnabled(False)
+            self.browseTimeMachineBackupsButton.setEnabled(False)
+   
+    def set_status_off(self):
+        print("Device is saved, but not connected.")
+
+        if str(mainIniFile.ini_automatically_backup()) == "true":
+            self.change_color("Red")
+            self.backupNowButton.setEnabled(False)
+            self.browseTimeMachineBackupsButton.setEnabled(False)
+            
+            # if self.iniNotificationID != " ":
+            #     # Clean notification add info, because auto backup is not enabled
+            #     config = configparser.ConfigParser()
+            #     config.read(src_user_config)
+            #     with open(src_user_config, 'w', encoding='utf8') as configfile:
+            #         config.set('INFO', 'notification_add_info', ' ')
+            #         config.write(configfile)
 
     def backup_now(self):
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
@@ -197,68 +203,18 @@ class APP:
             self.exit()
 
     def exit(self):
+        config = configparser.ConfigParser()
+        config.read(src_user_config)
+        with open(src_user_config, 'w') as configfile:
+            config.set('SYSTEMTRAY', 'system_tray', 'false')
+            config.write(configfile)
+
         self.tray.hide()
         QtWidgets.QApplication.exit()
     
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:
             self.tray.contextMenu().exec(QCursor.pos())
-
-    def check_pipe(self):
-        print("Checking pipes...")
-        
-        # # Check backup now
-        # try:
-        #     backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
-
-        #     if backupNowPipe:
-        #         data = os.read(backupNowPipe, 1024)
-        #         if data == START_BACKUP_MSG:
-        #             # Set the system tray icon to indicate that backup is in progress
-        #             self.change_color("Blue")
-                   
-        #             self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-        #             self.iniLastBackupInformation2.setText('')
-
-        #         else:
-        #             # Set the system tray icon to indicate that backup is complete
-        #             self.change_color("White")
-                    
-        #             self.backupNowButton.setEnabled(True)
-        #             self.browseTimeMachineBackupsButton.setEnabled(True)
-
-        #             # if calculate_time_left_to_backup() != None:
-        #             if self.timeLeftToBackup != "":
-        #                 print(f'Time left to backup: {self.timeLeftToBackup}')
-        #                 self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-        #                 self.iniLastBackupInformation2.setText(self.timeLeftToBackup)
-        #             else:
-        #                 self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-        #                 self.iniLastBackupInformation2.setText(self.lastestBackup)
-
-        # except (OSError, NameError):
-        #     # Handle errors reading from the named pipe
-        #     pass
-    
-        # Check system tray status
-        try:
-            systemTrayPipeLocation = os.open("/tmp/system_tray.pipe", os.O_RDONLY | os.O_NONBLOCK)
-
-            if systemTrayPipeLocation:
-                data = os.read(systemTrayPipeLocation, 1024)
-                if data == b"exit":
-                    QtWidgets.QApplication.quit()  # Exit the application
-                    exit()
-                else:
-                    # Handle other messages received over the named pipe
-                    pass
-
-        except Exception as error:
-            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
-                writeLog.write(error)
-            
-            # Handle errors reading from the named pipe
-            exit()
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()

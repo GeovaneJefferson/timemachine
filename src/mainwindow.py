@@ -686,7 +686,7 @@ class MAIN(QMainWindow):
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.showInSystemTrayCheckBox.isChecked():
 
-                    if not os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
+                    if not os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
                         os.mkfifo(f"/{src_folder_timemachine}/system_tray_is_running.txt")
                         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
@@ -695,7 +695,7 @@ class MAIN(QMainWindow):
                     print("System tray was successfully enabled!")
 
                 else:
-                    if os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
+                    if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
                         sub.run(f"rm /{src_folder_timemachine}/system_tray_is_running.txt",shell=True)
                     
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
@@ -705,8 +705,8 @@ class MAIN(QMainWindow):
             pass
 
     def backup_now_clicked(self):
-        if not os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
-            os.mkfifo(f"/{src_folder_timemachine}/backup_now_is_running.txt")
+        if not os.path.isfile(f"/{src_folder_timemachine}/src/backup_now_is_running.txt"):
+            os.mkfifo(f"/{src_folder_timemachine}/src/backup_now_is_running.txt")
             sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
@@ -1830,13 +1830,9 @@ class OPTION(QMainWindow):
                 main.lastestBackupLabel.setText("Latest Backup: None")
                 main.oldestBackupLabel.setText("Oldest Backup: None")
 
-                # # Close system tray
-                # pipe_fd = os.open(f"/{src_folder_timemachine}/system_tray.pipe", os.O_WRONLY)
-                # os.write(pipe_fd, b"exit")
-                # os.close(pipe_fd)
 
-                if os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
-                    sub.run("rm /tmp/system_tray_is_running.txt",shell=True)
+                if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
+                    sub.run(f"rm /{src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
                 
                 # Reset settings
                 config = configparser.ConfigParser()
