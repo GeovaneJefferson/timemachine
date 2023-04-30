@@ -85,10 +85,6 @@ getUserPackageManager = "cat /etc/os-release"
 # Theme
 iconThemeName = "Adwaita"
 
-# PIPE location
-START_BACKUP_MSG = "start_backup"
-END_BACKUP_MSG = b"end_backup"
-
 systemTrayPipeName = "/tmp/system_tray.pipe"
 appPipeName = f"/tmp/{appNameClose}.pipe"
 backupNowPipeName = f"/tmp/backup_now.pipe"
@@ -237,6 +233,8 @@ src_system_bar_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons
 # .Exclude-applications
 src_exclude_applications = ".exclude-applications.txt"
 
+# LOG
+appLogTxt = f"{src_folder_timemachine}/logs.txt"
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")

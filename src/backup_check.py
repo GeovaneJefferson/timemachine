@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 from setup import *
-from check_connection import *
+from check_connection import is_connected
 from get_time import *
 from get_backup_date import get_backup_date
 from get_system_language import system_language
@@ -19,46 +19,18 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class CLI:
     def __init__(self):
-        # Variables
-        # self.isSystemTrayActivated = None
-
-        # Auto Packages
-        self.downloadLoc = f"{homeUser}/Downloads"
-
-        # Auto Packages List
-        self.detectedPackagesDebList = []
-        self.detectedPackagesRPMList = []
- 
+        pass
+         
     def updates(self):
         try:
             print("Backup Checker is running...")
         except KeyError as error:
             print(error)
-            print("Backup checker KeyError!")
             exit()
-
-    #     self.is_system_tray_running()
-
-    # def is_system_tray_running(self):
-    #     ################################################################################
-    #     # Prevent multiples system tray running
-    #     ################################################################################
-    #     if not os.path.exists("/tmp/system_tray_is_running.txt"):
-    #         self.exit()
-
-        # if str(mainIniFile.ini_system_tray()) == "true":
-        #     if self.isSystemTrayActivated != None:
-        #         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-        #         self.isSystemTrayActivated = True
-
-        self.check_connection()
 
     def check_connection(self):
         if is_connected(str(mainIniFile.ini_hd_name())):
             self.search_downloads()
-        
-        else:
-            print("Backup device is not connected...")
 
     ################################################################################
     # Auto Packages
@@ -146,11 +118,6 @@ class CLI:
 
         sub.run(f"python3 {src_prepare_backup_py}", shell=True)
 
-    # def no_backup(self):
-    #     print("No backup for today.")
-    #     print("Updating INI file...")
-    #     print("Exiting...")
-
 
 mainIniFile = UPDATEINIFILE()
 main = CLI()
@@ -158,6 +125,8 @@ main = CLI()
 while True:
     time.sleep(5)
     main.updates()
+    main.check_connection()
+
 
     ################################################################################
     # Prevent multiples backup checker running

@@ -139,6 +139,8 @@ class BACKUP:
         
         # self.update_feedback_status("")
         backup_ini_file(False)
+        if os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
+            sub.run(f"rm /{src_folder_timemachine}/backup_now_is_running.txt",shell=True)
 
         print("Backup is done!")
         print("Sleeping for 60 seconds...")

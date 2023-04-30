@@ -517,7 +517,7 @@ class MAIN(QMainWindow):
     def condition(self):
         if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
             try:
-                # backupNowPipe = os.open("/tmp/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
+                # backupNowPipe = os.open(f"/{src_folder_timemachine}/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
                 # if backupNowPipe:
                 #     data = os.read(backupNowPipe, 1024)
                 if str(mainIniFile.ini_backup_now()) == "false":
@@ -686,21 +686,17 @@ class MAIN(QMainWindow):
             with open(src_user_config, 'w', encoding='utf8') as configfile:
                 if self.showInSystemTrayCheckBox.isChecked():
 
-                    if not os.path.exists("/tmp/system_tray_is_running.txt"):
+                    if not os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
+                        os.mkfifo(f"/{src_folder_timemachine}/system_tray_is_running.txt")
                         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-                        os.mkfifo("/tmp/system_tray_is_running.txt")
 
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
                     print("System tray was successfully enabled!")
 
                 else:
-                    # pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
-                    # os.write(pipe_fd, b"exit")
-                    # os.close(pipe_fd)
-
-                    if os.path.exists("/tmp/system_tray_is_running.txt"):
-                        sub.run("rm /tmp/system_tray_is_running.txt",shell=True)
+                    if os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
+                        sub.run(f"rm /{src_folder_timemachine}/system_tray_is_running.txt",shell=True)
                     
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
@@ -709,11 +705,9 @@ class MAIN(QMainWindow):
             pass
 
     def backup_now_clicked(self):
-        # # Open the named pipe for writing
-        # pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
-
-        # # Write the start backup message to the named pipe
-        # os.write(pipe_fd, START_BACKUP_MSG)
+        if not os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
+            os.mkfifo(f"/{src_folder_timemachine}/backup_now_is_running.txt")
+            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
@@ -1837,11 +1831,11 @@ class OPTION(QMainWindow):
                 main.oldestBackupLabel.setText("Oldest Backup: None")
 
                 # # Close system tray
-                # pipe_fd = os.open("/tmp/system_tray.pipe", os.O_WRONLY)
+                # pipe_fd = os.open(f"/{src_folder_timemachine}/system_tray.pipe", os.O_WRONLY)
                 # os.write(pipe_fd, b"exit")
                 # os.close(pipe_fd)
 
-                if os.path.exists("/tmp/system_tray_is_running.txt"):
+                if os.path.exists(f"/{src_folder_timemachine}/system_tray_is_running.txt"):
                     sub.run("rm /tmp/system_tray_is_running.txt",shell=True)
                 
                 # Reset settings

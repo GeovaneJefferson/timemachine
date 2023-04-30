@@ -18,22 +18,7 @@ class APP:
 
         self.alreadySet = False
         self.firstStartup = False
-
-        # # Try to acquire a lock for the application
-        # lock_file = self.acquire_lock()
-        # if lock_file is None:
-        #     print('Another instance of the application is already running.')
-        #     sys.exit(1)
-        
-        # try:
-        #     # create a named pipe
-        #     if not os.path.exists(systemTrayPipeName):
-        #         os.mkfifo(systemTrayPipeName)
-        
-        # except Exception as error:
-        #     with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
-        #         writeLog.write(error)
-                
+  
         self.iniUI()
     
     def iniUI(self):
@@ -62,7 +47,7 @@ class APP:
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
         self.tray.setVisible(True)
-        # self.tray.activated.connect(self.tray_icon_clicked)
+        self.tray.activated.connect(self.tray_icon_clicked)
 
         # Create a menu
         self.menu = QMenu()
@@ -113,7 +98,7 @@ class APP:
         # Read Ini File
         ################################################################################
         timer.timeout.connect(self.should_be_running)
-        timer.start(2000)  # update every x second
+        timer.start(2000)
         self.should_be_running()
         
         self.app.exec()
@@ -121,7 +106,7 @@ class APP:
     def should_be_running(self):
         print("System tray is running...")
         
-        if not os.path.exists("/tmp/system_tray_is_running.txt"):
+        if not os.path.exists(f"{src_folder_timemachine}/system_tray_is_running.txt"):
             self.exit()
         
         self.is_connected()
@@ -130,8 +115,11 @@ class APP:
         try:
             # User has registered a device name
             if str(mainIniFile.ini_hd_name()) != "None":
+                # Can device be found?
                 if is_connected(str(mainIniFile.ini_hd_name())):
-                    if str(mainIniFile.ini_backup_now()) == "false":
+                    # Is backup now running? (chech if file exists)
+                    if os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
+                    # if str(mainIniFile.ini_backup_now()) == "false":
                         self.change_color("White")
                         self.backupNowButton.setEnabled(True)
                         self.browseTimeMachineBackupsButton.setEnabled(True)
@@ -144,6 +132,9 @@ class APP:
                             else:
                                 self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
                                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+                        else:
+                            self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                            self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
                 
                     else:
                         self.change_color("Blue")
@@ -175,9 +166,8 @@ class APP:
                 self.browseTimeMachineBackupsButton.setEnabled(False)
         
         except Exception as error:
-            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+            with open(appLogTxt, 'w', encoding='utf8') as writeLog:
                 writeLog.write(error)
-            
             exit()
 
         self.check_pipe()
@@ -202,37 +192,17 @@ class APP:
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
         except Exception as error:
-            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
+            with open(appLogTxt, 'w', encoding='utf8') as writeLog:
                 writeLog.write(error)
+            self.exit()
 
-    def get_lock_file_path(self):
-        if sys.platform == 'linux':
-            return f'/tmp/myapp_pipe'
-        elif sys.platform == 'win32':
-            return os.path.join(os.environ['TEMP'], 'myapp_pipe')
-        elif sys.platform == 'darwin':
-            return os.path.join(os.path.expanduser('~/Library/Application Support'), 'myapp_pipe')
-
-    def acquire_lock(self):
-        try:
-            lock_file_path = self.get_lock_file_path()
-            lock_file = open(lock_file_path, 'w')
-            fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            return lock_file
-        except Exception as error:
-            with open("/home/geovane/log.text", 'w', encoding='utf8') as writeLog:
-                writeLog.write(error)
-            
-            # Handle errors reading from the named pipe
-            return None
-    
     def exit(self):
         self.tray.hide()
         QtWidgets.QApplication.exit()
     
-    # def tray_icon_clicked(self,reason):
-    #     if reason == QSystemTrayIcon.Trigger:
-    #         self.tray.contextMenu().exec(QCursor.pos())
+    def tray_icon_clicked(self,reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.tray.contextMenu().exec(QCursor.pos())
 
     def check_pipe(self):
         print("Checking pipes...")
