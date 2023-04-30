@@ -658,10 +658,16 @@ class MAIN(QMainWindow):
 
                     # Backup checker
                     sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+
+
                     # Set checker running to true
                     with open(src_user_config, 'w', encoding='utf8') as configfile:
                         config.set('BACKUP', 'checker_running', "true")
                         config.write(configfile)
+
+                    # if not os.path.exists(f"{src_folder_timemachine}/src/backup_now_is_running.txt"):
+                    #         os.mkfifo(f"{src_folder_timemachine}/src/backup_now_is_running.txt")
+                    #         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
                     print("Auto backup was successfully activated!")
          
@@ -699,15 +705,15 @@ class MAIN(QMainWindow):
                     config.write(configfile)
 
                     if os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
-                        sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+                        sub.run(f"rm -f {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
                     print("System tray was successfully disabled!")
         except:
             pass
 
     def backup_now_clicked(self):
-        if not os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
-            os.mkfifo(f"/{src_folder_timemachine}/src/backup_now_is_running.txt")
+        if not os.path.exists(f"{src_folder_timemachine}/src/backup_now_is_running.txt"):
+            os.mkfifo(f"{src_folder_timemachine}/src/backup_now_is_running.txt")
             sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
