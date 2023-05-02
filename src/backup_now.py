@@ -28,6 +28,7 @@ from backup_kde_aurorae import backup_kde_aurorae
 from backup_kde_scripts import backup_kde_scripts_folder
 from backup_kde_notes_folder import backup_kde_notes_folder
 from backup_kde_color_scheme import backup_kde_color_scheme
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
 
 
 ################################################################################
@@ -94,6 +95,10 @@ class BACKUP:
 
     def end_backup(self):
         print("Ending backup...")
+        
+        if can_backup_now_file_be_found():
+            add_backup_now_file()
+            
         
         # pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
 

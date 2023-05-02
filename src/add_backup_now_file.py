@@ -13,5 +13,8 @@ def can_backup_now_file_be_found():
     else:
         return False
 
+def remove_backup_now_file():
+    sub.run(f"rm {src_folder_timemachine}/src/backup_now_is_running.txt",shell=True)
+
 if __name__ == '__main__':
 	pass
