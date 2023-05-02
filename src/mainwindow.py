@@ -17,7 +17,7 @@ from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found
-from add_backup_now_file import add_backup_now_file
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
 
 
 class MAIN(QMainWindow):
@@ -1840,8 +1840,11 @@ class OPTION(QMainWindow):
                 main.lastestBackupLabel.setText("Latest Backup: None")
                 main.oldestBackupLabel.setText("Oldest Backup: None")
 
-                if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
-                    sub.run(f"rm /{src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+                if can_system_tray_file_be_found():
+                    sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+                
+                if can_backup_now_file_be_found():
+                    sub.run(f"rm {src_folder_timemachine}/src/backup_now_is_running.txt",shell=True)
                 
                 # Reset settings
                 config = configparser.ConfigParser()
