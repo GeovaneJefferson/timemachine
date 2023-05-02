@@ -1,9 +1,9 @@
 from setup import *
 
 def add_system_tray_file():
- 	if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+    if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
         os.mkfifo(f"{src_folder_timemachine}/src/system_tray_is_running.txt")
-    	return True
+        return True
     else:
     	return False
 
