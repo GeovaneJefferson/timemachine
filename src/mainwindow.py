@@ -697,6 +697,7 @@ class MAIN(QMainWindow):
                     config.write(configfile)
 
                     if not can_system_tray_file_be_found():
+                        add_system_tray_file()
                         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
                     
                     print("System tray was successfully enabled!")
@@ -705,7 +706,7 @@ class MAIN(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'false')
                     config.write(configfile)
 
-                    if os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+                    if can_system_tray_file_be_found():
                         sub.run(f"rm -f {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
                     print("System tray was successfully disabled!")

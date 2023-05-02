@@ -9,16 +9,12 @@ from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
+from add_system_tray_file import can_system_tray_file_be_found
 
 
 class APP:
     def __init__(self):
         self.color = str()
-        self.lastestBackup = str()
-        self.timeLeftToBackup = str()
-
-        self.alreadySet = False
-        self.firstStartup = False
         self.iniUI()
 
     def iniUI(self):
@@ -29,8 +25,6 @@ class APP:
         self.begin_settings()
 
     def begin_settings(self):
-        self.firstStartup = True
-
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
             self.systemBarIconStylesheetDetector = src_system_bar_white_icon
@@ -102,7 +96,7 @@ class APP:
     def should_be_running(self):
         print("System tray is running...")
         
-        if not os.path.exists(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+        if not can_system_tray_file_be_found():
             self.exit()
 
         self.has_connection()
@@ -198,11 +192,12 @@ class APP:
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
         except Exception as error:
-            with open(appLogTxt, 'w', encoding='utf8') as writeLog:
-                writeLog.write(error)
+            print(error)
             self.exit()
 
     def exit(self):
+        print("Exiting...")
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
