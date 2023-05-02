@@ -8,6 +8,7 @@ from get_time import *
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
 
 
 class APP:
@@ -134,7 +135,7 @@ class APP:
         print("Device is saved and connected.")
 
         # Not backing up right now
-        if not os.path.exists(f"/{src_folder_timemachine}/backup_now_is_running.txt"):
+        if not can_backup_now_file_be_found():
         # if str(mainIniFile.ini_backup_now()) == "false":
             self.change_color("White")
             self.backupNowButton.setEnabled(True)

@@ -16,6 +16,8 @@ from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
+from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found
+from add_backup_now_file import add_backup_now_file
 
 
 class MAIN(QMainWindow):
@@ -694,8 +696,7 @@ class MAIN(QMainWindow):
                     config.set('SYSTEMTRAY', 'system_tray', 'true')
                     config.write(configfile)
 
-                    if not os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
-                        os.mkfifo(f"{src_folder_timemachine}/src/system_tray_is_running.txt")
+                    if not can_system_tray_file_be_found():
                         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
                     
                     print("System tray was successfully enabled!")
@@ -712,10 +713,7 @@ class MAIN(QMainWindow):
             pass
 
     def backup_now_clicked(self):
-        if not os.path.exists(f"{src_folder_timemachine}/src/backup_now_is_running.txt"):
-            os.mkfifo(f"{src_folder_timemachine}/src/backup_now_is_running.txt")
-            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-
+        add_backup_now_file()
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
@@ -739,8 +737,8 @@ class MAIN(QMainWindow):
 
     def on_update_button_clicked(self):
         # Disable system tray
-        if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
-            sub.run(f"rm /{src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+        if os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
+            sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
         ################################################################################
         # Call update and Exit
