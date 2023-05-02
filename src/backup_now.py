@@ -28,7 +28,7 @@ from backup_kde_aurorae import backup_kde_aurorae
 from backup_kde_scripts import backup_kde_scripts_folder
 from backup_kde_notes_folder import backup_kde_notes_folder
 from backup_kde_color_scheme import backup_kde_color_scheme
-from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
 
 
 ################################################################################
@@ -97,16 +97,7 @@ class BACKUP:
         print("Ending backup...")
         
         if can_backup_now_file_be_found():
-            add_backup_now_file()
-            
-        
-        # pipe_fd = os.open("/tmp/backup_now.pipe", os.O_WRONLY)
-
-        # # Write the end backup message to the named pipe
-        # os.write(pipe_fd, END_BACKUP_MSG)
-
-        # # Close the named pipe
-        # os.close(pipe_fd)
+            remove_backup_now_file()
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
@@ -144,9 +135,6 @@ class BACKUP:
         
         # self.update_feedback_status("")
         backup_ini_file(False)
-
-        if os.path.isfile(f"/{src_folder_timemachine}/src/backup_now_is_running.txt"):
-            sub.run(f"rm /{src_folder_timemachine}/src/backup_now_is_running.txt",shell=True)
 
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
