@@ -29,6 +29,7 @@ class CLI:
             exit()
 
     def check_connection(self):
+        print("Checking connection...")
         if is_connected(str(mainIniFile.ini_hd_name())):
             self.search_downloads()
 
@@ -36,6 +37,7 @@ class CLI:
     # Auto Packages
     ################################################################################
     def search_downloads(self):
+        print("Checking new packages to backup...")
         search_download_for_packages()
 
         self.check_the_date()
@@ -72,11 +74,13 @@ class CLI:
 
     def check_the_mode(self):
         print("Checking mode...")
+
         if str(mainIniFile.ini_backup_now()) == "false":
             if str(mainIniFile.ini_one_time_mode()) == "true":
-                if int(mainIniFile.current_time()) > int(mainIniFile.backup_time_military()):
+                if int(mainIniFile.current_time()) >= int(mainIniFile.backup_time_military()):
                     if today_date() not in get_backup_date():
                         self.call_backup_now()
+
                     else:
                         print(f"{appName} has already made a backup for today.")
                         
@@ -87,8 +91,8 @@ class CLI:
                             config.set('SCHEDULE', 'time_left', 'None')
                             config.write(configfile)
 
-                elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
-                    self.call_backup_now()
+                # elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
+                #     self.call_backup_now()
 
                 else:
                     print("Waiting for the right time to backup...")
@@ -123,10 +127,8 @@ mainIniFile = UPDATEINIFILE()
 main = CLI()
 
 while True:
-    time.sleep(5)
     main.updates()
     main.check_connection()
-
 
     ################################################################################
     # Prevent multiples backup checker running
@@ -146,6 +148,8 @@ while True:
     except Exception as error:
         print(error)
         break
-    
+        
+    time.sleep(5)
+
 exit()
 
