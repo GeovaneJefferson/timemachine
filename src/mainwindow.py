@@ -738,6 +738,10 @@ class MAIN(QMainWindow):
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
 
     def on_update_button_clicked(self):
+        # Disable system tray
+        if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
+            sub.run(f"rm /{src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+
         ################################################################################
         # Call update and Exit
         ################################################################################
@@ -1836,7 +1840,6 @@ class OPTION(QMainWindow):
                 
                 main.lastestBackupLabel.setText("Latest Backup: None")
                 main.oldestBackupLabel.setText("Oldest Backup: None")
-
 
                 if os.path.isfile(f"/{src_folder_timemachine}/src/system_tray_is_running.txt"):
                     sub.run(f"rm /{src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
