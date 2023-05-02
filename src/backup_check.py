@@ -8,7 +8,6 @@ from languages import determine_days_language
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from search_download_for_packages import search_download_for_packages
 from read_ini_file import UPDATEINIFILE
-from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
 
 
 ################################################################################
@@ -116,9 +115,6 @@ class CLI:
                     print("Waiting for the right time to backup...")
 
     def call_backup_now(self):
-        if not can_backup_now_file_be_found():
-            add_backup_now_file()
-
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:

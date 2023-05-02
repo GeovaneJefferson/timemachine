@@ -7,6 +7,7 @@ from get_user_de import get_user_de
 from package_manager import package_manager
 from get_user_wallpaper import *
 from read_ini_file import UPDATEINIFILE
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
 
 ################################################################################
 ## Signal
@@ -23,6 +24,9 @@ class PREPAREBACKUP:
 
     def begin_settings(self):
         try:
+            if not can_backup_now_file_be_found():
+                add_backup_now_file()
+            
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
