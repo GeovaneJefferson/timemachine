@@ -117,7 +117,7 @@ class CLI:
 
     def call_backup_now(self):
         if not can_backup_now_file_be_found():
-            remove_backup_now_file()
+            add_backup_now_file()
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
