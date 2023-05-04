@@ -136,13 +136,9 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             # TODO
-            if mainIniFile.current_second() == 0:
-                if calculate_time_left_to_backup() != None:
-                    self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
-                    self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
-                else:
-                    self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
-                    self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
+            if calculate_time_left_to_backup() != "None":
+                self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
                 self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
