@@ -46,8 +46,6 @@ def search_download_for_packages():
                 
                 # Now back up
                 sub.run(f"{copyRsyncCMD} {downloadLoc}/{output} {mainIniFile.rpm_main_folder()}", shell=True)
-        else:
-            print("No package to be backup...")
 
     # Clean list
     detectedPackagesDebList.clear()
