@@ -1,4 +1,5 @@
 from setup import *
+from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found, remove_system_tray_file
 
 def backup_ini_file(updateNow):
     # Check if ini file exist and can be found
@@ -38,7 +39,7 @@ def restore_ini_file(updateNow):
 
 def open_app():
     sub.Popen(f"python3 {src_main_window_py}", shell=True)
-    # Re.open systen tray to close it ;D
-    sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+    # Close system tray
+    remove_system_tray_file()
 
     exit()
