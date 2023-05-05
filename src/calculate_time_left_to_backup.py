@@ -38,8 +38,6 @@ def calculate_time_left_to_backup():
                     
                 return f"In Approx. {timeLeft} minutes..."
 
-    return None
-
 
 if __name__ == '__main__':
     pass
