@@ -296,6 +296,15 @@ class UPDATEINIFILE:
 
     def kde_kwinrc_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kWinRcFolderName}"
+   
+    def kde_local_share_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeShareFolderName}"
+    
+    def kde_config_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeConfigFolderName}"
+    
+    def kde_share_config_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeShareConfigFolderName}"
 
     def gnomeshell_main_folder(self):
         gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}/{gnomeShellFolder}"

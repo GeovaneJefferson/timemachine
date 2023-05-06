@@ -18,17 +18,20 @@ from get_kde_gtk_cursor_name import users_kde_gtk_cursor_name
 from get_kde_gtk_icon_name import get_kde_gtk_icon_name
 from get_user_wallpaper import user_wallpaper
 from backup_user_flatpak_applications_name import backup_flatpak_applications_name
-from backup_kde_globals_file import backup_kde_globals_file
-from backup_kde_kglobal_shortcuts_src import backup_kde_kglobal_shortcuts_src
-from backup_kde_kwinrc import backup_kde_kwinrc
+# from backup_kde_globals_file import backup_kde_globals_file
+# from backup_kde_kglobal_shortcuts_src import backup_kde_kglobal_shortcuts_src
+# from backup_kde_kwinrc import backup_kde_kwinrc
 from get_kde_font import FONT
 from get_user_font import get_user_font
-from backup_kde_plasma_folder import backup_kde_plasma_folder
+# from backup_kde_plasma_folder import backup_kde_plasma_folder
 from backup_kde_aurorae import backup_kde_aurorae
-from backup_kde_scripts import backup_kde_scripts_folder
-from backup_kde_notes_folder import backup_kde_notes_folder
-from backup_kde_color_scheme import backup_kde_color_scheme
+# from backup_kde_scripts import backup_kde_scripts_folder
+# from backup_kde_notes_folder import backup_kde_notes_folder
+# from backup_kde_color_scheme import backup_kde_color_scheme
 from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
+from backup_kde_config import backup_kde_config
+from backup_kde_local_share import backup_kde_local_share
+from backup_kde_share_config import backup_kde_share_config
 
 
 ################################################################################
@@ -81,15 +84,18 @@ class BACKUP:
         
         # Only for Kde
         if get_user_de() == 'kde':
-            backup_kde_aurorae()
-            backup_kde_plasma_folder()
-            backup_kde_plasma_folder()
-            backup_kde_scripts_folder()
-            backup_kde_color_scheme()
+            backup_kde_local_share()
+            backup_kde_config()
+            backup_kde_share_config()
+            
+            # backup_kde_aurorae()
+            # backup_kde_plasma_folder()
+            # backup_kde_scripts_folder()
+            # backup_kde_color_scheme()
 
-            backup_kde_globals_file()
-            backup_kde_kglobal_shortcuts_src()
-            backup_kde_kwinrc()
+            # backup_kde_globals_file()
+            # backup_kde_kglobal_shortcuts_src()
+            # backup_kde_kwinrc()
 
         self.end_backup()
 
