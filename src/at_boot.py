@@ -24,10 +24,9 @@ class BOOT:
         if str(mainIniFile.ini_hd_name()) != "None":
             if str(mainIniFile.ini_automatically_backup()) == "true":
                 self.call_backup_checker()
+        exit()
 
     def call_backup_checker(self):
         sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-        exit()
-
 
 main = BOOT()
