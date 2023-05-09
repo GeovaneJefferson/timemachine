@@ -509,7 +509,7 @@ class MAIN(QMainWindow):
         # Get external size values
         ################################################################################
         try:
-            self.externalSizeLabel.setText(f"{get_disk_used_size()} of {get_disk_max_size()} available")
+            self.externalSizeLabel.setText(f"{get_external_device_used_size()} of {get_external_device_max_size()} available")
 
         except:
             self.externalSizeLabel.setText("No information available")
@@ -844,12 +844,12 @@ class MAIN(QMainWindow):
                         freeSpaceLabel.move(self.availableDevices.width()-80, 40)
                         
                         if str(mainIniFile.ini_external_location()) == self.availableDevices.text():
-                            freeSpaceLabel.setText(f"{get_disk_used_size()}/{get_disk_max_size()}")
+                            freeSpaceLabel.setText(f"{get_external_device_used_size()}/{get_external_device_max_size()}")
                             freeSpaceLabel.adjustSize()
 
                         # For other devices
                         else:
-                            freeSpaceLabel.setText(f"{get_available_devices_size(f'{run}/{userName}/{output}')}")
+                            freeSpaceLabel.setText(f"{get_external_device_string_size(f'{run}/{userName}/{output}')}")
                             freeSpaceLabel.adjustSize()
                             
                         ################################################################################

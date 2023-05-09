@@ -2,6 +2,7 @@
 from setup import *
 from get_backup_folders import *
 from get_time import *
+from get_size import get_external_device_free_size ,flatpak_var_size, flatpak_local_size
 from get_backup_date import get_backup_date
 from get_user_de import get_user_de
 from package_manager import package_manager
@@ -44,7 +45,6 @@ class PREPAREBACKUP:
 
     def start_process(self):
         if self.may_continue_to_backup():
-
             self.create_base_folders()
             self.system_settings_size_calculation()
             
@@ -52,9 +52,13 @@ class PREPAREBACKUP:
             #     self.calculate_flatpak_folders()
             
             self.create_date_time_folder()
+
+            sub.Popen(f"python3 {src_backup_now_py}",shell=True)
+
         else:
             print("Error!")
-            exit()
+
+        exit()
 
     def create_base_folders(self):
         try:
@@ -251,7 +255,7 @@ class PREPAREBACKUP:
                                 flatpak_local_size() +
                                 1500000)
 
-            if calculation > int(external_device_free_space()):
+            if calculation > get_external_device_free_size():
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
                 print("Please wait...")
@@ -346,10 +350,6 @@ class PREPAREBACKUP:
         except FileNotFoundError as error:
             # Call error function 
             error_trying_to_backup(error)
-
-        # Run prepare_backup first
-        sub.Popen(f"python3 {src_backup_now_py}",shell=True)
-        exit()
 
 
 if __name__ == '__main__':
