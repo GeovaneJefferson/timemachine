@@ -43,14 +43,18 @@ class PREPAREBACKUP:
         self.start_process()
 
     def start_process(self):
-        self.create_base_folders()
-        self.system_settings_size_calculation()
-        
-        # if str(mainIniFile.ini_allow_flatpak_data()) == "true":
-        #     self.calculate_flatpak_folders()
-        
         if self.may_continue_to_backup():
+
+            self.create_base_folders()
+            self.system_settings_size_calculation()
+            
+            # if str(mainIniFile.ini_allow_flatpak_data()) == "true":
+            #     self.calculate_flatpak_folders()
+            
             self.create_date_time_folder()
+        else:
+            print("Error!")
+            exit()
 
     def create_base_folders(self):
         try:
