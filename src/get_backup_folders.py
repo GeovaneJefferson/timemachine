@@ -107,7 +107,7 @@ def flatpak_local_list():
     except:
         pass
 
-def total_home_folders_to_backup():
+def need_space_for_home_to_be_backup():
     mainIniFile = UPDATEINIFILE()
     global freeSpace
 
@@ -131,15 +131,14 @@ def total_home_folders_to_backup():
     ################################################################################
     # Calculattions
     ################################################################################
-    # Sum of all folders (from INI file) to be backup
-    totalHomeFoldersToBackupSize = sum(homeFolderToBackupSizeList)
+    # Sum of all folders (from INI file) to be backup 
     # Calculate free space
     freeSpace = int(externalMaxSize - usedSpace)
 
-    return totalHomeFoldersToBackupSize
+    return sum(homeFolderToBackupSizeList)
 
-def free_space_home_folders():
-    total_home_folders_to_backup()
+def external_device_free_space():
+    need_space_for_home_to_be_backup()
     return freeSpace
 
 if __name__ == '__main__':

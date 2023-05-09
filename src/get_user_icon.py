@@ -12,3 +12,26 @@ def users_icon_name():
         userIconName = userIconName.replace("'", "")
 
     return userIconName 
+
+def users_icon_size():
+    try:
+        userIconSize = os.popen(f"du -s {homeUser}/.icons/{users_icon_name()}")
+        userIconSize = userIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{users_icon_name()}", "").replace("\t", "")
+        userIconSize = int(userIconSize)
+    except ValueError:
+        try:
+            userIconSize = os.popen(f"du -s {homeUser}/.local/share/icons/{users_icon_name()}")
+            userIconSize = userIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.local/share/icons/{users_icon_name()}", "").replace("\t", "")
+            userIconSize = int(userIconSize)
+        except ValueError:
+            try:
+                userIconSize = os.popen(f"du -s /usr/share/icons/{users_icon_name()}")
+                userIconSize = userIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{users_icon_name()}", "").replace("\t", "")
+                userIconSize = int(userIconSize)
+            except ValueError:
+                return None
+
+    return userIconSize 
+
+if __name__ == '__main__':
+    pass

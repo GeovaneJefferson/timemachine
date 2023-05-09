@@ -15,3 +15,7 @@ def backup_user_wallpaper():
 
     print(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/")
     sub.run(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/", shell=True) 
+
+
+if __name__ == '__main__':
+    pass
