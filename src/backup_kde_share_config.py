@@ -29,12 +29,10 @@ def backup_kde_share_config():
         for folders in os.listdir(f"{homeUser}/.kde/share/"):
             foldersList.append(folders)
             try:
-                print(folders)
-                # sub.run(f"{copyRsyncCMD} {homeUser}/.kde/share/{folders} {str(mainIniFile.kde_share_config_main_folder())}",shell=True)
+                sub.run(f"{copyRsyncCMD} {homeUser}/.kde/share/{folders} {str(mainIniFile.kde_share_config_main_folder())}",shell=True)
             except:
                 pass
             
-        
     except FileNotFoundError as error:
         print(error)
         pass

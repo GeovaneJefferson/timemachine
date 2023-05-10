@@ -296,7 +296,10 @@ class UPDATEINIFILE:
 
     def kde_kwinrc_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kWinRcFolderName}"
-   
+    
+    def kde_folder_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}"
+    
     def kde_local_share_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeShareFolderName}"
     

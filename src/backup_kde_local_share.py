@@ -23,12 +23,10 @@ def backup_kde_local_share():
             foldersList.append(folders)
             try:
                 if folders in includeList:
-                    # print(folders)
                     sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{folders} {str(mainIniFile.kde_local_share_main_folder())}",shell=True)
             except:
                 pass
             
-        
     except FileNotFoundError as error:
         print(error)
         pass

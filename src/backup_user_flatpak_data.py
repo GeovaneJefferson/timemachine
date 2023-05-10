@@ -1,6 +1,6 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from get_backup_folders import flatpak_var_list,flatpak_local_list
+from get_size import flatpak_var_list,flatpak_local_list
 
 def backup_user_flatpak_data():
     mainIniFile = UPDATEINIFILE()

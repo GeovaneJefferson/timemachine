@@ -141,6 +141,9 @@ class PREPAREBACKUP:
             # KDE OPTIONS
             ################################################################################
             if get_user_de() == 'kde':
+                if not os.path.exists(str(mainIniFile.kde_folder_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_folder_main_folder())}",shell=True)
+               
                 ################################################################################
                 # Create KDE LOCAL SHARE
                 ################################################################################
