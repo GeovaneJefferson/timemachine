@@ -10,16 +10,11 @@ from restore_backup_flatpaks_data import restore_backup_flatpaks_data
 from restore_backup_icons import restore_backup_icons
 from restore_backup_cursor import restore_backup_cursor
 from restore_backup_theme import restore_backup_theme
-from restore_backup_kde_globals import restore_backup_kde_globals
-from restore_kde_global_shortcut_src import restore_kde_global_shortcut_src
-from restore_kde_kwinrc import restore_kde_kwinrc
 from restart_kde_session import restart_kde_session
 from restore_backup_fonts import restore_backup_fonts
-from restore_kde_plasma_folder import restore_kde_plasma_folder
-from restore_kde_aurorae_folder import restore_kde_aurorae_folder
-from restore_kde_scripts_folder import restore_kde_scripts_folder
-from restore_kde_notes_folder import restore_kde_notes_folder
-from restore_kde_color_scheme import restore_kde_color_scheme
+from restore_kde_share_config import restore_kde_share_config
+from restore_kde_config import restore_kde_config
+from restore_kde_local_share import restore_kde_local_share
 
 
 ################################################################################
@@ -77,14 +72,9 @@ class RESTORE:
 
             # Only for kde
             if get_user_de() == 'kde':
-                await restore_kde_plasma_folder()
-                await restore_kde_aurorae_folder()
-                await restore_kde_scripts_folder()
-                await restore_kde_color_scheme()
-                await restore_kde_notes_folder()
-                
-                await restore_kde_global_shortcut_src()
-                await restore_kde_kwinrc()
+                await restore_kde_local_share()
+                await restore_kde_config()
+                await restore_kde_share_config()
                 
                 # Restart KDE session
                 restart_kde_session()

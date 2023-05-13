@@ -13,6 +13,8 @@ includeList = [
     # "fonts",
     "kate",
     "kxmlgui5"
+    "icons"
+    "themes"
                ]
 
 def backup_kde_local_share():

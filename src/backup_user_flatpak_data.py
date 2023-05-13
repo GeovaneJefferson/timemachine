@@ -29,3 +29,6 @@ def backup_user_flatpak_data():
 
     except FileNotFoundError as error:
         error_trying_to_backup(error)
+
+if __name__ == '__main__':
+    pass
