@@ -10,7 +10,7 @@ from get_user_icon import users_icon_size
 from get_user_theme import users_theme_size
 from get_user_wallpaper import *
 from read_ini_file import UPDATEINIFILE
-from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
+from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
 
 ################################################################################
 ## Signal
@@ -250,14 +250,20 @@ class PREPAREBACKUP:
         while True:
             # Home + Icon + Theme + aditional number, just for safety
             if str(mainIniFile.ini_allow_flatpak_data()) == "true":
-                calculation = int(home_folders_size()) + self.system_settings_size_calculation() + 1500000
+                calculation = int(home_folders_size()) + self.system_settings_size_calculation() + 1000000
             else:
                 calculation = int(home_folders_size() + 
                                 self.system_settings_size_calculation() + 
                                 flatpak_var_size() + 
                                 flatpak_local_size() +
-                                1500000)
+                                1000000) # 5 GB
 
+            # print(f"Space need to backup:{calculation}")
+            # print(f"FreeSpace inside backup device:{get_external_device_free_size()}")
+            # # TODO
+            # """
+            # Only works with '<' and not '>'?
+            # """
             if calculation > get_external_device_free_size():
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")

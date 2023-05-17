@@ -86,17 +86,17 @@ def get_external_device_used_size():
 def get_external_device_free_size():
     mainIniFile = UPDATEINIFILE()
 
-    externalMaxSize = os.popen(f"df --output=size {str(mainIniFile.ini_external_location())}")
-    externalMaxSize = externalMaxSize.read().strip().replace("1K-blocks", "").replace("Size", "").replace(
-        "\n", "").replace(" ", "")
-    externalMaxSize = int(externalMaxSize)
+    try:
+        availDeviceSpace = os.popen(f"df --output=avail {str(mainIniFile.ini_external_location())}")
+        availDeviceSpace = availDeviceSpace.read().strip().replace("1K-blocks", "").replace("Avail", "").replace(
+            "\n", "").replace(" ", "")
+        availDeviceSpace = int(availDeviceSpace)
 
-    usedSpace = os.popen(f"df --output=used {str(mainIniFile.ini_external_location())}")
-    usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace("Used", "").replace(
-        "\n", "").replace(" ", "")
-    usedSpace = int(usedSpace)
-
-    return int(externalMaxSize - usedSpace)
+        return int(availDeviceSpace)
+    
+    except ValueError:
+        print("Device is probably not connected.")
+        exit()
 
 def get_external_device_string_size(device):
     # Get external max size
@@ -112,5 +112,4 @@ def get_external_device_string_size(device):
     return usedSpace+"/"+externalMaxSize
 
 if __name__ == '__main__':
-    print(get_external_device_free_size())
     pass

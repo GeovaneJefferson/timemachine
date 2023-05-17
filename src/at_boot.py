@@ -5,7 +5,7 @@ from read_ini_file import UPDATEINIFILE
 class BOOT:
     def __init__(self):
         # Delay startup for x seconds
-        time.sleep(30)  # Seconds
+        time.sleep(0)  # Seconds
         
         self.system_tray()
 
