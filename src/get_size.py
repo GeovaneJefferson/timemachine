@@ -75,11 +75,20 @@ def get_external_device_max_size():
 
 def get_external_device_used_size():
     mainIniFile = UPDATEINIFILE()
+    
+    max = os.popen(f"df --output=size -h {str(mainIniFile.ini_external_location())}")
+    max = max.read().strip().replace("1K-blocks", "").replace(
+        "Size", "").replace("\n", "").replace(" ", "")
 
-    # Get external usded size
-    usedSpace = os.popen(f"df --output=used -h {str(mainIniFile.ini_external_location())}")
+    usedSpace = os.popen(f"df --output=avail -h {str(mainIniFile.ini_external_location())}")
     usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace(
-        "Used", "").replace("\n", "").replace(" ", "")
+        "Avail", "").replace("\n", "").replace(" ", "")
+
+    # print(removeList)
+    # Get external usded size
+    # usedSpace = os.popen(f"df --output=used -h {str(mainIniFile.ini_external_location())}")
+    # usedSpace = usedSpace.read().strip().replace("1K-blocks", "").replace(
+    #     "Used", "").replace("\n", "").replace(" ", "")
 
     return str(usedSpace)
 
@@ -112,4 +121,5 @@ def get_external_device_string_size(device):
     return usedSpace+"/"+externalMaxSize
 
 if __name__ == '__main__':
+    print(get_external_device_used_size())
     pass
