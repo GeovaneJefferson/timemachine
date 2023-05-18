@@ -144,8 +144,8 @@ class APP:
     
         else:
             self.change_color("Blue")
-            self.iniLastBackupInformation.setText("Backing up...")
-            # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+            # self.iniLastBackupInformation.setText("Backing up...")
+            self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
             self.iniLastBackupInformation2.setText('')
             
             self.backupNowButton.setEnabled(False)

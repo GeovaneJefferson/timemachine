@@ -261,9 +261,6 @@ class PREPAREBACKUP:
             # print(f"Space need to backup:{calculation}")
             # print(f"FreeSpace inside backup device:{get_external_device_free_size()}")
             # # TODO
-            # """
-            # Only works with '<' and not '>'?
-            # """
             if calculation > get_external_device_free_size():
                 print("Not enough space for new backup")
                 print("Old folders will be deleted, to make space for the new ones.")
@@ -302,14 +299,14 @@ class PREPAREBACKUP:
                         ################################################################################
                         # Write to INI file
                         ################################################################################
-                        # config = configparser.ConfigParser()
-                        # config.read(src_user_config)
-                        # with open(src_user_config, 'w') as configfile:
-                        #     config.set('INFO', 'notification_add_info', "Deleting old backups...")
-                        #     config.write(configfile)
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w') as configfile:
+                            config.set('INFO', 'feedback_status', f"Deleting {get_backup_date()[-1]}...")
+                            config.write(configfile)
 
                         # Action
-                        print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}...")
+                        # print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}...")
                         sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{backupFolderName}/{get_backup_date()[-1]}",shell=True)
                         
                         print(f"Deleting .trash...")
