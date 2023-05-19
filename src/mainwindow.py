@@ -11,13 +11,13 @@ from get_size import *
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
-from update import backup_ini_file
+from update import backup_ini_file, restore_ini_file
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found, remove_system_tray_file
-from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found, remove_backup_now_file
+from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
 
 
 class MAIN(QMainWindow):
@@ -34,11 +34,6 @@ class MAIN(QMainWindow):
         self.iniUI()
 
     def iniUI(self):
-        # Try to acquire a lock for the application
-        lock_file = self.acquire_lock()
-        if lock_file is None:
-            print('Another instance of the application is already running.')
-            sys.exit(1)
         ################################################################################
         # Center window
         ################################################################################
@@ -460,47 +455,51 @@ class MAIN(QMainWindow):
         # Reset timeOut
         self.timeOut = 0
 
-        if str(mainIniFile.ini_hd_name()) != "None":
-            self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
+        try:
+            if str(mainIniFile.ini_hd_name()) != "None":
+                self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
+                
+                if is_connected(str(mainIniFile.ini_hd_name())):
+                    ################################################################################
+                    # External status
+                    ################################################################################
+                    self.externalStatusLabel.setText("Status: Connected")
+                    self.externalStatusLabel.setStyleSheet('color: green')
+
+                    try:
+                        # Clean notification info
+                        config = configparser.ConfigParser()
+                        config.read(src_user_config)
+                        with open(src_user_config, 'w', encoding='utf8') as configfile:
+                            config.set('INFO', 'notification_add_info', ' ')
+                            config.write(configfile)
+
+                    except Exception as error:
+                        print(Exception)
+                        print("Main Window error!")
+                        exit()
+
+                    self.get_size_informations()
+
+                else:
+                    self.backupNowButton.setEnabled(False)       
+                    self.externalStatusLabel.setText("Status: Disconnected")
+                    self.externalStatusLabel.setStyleSheet('color: red')
+                    self.externalSizeLabel.setText("No information available")
             
-            if is_connected(str(mainIniFile.ini_hd_name())):
-                ################################################################################
-                # External status
-                ################################################################################
-                self.externalStatusLabel.setText("Status: Connected")
-                self.externalStatusLabel.setStyleSheet('color: green')
-
-                try:
-                    # Clean notification info
-                    config = configparser.ConfigParser()
-                    config.read(src_user_config)
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('INFO', 'notification_add_info', ' ')
-                        config.write(configfile)
-
-                except Exception as error:
-                    print(Exception)
-                    print("Main Window error!")
-                    exit()
-
-                self.get_size_informations()
-
+            # No device registered
             else:
-                self.backupNowButton.setEnabled(False)       
-                self.externalStatusLabel.setText("Status: Disconnected")
-                self.externalStatusLabel.setStyleSheet('color: red')
                 self.externalSizeLabel.setText("No information available")
-        
-        # No device registered
-        else:
-            self.externalSizeLabel.setText("No information available")
-            
-            self.externalNameLabel.setText("<h1>None</h1>")
-            
-            self.externalStatusLabel.setText("Status: None")
-            self.externalStatusLabel.setStyleSheet('color:gray')
-            
-            self.backupNowButton.setEnabled(False)
+                
+                self.externalNameLabel.setText("<h1>None</h1>")
+                
+                self.externalStatusLabel.setText("Status: None")
+                self.externalStatusLabel.setStyleSheet('color:gray')
+                
+                self.backupNowButton.setEnabled(False)
+        except KeyError:
+            print("Restoring ini backup...")
+            restore_ini_file(True)
 
         self.condition()
 
