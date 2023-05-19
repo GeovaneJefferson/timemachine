@@ -121,8 +121,6 @@ class APP:
                 self.browseTimeMachineBackupsButton.setEnabled(False)
         
         except Exception as error:
-            with open(appLogTxt, 'w', encoding='utf8') as writeLog:
-                writeLog.write(error)
             exit()
 
     def set_status_on(self):
