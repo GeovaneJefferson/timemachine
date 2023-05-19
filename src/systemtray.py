@@ -9,7 +9,8 @@ from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
-from add_system_tray_file import can_system_tray_file_be_found
+from add_system_tray_file import can_system_tray_file_be_found, remove_system_tray_file
+from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
 
 
 class APP:
@@ -121,7 +122,8 @@ class APP:
                 self.browseTimeMachineBackupsButton.setEnabled(False)
         
         except Exception as error:
-            exit()
+            print(error)
+            self.exit()
 
     def set_status_on(self):
         print("Device is saved and connected.")
@@ -197,6 +199,12 @@ class APP:
             config.set('SYSTEMTRAY', 'system_tray', 'false')
             config.write(configfile)
 
+        if can_system_tray_file_be_found():
+            remove_system_tray_file()
+        
+        if can_backup_now_file_be_found():
+            remove_backup_now_file()
+            
         self.tray.hide()
         QtWidgets.QApplication.exit()
     
