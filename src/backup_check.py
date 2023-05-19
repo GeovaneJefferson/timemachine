@@ -30,7 +30,6 @@ class CLI:
             exit()
 
     def check_connection(self):
-        print("Checking connection...")
         if is_connected(str(mainIniFile.ini_hd_name())):
             self.search_downloads()
 
@@ -38,13 +37,11 @@ class CLI:
     # Auto Packages
     ################################################################################
     def search_downloads(self):
-        print("Checking new packages to backup...")
         search_download_for_packages()
 
         self.check_the_date()
 
     def check_the_date(self):
-        print("Checking dates...")
         if str(mainIniFile.ini_multiple_time_mode()) == "true":
             self.check_the_mode()
 
@@ -70,12 +67,7 @@ class CLI:
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[6] and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode()
 
-            else:
-                print("No back up for today.")
-
     def check_the_mode(self):
-        print("Checking mode...")
-
         if str(mainIniFile.ini_backup_now()) == "false":
             if str(mainIniFile.ini_one_time_mode()) == "true":
                 if int(mainIniFile.current_time()) >= int(mainIniFile.backup_time_military()):
@@ -83,8 +75,6 @@ class CLI:
                         self.call_backup_now()
 
                     else:
-                        print(f"{appName} has already made a backup for today.")
-                        
                         # Reset time left
                         config = configparser.ConfigParser()
                         config.read(src_user_config)
@@ -96,8 +86,6 @@ class CLI:
                 #     self.call_backup_now()
 
                 else:
-                    print("Waiting for the right time to backup...")
-                    # TODO
                     calculate_time_left_to_backup()
                  
             else:
@@ -110,9 +98,6 @@ class CLI:
 
                 elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
                     self.call_backup_now()
-
-                else:
-                    print("Waiting for the right time to backup...")
 
     def call_backup_now(self):
         config = configparser.ConfigParser()
@@ -136,8 +121,6 @@ while True:
     ################################################################################
     try:
         if mainIniFile.ini_automatically_backup() == "false":
-            print("Exiting backup checker...")
-
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:

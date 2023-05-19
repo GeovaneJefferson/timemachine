@@ -114,8 +114,6 @@ class APP:
                     self.set_status_off()
                 
             else:
-                print("No Device has been saved.")
-
                 self.iniLastBackupInformation.setText('First, select a backup device.')
                 self.iniLastBackupInformation2.setText('')
                 self.backupNowButton.setEnabled(False)
@@ -126,8 +124,6 @@ class APP:
             self.exit()
 
     def set_status_on(self):
-        print("Device is saved and connected.")
-
         # Not backing up right now
         if not can_backup_now_file_be_found():
         # if str(mainIniFile.ini_backup_now()) == "false":
@@ -152,8 +148,6 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def set_status_off(self):
-        print("Device is saved, but not connected.")
-
         if str(mainIniFile.ini_automatically_backup()) == "true":
             self.change_color("Red")
             self.backupNowButton.setEnabled(False)
@@ -173,7 +167,6 @@ class APP:
     def change_color(self,color):
         try:
             if self.color != color:
-                print("Changing color")
                 if color == "Blue":
                     self.color = "Blue"
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
@@ -191,8 +184,6 @@ class APP:
             self.exit()
 
     def exit(self):
-        print("Exiting...")
-
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:

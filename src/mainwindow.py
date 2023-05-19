@@ -450,7 +450,7 @@ class MAIN(QMainWindow):
         self.connection()
         
     def connection(self):
-        print("Updating...")
+        print(f"Main Windows ({appNameClose}) is running...")
 
         # Reset timeOut
         self.timeOut = 0
@@ -498,7 +498,6 @@ class MAIN(QMainWindow):
                 
                 self.backupNowButton.setEnabled(False)
         except KeyError:
-            print("Restoring ini backup...")
             restore_ini_file(True)
 
         self.condition()
@@ -719,7 +718,6 @@ class MAIN(QMainWindow):
         widget.setCurrentWidget(mainOpitions)
 
     def check_for_updates(self):
-        print("Checking updates...")
         # Check for git updates
         gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
@@ -862,6 +860,7 @@ class MAIN(QMainWindow):
                         ################################################################################
                         # Vertical layout
                         self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
+            
             except FileNotFoundError:
                 pass
 
@@ -929,22 +928,22 @@ class MAIN(QMainWindow):
         
         self.externalBackgroundShadow.setVisible(False)
     
-    def get_lock_file_path(self):
-        if sys.platform == 'linux':
-            return f'/tmp/{appNameClose}.lock'
-        elif sys.platform == 'win32':
-            return os.path.join(os.environ['TEMP'], f'{appNameClose}.lock')
-        elif sys.platform == 'darwin':
-            return os.path.join(os.path.expanduser('~/Library/Application Support'), f'{appNameClose}.lock')
+    # def get_lock_file_path(self):
+    #     if sys.platform == 'linux':
+    #         return f'/tmp/{appNameClose}.lock'
+    #     elif sys.platform == 'win32':
+    #         return os.path.join(os.environ['TEMP'], f'{appNameClose}.lock')
+    #     elif sys.platform == 'darwin':
+    #         return os.path.join(os.path.expanduser('~/Library/Application Support'), f'{appNameClose}.lock')
 
-    def acquire_lock(self):
-        try:
-            lock_file_path = self.get_lock_file_path()
-            lock_file = open(lock_file_path, 'w')
-            fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            return lock_file
-        except (IOError, OSError):
-            return None
+    # def acquire_lock(self):
+    #     try:
+    #         lock_file_path = self.get_lock_file_path()
+    #         lock_file = open(lock_file_path, 'w')
+    #         fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    #         return lock_file
+    #     except (IOError, OSError):
+    #         return None
 
 class OPTION(QMainWindow):
     def __init__(self):
