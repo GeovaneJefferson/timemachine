@@ -30,14 +30,12 @@ def backup_kde_config():
             foldersList.append(folders)
             try:
                 if folders in includeList:
-                    # print(folders)
-                    sub.run(f"{copyRsyncCMD} {homeUser}/.config/{folders} {str(mainIniFile.kde_config_main_folder())}",shell=True)
+                    sub.run(f"{copyRsyncCMD} {homeUser}/.config/{folders} {str(mainIniFile.config_main_folder())}",shell=True)
             except:
                 pass
             
         
-    except FileNotFoundError as error:
-        print(error)
+    except:
         pass
 
 if __name__ == '__main__':

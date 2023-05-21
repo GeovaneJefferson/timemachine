@@ -19,13 +19,4 @@ def backup_flatpak_applications_name():
                 count += 1
 
     except OSError as error:
-        print(error)
-
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'backup_now', 'false')
-            # Change system tray color to red (Error)
-            config.set('INFO', 'notification_id', "2")
-            # Reset Main Window information
-            config.set('INFO', 'notification_add_info', f"Read-only, {error}")
+        pass

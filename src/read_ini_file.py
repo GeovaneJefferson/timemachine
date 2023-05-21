@@ -273,41 +273,17 @@ class UPDATEINIFILE:
     def theme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
     
-    def color_scheme_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{colorSchemeName}"
+    def configurations_folder_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}"
     
-    def plasma_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{plasmaFolderName}"
+    def local_share_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}/{shareFolderName}"
     
-    def aurorae_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{auroraeFolderName}"
+    def config_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}/{configFolderName}"
     
-    def kde_scripts_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeScriptsFolderName}"
-    
-    def kde_notes_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeNotesFolderName}"
-    
-    def kde_globals_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeGlobalsFolderName}"
-
-    def kglobal_shortcut_src_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kGlobalShortcutSrcFolderName}"
-
-    def kde_kwinrc_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kWinRcFolderName}"
-    
-    def kde_folder_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}"
-    
-    def kde_local_share_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeShareFolderName}"
-    
-    def kde_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeConfigFolderName}"
-    
-    def kde_share_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{kdeShareConfigFolderName}"
+    def share_config_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}/{shareConfigFolderName}"
 
     def gnomeshell_main_folder(self):
         gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}/{gnomeShellFolder}"

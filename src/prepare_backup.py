@@ -141,26 +141,26 @@ class PREPAREBACKUP:
             # KDE OPTIONS
             ################################################################################
             if get_user_de() == 'kde':
-                if not os.path.exists(str(mainIniFile.kde_folder_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_folder_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.configurations_folder_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.configurations_folder_main_folder())}",shell=True)
                
                 ################################################################################
                 # Create KDE LOCAL SHARE
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.kde_local_share_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_local_share_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.local_share_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.local_share_main_folder())}",shell=True)
                
                 ################################################################################
                 # Create KDE CONFIG
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.kde_config_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_config_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.config_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.config_main_folder())}",shell=True)
                 
                 ################################################################################
                 # Create KDE SHARE CONFIG
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.kde_share_config_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_share_config_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.share_config_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.share_config_main_folder())}",shell=True)
 
                 # ################################################################################
                 # # Create Color Scheme folder

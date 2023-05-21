@@ -22,8 +22,9 @@ from get_kde_font import FONT
 from get_user_font import get_user_font
 from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
 from backup_kde_config import backup_kde_config
-from backup_kde_local_share import backup_kde_local_share
+from backup_local_share import backup_local_share
 from backup_kde_share_config import backup_kde_share_config
+from update_notification_status import update_notification_status
 
 
 ################################################################################
@@ -53,9 +54,11 @@ class BACKUP:
         self.start_backup()
 
     def start_backup(self):
+        update_notification_status("Backing up: Wallpaper...")
         backup_user_wallpaper()
         
         if str(mainIniFile.ini_allow_flatpak_names()) == "true":
+            update_notification_status("Backing up: Flatpak Applications ...")
             backup_flatpak_applications_name()
 
         if str(mainIniFile.ini_multiple_time_mode()) == "true":
@@ -64,20 +67,28 @@ class BACKUP:
             except FileNotFoundError as error:
                 error_trying_to_backup(error)
 
+        update_notification_status("Backing up: Home ...")
         backup_user_home()
 
         if str(mainIniFile.ini_allow_flatpak_data()) == "true":
+            update_notification_status("Backing up: Flatpak Data ...")
             backup_user_flatpak_data()
       
         # For both Gnome and Kde
+        update_notification_status("Backing up: Icon ...")
         backup_user_icons()
+        update_notification_status("Backing up: Fonts ...")
         backup_user_fonts()
+        update_notification_status("Backing up: Themes ...")
         backup_user_theme()
         
         # Only for Kde
         if get_user_de() == 'kde':
-            backup_kde_local_share()
+            update_notification_status("Backing up: .local/share ...")
+            backup_local_share()
+            update_notification_status("Backing up: .config ...")
             backup_kde_config()
+            update_notification_status("Backing up: .kde/share/...")
             backup_kde_share_config()
             
         self.end_backup()
@@ -88,13 +99,12 @@ class BACKUP:
         if can_backup_now_file_be_found():
             remove_backup_now_file()
 
+        update_notification_status("")
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'false')
-            # Change system tray color to white (Normal)
-            config.set('INFO', 'notification_id', "0")
-            config.set('INFO', 'notification_add_info', "")
             config.set('BACKUP', 'checker_running', "true")
             config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
@@ -122,7 +132,6 @@ class BACKUP:
 
             config.write(configfile)
         
-        # self.update_feedback_status("")
         backup_ini_file(False)
 
         print("Backup is done!")
@@ -130,16 +139,6 @@ class BACKUP:
         time.sleep(60)  # Wait x, so if it finish fast, won't repeat the backup
         exit()
 
-    def update_feedback_status(self,output):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            # Save theme information
-            if output == "":
-                config.set('INFO', 'feedback_status', "")
-            else:
-                config.set('INFO', 'feedback_status', f"Backing up: {output}")
-            config.write(configfile)
 
 if __name__ == '__main__':
     mainIniFile = UPDATEINIFILE()

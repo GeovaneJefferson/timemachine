@@ -10,27 +10,29 @@ includeList = [
     "plasma",
     "aurorae",
     "color-schemes",
-    # "fonts",
+    "fonts",
     "kate",
     "kxmlgui5"
     "icons"
     "themes"
                ]
 
-def backup_kde_local_share():
+def backup_local_share():
     mainIniFile = UPDATEINIFILE()
 
     try:
         for folders in os.listdir(f"{homeUser}/.local/share/"):
             foldersList.append(folders)
+
+            # .local/share
             try:
                 if folders in includeList:
-                    sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{folders} {str(mainIniFile.kde_local_share_main_folder())}",shell=True)
+                    sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{folders} {str(mainIniFile.local_share_main_folder())}",shell=True)
+            
             except:
                 pass
-            
-    except FileNotFoundError as error:
-        print(error)
+                    
+    except:
         pass
 
 if __name__ == '__main__':

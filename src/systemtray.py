@@ -11,7 +11,7 @@ from read_ini_file import UPDATEINIFILE
 from add_backup_now_file import add_backup_now_file, can_backup_now_file_be_found
 from add_system_tray_file import can_system_tray_file_be_found, remove_system_tray_file
 from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
-
+from update_notification_status import update_notification_status
 
 class APP:
     def __init__(self):

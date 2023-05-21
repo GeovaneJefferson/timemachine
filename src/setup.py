@@ -60,9 +60,12 @@ gnomeShellFolder = "gnome-shell"
 varFolderName = "var"
 localFolderName = "share"
 kdeFolderName = "kde"
-kdeShareFolderName = "share"
-kdeConfigFolderName = "config"
-kdeShareConfigFolderName = "share_config"
+
+configurationFolderName = "configurations"
+shareFolderName = "share"
+
+configFolderName = "config"
+shareConfigFolderName = "share_config"
 flatpakTxt = "flatpak.txt"
 restoreSettingsIni = "restore_settings.ini"
 
