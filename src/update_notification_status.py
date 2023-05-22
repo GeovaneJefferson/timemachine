@@ -5,4 +5,7 @@ def update_notification_status(status):
     config.read(src_user_config)
     with open(src_user_config, 'w') as configfile:
         config.set('INFO', 'feedback_status', f"{status}")
-        configfile.write(configfile)
+        config.write(configfile)
+
+if __name__ == '__main__':
+    pass
