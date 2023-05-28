@@ -66,7 +66,10 @@ class CLI:
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[6] and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode()
-
+            
+            else:
+                pass
+    
     def check_the_mode(self):
         if str(mainIniFile.ini_backup_now()) == "false":
             if str(mainIniFile.ini_one_time_mode()) == "true":
@@ -98,6 +101,9 @@ class CLI:
 
                 elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
                     self.call_backup_now()
+                
+                else:
+                    pass
 
     def call_backup_now(self):
         config = configparser.ConfigParser()
