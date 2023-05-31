@@ -67,9 +67,6 @@ class CLI:
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[6] and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode()
             
-            else:
-                pass
-    
     def check_the_mode(self):
         if str(mainIniFile.ini_backup_now()) == "false":
             if str(mainIniFile.ini_one_time_mode()) == "true":
@@ -77,16 +74,13 @@ class CLI:
                     if today_date() not in get_backup_date():
                         self.call_backup_now()
 
-                    else:
-                        # Reset time left
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w') as configfile:
-                            config.set('SCHEDULE', 'time_left', 'None')
-                            config.write(configfile)
-
-                # elif int(mainIniFile.current_time()) == int(mainIniFile.backup_time_military()):
-                #     self.call_backup_now()
+                    # else:
+                    #     # Reset time left
+                    #     config = configparser.ConfigParser()
+                    #     config.read(src_user_config)
+                    #     with open(src_user_config, 'w') as configfile:
+                    #         config.set('SCHEDULE', 'time_left', 'None')
+                    #         config.write(configfile)
 
                 else:
                     calculate_time_left_to_backup()
@@ -102,14 +96,12 @@ class CLI:
                 elif str(mainIniFile.everytime()) == '240' and str(mainIniFile.current_time()) in timeModeHours240:
                     self.call_backup_now()
                 
-                else:
-                    pass
-
     def call_backup_now(self):
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('BACKUP', 'backup_now', 'true')
+            config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
 
         sub.run(f"python3 {src_prepare_backup_py}", shell=True)
