@@ -121,5 +121,4 @@ def get_external_device_string_size(device):
     return usedSpace+"/"+externalMaxSize
 
 if __name__ == '__main__':
-    print(get_external_device_used_size())
     pass

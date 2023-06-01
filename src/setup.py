@@ -248,7 +248,7 @@ def signal_exit(*args):
     config = configparser.ConfigParser()
     config.read(src_user_config)
     with open(src_user_config, 'w') as configfile:
-        config.set('BACKUP', 'backup_now', 'false')
+        config.set('BACKUP', 'backup_now', 'unfinished')
         config.set('BACKUP', 'checker_running', 'false')
         config.write(configfile)
 

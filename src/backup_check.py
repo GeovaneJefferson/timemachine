@@ -31,7 +31,13 @@ class CLI:
 
     def check_connection(self):
         if is_connected(str(mainIniFile.ini_hd_name())):
+            self.needs_to_continue_previus_backup()
             self.search_downloads()
+
+
+    def needs_to_continue_previus_backup(self):
+        if str(mainIniFile.ini_backup_now()) == "unfinished":
+            sub.Popen(f"python3 {src_backup_now_py}",shell=True)
 
     ################################################################################
     # Auto Packages
