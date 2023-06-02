@@ -17,13 +17,17 @@ def calculate_time_left_to_backup():
         if timeLeft < 59 and timeLeft >= 0:
             write_to_ini_file()
             return f"In Approx. {timeLeft} minutes..."
+        else:
+            return "None"
     
     elif int(backupHour) - int(currentBackupHour) == 0:
         timeLeft = int(backupMinute) - int(currentBackupMinute)
         if timeLeft >= 0:
             write_to_ini_file()
             return f"In Approx. {timeLeft} minutes..."
- 
+        else:
+            return "None"
+        
 def write_to_ini_file():
     print(f"In Approx. {timeLeft} minutes...")
     
@@ -32,7 +36,8 @@ def write_to_ini_file():
     with open(src_user_config, 'w') as configfile:
         config.set('SCHEDULE', 'time_left', f'In Approx. {timeLeft} minutes...')
         config.write(configfile)
-    
+
 
 if __name__ == '__main__':
+    print(calculate_time_left_to_backup())
     pass
