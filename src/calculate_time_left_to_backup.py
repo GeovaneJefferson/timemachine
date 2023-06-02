@@ -14,14 +14,15 @@ def calculate_time_left_to_backup():
     if int(backupHour) - int(currentBackupHour) == 1:
         timeLeft = (int(backupMinute) - int(currentBackupMinute) + 59)
     
-        if timeLeft < 59:
+        if timeLeft < 59 and timeLeft >= 0:
             write_to_ini_file()
             return f"In Approx. {timeLeft} minutes..."
     
     elif int(backupHour) - int(currentBackupHour) == 0:
         timeLeft = int(backupMinute) - int(currentBackupMinute)
-        write_to_ini_file()
-        return f"In Approx. {timeLeft} minutes..."
+        if timeLeft >= 0:
+            write_to_ini_file()
+            return f"In Approx. {timeLeft} minutes..."
  
 def write_to_ini_file():
     print(f"In Approx. {timeLeft} minutes...")
