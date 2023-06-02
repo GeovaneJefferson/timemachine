@@ -1804,28 +1804,27 @@ class OPTION(QMainWindow):
             pass
 
     def on_apparence_button_clicked(self):
-        # Reset settings
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w', encoding='utf8') as configfile:
-            # Mode section
-            # True = Dark, White = False
-            if main.darkMode == "true":
-                print((main.darkMode))
+        pass
+        # # Reset settings
+        # config = configparser.ConfigParser()
+        # config.read(src_user_config)
+        # with open(src_user_config, 'w', encoding='utf8') as configfile:
+        #     # Mode section
+        #     # True = Dark, White = False
+        #     if main.darkMode == "true":
+        #         config.set('MODE', 'dark_mode', 'false')
+        #     else:
+        #         config.set('MODE', 'dark_mode', 'true')
 
-                config.set('MODE', 'dark_mode', 'false')
-            else:
-                config.set('MODE', 'dark_mode', 'true')
+        #     # Write to INI file
+        #     config.write(configfile)
 
-            # Write to INI file
-            config.write(configfile)
+        # themeChanger = QMessageBox.question(self, 'Change Theme', 
+        # f'Will be applied after {appName} is restarted.',
+        # QMessageBox.Ok)
 
-        themeChanger = QMessageBox.question(self, 'Change Theme', 
-        f'Will be applied after {appName} is restarted.',
-        QMessageBox.Ok)
-
-        if themeChanger == QMessageBox.Ok:
-            QMessageBox.Close
+        # if themeChanger == QMessageBox.Ok:
+        #     QMessageBox.Close
 
     def on_button_fix_clicked(self):
         resetConfirmation = QMessageBox.question(self, 'Reset', 
