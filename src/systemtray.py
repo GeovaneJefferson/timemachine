@@ -131,7 +131,7 @@ class APP:
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
-            if calculate_time_left_to_backup() != "None":
+            if calculate_time_left_to_backup() != None:
                 self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
@@ -168,15 +168,15 @@ class APP:
         try:
             if self.color != color:
                 if color == "Blue":
-                    self.color = "Blue"
+                    self.color = color
                     self.tray.setIcon(QIcon(src_system_bar_run_icon))
 
                 elif color == "White":
-                    self.color = "White"
+                    self.color = color
                     self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
 
                 elif color == "Red":
-                    self.color = "Red"
+                    self.color = color
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
         except Exception as error:
