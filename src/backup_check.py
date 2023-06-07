@@ -34,7 +34,6 @@ class CLI:
             self.needs_to_continue_previus_backup()
             self.search_downloads()
 
-
     def needs_to_continue_previus_backup(self):
         if str(mainIniFile.ini_backup_now()) == "unfinished":
             sub.Popen(f"python3 {src_backup_now_py}",shell=True)
@@ -48,45 +47,36 @@ class CLI:
         self.check_the_date()
 
     def check_the_date(self):
-        if str(mainIniFile.ini_multiple_time_mode()) == "true":
-            self.check_the_mode()
-
-        else:
+        if str(mainIniFile.ini_one_time_mode()) == "true":
             if str(mainIniFile.day_name()) in determine_days_language((system_language()))[0] and str(mainIniFile.ini_next_backup_sun()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[1] and str(mainIniFile.ini_next_backup_mon()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[2] and str(mainIniFile.ini_next_backup_tue()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[3] and str(mainIniFile.ini_next_backup_wed()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[4] and str(mainIniFile.ini_next_backup_thu()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[5] and str(mainIniFile.ini_next_backup_fri()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[6] and str(mainIniFile.ini_next_backup_sat()) == "true":
-                self.check_the_mode()
+                self.check_the_mode(True)
+        else:
+            self.check_the_mode(False)
             
-    def check_the_mode(self):
+    def check_the_mode(self,oneMode):
         if str(mainIniFile.ini_backup_now()) == "false":
-            if str(mainIniFile.ini_one_time_mode()) == "true":
+            if oneMode:
                 if int(mainIniFile.current_time()) >= int(mainIniFile.backup_time_military()):
                     if today_date() not in get_backup_date():
                         self.call_backup_now()
-
-                    # else:
-                    #     # Reset time left
-                    #     config = configparser.ConfigParser()
-                    #     config.read(src_user_config)
-                    #     with open(src_user_config, 'w') as configfile:
-                    #         config.set('SCHEDULE', 'time_left', 'None')
-                    #         config.write(configfile)
 
                 else:
                     calculate_time_left_to_backup()

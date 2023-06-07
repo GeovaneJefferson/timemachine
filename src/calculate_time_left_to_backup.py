@@ -39,5 +39,4 @@ def write_to_ini_file():
 
 
 if __name__ == '__main__':
-    print(calculate_time_left_to_backup())
     pass

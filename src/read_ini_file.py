@@ -192,32 +192,32 @@ class UPDATEINIFILE:
         return self.iniFolders
     
     def day_name(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.dayName = now.strftime("%a")
         return self.dayName
 
     def current_date(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.dateDay = now.strftime("%d")
         return self.dateDay
 
     def current_month(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.dateMonth = now.strftime("%m")
         return self.dateMonth
 
     def current_year(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.dateYear = now.strftime("%y")
         return self.dateYear
 
     def current_hour(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.currentHour = now.strftime("%H")
         return self.currentHour
 
     def current_minute(self):
-        # now = datetime.now()
+        now = datetime.now()
         self.currentMinute = now.strftime("%M")
         return self.currentMinute
 
