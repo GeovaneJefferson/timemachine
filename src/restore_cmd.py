@@ -89,9 +89,9 @@ class RESTORE:
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
-            config.set('INFO', 'notification_id', "0")
+            config.set('INFO', 'notification_message', "0")
             config.set('INFO', 'notification_add_info', "")
-            config.set('INFO', 'feedback_status', "")
+            config.set('INFO', 'current_backing_up', "")
 
             config.set('RESTORE', 'is_restore_running', "false")
             config.set('RESTORE', 'files_and_folders', "false")

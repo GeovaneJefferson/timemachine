@@ -288,13 +288,12 @@ class PREPAREBACKUP:
                 # config = configparser.ConfigParser()
                 # config.read(src_user_config)
                 # with open(src_user_config, 'w') as configfile:
-                #     config.set('INFO', 'notification_id', "2")
+                #     config.set('INFO', 'notification_massage', "2")
                 #     config.set('INFO', 'notification_add_info', f"Space needed: {addToNotificationInfo}")
                 #     config.write(configfile)
 
                 try:
                     # Only deletes if exist more than one date folder inside
-                    # Will return to the top, if free space is not enought, so app can delete more old folders
                     if len(get_backup_date()) > 1:
                         ################################################################################
                         # Write to INI file
@@ -302,7 +301,7 @@ class PREPAREBACKUP:
                         # config = configparser.ConfigParser()
                         # config.read(src_user_config)
                         # with open(src_user_config, 'w') as configfile:
-                        #     config.set('INFO', 'feedback_status', f"Deleting {get_backup_date()[-1]}...")
+                        #     config.set('INFO', 'current_backing_up', f"Deleting {get_backup_date()[-1]}...")
                         #     config.write(configfile)
 
                         # Action
@@ -319,7 +318,7 @@ class PREPAREBACKUP:
                         # config = configparser.ConfigParser()
                         # config.read(src_user_config)
                         # with open(src_user_config, 'w') as configfile:
-                            # config.set('INFO', 'notification_id', "2")
+                            # config.set('INFO', 'notification_massage', "2")
                             # config.set('BACKUP', 'backup_now', 'false')
                             # config.set('INFO', 'notification_add_info', "Please, manual delete file(s)/folder(s) inside "
                             #         f"your backup device, to make space for {appName}'s backup!")

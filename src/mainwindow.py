@@ -1,30 +1,26 @@
-#! /usr/bin/python3
 from setup import *
 from stylesheet import *
 from check_connection import *
 from device_location import *
 from package_manager import *
-from get_user_de import get_user_de
 from get_home_folders import *
-from get_system_language import system_language
 from get_size import *
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
-from update import backup_ini_file, restore_ini_file
+from update import backup_ini_file
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found, remove_system_tray_file
 from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
-
+from notification_massage import notification_massage
+from detect_theme_color import detect_theme_color
 
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
-        self.timeOut = 0
-
         self.chooseDevice = ()
         self.captureDevices = []
 
@@ -46,7 +42,8 @@ class MAIN(QMainWindow):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
+        # if app.palette().window().color().getRgb()[0] < 55:
             # Left background
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             # Button
@@ -168,7 +165,6 @@ class MAIN(QMainWindow):
         ################################################################################
         self.externalNameLabel = QLabel()
         self.externalNameLabel.setFont(QFont(mainFont, 6))
-        # self.externalNameLabel.setFixedSize(350, 80)
         self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
@@ -221,8 +217,9 @@ class MAIN(QMainWindow):
         ################################################################################
         # Extra information about an error
         ################################################################################
-        self.extraInformationLabel = QLabel(self)
-        self.extraInformationLabel.setFont(item)
+        # self.extraInformationLabel = QLabel(self)
+        # self.extraInformationLabel.setVisible(True)
+        # self.extraInformationLabel.setFont(item)
         
         ################################################################################
         # Current backup label information
@@ -452,32 +449,17 @@ class MAIN(QMainWindow):
     def connection(self):
         print(f"Main Windows ({appNameClose}) is running...")
 
-        # Reset timeOut
-        self.timeOut = 0
-
         try:
             if str(mainIniFile.ini_hd_name()) != "None":
                 self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
                 
                 if is_connected(str(mainIniFile.ini_hd_name())):
-                    ################################################################################
                     # External status
-                    ################################################################################
                     self.externalStatusLabel.setText("Status: Connected")
                     self.externalStatusLabel.setStyleSheet('color: green')
 
-                    try:
-                        # Clean notification info
-                        config = configparser.ConfigParser()
-                        config.read(src_user_config)
-                        with open(src_user_config, 'w', encoding='utf8') as configfile:
-                            config.set('INFO', 'notification_add_info', ' ')
-                            config.write(configfile)
-
-                    except Exception as error:
-                        print(Exception)
-                        print("Main Window error!")
-                        exit()
+                    # Clean notification massage
+                    notification_massage(" ") 
 
                     self.get_size_informations()
 
@@ -490,77 +472,65 @@ class MAIN(QMainWindow):
             # No device registered
             else:
                 self.externalSizeLabel.setText("No information available")
-                
                 self.externalNameLabel.setText("<h1>None</h1>")
-                
                 self.externalStatusLabel.setText("Status: None")
                 self.externalStatusLabel.setStyleSheet('color:gray')
-                
                 self.backupNowButton.setEnabled(False)
-        except KeyError:
-            restore_ini_file(True)
+
+        except Exception as error:
+            print("Main Window Connection Error:",error)
+            # restore_ini_file(True)
 
         self.condition()
 
     def get_size_informations(self):
-        ################################################################################
         # Get external size values
-        ################################################################################
         try:
             self.externalSizeLabel.setText(f"{get_external_device_used_size()} of {get_external_device_max_size()} available")
-
+       
         except:
             self.externalSizeLabel.setText("No information available")
 
         self.condition()
 
     def condition(self):
-        if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
-            try:
-                # backupNowPipe = os.open(f"/{src_folder_timemachine}/backup_now.pipe)", os.O_RDONLY | os.O_NONBLOCK)
-                # if backupNowPipe:
-                #     data = os.read(backupNowPipe, 1024)
-                if str(mainIniFile.ini_backup_now()) == "false":
-                # if data != START_BACKUP_MSG:
-                    self.selectDiskButton.setEnabled(True)
-                    self.backupNowButton.setEnabled(True)
-                    self.automaticallyCheckBox.setEnabled(True)                
-                    self.showInSystemTrayCheckBox.setEnabled(True)
-                else:
-                    self.selectDiskButton.setEnabled(False)
-                    self.backupNowButton.setEnabled(False)
-                    self.automaticallyCheckBox.setEnabled(False)
-                    self.showInSystemTrayCheckBox.setEnabled(False)
+        # if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
+        if is_connected(str(mainIniFile.ini_hd_name())):  
+            if str(mainIniFile.ini_backup_now()) == "false":
+                self.connected_action_to_take()
 
-            except (OSError, NameError):
-                self.selectDiskButton.setEnabled(True)
-                self.backupNowButton.setEnabled(True)
-                self.automaticallyCheckBox.setEnabled(True)
-                self.showInSystemTrayCheckBox.setEnabled(True)
+            else:
+                self.currentBackUpLabel.setText(str(mainIniFile.ini_current_backup_information()))
+                self.currentBackUpLabel.adjustSize()
+                self.not_connected_action_to_take()
 
         else:
-            self.externalNameLabel.setText("<h1>None</h1>")
-            self.backupNowButton.setEnabled(False)
+            self.not_registered_action_to_take()
       
-        self.set_external_oldest_backup()
+        self.update_ui_status_informations()
 
-    def set_external_oldest_backup(self):
+    def update_ui_status_informations(self):
         self.oldestBackupLabel.setText(f"Oldest Backup: {oldest_backup_date()}")
-      
-        self.set_external_last_backup()
-
-    def set_external_last_backup(self):
         self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date_label()}")
-
-        self.automatically_backup_checkbox()
-
-    def automatically_backup_checkbox(self):
+        
         if mainIniFile.ini_automatically_backup() == 'true':
+            self.save_to_ini_file_next_backup_text()
+
             if str(mainIniFile.ini_one_time_mode()) == "true":
-                if str(calculate_time_left_to_backup()) != "None":
-                    self.nextBackupLabel.setText(f"Next Backup: {calculate_time_left_to_backup()}")
+
+                # Device registered
+                if str(mainIniFile.ini_hd_name()) != "None":
+
+                    # Time left calculation
+                    if str(calculate_time_left_to_backup()) != "None":
+                        self.nextBackupLabel.setText(f"Next Backup: {calculate_time_left_to_backup()}")
+                    
+                    else:
+                        self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
+                
+                # No  device registered
                 else:
-                    self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
+                    self.nextBackupLabel.setText("Next Backup: First, select a backup device.")
             else:
                 if str(mainIniFile.ini_everytime()) == "60":
                     self.nextBackupLabel.setText("Next Backup: Every 1 hour")
@@ -576,55 +546,25 @@ class MAIN(QMainWindow):
         else:
             self.nextBackupLabel.setText("Next Backup: Automatic backups off")
 
-        self.load_dates()
-    
-    def load_dates(self):
+    # TODO
+    def save_to_ini_file_next_backup_text(self):
         try:
-            info = str(get_next_backup().capitalize()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
-            # Save next backup to user.ini
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set('INFO', 'next', f'{info}')
-                config.write(configfile)
+            # Device registered
+            if str(mainIniFile.ini_hd_name()) != "None":
+                info = str(get_next_backup().capitalize()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
+
+                # Write to INI file
+                config = configparser.ConfigParser()
+                config.read(src_user_config)
+                with open(src_user_config, 'w', encoding='utf8') as configfile:
+                    config.set('INFO', 'next', f'{info}')
+                    config.write(configfile)
         except:
             pass
 
-        self.load_current_backup_folder()
-
-    def load_current_backup_folder(self):
-        # Current backup folder been backup
-        self.currentBackUpLabel.setText(str(mainIniFile.ini_current_backup_information()))
-        # Auto adjustSize for current backup folder
-        self.currentBackUpLabel.adjustSize()
-
-        # self.load_extra_information()
         self.load_automacically_backup()
 
-    # def load_extra_information(self):
-    #     if str(mainIniFile.ini_extra_information()) != "":
-    #         # Information about an error message
-    #         self.extraInformationLabel.setText(str(mainIniFile.ini_extra_information()))
-    #         # Auto adjustSize label
-    #         self.extraInformationLabel.adjustSize()
-    #         # Show label
-    #         self.extraInformationLabel.setEnabled(True)
-    #     else:
-    #         self.extraInformationLabel.setEnabled(False)
-
-    #     self.load_automacically_backup()
-
     def load_automacically_backup(self):
-        ################################################################################
-        # Auto backup
-        ################################################################################
-        # if str(mainIniFile.ini_hd_name()) == "None":
-        #     # Disable automatically backup checkbox
-        #     self.automaticallyCheckBox.setEnabled(False)
-        # else:
-        #     # Enable automatically backup checkbox
-        #     self.automaticallyCheckBox.setEnabled(True)
-
         if str(mainIniFile.ini_automatically_backup()) == "true":
             self.automaticallyCheckBox.setChecked(True)
         else:
@@ -633,53 +573,44 @@ class MAIN(QMainWindow):
         self.load_system_tray()
 
     def load_system_tray(self):
-        ################################################################################
-        # System tray
-        ################################################################################
         if str(mainIniFile.ini_system_tray()) == "true":
             self.showInSystemTrayCheckBox.setChecked(True)
 
         else:
             self.showInSystemTrayCheckBox.setChecked(False)
 
+    ################################################################################
+    # STATIC
+    ################################################################################
     def automatically_clicked(self):
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w', encoding='utf8') as configfile:  
                 if self.automaticallyCheckBox.isChecked():
-                    # if not os.path.exists(src_backup_check_desktop):
-                    # Copy .desktop to user folder (Autostart .desktop)
                     create_backup_checker_desktop()
+
+                    # Copy backup_check.desktop
                     shutil.copy(src_backup_check_desktop, src_autostart_location)  
 
+                    # Write to INI file
                     config.set('BACKUP', 'auto_backup', 'true')
+                    config.set('BACKUP', 'checker_running', "true")
                     config.write(configfile)
 
-                    # Backup checker
+                    # call backup check
                     sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-
-
-                    # Set checker running to true
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('BACKUP', 'checker_running', "true")
-                        config.write(configfile)
-
-                    # if not os.path.exists(f"{src_folder_timemachine}/src/backup_now_is_running.txt"):
-                    #         os.mkfifo(f"{src_folder_timemachine}/src/backup_now_is_running.txt")
-                    #         sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
                     print("Auto backup was successfully activated!")
          
                 else:
+                    # Remove autostart.desktop
                     sub.run(f"rm -f {src_autostart_location}",shell=True)
-                    config.set('BACKUP', 'auto_backup', 'false')
-                    config.write(configfile)    
                     
-                    # Set checker running to false
-                    with open(src_user_config, 'w', encoding='utf8') as configfile:
-                        config.set('BACKUP', 'checker_running', "false")
-                        config.write(configfile)
+                    # Write to INI file
+                    config.set('BACKUP', 'auto_backup', 'false')
+                    config.set('BACKUP', 'checker_running', "false")
+                    config.write(configfile)    
 
                     print("Auto backup was successfully deactivated!")
         except:
@@ -711,6 +642,22 @@ class MAIN(QMainWindow):
         except:
             pass
 
+    def connected_action_to_take(self):
+        self.selectDiskButton.setEnabled(True)
+        self.backupNowButton.setEnabled(True)
+        self.automaticallyCheckBox.setEnabled(True)                
+        self.showInSystemTrayCheckBox.setEnabled(True)
+
+    def not_connected_action_to_take(self):
+        self.selectDiskButton.setEnabled(False)
+        self.backupNowButton.setEnabled(False)
+        self.automaticallyCheckBox.setEnabled(False)
+        self.showInSystemTrayCheckBox.setEnabled(False)
+
+    def not_registered_action_to_take(self):
+        self.externalNameLabel.setText("<h1>None</h1>")
+        self.backupNowButton.setEnabled(False)
+
     def backup_now_clicked(self):
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
@@ -737,12 +684,8 @@ class MAIN(QMainWindow):
         if os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
             sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
-        ################################################################################
         # Call update and Exit
-        ################################################################################
-        # Set to True, so it will call others function to update propely
         backup_ini_file(True)
-        # exit()
 
     ################################################################################
     # EXTERNAL
@@ -865,39 +808,11 @@ class MAIN(QMainWindow):
                 pass
 
     def on_use_disk_clicked(self):
-        ################################################################################
         # Update INI file
-        ################################################################################
         save_info(self.chooseDevice)
 
         try:
-            # config = configparser.ConfigParser()
-            # config.read(src_user_config)
-            # with open(src_user_config, 'w', encoding='utf8') as configfile:
-            #     if "deb" in package_manager():
-            #         config.set('INFO', 'packageManager', f'{debFolderName}')
-                
-            #     elif "rpm" in package_manager():
-            #         config.set('INFO', 'packageManager', f'{rpmFolderName}')
-                
-            #     config.set('INFO', 'os',  f'{get_user_de()}')
-            #     config.set('INFO', 'language',  f'{str(system_language())}')
-            #     config.write(configfile)
-
-            # config = configparser.ConfigParser()
-            # config.read(src_user_config)
-            # with open(src_user_config, 'w', encoding='utf8') as configfile:
-            #     if device_location():
-            #         config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
-            #     elif not device_location():
-            #         config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
-                
-            #     config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
-            #     config.write(configfile)
-            
-            ################################################################################
             # Backup Ini File
-            ################################################################################
             backup_ini_file(False)
             
             self.external_close_animation()
@@ -909,10 +824,13 @@ class MAIN(QMainWindow):
     def on_device_clicked(self, output):
         if self.availableDevices.isChecked():
             self.chooseDevice = output
+
             # Enable use disk
             self.useDiskButton.setEnabled(True)
+
         else:
             self.chooseDevice = ""
+
             # Disable use disk
             self.useDiskButton.setEnabled(False)
 
@@ -928,29 +846,14 @@ class MAIN(QMainWindow):
         
         self.externalBackgroundShadow.setVisible(False)
     
-    # def get_lock_file_path(self):
-    #     if sys.platform == 'linux':
-    #         return f'/tmp/{appNameClose}.lock'
-    #     elif sys.platform == 'win32':
-    #         return os.path.join(os.environ['TEMP'], f'{appNameClose}.lock')
-    #     elif sys.platform == 'darwin':
-    #         return os.path.join(os.path.expanduser('~/Library/Application Support'), f'{appNameClose}.lock')
-
-    # def acquire_lock(self):
-    #     try:
-    #         lock_file_path = self.get_lock_file_path()
-    #         lock_file = open(lock_file_path, 'w')
-    #         fcntl.lockf(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    #         return lock_file
-    #     except (IOError, OSError):
-    #         return None
-
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
+
         self.iniUI()
 
     def iniUI(self):
+        # Set window icon
         self.setWindowIcon(QIcon(src_backup_icon))
 
         ################################################################################
@@ -965,7 +868,7 @@ class OPTION(QMainWindow):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.buttonStylesheetDetector = buttonStylesheetDark
         else:
             self.buttonStylesheetDetector = buttonStylesheet
@@ -1888,8 +1791,8 @@ class OPTION(QMainWindow):
                     # config.set('INFO', 'oldest', 'None')
                     # config.set('INFO', 'latest', 'None')
                     config.set('INFO', 'next', 'None')
-                    config.set('INFO', 'notification_id', '0')
-                    config.set('INFO', 'feedback_status', ' ')
+                    config.set('INFO', 'notification_message', '')
+                    config.set('INFO', 'current_backing_up', ' ')
                     config.set('INFO', 'auto_reboot', 'false')
 
                     # Folders section

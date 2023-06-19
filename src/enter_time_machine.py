@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 from setup import *
 from stylesheet import *
+from detect_theme_color import detect_theme_color
 
 config = configparser.ConfigParser()
 config.read(src_user_config)
@@ -9,6 +10,7 @@ config.read(src_user_config)
 class ENTERTIMEMACHINE(QWidget):
     def __init__(self):
         super().__init__()
+
         # Variables
         self.filesToRestore = []
         self.filesToRestoreWithSpace = []
@@ -47,7 +49,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.buttonStylesheetDetector = buttonStylesheetDark
         else:
             self.buttonStylesheetDetector = buttonStylesheet
@@ -295,11 +297,11 @@ class ENTERTIMEMACHINE(QWidget):
                         self.alreadyGotDateList = True
 
         except FileNotFoundError as error:
-            # Set notification_id to 2
-            with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'notification_id', "2")
-                config.set('INFO', 'notification_add_info', f"{error}")
-                config.write(configfile)
+            # # Set notification_massage to 2
+            # with open(src_user_config, 'w') as configfile:
+            #     config.set('INFO', 'notification_massage', "2")
+            #     config.set('INFO', 'notification_add_info', f"{error}")
+            #     config.write(configfile)
 
             print("Backup devices was not found...")
             exit()
@@ -409,6 +411,7 @@ class ENTERTIMEMACHINE(QWidget):
             imagePrefix = (
                 ".png", ".jpg", ".jpeg", 
                 ".webp", ".gif", ".svg")
+            
             for output in os.listdir(f"{self.iniExternalLocation}/"
                     f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
                     f"{self.timeFolders[self.countForTime]}/{self.currentFolder}"):

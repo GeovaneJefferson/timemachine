@@ -10,7 +10,7 @@ from get_system_settings_size import get_system_settings_size
 from package_manager import package_manager
 from get_backup_home_name_and_size import get_backup_folders_size_pretty
 from save_info import save_info
-
+from detect_theme_color import detect_theme_color
 
 class WELCOMESCREEN(QWidget):
     def __init__(self):
@@ -19,7 +19,7 @@ class WELCOMESCREEN(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
@@ -115,7 +115,7 @@ class CHOOSEDEVICE(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.separatorstylesheetDetector = separetorLineDark
             self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
@@ -348,7 +348,7 @@ class PREBACKUP(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.separatorstylesheetDetector = separetorLineDark
             self.applicationBackgroundBoxDetector = leftBackgroundColorStylesheetDark
@@ -1055,7 +1055,7 @@ class BACKUPSCREEN(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(app):
             self.buttonStylesheetDetector = buttonStylesheetDark
             self.separatorstylesheetDetector = separetorLineDark
         else:

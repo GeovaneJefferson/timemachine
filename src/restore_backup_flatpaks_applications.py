@@ -16,7 +16,7 @@ async def restore_backup_flatpaks_applications():
             config = configparser.ConfigParser()
             config.read(src_user_config) 
             with open(src_user_config, 'w') as configfile:
-                config.set('INFO', 'feedback_status', f"{output}")
+                config.set('INFO', 'current_backing_up', f"{output}")
                 config.write(configfile)
 
             sub.run(f"{flatpakInstallCommand} {output}", shell=True)

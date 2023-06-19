@@ -40,17 +40,6 @@ class BACKUP:
         self.begin_settings()
 
     def begin_settings(self):
-        # try:
-        #     config = configparser.ConfigParser()
-        #     config.read(src_user_config)
-        #     with open(src_user_config, 'w') as configfile:
-        #         config.set('BACKUP', 'backup_now', "true")
-        #         config.write(configfile)
-                
-        # except KeyError as error:
-        #     print(error)
-        #     exit()
-
         self.start_backup()
 
     def start_backup(self):
@@ -75,19 +64,29 @@ class BACKUP:
             backup_user_flatpak_data()
       
         # For both Gnome and Kde
+        # Backup Icons
         update_notification_status("Backing up: Icon ...")
         backup_user_icons()
+        
+        # Backup Fonts
         update_notification_status("Backing up: Fonts ...")
         backup_user_fonts()
+        
+        # Backup Themes
         update_notification_status("Backing up: Themes ...")
         backup_user_theme()
         
         # Only for Kde
         if get_user_de() == 'kde':
+            # Update status
             update_notification_status("Backing up: .local/share ...")
             backup_local_share()
+
+            # Update status
             update_notification_status("Backing up: .config ...")
             backup_kde_config()
+
+            # Update status
             update_notification_status("Backing up: .kde/share/...")
             backup_kde_share_config()
             

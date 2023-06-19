@@ -151,7 +151,7 @@ class UPDATEINIFILE:
         try:
             config = configparser.ConfigParser()
             config.read(src_user_config)
-            return config['INFO']['feedback_status']
+            return config['INFO']['current_backing_up']
         except:
             pass
         
@@ -212,11 +212,13 @@ class UPDATEINIFILE:
         return self.dateYear
 
     def current_hour(self):
+        # With 'now', current time will update by each hour 
         now = datetime.now()
         self.currentHour = now.strftime("%H")
         return self.currentHour
 
     def current_minute(self):
+        # With 'now', current time will update by each minute 
         now = datetime.now()
         self.currentMinute = now.strftime("%M")
         return self.currentMinute
@@ -227,6 +229,21 @@ class UPDATEINIFILE:
 
     def current_time(self):
         return f"{self.current_hour()}{self.current_minute()}" 
+    
+    def backup_year(self):
+        return now.strftime("%y") 
+
+    def backup_month(self):
+        return now.strftime("%m")
+    
+    def backup_date(self):
+        return now.strftime("%d")
+
+    def backup_hour(self):
+        return now.strftime("%H") 
+
+    def backup_minute(self):
+        return now.strftime("%M") 
 
     def backup_time_military(self):
         backupTime = f"{str(self.ini_next_hour())}{str(self.ini_next_minute())}"
@@ -300,7 +317,7 @@ class UPDATEINIFILE:
         return dateFolder
 
     def time_folder_format(self):
-        timeFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}/{str(self.current_hour())}-{str(self.current_minute())}"
+        timeFolder = f"{str(self.backup_folder_name())}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
         return timeFolder
 
     def flatpak_txt_location(self):

@@ -126,7 +126,6 @@ class APP:
     def set_status_on(self):
         # Not backing up right now
         if not can_backup_now_file_be_found():
-        # if str(mainIniFile.ini_backup_now()) == "false":
             self.change_color("White")
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
