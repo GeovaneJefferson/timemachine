@@ -174,6 +174,7 @@ fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 homeUser = str(Path.home())
 userName = getpass.getuser()
 getHomeFolders = os.listdir(homeUser)
+getCurrentLocation = pathlib.Path().resolve() 
 
 src_applications_location = f"{homeUser}/.local/share/applications"
 src_autostart_folder_location = f"{homeUser}/.config/autostart"

@@ -866,11 +866,12 @@ class ENTERTIMEMACHINE(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = ENTERTIMEMACHINE()
-    main.show()
+    
     # Windows settings
     main.setWindowTitle(f"Browser {appName} Backups")
     main.setWindowIcon(QIcon(src_backup_icon))
-    main.resize(1280, 720)
+    main.setMinimumSize(1280, 720)
     main.showMaximized()
     
+    main.show()
     app.exit(app.exec())

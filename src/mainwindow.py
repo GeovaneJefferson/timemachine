@@ -21,7 +21,7 @@ from detect_theme_color import detect_theme_color
 class MAIN(QMainWindow):
     def __init__(self):
         super(MAIN, self).__init__()
-        self.chooseDevice = ()
+        self.chooseDevice = []
         self.captureDevices = []
 
         self.oldestList = []
@@ -711,6 +711,7 @@ class MAIN(QMainWindow):
                 for output in os.listdir(f'{media}/{userName}'):
                     # No spaces and special characters allowed
                     if output not in self.captureDevices and "'" not in output and " " not in output:
+                        print("     Devices:",output)
                         self.captureDevices.append(output)
 
                         # Avaliables external  devices
@@ -724,6 +725,7 @@ class MAIN(QMainWindow):
                             self.availableDevices.setAutoExclusive(True)
     
                         self.availableDevices.setStyleSheet(self.availableDeviceButtonDetector)
+                        
                         text = self.availableDevices.text()
                         self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
                         
@@ -767,9 +769,12 @@ class MAIN(QMainWindow):
                         self.availableDevices.setCheckable(True)
                         self.availableDevices.setAutoExclusive(True)
                         self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
-                        text = self.availableDevices.text()
-                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+                        device = self.availableDevices.text()
+
+                        # Connect the device
+                        self.availableDevices.clicked.connect(lambda *args, device=device: self.on_device_clicked(device))
                         
+          
                         # Image
                         icon = QLabel(self.availableDevices)
                         image = QPixmap(f"{src_restore_icon}")
@@ -795,7 +800,7 @@ class MAIN(QMainWindow):
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
-                        if text == str(mainIniFile.ini_hd_name()):
+                        if device == str(mainIniFile.ini_hd_name()):
                             self.availableDevices.setChecked(True)
 
                         ################################################################################
@@ -809,7 +814,7 @@ class MAIN(QMainWindow):
 
     def on_use_disk_clicked(self):
         # Update INI file
-        save_info(self.chooseDevice)
+        save_info(self.chooseDevice[-1])
 
         try:
             # Backup Ini File
@@ -821,18 +826,29 @@ class MAIN(QMainWindow):
         except:
             pass
 
-    def on_device_clicked(self, output):
-        if self.availableDevices.isChecked():
-            self.chooseDevice = output
+    def on_device_clicked(self, device):
+        # Add to the list
+        if device not in self.chooseDevice:
+            # Add to choosed device list
+            self.chooseDevice.append(device)
 
             # Enable use disk
             self.useDiskButton.setEnabled(True)
 
+        # Remove from the list
         else:
-            self.chooseDevice = ""
+            # self.chooseDevice.clear()
+            self.chooseDevice.remove(device)
 
             # Disable use disk
             self.useDiskButton.setEnabled(False)
+        
+        # Limit if list is higher than 1
+        if len(self.chooseDevice) > 1:
+            self.useDiskButton.setEnabled(False)
+        
+        else:
+            self.useDiskButton.setEnabled(True)
 
     def on_button_cancel_clicked(self):
         self.external_close_animation()
