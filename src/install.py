@@ -108,15 +108,27 @@ class CLI:
             print("")
             pass
 
+    def copy_files(self):
+        try:
+            # Copy current Time Machine folder to user
+            shutil.copytree(getCurrentLocation,
+                            dst_folder_timemachine)
+            
+        except FileNotFoundError as e:
+            print(e)
+            print(f"Error trying install {appName}!")
+            exit()
+
     def create_files(self):
         create_backup_checker_desktop()
 
-        # Create applications folder
-        if not os.path.exists(src_applications_location):
-            sub.run(f"{createCMDFolder} {src_applications_location}", shell=True)
+        # Create applications folder inside .local/share
+        if not os.path.exists(dst_applications_location):
+            sub.run(f"{createCMDFolder} {dst_applications_location}", shell=True)
 
-        print(f"Creating {appNameClose}.desktop...")
-        with open(src_timemachine_desktop, "w") as writer: 
+        # Edit appNameClose.desktop 
+        print(f"Editing {dst_timemachine_desktop}")
+        with open(dst_timemachine_desktop, "w") as writer: 
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Version=1.0\n "
@@ -130,8 +142,8 @@ class CLI:
                 f"StartupWMClass={(src_main_window_py).split('/')[-1]}\n "
                 f"Terminal=false")
 
-        print(f"Creating Migration Assistant.desktop...")
-        with open(src_migration_assistant_desktop, "w") as writer:
+        # Edit migration_assistant.desktop 
+        with open(dst_migration_assistant_desktop, "w") as writer:
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Version=1.0\n "
@@ -145,54 +157,15 @@ class CLI:
                 f"StartupWMClass={(src_migration_assistant_py).split('/')[-1]}\n "
                 f"Terminal=true")
             
-    def copy_files(self):
-        try:
-            # Copy current Time Machine folder to user
-            # Copy current folder to destination folder
-            try:
-                print("\n\n\n\n\n\n\n\n\n")
-                print(getCurrentLocation,src_folder_timemachine)
-                shutil.copytree(getCurrentLocation,
-                                src_folder_timemachine)
-                print("\n\n\n\n\n\n\n\n\n")
-                
-            except FileExistsError:
-                pass
-            
-            # Copy .desktop and .timemachine.desktop to destination folder
-            try:
-                print("\n\n\n\n\n\n\n\n\n")
-                print(src_timemachine_desktop,src_timemachine_desktop)
-                shutil.copy(src_timemachine_desktop,
-                            src_timemachine_desktop)
-                print("\n\n\n\n\n\n\n\n\n")
-                
-            except FileExistsError:
-                pass
-
-            # Copy migration_assistant.desktop to destination folder
-            try:
-                print("\n\n\n\n\n\n\n\n\n")
-                print(src_migration_assistant_desktop,src_migration_assistant_desktop)
-                shutil.copy(src_migration_assistant_desktop,
-                            src_migration_assistant_desktop)
-                print("\n\n\n\n\n\n\n\n\n")
-                
-            except FileExistsError:
-                pass
-            
-            print("Program was successfully installed!")
-
-        except FileNotFoundError:
-            print(f"Error trying install {appName}!")
-            exit()
 
 if __name__ == '__main__':
     main = CLI()
     main.requirements(str(main.check_system()))
     
-    # Create files
-    main.create_files
     # Begin installation
     main.copy_files()
+    
+    # Edit files
+    main.create_files()
 
+    print("Program was successfully installed!")

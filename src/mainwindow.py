@@ -591,7 +591,7 @@ class MAIN(QMainWindow):
                     create_backup_checker_desktop()
 
                     # Copy backup_check.desktop
-                    shutil.copy(src_backup_check_desktop, src_autostart_location)  
+                    shutil.copy(dst_backup_check_desktop, dst_autostart_location)  
 
                     # Write to INI file
                     config.set('BACKUP', 'auto_backup', 'true')
@@ -605,7 +605,7 @@ class MAIN(QMainWindow):
          
                 else:
                     # Remove autostart.desktop
-                    sub.run(f"rm -f {src_autostart_location}",shell=True)
+                    sub.run(f"rm -f {dst_autostart_location}",shell=True)
                     
                     # Write to INI file
                     config.set('BACKUP', 'auto_backup', 'false')
@@ -636,7 +636,7 @@ class MAIN(QMainWindow):
                     config.write(configfile)
 
                     if can_system_tray_file_be_found():
-                        sub.run(f"rm -f {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+                        sub.run(f"rm -f {dst_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
                     print("System tray was successfully disabled!")
         except:
@@ -681,8 +681,8 @@ class MAIN(QMainWindow):
 
     def on_update_button_clicked(self):
         # Disable system tray
-        if os.path.isfile(f"{src_folder_timemachine}/src/system_tray_is_running.txt"):
-            sub.run(f"rm {src_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+        if os.path.isfile(f"{dst_folder_timemachine}/src/system_tray_is_running.txt"):
+            sub.run(f"rm {dst_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
 
         # Call update and Exit
         backup_ini_file(True)
@@ -849,6 +849,12 @@ class MAIN(QMainWindow):
         
         else:
             self.useDiskButton.setEnabled(True)
+
+        if len(self.chooseDevice) == 0:
+            self.useDiskButton.setEnabled(False)
+
+
+        print(self.chooseDevice)
 
     def on_button_cancel_clicked(self):
         self.external_close_animation()

@@ -7,7 +7,7 @@ def create_backup_checker_desktop():
         sub.run(f"{createCMDFolder} {src_autostart_folder_location}", shell=True)
     
     print("Creating backup_check.desktop ...")
-    with open(src_backup_check_desktop, "w") as writer: 
+    with open(dst_backup_check_desktop, "w") as writer: 
         writer.write(
             f"[Desktop Entry]\n "
             f"Type=Application\n "

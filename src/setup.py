@@ -176,7 +176,7 @@ userName = getpass.getuser()
 getHomeFolders = os.listdir(homeUser)
 getCurrentLocation = pathlib.Path().resolve() 
 
-src_applications_location = f"{homeUser}/.local/share/applications"
+dst_applications_location = f"{homeUser}/.local/share/applications"
 src_autostart_folder_location = f"{homeUser}/.config/autostart"
 src_flatpak_var_folder_location = f"{homeUser}/.var/app"
 src_flatpak_local_folder_location = f"{homeUser}/.local/share/flatpak"
@@ -208,15 +208,23 @@ src_restore_cmd_py = f"{homeUser}/.local/share/{appNameClose}/src/restore_cmd.py
 ################################################################################
 ## Desktop
 ################################################################################
-src_autostart_location = f"{homeUser}/.config/autostart/backup_check.desktop"
-src_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
-src_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
-src_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
+# Source
+src_autostart_location = f"desktop/backup_check.desktop"
+src_timemachine_desktop = f"desktop/{appNameClose}.desktop"
+src_migration_assistant_desktop = "desktop/migration_assistant.desktop"
+src_backup_check_desktop = f"desktop/backup_check.desktop"
+
+
+# Destination
+dst_autostart_location = f"{homeUser}/.config/autostart/backup_check.desktop"
+dst_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
+dst_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
+dst_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
 
 ################################################################################
 ## Config
 ################################################################################
-src_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
+dst_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
 src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
 src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
 
@@ -242,7 +250,7 @@ src_system_bar_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons
 src_exclude_applications = ".exclude-applications.txt"
 
 # LOG
-appLogTxt = f"{src_folder_timemachine}/logs.txt"
+appLogTxt = f"{dst_folder_timemachine}/logs.txt"
 
 def signal_exit(*args):
     print("Updating INI settings... Exiting...")

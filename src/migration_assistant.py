@@ -2,7 +2,6 @@
 from setup import *
 from device_location import device_location
 from package_manager import package_manager
-from restore_cmd import RESTORE
 from read_ini_file import UPDATEINIFILE
 from stylesheet import *
 from get_packages_size import get_packages_size
@@ -11,6 +10,7 @@ from package_manager import package_manager
 from get_backup_home_name_and_size import get_backup_folders_size_pretty
 from save_info import save_info
 from detect_theme_color import detect_theme_color
+
 
 class WELCOMESCREEN(QWidget):
     def __init__(self):
@@ -214,19 +214,17 @@ class CHOOSEDEVICE(QWidget):
     def show_on_screen(self):
         print("Searching devices...")
   
-        ################################################################################
         # Search external inside media
-        ################################################################################
         if device_location():
             location = f"{media}"
+
         elif not device_location():
             location = f"{run}"
+            
         else:
             location = None
         
-        ################################################################################
         # Show available files
-        ################################################################################
         try:
             for output in os.listdir(f"{location}/{userName}/"):
                 # Only show disk the have baseFolderName inside
@@ -278,6 +276,7 @@ class CHOOSEDEVICE(QWidget):
         if self.availableDevices.isChecked():
             self.chooseDevice = output
             self.continueButton.setEnabled(True)
+
         else:
             self.continueButton.setEnabled(False)
             
@@ -286,27 +285,6 @@ class CHOOSEDEVICE(QWidget):
         # Update INI file
         ################################################################################
         save_info(self.chooseDevice)
-
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)
-        # with open(src_user_config, 'w') as configfile:
-        #     if str(supportedDEBPackageManager) in package_manager():
-        #         # Save user's os name
-        #         config.set(f'INFO', 'packageManager', f'{debFolderName}')
-
-        #     elif str(supportedRPMPackageManager) in package_manager():
-        #         # Save user's os name
-        #         config.set(f'INFO', 'packageManager', f'{rpmFolderName}')
-
-        #     # Update INI file
-        #     if device_location():
-        #         config.set(f'EXTERNAL', 'hd', f'{media}/{userName}/{self.chooseDevice}')
-
-        #     elif not device_location():
-        #         config.set(f'EXTERNAL', 'hd', f'{run}/{userName}/{self.chooseDevice}')
-
-        #     config.set('EXTERNAL', 'name', f'{self.chooseDevice}')
-        #     config.write(configfile)
 
         main3 = PREBACKUP()
         widget.addWidget(main3) 
