@@ -18,7 +18,7 @@ def calculate_time_left_to_backup():
             write_to_ini_file()
             return f"In Approx. {timeLeft} minutes..."
         else:
-            return "None"
+            return None
     
     elif int(backupHour) - int(currentBackupHour) == 0:
         timeLeft = int(backupMinute) - int(currentBackupMinute)
@@ -26,7 +26,7 @@ def calculate_time_left_to_backup():
             write_to_ini_file()
             return f"In Approx. {timeLeft} minutes..."
         else:
-            return "None"
+            return None
         
 def write_to_ini_file():
     print(f"In Approx. {timeLeft} minutes...")
