@@ -60,7 +60,7 @@ gnomeShellFolder = "gnome-shell"
 varFolderName = "var"
 localFolderName = "share"
 kdeFolderName = "kde"
-gnomeFolderName = "kde"
+gnomeFolderName = "gnome"
 
 configurationFolderName = "configurations"
 shareFolderName = "share"
