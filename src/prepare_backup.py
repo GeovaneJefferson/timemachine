@@ -147,76 +147,20 @@ class PREPAREBACKUP:
                 ################################################################################
                 # Create KDE LOCAL SHARE
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.local_share_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.local_share_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.kde_local_share_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_local_share_main_folder())}",shell=True)
                
                 ################################################################################
                 # Create KDE CONFIG
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.config_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.config_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.kde_config_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_config_main_folder())}",shell=True)
                 
                 ################################################################################
                 # Create KDE SHARE CONFIG
                 ################################################################################
                 if not os.path.exists(str(mainIniFile.share_config_main_folder())):
                     sub.run(f"{createCMDFolder} {str(mainIniFile.share_config_main_folder())}",shell=True)
-
-                # ################################################################################
-                # # Create Color Scheme folder
-                # ################################################################################
-                # if not os.path.exists(str(mainIniFile.color_scheme_main_folder())):
-                #     print("Color scheme folder inside external, was created.")
-                #     sub.run(f"{createCMDFolder} {str(mainIniFile.color_scheme_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create Plasma Folder
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.plasma_main_folder())):
-            #         print("Plasma folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.plasma_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create Aurorae Folder
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.aurorae_main_folder())):
-            #         print("Aurorae folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.aurorae_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create Plasma Notes Folder
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.kde_notes_main_folder())):
-            #         print("Plasma Notes folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.kde_notes_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create Scripts Folder
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.kde_scripts_main_folder())):
-            #         print("Kde Scripts folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.kde_scripts_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create KdeGlobals
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.kde_globals_main_folder())):
-            #         print("KDE Globals folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.kde_globals_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create KGlobalShortcut Src
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.kglobal_shortcut_src_main_folder())):
-            #         print("KGlobal Shortcut Src folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.kglobal_shortcut_src_main_folder())}",shell=True)
-                
-            #     ################################################################################
-            #     # Create KdeKwinRc Src
-            #     ################################################################################
-            #     if not os.path.exists(str(mainIniFile.kde_kwinrc_main_folder())):
-            #         print("KWinRc Src folder inside external, was created.")
-            #         sub.run(f"{createCMDFolder} {str(mainIniFile.kde_kwinrc_main_folder())}",shell=True)
                 
             ################################################################################
             # Create restore_settings.ini
@@ -229,10 +173,10 @@ class PREPAREBACKUP:
             error_trying_to_backup(error)
 
     def system_settings_size_calculation(self):
-        if users_icon_size() != None:
+        if users_icon_size() is not None:
             self.systemSettingsFolderToBackupSizeList.append(users_icon_size())
         
-        if users_theme_size() != None:
+        if users_theme_size() is not None:
             self.systemSettingsFolderToBackupSizeList.append(users_theme_size())
 
         try:

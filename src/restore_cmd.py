@@ -15,6 +15,7 @@ from restore_backup_fonts import restore_backup_fonts
 from restore_kde_share_config import restore_kde_share_config
 from restore_kde_config import restore_kde_config
 from restore_kde_local_share import restore_kde_local_share
+from restore_settings import restore_settings
 
 
 ################################################################################
@@ -27,65 +28,71 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class RESTORE:
     def __init__(self):
+        self.auto_reboot = False
+
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
             config.set('RESTORE', 'is_restore_running', "true")
             config.write(configfile)
 
-        # self.begin_settings()
-        asyncio.run(self.begin_settings())
+        asyncio.run(self.start_restoring())
 
-    async def begin_settings(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        # isRunning = config['RESTORE']['is_restore_running']
-        restoreHome = config['RESTORE']['files_and_folders']
-        restoreApplicationsPackages = config['RESTORE']['applications_packages']
-        restoreFlatpaksPrograms = config['RESTORE']['applications_flatpak_names']
-        restoreFlatpaksData = config['RESTORE']['applications_data']
-        restoreSystemSettings = config['RESTORE']['system_settings']
-        reboot = config['INFO']['auto_reboot']
-
+    async def start_restoring(self):
         # First change the wallpaper
-        if restoreSystemSettings == 'true':
+        if restore_settings.restore_system_settings:
             await restore_backup_wallpaper()
         
-        if restoreHome == 'true':
+        # Restore home folder
+        if restore_settings.restore_home:
             await restore_backup_home()
 
-        if restoreApplicationsPackages == 'true':
+        # Restore applications packages (.deb, .rpm etc.)
+        if restore_settings.restore_applications_packages:
             await restore_backup_package_applications()
        
-        if restoreFlatpaksPrograms == 'true':
+        # Restore flatpaks
+        if restore_settings.restore_flatpaks_programs:
             await restore_backup_flatpaks_applications()
         
-        if restoreFlatpaksData == 'true':
+        # Restore flatpaks data
+        if restore_settings.restore_flatpaks_data:
             await restore_backup_flatpaks_data()
         
-        if restoreSystemSettings == 'true':
+        # Restore system settings
+        if restore_settings.restore_system_settings:
+            # Restore cursor
             await restore_backup_cursor()
+            
+            # Restore font
             await restore_backup_fonts()
+
+            # Restore icons
             await restore_backup_icons()
+            
+            # Restore theme
             await restore_backup_theme()
 
             # Only for kde
             if get_user_de() == 'kde':
+                # Restore kde local share
                 await restore_kde_local_share()
+                
+                # Restore kde config
                 await restore_kde_config()
+                
+                # Restore kde share config
                 await restore_kde_share_config()
                 
                 # Restart KDE session
                 restart_kde_session()
         
-        self.end_backup(reboot)
+        self.end_restoring()
 
-    def end_backup(self,reboot):
+    def end_restoring(self):
         print("Ending restoring...")
-        ###############################################################################
+
         # Update INI file
-        ###############################################################################
         config = configparser.ConfigParser()
         config.read(src_user_config)
         with open(src_user_config, 'w') as configfile:
@@ -103,20 +110,15 @@ class RESTORE:
 
             config.write(configfile)
 
-        ################################################################################
         # After backup is done
-        ################################################################################
         print("Restoring is done!")
 
-        if reboot == 'true':
-            ###############################################################################
+        if self.auto_reboot:
             # Update INI file
-            ###############################################################################
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:
                 config.set('RESTORE', 'is_restore_running', 'false')
-                config.set('INFO', 'auto_reboot', 'false')
                 config.write(configfile)
 
             sub.run("sudo reboot", shell=True)

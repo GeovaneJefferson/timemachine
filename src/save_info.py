@@ -11,9 +11,11 @@ def save_info(chooseDevice):
     config = configparser.ConfigParser()
     config.read(src_user_config)
     with open(src_user_config, 'w', encoding='utf8') as configfile:
+        # .deb
         if "deb" in package_manager():
             config.set('INFO', 'packageManager', f'{debFolderName}')
         
+        # .rpm
         elif "rpm" in package_manager():
             config.set('INFO', 'packageManager', f'{rpmFolderName}')
         

@@ -49,10 +49,12 @@ def get_backup_home_folders_name():
 
 def get_backup_folders_size():
     get_backup_home_folders_name()
+    
     return homeFolderToRestoreSizeList[0]
 
 def get_backup_folders_size_pretty():
     get_backup_home_folders_name()
+
     try:
         return homeFolderToRestoreSizeListPretty[0]
     except IndexError:

@@ -13,6 +13,7 @@ def backup_user_wallpaper():
             print(f"Deleting {str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}/{image}...")
             sub.run(f"rm -rf {str(mainIniFile.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}/{image}", shell=True)
 
+    # Start back up 
     print(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/")
     sub.run(f"{copyCPCMD} {user_wallpaper()} {str(mainIniFile.wallpaper_main_folder())}/", shell=True) 
 

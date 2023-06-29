@@ -1,12 +1,9 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from delete_old_settings_settings import delete_old_settings
 from get_user_theme import users_theme_name
 
 def backup_user_theme():
     mainIniFile = UPDATEINIFILE()
-
-    # delete_old_settings("Theme")
 
     ################################################################################
     # Create gnome-shell inside theme current theme folder

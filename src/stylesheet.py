@@ -209,7 +209,7 @@ externalWindowbackgroundStylesheet =(
             "{"
                 "background-color:white;"
                 "border:1px solid rgba(14,14,14,0.1);"
-                "border-radius:2px;"
+                "border-radius: 8px;"
             "}")
 
 externalWindowbackgroundStylesheetDark =( 
@@ -217,7 +217,7 @@ externalWindowbackgroundStylesheetDark =(
             "{"
                 "background-color:rgba(69, 69, 70, 1);"
                 "border:1px solid rgba(14,14,14,0.1);"
-                "border-radius:2px;"
+                "border-radius: 8px;"
                 "color:white;"
             "}")
 

@@ -46,27 +46,38 @@ class MAIN(QMainWindow):
         # if app.palette().window().color().getRgb()[0] < 55:
             # Left background
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
+
             # Button
             self.buttonStylesheetDetector = buttonStylesheetDark
+
             # External window
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
+
             # Available devices
             self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
+
             # Separator
             self.separatorstylesheetDetector = separetorLineDark
+
             # Separator left background
             self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackgroundDark
+
         else:
             # Left background
             self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
+
             # Button
             self.buttonStylesheetDetector = buttonStylesheet
+
             # External window
             self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
+
             # Available devices
             self.availableDeviceButtonDetector = availableDeviceButtonStylesheet
+
             # Separator
             self.separatorstylesheetDetector = separetorLine
+
             # Separator left background
             self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackground
 

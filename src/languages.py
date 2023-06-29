@@ -3,7 +3,9 @@ from setup import *
 languageList = []
 
 def determine_days_language(lang):
+    # Clean list
     languageList.clear()
+
     # ENG
     if lang == 'en':
         languageList.append("Sun")
@@ -48,8 +50,19 @@ def determine_days_language(lang):
         languageList.append("Sáb")
         return languageList
     
+    # IT
+    elif lang == 'it':
+        languageList.append("Dom")
+        languageList.append("Lun")
+        languageList.append("Mar")
+        languageList.append("Mer")
+        languageList.append("Gio")
+        languageList.append("Ven")
+        languageList.append("Sab")
+        return languageList
+    
+    # ENG
     else:
-        # ENG
         languageList.append("Sun")
         languageList.append("Mon")
         languageList.append("Tue")

@@ -5,7 +5,7 @@ async def restore_kde_local_share():
     mainIniFile = UPDATEINIFILE()
 
     try:
-        sub.run(f"{copyRsyncCMD} {mainIniFile.local_share_main_folder()}/ {homeUser}/.local/share/", shell=True)
+        sub.run(f"{copyRsyncCMD} {mainIniFile.kde_local_share_main_folder()}/ {homeUser}/.local/share/", shell=True)
     except:         
         pass
 

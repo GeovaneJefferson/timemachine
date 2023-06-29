@@ -17,7 +17,7 @@ includeList = [
     "themes"
                ]
 
-def backup_local_share():
+def backup_kde_local_share():
     mainIniFile = UPDATEINIFILE()
 
     try:
@@ -27,7 +27,7 @@ def backup_local_share():
             # .local/share
             try:
                 if folders in includeList:
-                    sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{folders} {str(mainIniFile.local_share_main_folder())}",shell=True)
+                    sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/{folders} {str(mainIniFile.kde_local_share_main_folder())}",shell=True)
             
             except:
                 pass
