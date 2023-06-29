@@ -138,11 +138,30 @@ class PREPAREBACKUP:
                     sub.run(f"{createCMDFolder} {str(mainIniFile.deb_main_folder())}",shell=True)   
             
             ################################################################################
-            # KDE OPTIONS
+            # GNOME
             ################################################################################
-            if get_user_de() == 'kde':
-                if not os.path.exists(str(mainIniFile.configurations_folder_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.configurations_folder_main_folder())}",shell=True)
+            if get_user_de() == 'gnome':
+                if not os.path.exists(str(mainIniFile.gnome_configurations_folder_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.gnome_configurations_folder_main_folder())}",shell=True)
+               
+                ################################################################################
+                # Create gnome LOCAL SHARE
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.gnome_local_share_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.gnome_local_share_main_folder())}",shell=True)
+               
+                ################################################################################
+                # Create gnome CONFIG
+                ################################################################################
+                if not os.path.exists(str(mainIniFile.gnome_config_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.gnome_config_main_folder())}",shell=True)
+
+            ################################################################################
+            # KDE
+            ################################################################################
+            elif get_user_de() == 'kde':
+                if not os.path.exists(str(mainIniFile.kde_configurations_folder_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_configurations_folder_main_folder())}",shell=True)
                
                 ################################################################################
                 # Create KDE LOCAL SHARE
@@ -159,8 +178,8 @@ class PREPAREBACKUP:
                 ################################################################################
                 # Create KDE SHARE CONFIG
                 ################################################################################
-                if not os.path.exists(str(mainIniFile.share_config_main_folder())):
-                    sub.run(f"{createCMDFolder} {str(mainIniFile.share_config_main_folder())}",shell=True)
+                if not os.path.exists(str(mainIniFile.kde_share_config_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_share_config_main_folder())}",shell=True)
                 
             ################################################################################
             # Create restore_settings.ini

@@ -33,7 +33,6 @@ def backup_kde_config():
                     sub.run(f"{copyRsyncCMD} {homeUser}/.config/{folders} {str(mainIniFile.kde_config_main_folder())}",shell=True)
             except:
                 pass
-            
         
     except:
         pass

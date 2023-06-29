@@ -344,11 +344,8 @@ class UPDATEINIFILE:
     def theme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
     
-    def configurations_folder_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}"
-    
-    def gnome_local_share_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}/{shareFolderName}"
+    def kde_configurations_folder_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}"
     
     ####################################################################
     # KDE
@@ -361,20 +358,23 @@ class UPDATEINIFILE:
     def kde_local_share_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{shareFolderName}"
     
+    def kde_share_config_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{shareConfigFolderName}"
+    
     ####################################################################
     # GNOME
     ####################################################################
+    def gnome_configurations_folder_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}"
+    
     # GNOME config folder
     def gnome_config_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}/{configFolderName}"
     
-    def gnomeshell_main_folder(self):
-        gnomeShellMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}/{gnomeShellFolder}"
-        return gnomeShellMainFolder
-
-    def share_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{configurationFolderName}/{shareConfigFolderName}"
-
+    # GNOME share folder
+    def gnome_local_share_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}/{shareFolderName}"
+    
     ####################################################################
     # Packages managers
     ####################################################################
