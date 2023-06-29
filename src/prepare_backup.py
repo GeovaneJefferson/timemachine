@@ -123,6 +123,9 @@ class PREPAREBACKUP:
             if not os.path.exists(str(mainIniFile.wallpaper_main_folder())):
                 sub.run(f"{createCMDFolder} {str(mainIniFile.wallpaper_main_folder())}",shell=True)   
 
+            ################################################################################
+            # Package manager
+            ################################################################################
             if package_manager() == f"{rpmFolderName}": 
                 ################################################################################
                 # Create RPM folder (Folder to manual place rpms apps)

@@ -344,12 +344,13 @@ class UPDATEINIFILE:
     def theme_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
     
-    def kde_configurations_folder_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}"
-    
     ####################################################################
     # KDE
     ####################################################################
+    # KDE configurration folder
+    def kde_configurations_folder_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}"
+    
     # KDE config folder
     def kde_config_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{configFolderName}"
