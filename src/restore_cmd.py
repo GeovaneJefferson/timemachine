@@ -61,17 +61,18 @@ class RESTORE:
         
         # Restore system settings
         if restore_settings.restore_system_settings:
+            print("")
             # Restore cursor
-            await restore_backup_cursor()
+            # await restore_backup_cursor()
             
-            # Restore font
-            await restore_backup_fonts()
+            # # Restore font
+            # await restore_backup_fonts()
 
-            # Restore icons
-            await restore_backup_icons()
+            # # Restore icons
+            # await restore_backup_icons()
             
-            # Restore theme
-            await restore_backup_theme()
+            # # Restore theme
+            # await restore_backup_theme()
 
             # Only for kde
             if get_user_de() == 'kde':
