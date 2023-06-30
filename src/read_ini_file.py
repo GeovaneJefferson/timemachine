@@ -347,6 +347,10 @@ class UPDATEINIFILE:
     ####################################################################
     # KDE
     ####################################################################
+    # Create kde folder
+    def kde_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}"
+    
     # KDE configurration folder
     def kde_configurations_folder_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}"
@@ -365,6 +369,10 @@ class UPDATEINIFILE:
     ####################################################################
     # GNOME
     ####################################################################
+    # Create gnome folder
+    def gnome_main_folder(self):
+        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}"
+    
     def gnome_configurations_folder_main_folder(self):
         return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}"
     

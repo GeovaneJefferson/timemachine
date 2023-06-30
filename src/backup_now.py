@@ -87,17 +87,17 @@ class BACKUP:
         update_notification_status("Backing up: Home ...")
         backup_user_home()
 
-        # Backup Icons
-        update_notification_status("Backing up: Icon ...")
-        backup_user_icons()
+        # # Backup Icons
+        # update_notification_status("Backing up: Icon ...")
+        # backup_user_icons()
         
-        # Backup Fonts
-        update_notification_status("Backing up: Fonts ...")
-        backup_user_fonts()
+        # # Backup Fonts
+        # update_notification_status("Backing up: Fonts ...")
+        # backup_user_fonts()
         
-        # Backup Themes
-        update_notification_status("Backing up: Themes ...")
-        backup_user_theme()        
+        # # Backup Themes
+        # update_notification_status("Backing up: Themes ...")
+        # backup_user_theme()        
         
         ####################################################################
         # For GNOME

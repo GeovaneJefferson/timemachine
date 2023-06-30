@@ -45,12 +45,14 @@ class PREPAREBACKUP:
 
     def start_process(self):
         if self.may_continue_to_backup():
+
+            # Create base folders
             self.create_base_folders()
+            
+            # Calculate size
             self.system_settings_size_calculation()
-            
-            # if str(mainIniFile.ini_allow_flatpak_data()) == "true":
-            #     self.calculate_flatpak_folders()
-            
+
+            # Create folders with date/time
             self.create_date_time_folder()
 
             sub.Popen(f"python3 {src_backup_now_py}",shell=True)
@@ -61,6 +63,7 @@ class PREPAREBACKUP:
         exit()
 
     def create_base_folders(self):
+        print("Creating base folders...")
         try:
             ################################################################################
             # Create TMB (Base)
@@ -87,17 +90,17 @@ class PREPAREBACKUP:
             if not os.path.exists(str(mainIniFile.icon_main_folder())):
                 sub.run(f"{createCMDFolder} {str(mainIniFile.icon_main_folder())}",shell=True)
 
-            ################################################################################
-            # Create Font folder
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.fonts_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.fonts_main_folder())}",shell=True)
+            # ################################################################################
+            # # Create Font folder
+            # ################################################################################
+            # if not os.path.exists(str(mainIniFile.fonts_main_folder())):
+            #     sub.run(f"{createCMDFolder} {str(mainIniFile.fonts_main_folder())}",shell=True)
 
-            ################################################################################
-            # Create Theme folder
-            ################################################################################
-            if not os.path.exists(str(mainIniFile.gtk_theme_main_folder())):
-                sub.run(f"{createCMDFolder} {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
+            # ################################################################################
+            # # Create Theme folder
+            # ################################################################################
+            # if not os.path.exists(str(mainIniFile.gtk_theme_main_folder())):
+            #     sub.run(f"{createCMDFolder} {str(mainIniFile.gtk_theme_main_folder())}",shell=True)
 
             ################################################################################
             # Create flatpak text
@@ -144,6 +147,11 @@ class PREPAREBACKUP:
             # GNOME
             ################################################################################
             if get_user_de() == 'gnome':
+                # Create gnome folder
+                if not os.path.exists(str(mainIniFile.gnome_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.gnome_main_folder())}",shell=True)
+               
+                # Create configuration folder
                 if not os.path.exists(str(mainIniFile.gnome_configurations_folder_main_folder())):
                     sub.run(f"{createCMDFolder} {str(mainIniFile.gnome_configurations_folder_main_folder())}",shell=True)
                
@@ -163,6 +171,11 @@ class PREPAREBACKUP:
             # KDE
             ################################################################################
             elif get_user_de() == 'kde':
+                # Create kde folder
+                if not os.path.exists(str(mainIniFile.kde_main_folder())):
+                    sub.run(f"{createCMDFolder} {str(mainIniFile.kde_main_folder())}",shell=True)
+               
+                # Create configuration folder
                 if not os.path.exists(str(mainIniFile.kde_configurations_folder_main_folder())):
                     sub.run(f"{createCMDFolder} {str(mainIniFile.kde_configurations_folder_main_folder())}",shell=True)
                
