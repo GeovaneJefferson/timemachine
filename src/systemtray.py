@@ -12,9 +12,6 @@ from add_backup_now_file import can_backup_now_file_be_found
 from add_system_tray_file import can_system_tray_file_be_found, remove_system_tray_file
 from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
 
-# notifications
-from current_notification_status import get_notification_status
-
 
 class APP:
     def __init__(self):
@@ -142,14 +139,11 @@ class APP:
     
         else:
             self.change_color("Blue")
-            # self.iniLastBackupInformation.setText("Backing up...")
 
             # Notification information
-            # self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
-            if get_notification_status() is not None:
-                self.iniLastBackupInformation.setText(f"{get_notification_status()}")
-                self.iniLastBackupInformation2.setText('')
-            
+            self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+            self.iniLastBackupInformation2.setText('')
+        
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
    

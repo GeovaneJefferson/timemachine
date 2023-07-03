@@ -43,7 +43,6 @@ from backup_gnome_config import backup_gnome_config
 
 # notifications
 from update_notification_status import update_notification_status
-from current_notification_status import get_notification_status
 
 
 ################################################################################
@@ -63,10 +62,7 @@ class BACKUP:
         # GNOME/KDE
         ####################################################################
         # Backup wallpaper
-        # Update notification status
-        get_notification_status.current_notification_status = "Backing up: Wallpaper..."
-        
-        # update_notification_status("Backing up: Wallpaper...")
+        update_notification_status("Backing up: Wallpaper...")
         backup_user_wallpaper()
         
         ####################################################################
@@ -74,10 +70,7 @@ class BACKUP:
         ####################################################################
         # Backup flatpak application
         if str(mainIniFile.ini_allow_flatpak_names()) == "true":
-            # Update notification status
-            get_notification_status.current_notification_status = "Backing up: Flatpak Applications ..."
-            
-            # update_notification_status("Backing up: Flatpak Applications ...")
+            update_notification_status("Backing up: Flatpak Applications ...")
             backup_flatpak_applications_name()
 
         if str(mainIniFile.ini_multiple_time_mode()) == "true":
@@ -89,20 +82,14 @@ class BACKUP:
 
         # Backup flatpak data
         if str(mainIniFile.ini_allow_flatpak_data()) == "true":
-            # Update notification status
-            get_notification_status.current_notification_status = "Backing up: Flatpak Data ..."
-            
-            # update_notification_status("Backing up: Flatpak Data ...")
+            update_notification_status("Backing up: Flatpak Data ...")
             backup_user_flatpak_data()
       
         # Backup home
-        # Update notification status
-        get_notification_status.current_notification_status = "Backing up: Home ..."
-        
         # update_notification_status("Backing up: Home ...")
         backup_user_home()
 
-        # # Backup Icons
+        # Backup Icons
         # update_notification_status("Backing up: Icon ...")
         # backup_user_icons()
         
@@ -119,16 +106,12 @@ class BACKUP:
         ####################################################################
         if get_user_de() == 'gnome':
             # Backup .local/share
-            # Update notification status
-            get_notification_status.current_notification_status = "Backing up: .local/share/ ..."
-        
             # update_notification_status("Backing up: .local/share/ ...")
             backup_gnome_local_share()
 
             # Backup .config
             # Update notification status
-            get_notification_status.current_notification_status = "Backing up: .config/ ..."
-            # update_notification_status("Backing up: .config/ ...")
+            update_notification_status("Backing up: .config/ ...")
             backup_gnome_config()
         
         ####################################################################
@@ -136,24 +119,17 @@ class BACKUP:
         ####################################################################
         if get_user_de() == 'kde':
             # Backup .local/share
-            # Update notification status
-            get_notification_status.current_notification_status = "Backing up: .local/share ..."
-            
-            # update_notification_status("Backing up: .local/share ...")
+            update_notification_status("Backing up: .local/share ...")
             backup_kde_local_share()
 
             # Backup .config
             # Update notification status
-            get_notification_status.current_notification_status = "Backing up: .config ..."
             
-            # update_notification_status("Backing up: .config ...")
+            update_notification_status("Backing up: .config ...")
             backup_kde_config()
 
             # Backup .kde/share
-            # Update notification status
-            get_notification_status.current_notification_status = "Backing up: .kde/share..."
-            
-            # update_notification_status("Backing up: .kde/share...")
+            update_notification_status("Backing up: .kde/share...")
             backup_kde_share_config()
             
         self.end_backup()
@@ -164,10 +140,7 @@ class BACKUP:
         if can_backup_now_file_be_found():
             remove_backup_now_file()
         
-        # Update notification status
-        get_notification_status.current_notification_status = ""
-            
-        # update_notification_status("")
+        update_notification_status("")
 
         config = configparser.ConfigParser()
         config.read(src_user_config)
