@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 from setup import *
 from check_connection import is_connected
 from get_time import *
@@ -25,28 +24,30 @@ class CLI:
     def updates(self):
         try:
             print("Backup Checker is running...")
+            
         except KeyError as error:
             print(error)
             exit()
 
+    # Check backup device conenction 
     def check_connection(self):
         if is_connected(str(mainIniFile.ini_hd_name())):
             self.needs_to_continue_previus_backup()
             self.search_downloads()
 
+    # Backup is backup was interrupted
     def needs_to_continue_previus_backup(self):
         if str(mainIniFile.ini_backup_now()) == "unfinished":
             sub.Popen(f"python3 {src_backup_now_py}",shell=True)
 
-    ################################################################################
-    # Auto Packages
-    ################################################################################
+    # Check for new .deb, .rpm etc. inside Downloads folder and backup
     def search_downloads(self):
         search_download_for_packages()
-
         self.check_the_date()
 
+    # Check date
     def check_the_date(self):
+        # One time backup mode
         if str(mainIniFile.ini_one_time_mode()) == "true":
             if str(mainIniFile.day_name()) in determine_days_language((system_language()))[0] and str(mainIniFile.ini_next_backup_sun()) == "true":
                 self.check_the_mode(True)
@@ -68,6 +69,8 @@ class CLI:
 
             elif str(mainIniFile.day_name()) in determine_days_language((system_language()))[6] and str(mainIniFile.ini_next_backup_sat()) == "true":
                 self.check_the_mode(True)
+        
+        # Multiple time backup mode
         else:
             self.check_the_mode(False)
             
@@ -110,11 +113,11 @@ while True:
     main.updates()
     main.check_connection()
 
-    ################################################################################
     # Prevent multiples backup checker running
-    ################################################################################
     try:
+        # Automatically backup OFF
         if mainIniFile.ini_automatically_backup() == "false":
+            # Write to file
             config = configparser.ConfigParser()
             config.read(src_user_config)
             with open(src_user_config, 'w') as configfile:

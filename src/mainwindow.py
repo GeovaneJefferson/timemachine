@@ -451,7 +451,7 @@ class MAIN(QMainWindow):
 
         self.setLayout(self.leftLayout)
 
-        self.check_for_updates()
+        # self.check_for_updates()
 
         timer.timeout.connect(self.connection)
         timer.start(2000) 

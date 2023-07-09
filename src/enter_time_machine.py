@@ -433,9 +433,7 @@ class ENTERTIMEMACHINE(QWidget):
                                 output, self.dateFolders[self.countForDate],
                                 self.timeFolders[self.countForTime]))
 
-                    ################################################################################
                     # Text
-                    ################################################################################
                     text = QLabel(self.filesResult)
 
                     # Short strings

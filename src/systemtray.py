@@ -113,14 +113,18 @@ class APP:
                 else:
                     self.status_off()
                 
+            # No backup device registered
             else:
                 self.iniLastBackupInformation.setText('First, select a backup device.')
                 self.iniLastBackupInformation2.setText('')
+                
+                # Backup now button to False
                 self.backupNowButton.setEnabled(False)
+                
+                # Browser Time Machine button to False 
                 self.browseTimeMachineBackupsButton.setEnabled(False)
         
-        except Exception as error:
-            print(error)
+        except Exception:
             self.exit()
 
     def status_on(self):
