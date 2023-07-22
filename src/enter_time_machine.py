@@ -3,8 +3,8 @@ from setup import *
 from stylesheet import *
 from detect_theme_color import detect_theme_color
 
-config = configparser.ConfigParser()
-config.read(src_user_config)
+config=configparser.ConfigParser()
+config.read(SRC_USER_CONFIG)
 
 
 class ENTERTIMEMACHINE(QWidget):
@@ -12,26 +12,26 @@ class ENTERTIMEMACHINE(QWidget):
         super().__init__()
 
         # Variables
-        self.filesToRestore = []
-        self.filesToRestoreWithSpace = []
-        self.extra1 = ""
+        self.filesToRestore=[]
+        self.filesToRestoreWithSpace=[]
+        self.extra1=""
 
         # Folders
-        self.currentFolder = str()
+        self.currentFolder=str()
         
         # Times
-        self.timeFolders = []
-        self.countForTime = 0
-        self.excludeTimeList = []
+        self.timeFolders=[]
+        self.countForTime=0
+        self.excludeTimeList=[]
 
         # Dates
-        self.dateFolders = []
-        self.dateIndex = 0
-        self.countForDate = 0
-        self.alreadyGotDateList = False
+        self.dateFolders=[]
+        self.dateIndex=0
+        self.countForDate=0
+        self.alreadyGotDateList=False
 
         # xdg-open
-        self.folderAlreadyOpened = False
+        self.folderAlreadyOpened=False
 
         self.read_ini_file()
 
@@ -39,36 +39,36 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Read ini
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+        config=configparser.ConfigParser()
+        config.read(SRC_USER_CONFIG)
 
-        self.iniExternalLocation = config['EXTERNAL']['hd']
-        self.iniFolder = config.options('FOLDER')
+        self.iniExternalLocation=config['EXTERNAL']['hd']
+        self.iniFolder=config.options('FOLDER')
         
         self.begin_settings()
 
     def begin_settings(self):
         # Detect dark theme
         if detect_theme_color(app):
-            self.buttonStylesheetDetector = buttonStylesheetDark
+            self.buttonStylesheetDetector=buttonStylesheetDark
         else:
-            self.buttonStylesheetDetector = buttonStylesheet
+            self.buttonStylesheetDetector=buttonStylesheet
 
         self.widgets()
 
     def widgets(self):
         # Base vertical layout
-        baseV = QVBoxLayout()
-        baseH = QHBoxLayout()
+        baseV=QVBoxLayout()
+        baseH=QHBoxLayout()
 
         ################################################################################
         # Left widget
         ################################################################################
         # Folders widget
-        self.widgetLeft = QWidget()
+        self.widgetLeft=QWidget()
         self.widgetLeft.setFixedWidth(200)
 
-        self.foldersLayout = QVBoxLayout(self.widgetLeft)
+        self.foldersLayout=QVBoxLayout(self.widgetLeft)
         self.foldersLayout.setAlignment(QtCore.Qt.AlignLeft)
         self.foldersLayout.setSpacing(5)
         
@@ -77,48 +77,48 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Folders/Files 
         # Scroll
-        widgetCenterForFolders = QWidget()
-        self.scrollForFolders = QScrollArea()
+        widgetCenterForFolders=QWidget()
+        self.scrollForFolders=QScrollArea()
         self.scrollForFolders.setWidgetResizable(True)
         self.scrollForFolders.setMinimumHeight(180)
         self.scrollForFolders.setWidget(widgetCenterForFolders)
 
         # Scroll files
-        widgetCenterForFiles = QWidget()
-        self.scrollForFiles = QScrollArea()
+        widgetCenterForFiles=QWidget()
+        self.scrollForFiles=QScrollArea()
         self.scrollForFiles.setWidgetResizable(True)
         self.scrollForFiles.setWidget(widgetCenterForFiles)
         
         # Show loading label
-        self.loadingLabel = QLabel(self)
+        self.loadingLabel=QLabel(self)
         self.loadingLabel.move(0, 0)
         self.loadingLabel.setText("<h1>Loading...</h1>")
         self.loadingLabel.setFont(QFont("Ubuntu", 10))
 
         # Folders Layout
-        self.foldersLayoutHorizontal = QHBoxLayout(widgetCenterForFolders)
+        self.foldersLayoutHorizontal=QHBoxLayout(widgetCenterForFolders)
         self.foldersLayoutHorizontal.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.foldersLayoutHorizontal.setContentsMargins(10, 20, 10, 20)
 
         # Files Layout
-        self.filesLayoutGrid = QGridLayout(widgetCenterForFiles)
+        self.filesLayoutGrid=QGridLayout(widgetCenterForFiles)
         self.filesLayoutGrid.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.filesLayoutGrid.setContentsMargins(10, 20, 10, 20)
 
         ################################################################################
         # Up/Down widget
         ################################################################################
-        widgetUpDown = QWidget()
+        widgetUpDown=QWidget()
         widgetUpDown.setFixedWidth(120)
 
         # UpDown layout
-        self.upDownLayout = QVBoxLayout(widgetUpDown)
+        self.upDownLayout=QVBoxLayout(widgetUpDown)
         self.upDownLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.upDownLayout.setSpacing(20)
         self.upDownLayout.setContentsMargins(20, 20, 20, 0)
 
         # Up button
-        self.upButton = QPushButton()
+        self.upButton=QPushButton()
         self.upButton.setText("ʌ")
         self.upButton.setFont(QFont("Ubuntu", 11))
         self.upButton.setFixedSize(38, 38)
@@ -126,7 +126,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.upButton.clicked.connect(self.change_date_up)
 
         # Down button
-        self.downButton = QPushButton()
+        self.downButton=QPushButton()
         self.downButton.setText("v")
         self.downButton.setFont(QFont("Ubuntu", 11))
         self.downButton.setFixedSize(38, 38)
@@ -134,7 +134,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.downButton.clicked.connect(self.change_date_down)
 
         # Before gray date
-        self.beforeGrayDate = QLabel()
+        self.beforeGrayDate=QLabel()
         self.beforeGrayDate.setFont(QFont("Ubuntu", 10))
         self.beforeGrayDate.setStyleSheet("""
             background-color: transparent;
@@ -142,7 +142,7 @@ class ENTERTIMEMACHINE(QWidget):
         """)
         
         # After gray date
-        self.afterGrayDate = QLabel()
+        self.afterGrayDate=QLabel()
         self.afterGrayDate.setFont(QFont("Ubuntu", 10))
         self.afterGrayDate.setStyleSheet("""
             background-color: transparent;
@@ -150,7 +150,7 @@ class ENTERTIMEMACHINE(QWidget):
         """)
 
         # Data label
-        self.dateLabel = QLabel()
+        self.dateLabel=QLabel()
         self.dateLabel.setFont(QFont("Ubuntu", 12))
         self.dateLabel.setStyleSheet("""
             background-color: transparent;
@@ -159,11 +159,11 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Right widget
         ################################################################################
-        widgetRight = QWidget()
+        widgetRight=QWidget()
         widgetRight.setFixedWidth(120)
 
         # Times layout
-        self.timesLayout = QVBoxLayout(widgetRight)
+        self.timesLayout=QVBoxLayout(widgetRight)
         self.timesLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.timesLayout.setSpacing(20)
         self.timesLayout.setContentsMargins(10, 20, 10, 20)
@@ -171,7 +171,7 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Current location
         ################################################################################
-        self.currentLocation = QLabel()
+        self.currentLocation=QLabel()
         self.currentLocation.setFont(QFont("Ubuntu", 14))
         self.currentLocation.setText("Pictures")
         self.currentLocation.setStyleSheet("""
@@ -182,12 +182,12 @@ class ENTERTIMEMACHINE(QWidget):
         # Restore and Cancel buttons
         ################################################################################
         # Cancel and restore layout
-        self.restoreLayout = QHBoxLayout()
+        self.restoreLayout=QHBoxLayout()
         self.restoreLayout.setSpacing(20)
         self.restoreLayout.setContentsMargins(10, 10, 10, 10)
         
         # Cancel button
-        self.cancelButton = QPushButton()
+        self.cancelButton=QPushButton()
         self.cancelButton.setText("Cancel")
         self.cancelButton.setFont(QFont("Ubuntu", 14))
         self.cancelButton.setFixedSize(120, 34)
@@ -196,7 +196,7 @@ class ENTERTIMEMACHINE(QWidget):
         self.cancelButton.clicked.connect(lambda x: exit())
 
         # Restore button
-        self.restoreButton = QPushButton()
+        self.restoreButton=QPushButton()
         self.restoreButton.setText("   Restore   ")
         self.restoreButton.setFont(QFont("Ubuntu", 14))
         self.restoreButton.adjustSize()
@@ -237,34 +237,34 @@ class ENTERTIMEMACHINE(QWidget):
         # GET FOLDERS
         ################################################################################
         # Sort folders alphabetically
-        dummyList = []
+        dummyList=[]
         for folder in self.iniFolder:
             dummyList.append(folder)
             dummyList.sort()
 
         # Get available folders from INI file
-        alreadyAdded = False
+        alreadyAdded=False
         for output in dummyList:
             # Capitalize first letter
-            output = output.capitalize()
+            output=output.capitalize()
             # Can output be found inside Users Home?
             try:
-                os.listdir(f"{homeUser}/{output}")
+                os.listdir(f"{HOME_USER}/{output}")
             except:
                 # Lower output first letter
-                output = output.lower() # Lower output first letter
+                output=output.lower() # Lower output first letter
 
             ################################################################################
             # Create folders buttons
             ################################################################################
-            self.foldersOnScreen = QPushButton()
+            self.foldersOnScreen=QPushButton()
             self.foldersOnScreen.setText(output)
             self.foldersOnScreen.setFont(QFont("Ubuntu", 12))
             self.foldersOnScreen.setFixedSize(140, 34)
             self.foldersOnScreen.setCheckable(True)
             self.foldersOnScreen.setAutoExclusive(True)
             self.foldersOnScreen.setStyleSheet(self.buttonStylesheetDetector)
-            # self.foldersOnScreen.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
+            # self.foldersOnScreen.setIcon(QIcon(f"{homeUser}/.local/share/{APPNAMEClose}/src/icons/folder.png"))
             self.foldersOnScreen.clicked.connect(lambda *args, folder=output: self.change_folder(folder))
             self.foldersLayout.addWidget(self.foldersOnScreen)
 
@@ -272,8 +272,8 @@ class ENTERTIMEMACHINE(QWidget):
                 # Auto check the first folder
                 self.foldersOnScreen.setChecked(True)
                 # Auto select the first folder
-                self.currentFolder = output
-                alreadyAdded = True 
+                self.currentFolder=output
+                alreadyAdded=True 
         
         # Add space
         self.foldersLayout.addStretch()
@@ -287,14 +287,14 @@ class ENTERTIMEMACHINE(QWidget):
         try:
             if not self.alreadyGotDateList:
                 for output in os.listdir(f"{self.iniExternalLocation}/"
-                        f"{baseFolderName}/{backupFolderName}"):
+                        f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
                     # Hide hidden outputs
                     if "." not in output:
                         self.dateFolders.append(output)
                         self.dateFolders.sort(
                             reverse=True, 
                             key=lambda date: datetime.strptime(date, "%d-%m-%y"))
-                        self.alreadyGotDateList = True
+                        self.alreadyGotDateList=True
 
         except FileNotFoundError as error:
             # # Set notification_massage to 2
@@ -320,7 +320,7 @@ class ENTERTIMEMACHINE(QWidget):
             # Clear list
             self.timeFolders.clear()
             for getTime in os.listdir(f"{self.iniExternalLocation}/"
-                    f"{baseFolderName}/{backupFolderName}/"
+                    f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                     f"{self.dateFolders[(self.countForDate)]}/"):
 
                 # Add to list
@@ -330,7 +330,7 @@ class ENTERTIMEMACHINE(QWidget):
 
                 # Only add time button if self.currentFolder can be found inside current date and time
                 if os.path.exists(f"{self.iniExternalLocation}/"
-                        f"{baseFolderName}/{backupFolderName}/"
+                        f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                         f"{self.dateFolders[(self.countForDate)]}/"
                         f"{getTime}/{self.currentFolder}"):
 
@@ -338,11 +338,11 @@ class ENTERTIMEMACHINE(QWidget):
                     # Time button
                     ################################################################################
                     # Change - to :
-                    getTime = getTime.replace("-", ":")  
-                    self.timeButton = QPushButton()
+                    getTime=getTime.replace("-", ":")  
+                    self.timeButton=QPushButton()
                     self.timeButton.setText(getTime)
                     # Change back : to -
-                    getTime = getTime.replace(":", "-")  
+                    getTime=getTime.replace(":", "-")  
                     self.timeButton.setFont(QFont("Ubuntu", 12))
                     self.timeButton.setFixedSize(100, 34)
                     self.timeButton.setCheckable(True)
@@ -359,7 +359,7 @@ class ENTERTIMEMACHINE(QWidget):
 
         except:
             # Reset self.countForDate
-            self.countForDate = 0
+            self.countForDate=0
             # Add to self.countForDate
             self.countForDate += 1
             # Return to Date
@@ -384,7 +384,7 @@ class ENTERTIMEMACHINE(QWidget):
     async def main(self):
         print("Starting main")
         self.loadingLabel.setVisible(False)
-        task = asyncio.create_task(self.show_on_screen())
+        task=asyncio.create_task(self.show_on_screen())
 
         print("Task created")
         
@@ -399,21 +399,21 @@ class ENTERTIMEMACHINE(QWidget):
 
         # Show available files
         try:
-            filesButtomX = 220
-            filesButtomY = 120
+            filesButtomX=220
+            filesButtomY=120
 
             ################################################################################
             # (FILES) Preview of files that are not in imagePrefix
             ################################################################################
-            count = 0
-            horizontal = 0
-            vertical = 0
-            imagePrefix = (
+            count=0
+            horizontal=0
+            vertical=0
+            imagePrefix=(
                 ".png", ".jpg", ".jpeg", 
                 ".webp", ".gif", ".svg")
             
             for output in os.listdir(f"{self.iniExternalLocation}/"
-                    f"{baseFolderName}/{backupFolderName}/{self.dateFolders[self.countForDate]}/"
+                    f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{self.dateFolders[self.countForDate]}/"
                     f"{self.timeFolders[self.countForTime]}/{self.currentFolder}"):
             
             # for output in os.listdir(f"{self.iniExternalLocation}/"
@@ -423,7 +423,7 @@ class ENTERTIMEMACHINE(QWidget):
                 # Only show files and hide hidden outputs
                 if not output.startswith("."):
                     print("     Files: ", output)
-                    self.filesResult = QPushButton(self)
+                    self.filesResult=QPushButton(self)
                     self.filesResult.setCheckable(True)
                     self.filesResult.setFixedSize(filesButtomX, filesButtomY)
                     self.filesResult.setIconSize(QtCore.QSize(64, 64))
@@ -434,11 +434,11 @@ class ENTERTIMEMACHINE(QWidget):
                                 self.timeFolders[self.countForTime]))
 
                     # Text
-                    text = QLabel(self.filesResult)
+                    text=QLabel(self.filesResult)
 
                     # Short strings
-                    countStrings = len(output)
-                    recentEndswith = output.split(".")[-1]
+                    countStrings=len(output)
+                    recentEndswith=output.split(".")[-1]
 
                     # Label
                     if countStrings < 20:            
@@ -451,9 +451,9 @@ class ENTERTIMEMACHINE(QWidget):
 
                     # Show bigger preview if mouse hover
                     if output.endswith(imagePrefix):
-                        scaledHTML = 'width:"5%" height="250"'
+                        scaledHTML='width:"5%" height="250"'
                         self.filesResult.setToolTip(
-                            f"<img src={self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
+                            f"<img src={self.iniExternalLocation}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
                             f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
                             f"{self.currentFolder}/{output} {scaledHTML}/>")
 
@@ -461,7 +461,7 @@ class ENTERTIMEMACHINE(QWidget):
                     # Preview of files that are not in imagePrefix
                     ################################################################################
                     # Image label
-                    image = QLabel(self.filesResult)
+                    image=QLabel(self.filesResult)
                     image.move(10, 10)
                     image.setStyleSheet(
                         "QLabel"
@@ -469,50 +469,48 @@ class ENTERTIMEMACHINE(QWidget):
                         "background-repeat: no-repeat;"
                         "}")
 
-                    if output.endswith(imagePrefix):
-                        image = QImage(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}/"
-                            f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-                            f"{self.currentFolder}/{output}")
+                    # if output.endswith(imagePrefix):
+                    #     image=QImage(f"{self.iniExternalLocation}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
+                    #         f"{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
+                    #         f"{self.currentFolder}/{output}")
 
-                        # Convert the image to a pixmap and use it
-                        pixmap = QPixmap.fromImage(image)
-                        scaled_pixmap = pixmap.scaled(256, 256, QtCore.Qt.KeepAspectRatio)
-                        # scaled_pixmap = pixmap.scaled(self.filesResult.size(), QtCore.Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                        self.filesResult.setIcon(QIcon(scaled_pixmap))
-                        # self.filesResult.setIconSize(image.size())
+                    #     # Convert the image to a pixmap and use it
+                    #     pixmap=QPixmap.fromImage(image)
+                    #     scaled_pixmap=pixmap.scaled(256, 256, QtCore.Qt.KeepAspectRatio)
+                    #     self.filesResult.setIcon(QIcon(scaled_pixmap))
 
-                    elif output.endswith(".txt"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/txt.png"))
+                    if output.endswith(".txt"):
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/txt.png"))
 
                     elif output.endswith(".pdf"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/pdf.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/pdf.png"))
 
                     elif output.endswith(".py"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/py.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/py.png"))
 
                     elif output.endswith(".cpp"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/cpp.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/cpp.png"))
 
                     elif output.endswith(".sh"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/bash.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/bash.png"))
 
                     elif output.endswith(".blend"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/blend.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/blend.png"))
 
                     elif output.endswith(".excel"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/excel.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/excel.png"))
 
                     elif output.endswith(".mp4"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/mp4.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/mp4.png"))
 
                     elif output.endswith(".iso"):
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/iso.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/iso.png"))
                     
                     elif not output.endswith(".")and "." not in output:
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.svg"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/folder.svg"))
 
                     else:
-                        self.filesResult.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/none.png"))
+                        self.filesResult.setIcon(QIcon(f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/none.png"))
 
                     # Only show files and hide hidden outputs
                     if not output.startswith(".") and "." in output:
@@ -520,22 +518,25 @@ class ENTERTIMEMACHINE(QWidget):
                     
                     else:
                         # Folders
-                        print(output)
                         self.foldersLayoutHorizontal.addWidget(self.filesResult)
+                        # TODO
+                        count -= 1
 
                     count += 1
+
                     # If filesButtomX if higher than scroll width, go to the next column
                     horizontal += 1
                     if self.scrollForFiles.width() <=800:
-                        dimension = 3
+                        
+                        dimension=3
                     elif self.scrollForFiles.width() <=1440:
-                        dimension = 6
+                        dimension=6
 
                     if count %dimension == 0:
                         # Reset counts
-                        count = 0
+                        count=0
                         # Reset horizontal
-                        horizontal = 0
+                        horizontal=0
                         # Add 1 to vertical
                         vertical += 1
 
@@ -559,19 +560,19 @@ class ENTERTIMEMACHINE(QWidget):
                 print("No more times to change...")
                 print("Change dates...")
                 self.countForDate += 1
-                self.countForTime = 0
+                self.countForTime=0
 
         self.up_down()
 
     def up_down(self):
         try:
             # Date Index
-            self.dateIndex = self.dateFolders.index(self.dateFolders[self.countForDate])
+            self.dateIndex=self.dateFolders.index(self.dateFolders[self.countForDate])
             ################################################################################
             # Up settings
             # If clicked on up, go back in time
             ################################################################################
-            # 0 = The latest date available
+            # 0=The latest date available
             if self.dateIndex == 0: 
                 self.downButton.setEnabled(False)
             else:
@@ -648,16 +649,16 @@ class ENTERTIMEMACHINE(QWidget):
 
             # Hide time functions from TimeVLayout if 1 or more items is/are selected
             for i in range(self.timesLayout.count()):
-                item = self.timesLayout.itemAt(i)
-                widget = item.widget()
+                item=self.timesLayout.itemAt(i)
+                widget=item.widget()
                 widget.setEnabled(False)  # Disable function
                 i -= 1
 
             try:
                 # Hide folders functions from foldersVLayout if 1 or more items is/are selected
                 for i in range(self.foldersLayout.count()):
-                    item = self.foldersLayout.itemAt(i)
-                    widget = item.widget()
+                    item=self.foldersLayout.itemAt(i)
+                    widget=item.widget()
                     widget.setEnabled(False)  # Disable function
                     i -= 1
             except:
@@ -671,16 +672,16 @@ class ENTERTIMEMACHINE(QWidget):
             
             # Show time functions from TimeVLayout if 1 or more items is/are selected
             for i in range(self.timesLayout.count()):
-                item = self.timesLayout.itemAt(i)
-                widget = item.widget()
+                item=self.timesLayout.itemAt(i)
+                widget=item.widget()
                 widget.setEnabled(True)
                 i -= 1
             
             # Show folders functions from foldersVLayout if 1 or more items is/are selected
             try:
                 for i in range(self.foldersLayout.count()):
-                    item = self.foldersLayout.itemAt(i)
-                    widget = item.widget()
+                    item=self.foldersLayout.itemAt(i)
+                    widget=item.widget()
                     widget.setEnabled(True)  
                     i -= 1
             except:
@@ -693,7 +694,7 @@ class ENTERTIMEMACHINE(QWidget):
             # Up settings
             # If clicked on up, go back in time
             ################################################################################
-            # 0 = The latest date available
+            # 0=The latest date available
             if self.dateIndex == 0: 
                 self.downButton.setEnabled(False)
             else:
@@ -719,7 +720,7 @@ class ENTERTIMEMACHINE(QWidget):
 
     async def pre_start_restoring(self, getDate, getTime):
         print("Starting main")
-        task = asyncio.create_task(self.start_restore(getDate, getTime))
+        task=asyncio.create_task(self.start_restore(getDate, getTime))
 
         print("Task created")
         
@@ -731,10 +732,10 @@ class ENTERTIMEMACHINE(QWidget):
         If is not opened already.
         """        
         if not self.folderAlreadyOpened:
-            self.folderAlreadyOpened = True
+            self.folderAlreadyOpened=True
             # Open folder manager
-            print(f"Opening {homeUser}/{self.currentFolder}...")
-            sub.Popen(f"xdg-open {homeUser}/{self.currentFolder}",shell=True)
+            print(f"Opening {HOME_USER}/{self.currentFolder}...")
+            sub.Popen(f"xdg-open {HOME_USER}/{self.currentFolder}",shell=True)
             exit()
 
     async def start_restore(self, getDate, getTime):
@@ -743,12 +744,12 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         print("Your files are been restored...")
         try:
-            count = 0
+            count=0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
-                    f"{self.filesToRestore[count]} {homeUser}/{self.currentFolder}/",
+                    f"{COPY_RSYNC_CMD} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
+                    f"{BACKUP_FOLDER_NAME}/{getDate}/{getTime}/{self.currentFolder}/"
+                    f"{self.filesToRestore[count]} {HOME_USER}/{self.currentFolder}/",
                     shell=True)
                 
                 # Add to count
@@ -757,12 +758,12 @@ class ENTERTIMEMACHINE(QWidget):
             ################################################################################
             # Restore files with spaces
             ################################################################################
-            count = 0
+            count=0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f"{copyRsyncCMD} {self.iniExternalLocation}/{baseFolderName}/"
-                    f"{backupFolderName}/{getDate}/{getTime}/{self.currentFolder}/"
-                    f"{self.filesToRestoreWithSpace[count]} {homeUser}/"
+                    f"{COPY_RSYNC_CMD} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
+                    f"{BACKUP_FOLDER_NAME}/{getDate}/{getTime}/{self.currentFolder}/"
+                    f"{self.filesToRestoreWithSpace[count]} {HOME_USER}/"
                     f"{self.currentFolder}/", shell=True)
 
                 # Add to count
@@ -776,7 +777,7 @@ class ENTERTIMEMACHINE(QWidget):
         # Clean screen
         self.clean_stuff_on_screen("times")
 
-        self.countForTime = 0
+        self.countForTime=0
         self.countForDate += 1
         # Return to get_date
         self.get_date()
@@ -785,7 +786,7 @@ class ENTERTIMEMACHINE(QWidget):
         # Clean screen
         self.clean_stuff_on_screen("times")
 
-        self.countForTime = 0
+        self.countForTime=0
         self.countForDate -= 1
         # Return to get_date
         self.get_date()
@@ -795,9 +796,9 @@ class ENTERTIMEMACHINE(QWidget):
         self.clean_stuff_on_screen("clean_files")
 
         # Index of the getTime
-        index = self.timeFolders.index(getTime)
+        index=self.timeFolders.index(getTime)
         # Add to
-        self.countForTime = index
+        self.countForTime=index
 
         asyncio.run(self.main())       
 
@@ -806,11 +807,11 @@ class ENTERTIMEMACHINE(QWidget):
         print(bool(self.loadingLabel.isVisible()))
 
         # Update self.currentFolder
-        self.currentFolder = folder
+        self.currentFolder=folder
         # Reset date
-        self.countForDate = 0
+        self.countForDate=0
         # Reset time
-        self.countForTime = 0
+        self.countForTime=0
 
         # Clean screen
         self.clean_stuff_on_screen("clean_files")
@@ -825,8 +826,8 @@ class ENTERTIMEMACHINE(QWidget):
         try:
             if exec == "clean_folders":
                 for i in range(self.foldersLayout.count()):
-                    item = self.foldersLayout.itemAt(i)
-                    widget = item.widget()
+                    item=self.foldersLayout.itemAt(i)
+                    widget=item.widget()
                     widget.deleteLater()
                     i -= 1
         except:
@@ -835,15 +836,15 @@ class ENTERTIMEMACHINE(QWidget):
         try:
             if exec == "clean_files":
                 for i in range(self.filesLayoutGrid.count()):
-                    item = self.filesLayoutGrid.itemAt(i)
-                    widget = item.widget()
+                    item=self.filesLayoutGrid.itemAt(i)
+                    widget=item.widget()
                     widget.deleteLater()
                     i -= 1
                 
                 # Clean folders too
                 for i in range(self.foldersLayoutHorizontal.count()):
-                    item = self.foldersLayoutHorizontal.itemAt(i)
-                    widget = item.widget()
+                    item=self.foldersLayoutHorizontal.itemAt(i)
+                    widget=item.widget()
                     widget.deleteLater()
                     i -= 1
                 
@@ -853,8 +854,8 @@ class ENTERTIMEMACHINE(QWidget):
         try:
             if exec == "clean_time":
                 for i in range(self.timesLayout.count()):
-                    item = self.timesLayout.itemAt(i)
-                    widget = item.widget()
+                    item=self.timesLayout.itemAt(i)
+                    widget=item.widget()
                     widget.deleteLater()
                     i -= 1
         except:
@@ -862,12 +863,12 @@ class ENTERTIMEMACHINE(QWidget):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    main = ENTERTIMEMACHINE()
+    app=QApplication(sys.argv)
+    main=ENTERTIMEMACHINE()
     
     # Windows settings
-    main.setWindowTitle(f"Browser {appName} Backups")
-    main.setWindowIcon(QIcon(src_backup_icon))
+    main.setWindowTitle(f"Browser {APP_NAME} Backups")
+    main.setWindowIcon(QIcon(SRC_BACKUP_ICON))
     main.setMinimumSize(1280, 720)
     main.showMaximized()
     

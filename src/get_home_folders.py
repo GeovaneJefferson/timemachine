@@ -1,9 +1,9 @@
 from setup import *
 
-homeFoldersList = []
+homeFoldersList=[]
 
 def get_home_folders():
-    for folder in getHomeFolders:
+    for folder in GET_HOME_FOLDERS:
         if not "." in folder:    
             homeFoldersList.append(folder)
             homeFoldersList.sort()

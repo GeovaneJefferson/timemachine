@@ -6,4 +6,4 @@ if os.geteuid() != 0:
     print("")
     print("Please wait...")
     print("")
-    sub.run(f"python3 {src_migration_assistant_py}", shell=True)
+    sub.run(f"python3 {SRC_MIGRATION_ASSISTANT_PY}", shell=True)

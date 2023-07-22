@@ -9,6 +9,7 @@ import sys
 import signal
 import asyncio
 import fcntl
+import threading
 
 from stylesheet import *
 from pathlib import Path
@@ -27,253 +28,293 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
                             QSystemTrayIcon, QMenu, QStackedWidget)
 
-timer = QtCore.QTimer()
+timer=QtCore.QTimer()
+
+# Remember to change INSTALL too!
 
 ################################################################################
 ## Variables
 ################################################################################
 # Github
-githubHome = "https://www.github.com/geovanejefferson/timemachine"
+GITHUB_HOME="https://www.github.com/geovanejefferson/timemachine"
 
 # Names
-appName = "Time Machine"
-appNameClose = "timemachine"
-appVersion = "v1.1.7 dev"
-baseFolderName = "TMB"
-backupFolderName = "backups"
-applicationFolderName = "applications"
-wallpaperFolderName = "wallpaper"
-iconFolderName = "icon"
-fontsFolderName = "fonts"
-gtkThemeFolderName = "gtktheme"
-themeFolderName = "theme"
-cursorFolderName = "cursor"
-colorSchemeName = "color-schemes"
-plasmaFolderName = "plasma"
-kdeScriptsFolderName = "kde-scripts"
-kdeNotesFolderName = "plasma-notes"
-auroraeFolderName = "aurorae"
-kdeGlobalsFolderName = "kdeglobals"
-kGlobalShortcutSrcFolderName = "kglobalshortcutsrc"
-kWinRcFolderName = "kwinrc"
-gnomeShellFolder = "gnome-shell"
-varFolderName = "var"
-localFolderName = "share"
-kdeFolderName = "kde"
-gnomeFolderName = "gnome"
+APP_NAME="Time Machine"
+APP_NAME_CLOSE="timemachine"
+APP_VERSION="v1.1.7 dev"
+BASE_FOLDER_NAME="TMB"
+BACKUP_FOLDER_NAME="backups"
+APPLICATIONS_FOLDER_NAME="applications"
+WALLPAPER_FOLDER_NAME="wallpaper"
+ICONS_FOLDER_NAME="icon"
+FONTS_FOLDER_NAME="fonts"
+GTK_THEME_FOLDER_NAME="gtktheme"
+THEMES_FOLDER_NAME="theme"
+CURSORS_FOLDER_NAME="cursor"
+COLORSCHEMEFOLDERNAME="color-schemes"
+PLASMA_FOLDER_NAME="plasma"
+KDE_SCRIPT_FOLDER_NAME="kde-scripts"
+KDE_NOTES_FOLDER_NAME="plasma-notes"
+AURORAEFOLDERNAME="aurorae"
+KDEGLOBALDSFOLDERNAME="kdeglobals"
+kGlobalShortcutSrcFolderName="kglobalshortcutsrc"
+kWinRcFolderName="kwinrc"
+GNOME_SHELL_FOLDER_NAME="gnome-shell"
+VAR_FOLDER_NAME="var"
+LOCAL_FOLDER_NAME="share"
+KDE_FOLDER_NAME="kde"
+GNOME_FOLDER_NAME="gnome"
+FLATPAK_FOLDER_NAME="flatpak"
 
-configurationFolderName = "configurations"
-shareFolderName = "share"
+CONFIGURATIONS_FOLDER_NAME="configurations"
+SHARE_FOLDER_NAME="share"
 
-configFolderName = "config"
-shareConfigFolderName = "share_config"
-flatpakTxt = "flatpak.txt"
-restoreSettingsIni = "restore_settings.ini"
+CONFIG_FOLDER_NAME="config"
+SHARE_CONFIG_FOLDER_NAME="share_config"
+FLATPAK_TXT="flatpak.txt"
+RESTORE_SETTINGS_INI="restore_settings.ini"
 
-debFolderName = "deb"
-rpmFolderName = "rpm"
+DEB_FOLDER_NAME="deb"
+RPM_FOLDER_NAME="rpm"
 
 # CMD commands
-copyRsyncCMD = "rsync -avr --exclude={'cache','.cache'}"
-copyCPCMD = "cp -rv"
-createCMDFolder = "mkdir"
-createCMDFile = "touch"
-getFlatpaks = "flatpak list --columns=app --app"
-installRPM = "sudo rpm -ivh --replacepkgs"
-installDEB = "sudo dpkg -i"
-flatpakInstallCommand = "flatpak install --system --noninteractive --assumeyes --or-update"
+COPY_RSYNC_CMD="rsync -avr --exclude={'cache','.cache'}"
+COPY_CP_CMD="cp -rv"
+CREATE_CMD_FOLDER="mkdir"
+CREATE_CMD_FILE="touch"
+GET_FLATPAKS_APPLICATIONS_NAME="flatpak list --columns=app --app"
+INSTALL_DEB="sudo dpkg -i"
+INSTALL_RPM="sudo rpm -ivh --replacepkgs"
+FLATPAK_INSTALL_CMD="flatpak install --system --noninteractive --assumeyes --or-update"
 
 # DE
-supportedOS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop", "kde"]
-supportedDEBPackageManager = ["debian", "ubuntu"]
-supportedRPMPackageManager = ["fedora", "opensuse"]
-getUserDE = "echo $XDG_CURRENT_DESKTOP"
-getUserPackageManager = "cat /etc/os-release"
+SUPPORT_OS=["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop", "kde"]
+SUPPORT_DEB_PACKAGES_MANAGER=["debian", "ubuntu"]
+SUPPORT_RPM_PACKAGE_MANAGER=["fedora", "opensuse"]
+GET_USER_DE="echo $XDG_CURRENT_DESKTOP"
+GET_USER_PACKAGE_MANAGER="cat /etc/os-release"
 
 # Theme
-iconThemeName = "Adwaita"
+ICON_THEME_NAME="Adwaita"
 
-systemTrayPipeName = "/tmp/system_tray.pipe"
-appPipeName = f"/tmp/{appNameClose}.pipe"
-backupNowPipeName = f"/tmp/backup_now.pipe"
+systemTrayPipeName="/tmp/system_tray.pipe"
+appPipeName=f"/tmp/{APP_NAME_CLOSE}.pipe"
+backupNowPipeName=f"/tmp/backup_now.pipe"
 
 ################################################################################
 # GNOME
 ################################################################################
-detectThemeMode = "gsettings get org.gnome.desktop.interface color-scheme"
+DETECT_THEME_MODE="gsettings get org.gnome.desktop.interface color-scheme"
 
-getGnomeWallpaper = "gsettings get org.gnome.desktop.background picture-uri"
-getGnomeWallpaperDark = "gsettings get org.gnome.desktop.background picture-uri-dark"
+GET_GNOME_WALLPAPER="gsettings get org.gnome.desktop.background picture-uri"
+GET_GNOME_WALLPAPER_DARK="gsettings get org.gnome.desktop.background picture-uri-dark"
 
-setGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-uri"
-setGnomeWallpaperDark = "gsettings set org.gnome.desktop.background picture-uri-dark"
+SET_GNOME_WALLPAPER="gsettings set org.gnome.desktop.background picture-uri"
+SET_GNOME_WALLPAPER_DARK="gsettings set org.gnome.desktop.background picture-uri-dark"
 
-zoomGnomeWallpaper = "gsettings set org.gnome.desktop.background picture-options zoom"
+ZOOM_GNOME_WALLPAPER="gsettings set org.gnome.desktop.background picture-options zoom"
 
 # Icon
-getUserIconCMD = "gsettings get org.gnome.desktop.interface icon-theme"
-setUserIconCMD = "gsettings set org.gnome.desktop.interface icon-theme"
+GET_USER_ICON_CMD="gsettings get org.gnome.desktop.interface icon-theme"
+SET_USER_ICON_CMD="gsettings set org.gnome.desktop.interface icon-theme"
 
 # Theme
-getUserThemeCMD = "gsettings get org.gnome.desktop.interface gtk-theme"
-setUserThemeCMD = "gsettings set org.gnome.desktop.interface gtk-theme"
+GET_USER_THEME_CMD="gsettings get org.gnome.desktop.interface gtk-theme"
+SET_USER_THEME_CMD="gsettings set org.gnome.desktop.interface gtk-theme"
 
 # Cursor
-getUserCursorCMD = "gsettings get org.gnome.desktop.interface cursor-theme"
-setUserCursorCMD = "gsettings set org.gnome.desktop.interface cursor-theme"
+GET_USER_CURSOR_CMD="gsettings get org.gnome.desktop.interface cursor-theme"
+SET_USER_CURSOR_CMD="gsettings set org.gnome.desktop.interface cursor-theme"
 
 # Font
 # gsettings set org.gnome.desktop.interface font-name "FreeSans Regular 11"
-getUserFontCMD = "gsettings get org.gnome.desktop.interface font-name"
+GET_USER_FONT_CMD="gsettings get org.gnome.desktop.interface font-name"
 # 'FreeSans Regular 11'
-setUserFontCMD = "gsettings get org.gnome.desktop.interface font-name"
+SET_USER_FONT_CMD="gsettings get org.gnome.desktop.interface font-name"
 
 ################################################################################
 # KDE
 ################################################################################
 # Cursor
-getKDEUserCursorCMD = "plasma-apply-cursortheme --list-themes"
+GET_KDE_USER_CURSOR_CMD="plasma-apply-cursortheme --list-themes"
 # Color Scheme
-getKDEUserColorSchemeCMD = "plasma-apply-colorscheme --list-schemes"
+GET_KDE_USER_COLOR_SCHEME_CMD="plasma-apply-colorscheme --list-schemes"
 # Plasma Style
-getKDEUserPlasmaStyleCMD = "plasma-apply-desktoptheme --list-themes"
+GET_KDE_USER_PLASMA_STYLE_CMD="plasma-apply-desktoptheme --list-themes"
 
 # Locations
-media = "/media"
-run = "/run/media"
+MEDIA="/media"
+RUN="/run/media"
 
 # Fonts
-mainFont = "Ubuntu"
-normalFontSize = 10
-smallFontSize = 5
+MAIN_FONT="Ubuntu"
+NORMAL_FONT_SIZE=10
+SMALL_FONT_SIZE=5
 
 ################################################################################
 ## Fonts
 ################################################################################
-bigTitle = QFont("DeJaVu Sans", 18)
-topicTitle = QFont("DeJaVu Sans", 10.5)
-item = QFont("Ubuntu", 10)
+BIG_TITLE=QFont("DeJaVu Sans", 18)
+TOP_TITLE=QFont("DeJaVu Sans", 10.5)
+ITEM=QFont("Ubuntu", 10)
 
 ################################################################################
 ## Times
 ################################################################################
-timeModeHours60 = ['0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
+MULTIPLE_TIME_OPTION1=['0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
                       '0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500',
                       '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300']
-timeModeHours120 = ['0000', '0200', '0400', '0600', '0800', '1000', '1200', '1400',
+
+MULTIPLE_TIME_OPTION2=['0000', '0200', '0400', '0600', '0800', '1000', '1200', '1400',
                        '1600', '1800', '2000', '2200']
-timeModeHours240 = ['0000', '0400', '0800', '1200', '1600', '2000']
+
+MULTIPLE_TIME_OPTION3=['0000', '0400', '0800', '1200', '1600', '2000']
 
 ################################################################################
 ## FIX
-################################################################################# 
-fixMinutes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+#################################################################################
+FIX_MINUTES=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+################################################################################
+## Time options
+#################################################################################
+TIME1='60'
+TIME2='120'
+TIME3='240'
 
 ################################################################################
 ## LOCATION
 ################################################################################
-homeUser = str(Path.home())
-userName = getpass.getuser()
-getHomeFolders = os.listdir(homeUser)
-getCurrentLocation = pathlib.Path().resolve() 
+HOME_USER=str(Path.home())
+USERNAME=getpass.getuser()
+GET_HOME_FOLDERS=os.listdir(HOME_USER)
+GET_CURRENT_LOCATION=pathlib.Path().resolve()
 
-dst_applications_location = f"{homeUser}/.local/share/applications"
-src_autostart_folder_location = f"{homeUser}/.config/autostart"
-src_flatpak_var_folder_location = f"{homeUser}/.var/app"
-src_flatpak_local_folder_location = f"{homeUser}/.local/share/flatpak"
+DST_APPLICATIONS_LOCATION=f"{HOME_USER}/.local/share/applications"
+SRC_AUTOSTART_FOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
+src_flatpak_var_folder_location=f"{HOME_USER}/.var/app"
+src_flatpak_local_folder_location=f"{HOME_USER}/.local/share/flatpak"
 
 # KDE
-src_color_scheme_folder_location = f"{homeUser}/.local/share/color-schemes"
-src_plasma_style_folder_location = f"{homeUser}/.local/share/plasma/desktoptheme"
+src_color_scheme_folder_location=f"{HOME_USER}/.local/share/color-schemes"
+src_plasma_style_folder_location=f"{HOME_USER}/.local/share/plasma/desktoptheme"
 
 ################################################################################
 ## PY
 ################################################################################
-src_options_py = f"{homeUser}/.local/share/{appNameClose}/src/options.py"
-src_schedule_py = f"{homeUser}/.local/share/{appNameClose}/src/schedule.py"
-src_backup_check_py = f"{homeUser}/.local/share/{appNameClose}/src/backup_check.py"
-src_main_window_py = f"{homeUser}/.local/share/{appNameClose}/src/mainwindow.py"
-src_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/migration_assistant.py"
-src_call_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/call_migration_assistant.py"
-src_enter_time_machine_py = f"{homeUser}/.local/share/{appNameClose}/src/enter_time_machine.py"
-src_package_backup_py = f"{homeUser}/.local/share/{appNameClose}/src/auto-package.py"
-src_prepare_backup_py = f"{homeUser}/.local/share/{appNameClose}/src/prepare_backup.py"
-src_update_py = f"{homeUser}/.local/share/{appNameClose}/src/update.py"
-src_backup_now_py = f"{homeUser}/.local/share/{appNameClose}/src/backup_now.py"
-src_system_tray_py = f"{homeUser}/.local/share/{appNameClose}/src/systemtray.py"
-src_notification_py = f"{homeUser}/.local/share/{appNameClose}/src/notification.py"
-src_search_for_devices_py = f"{homeUser}/.local/share/{appNameClose}/src/search_for_devices.py"
-src_migration_assistant_py = f"{homeUser}/.local/share/{appNameClose}/src/migration_assistant.py"
-src_restore_cmd_py = f"{homeUser}/.local/share/{appNameClose}/src/restore_cmd.py"
+src_options_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/options.py"
+src_schedule_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/schedule.py"
+SRC_BACKUP_CHECKER_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_checker.py"
+SRC_MAIN_WINDOW_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.py"
+SRC_MIGRATION_ASSISTANT_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
+SRC_CALL_MIGRATION_ASSISTANT_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
+src_enter_time_machine_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/enter_time_machine.py"
+src_package_backup_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/auto-package.py"
+src_prepare_backup_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
+src_update_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/update.py"
+src_backup_now_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_now.py"
+src_system_tray_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/systemtray.py"
+src_notification_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/notification.py"
+src_search_for_devices_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/search_for_devices.py"
+src_restore_cmd_py=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/restore_cmd.py"
 
 ################################################################################
 ## Desktop
 ################################################################################
 # Source
-src_autostart_location = f"desktop/backup_check.desktop"
-src_timemachine_desktop = f"desktop/{appNameClose}.desktop"
-src_migration_assistant_desktop = "desktop/migration_assistant.desktop"
-src_backup_check_desktop = f"desktop/backup_check.desktop"
+src_autostart_location=f"desktop/backup_check.desktop"
+src_timemachine_desktop=f"desktop/{APP_NAME_CLOSE}.desktop"
+src_migration_assistant_desktop="desktop/migration_assistant.desktop"
+src_backup_check_desktop=f"desktop/backup_check.desktop"
 
 
 # Destination
-dst_autostart_location = f"{homeUser}/.config/autostart/backup_check.desktop"
-dst_backup_check_desktop = f"{homeUser}/.local/share/{appNameClose}/src/desktop/backup_check.desktop"
-dst_timemachine_desktop = f"{homeUser}/.local/share/applications/{appNameClose}.desktop"
-dst_migration_assistant_desktop = f"{homeUser}/.local/share/applications/migration_assistant.desktop"
+dst_autostart_location=f"{HOME_USER}/.config/autostart/backup_check.desktop"
+DST_BACKUP_CHECK_DESKTOP=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/desktop/backup_check.desktop"
+DST_FILE_EXE_DESKTOP=f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
+DST_MIGRATION_ASSISTANT_DESKTOP=f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"
 
 ################################################################################
 ## Config
 ################################################################################
-dst_folder_timemachine = f"{homeUser}/.local/share/{appNameClose}"
-src_user_config = f"{homeUser}/.local/share/{appNameClose}/src/ini/user.ini"
-src_pycache = f"{homeUser}/.local/share/{appNameClose}/src/__pycache__"
+DST_FOLDER_INSTALL=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
+SRC_USER_CONFIG=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.ini"
+src_pycache=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 
 ################################################################################
 ## Icons
 ################################################################################
-src_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/restore_64px.svg"
-src_monitor_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/applications-system.svg"
-src_settings_up_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/laptop-symbolic.svg"
-src_backup_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/backup_128px.png"
-src_migration_assistant_icon_212px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_212px.png"
-src_migration_assistant_clean_icon_128px = f"{homeUser}/.local/share/{appNameClose}/src/icons/migration_assistant_clean_128px.svg"
-src_system_bar_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayicon.png"
-src_system_bar_white_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtraywhiteicon.png"
-src_system_bar_run_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrun.png"
-src_system_bar_error_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconerror.png"
-src_system_bar_restore_icon = f"{homeUser}/.local/share/{appNameClose}/src/icons/systemtrayiconrestore.png"
+SRC_RESTORE_ICON=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
+src_monitor_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/applications-system.svg"
+src_settings_up_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/laptop-symbolic.svg"
+SRC_BACKUP_ICON=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
+SRC_MIGRATION_ASSISTANT_ICON_212PX=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
+src_migration_assistant_clean_icon_128px=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_clean_128px.svg"
+src_system_bar_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayicon.png"
+src_system_bar_white_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtraywhiteicon.png"
+SRC_SYSTEM_BAR_RUN_ICON=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrun.png"
+src_system_bar_error_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconerror.png"
+src_system_bar_restore_icon=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrestore.png"
 
 ################################################################################
 ## TXT
 ################################################################################
 # .Exclude-applications
-src_exclude_applications = ".exclude-applications.txt"
+SRC_EXCLUDE_APPLICATIONS=".exclude-applications.txt"
 
 # LOG
-appLogTxt = f"{dst_folder_timemachine}/logs.txt"
+APP_LOGS=f"{DST_FOLDER_INSTALL}/app_logs.txt"
 
 def signal_exit(*args):
-    print("Updating INI settings... Exiting...")
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    with open(src_user_config, 'w') as configfile:
-        config.set('BACKUP', 'backup_now', 'unfinished')
-        config.set('BACKUP', 'checker_running', 'false')
-        config.write(configfile)
+    print("Updating INI settings...")
+    print("Exiting...")
 
-    exit()
-    
-# Error fuction
-def error_trying_to_backup(error):
-    # Set notification_massage to 2
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    with open(src_user_config, 'w') as configfile:
-        config.set('INFO', 'notification_massage', "2")
-        config.set('INFO', 'notification_add_info', f"{error}")
-        config.set('BACKUP', 'checker_running', 'false')
-        config.write(configfile)
+    CONFIG=configparser.ConfigParser()
+    CONFIG.read(SRC_USER_CONFIG)
+    with open(SRC_USER_CONFIG, 'w') as configfile:
+        CONFIG.set('STATUS', 'unfinished_backup', 'yes')
+        CONFIG.write(configfile)
 
-    print(error)
+    # Quit
     exit()
+
+def error_trying_to_backup(e):
+    CONFIG=configparser.ConfigParser()
+    CONFIG.read(SRC_USER_CONFIG)
+    with open(SRC_USER_CONFIG, 'w') as configfile:
+        CONFIG.set('INFO', 'saved_notification', f"{e}")
+        CONFIG.write(configfile)
+
+    # Quit
+    exit()
+
+def lock_ini_file():
+    # Acquire a file lock
+    file=open(SRC_USER_CONFIG, 'r+')
+
+    # Acquire an exclusive lock
+    fcntl.flock(file, fcntl.LOCK_EX)
+
+def release_ini_file():
+    # Acquire a file lock
+    file=open(SRC_USER_CONFIG, 'r+')
+
+    # Release the file lock
+    fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock
+    file.close()
+
+def ini_locked_status():
+    # Acquire a file lock
+    file=open(SRC_USER_CONFIG, 'r+')
+
+    if file.closed:
+        print("File is closed")
+
+        # Lock file
+        lock_ini_file()
+
+        return False
+
+    else:
+        print("File is open")
+        return True

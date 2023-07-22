@@ -4,15 +4,15 @@ from read_ini_file import UPDATEINIFILE
 from get_latest_backup_date import latest_backup_date
 
 
-timeFolder = []
-timeAllFolder = []
+timeFolder=[]
+timeAllFolder=[]
 
 def get_latest_backup_time():
-    mainIniFile = UPDATEINIFILE()
+    MAININIFILE=UPDATEINIFILE()
 
     try:
         timeFolder.clear()
-        for output in os.listdir(f"{str(mainIniFile.backup_folder_name())}/{latest_backup_date()}/"):
+        for output in os.listdir(f"{str(MAININIFILE.backup_folder_name())}/{latest_backup_date()}/"):
             timeFolder.append(output)
             timeFolder.sort(reverse=True)
         return timeFolder

@@ -1,10 +1,9 @@
 from setup import *
-from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found, remove_system_tray_file
 
 def backup_ini_file(updateNow):
     # Check if ini file exist and can be found
     # Make a copy and move to /src
-    sub.run(f"{copyCPCMD} {src_user_config} {homeUser}/.local/share/{appNameClose}/src",shell=True)
+    sub.run(f"{COPY_CP_CMD} {SRC_USER_CONFIG} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src",shell=True)
     if updateNow:
         delete_pycache_(updateNow)
 
@@ -28,17 +27,17 @@ def update_git(updateNow):
 def delete_ini_file(updateNow):
     print("Deleting old ini file...")
 
-    sub.run(f"rm -f {src_user_config}", shell=True)
+    sub.run(f"rm -f {SRC_USER_CONFIG}", shell=True)
     if updateNow:
         restore_ini_file(updateNow)
 
 def restore_ini_file(updateNow):
-    sub.run(f"{copyCPCMD} {homeUser}/.local/share/{appNameClose}/src/user.ini {src_user_config}",shell=True)
+    sub.run(f"{COPY_CP_CMD} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/user.ini {SRC_USER_CONFIG}",shell=True)
     if updateNow:
         open_app()
 
 def open_app():
-    sub.Popen(f"python3 {src_main_window_py}", shell=True)
+    sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}", shell=True)
     # Close system tray
     remove_system_tray_file()
 

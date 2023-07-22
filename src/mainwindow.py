@@ -1,10 +1,10 @@
 from setup import *
 from stylesheet import *
-from check_connection import *
-from device_location import *
-from package_manager import *
-from get_home_folders import *
-from get_size import *
+from check_connection import is_connected
+from device_location import device_location
+from get_home_folders import get_home_folders
+from get_flatpaks_folders_size import (get_external_device_used_size, get_external_device_max_size,
+                                        get_all_used_backup_device_space, get_all_max_backup_device_space)
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
@@ -13,28 +13,25 @@ from calculate_time_left_to_backup import calculate_time_left_to_backup
 from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
-from add_system_tray_file import add_system_tray_file, can_system_tray_file_be_found, remove_system_tray_file
-from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
-from notification_massage import notification_massage
+from notification_massage import notification_message
 from detect_theme_color import detect_theme_color
 
-class MAIN(QMainWindow):
+
+CHOOSE_DEVICE=[]
+CAPTURE_DEVICE=[]
+
+
+class MainWindow(QMainWindow):
     def __init__(self):
-        super(MAIN, self).__init__()
-        self.chooseDevice = []
-        self.captureDevices = []
+        super(MainWindow, self).__init__()
+        self.ini_ui()
 
-        self.oldestList = []
-        self.lastList = []
-        
-        self.iniUI()
-
-    def iniUI(self):
+    def ini_ui(self):
         ################################################################################
         # Center window
         ################################################################################
-        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-        fg = self.frameGeometry()
+        centerPoint=QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        fg=self.frameGeometry()
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
 
@@ -42,47 +39,36 @@ class MAIN(QMainWindow):
 
     def begin_settings(self):
         # Detect dark theme
-        if detect_theme_color(app):
-        # if app.palette().window().color().getRgb()[0] < 55:
+        if detect_theme_color(APP):
             # Left background
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheetDark
-
+            self.leftBackgroundColorDetector=leftBackgroundColorStylesheetDark
             # Button
-            self.buttonStylesheetDetector = buttonStylesheetDark
-
+            self.buttonStylesheetDetector=buttonStylesheetDark
             # External window
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheetDark
-
+            self.externalWindowbackgroundDetector=externalWindowbackgroundStylesheetDark
             # Available devices
-            self.availableDeviceButtonDetector = availableDeviceButtonStylesheetDark
-
+            self.availableDeviceButtonDetector=availableDeviceButtonStylesheetDark
             # Separator
-            self.separatorstylesheetDetector = separetorLineDark
-
+            self.separatorstylesheetDetector=separetorLineDark
             # Separator left background
-            self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackgroundDark
+            self.separatorLeftBackgroundStylesheetDetector=separetorLineLeftbackgroundDark
 
         else:
             # Left background
-            self.leftBackgroundColorDetector = leftBackgroundColorStylesheet
-
+            self.leftBackgroundColorDetector=leftBackgroundColorStylesheet
             # Button
-            self.buttonStylesheetDetector = buttonStylesheet
-
+            self.buttonStylesheetDetector=buttonStylesheet
             # External window
-            self.externalWindowbackgroundDetector = externalWindowbackgroundStylesheet
-
+            self.externalWindowbackgroundDetector=externalWindowbackgroundStylesheet
             # Available devices
-            self.availableDeviceButtonDetector = availableDeviceButtonStylesheet
-
+            self.availableDeviceButtonDetector=availableDeviceButtonStylesheet
             # Separator
-            self.separatorstylesheetDetector = separetorLine
-
+            self.separatorstylesheetDetector=separetorLine
             # Separator left background
-            self.separatorLeftBackgroundStylesheetDetector = separetorLineLeftbackground
+            self.separatorLeftBackgroundStylesheetDetector=separetorLineLeftbackground
 
-        leftBackgroundColor = QWidget(self)
-        leftBackgroundColor.setGeometry(0,0,220,self.height()) 
+        leftBackgroundColor=QWidget(self)
+        leftBackgroundColor.setGeometry(0,0,220,self.height())
         leftBackgroundColor.setStyleSheet(self.leftBackgroundColorDetector)
 
         self.widgets()
@@ -91,81 +77,81 @@ class MAIN(QMainWindow):
         ################################################################################
         # Left Widget
         ################################################################################
-        self.leftWidget = QWidget(self)
-        self.leftWidget.setGeometry(20, 20, 200, 410) 
+        self.leftWidget=QWidget(self)
+        self.leftWidget.setGeometry(20, 20, 200, 410)
         self.leftWidget.setStyleSheet(self.separatorLeftBackgroundStylesheetDetector)
 
         # Left layout
-        self.leftLayout = QVBoxLayout(self.leftWidget)
+        self.leftLayout=QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(20)
         self.leftLayout.setContentsMargins(0, 0, 10, 0)
 
         # Backup images
-        self.backupImageLabel = QLabel()
+        self.backupImageLabel=QLabel()
         self.backupImageLabel.setFixedSize(128, 128)
         self.backupImageLabel.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_backup_icon});"
+            f"background-image: url({SRC_BACKUP_ICON});"
             "border-color: transparent;"
             "background-repeat: no-repeat;"
             "}")
 
         # App name
-        self.appName = QLabel()
-        self.appName.setFont(QFont(mainFont,smallFontSize))
-        self.appName.setText(f"<h1>{appName}</h1>")
-        self.appName.adjustSize()
+        self.APPNAME=QLabel()
+        self.APPNAME.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
+        self.APPNAME.setText(f"<h1>{APP_NAME}</h1>")
+        self.APPNAME.adjustSize()
 
         # Automatically checkbox
-        self.automaticallyCheckBox = QCheckBox()
-        self.automaticallyCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.automaticallyCheckBox.setText("Back Up Automatically")
-        self.automaticallyCheckBox.adjustSize()
-        self.automaticallyCheckBox.setStyleSheet("""
+        self.automatically_check_box=QCheckBox()
+        self.automatically_check_box.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.automatically_check_box.setText("Back Up Automatically")
+        self.automatically_check_box.adjustSize()
+        self.automatically_check_box.setStyleSheet("""
             border-color: transparent;
         """)
-        self.automaticallyCheckBox.clicked.connect(self.automatically_clicked)
+        self.automatically_check_box.clicked.connect(self.automatically_clicked)
 
         ################################################################################
         # Right Widget
         ################################################################################
-        self.rightWidget = QWidget(self)
+        self.rightWidget=QWidget(self)
         self.rightWidget.setGeometry(240, 40, 120, 154)
 
         # Right layout
-        self.rightLayout = QVBoxLayout(self.rightWidget)
+        self.rightLayout=QVBoxLayout(self.rightWidget)
         self.rightLayout.setSpacing(20)
 
         # Restore images
-        self.restoreImageLabel = QLabel()
+        self.restoreImageLabel=QLabel()
         self.restoreImageLabel.setFixedSize(74, 74)
         self.restoreImageLabel.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_restore_icon});"
+            f"background-image: url({SRC_RESTORE_ICON});"
             "background-repeat: no-repeat;"
             "background-position: top;"
             "}")
 
         # Select disk button
-        self.selectDiskButton = QPushButton(self)
-        self.selectDiskButton.setFont(QFont(mainFont,normalFontSize))
-        self.selectDiskButton.setText("   Select Disk...   ")
-        self.selectDiskButton.adjustSize()
-        self.selectDiskButton.setFixedHeight(buttonHeightSize)
-        self.selectDiskButton.setStyleSheet(self.buttonStylesheetDetector)
-        self.selectDiskButton.clicked.connect(self.external_open_animation)
-       
+        self.select_disk_button=QPushButton(self)
+        self.select_disk_button.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.select_disk_button.setText("   Select Disk...   ")
+        self.select_disk_button.adjustSize()
+        self.select_disk_button.setFixedHeight(BUTTONHEIGHT_SIZE)
+        self.select_disk_button.setStyleSheet(self.buttonStylesheetDetector)
+        self.select_disk_button.clicked.connect(self.external_open_animation)
+
         ################################################################################
         # Far right Widget
         ################################################################################
-        self.farRightWidget = QWidget(self)
+        self.farRightWidget=QWidget(self)
         self.farRightWidget.setContentsMargins(0, 0, 0, 0)
         self.farRightWidget.setGeometry(360, 40, 280, 154)
-        
-        # Right widget
-        self.farRightLayout = QVBoxLayout(self.farRightWidget)
+
+        # Right WIDGET
+        self.farRightLayout=QVBoxLayout(self.farRightWidget)
         self.farRightLayout.setSpacing(0)
         # self.farRightWidget.setStyleSheet("""
         #     border: 1px solid red;
@@ -174,102 +160,89 @@ class MAIN(QMainWindow):
         ################################################################################
         # Set external name
         ################################################################################
-        self.externalNameLabel = QLabel()
-        self.externalNameLabel.setFont(QFont(mainFont, 6))
-        self.externalNameLabel.setAlignment(QtCore.Qt.AlignLeft)
+        self.external_name_label=QLabel()
+        self.external_name_label.setFont(QFont(MAIN_FONT, 6))
+        self.external_name_label.setAlignment(QtCore.Qt.AlignLeft)
 
         ################################################################################
         # Get external size
         ################################################################################
-        self.externalSizeLabel = QLabel()
-        self.externalSizeLabel.setFont(item)
-        self.externalSizeLabel.setFixedSize(200, 18)
-        self.externalSizeLabel.setStyleSheet("""
+        self.external_size_label=QLabel()
+        self.external_size_label.setFont(ITEM)
+        self.external_size_label.setFixedSize(200, 18)
+        self.external_size_label.setStyleSheet("""
             color: gray;
             """)
 
         ################################################################################
         # Label UI backup
         ################################################################################
-        self.oldestBackupLabel = QLabel()
-        self.oldestBackupLabel.setFont(item)
-        self.oldestBackupLabel.setText("Oldest Backup: None")
-        self.oldestBackupLabel.setFixedSize(200, 18)
-        self.oldestBackupLabel.setStyleSheet("""
+        self.oldest_backup_label=QLabel()
+        self.oldest_backup_label.setFont(ITEM)
+        self.oldest_backup_label.setText("Oldest Backup: None")
+        self.oldest_backup_label.setFixedSize(200, 18)
+        self.oldest_backup_label.setStyleSheet("""
             color: gray;
             """)
-            
-        self.lastestBackupLabel = QLabel()
-        self.lastestBackupLabel.setFont(item)
-        self.lastestBackupLabel.setText("Lastest Backup: None")
-        self.lastestBackupLabel.setFixedSize(200, 18)
-        self.lastestBackupLabel.setStyleSheet("""
+
+        self.latest_backup_label=QLabel()
+        self.latest_backup_label.setFont(ITEM)
+        self.latest_backup_label.setText("Lastest Backup: None")
+        self.latest_backup_label.setFixedSize(200, 18)
+        self.latest_backup_label.setStyleSheet("""
             color: gray;
             """)
 
         # Label last backup
-        self.nextBackupLabel = QLabel()
-        self.nextBackupLabel.setFont(item)
-        self.nextBackupLabel.setText("Next Backup: None")
-        self.nextBackupLabel.setFixedSize(250, 18)
-        self.nextBackupLabel.setStyleSheet("""
+        self.next_backup_label=QLabel()
+        self.next_backup_label.setFont(ITEM)
+        self.next_backup_label.setText("Next Backup: None")
+        self.next_backup_label.setFixedSize(250, 18)
+        self.next_backup_label.setStyleSheet("""
             color: gray;
             """)
 
         # Status Status
-        self.externalStatusLabel = QLabel()
-        self.externalStatusLabel.setFont(item)
-        self.externalStatusLabel.setText("Status: None")
-        self.externalStatusLabel.setFixedSize(200, 18)
-        self.externalStatusLabel.setStyleSheet("""
+        self.external_status_label=QLabel()
+        self.external_status_label.setFont(ITEM)
+        self.external_status_label.setText("Status: None")
+        self.external_status_label.setFixedSize(200, 18)
+        self.external_status_label.setStyleSheet("""
             color: gray;
             """)
 
         ################################################################################
-        # Extra information about an error
-        ################################################################################
-        # self.extraInformationLabel = QLabel(self)
-        # self.extraInformationLabel.setVisible(True)
-        # self.extraInformationLabel.setFont(item)
-        
-        ################################################################################
-        # Current backup label information
-        ################################################################################
-        self.currentBackUpLabel = QLabel(self)
-        self.currentBackUpLabel.setFont(item)
-        
-        ################################################################################
         # Backup now button
         ################################################################################
-        self.backupNowButton = QPushButton(self)
-        self.backupNowButton.setText("   Back Up Now   ")
-        self.backupNowButton.setFont(QFont(mainFont,normalFontSize))
-        self.backupNowButton.adjustSize()
-        self.backupNowButton.setFixedHeight(buttonHeightSize)
-        self.backupNowButton.setStyleSheet(self.buttonStylesheetDetector)
-        self.backupNowButton.clicked.connect(self.backup_now_clicked)
-        self.backupNowButton.setEnabled(False)        
+        self.backup_now_button=QPushButton(self)
+        self.backup_now_button.setText("   Back Up Now   ")
+        self.backup_now_button.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.backup_now_button.adjustSize()
+        self.backup_now_button.setFixedHeight(BUTTONHEIGHT_SIZE)
+        self.backup_now_button.setStyleSheet(self.buttonStylesheetDetector)
+        self.backup_now_button.clicked.connect(self.backup_now_clicked)
+        self.backup_now_button.setEnabled(False)
 
         ################################################################################
-        # Top line widget
+        # Top line WIDGET
         ################################################################################
-        topLineWidget = QWidget(self)
+        topLineWidget=QWidget(self)
         topLineWidget.setGeometry(240,30,440,1)
         topLineWidget.setStyleSheet(self.separatorstylesheetDetector)
         ################################################################################
         # Description
         ################################################################################
-        self.descriptionWidget = QWidget(self)
+        self.descriptionWidget=QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
         self.descriptionWidget.setStyleSheet(self.separatorstylesheetDetector)
 
         # Description Layout
-        self.descriptionLayout = QVBoxLayout(self.descriptionWidget)
+        self.descriptionLayout=QVBoxLayout(self.descriptionWidget)
 
         # Description Title
-        self.descriptionTitle = QLabel()
-        self.descriptionTitle.setFont(topicTitle)
-        self.descriptionTitle.setText(f"{appName} keeps:")
+        self.descriptionTitle=QLabel()
+        self.descriptionTitle.setFont(TOP_TITLE)
+        self.descriptionTitle.setText(f"{APP_NAME} keeps:")
         self.descriptionTitle.adjustSize()
         self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         # self.descriptionTitle.setFixedSize(420, 24)
@@ -279,14 +252,14 @@ class MAIN(QMainWindow):
         """)
 
         # Description Text
-        self.descriptionText = QLabel()
-        self.descriptionText.setFont(item)
+        self.descriptionText=QLabel()
+        self.descriptionText.setFont(ITEM)
         self.descriptionText.setText(
             "• Local snapshots as space permits\n"
             "• Hourly backups for the past 24 hours\n"
             "• Daily backups for the past mounths\n"
             "• Applications '.deb and .rpm' + Flatpaks\n"
-            "• Wallpaper, Theme, Icon and Cursor theme\n\n"
+            "• Some system files and folders\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -298,48 +271,47 @@ class MAIN(QMainWindow):
         ################################################################################
         # Donate and Settings buttons
         ################################################################################
-        self.optionsWidget = QWidget(self)
+        self.optionsWidget=QWidget(self)
         self.optionsWidget.setGeometry(340, 380, 350, 80)
 
         # Options Layout
-        self.optionsLayout = QHBoxLayout(self.optionsWidget)
+        self.optionsLayout=QHBoxLayout(self.optionsWidget)
         self.optionsLayout.setSpacing(10)
 
         # Options button
-        self.optionsButton = QPushButton()
+        self.optionsButton=QPushButton()
         self.optionsButton.setText("   Options...   ")
-        self.optionsButton.setFont(QFont(mainFont,normalFontSize))
-        self.optionsButton.setFixedHeight(buttonHeightSize)
+        self.optionsButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.optionsButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.optionsButton.adjustSize()
         self.optionsButton.setStyleSheet(self.buttonStylesheetDetector)
         self.optionsButton.clicked.connect(self.on_options_clicked)
 
         # Help button
-        self.helpButton = QPushButton()
+        self.helpButton=QPushButton()
         self.helpButton.setText("?")
-        self.helpButton.setFont(QFont(mainFont,normalFontSize))
+        self.helpButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.helpButton.setFixedSize(24,24)
         self.helpButton.setToolTip("Help")
         self.helpButton.setStyleSheet(self.buttonStylesheetDetector)
         self.helpButton.clicked.connect(
-            lambda: sub.Popen(f"xdg-open {githubHome}", shell=True))
-        
+            lambda: sub.Popen(f"xdg-open {GITHUB_HOME}", shell=True))
+
         # Show system tray
-        self.showInSystemTrayCheckBox = QCheckBox(self)
-        self.showInSystemTrayCheckBox.setFont(item)
-        self.showInSystemTrayCheckBox.setText(f"Show {appName} in menu bar")
+        self.showInSystemTrayCheckBox=QCheckBox(self)
+        self.showInSystemTrayCheckBox.setFont(ITEM)
+        self.showInSystemTrayCheckBox.setText(f"Show {APP_NAME} in menu bar")
         self.showInSystemTrayCheckBox.setFixedSize(280, 20)
         self.showInSystemTrayCheckBox.move(240, 410)
         self.showInSystemTrayCheckBox.setStyleSheet("""
             border-color: transparent;
         """)
-        
         self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
-        
+
         ################################################################################
         # External Window
         ################################################################################
-        self.externalBackgroundShadow = QWidget(self)
+        self.externalBackgroundShadow=QWidget(self)
         self.externalBackgroundShadow.setFixedSize(700,self.height())
         self.externalBackgroundShadow.move(0,0)
         self.externalBackgroundShadow.setVisible(False)
@@ -348,93 +320,93 @@ class MAIN(QMainWindow):
             "{"
                 "background-color:rgba(14,14,14,0.6);"
             "}")
-        
-        self.externalWindow = QWidget(self)
+
+        self.externalWindow=QWidget(self)
         self.externalWindow.setFixedSize(400,280)
         self.externalWindow.move(self.width()/4,-300)
         self.externalWindow.show()
         self.externalWindow.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Frame
-        self.whereFrame = QFrame(self.externalWindow)
-        self.whereFrame.setFixedSize(self.externalWindow.width()-60,self.externalWindow.height())
-        self.whereFrame.move(20,40)
-        self.whereFrame.setStyleSheet(self.externalWindowbackgroundDetector)
+        self.where_frame=QFrame(self.externalWindow)
+        self.where_frame.setFixedSize(self.externalWindow.width()-60,self.externalWindow.height())
+        self.where_frame.move(20,40)
+        self.where_frame.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Scroll
-        self.scroll = QScrollArea(self.externalWindow)
+        self.scroll=QScrollArea(self.externalWindow)
         self.scroll.resize(360,180)
         self.scroll.move(20,40)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.whereFrame)
+        self.scroll.setWidget(self.where_frame)
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Vertical layout V
-        self.verticalLayout = QVBoxLayout(self.whereFrame)
+        self.verticalLayout=QVBoxLayout(self.where_frame)
         self.verticalLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
-        
-        # Info 
-        self.notAllowed = QLabel(self.externalWindow)
+
+        # Info
+        self.notAllowed=QLabel(self.externalWindow)
         self.notAllowed.setText("Devices with space(s) and/or special characters will be hidden.")
-        self.notAllowed.setFont(item)
+        self.notAllowed.setFont(ITEM)
         self.notAllowed.move(20,20)
         self.notAllowed.setStyleSheet(transparentBackground)
-        
+
         ################################################################################
         # Buttons
         ################################################################################
-        widgetButton = QWidget(self.externalWindow)
+        widgetButton=QWidget(self.externalWindow)
         widgetButton.setFixedSize(self.externalWindow.width()-10,58)
         widgetButton.move(5,220)
         widgetButton.setStyleSheet("""border:0px;""")
 
-        widgetButtonLayout = QHBoxLayout(widgetButton)
+        widgetButtonLayout=QHBoxLayout(widgetButton)
         widgetButtonLayout.setSpacing(10)
-        
+
         # Cancel button
-        self.cancelButton = QPushButton()
-        self.cancelButton.setFont(item)
+        self.cancelButton=QPushButton()
+        self.cancelButton.setFont(ITEM)
         self.cancelButton.setText("   Cancel   ")
         self.cancelButton.adjustSize()
-        self.cancelButton.setFixedHeight(buttonHeightSize)
+        self.cancelButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.cancelButton.setStyleSheet(self.buttonStylesheetDetector)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
         # Use this device
-        self.useDiskButton = QPushButton()
-        self.useDiskButton.setFont(item)
+        self.useDiskButton=QPushButton()
+        self.useDiskButton.setFont(ITEM)
         self.useDiskButton.setText("   Use Disk   ")
-        self.useDiskButton.setFixedHeight(buttonHeightSize)
+        self.useDiskButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.useDiskButton.adjustSize()
         self.useDiskButton.setEnabled(False)
         self.useDiskButton.setStyleSheet(useDiskButtonStylesheet)
         self.useDiskButton.clicked.connect(self.on_use_disk_clicked)
-        
+
         ################################################################################
         # Add widgets and Layouts
         ################################################################################
         # Left Layout
         self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
-        self.leftLayout.addWidget(self.appName, 0, Qt.AlignHCenter | Qt.AlignTop)
-        self.leftLayout.addWidget(self.automaticallyCheckBox, 1, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.APPNAME, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.automatically_check_box, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
         self.rightLayout.addStretch(10)
         self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.rightLayout.addWidget(self.selectDiskButton, 1, Qt.AlignVCenter | Qt.AlignHCenter)
-        
+        self.rightLayout.addWidget(self.select_disk_button, 1, Qt.AlignVCenter | Qt.AlignHCenter)
+
         #  Far Right Layout
-        self.farRightLayout.addWidget(self.externalNameLabel, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.externalSizeLabel, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.oldestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.lastestBackupLabel, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.nextBackupLabel, 2, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.externalStatusLabel, 3, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.external_name_label, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.external_size_label, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.oldest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.latest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.next_backup_label, 2, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.external_status_label, 3, Qt.AlignLeft | Qt.AlignTop)
         self.farRightLayout.addStretch(10)
-        self.farRightLayout.addWidget(self.backupNowButton, 4, Qt.AlignLeft | Qt.AlignTop)
+        self.farRightLayout.addWidget(self.backup_now_button, 4, Qt.AlignLeft | Qt.AlignTop)
 
         # Description Layout
         self.descriptionLayout.addWidget(self.descriptionTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)
@@ -444,256 +416,264 @@ class MAIN(QMainWindow):
         self.optionsLayout.addStretch()
         self.optionsLayout.addWidget(self.optionsButton, 0, Qt.AlignRight | Qt.AlignVCenter)
         self.optionsLayout.addWidget(self.helpButton, 0, Qt.AlignRight | Qt.AlignVCenter)
-        
+
         widgetButtonLayout.addStretch()
         widgetButtonLayout.addWidget(self.cancelButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
         widgetButtonLayout.addWidget(self.useDiskButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
 
         self.setLayout(self.leftLayout)
 
-        # self.check_for_updates()
+        # Startup checking
+        self.startup_check()
 
-        timer.timeout.connect(self.connection)
-        timer.start(2000) 
-        self.connection()
-        
-    def connection(self):
-        print(f"Main Windows ({appNameClose}) is running...")
+        timer.timeout.connect(self.running)
+        timer.start(2000)
+        self.running()
 
-        try:
-            if str(mainIniFile.ini_hd_name()) != "None":
-                self.externalNameLabel.setText(f"<h1>{str(mainIniFile.ini_hd_name())}</h1>")
-                
-                if is_connected(str(mainIniFile.ini_hd_name())):
-                    # External status
-                    self.externalStatusLabel.setText("Status: Connected")
-                    self.externalStatusLabel.setStyleSheet('color: green')
+    def running(self):
+        print(f"Main Windows ({APP_NAME_CLOSE}) is running...")
 
-                    # Clean notification massage
-                    notification_massage(" ") 
+        # Check if a backup device was registered
+        if self.device_registered():
+            # Check connection to it
+            if is_connected(MAIN_INI_FILE.ini_hd_name()):
+                ################################################
+                # Connection
+                ################################################
+                # Set external status label to Connected
+                self.external_status_label.setText("Status: Connected")
+                # Set external status label to color Green
+                self.external_status_label.setStyleSheet('color: green')
 
-                    self.get_size_informations()
+                ################################################
+                # Clean notification massage
+                ################################################
+                notification_message(" ")
+
+                ################################################
+                # Get backup devices size informations
+                ################################################
+                try:
+                    self.external_size_label.setText(
+                        f"{get_external_device_used_size()} of "
+                        f"{get_external_device_max_size()} available")
+
+                except:
+                    self.external_size_label.setText("No information available")
+
+                ################################################
+                # Check if is current busy doing something
+                ################################################
+                # If is backing up right now
+                if MAIN_INI_FILE.ini_backing_up_now():
+                    # Disable backup now
+                    self.backup_now_button.setEnabled(False)
+                    # Disable select disk
+                    self.select_disk_button.setEnabled(False)
+                    # Disable automatically backup
+                    self.automatically_check_box.setEnabled(False)
 
                 else:
-                    self.backupNowButton.setEnabled(False)       
-                    self.externalStatusLabel.setText("Status: Disconnected")
-                    self.externalStatusLabel.setStyleSheet('color: red')
-                    self.externalSizeLabel.setText("No information available")
-            
-            # No device registered
-            else:
-                self.externalSizeLabel.setText("No information available")
-                self.externalNameLabel.setText("<h1>None</h1>")
-                self.externalStatusLabel.setText("Status: None")
-                self.externalStatusLabel.setStyleSheet('color:gray')
-                self.backupNowButton.setEnabled(False)
+                    # Enable backup now
+                    self.backup_now_button.setEnabled(True)
+                    # Enable select disk
+                    self.select_disk_button.setEnabled(True)
+                    # Enable automatically backup
+                    self.automatically_check_box.setEnabled(True)
 
-        except Exception as error:
-            print("Main Window Connection Error:",error)
-            # restore_ini_file(True)
+                ################################################
+                # One time per day
+                ################################################
+                if MAIN_INI_FILE.ini_one_time_mode():
+                        ################################################
+                        # Automatically backup
+                        ################################################
+                        if MAIN_INI_FILE.ini_automatically_backup():
+                            ################################################
+                            # Time left calculation
+                            ################################################
+                            if calculate_time_left_to_backup() is not None:
+                                self.next_backup_label.setText(
+                                    f"Next Backup: {calculate_time_left_to_backup()}")
 
-        self.condition()
+                            else:
+                                self.next_backup_label.setText(
+                                    f"Next Backup: {get_next_backup().capitalize()}, "
+                                    f"{MAIN_INI_FILE.ini_next_hour()}:{MAIN_INI_FILE.ini_next_minute()}")
 
-    def get_size_informations(self):
-        # Get external size values
-        try:
-            self.externalSizeLabel.setText(f"{get_external_device_used_size()} of {get_external_device_max_size()} available")
-       
-        except:
-            self.externalSizeLabel.setText("No information available")
+                        else:
+                            self.next_backup_label.setText("Next Backup: Automatic backups off")
 
-        self.condition()
+                else:
+                    ################################################
+                    # Automatically backup
+                    ################################################
+                    if MAIN_INI_FILE.ini_automatically_backup():
+                        ################################################
+                        # Multiple times per day
+                        ################################################
+                        if MAIN_INI_FILE.ini_everytime() == f'{TIME1}':
+                            self.next_backup_label.setText(f'Next Backup: Every 1 hour')
+                            self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
-    def condition(self):
-        # if str(mainIniFile.ini_hd_name()) != "None" and is_connected(str(mainIniFile.ini_hd_name())):  
-        if is_connected(str(mainIniFile.ini_hd_name())):  
-            if str(mainIniFile.ini_backup_now()) == "false":
-                self.connected_action_to_take()
+                        elif MAIN_INI_FILE.ini_everytime() == f'{TIME2}':
+                            self.next_backup_label.setText(f'Next Backup: Every 2 hours')
+                            self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
-            else:
-                self.currentBackUpLabel.setText(str(mainIniFile.ini_current_backup_information()))
-                self.currentBackUpLabel.adjustSize()
-                self.not_connected_action_to_take()
+                        elif MAIN_INI_FILE.ini_everytime() == f'{TIME3}':
+                            self.next_backup_label.setText(f'Next Backup: Every 4 hours')
+                            self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
-        else:
-            self.not_registered_action_to_take()
-      
-        self.update_ui_status_informations()
-
-    def update_ui_status_informations(self):
-        self.oldestBackupLabel.setText(f"Oldest Backup: {oldest_backup_date()}")
-        self.lastestBackupLabel.setText(f"Lastest Backup: {latest_backup_date_label()}")
-        
-        if mainIniFile.ini_automatically_backup() == 'true':
-            self.save_to_ini_file_next_backup_text()
-
-            if str(mainIniFile.ini_one_time_mode()) == "true":
-
-                # Device registered
-                if str(mainIniFile.ini_hd_name()) != "None":
-
-                    # Time left calculation
-                    if str(calculate_time_left_to_backup()) != "None":
-                        self.nextBackupLabel.setText(f"Next Backup: {calculate_time_left_to_backup()}")
-                    
                     else:
-                        self.nextBackupLabel.setText(f"Next Backup: {get_next_backup().capitalize()}, {mainIniFile.ini_next_hour()}:{mainIniFile.ini_next_minute()}")
-                
-                # No  device registered
-                else:
-                    self.nextBackupLabel.setText("Next Backup: First, select a backup device.")
+                        self.next_backup_label.setText("Next Backup: Automatic backups off")
+
+            ################################################
+            # Has no connection to it
+            ################################################
             else:
-                if str(mainIniFile.ini_everytime()) == "60":
-                    self.nextBackupLabel.setText("Next Backup: Every 1 hour")
-                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
+                # Disable backup now
+                self.backup_now_button.setEnabled(False)
+                # Set external status label to Disconencted
+                self.external_status_label.setText("Status: Disconnected")
+                # Set external status label to color Red
+                self.external_status_label.setStyleSheet('color: red')
+                # Set external size label to No information
+                self.external_size_label.setText("No information available")
 
-                elif str(mainIniFile.ini_everytime()) == "120":
-                    self.nextBackupLabel.setText("Next Backup: Every 2 hours")
-                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
-
-                elif str(mainIniFile.ini_everytime()) == "240":
-                    self.nextBackupLabel.setText("Next Backup: Every 4 hours")
-                    self.nextBackupLabel.setFont(QFont(mainFont,buttonFontSize))
+        ################################################
+        # No device was registered yet
+        ################################################
         else:
-            self.nextBackupLabel.setText("Next Backup: Automatic backups off")
+            # Set external size label to No information
+            self.external_size_label.setText("No information available")
+            # Set external name label to None
+            self.external_name_label.setText("<h1>None</h1>")
+            # Set external status label to None
+            self.external_status_label.setText("Status: None")
+            # Set external status label to color Gray
+            self.external_status_label.setStyleSheet('color: gray')
+            # Set backup now to False
+            self.backup_now_button.setEnabled(False)
 
-    # TODO
-    def save_to_ini_file_next_backup_text(self):
-        try:
-            # Device registered
-            if str(mainIniFile.ini_hd_name()) != "None":
-                info = str(get_next_backup().capitalize()) + ", " + str(mainIniFile.ini_next_hour()) + ":" + str(mainIniFile.ini_next_minute())
+    def device_registered(self):
+        # Check if a backup device was registered
+        if MAIN_INI_FILE.ini_hd_name() != "None":
+            # Show devices name
+            self.external_name_label.setText(f"<h1>{MAIN_INI_FILE.ini_hd_name()}</h1>")
+            # Show oldest backup label
+            self.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
+            # Show latest backup label
+            self.latest_backup_label.setText(f"Lastest Backup: {latest_backup_date_label()}")
 
-                # Write to INI file
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    config.set('INFO', 'next', f'{info}')
-                    config.write(configfile)
-        except:
-            pass
+            # Return True
+            return True
 
-        self.load_automacically_backup()
-
-    def load_automacically_backup(self):
-        if str(mainIniFile.ini_automatically_backup()) == "true":
-            self.automaticallyCheckBox.setChecked(True)
+    ################################################################################
+    # STATIC
+    ################################################################################
+    def startup_check(self):
+        if MAIN_INI_FILE.ini_automatically_backup():
+            self.automatically_check_box.setChecked(True)
         else:
-            self.automaticallyCheckBox.setChecked(False)
-        
-        self.load_system_tray()
+            self.automatically_check_box.setChecked(False)
 
-    def load_system_tray(self):
-        if str(mainIniFile.ini_system_tray()) == "true":
+        if MAIN_INI_FILE.ini_system_tray():
             self.showInSystemTrayCheckBox.setChecked(True)
 
         else:
             self.showInSystemTrayCheckBox.setChecked(False)
 
-    ################################################################################
-    # STATIC
-    ################################################################################
     def automatically_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:  
-                if self.automaticallyCheckBox.isChecked():
-                    create_backup_checker_desktop()
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.automatically_check_box.isChecked():
+                # Create backup checker .desktop and move it to the destination
+                create_backup_checker_desktop()
 
-                    # Copy backup_check.desktop
-                    shutil.copy(dst_backup_check_desktop, dst_autostart_location)  
+                # Copy backup_check.desktop
+                shutil.copy(DST_BACKUP_CHECK_DESKTOP, dst_autostart_location)
 
-                    # Write to INI file
-                    config.set('BACKUP', 'auto_backup', 'true')
-                    config.set('BACKUP', 'checker_running', "true")
-                    config.write(configfile)
+                # Write to INI file
+                CONFIG.set('STATUS', 'automatically_backup', 'true')
+                CONFIG.write(configfile)
 
-                    # call backup check
-                    sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+                # call backup check
+                sub.Popen(f"python3 {SRC_BACKUP_CHECKER_PY}", shell=True)
 
-                    print("Auto backup was successfully activated!")
-         
-                else:
-                    # Remove autostart.desktop
-                    sub.run(f"rm -f {dst_autostart_location}",shell=True)
-                    
-                    # Write to INI file
-                    config.set('BACKUP', 'auto_backup', 'false')
-                    config.set('BACKUP', 'checker_running', "false")
-                    config.write(configfile)    
+                print("Auto backup was successfully activated!")
 
-                    print("Auto backup was successfully deactivated!")
-        except:
-            pass
+            else:
+                # Remove autostart.desktop
+                sub.run(f"rm -f {dst_autostart_location}",shell=True)
 
+                # Write to INI file
+                CONFIG.set('STATUS', 'automatically_backup', 'false')
+                CONFIG.write(configfile)
+
+                print("Auto backup was successfully deactivated!")
+
+    # TODO
     def system_tray_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.showInSystemTrayCheckBox.isChecked():
-                    config.set('SYSTEMTRAY', 'system_tray', 'true')
-                    config.write(configfile)
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.showInSystemTrayCheckBox.isChecked():
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'true')
+                CONFIG.write(configfile)
 
-                    if not can_system_tray_file_be_found():
-                        add_system_tray_file()
-                        sub.Popen(f"python3 {src_system_tray_py}", shell=True)
-                    
-                    print("System tray was successfully enabled!")
+                # Call system tray
+                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
-                else:
-                    config.set('SYSTEMTRAY', 'system_tray', 'false')
-                    config.write(configfile)
+                print("System tray was successfully enabled!")
 
-                    if can_system_tray_file_be_found():
-                        sub.run(f"rm -f {dst_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+            else:
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'false')
+                CONFIG.write(configfile)
 
-                    print("System tray was successfully disabled!")
-        except:
-            pass
+                print("System tray was successfully disabled!")
 
     def connected_action_to_take(self):
-        self.selectDiskButton.setEnabled(True)
-        self.backupNowButton.setEnabled(True)
-        self.automaticallyCheckBox.setEnabled(True)                
+        self.select_disk_button.setEnabled(True)
+        self.backup_now_button.setEnabled(True)
+        self.automatically_check_box.setEnabled(True)
         self.showInSystemTrayCheckBox.setEnabled(True)
 
     def not_connected_action_to_take(self):
-        self.selectDiskButton.setEnabled(False)
-        self.backupNowButton.setEnabled(False)
-        self.automaticallyCheckBox.setEnabled(False)
+        self.select_disk_button.setEnabled(False)
+        self.backup_now_button.setEnabled(False)
+        self.automatically_check_box.setEnabled(False)
         self.showInSystemTrayCheckBox.setEnabled(False)
 
     def not_registered_action_to_take(self):
-        self.externalNameLabel.setText("<h1>None</h1>")
-        self.backupNowButton.setEnabled(False)
+        self.external_name_label.setText("<h1>None</h1>")
+        self.backup_now_button.setEnabled(False)
 
     def backup_now_clicked(self):
         sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
 
     def on_options_clicked(self):
-        widget.setCurrentWidget(mainOpitions)
+        WIDGET.setCurrentWidget(MAIN_OPTIONS)
 
     def check_for_updates(self):
         # Check for git updates
-        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
+        gitUpdateCommand=os.popen("git remote update && git status -uno").read()
 
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable = QPushButton()
+            updateAvailable=QPushButton()
             updateAvailable.setText("   Update Available   ")
             updateAvailable.adjustSize()
             updateAvailable.setStyleSheet(self.buttonStylesheetDetector)
             updateAvailable.clicked.connect(self.on_update_button_clicked)
-            
-            # Show button on screen      
+
+            # Show button on screen
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
 
     def on_update_button_clicked(self):
         # Disable system tray
-        if os.path.isfile(f"{dst_folder_timemachine}/src/system_tray_is_running.txt"):
-            sub.run(f"rm {dst_folder_timemachine}/src/system_tray_is_running.txt",shell=True)
+        if os.path.isfile(f"{DST_FOLDER_INSTALL}/src/system_tray_is_running.txt"):
+            sub.run(f"rm {DST_FOLDER_INSTALL}/src/system_tray_is_running.txt",shell=True)
 
         # Call update and Exit
         backup_ini_file(True)
@@ -702,198 +682,195 @@ class MAIN(QMainWindow):
     # EXTERNAL
     ################################################################################
     def external_open_animation(self):
-        self.anim = QPropertyAnimation(self.externalWindow, b"pos")
+        self.anim=QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,0))
         self.anim.setDuration(500)
         self.anim.start()
-    
+
         self.externalBackgroundShadow.setVisible(True)
 
         self.check_connection()
 
     def check_connection(self):
         ################################################################################
-        # Search external inside media
+        # Search external inside /Media
         ################################################################################
         if device_location():
             try:
                 # Add buttons and images for each external
-                for output in os.listdir(f'{media}/{userName}'):
+                for backup_device in os.listdir(f'{MEDIA}/{USERNAME}'):
                     # No spaces and special characters allowed
-                    if output not in self.captureDevices and "'" not in output and " " not in output:
-                        print("     Devices:",output)
-                        self.captureDevices.append(output)
+                    if backup_device not in CAPTURE_DEVICE and "'" not in backup_device and " " not in backup_device:
+                        print("     Devices:",backup_device)
+                        CAPTURE_DEVICE.append(backup_device)
 
                         # Avaliables external  devices
-                        self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(QFont(mainFont,fontSize11px))
-                        self.availableDevices.setText(f"{output}")
-                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,50)
-                        self.availableDevices.setCheckable(True)
+                        self.available_devices=QPushButton(self.where_frame)
+                        self.available_devices.setFont(QFont(MAIN_FONT,FONT_SIZE_11PX))
+                        self.available_devices.setText(backup_device)
+                        self.available_devices.setFixedSize(self.where_frame.width()-20,50)
+                        self.available_devices.setCheckable(True)
 
-                        if str(mainIniFile.ini_hd_name()) != "None":
-                            self.availableDevices.setAutoExclusive(True)
-    
-                        self.availableDevices.setStyleSheet(self.availableDeviceButtonDetector)
-                        
-                        text = self.availableDevices.text()
-                        self.availableDevices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
-                        
+                        if MAIN_INI_FILE.ini_hd_name() != "None":
+                            self.available_devices.setAutoExclusive(True)
+
+                        self.available_devices.setStyleSheet(self.availableDeviceButtonDetector)
+
+                        text=self.available_devices.text()
+                        self.available_devices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
+
                         # Image
-                        icon = QLabel(self.availableDevices)
-                        image = QPixmap(f"{src_restore_icon}")
-                        image = image.scaled(36,36,QtCore.Qt.KeepAspectRatio)
+                        icon=QLabel(self.available_devices)
+                        image=QPixmap(f"{SRC_RESTORE_ICON}")
+                        image=image.scaled(36,36,QtCore.Qt.KeepAspectRatio)
                         icon.move(7,7)
                         icon.setStyleSheet(transparentBackground)
                         icon.setPixmap(image)
-      
-                        ################################################################################
-                        # Auto checked this choosed external device
-                        ################################################################################
                         
-                        if text == str(mainIniFile.ini_hd_name()):
-                            self.availableDevices.setChecked(True)
+                        # Free Space Label
+                        free_space_label=QLabel(self.available_devices)
+                        free_space_label.setText(f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
+                        free_space_label.setFont(QFont(MAIN_FONT, 8))
+                        free_space_label.setAlignment(QtCore.Qt.AlignRight)
+                        free_space_label.move(self.available_devices.width()-80, 30)
+
+                        # Auto checked the choosed backup device
+                        if text == MAIN_INI_FILE.ini_hd_name():
+                            self.available_devices.setChecked(True)
 
                         ################################################################################
                         # Add widgets and Layouts
                         ################################################################################
                         # Vertical layout
-                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
-           
+                        self.verticalLayout.addWidget(self.available_devices, 0, QtCore.Qt.AlignHCenter)
+
             except FileNotFoundError:
                 pass
 
-        elif not device_location():
+        # If backup devices found inside /Run
+        else:
             try:
                 # If x device is removed or unmounted, remove from screen
-                for output in os.listdir(f'{run}/{userName}'):
+                for backup_device in os.listdir(f'{RUN}/{USERNAME}'):
                     # No spaces and special characters allowed
-                    if "'" not in output and " " not in output:
-                        self.captureDevices.append(output)
+                    if backup_device not in CAPTURE_DEVICE and "'" not in backup_device and " " not in backup_device:
+                        print("     Devices:",backup_device)
+                        CAPTURE_DEVICE.append(backup_device)
 
                         # Avaliables external  devices
-                        self.availableDevices = QPushButton(self.whereFrame)
-                        self.availableDevices.setFont(QFont(mainFont,fontSize11px))
-                        self.availableDevices.setText(f"{output}")
-                        self.availableDevices.setFixedSize(self.whereFrame.width()-20,60)
-                        self.availableDevices.setCheckable(True)
-                        self.availableDevices.setAutoExclusive(True)
-                        self.availableDevices.setStyleSheet(availableDeviceButtonStylesheet)
-                        device = self.availableDevices.text()
+                        self.available_devices=QPushButton(self.where_frame)
+                        self.available_devices.setFont(QFont(MAIN_FONT,FONT_SIZE_11PX))
+                        self.available_devices.setText(backup_device)
+                        self.available_devices.setFixedSize(self.where_frame.width()-20,60)
+                        self.available_devices.setCheckable(True)
+                        self.available_devices.setAutoExclusive(True)
+                        self.available_devices.setStyleSheet(availableDeviceButtonStylesheet)
+                        device=self.available_devices.text()
 
                         # Connect the device
-                        self.availableDevices.clicked.connect(lambda *args, device=device: self.on_device_clicked(device))
-                        
-          
+                        self.available_devices.clicked.connect(lambda *args, device=device: self.on_device_clicked(device))
+
+
                         # Image
-                        icon = QLabel(self.availableDevices)
-                        image = QPixmap(f"{src_restore_icon}")
-                        image = image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        icon=QLabel(self.available_devices)
+                        image=QPixmap(f"{SRC_RESTORE_ICON}")
+                        image=image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
                         icon.move(7, 7)
                         icon.setPixmap(image)
-                        
-                        # Free Space Label
-                        freeSpaceLabel = QLabel(self.availableDevices)
-                        freeSpaceLabel.setFont(QFont(mainFont, 8))
-                        freeSpaceLabel.setAlignment(QtCore.Qt.AlignRight)
-                        freeSpaceLabel.move(self.availableDevices.width()-80, 40)
-                        
-                        if str(mainIniFile.ini_external_location()) == self.availableDevices.text():
-                            freeSpaceLabel.setText(f"{get_external_device_used_size()}/{get_external_device_max_size()}")
-                            freeSpaceLabel.adjustSize()
 
-                        # For other devices
-                        else:
-                            freeSpaceLabel.setText(f"{get_external_device_string_size(f'{run}/{userName}/{output}')}")
-                            freeSpaceLabel.adjustSize()
-                            
+                        # Free Space Label
+                        free_space_label=QLabel(self.available_devices)
+                        free_space_label.setText(f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
+                        free_space_label.setFont(QFont(MAIN_FONT, 8))
+                        free_space_label.setAlignment(QtCore.Qt.AlignRight)
+                        free_space_label.move(self.available_devices.width()-80, 30)
+
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
-                        if device == str(mainIniFile.ini_hd_name()):
-                            self.availableDevices.setChecked(True)
+                        if device == MAIN_INI_FILE.ini_hd_name():
+                            self.available_devices.setChecked(True)
 
                         ################################################################################
                         # Add widgets and Layouts
                         ################################################################################
                         # Vertical layout
-                        self.verticalLayout.addWidget(self.availableDevices, 0, QtCore.Qt.AlignHCenter)
-            
+                        self.verticalLayout.addWidget(self.available_devices, 0, QtCore.Qt.AlignHCenter)
+
             except FileNotFoundError:
                 pass
 
     def on_use_disk_clicked(self):
         # Update INI file
-        save_info(self.chooseDevice[-1])
+        save_info(CHOOSE_DEVICE[-1])
 
         try:
             # Backup Ini File
             backup_ini_file(False)
-            
+
             self.external_close_animation()
-            self.get_size_informations()
 
         except:
             pass
 
     def on_device_clicked(self, device):
         # Add to the list
-        if device not in self.chooseDevice:
+        if device not in CHOOSE_DEVICE:
             # Add to choosed device list
-            self.chooseDevice.append(device)
+            CHOOSE_DEVICE.append(device)
 
             # Enable use disk
             self.useDiskButton.setEnabled(True)
 
         # Remove from the list
         else:
-            # self.chooseDevice.clear()
-            self.chooseDevice.remove(device)
+            # CHOOSEDEVICE.clear()
+            CHOOSE_DEVICE.remove(device)
 
             # Disable use disk
             self.useDiskButton.setEnabled(False)
-        
+
         # Limit if list is higher than 1
-        if len(self.chooseDevice) > 1:
+        if len(CHOOSE_DEVICE) > 1:
             self.useDiskButton.setEnabled(False)
-        
+
         else:
             self.useDiskButton.setEnabled(True)
 
-        if len(self.chooseDevice) == 0:
+        if len(CHOOSE_DEVICE) == 0:
             self.useDiskButton.setEnabled(False)
 
 
-        print(self.chooseDevice)
+        print(CHOOSE_DEVICE)
 
     def on_button_cancel_clicked(self):
         self.external_close_animation()
-    
+
     def external_close_animation(self):
-        self.anim = QPropertyAnimation(self.externalWindow, b"pos")
+        self.anim=QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,-300))
         self.anim.setDuration(500)
         self.anim.start()
-        
+
         self.externalBackgroundShadow.setVisible(False)
-    
+
+
 class OPTION(QMainWindow):
     def __init__(self):
         super(OPTION, self).__init__()
-
         self.iniUI()
 
     def iniUI(self):
         # Set window icon
-        self.setWindowIcon(QIcon(src_backup_icon))
+        self.setWindowIcon(QIcon(SRC_BACKUP_ICON))
 
         ################################################################################
         # Center window
         ################################################################################
-        centerPoint = QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-        fg = self.frameGeometry()
+        centerPoint=QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        fg=self.frameGeometry()
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
 
@@ -901,18 +878,18 @@ class OPTION(QMainWindow):
 
     def begin_settings(self):
         # Detect dark theme
-        if detect_theme_color(app):
-            self.buttonStylesheetDetector = buttonStylesheetDark
+        if detect_theme_color(APP):
+            self.buttonStylesheetDetector=buttonStylesheetDark
         else:
-            self.buttonStylesheetDetector = buttonStylesheet
-        
+            self.buttonStylesheetDetector=buttonStylesheet
+
         self.widgets()
 
     def widgets(self):
         # Apps version
-        version = QLabel(self)
-        version.setFont(QFont(mainFont, 4))
-        version.setText(f"<h1>{appVersion}</h1>")
+        version=QLabel(self)
+        version.setFont(QFont(MAIN_FONT, 4))
+        version.setText(f"<h1>{APP_VERSION}</h1>")
         version.adjustSize()
         # version.setFixedSize(80, 20)
         version.move(290, 410)
@@ -920,36 +897,36 @@ class OPTION(QMainWindow):
         ################################################################################
         # Left Widget
         ################################################################################
-        self.leftWidget = QWidget()
+        self.leftWidget=QWidget()
         self.leftWidget.setGeometry(20, 20, 240, 405)
-   
+
         # Scroll
-        self.scroll = QScrollArea(self)
+        self.scroll=QScrollArea(self)
         self.scroll.setFixedSize(240, 405)
         self.scroll.move(20, 20)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.leftWidget)
 
         # Left layout
-        self.leftLayout = QVBoxLayout(self.leftWidget)
+        self.leftLayout=QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(10)
         self.leftLayout.setContentsMargins(10, 10, 10, 10)
-        
+
         ################################################################################
         # Left title
-        self.leftTitle = QLabel()
-        self.leftTitle.setFont(QFont(mainFont,smallFontSize))
+        self.leftTitle=QLabel()
+        self.leftTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.leftTitle.setText("<h1>Folders to be back up:</h1>")
         self.leftTitle.adjustSize()
 
         # Frame
-        self.leftFrame = QFrame()
+        self.leftFrame=QFrame()
         self.leftFrame.setGeometry(20, 20, 240, 405)
-   
+
         ################################################################################
-        # Days to run widget
+        # Days to run WIDGET
         ################################################################################
-        self.daysToRunWidget = QWidget(self)
+        self.daysToRunWidget=QWidget(self)
         self.daysToRunWidget.setGeometry(285, 20, 390, 80)
         self.daysToRunWidget.setStyleSheet("""
             border-top: 0px;
@@ -958,16 +935,16 @@ class OPTION(QMainWindow):
         """)
 
         # Days to run layout V
-        self.daysToRunLayoutV = QVBoxLayout(self.daysToRunWidget)
+        self.daysToRunLayoutV=QVBoxLayout(self.daysToRunWidget)
         self.daysToRunLayoutV.setSpacing(10)
 
         # Days to run layout H
-        self.daysToRunLayoutH = QHBoxLayout()
+        self.daysToRunLayoutH=QHBoxLayout()
         self.daysToRunLayoutH.setSpacing(10)
 
         # Days to run title
-        self.daysToRunTitle = QLabel()
-        self.daysToRunTitle.setFont(QFont(mainFont,smallFontSize))
+        self.daysToRunTitle=QLabel()
+        self.daysToRunTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.daysToRunTitle.setText("<h1>Days to run:</h1>")
         self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.daysToRunTitle.adjustSize()
@@ -978,66 +955,66 @@ class OPTION(QMainWindow):
         ################################################################################
         # Checkboxes
         ################################################################################
-        self.sunCheckBox = QCheckBox()
-        self.sunCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.sunCheckBox.setText("Sun")
-        self.sunCheckBox.clicked.connect(self.on_check_sun_clicked)
-        self.sunCheckBox.setStyleSheet("""
+        self.sun_checkbox=QCheckBox()
+        self.sun_checkbox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.sun_checkbox.setText("Sun")
+        self.sun_checkbox.clicked.connect(self.on_check_sun_clicked)
+        self.sun_checkbox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.monCheckBox = QCheckBox()
-        self.monCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.monCheckBox.setText("Mon")
-        self.monCheckBox.clicked.connect(self.on_check_mon_clicked)
-        self.monCheckBox.setStyleSheet("""
+        self.mon_checkBox=QCheckBox()
+        self.mon_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.mon_checkBox.setText("Mon")
+        self.mon_checkBox.clicked.connect(self.on_check_mon_clicked)
+        self.mon_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.tueCheckBox = QCheckBox()
-        self.tueCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.tueCheckBox.setText("Tue")
-        self.tueCheckBox.clicked.connect(self.on_check_tue_clicked)
-        self.tueCheckBox.setStyleSheet("""
+        self.tue_checkBox=QCheckBox()
+        self.tue_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.tue_checkBox.setText("Tue")
+        self.tue_checkBox.clicked.connect(self.on_check_tue_clicked)
+        self.tue_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.wedCheckBox = QCheckBox()
-        self.wedCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.wedCheckBox.setText("Wed")
-        self.wedCheckBox.clicked.connect(self.on_check_wed_clicked)
-        self.wedCheckBox.setStyleSheet("""
+        self.wed_checkBox=QCheckBox()
+        self.wed_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.wed_checkBox.setText("Wed")
+        self.wed_checkBox.clicked.connect(self.on_check_wed_clicked)
+        self.wed_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.thuCheckBox = QCheckBox()
-        self.thuCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.thuCheckBox.setText("Thu")
-        self.thuCheckBox.clicked.connect(self.on_check_thu_clicked)
-        self.thuCheckBox.setStyleSheet("""
+        self.thu_checkBox=QCheckBox()
+        self.thu_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.thu_checkBox.setText("Thu")
+        self.thu_checkBox.clicked.connect(self.on_check_thu_clicked)
+        self.thu_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.friCheckBox = QCheckBox()
-        self.friCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.friCheckBox.setText("Fri")
-        self.friCheckBox.clicked.connect(self.on_check_fri_clicked)
-        self.friCheckBox.setStyleSheet("""
+        self.fri_checkBox=QCheckBox()
+        self.fri_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.fri_checkBox.setText("Fri")
+        self.fri_checkBox.clicked.connect(self.on_check_fri_clicked)
+        self.fri_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
-        self.satCheckBox = QCheckBox()
-        self.satCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.satCheckBox.setText("Sat")
-        self.satCheckBox.clicked.connect(self.on_check_sat_clicked)
-        self.satCheckBox.setStyleSheet("""
+        self.sat_checkBox=QCheckBox()
+        self.sat_checkBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.sat_checkBox.setText("Sat")
+        self.sat_checkBox.clicked.connect(self.on_check_sat_clicked)
+        self.sat_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
 
         ################################################################################
-        # Time to run widget
+        # Time to run WIDGET
         ################################################################################
-        self.timeToRunWidget = QWidget(self)
+        self.timeToRunWidget=QWidget(self)
         self.timeToRunWidget.setGeometry(285, 100, 390, 140)
         self.timeToRunWidget.setStyleSheet("""
             border-top: 0px;
@@ -1047,8 +1024,8 @@ class OPTION(QMainWindow):
         """)
 
         # Time to run title
-        self.timeToRunTitle = QLabel(self.timeToRunWidget)
-        self.timeToRunTitle.setFont(QFont(mainFont,smallFontSize))
+        self.timeToRunTitle=QLabel(self.timeToRunWidget)
+        self.timeToRunTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.timeToRunTitle.setText("<h1>Time to run:</h1>")
         self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
         self.timeToRunTitle.adjustSize()
@@ -1057,62 +1034,62 @@ class OPTION(QMainWindow):
         """)
 
         # Time to run layout
-        self.timeToRunLayout = QGridLayout(self.timeToRunWidget)
+        self.timeToRunLayout=QGridLayout(self.timeToRunWidget)
 
         # Time settings
-        self.timesGridLayout = QGridLayout()
+        self.timesGridLayout=QGridLayout()
 
         # Radio buttons
-        self.oneTimePerDayRadio = QRadioButton()
-        self.oneTimePerDayRadio.setFont(QFont(mainFont,normalFontSize))
-        self.oneTimePerDayRadio.setText("At:")
-        self.oneTimePerDayRadio.setToolTip("One single back up will be execute every selected day(s) and time.")
-        self.oneTimePerDayRadio.adjustSize()
-        self.oneTimePerDayRadio.setStyleSheet(
+        self.one_time_per_day_radio=QRadioButton()
+        self.one_time_per_day_radio.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.one_time_per_day_radio.setText("At:")
+        self.one_time_per_day_radio.setToolTip("One single back up will be execute every selected day(s) and time.")
+        self.one_time_per_day_radio.adjustSize()
+        self.one_time_per_day_radio.setStyleSheet(
         "QRadioButton"
            "{"
             "border: 0px solid transparent;"
             "border-radius: 5px;"
            "}")
-        self.oneTimePerDayRadio.clicked.connect(self.on_frequency_clicked)
+        self.one_time_per_day_radio.clicked.connect(self.on_frequency_clicked)
 
-        self.moreTimePerDayRadio = QRadioButton()
-        self.moreTimePerDayRadio.setFont(QFont(mainFont,normalFontSize))
-        self.moreTimePerDayRadio.setToolTip(
+        self.more_time_per_day_radio=QRadioButton()
+        self.more_time_per_day_radio.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.more_time_per_day_radio.setToolTip(
             "Back up will be execute every x hours.\n"
             "This will produce a time folder inside your backup device.\n"
             "Fx: 12-12-12/10-00\n"
             "10-00, is the time of the back up (10:00).")
 
-        self.moreTimePerDayRadio.setText("Every:")
-        self.moreTimePerDayRadio.adjustSize()
-        self.moreTimePerDayRadio.setStyleSheet("""
+        self.more_time_per_day_radio.setText("Every:")
+        self.more_time_per_day_radio.adjustSize()
+        self.more_time_per_day_radio.setStyleSheet("""
             border-color: transparent;
         """)
-        self.moreTimePerDayRadio.clicked.connect(self.on_frequency_clicked)
+        self.more_time_per_day_radio.clicked.connect(self.on_frequency_clicked)
 
         # Spinbox Hours
-        self.hoursSpinBox = QSpinBox()
-        self.hoursSpinBox.setFont(QFont(mainFont, 14))
-        self.hoursSpinBox.setFixedSize(50, 30)
-        self.hoursSpinBox.setFrame(False)
-        self.hoursSpinBox.setMinimum(0)
-        self.hoursSpinBox.setSingleStep(1)
-        self.hoursSpinBox.setMaximum(23)
-        self.hoursSpinBox.valueChanged.connect(self.label_hours_changed)
-        self.hoursSpinBox.setStyleSheet(timeBox)
+        self.hours_spinbox=QSpinBox()
+        self.hours_spinbox.setFont(QFont(MAIN_FONT, 14))
+        self.hours_spinbox.setFixedSize(50, 30)
+        self.hours_spinbox.setFrame(False)
+        self.hours_spinbox.setMinimum(0)
+        self.hours_spinbox.setSingleStep(1)
+        self.hours_spinbox.setMaximum(23)
+        self.hours_spinbox.valueChanged.connect(self.label_hours_changed)
+        self.hours_spinbox.setStyleSheet(timeBox)
 
         # : between hours and minutes
-        self.betweenHoursAndMinutesLabel = QLabel()
-        self.betweenHoursAndMinutesLabel.setFont(QFont(mainFont, 18))
+        self.betweenHoursAndMinutesLabel=QLabel()
+        self.betweenHoursAndMinutesLabel.setFont(QFont(MAIN_FONT, 18))
         self.betweenHoursAndMinutesLabel.setText(":")
         self.betweenHoursAndMinutesLabel.setStyleSheet("""
             border-color: transparent;
         """)
 
         # Hours title
-        self.hoursTitle = QLabel()
-        self.hoursTitle.setFont(QFont(mainFont, 4))
+        self.hoursTitle=QLabel()
+        self.hoursTitle.setFont(QFont(MAIN_FONT, 4))
         self.hoursTitle.setText("<h1>Hours</h1>")
         self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
@@ -1121,8 +1098,8 @@ class OPTION(QMainWindow):
         """)
 
         # Minutes title
-        self.minutesTitle = QLabel()
-        self.minutesTitle.setFont(QFont(mainFont, 4))
+        self.minutesTitle=QLabel()
+        self.minutesTitle.setFont(QFont(MAIN_FONT, 4))
         self.minutesTitle.setText("<h1>Minutes</h1>")
         self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
@@ -1130,35 +1107,35 @@ class OPTION(QMainWindow):
         """)
 
         # Spinbox Hours
-        self.minutesSpinBox = QSpinBox()
-        self.minutesSpinBox.setFont(QFont(mainFont, 14))
-        self.minutesSpinBox.setFixedSize(50, 30)
-        self.minutesSpinBox.setFrame(False)
-        self.minutesSpinBox.setStyleSheet(timeBox)
+        self.minutes_spinBox=QSpinBox()
+        self.minutes_spinBox.setFont(QFont(MAIN_FONT, 14))
+        self.minutes_spinBox.setFixedSize(50, 30)
+        self.minutes_spinBox.setFrame(False)
+        self.minutes_spinBox.setStyleSheet(timeBox)
 
-        self.minutesSpinBox.setMinimum(0)
-        self.minutesSpinBox.setSingleStep(1)
-        self.minutesSpinBox.setMaximum(59)
-        self.minutesSpinBox.valueChanged.connect(self.label_minutes_changed)
+        self.minutes_spinBox.setMinimum(0)
+        self.minutes_spinBox.setSingleStep(1)
+        self.minutes_spinBox.setMaximum(59)
+        self.minutes_spinBox.valueChanged.connect(self.label_minutes_changed)
 
         # Multiple time per day combobox
-        self.multipleTimePerDayComboBox = QComboBox()
-        self.multipleTimePerDayComboBox.setFrame(True)
-        self.multipleTimePerDayComboBox.setFixedSize(132, 28)
-        self.multipleTimePerDayComboBox.setFont(QFont(mainFont,normalFontSize))
-        self.multipleTimePerDayComboBox.setStyleSheet(timeBox)
+        self.multiple_time_per_day_comboBox=QComboBox()
+        self.multiple_time_per_day_comboBox.setFrame(True)
+        self.multiple_time_per_day_comboBox.setFixedSize(132, 28)
+        self.multiple_time_per_day_comboBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.multiple_time_per_day_comboBox.setStyleSheet(timeBox)
 
-        multipleTimerPerDayComboBoxList = [
+        multipleTimerPerDayComboBoxList=[
             "Every 1 hour",
             "Every 2 hours",
             "Every 4 hours"]
-        self.multipleTimePerDayComboBox.addItems(multipleTimerPerDayComboBoxList)
-        self.multipleTimePerDayComboBox.currentIndexChanged.connect(self.on_every_combox_changed)
+        self.multiple_time_per_day_comboBox.addItems(multipleTimerPerDayComboBoxList)
+        self.multiple_time_per_day_comboBox.currentIndexChanged.connect(self.on_every_combox_changed)
 
         ################################################################################
         # Flatpak settings
         ################################################################################
-        self.flatpakWidget = QWidget(self)
+        self.flatpakWidget=QWidget(self)
         self.flatpakWidget.setGeometry(285, 240, 390, 80)
         self.flatpakWidget.setStyleSheet(
         "QWidget"
@@ -1169,12 +1146,12 @@ class OPTION(QMainWindow):
         "}")
 
         # Notification layout
-        self.flatpakLayout = QVBoxLayout(self.flatpakWidget)
+        self.flatpakLayout=QVBoxLayout(self.flatpakWidget)
         self.flatpakLayout.setSpacing(5)
 
         # Notification title
-        self.flatpakTitle = QLabel()
-        self.flatpakTitle.setFont(QFont(mainFont,smallFontSize))
+        self.flatpakTitle=QLabel()
+        self.flatpakTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.flatpakTitle.setText("<h1>Flatpak Settings:</h1>")
         self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
@@ -1182,20 +1159,20 @@ class OPTION(QMainWindow):
             border: transparent;
         """)
 
-        # Flatpak Name checkbox
-        self.allowFlatpakNamesCheckBox = QCheckBox()
-        self.allowFlatpakNamesCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks")
-        self.allowFlatpakNamesCheckBox.adjustSize()
-        self.allowFlatpakNamesCheckBox.setStyleSheet("""
-            border: transparent;
-        """)
-        self.allowFlatpakNamesCheckBox.clicked.connect(self.on_allow__flatpak_names_clicked)
-        
+        # # Flatpak Name checkbox
+        # self.allowFlatpakNamesCheckBox=QCheckBox()
+        # self.allowFlatpakNamesCheckBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        # self.allowFlatpakNamesCheckBox.setText(f"Back up Flatpaks")
+        # self.allowFlatpakNamesCheckBox.adjustSize()
+        # self.allowFlatpakNamesCheckBox.setStyleSheet("""
+        #     border: transparent;
+        # """)
+        # self.allowFlatpakNamesCheckBox.clicked.connect(self.on_allow__flatpak_names_clicked)
+
         # Flatpak Data checkbox
-        self.allowFlatpakDataCheckBox = QCheckBox()
-        self.allowFlatpakDataCheckBox.setFont(QFont(mainFont,normalFontSize))
-        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks Data " 
+        self.allowFlatpakDataCheckBox=QCheckBox()
+        self.allowFlatpakDataCheckBox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.allowFlatpakDataCheckBox.setText(f"Back up Flatpaks Data (.var/app) and (.local/share/flatpak)"
             "")
         self.allowFlatpakDataCheckBox.adjustSize()
         self.allowFlatpakDataCheckBox.setStyleSheet("""
@@ -1204,61 +1181,61 @@ class OPTION(QMainWindow):
         self.allowFlatpakDataCheckBox.clicked.connect(self.on_allow__flatpak_data_clicked)
 
         ################################################################################
-        # Reset widget
+        # Reset WIDGET
         ################################################################################
-        self.resetWidget = QWidget(self)
+        self.resetWidget=QWidget(self)
         self.resetWidget.setGeometry(285, 320, 390, 90)
-         
+
         # Reset layout
-        self.resetLayout = QVBoxLayout(self.resetWidget)
+        self.resetLayout=QVBoxLayout(self.resetWidget)
         self.resetLayout.setSpacing(0)
-        
+
         # Reset title
-        self.resetTitle = QLabel()
-        self.resetTitle.setFont(QFont(mainFont,smallFontSize))
+        self.resetTitle=QLabel()
+        self.resetTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
         self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
 
         # Reset label text
-        self.resetText = QLabel()
-        self.resetText.setFont(QFont(mainFont,normalFontSize))
+        self.resetText=QLabel()
+        self.resetText.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.resetText.setText('If something seems broken, click on "Reset", to reset settings.')
         self.resetText.adjustSize()
 
         ################################################################################
         # Fix button
         ################################################################################
-        self.fixButton = QPushButton()
-        self.fixButton.setFont(QFont(mainFont,normalFontSize))
+        self.fixButton=QPushButton()
+        self.fixButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.fixButton.setText("   Reset   ")
         self.fixButton.adjustSize()
-        self.fixButton.setFixedHeight(buttonHeightSize)
+        self.fixButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.fixButton.setStyleSheet(self.buttonStylesheetDetector)
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
         # Donate, Update and Save buttons
         ################################################################################
-        self.donateAndBackWidget = QWidget(self)
+        self.donateAndBackWidget=QWidget(self)
         self.donateAndBackWidget.setGeometry(310, 390, 380, 60)
 
-        # Donate and Settings widget
-        self.donateAndBackLayout = QHBoxLayout(self.donateAndBackWidget)
+        # Donate and Settings WIDGET
+        self.donateAndBackLayout=QHBoxLayout(self.donateAndBackWidget)
         self.donateAndBackLayout.setSpacing(10)
 
         # Donate buton
-        self.donateButton = QPushButton()
+        self.donateButton=QPushButton()
         self.donateButton.setText("   Donate   ")
-        self.donateButton.setFont(QFont(mainFont,normalFontSize))
-        self.donateButton.setFixedHeight(buttonHeightSize)
+        self.donateButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.donateButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.donateButton.setStyleSheet(self.buttonStylesheetDetector)
         self.donateButton.clicked.connect(self.donate_clicked)
 
         ################################################################################
         # Button
         ################################################################################
-        # self.applyButton = QPushButton()
+        # self.applyButton=QPushButton()
         # self.applyButton.setFont(QFont(mainFont,normalFontSize))
         # self.applyButton.setText("   Apply   ")
         # self.applyButton.adjustSize()
@@ -1266,11 +1243,11 @@ class OPTION(QMainWindow):
         # self.applyButton.setStyleSheet(self.buttonStylesheetDetector)
         # self.applyButton.clicked.connect(self.on_save_button_clicked)
 
-        self.backButton = QPushButton()
-        self.backButton.setFont(QFont(mainFont,normalFontSize))
+        self.backButton=QPushButton()
+        self.backButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.backButton.setText("   Back   ")
         self.backButton.adjustSize()
-        self.backButton.setFixedHeight(buttonHeightSize)
+        self.backButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.backButton.setStyleSheet(self.buttonStylesheetDetector)
         self.backButton.clicked.connect(self.on_back_button_clicked)
 
@@ -1285,31 +1262,31 @@ class OPTION(QMainWindow):
         self.daysToRunLayoutV.addLayout(self.daysToRunLayoutH)
 
         # Days to run layout H
-        self.daysToRunLayoutH.addWidget(self.sunCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.monCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.tueCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.wedCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.thuCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.friCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.daysToRunLayoutH.addWidget(self.satCheckBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.sun_checkbox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.mon_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.tue_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.wed_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.thu_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.fri_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.daysToRunLayoutH.addWidget(self.sat_checkBox, 0, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Time to run layout
         self.timeToRunLayout.addWidget(self.timeToRunTitle, 0, 0, Qt.AlignTop | Qt.AlignLeft)
-        self.timeToRunLayout.addWidget(self.oneTimePerDayRadio, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.timeToRunLayout.addWidget(self.moreTimePerDayRadio, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
-        self.timeToRunLayout.addWidget(self.multipleTimePerDayComboBox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timeToRunLayout.addWidget(self.one_time_per_day_radio, 1, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timeToRunLayout.addWidget(self.more_time_per_day_radio, 2, 0, Qt.AlignVCenter | Qt.AlignLeft)
+        self.timeToRunLayout.addWidget(self.multiple_time_per_day_comboBox, 2, 1, Qt.AlignVCenter | Qt.AlignLeft)
         self.timeToRunLayout.addLayout(self.timesGridLayout, 1, 1, Qt.AlignVCenter | Qt.AlignLeft)
 
         # Time grid layout
-        self.timesGridLayout.addWidget(self.hoursSpinBox, 0, 0, Qt.AlignTop | Qt.AlignLeft)
+        self.timesGridLayout.addWidget(self.hours_spinbox, 0, 0, Qt.AlignTop | Qt.AlignLeft)
         self.timesGridLayout.addWidget(self.betweenHoursAndMinutesLabel, 0, 2, Qt.AlignVCenter | Qt.AlignHCenter)
-        self.timesGridLayout.addWidget(self.minutesSpinBox, 0, 3, Qt.AlignTop | Qt.AlignLeft)
+        self.timesGridLayout.addWidget(self.minutes_spinBox, 0, 3, Qt.AlignTop | Qt.AlignLeft)
         self.timesGridLayout.addWidget(self.hoursTitle, 1, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.timesGridLayout.addWidget(self.minutesTitle, 1, 3, Qt.AlignVCenter | Qt.AlignHCenter)
 
         # Flaptak settings
         self.flatpakLayout.addWidget(self.flatpakTitle, Qt.AlignTop | Qt.AlignLeft)
-        self.flatpakLayout.addWidget(self.allowFlatpakNamesCheckBox)
+        # self.flatpakLayout.addWidget(self.allowFlatpakNamesCheckBox)
         self.flatpakLayout.addWidget(self.allowFlatpakDataCheckBox)
 
         # Reset layout
@@ -1321,7 +1298,7 @@ class OPTION(QMainWindow):
         self.donateAndBackLayout.addStretch()
         self.donateAndBackLayout.addWidget(self.donateButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.donateAndBackLayout.addWidget(self.backButton, 0, Qt.AlignVCenter | Qt.AlignHCenter)
-        
+
         self.setLayout(self.leftLayout)
 
         self.get_folders()
@@ -1330,29 +1307,30 @@ class OPTION(QMainWindow):
         ################################################################################
         # Read Ini File
         ################################################################################
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        getIniFolders = config.options('FOLDER')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        getIniFolders=CONFIG.options('FOLDER')
+
         ################################################################################
         # Get Home Folders and Sort them alphabetically
         # Add On Screen
         ################################################################################
         for folder in get_home_folders():
             # Hide hidden folder
-            if not "." in folder:   
+            if not "." in folder:
                 # Checkboxes
-                self.foldersCheckbox = QCheckBox(self.leftFrame)
+                self.foldersCheckbox=QCheckBox(self.leftFrame)
                 self.foldersCheckbox.setText(folder)
-                self.foldersCheckbox.setFont(QFont(mainFont,normalFontSize))
+                self.foldersCheckbox.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
                 self.foldersCheckbox.adjustSize()
-                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/{appNameClose}/src/icons/folder.png"))
+                # self.foldersCheckbox.setIcon(QIcon(f"{homeUser}/.local/share/{APPNAMEClose}/src/icons/folder.png"))
                 self.foldersCheckbox.setStyleSheet(
                     "QCheckBox"
                     "{"
                     "border-color: transparent;"
                     "}")
                 self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
-                
+
                 # Activate checkboxes in user.ini
                 if folder.lower() in getIniFolders:
                     self.foldersCheckbox.setChecked(True)
@@ -1367,488 +1345,396 @@ class OPTION(QMainWindow):
         # Dates
         # Check each dates
         ################################################################################
-        if str(mainIniFile.ini_next_backup_sun()) == "true":
-            self.sunCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_sun():
+            self.sun_checkbox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_mon()) == "true":
-            self.monCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_mon():
+            self.mon_checkBox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_tue()) == "true":
-            self.tueCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_tue():
+            self.tue_checkBox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_wed()) == "true":
-            self.wedCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_wed():
+            self.wed_checkBox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_thu()) == "true":
-            self.thuCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_thu():
+            self.thu_checkBox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_fri()) == "true":
-            self.friCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_fri():
+            self.fri_checkBox.setChecked(True)
 
-        if str(mainIniFile.ini_next_backup_sat()) == "true":
-            self.satCheckBox.setChecked(True)
+        if MAIN_INI_FILE.ini_next_backup_sat():
+            self.sat_checkBox.setChecked(True)
 
         self.time_to_run()
 
     def time_to_run(self):
-        self.hoursSpinBox.setValue(int(mainIniFile.ini_next_hour()))
-        self.minutesSpinBox.setValue(int(mainIniFile.ini_next_minute()))
+        self.hours_spinbox.setValue(int(MAIN_INI_FILE.ini_next_hour()))
+        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.ini_next_minute()))
 
         ################################################################################
         # Get info from INI file
         # One time per day
         ################################################################################
-        if str(mainIniFile.ini_one_time_mode()) == "true":
-            self.multipleTimePerDayComboBox.setEnabled(False)
-            self.hoursSpinBox.setEnabled(True)
-            self.minutesSpinBox.setEnabled(True)
-            self.oneTimePerDayRadio.setChecked(True)
-            
+        if MAIN_INI_FILE.ini_one_time_mode():
+            self.multiple_time_per_day_comboBox.setEnabled(False)
+            self.hours_spinbox.setEnabled(True)
+            self.minutes_spinBox.setEnabled(True)
+            self.one_time_per_day_radio.setChecked(True)
+
             # Enable all days
-            self.sunCheckBox.setEnabled(True)
-            self.monCheckBox.setEnabled(True)
-            self.tueCheckBox.setEnabled(True)
-            self.wedCheckBox.setEnabled(True)
-            self.thuCheckBox.setEnabled(True)
-            self.friCheckBox.setEnabled(True)
-            self.satCheckBox.setEnabled(True)
-        
+            self.sun_checkbox.setEnabled(True)
+            self.mon_checkBox.setEnabled(True)
+            self.tue_checkBox.setEnabled(True)
+            self.wed_checkBox.setEnabled(True)
+            self.thu_checkBox.setEnabled(True)
+            self.fri_checkBox.setEnabled(True)
+            self.sat_checkBox.setEnabled(True)
+
         # Multiple time per day
-        elif str(mainIniFile.ini_multiple_time_mode()) == "true":
-            self.hoursSpinBox.setEnabled(False)
-            self.minutesSpinBox.setEnabled(False)
-            self.multipleTimePerDayComboBox.setEnabled(True)
-            self.moreTimePerDayRadio.setChecked(True)
-        
+        elif MAIN_INI_FILE.ini_multiple_time_mode():
+            self.hours_spinbox.setEnabled(False)
+            self.minutes_spinBox.setEnabled(False)
+            self.multiple_time_per_day_comboBox.setEnabled(True)
+            self.more_time_per_day_radio.setChecked(True)
+
             # Disable all days
-            self.sunCheckBox.setEnabled(False)
-            self.monCheckBox.setEnabled(False)
-            self.tueCheckBox.setEnabled(False)
-            self.wedCheckBox.setEnabled(False)
-            self.thuCheckBox.setEnabled(False)
-            self.friCheckBox.setEnabled(False)
-            self.satCheckBox.setEnabled(False)
+            self.sun_checkbox.setEnabled(False)
+            self.mon_checkBox.setEnabled(False)
+            self.tue_checkBox.setEnabled(False)
+            self.wed_checkBox.setEnabled(False)
+            self.thu_checkBox.setEnabled(False)
+            self.fri_checkBox.setEnabled(False)
+            self.sat_checkBox.setEnabled(False)
 
         ################################################################################
         # Multiple time per day
         ################################################################################
-        if str(mainIniFile.ini_everytime()) == "60":
-            self.multipleTimePerDayComboBox.setCurrentIndex(0)
+        if str(MAIN_INI_FILE.ini_everytime()) == "60":
+            self.multiple_time_per_day_comboBox.setCurrentIndex(0)
 
-        elif str(mainIniFile.ini_everytime()) == "120":
-            self.multipleTimePerDayComboBox.setCurrentIndex(1)
+        elif str(MAIN_INI_FILE.ini_everytime()) == "120":
+            self.multiple_time_per_day_comboBox.setCurrentIndex(1)
 
-        elif str(mainIniFile.ini_everytime()) == "240":
-            self.multipleTimePerDayComboBox.setCurrentIndex(2)
+        elif str(MAIN_INI_FILE.ini_everytime()) == "240":
+            self.multiple_time_per_day_comboBox.setCurrentIndex(2)
 
         self.flatpak_settings()
 
     def flatpak_settings(self):
         ################################################################################
-        # Flatpak settings
-        ################################################################################
-        # Flatpak names
-        if str(mainIniFile.ini_allow_flatpak_names()) == "true":
-            self.allowFlatpakNamesCheckBox.setChecked(True)
-
         # Flatpak data
-        if str(mainIniFile.ini_allow_flatpak_data()) == "true":
+        ################################################################################
+        # Flatpak data
+        if MAIN_INI_FILE.ini_allow_flatpak_data():
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if config.has_option('FOLDER', output):
-                    config.remove_option('FOLDER', output)
-                else:
-                    config.set('FOLDER', output, 'true')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if CONFIG.has_option('FOLDER', output):
+                CONFIG.remove_option('FOLDER', output)
+            else:
+                CONFIG.set('FOLDER', output, 'true')
 
-                # Write to INI file
-                config.write(configfile)
-
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_every_combox_changed(self):
-        chooseMultipleTimePerDayCombox = self.multipleTimePerDayComboBox.currentIndex()
-        
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if chooseMultipleTimePerDayCombox == 0:
-                    config.set('SCHEDULE', 'everytime', '60')
+        chooseMultipleTimePerDayCombox=self.multiple_time_per_day_comboBox.currentIndex()
 
-                elif chooseMultipleTimePerDayCombox == 1:
-                    config.set('SCHEDULE', 'everytime', '120')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if chooseMultipleTimePerDayCombox == 0:
+                CONFIG.set('SCHEDULE', 'everytime', f'{TIME1}')
 
-                elif chooseMultipleTimePerDayCombox == 2:
-                    config.set('SCHEDULE', 'everytime', '240')
+            elif chooseMultipleTimePerDayCombox == 1:
+                CONFIG.set('SCHEDULE', 'everytime', f'{TIME2}')
 
-                # Write to INI file
-                config.write(configfile)
+            elif chooseMultipleTimePerDayCombox == 2:
+                CONFIG.set('SCHEDULE', 'everytime', f'{TIME3}')
 
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_sun_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.sunCheckBox.isChecked():
-                    config.set('SCHEDULE', 'sun', 'true')
-                    print("Sun")
-                else:
-                    config.set('SCHEDULE', 'sun', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.sun_checkbox.isChecked():
+                CONFIG.set('SCHEDULE', 'sun', 'true')
+                print("Sun")
+            else:
+                CONFIG.set('SCHEDULE', 'sun', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_mon_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.monCheckBox.isChecked():
-                    config.set('SCHEDULE', 'mon', 'true')
-                    print("Mon")
-                else:
-                    config.set('SCHEDULE', 'mon', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.mon_checkBox.isChecked():
+                CONFIG.set('SCHEDULE', 'mon', 'true')
+                print("Mon")
+            else:
+                CONFIG.set('SCHEDULE', 'mon', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_tue_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.tueCheckBox.isChecked():
-                    config.set('SCHEDULE', 'tue', 'true')
-                    print("Tue")
-                else:
-                    config.set('SCHEDULE', 'tue', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.tue_checkBox.isChecked():
+                CONFIG.set('SCHEDULE', 'tue', 'true')
+                print("Tue")
+            else:
+                CONFIG.set('SCHEDULE', 'tue', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_wed_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.wedCheckBox.isChecked():
-                    config.set('SCHEDULE', 'wed', 'true')
-                    print("Wed")
-                else:
-                    config.set('SCHEDULE', 'wed', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.wed_checkBox.isChecked():
+                CONFIG.set('SCHEDULE', 'wed', 'true')
+                print("Wed")
+            else:
+                CONFIG.set('SCHEDULE', 'wed', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_thu_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.thuCheckBox.isChecked():
-                    config.set('SCHEDULE', 'thu', 'true')
-                    print("Thu")
-                else:
-                    config.set('SCHEDULE', 'thu', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.thu_checkBox.isChecked():
+                CONFIG.set('SCHEDULE', 'thu', 'true')
+                print("Thu")
+            else:
+                CONFIG.set('SCHEDULE', 'thu', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_check_fri_clicked(self):
         try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.friCheckBox.isChecked():
-                    config.set('SCHEDULE', 'fri', 'true')
+            CONFIG=configparser.ConfigParser()
+            CONFIG.read(SRC_USER_CONFIG)
+            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+                if self.fri_checkBox.isChecked():
+                    CONFIG.set('SCHEDULE', 'fri', 'true')
                     print("Fri")
                 else:
-                    config.set('SCHEDULE', 'fri', 'false')
+                    CONFIG.set('SCHEDULE', 'fri', 'false')
 
                 # Write to INI file
-                config.write(configfile)
+                CONFIG.write(configfile)
 
         except:
             pass
 
     def on_check_sat_clicked(self):
         try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.satCheckBox.isChecked():
-                    config.set('SCHEDULE', 'sat', 'true')
+            CONFIG=configparser.ConfigParser()
+            CONFIG.read(SRC_USER_CONFIG)
+            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+                if self.sat_checkBox.isChecked():
+                    CONFIG.set('SCHEDULE', 'sat', 'true')
                     print("Sat")
                 else:
-                    config.set('SCHEDULE', 'sat', 'false')
+                    CONFIG.set('SCHEDULE', 'sat', 'false')
 
                 # Write to INI file
-                config.write(configfile)    
+                CONFIG.write(configfile)
 
         except:
             pass
 
     def label_hours_changed(self):
-        hours = str(self.hoursSpinBox.value())
-        try:
-            # Save hours
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set('SCHEDULE', 'hours', hours)
-                if hours in fixMinutes:
-                    config.set('SCHEDULE', 'hours', '0' + hours)
+        hours=str(self.hours_spinbox.value())
 
-                # Write to INI file
-                config.write(configfile)
+        # Save hours
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            CONFIG.set('SCHEDULE', 'hours', hours)
+            if hours in FIX_MINUTES:
+                CONFIG.set('SCHEDULE', 'hours', '0' + hours)
 
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def label_minutes_changed(self):
-        minutes = str(self.minutesSpinBox.value())
-        try:
-            # Save minutes
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                config.set('SCHEDULE', 'minutes', minutes)
-                if minutes in fixMinutes:
-                    config.set('SCHEDULE', 'minutes', '0' + minutes)
+        minutes=str(self.minutes_spinBox.value())
 
-                # Write to INI file
-                config.write(configfile)
+        # Save minutes
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        # with open(src_user_config, 'w+') as configfile:
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            CONFIG.set('SCHEDULE', 'minutes', minutes)
+            if minutes in FIX_MINUTES:
+                CONFIG.set('SCHEDULE', 'minutes', '0' + minutes)
 
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_frequency_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            # with open(src_user_config, 'w+') as configfile:
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.oneTimePerDayRadio.isChecked():
-                    config.set('MODE', 'one_time_mode', 'true')
-                    print("One time per day selected")
-                    # DISABLE MORE TIME MODE
-                    config.set('MODE', 'more_time_mode', 'false')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        # with open(src_user_config, 'w+') as configfile:
+        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            if self.one_time_per_day_radio.isChecked():
+                CONFIG.set('MODE', 'one_time_mode', 'true')
+                # DISABLE MORE TIME MODE
+                CONFIG.set('MODE', 'more_time_mode', 'false')
 
-                    self.multipleTimePerDayComboBox.setEnabled(False)
-                    self.hoursSpinBox.setEnabled(True)
-                    self.minutesSpinBox.setEnabled(True)
-                    self.oneTimePerDayRadio.setChecked(True)
-                    
-                    # Enable all days
-                    self.sunCheckBox.setEnabled(True)
-                    self.monCheckBox.setEnabled(True)
-                    self.tueCheckBox.setEnabled(True)
-                    self.wedCheckBox.setEnabled(True)
-                    self.thuCheckBox.setEnabled(True)
-                    self.friCheckBox.setEnabled(True)
-                    self.satCheckBox.setEnabled(True)
+                self.multiple_time_per_day_comboBox.setEnabled(False)
+                self.hours_spinbox.setEnabled(True)
+                self.minutes_spinBox.setEnabled(True)
+                self.one_time_per_day_radio.setChecked(True)
 
-                elif self.moreTimePerDayRadio.isChecked():
-                    config.set('MODE', 'more_time_mode', 'true')
-                    print("Multiple time per day selected")
-                    # DISABLE ONE TIME MODE
-                    config.set('MODE', 'one_time_mode', 'false')
+                # Enable all days
+                self.sun_checkbox.setEnabled(True)
+                self.mon_checkBox.setEnabled(True)
+                self.tue_checkBox.setEnabled(True)
+                self.wed_checkBox.setEnabled(True)
+                self.thu_checkBox.setEnabled(True)
+                self.fri_checkBox.setEnabled(True)
+                self.sat_checkBox.setEnabled(True)
 
-                    self.hoursSpinBox.setEnabled(False)
-                    self.minutesSpinBox.setEnabled(False)
-                    self.multipleTimePerDayComboBox.setEnabled(True)
-                    self.moreTimePerDayRadio.setChecked(True)
-            
-                    # Disable all days
-                    self.sunCheckBox.setEnabled(False)
-                    self.monCheckBox.setEnabled(False)
-                    self.tueCheckBox.setEnabled(False)
-                    self.wedCheckBox.setEnabled(False)
-                    self.thuCheckBox.setEnabled(False)
-                    self.friCheckBox.setEnabled(False)
-                    self.satCheckBox.setEnabled(False)
+            elif self.more_time_per_day_radio.isChecked():
+                CONFIG.set('MODE', 'more_time_mode', 'true')
+                print("Multiple time per day selected")
+                # DISABLE ONE TIME MODE
+                CONFIG.set('MODE', 'one_time_mode', 'false')
 
-                # Write to INI file
-                config.write(configfile)
-        except:
-            pass
+                self.hours_spinbox.setEnabled(False)
+                self.minutes_spinBox.setEnabled(False)
+                self.multiple_time_per_day_comboBox.setEnabled(True)
+                self.more_time_per_day_radio.setChecked(True)
 
-    def on_allow__flatpak_names_clicked(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
-                if self.allowFlatpakNamesCheckBox.isChecked():
-                    config.set('BACKUP', 'allow_flatpak_names', 'true')
-                    print("Allow flatpaks installed names")
-                else:
-                    config.set('BACKUP', 'allow_flatpak_names', 'false')
-                    config.set('BACKUP', 'allow_flatpak_data', 'false')
-                    self.allowFlatpakDataCheckBox.setChecked(False)
+                # Disable all days
+                self.sun_checkbox.setEnabled(False)
+                self.mon_checkBox.setEnabled(False)
+                self.tue_checkBox.setEnabled(False)
+                self.wed_checkBox.setEnabled(False)
+                self.thu_checkBox.setEnabled(False)
+                self.fri_checkBox.setEnabled(False)
+                self.sat_checkBox.setEnabled(False)
 
-                # Write to INI file
-                config.write(configfile)
-
-        except:
-            pass
+            # Write to INI file
+            CONFIG.write(configfile)
 
     def on_allow__flatpak_data_clicked(self):
         try:
-            # If user allow app to back up data, auto activate
+            # If user allowAPP to back up data, auto activate
             # backup flatpaks name too.
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            with open(src_user_config, 'w', encoding='utf8') as configfile:
+            CONFIG=configparser.ConfigParser()
+            CONFIG.read(SRC_USER_CONFIG)
+            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.allowFlatpakDataCheckBox.isChecked():
-                    config.set('BACKUP', 'allow_flatpak_names', 'true')
-                    config.set('BACKUP', 'allow_flatpak_data', 'true')
-                    print("Allow flatpaks installed names + data")
-
-                    # Activate names checkbox
-                    self.allowFlatpakNamesCheckBox.setChecked(True)
+                    CONFIG.set('STATUS', 'allow_flatpak_data', 'true')
+                    print("Allow flatpaks data to be backup.")
 
                 else:
-                    config.set('BACKUP', 'allow_flatpak_data', 'false')
+                    CONFIG.set('STATUS', 'allow_flatpak_data', 'false')
 
                 # Write to INI file
-                config.write(configfile)
+                CONFIG.write(configfile)
 
         except:
             pass
 
-    def on_apparence_button_clicked(self):
-        pass
-        # # Reset settings
-        # config = configparser.ConfigParser()
-        # config.read(src_user_config)
-        # with open(src_user_config, 'w', encoding='utf8') as configfile:
-        #     # Mode section
-        #     # True = Dark, White = False
-        #     if main.darkMode == "true":
-        #         config.set('MODE', 'dark_mode', 'false')
-        #     else:
-        #         config.set('MODE', 'dark_mode', 'true')
-
-        #     # Write to INI file
-        #     config.write(configfile)
-
-        # themeChanger = QMessageBox.question(self, 'Change Theme', 
-        # f'Will be applied after {appName} is restarted.',
-        # QMessageBox.Ok)
-
-        # if themeChanger == QMessageBox.Ok:
-        #     QMessageBox.Close
-
     def on_button_fix_clicked(self):
-        resetConfirmation = QMessageBox.question(self, 'Reset', 
-            'Are you sure you want to reset settings?',
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if resetConfirmation == QMessageBox.Yes:
-            try:
-                
-                main.lastestBackupLabel.setText("Latest Backup: None")
-                main.oldestBackupLabel.setText("Oldest Backup: None")
+        reset_confirmation=QMessageBox.question(
+            self,
+            'Reset',
+            'Are you sure you want to reset settings?',QMessageBox.Yes | QMessageBox.No)
 
-                if can_system_tray_file_be_found():
-                    remove_system_tray_file()
-                
-                if can_backup_now_file_be_found():
-                    remove_backup_now_file()
-                
-                # Reset settings
-                config = configparser.ConfigParser()
-                config.read(src_user_config)
-                with open(src_user_config, 'w', encoding='utf8') as configfile:
-                    # Backup section
-                    config.set('BACKUP', 'auto_backup', 'false')
-                    config.set('BACKUP', 'backup_now', 'false')
-                    config.set('BACKUP', 'checker_running', 'false')
-                    config.set('BACKUP', 'allow_flatpak_names', 'true')
-                    config.set('BACKUP', 'allow_flatpak_data', 'false')
-                    config.set('BACKUP', 'skip_this_backup', 'false')
+        if reset_confirmation == QMessageBox.Yes:
+            MAIN.latest_backup_label.setText("Latest Backup: None")
+            MAIN.oldest_backup_label.setText("Oldest Backup: None")
 
-                    # External section
-                    config.set('EXTERNAL', 'hd', 'None')
-                    config.set('EXTERNAL', 'name', 'None')
+            # Reset settings
+            CONFIG=configparser.ConfigParser()
+            CONFIG.read(SRC_USER_CONFIG)
+            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+                # Backup section
+                CONFIG.set('STATUS', 'unfinished_backup', 'no')
+                CONFIG.set('STATUS', 'automatically_backup', 'false')
+                CONFIG.set('STATUS', 'backing_up_now', 'false')
+                CONFIG.set('STATUS', 'first_startup', 'false')
+                CONFIG.set('STATUS', 'allow_flatpak_names', 'true')
+                CONFIG.set('STATUS', 'allow_flatpak_data', 'false')
 
-                    # Mode section
-                    config.set('MODE', 'one_time_mode', 'true')
-                    config.set('MODE', 'more_time_mode', 'false')
+                # External section
+                CONFIG.set('EXTERNAL', 'hd', 'None')
+                CONFIG.set('EXTERNAL', 'name', 'None')
 
-                    # System tray  section
-                    config.set('SYSTEMTRAY', 'system_tray', 'false')
+                # Mode section
+                CONFIG.set('MODE', 'one_time_mode', 'true')
+                CONFIG.set('MODE', 'more_time_mode', 'false')
 
-                    # Schedule section
-                    config.set('SCHEDULE', 'sun', 'true')
-                    config.set('SCHEDULE', 'mon', 'true')
-                    config.set('SCHEDULE', 'tue', 'true')
-                    config.set('SCHEDULE', 'wed', 'true')
-                    config.set('SCHEDULE', 'thu', 'true')
-                    config.set('SCHEDULE', 'fri', 'true')
-                    config.set('SCHEDULE', 'sat', 'true')
-                    config.set('SCHEDULE', 'hours', '10')
-                    config.set('SCHEDULE', 'minutes', '00')
-                    config.set('SCHEDULE', 'everytime', '60')
+                # System tray  section
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'false')
 
-                    # Info section
-                    config.set('INFO', 'language', 'None')
-                    config.set('INFO', 'os', 'None')
-                    config.set('INFO', 'packageManager', 'None')
-                    config.set('INFO', 'icon', 'None')
-                    config.set('INFO', 'theme', 'None')
-                    config.set('INFO', 'cursor', 'None')
-                    config.set('INFO', 'colortheme', 'None')
-                    # config.set('INFO', 'oldest', 'None')
-                    # config.set('INFO', 'latest', 'None')
-                    config.set('INFO', 'next', 'None')
-                    config.set('INFO', 'notification_message', '')
-                    config.set('INFO', 'current_backing_up', ' ')
-                    config.set('INFO', 'auto_reboot', 'false')
+                # Schedule section
+                CONFIG.set('SCHEDULE', 'sun', 'true')
+                CONFIG.set('SCHEDULE', 'mon', 'true')
+                CONFIG.set('SCHEDULE', 'tue', 'true')
+                CONFIG.set('SCHEDULE', 'wed', 'true')
+                CONFIG.set('SCHEDULE', 'thu', 'true')
+                CONFIG.set('SCHEDULE', 'fri', 'true')
+                CONFIG.set('SCHEDULE', 'sat', 'true')
+                CONFIG.set('SCHEDULE', 'hours', '10')
+                CONFIG.set('SCHEDULE', 'minutes', '00')
+                CONFIG.set('SCHEDULE', 'everytime', '60')
+                CONFIG.set('SCHEDULE', 'time_left', 'None')
 
-                    # Folders section
-                    config.set('FOLDER', 'pictures', 'true')
-                    config.set('FOLDER', 'documents', 'true')
-                    config.set('FOLDER', 'music', 'true')
-                    config.set('FOLDER', 'videos', 'true')
-                    config.set('FOLDER', 'desktop', 'true')
 
-                    # Restore section
-                    config.set('RESTORE', 'is_restore_running', 'none')
-                    config.set('RESTORE', 'applications_packages', 'false')
-                    config.set('RESTORE', 'applications_flatpak_names', 'false')
-                    config.set('RESTORE', 'applications_data', 'false')
-                    config.set('RESTORE', 'files_and_folders', 'false')
-                    config.set('RESTORE', 'system_settings', 'false')
+                # Info section
+                CONFIG.set('INFO', 'language', 'None')
+                CONFIG.set('INFO', 'os', 'None')
+                CONFIG.set('INFO', 'packageManager', 'None')
+                CONFIG.set('INFO', 'theme', 'None')
+                CONFIG.set('INFO', 'icon', 'None')
+                CONFIG.set('INFO', 'cursor', 'None')
+                CONFIG.set('INFO', 'colortheme', 'None')
 
-                    config.write(configfile)
-            
-            except:
-                pass
+                CONFIG.set('INFO', 'saved_notification', '')
+
+                # Folders section
+                CONFIG.set('FOLDER', 'pictures', 'true')
+                CONFIG.set('FOLDER', 'documents', 'true')
+                CONFIG.set('FOLDER', 'music', 'true')
+                CONFIG.set('FOLDER', 'videos', 'true')
+                CONFIG.set('FOLDER', 'desktop', 'true')
+
+                # Restore section
+                CONFIG.set('RESTORE', 'applications_packages', 'false')
+                CONFIG.set('RESTORE', 'applications_flatpak_names', 'false')
+                CONFIG.set('RESTORE', 'applications_data', 'false')
+                CONFIG.set('RESTORE', 'files_and_folders', 'false')
+                CONFIG.set('RESTORE', 'system_settings', 'false')
+
+                CONFIG.write(configfile)
 
             print("All settings was reset!")
+
+            # Re-open Main Windows
+            sub.Popen(f'python3 {SRC_MAIN_WINDOW_PY}', shell=True)
+
+            # Quit
+            exit()
 
         else:
             QMessageBox.Close
@@ -1857,27 +1743,24 @@ class OPTION(QMainWindow):
         sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)
 
     def on_back_button_clicked(self):
-        widget.setCurrentWidget(main)
+        WIDGET.setCurrentWidget(MAIN)
 
-    # async def wait_few_seconds(self):
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ####################
-    mainIniFile = UPDATEINIFILE()
-    main = MAIN()
-    mainOpitions = OPTION()
+    APP=QApplication(sys.argv)
 
-    widget = QStackedWidget()
-    widget.addWidget(main)   
-    widget.addWidget(mainOpitions) 
-    widget.setCurrentWidget(main)   
-    widget.show()
+    MAIN_INI_FILE=UPDATEINIFILE()
+    MAIN=MainWindow()
+    MAIN_OPTIONS=OPTION()
 
-    widget.setWindowTitle(appName)
-    widget.setWindowIcon(QIcon(src_backup_icon))
-    widget.setFixedSize(700,450)
+    WIDGET=QStackedWidget()
+    WIDGET.addWidget(MAIN)
+    WIDGET.addWidget(MAIN_OPTIONS)
+    WIDGET.setCurrentWidget(MAIN)
+    WIDGET.show()
 
-    app.exit(app.exec())
-        
+    WIDGET.setWindowTitle(APP_NAME)
+    WIDGET.setWindowIcon(QIcon(SRC_BACKUP_ICON))
+    WIDGET.setFixedSize(700,450)
 
+    APP.exit(APP.exec())

@@ -2,7 +2,7 @@ from setup import *
 
 
 def package_manager():
-    userPackageManager = os.popen(getUserPackageManager).read().strip().lower()
+    userPackageManager=os.popen(GET_USER_PACKAGE_MANAGER).read().strip().lower()
     
     # Distros
     if "ubuntu" in userPackageManager:

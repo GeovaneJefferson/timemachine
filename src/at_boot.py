@@ -1,6 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 
+MAIN_INI_FILE=UPDATEINIFILE()
 
 class BOOT:
     def __init__(self):
@@ -10,23 +11,22 @@ class BOOT:
         self.system_tray()
 
     def system_tray(self):
-        mainIniFile = UPDATEINIFILE()
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w') as configfile:
+            CONFIG.set('STATUS', 'first_startup', 'true')
+            CONFIG.write(configfile)
 
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'first_startup', 'true')
-            config.write(configfile)
-
-        if str(mainIniFile.ini_system_tray()) == "true":
+        if MAIN_INI_FILE.ini_system_tray():
             sub.Popen(f"python3 {src_system_tray_py}",shell=True)
 
-        if str(mainIniFile.ini_hd_name()) != "None":
-            if str(mainIniFile.ini_automatically_backup()) == "true":
+        if MAIN_INI_FILE.ini_hd_name() != "None":
+            if MAIN_INI_FILE.ini_automatically_backup():
                 self.call_backup_checker()
         exit()
 
     def call_backup_checker(self):
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
+        sub.Popen(f"python3 {SRC_BACKUP_CHECKER_PY}", shell=True)
 
-main = BOOT()
+if __name__=='__main__':
+    main=BOOT()

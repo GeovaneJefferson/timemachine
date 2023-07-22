@@ -8,69 +8,70 @@ from get_time import *
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
-from add_backup_now_file import can_backup_now_file_be_found
-from add_system_tray_file import can_system_tray_file_be_found, remove_system_tray_file
-from add_backup_now_file import can_backup_now_file_be_found, remove_backup_now_file
 
 
 class APP:
     def __init__(self):
-        self.color = str()
+        self.color=str()
+
+        # Update delay
+        self.update_delay=2000
+
         self.iniUI()
 
     def iniUI(self):
-        self.app = QApplication([])
+        self.app=QApplication([])
         self.app.setQuitOnLastWindowClosed(False)
-        self.app.setApplicationDisplayName(appName)
-        self.app.setApplicationName(appName)
+        self.app.setApplicationDisplayName(APP_NAME)
+        self.app.setApplicationName(APP_NAME)
+
         self.begin_settings()
 
     def begin_settings(self):
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
-            self.systemBarIconStylesheetDetector = src_system_bar_white_icon
+            self.systemBarIconStylesheetDetector=src_system_bar_white_icon
+
         else:
-            self.systemBarIconStylesheetDetector = src_system_bar_icon
+            self.systemBarIconStylesheetDetector=src_system_bar_icon
 
         self.widget()
 
     def widget(self):
-        ################################################################################
-        # Add icon
-        ################################################################################
-        self.tray = QSystemTrayIcon()
+        # Tray
+        self.tray=QSystemTrayIcon()
         self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
         self.tray.setVisible(True)
         self.tray.activated.connect(self.tray_icon_clicked)
 
         # Create a menu
-        self.menu = QMenu()
+        self.menu=QMenu()
 
         # Ini last backup information
-        self.iniLastBackupInformation = QAction()
-        self.iniLastBackupInformation.setFont(QFont(mainFont,buttonFontSize))
+        self.iniLastBackupInformation=QAction()
+        self.iniLastBackupInformation.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.iniLastBackupInformation.setEnabled(False)
         
-        self.iniLastBackupInformation2 = QAction()
-        self.iniLastBackupInformation2.setFont(QFont(mainFont,buttonFontSize))
+        self.iniLastBackupInformation2=QAction()
+        self.iniLastBackupInformation2.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.iniLastBackupInformation2.setEnabled(False)
 
         # Backup now button
-        self.backupNowButton = QAction("Back Up Now")
-        self.backupNowButton.setFont(QFont(mainFont,buttonFontSize))
+        self.backupNowButton=QAction("Back Up Now")
+        self.backupNowButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
-        self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
-        self.browseTimeMachineBackupsButton.setFont(QFont(mainFont,buttonFontSize))
+        self.browseTimeMachineBackupsButton=QAction("Browse Time Machine Backups")
+        self.browseTimeMachineBackupsButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browseTimeMachineBackupsButton.triggered.connect(
             lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
 
         # Open Time Machine button
-        self.openTimeMachine = QAction(f"Open {appName}")
-        self.openTimeMachine.setFont(QFont(mainFont,buttonFontSize))
+        self.openTimeMachine=QAction(f"Open {APP_NAME}")
+        self.openTimeMachine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.openTimeMachine.triggered.connect(
-            lambda: sub.Popen(f"python3 {src_main_window_py}",shell=True))
+            lambda: sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}",shell=True))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
@@ -89,7 +90,7 @@ class APP:
         self.tray.setContextMenu(self.menu)
         
         timer.timeout.connect(self.should_be_running)
-        timer.start(2000) 
+        timer.start(self.update_delay) 
         self.should_be_running()
 
         self.app.exec()
@@ -97,7 +98,9 @@ class APP:
     def should_be_running(self):
         print("System tray is running...")
         
-        if not can_system_tray_file_be_found():
+        # Check if ini file is locked or not 
+        if not MAIN_INI_FILE.ini_system_tray():
+            # Quit 
             self.exit()
 
         self.has_connection()
@@ -105,9 +108,9 @@ class APP:
     def has_connection(self):
         try:
             # User has registered a device name
-            if str(mainIniFile.ini_hd_name()) != "None":
+            if MAIN_INI_FILE.ini_hd_name() != "None":
                 # Can device be found?
-                if is_connected(str(mainIniFile.ini_hd_name())):
+                if is_connected(MAIN_INI_FILE.ini_hd_name()):
                     # Is backup now running? (chech if file exists)
                     self.status_on()
                 else:
@@ -128,38 +131,39 @@ class APP:
             self.exit()
 
     def status_on(self):
-        # Not backing up right now
-        if not can_backup_now_file_be_found():
+        # Backing up right now False
+        if not MAIN_INI_FILE.ini_backing_up_now():
             self.change_color("White")
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
-                self.iniLastBackupInformation.setText(f'Next Backup to "{str(mainIniFile.ini_hd_name())}":')
+                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.ini_hd_name()}":')
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
-                self.iniLastBackupInformation.setText(f'Latest Backup to "{str(mainIniFile.ini_hd_name())}":')
+                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.ini_hd_name()}":')
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
     
         else:
+            # Change color to Blue
             self.change_color("Blue")
 
             # Notification information
-            self.iniLastBackupInformation.setText(f"{str(mainIniFile.ini_current_backup_information())}")
+            self.iniLastBackupInformation.setText(f"{MAIN_INI_FILE.ini_current_backup_information()}")
             self.iniLastBackupInformation2.setText('')
         
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def status_off(self):
-        if str(mainIniFile.ini_automatically_backup()) == "true":
+        if str(MAIN_INI_FILE.ini_automatically_backup()) == "true":
             self.change_color("Red")
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
             
             # if self.iniNotificationID != " ":
             #     # Clean notification add info, because auto backup is not enabled
-            #     config = configparser.ConfigParser()
+            #     config=configparser.ConfigParser()
             #     config.read(src_user_config)
             #     with open(src_user_config, 'w', encoding='utf8') as configfile:
             #         config.set('INFO', 'notification_add_info', ' ')
@@ -172,41 +176,35 @@ class APP:
         try:
             if self.color != color:
                 if color == "Blue":
-                    self.color = color
-                    self.tray.setIcon(QIcon(src_system_bar_run_icon))
+                    self.color=color
+                    self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_RUN_ICON))
 
                 elif color == "White":
-                    self.color = color
+                    self.color=color
                     self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
 
                 elif color == "Red":
-                    self.color = color
+                    self.color=color
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
         except Exception as error:
-            print(error)
             self.exit()
 
     def exit(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        with open(src_user_config, 'w') as configfile:
+        config=configparser.ConfigParser()
+        config.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w') as configfile:
             config.set('SYSTEMTRAY', 'system_tray', 'false')
             config.write(configfile)
 
-        if can_system_tray_file_be_found():
-            remove_system_tray_file()
-        
-        if can_backup_now_file_be_found():
-            remove_backup_now_file()
-            
         self.tray.hide()
         QtWidgets.QApplication.exit()
     
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:
             self.tray.contextMenu().exec(QCursor.pos())
+    
 
 if __name__ == '__main__':
-    mainIniFile = UPDATEINIFILE()
-    main = APP()
+    MAIN_INI_FILE=UPDATEINIFILE()
+    main=APP()

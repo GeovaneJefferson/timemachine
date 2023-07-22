@@ -1,8 +1,9 @@
 from setup import *
 
-now = datetime.now()
-config = configparser.ConfigParser()
-config.read(src_user_config)
+
+NOW=datetime.now()
+CONFIG=configparser.ConfigParser()
+CONFIG.read(SRC_USER_CONFIG)
 
 
 class UPDATEINIFILE:
@@ -10,418 +11,463 @@ class UPDATEINIFILE:
     # INI
     ####################################################################
     def ini_hd_name(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            self.iniHDName = config['EXTERNAL']['name']
-            return self.iniHDName
-        
-        except:
-            pass
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return str(CONFIG['EXTERNAL']['name'])
 
     def ini_external_location(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['EXTERNAL']['hd']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['EXTERNAL']['hd']
 
-    def ini_backup_now(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        try:
-            return config['BACKUP']['backup_now']
-        
-        except:
-            return "None"
-        
+    def ini_backing_up_now(self):
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        # Not backing up
+        if str(CONFIG['STATUS']['backing_up_now']) == 'false':
+            return False
+
+        # Current backing up
+        else:
+            return True
+
+    def ini_unfinished_backup(self):
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['STATUS']['unfinished_backup']) == 'no':
+            return False
+
+        else:
+            return True
+
     def ini_automatically_backup(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            return config['BACKUP']['auto_backup']
-        
-        except:
-            return "false"
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        if CONFIG['STATUS']['automatically_backup'] == 'false':
+            return False
+        else:
+            return True
 
     def ini_system_tray(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SYSTEMTRAY']['system_tray']
-   
-    # def ini_oldest_backup(self):
-    #     config = configparser.ConfigParser()
-    #     config.read(src_user_config)
-    #     return config['INFO']['oldest']   
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
 
-    # def ini_lastest_backup(self):
-    #     config = configparser.ConfigParser()
-    #     config.read(src_user_config)
-    #     return config['INFO']['latest']
-    
-    # def ini_next_backup(self):
-    #     config = configparser.ConfigParser()
-    #     config.read(src_user_config)
-    #     self.iniNextBackup = config['INFO']['next']
-    #     return self.iniNextBackup
-    
+        if CONFIG['SYSTEMTRAY']['system_tray'] == 'false':
+            return False
+        else:
+            return True
+
     def ini_one_time_mode(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['MODE']['one_time_mode']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['MODE']['one_time_mode']) == 'false':
+            return False
+        else:
+            return True
+
     def ini_multiple_time_mode(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['MODE']['more_time_mode']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['MODE']['more_time_mode']) == 'false':
+            return False
+        else:
+            return True
+
     def ini_next_hour(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['hours']
-     
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['SCHEDULE']['hours']
+
     def ini_next_minute(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['minutes']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['SCHEDULE']['minutes']
+
     def ini_next_backup_sun(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['sun']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['sun']) == 'false':
+            return False
+
+        else:
+            return True
 
     def ini_next_backup_mon(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['mon']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['mon']) == 'false':
+            return False
+
+        else:
+            return True
+
     def ini_next_backup_tue(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['tue']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['tue']) == 'false':
+            return False
+
+        else:
+            return True
 
     def ini_next_backup_wed(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['wed']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['wed']) == 'false':
+            return False
+
+        else:
+            return True
 
     def ini_next_backup_thu(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['thu']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['thu']) == 'false':
+            return False
+
+        else:
+            return True
+
     def ini_next_backup_fri(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['fri']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['fri']) == 'false':
+            return False
+        else:
+            return True
 
     def ini_next_backup_sat(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['sat']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['SCHEDULE']['sat']) == 'false':
+            return False
+
+        else:
+            return True
 
     def ini_everytime(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['everytime']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return str(CONFIG['SCHEDULE']['everytime'])
+
     def ini_time_left(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['SCHEDULE']['time_left']
-                                                     
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if CONFIG['SCHEDULE']['time_left'] == 'None':
+            return None
+
     def ini_extra_information(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
         try:
-            return config['INFO']['notification_add_info']
+            return CONFIG['INFO']['notification_add_info']
         except KeyError:
             return "None"
 
     def ini_current_backup_information(self):
-        try:
-            config = configparser.ConfigParser()
-            config.read(src_user_config)
-            return config['INFO']['current_backing_up']
-        except:
-            pass
-        
-    def ini_allow_flatpak_names(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['BACKUP']['allow_flatpak_names']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return str(CONFIG['INFO']['current_backing_up'])
+
     def ini_allow_flatpak_data(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['BACKUP']['allow_flatpak_data']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if str(CONFIG['STATUS']['allow_flatpak_data']) == 'false':
+            return False
+        else:
+            return True
+
     def ini_files_and_folders(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['RESTORE']['files_and_folders']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['RESTORE']['files_and_folders']
+
     def ini_system_settings(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['RESTORE']['system_settings']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['RESTORE']['system_settings']
+
     def ini_user_os(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['INFO']['os']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['INFO']['os']
 
     def ini_folders(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config.options('FOLDER')
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG.options('FOLDER')
 
     def ini_package_manager(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['INFO']['packageManager']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['INFO']['packageManager']
+
     def ini_automatically_reboot(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['INFO']['auto_reboot']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+
+        if CONFIG['INFO']['auto_reboot'] == 'false':
+            return False
+        else:
+            return True 
+
     def ini_applications_packages(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['RESTORE']['applications_packages']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        return CONFIG['RESTORE']['applications_packages']
+
     def ini_restoring_is_running(self):
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-        return config['RESTORE']['is_restore_running']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        if CONFIG['RESTORE']['is_restore_running'] == 'false':
+            return False
+        else:
+            return True
+
     def ini_info_wallpaper(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['wallpaper']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['wallpaper']
 
     def ini_info_icon(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['icon']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['icon']
 
     def ini_info_cursor(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['cursor']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['cursor']
+
     def ini_info_font(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['font']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['font']
 
     def ini_info_colortheme(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['colortheme']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['colortheme']
 
     def ini_info_gtktheme(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['gtktheme']
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['gtktheme']
 
     def ini_info_theme(self):
-        config = configparser.ConfigParser()
-        config.read(f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}")
-        return config['INFO']['theme']
-    
+        CONFIG=configparser.ConfigParser()
+        CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        return CONFIG['INFO']['theme']
+
     ####################################################################
     # Date/time
     ####################################################################
     def day_name(self):
-        now = datetime.now()
-        self.dayName = now.strftime("%a")
+        NOW=datetime.now()
+        self.dayName= NOW.strftime("%a")
         return self.dayName
 
     def current_date(self):
-        now = datetime.now()
-        self.dateDay = now.strftime("%d")
+        NOW=datetime.now()
+        self.dateDay= NOW.strftime("%d")
         return self.dateDay
 
     def current_month(self):
-        now = datetime.now()
-        self.dateMonth = now.strftime("%m")
+        NOW=datetime.now()
+        self.dateMonth=   NOW.strftime("%m")
         return self.dateMonth
 
     def current_year(self):
-        now = datetime.now()
-        self.dateYear = now.strftime("%y")
+        NOW=datetime.now()
+        self.dateYear=NOW.strftime("%y")
         return self.dateYear
 
     def current_hour(self):
-        # With 'now', current time will update by each hour 
-        now = datetime.now()
-        return now.strftime("%H")
+        # With 'now', current time will update by each hour
+        NOW=datetime.now()
+        return  NOW.strftime("%H")
 
     def current_minute(self):
-        # With 'now', current time will update by each minute 
-        now = datetime.now()
-        return now.strftime("%M")
+        # With 'now', current time will update by each minute
+        NOW=datetime.now()
+        return  NOW.strftime("%M")
 
     def current_second(self):
-        now = datetime.now()
-        return int(now.strftime("%S"))
-    
+        NOW=datetime.now()
+        return int(NOW.strftime("%S"))
+
     def date_folder_format(self):
-        dateFolder = f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
+        dateFolder=f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
         return dateFolder
 
     def time_folder_format(self):
-        timeFolder = f"{str(self.backup_folder_name())}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
-        return timeFolder
+        value=f"{str(self.backup_folder_name())}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
+        return value
 
     def current_time(self):
-        return f"{self.current_hour()}{self.current_minute()}" 
-    
+        value=f"{self.current_hour()}{self.current_minute()}"
+        return int(value)
+
     def backup_year(self):
-        return now.strftime("%y") 
+        return  NOW.strftime("%y")
 
     def backup_month(self):
-        return now.strftime("%m")
-    
+        return  NOW.strftime("%m")
+
     def backup_date(self):
-        return now.strftime("%d")
+        return  NOW.strftime("%d")
 
     def backup_hour(self):
-        return now.strftime("%H") 
+        return  NOW.strftime("%H")
 
     def backup_minute(self):
-        return now.strftime("%M") 
+        return  NOW.strftime("%M")
 
     def backup_time_military(self):
-        backupTime = f"{str(self.ini_next_hour())}{str(self.ini_next_minute())}"
-        return backupTime
-    
+        value=f"{str(self.ini_next_hour())}{str(self.ini_next_minute())}"
+        return int(value)
+
     ####################################################################
-    # Folder creation 
+    # Folder creation
     ####################################################################
     def create_base_folder(self):
-        createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}"
+        createBackupFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}"
         return createBackupFolder
 
     def backup_folder_name(self):
-        createBackupFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{backupFolderName}"
+        createBackupFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
         return createBackupFolder
 
     # Wallpaper
     def wallpaper_main_folder(self):
-        wallpaperMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{wallpaperFolderName}"
+        wallpaperMainFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}"
         return wallpaperMainFolder
-    
+
     def application_main_folder(self):
-        applicationMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}"
+        applicationMainFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}"
         return applicationMainFolder
-
-    def application_var_folder(self):
-        applicationVarFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{varFolderName}"
-        return applicationVarFolder
-
-    def application_local_folder(self):
-        applicationLocalFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{localFolderName}"
-        return applicationLocalFolder
 
     ####################################################################
     # System settings
     ####################################################################
     def icon_main_folder(self):
-        iconsMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{iconFolderName}"
+        iconsMainFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{ICONS_FOLDER_NAME}"
         return iconsMainFolder
 
     def cursor_main_folder(self):
-        cursorMainFolder = f"{str(self.ini_external_location())}/{baseFolderName}/{cursorFolderName}"
+        cursorMainFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{CURSORS_FOLDER_NAME}"
         return cursorMainFolder
 
     def fonts_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{fontsFolderName}"
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FONTS_FOLDER_NAME}"
 
     def gtk_theme_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gtkThemeFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{GTK_THEME_FOLDER_NAME}"
+
     def theme_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{themeFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{THEMES_FOLDER_NAME}"
+
     ####################################################################
     # KDE
     ####################################################################
     # Create kde folder
     def kde_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}"
+
     # KDE configurration folder
     def kde_configurations_folder_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}"
-    
-    # KDE config folder
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
+
+    # KDE CONFIG folder
     def kde_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{configFolderName}"
-   
-    # KDE .local/share 
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
+
+    # KDE .local/share
     def kde_local_share_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{shareFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
+
     def kde_share_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{kdeFolderName}/{configurationFolderName}/{shareConfigFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_CONFIG_FOLDER_NAME}"
+
     ####################################################################
     # GNOME
     ####################################################################
     # Create gnome folder
     def gnome_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}"
+
     def gnome_configurations_folder_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}"
-    
-    # GNOME config folder
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
+
+    # GNOME CONFIG folder
     def gnome_config_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}/{configFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
+
     # GNOME share folder
     def gnome_local_share_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{gnomeFolderName}/{configurationFolderName}/{shareFolderName}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
+
     ####################################################################
     # Packages managers
     ####################################################################
     # .rpm
     def rpm_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{rpmFolderName}"
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{RPM_FOLDER_NAME}"
 
     # .deb
     def deb_main_folder(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{debFolderName}"
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{DEB_FOLDER_NAME}"
 
     ####################################################################
     # Flatpak
     ####################################################################
     def flatpak_txt_location(self):
-        flatpakTxtFile = f"{str(self.ini_external_location())}/{baseFolderName}/{flatpakTxt}"
+        flatpakTxtFile=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
         return flatpakTxtFile
     
+    def flatpak_var_folder(self):
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{VAR_FOLDER_NAME}"
+
+    def flatpak_local_folder(self):
+        applicationLocalFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{LOCAL_FOLDER_NAME}"
+        return applicationLocalFolder
+    
+    def create_flatpak_folder(self):
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}"
+
     ####################################################################
     # Exclude
     ####################################################################
     def exclude_apps_location(self):
-        excludeAppsLoc = f"{str(self.ini_external_location())}/{baseFolderName}/{applicationFolderName}/{src_exclude_applications}"
+        excludeAppsLoc=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
         return excludeAppsLoc
-   
-    def exclude_appsications_location(self):
-        return f"{self.ini_external_location()}/{baseFolderName}/{applicationFolderName}/{src_exclude_applications}"
-   
+
+    def exclude_applications_location(self):
+        return f"{self.ini_external_location()}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
+
     def restore_settings_location(self):
-        return f"{str(self.ini_external_location())}/{baseFolderName}/{restoreSettingsIni}"
-    
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}"
+
     def get_backup_home_folders(self):
         from get_latest_backup_date import latest_backup_date
 
-        getbackupHomeFolders = f"{self.backup_folder_name()}/{latest_backup_date()}"
+        getbackupHomeFolders=f"{self.backup_folder_name()}/{latest_backup_date()}"
         return getbackupHomeFolders
 
 
 if __name__ == '__main__':
-    mainIniFile = UPDATEINIFILE()
+    MAININIFILE=UPDATEINIFILE()
     pass

@@ -1,16 +1,16 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from get_user_de import get_user_de
+from get_users_de import get_user_de
 
-somethingToRestoreInTheme = []
+somethingToRestoreInTheme=[]
 
 async def restore_backup_theme():
-    mainIniFile = UPDATEINIFILE()
+    MAININIFILE=UPDATEINIFILE()
 
     print("Restoring theme...")
     try:
         # Check for theme to be restored
-        for theme in os.listdir(f"{mainIniFile.gtk_theme_main_folder()}/"):
+        for theme in os.listdir(f"{MAININIFILE.gtk_theme_main_folder()}/"):
             somethingToRestoreInTheme.append(theme)
 
         # If has something to restore
@@ -18,22 +18,22 @@ async def restore_backup_theme():
             ################################################################################
             # Create .themes inside home user
             ################################################################################
-            if not os.path.exists(f"{homeUser}/.local/share/themes"):
-                sub.run(f"{createCMDFolder} {homeUser}/.local/share/themes", shell=True)   
+            if not os.path.exists(f"{HOME_USER}/.local/share/themes"):
+                sub.run(f"{CREATE_CMD_FOLDER} {HOME_USER}/.local/share/themes", shell=True)   
 
-            sub.run(f"{copyRsyncCMD} {mainIniFile.gtk_theme_main_folder()}/ {homeUser}/.local/share/themes", shell=True)
+            sub.run(f"{COPY_RSYNC_CMD} {MAININIFILE.gtk_theme_main_folder()}/ {HOME_USER}/.local/share/themes", shell=True)
 
             if get_user_de() != 'kde': 
                 try:
-                    os.listdir(f"/usr/share/themes/{mainIniFile.ini_info_gtktheme()}")
-                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    os.listdir(f"/usr/share/themes/{MAININIFILE.ini_info_gtktheme()}")
+                    sub.run(f"{SET_USER_THEME_CMD} {MAININIFILE.ini_info_gtktheme()}", shell=True)
                 except:
                     # try:
-                    os.listdir(f"{homeUser}/.local/share/themes/{mainIniFile.ini_info_gtktheme()}")
-                    sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    os.listdir(f"{HOME_USER}/.local/share/themes/{MAININIFILE.ini_info_gtktheme()}")
+                    sub.run(f"{SET_USER_THEME_CMD} {MAININIFILE.ini_info_gtktheme()}", shell=True)
                     # except:
-                    #     os.listdir(f"{homeUser}/.themes/{mainIniFile.ini_info_gtktheme()}")
-                    #     sub.run(f"{setUserThemeCMD} {mainIniFile.ini_info_gtktheme()}", shell=True)
+                    #     os.listdir(f"{homeUser}/.themes/{MAININIFILE.ini_info_gtktheme()}")
+                    #     sub.run(f"{setUserThemeCMD} {MAININIFILE.ini_info_gtktheme()}", shell=True)
     except:     
         pass
 

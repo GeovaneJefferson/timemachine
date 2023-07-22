@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 
 
 def restore_backup_flatpaks_data():
-    mainIniFile = UPDATEINIFILE()
+    MAININIFILE=UPDATEINIFILE()
     try:
         print("Checking size of flatpak (var)...")
         # Get folders size
@@ -13,9 +13,9 @@ def restore_backup_flatpaks_data():
         self.flatpakLocaloBeRestore=[]
         
         for output in os.listdir(src_flatpak_var_folder_location): 
-            getSize = os.popen(f"du -s {src_flatpak_var_folder_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_folder_location}/{output}", "").replace("\t", "")
-            getSize = int(getSize)
+            getSize=os.popen(f"du -s {src_flatpak_var_folder_location}/{output}")
+            getSize=getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_var_folder_location}/{output}", "").replace("\t", "")
+            getSize=int(getSize)
 
             ################################################################################
             # Add to list
@@ -33,9 +33,9 @@ def restore_backup_flatpaks_data():
         ################################################################################
         for output in os.listdir(src_flatpak_local_folder_location):  # Get .local/share/flatpak size before back up to external
             # Get size of flatpak folder inside var/app/
-            getSize = os.popen(f"du -s {src_flatpak_local_folder_location}/{output}")
-            getSize = getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_folder_location}/{output}", "").replace("\t", "")
-            getSize = int(getSize)
+            getSize=os.popen(f"du -s {src_flatpak_local_folder_location}/{output}")
+            getSize=getSize.read().strip("\t").strip("\n").replace(f"{src_flatpak_local_folder_location}/{output}", "").replace("\t", "")
+            getSize=int(getSize)
 
             # Add to list to be backup
             self.flatpakVarSizeList.append(getSize)

@@ -56,15 +56,15 @@ files/folders, themes, apps etc. after a fresh installation.
 
 ## System Tray 
 You will notice that your system tray will from time to time change its color from White to Blue or Red.
-* ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) = Normal color, 
+* ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png)=Normal color, 
 automatically backup is ON and your backup device is connected and mounted.
 
 
-* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing up your files, after is done,
+* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png)=Time Machine is current backing up your files, after is done,
 it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
 
 
-* ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) = If automatically backup is ON but your backup device
+* ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png)=If automatically backup is ON but your backup device
 is disconnected or not mounted, you will see ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png).
   - ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) can also mean that Time Machine had some problem to back up. Open Time Machine main window and 
   read the report about it.

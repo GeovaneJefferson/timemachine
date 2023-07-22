@@ -1,6 +1,6 @@
 from setup import *
 
-languageList = []
+languageList=[]
 
 def determine_days_language(lang):
     # Clean list

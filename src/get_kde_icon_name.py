@@ -1,8 +1,8 @@
 from setup import *
 
 def get_kde_icon_name():
-    with open(f"{homeUser}/.config/kdeglobals", "r") as read:
-        read = read.readlines()
+    with open(f"{HOME_USER}/.config/kdeglobals", "r") as read:
+        read=read.readlines()
         
         for count in range(len(read)):
             try:

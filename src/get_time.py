@@ -3,29 +3,25 @@ from read_ini_file import UPDATEINIFILE
 
 
 def get_date_time():
-    mainIniFile = UPDATEINIFILE()
-    timeFolder = f"{str(mainIniFile.day_name())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}/{str(mainIniFile.current_hour())}-{str(mainIniFile.current_minute())}"
-    return timeFolder
+    MAIN_INI_FILE=UPDATEINIFILE()
+    return f"{str(MAIN_INI_FILE.day_name())}-{str(MAIN_INI_FILE.current_month())}-{str(MAIN_INI_FILE.current_year())}/{str(MAIN_INI_FILE.current_hour())}-{str(MAIN_INI_FILE.current_minute())}"
 
 def get_date():
-    mainIniFile = UPDATEINIFILE()
-    dateFolder = f"{str(mainIniFile.current_date())}-{str(mainIniFile.current_month())}-{str(mainIniFile.current_year())}"
-    return dateFolder
+    MAIN_INI_FILE=UPDATEINIFILE()
+    return f"{str(MAIN_INI_FILE.current_date())}-{str(MAIN_INI_FILE.current_month())}-{str(MAIN_INI_FILE.current_year())}"
 
 def latest_time_info():
-    mainIniFile = UPDATEINIFILE()
-    lastestTimeInfo = f'{str(mainIniFile.day_name())}, {str(mainIniFile.current_hour())}:{str(mainIniFile.current_minute())}'
-    return lastestTimeInfo
+    MAIN_INI_FILE=UPDATEINIFILE()
+    return f'{str(MAIN_INI_FILE.day_name())}, {str(MAIN_INI_FILE.current_hour())}:{str(MAIN_INI_FILE.current_minute())}'
 
 def today_date():
-    dateTime = datetime.now()
-    todayDate = dateTime.strftime("%d-%m-%y")
-    return todayDate
+    date_time=datetime.now()
+    return date_time.strftime("%d-%m-%y")
 
 def current_time():
-    dateTime = datetime.now()
-    currentTime = dateTime.strftime("%H:%M")
-    return currentTime
+    date_time=datetime.now()
+    return date_time.strftime("%H:%M")
+
 
 if __name__ == '__main__':
     pass

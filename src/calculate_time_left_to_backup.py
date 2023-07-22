@@ -2,39 +2,49 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 def calculate_time_left_to_backup():
-    mainIniFile = UPDATEINIFILE()
-    global timeLeft
+    MAININIFILE=UPDATEINIFILE()
+    global time_left
 
-    backupHour = mainIniFile.ini_next_hour() 
-    currentBackupHour = mainIniFile.current_hour() 
-    
-    backupMinute = mainIniFile.ini_next_minute() 
-    currentBackupMinute = mainIniFile.current_minute() 
+    # Backup hour
+    backup_hour=MAININIFILE.ini_next_hour()
+    # Current hour
+    current_hour=MAININIFILE.current_hour()
+    # Backup minute
+    backup_minute=MAININIFILE.ini_next_minute()
+    # Current minute
+    current_minute=MAININIFILE.current_minute()
 
-    if int(backupHour) - int(currentBackupHour) == 1:
-        timeLeft = (int(backupMinute) - int(currentBackupMinute) + 59)
-    
-        if timeLeft < 59 and timeLeft >= 0:
+    # If backup hour - current hour == 1, ex. backup hour=10, current hour=9
+    if int(backup_hour) - int(current_hour) == 1:
+        time_left=(int(backup_minute) - int(current_minute) + 59)
+
+        if time_left < 59 and time_left >= 0:
+            # Write time left to ini file
             write_to_ini_file()
-            return f"In Approx. {timeLeft} minutes..."
+
+            return f"In Approx. {time_left} minutes..."
         else:
             return None
-    
-    elif int(backupHour) - int(currentBackupHour) == 0:
-        timeLeft = int(backupMinute) - int(currentBackupMinute)
-        if timeLeft >= 0:
+
+    # If backup hour - current hour == 0, ex. backup hour=10, current hour=10
+    elif int(backup_hour) - int(current_hour) == 0:
+        time_left=int(backup_minute) - int(current_minute)
+
+        if time_left >= 0:
+            # Write time left to ini file
             write_to_ini_file()
-            return f"In Approx. {timeLeft} minutes..."
+
+            return f"In Approx. {time_left} minutes..."
         else:
             return None
-        
+
 def write_to_ini_file():
-    print(f"In Approx. {timeLeft} minutes...")
-    
-    config = configparser.ConfigParser()
-    config.read(src_user_config)
-    with open(src_user_config, 'w') as configfile:
-        config.set('SCHEDULE', 'time_left', f'In Approx. {timeLeft} minutes...')
+    print(f"In Approx. {time_left} minutes...")
+
+    config=configparser.ConfigParser()
+    config.read(SRC_USER_CONFIG)
+    with open(SRC_USER_CONFIG, 'w') as configfile:
+        config.set('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
         config.write(configfile)
 
 

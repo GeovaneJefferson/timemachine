@@ -3,17 +3,17 @@ from read_ini_file import UPDATEINIFILE
 
 
 def backup_user_fonts():
-    mainIniFile = UPDATEINIFILE()
+    MAININIFILE=UPDATEINIFILE()
 
     try:
-        os.listdir(f"{homeUser}/.fonts")
-        sub.run(f"{copyRsyncCMD} {homeUser}/.fonts/ {str(mainIniFile.fonts_main_folder())}",shell=True)
+        os.listdir(f"{HOME_USER}/.fonts")
+        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.fonts/ {str(MAININIFILE.fonts_main_folder())}",shell=True)
     except:
         pass
 
     try:
-        os.listdir(f"{homeUser}/.local/share/fonts")
-        sub.run(f"{copyRsyncCMD} {homeUser}/.local/share/fonts/ {str(mainIniFile.fonts_main_folder())}",shell=True)
+        os.listdir(f"{HOME_USER}/.local/share/fonts")
+        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/fonts/ {str(MAININIFILE.fonts_main_folder())}",shell=True)
     except:
         pass
 
