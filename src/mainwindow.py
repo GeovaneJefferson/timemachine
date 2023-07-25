@@ -255,10 +255,10 @@ class MainWindow(QMainWindow):
         self.descriptionText=QLabel()
         self.descriptionText.setFont(ITEM)
         self.descriptionText.setText(
-            "• Local snapshots as space permits\n"
-            "• Hourly backups for the past 24 hours\n"
-            "• Daily backups for the past mounths\n"
-            "• Applications '.deb and .rpm' + Flatpaks\n"
+            "• Local HOME snapshots as space permits\n"
+            "• Hourly or Daily backups\n"
+            "• Packages as: .DEB and .RPM\n"
+            "• Installed flatpaks + Data (.var/app) and (.local/share/flatpak)\n"
             "• Some system files and folders\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
