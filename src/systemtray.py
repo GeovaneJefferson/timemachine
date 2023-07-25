@@ -10,13 +10,12 @@ from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 
 
+DELAY_TO_UPDATE=2000
+
+
 class APP:
     def __init__(self):
-        self.color=str()
-
-        # Update delay
-        self.update_delay=2000
-
+        self.color = str()
         self.iniUI()
 
     def iniUI(self):
@@ -30,17 +29,16 @@ class APP:
     def begin_settings(self):
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
-            self.systemBarIconStylesheetDetector=src_system_bar_white_icon
-
+            self.system_bar_icon_stylesheet_detector = src_system_bar_icon
         else:
-            self.systemBarIconStylesheetDetector=src_system_bar_icon
+            self.system_bar_icon_stylesheet_detector = src_system_bar_white_icon
 
         self.widget()
 
     def widget(self):
         # Tray
         self.tray=QSystemTrayIcon()
-        self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
+        self.tray.setIcon(QIcon(self.system_bar_icon_stylesheet_detector))
         self.tray.setVisible(True)
         self.tray.activated.connect(self.tray_icon_clicked)
 
@@ -90,7 +88,7 @@ class APP:
         self.tray.setContextMenu(self.menu)
         
         timer.timeout.connect(self.should_be_running)
-        timer.start(self.update_delay) 
+        timer.start(DELAY_TO_UPDATE) 
         self.should_be_running()
 
         self.app.exec()
@@ -181,7 +179,7 @@ class APP:
 
                 elif color == "White":
                     self.color=color
-                    self.tray.setIcon(QIcon(self.systemBarIconStylesheetDetector))
+                    self.tray.setIcon(QIcon(self.system_bar_icon_stylesheet_detector))
 
                 elif color == "Red":
                     self.color=color
