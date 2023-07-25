@@ -23,9 +23,6 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 
 class BACKUP:
-    def __init__(self):
-        self.backup_wallpaper()
-
     def backup_wallpaper(self):
         # GNOME/KDE
         # Send notification status
@@ -39,62 +36,8 @@ class BACKUP:
 
         # Backup current wallpaper
         sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {str(MAIN_INI_FILE.wallpaper_main_folder())}/", shell=True)
-
-        self.backup_flatpak()
-
-    def backup_flatpak(self):
-        # Send notification status
-        notification_message("Backing up: Flatpak Applications ...")
-
-        # Backup flatpak installed apps by the name
-        try:
-            count=0
-            flatpak_list=[]
-
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
-                for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
-                    flatpak_list.append(flatpak)
-
-                    # Write USER installed flatpak to flatpak.txt inside external device
-                    configfile.write(flatpak_list[count])
-
-                    count += 1
-                    
-        except Exception as e:
-            print("Flatpak names ERROR:", e)
-            pass
-
-        # Backup flatpak data
-        if MAIN_INI_FILE.ini_allow_flatpak_data():
-            # Send notification status
-            notification_message("Backing up: Flatpak Data ...")
-
-            # Backup flatpak data folder
-            try:
-                # Start Flatpak (var/app) backup
-                count=0
-                for _ in flatpak_var_list():
-                    # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[count]} {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
-
-                    count += 1
-
-                # Start Flatpak (.local/share/flatpak) backup
-                count=0
-                for _ in flatpak_local_list():
-                    # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[count]} {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
-
-                    count += 1
-
-            except:
-                pass
-
-        self.backup_home()
-
-    def backup_home(self):
+        
+    async def backup_home(self):
         # Backup Home
         # Send notification status
         notification_message("Backing up: Home folders...")
@@ -107,9 +50,7 @@ class BACKUP:
         except:
             pass
 
-        self.backup_home_hidden_files()
-
-    def backup_home_hidden_files(self):
+    async def backup_home_hidden_files(self):
         # For GNOME
         if get_user_de() == 'gnome':
             # Send notification status
@@ -227,7 +168,55 @@ class BACKUP:
             except:
                 pass
 
-        self.end_backup()
+    async def backup_flatpak(self):
+        # Send notification status
+        notification_message("Backing up: Flatpak Applications ...")
+
+        # Backup flatpak installed apps by the name
+        try:
+            count = 0
+            flatpak_list = []
+
+            CONFIG=configparser.ConfigParser()
+            CONFIG.read(SRC_USER_CONFIG)
+            with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
+                for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
+                    flatpak_list.append(flatpak)
+
+                    # Write USER installed flatpak to flatpak.txt inside external device
+                    configfile.write(flatpak_list[count])
+
+                    count += 1
+                    
+        except Exception as e:
+            print("Flatpak names ERROR:", e)
+            pass
+
+        # Backup flatpak data
+        if MAIN_INI_FILE.ini_allow_flatpak_data():
+            # Send notification status
+            notification_message("Backing up: Flatpak Data ...")
+
+            # Backup flatpak data folder
+            try:
+                # Start Flatpak (var/app) backup
+                count = 0
+                for _ in flatpak_var_list():
+                    # Copy the Flatpak var/app folders
+                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[count]} {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
+
+                    count += 1
+
+                # Start Flatpak (.local/share/flatpak) backup
+                count=0
+                for _ in flatpak_local_list():
+                    # Copy the Flatpak var/app folders
+                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[count]} {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
+
+                    count += 1
+
+            except:
+                pass
 
     def end_backup(self):
         print("Ending backup...")
@@ -402,8 +391,18 @@ class BACKUP:
         # Return users GTK cursor name
         return user_cursor_name
 
+    async def main(self):
+        # Call the asynchronous functions using await.
+        await self.backup_wallpaper()
+        await self.backup_home()
+        await self.backup_home_hidden_files()
+        await self.backup_flatpak()
+        await self.end_backup()
 
-if __name__=='__main__':
-    MAIN_INI_FILE=UPDATEINIFILE()
+
+if __name__ == '__main__':
+    MAIN_INI_FILE = UPDATEINIFILE()
     # Main
-    main=BACKUP()
+    main = BACKUP()
+    # To call an async function, you need to run it within an event loop using asyncio.run()
+    asyncio.run(main.main())

@@ -227,7 +227,13 @@ class UPDATEINIFILE:
     def ini_applications_packages(self):
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        return CONFIG['RESTORE']['applications_packages']
+
+        if CONFIG['RESTORE']['applications_packages'] == 'false':
+            return False
+        elif CONFIG['RESTORE']['applications_packages'] == 'true':
+            return True
+        else:
+            return None
 
     def ini_restoring_is_running(self):
         CONFIG=configparser.ConfigParser()

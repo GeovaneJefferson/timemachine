@@ -1222,7 +1222,7 @@ class BackupScreen(QWidget):
             CONFIG.write(configfile)
         
         sub.Popen(f"python3 {src_restore_cmd_py}",shell=True)
-        MAIN5=StartRestoring()
+        MAIN5 = StartRestoring()
         WIDGET.addWidget(MAIN5)
         
         WIDGET.showFullScreen()
@@ -1244,24 +1244,32 @@ class StartRestoring(QWidget):
             
     def widgets(self):
         # Title layout
-        self.titlelLayout=QVBoxLayout()
-        self.titlelLayout.setSpacing(20)
-        self.titlelLayout.setContentsMargins(20, 20, 20, 20)
+        titlel_layout=QVBoxLayout()
+        titlel_layout.setSpacing(20)
+        titlel_layout.setContentsMargins(20, 20, 20, 20)
         
-        self.settingsUP=QLabel()
-        self.settingsUP.setFont(QFont(MAIN_FONT,MIGRATION_ASSISTANT_TITLE))
-        self.settingsUP.setText("Setting Up Your PC...")
-        self.settingsUP.setAlignment(QtCore.Qt.AlignHCenter)
-        self.settingsUP.setStyleSheet("""
+        setting_up = QLabel()
+        setting_up.setFont(QFont(MAIN_FONT,MIGRATION_ASSISTANT_TITLE))
+        setting_up.setText("Setting Up Your PC...")
+        setting_up.setAlignment(QtCore.Qt.AlignHCenter)
+        setting_up.setStyleSheet("""
         font-weight: Bold;
         color:gray;
         """)
 
-        self.title=QLabel()
-        self.title.setFont(QFont(MAIN_FONT,16))
-        self.title.setText("This may take a few minutes...")
-        self.title.setAlignment(QtCore.Qt.AlignHCenter)
-        self.title.setStyleSheet("""
+        current_status = QLabel()
+        current_status.setFont(QFont(MAIN_FONT, 12))
+        current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
+        current_status.setAlignment(QtCore.Qt.AlignHCenter)
+        current_status.setStyleSheet("""
+        color:white;
+        """)
+
+        title=QLabel()
+        title.setFont(QFont(MAIN_FONT,16))
+        title.setText("This may take a few minutes...")
+        title.setAlignment(QtCore.Qt.AlignHCenter)
+        title.setStyleSheet("""
         font-weight: Bold;
         color:gray;
         """)
@@ -1289,13 +1297,14 @@ class StartRestoring(QWidget):
         ###########################################################################
         # Add layouts and widgets
         ################################################################################
-        self.titlelLayout.addStretch()
-        self.titlelLayout.addWidget(self.settingsUP, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(self.title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        self.titlelLayout.addStretch()
-        self.setLayout(self.titlelLayout)
+        titlel_layout.addStretch()
+        titlel_layout.addWidget(setting_up, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addWidget(image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addWidget(current_status, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addWidget(title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addStretch()
+        self.setLayout(titlel_layout)
 
         # Update
         timer.timeout.connect(self.read_ini_file)
@@ -1323,10 +1332,11 @@ if __name__ == '__main__':
 
     MAIN_INI_FILE=UPDATEINIFILE()
 
-    MAIN=WelcomeScreen()
+    # MAIN=WelcomeScreen()
+    MAIN5 = StartRestoring()
 
-    WIDGET.addWidget(MAIN)   
-    WIDGET.setCurrentWidget(MAIN)   
+    WIDGET.addWidget(MAIN5)   
+    WIDGET.setCurrentWidget(MAIN5)   
     WIDGET.setWindowTitle("Migration Assistant")
     WIDGET.setWindowIcon(QIcon(SRC_MIGRATION_ASSISTANT_ICON_212PX)) 
     WIDGET.setFixedSize(900,600)
