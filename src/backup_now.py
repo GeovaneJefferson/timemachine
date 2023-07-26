@@ -23,7 +23,7 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 
 class BACKUP:
-    def backup_wallpaper(self):
+    async def backup_wallpaper(self):
         # GNOME/KDE
         # Send notification status
         notification_message("Backing up: Wallpaper...")
