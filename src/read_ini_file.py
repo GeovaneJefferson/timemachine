@@ -441,8 +441,7 @@ class UPDATEINIFILE:
     # Flatpak
     ####################################################################
     def flatpak_txt_location(self):
-        flatpakTxtFile=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
-        return flatpakTxtFile
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
     
     def flatpak_var_folder(self):
         return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{VAR_FOLDER_NAME}"
@@ -475,5 +474,5 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    MAININIFILE=UPDATEINIFILE()
+    MAIN_INI_FILE=UPDATEINIFILE()
     pass

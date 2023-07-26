@@ -11,10 +11,6 @@ from get_backup_home_name_and_size import get_backup_folders_size_pretty
 from save_info import save_info
 from detect_theme_color import detect_theme_color
 from restore_cmd import RESTORE
-from restore_settings import (
-    restore_system_settings, restore_home, restore_applications_packages,
-    restore_flatpaks_programs, restore_flatpaks_data)
-
 
 
 class WelcomeScreen(QWidget):
@@ -453,9 +449,9 @@ class PreBackup(QWidget):
             CONFIG=configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(MAIN_INI_FILE.flatpak_txt_location(), "r") as read_file:
-                flatpaksToBeInstalled=len(read_file.readlines())
+                flatpaksToBeInstalled = len(read_file.readlines())
 
-                self.flatpakCheckBox=QCheckBox()
+                self.flatpakCheckBox = QCheckBox()
                 self.flatpakCheckBox.setText(f" Flatpak "
                     "                                  "
                     f"                               {flatpaksToBeInstalled} Apps")
@@ -1202,7 +1198,7 @@ class BackupScreen(QWidget):
             # Update widgets
             ################################################################################
             # if restoring is running
-            if MAIN_INI_FILE.ini_restoring_is_running() == "true":
+            if MAIN_INI_FILE.ini_restoring_is_running():
                 # Show restoring description
                 self.whileRestoringDescription.setText(f'Transferring '
                     f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 

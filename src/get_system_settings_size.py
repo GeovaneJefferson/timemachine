@@ -29,20 +29,20 @@ def get_system_settings_size():
         ####################################
         # Plasma
         ####################################
-        systemSettingsTheme=os.popen(f"du -hs {MAININIFILE.plasma_main_folder()} 2>/dev/null")
-        systemSettingsTheme=systemSettingsTheme.read().strip("\t")
-        systemSettingsTheme=systemSettingsTheme.strip("\n")
-        systemSettingsTheme=systemSettingsTheme.replace(f"{PLASMA_FOLDER_NAME}", "")
+        # systemSettingsTheme=os.popen(f"du -hs {MAININIFILE.plasma_main_folder()} 2>/dev/null")
+        # systemSettingsTheme=systemSettingsTheme.read().strip("\t")
+        # systemSettingsTheme=systemSettingsTheme.strip("\n")
+        # systemSettingsTheme=systemSettingsTheme.replace(f"{PLASMA_FOLDER_NAME}", "")
 
-        if systemSettingsTheme != "":
-            for string in systemSettingsTheme:
-                if string.isdigit():
-                    dummy.append(string)
+        # if systemSettingsTheme != "":
+        #     for string in systemSettingsTheme:
+        #         if string.isdigit():
+        #             dummy.append(string)
 
-            systemSettingsTheme=''.join(dummy)
-            dummy.clear()
-            systemSettingsTheme=int(systemSettingsTheme)
-            dummySystemSettingsSizeList.append(systemSettingsTheme)
+        #     systemSettingsTheme=''.join(dummy)
+        #     dummy.clear()
+        #     systemSettingsTheme=int(systemSettingsTheme)
+        #     dummySystemSettingsSizeList.append(systemSettingsTheme)
         
         ####################################
         # GTK Theme

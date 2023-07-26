@@ -218,7 +218,7 @@ class BACKUP:
             except:
                 pass
 
-    def end_backup(self):
+    async def end_backup(self):
         print("Ending backup...")
 
         # Send notification status
