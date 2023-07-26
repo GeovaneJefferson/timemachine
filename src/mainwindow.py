@@ -1709,8 +1709,8 @@ class OPTION(QMainWindow):
                 CONFIG.set('INFO', 'icon', 'None')
                 CONFIG.set('INFO', 'cursor', 'None')
                 CONFIG.set('INFO', 'colortheme', 'None')
-
                 CONFIG.set('INFO', 'saved_notification', '')
+                CONFIG.set('INFO', 'current_backing_up', '')
 
                 # Folders section
                 CONFIG.set('FOLDER', 'pictures', 'true')

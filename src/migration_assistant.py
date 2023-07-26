@@ -1330,13 +1330,11 @@ if __name__ == '__main__':
     APP=QApplication(sys.argv)
     WIDGET=QStackedWidget()
 
-    MAIN_INI_FILE=UPDATEINIFILE()
+    MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN = WelcomeScreen()
 
-    # MAIN=WelcomeScreen()
-    MAIN5 = StartRestoring()
-
-    WIDGET.addWidget(MAIN5)   
-    WIDGET.setCurrentWidget(MAIN5)   
+    WIDGET.addWidget(MAIN)   
+    WIDGET.setCurrentWidget(MAIN)   
     WIDGET.setWindowTitle("Migration Assistant")
     WIDGET.setWindowIcon(QIcon(SRC_MIGRATION_ASSISTANT_ICON_212PX)) 
     WIDGET.setFixedSize(900,600)
