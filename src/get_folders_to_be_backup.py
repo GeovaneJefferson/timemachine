@@ -1,12 +1,11 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 
-home_folder_to_be_backup=[]
-home_folder_to_backup_size_list=[]
 
+MAININIFILE=UPDATEINIFILE()
 
 def get_folders():
-    MAININIFILE=UPDATEINIFILE()
+    home_folder_to_be_backup=[]
 
     # Get Backup Folders
     for folder in MAININIFILE.ini_folders():  
@@ -31,6 +30,8 @@ def get_folders():
 
 
 def home_folders_size():
+    home_folder_to_backup_size_list=[]
+
     for folder in get_folders():
         # Get folder size
         get_size=os.popen(f"du -s {HOME_USER}/{folder}")

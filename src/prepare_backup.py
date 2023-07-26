@@ -200,15 +200,15 @@ class PREPAREBACKUP:
 
     def get_backup_sizes(self):
         # Home + System Settings + safe additional size
-        if str(MAIN_INI_FILE.ini_allow_flatpak_data()) == "true":
-            backup_size_needeed=int(home_folders_size()) + self.safe_added_space
+        if MAIN_INI_FILE.ini_allow_flatpak_data():
+            backup_size_needeed = int(home_folders_size()) + self.safe_added_space
 
         # Home + System Settings + Flatpak data + safe additional size
         else:
-            backup_size_needeed=int(home_folders_size() +
-                            flatpak_var_size() +
-                            flatpak_local_size() +
-                            self.safe_added_space)
+            backup_size_needeed = int(home_folders_size() +
+                                    flatpak_var_size() +
+                                    flatpak_local_size() +
+                                    self.safe_added_space)
 
         # if backup size if higher than free space inside backup device
         if backup_size_needeed > get_external_device_free_size():
@@ -275,5 +275,5 @@ class PREPAREBACKUP:
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE=UPDATEINIFILE()
-    main=PREPAREBACKUP()
+    MAIN_INI_FILE = UPDATEINIFILE()
+    main = PREPAREBACKUP()
