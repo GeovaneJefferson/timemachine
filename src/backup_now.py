@@ -177,7 +177,7 @@ class BACKUP:
             count = 0
             flatpak_list = []
 
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
                 for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
