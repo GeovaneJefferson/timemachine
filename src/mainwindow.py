@@ -1725,6 +1725,7 @@ class OPTION(QMainWindow):
                 CONFIG.set('RESTORE', 'applications_data', 'false')
                 CONFIG.set('RESTORE', 'files_and_folders', 'false')
                 CONFIG.set('RESTORE', 'system_settings', 'false')
+                CONFIG.set('RESTORE', 'is_restore_running', 'false')
 
                 CONFIG.write(configfile)
 
