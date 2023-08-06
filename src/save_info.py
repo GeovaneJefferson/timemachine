@@ -2,7 +2,6 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 from package_manager import package_manager
 from get_users_de import get_user_de
-from determine_next_backup import system_language
 from device_location import device_location
 
 MAININIFILE=UPDATEINIFILE()
@@ -22,7 +21,7 @@ def save_info(chooseDevice):
         # Users OS
         config.set('INFO', 'os',  f'{get_user_de()}')
         # Users OS language
-        config.set('INFO', 'language',  f'{str(system_language())}')
+        # config.set('INFO', 'language',  f'{str(system_language())}')
 
         # Device location
         if device_location():

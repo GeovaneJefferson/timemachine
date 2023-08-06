@@ -1,16 +1,9 @@
 from setup import *
-# Read ini file
 from read_ini_file import UPDATEINIFILE
-# Languages
-from languages import determine_days_language
-from get_system_language import system_language
-# Connection
+from get_days_name import get_days_name
 from check_connection import is_connected
-# Calculation
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-# Time
 from get_time import today_date
-# Date
 from get_backup_date import get_backup_date
 
 
@@ -78,25 +71,25 @@ class CHECKER:
     def check_the_dates(self):
         # One time per day
         if MAIN_INI_FILE.ini_one_time_mode():
-            if str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[0] and str(MAIN_INI_FILE.ini_next_backup_sun()):
+            if str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_sun()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[1] and str(MAIN_INI_FILE.ini_next_backup_mon()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_mon()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[2] and str(MAIN_INI_FILE.ini_next_backup_tue()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_tue()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[3] and str(MAIN_INI_FILE.ini_next_backup_wed()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_wed()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[4] and str(MAIN_INI_FILE.ini_next_backup_thu()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_thu()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[5] and str(MAIN_INI_FILE.ini_next_backup_fri()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_fri()):
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) in determine_days_language((system_language()))[6] and str(MAIN_INI_FILE.ini_next_backup_sat()):
+            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_sat()):
                 self.take_action(True)
 
         # Multiple time per day
@@ -183,5 +176,5 @@ if __name__ == '__main__':
             print("Backup Checker ERROR:", e)
             break
 
-# Quit
+print("Automatically backup is OFF.")
 exit()

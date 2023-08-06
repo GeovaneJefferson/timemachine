@@ -1,196 +1,625 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from languages import determine_days_language
-from get_system_language import system_language
+from get_days_name import get_days_name
+
+
+MAIN_INI_FILE = UPDATEINIFILE()
 
 
 def get_next_backup():
-   MAININIFILE=UPDATEINIFILE()
-   
    # SUN
-   if str(MAININIFILE.day_name()) == determine_days_language(system_language())[0]:
-      if str(MAININIFILE.ini_next_backup_sun()) and int(MAININIFILE.current_hour()) <= int(MAININIFILE.ini_next_hour()) and int(MAININIFILE.current_minute()) <= int(MAININIFILE.ini_next_minute()):
+   if str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_sun()) and int(MAIN_INI_FILE.current_hour()) <= int(MAIN_INI_FILE.ini_next_hour()) and int(MAIN_INI_FILE.current_minute()) <= int(MAIN_INI_FILE.ini_next_minute()):
          return "Today"
       
+      # TODO
       else:
-         if str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         if str(MAIN_INI_FILE.ini_next_backup_mon()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+
    # MON
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[1]:
-      if str(MAININIFILE.ini_next_backup_mon()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_mon()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         if str(MAIN_INI_FILE.ini_next_backup_tue()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    # TUE
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[2]:
-      if str(MAININIFILE.ini_next_backup_tue()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_tue()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         if str(MAIN_INI_FILE.ini_next_backup_wed()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    # WED
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[3]:
-      if str(MAININIFILE.ini_next_backup_wed()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_wed()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         if str(MAIN_INI_FILE.ini_next_backup_thu()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    # TUE
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[4]:
-      if str(MAININIFILE.ini_next_backup_thu()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_thu()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         if str(MAIN_INI_FILE.ini_next_backup_fri()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    # FRI
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[5]:
-      if str(MAININIFILE.ini_next_backup_fri()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_fri()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         if str(MAIN_INI_FILE.ini_next_backup_sat()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         elif str(MAIN_INI_FILE.ini_next_backup_sun()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    # SAT
-   elif str(MAININIFILE.day_name()) == determine_days_language(system_language())[6]:
-      if str(MAININIFILE.ini_next_backup_sat()) == "true" and int(MAININIFILE.current_time()) < int(MAININIFILE.backup_time_military()):
+   elif str(MAIN_INI_FILE.day_name()) == get_days_name():
+      if str(MAIN_INI_FILE.ini_next_backup_sat()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
-         if str(MAININIFILE.ini_next_backup_sun()):
-            return determine_days_language(str(system_language()))[0]
+         if str(MAIN_INI_FILE.ini_next_backup_sun()):
+            return "Tomorrow"
          
-         elif str(MAININIFILE.ini_next_backup_mon()):
-            return determine_days_language(str(system_language()))[1]
+         elif str(MAIN_INI_FILE.ini_next_backup_mon()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=2)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_tue()):
-            return determine_days_language(str(system_language()))[2]
+         elif str(MAIN_INI_FILE.ini_next_backup_tue()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=3)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_wed()):
-            return determine_days_language(str(system_language()))[3]
+         elif str(MAIN_INI_FILE.ini_next_backup_wed()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=4)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_thu()):
-            return determine_days_language(str(system_language()))[4]
+         elif str(MAIN_INI_FILE.ini_next_backup_thu()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=5)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_fri()):
-            return determine_days_language(str(system_language()))[5]
+         elif str(MAIN_INI_FILE.ini_next_backup_fri()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=6)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
          
-         elif str(MAININIFILE.ini_next_backup_sat()):
-            return determine_days_language(str(system_language()))[6]
+         elif str(MAIN_INI_FILE.ini_next_backup_sat()):
+            # Set the locale for the current session to English (United States)
+            locale.setlocale(locale.LC_TIME, 'en_US.utf8')
+
+            # Get the current date
+            current_date = datetime.datetime.today()
+
+            # Add one day to the current date
+            next_backup_date = current_date + datetime.timedelta(days=7)
+
+            # Get the day of the week for the next backup date
+            return next_backup_date.strftime('%a')
+         
    else:
       return "None"
    
+
 if __name__ == '__main__':
    pass

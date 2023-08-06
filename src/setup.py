@@ -41,7 +41,7 @@ GITHUB_HOME = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.7.02 dev"
+APP_VERSION = "v1.1.7.03 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -289,33 +289,4 @@ def error_trying_to_backup(e):
     # Quit
     exit()
 
-def lock_ini_file():
-    # Acquire a file lock
-    file = open(SRC_USER_CONFIG, 'r+')
 
-    # Acquire an exclusive lock
-    fcntl.flock(file, fcntl.LOCK_EX)
-
-def release_ini_file():
-    # Acquire a file lock
-    file = open(SRC_USER_CONFIG, 'r+')
-
-    # Release the file lock
-    fcntl.flock(file, fcntl.LOCK_UN)  # Release the lock
-    file.close()
-
-def ini_locked_status():
-    # Acquire a file lock
-    file = open(SRC_USER_CONFIG, 'r+')
-
-    if file.closed:
-        print("File is closed")
-
-        # Lock file
-        lock_ini_file()
-
-        return False
-
-    else:
-        print("File is open")
-        return True

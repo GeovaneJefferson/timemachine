@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
 
         # Automatically checkbox
         self.automatically_check_box=QCheckBox()
-        self.automatically_check_box.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
+        self.automatically_check_box.setFont(QFont(MAIN_FONT, NORMAL_FONT_SIZE))
         self.automatically_check_box.setText("Back Up Automatically")
         self.automatically_check_box.adjustSize()
         self.automatically_check_box.setStyleSheet("""
@@ -727,7 +727,7 @@ class MainWindow(QMainWindow):
                         icon.move(7,7)
                         icon.setStyleSheet(transparentBackground)
                         icon.setPixmap(image)
-                        
+
                         # Free Space Label
                         free_space_label=QLabel(self.available_devices)
                         free_space_label.setText(f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
