@@ -14,7 +14,7 @@ class BOOT:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('STATUS', 'first_startup', 'true')
+            CONFIG.set('STATUS', 'first_startup', 'True')
             CONFIG.write(configfile)
 
         if MAIN_INI_FILE.ini_system_tray():

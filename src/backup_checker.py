@@ -134,7 +134,7 @@ class CHECKER:
         config=configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'backing_up_now', 'true')
+            config.set('STATUS', 'backing_up_now', 'True')
             config.set('SCHEDULE', 'time_left', 'None')
             config.write(configfile)
 

@@ -192,7 +192,7 @@ class APP:
         config=configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('SYSTEMTRAY', 'system_tray', 'false')
+            config.set('SYSTEMTRAY', 'system_tray', 'False')
             config.write(configfile)
 
         self.tray.hide()

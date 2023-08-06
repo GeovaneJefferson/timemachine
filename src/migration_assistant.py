@@ -738,7 +738,7 @@ class PreBackup(QWidget):
             CONFIG=configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                CONFIG.set('RESTORE', 'applications_packages', 'true')
+                CONFIG.set('RESTORE', 'applications_packages', 'True')
                 CONFIG.write(configfile)
 
             self.application_packages_Checkbox.setChecked(True)
@@ -776,7 +776,7 @@ class PreBackup(QWidget):
             CONFIG=configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                CONFIG.set('RESTORE', 'applications_packages', 'false')
+                CONFIG.set('RESTORE', 'applications_packages', 'False')
                 CONFIG.write(configfile)
 
             self.has_itens_inside_to_continue_list.remove("packages")
@@ -806,7 +806,7 @@ class PreBackup(QWidget):
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile: 
             if self.flatpakCheckBox.isChecked():
                 # Set restore flatpak program to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'true')
+                CONFIG.set('RESTORE', 'applications_flatpak_names', 'True')
                 # Set flatpak checkbox to True
                 self.flatpakCheckBox.setChecked(True)
                 # Enable continue button
@@ -815,7 +815,7 @@ class PreBackup(QWidget):
                 self.has_itens_inside_to_continue_list.append("flatpak")
             else:
                 # Set restore flatpak applications to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'false')
+                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
                 # Uncheck flatpak checkbox
                 self.flatpakCheckBox.setChecked(False)
                 # Remove "flatpak" from list
@@ -839,7 +839,7 @@ class PreBackup(QWidget):
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.flatpak_data_Checkbox.isChecked():
                 # Set restore flatpak data to True
-                CONFIG.set('RESTORE', 'applications_data', 'true')
+                CONFIG.set('RESTORE', 'applications_data', 'True')
                 # Check flatpak data checkbox
                 self.flatpak_data_Checkbox.setChecked(True)
                 # Enable continue button
@@ -850,9 +850,9 @@ class PreBackup(QWidget):
                 self.has_itens_inside_to_continue_list.append("flatpak")
             else:
                 # Set restore flatpak program to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'false')
+                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
                 # Set restore flatpak data to False
-                CONFIG.set('RESTORE', 'applications_data', 'false')
+                CONFIG.set('RESTORE', 'applications_data', 'False')
                 # Uncheck flatpak data checkbox
                 self.flatpak_data_Checkbox.setChecked(False)
                 # Remove "data" from list
@@ -876,14 +876,14 @@ class PreBackup(QWidget):
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.fileAndFoldersCheckBox.isChecked():
                 # Set restore home to True
-                CONFIG.set('RESTORE', 'files_and_folders', 'true')
+                CONFIG.set('RESTORE', 'files_and_folders', 'True')
                 # Enable continue button
                 self.continue_button.setEnabled(True)
                 # Add "files" to list
                 self.has_itens_inside_to_continue_list.append("files")
             else:
                 # Set restore home to False
-                CONFIG.set('RESTORE', 'files_and_folders', 'false')
+                CONFIG.set('RESTORE', 'files_and_folders', 'False')
                 # Disable continue button
                 self.continue_button.setEnabled(False)
                 # Remove "files" to list
@@ -907,14 +907,14 @@ class PreBackup(QWidget):
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:  
             if self.systemSettingsCheckBox.isChecked():
                 # Set restore system settings to True
-                CONFIG.set('RESTORE', 'system_settings', 'true')
+                CONFIG.set('RESTORE', 'system_settings', 'True')
                 # Enable continue button
                 self.continue_button.setEnabled(True)
                 # Add "system_settings" to list
                 self.has_itens_inside_to_continue_list.append("system_settings")
             else:
                 # Set restore system settings to False
-                CONFIG.set('RESTORE', 'system_settings', 'false')
+                CONFIG.set('RESTORE', 'system_settings', 'False')
                 # Disable continue button
                 self.continue_button.setEnabled(False)
                 
@@ -1214,7 +1214,7 @@ class BackupScreen(QWidget):
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:  
-            CONFIG.set('RESTORE', 'is_restore_running', 'true')
+            CONFIG.set('RESTORE', 'is_restore_running', 'True')
             CONFIG.write(configfile)
         
         sub.Popen(f"python3 {src_restore_cmd_py}",shell=True)

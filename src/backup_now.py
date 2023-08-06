@@ -229,7 +229,7 @@ class BACKUP:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('STATUS', 'backing_up_now', 'false')
+            CONFIG.set('STATUS', 'backing_up_now', 'False')
             CONFIG.set('STATUS', 'unfinished_backup', 'no')
             CONFIG.set('SCHEDULE', 'time_left', 'None')
             CONFIG.write(configfile)
