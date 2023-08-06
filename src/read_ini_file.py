@@ -25,7 +25,7 @@ class UPDATEINIFILE:
         CONFIG.read(SRC_USER_CONFIG)
 
         # Not backing up
-        if str(CONFIG['STATUS']['backing_up_now']) == 'false':
+        if str(CONFIG['STATUS']['backing_up_now']) == 'False':
             return False
 
         # Current backing up
@@ -45,7 +45,7 @@ class UPDATEINIFILE:
     def ini_automatically_backup(self):
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        if CONFIG['STATUS']['automatically_backup'] == 'false':
+        if CONFIG['STATUS']['automatically_backup'] == 'False':
             return False
         else:
             return True
@@ -54,7 +54,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if CONFIG['SYSTEMTRAY']['system_tray'] == 'false':
+        if CONFIG['SYSTEMTRAY']['system_tray'] == 'False':
             return False
         else:
             return True
@@ -63,7 +63,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['MODE']['one_time_mode']) == 'false':
+        if str(CONFIG['MODE']['one_time_mode']) == 'False':
             return False
         else:
             return True
@@ -72,7 +72,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['MODE']['more_time_mode']) == 'false':
+        if str(CONFIG['MODE']['more_time_mode']) == 'False':
             return False
         else:
             return True
@@ -91,7 +91,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['sun']) == 'false':
+        if str(CONFIG['DAYS']['sun']) == 'False':
             return False
 
         else:
@@ -101,7 +101,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['mon']) == 'false':
+        if str(CONFIG['DAYS']['mon']) == 'False':
             return False
 
         else:
@@ -111,7 +111,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['tue']) == 'false':
+        if str(CONFIG['DAYS']['tue']) == 'False':
             return False
 
         else:
@@ -121,7 +121,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['wed']) == 'false':
+        if str(CONFIG['DAYS']['wed']) == 'False':
             return False
 
         else:
@@ -131,7 +131,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['thu']) == 'false':
+        if str(CONFIG['DAYS']['thu']) == 'False':
             return False
 
         else:
@@ -141,7 +141,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['fri']) == 'false':
+        if str(CONFIG['DAYS']['fri']) == 'False':
             return False
         else:
             return True
@@ -150,7 +150,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['SCHEDULE']['sat']) == 'false':
+        if str(CONFIG['DAYS']['sat']) == 'False':
             return False
 
         else:
@@ -185,7 +185,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['STATUS']['allow_flatpak_data']) == 'false':
+        if str(CONFIG['STATUS']['allow_flatpak_data']) == 'False':
             return False
         else:
             return True
@@ -219,7 +219,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if CONFIG['INFO']['auto_reboot'] == 'false':
+        if CONFIG['INFO']['auto_reboot'] == 'False':
             return False
         else:
             return True 
@@ -228,9 +228,9 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if CONFIG['RESTORE']['applications_packages'] == 'false':
+        if CONFIG['RESTORE']['applications_packages'] == 'False':
             return False
-        elif CONFIG['RESTORE']['applications_packages'] == 'true':
+        elif CONFIG['RESTORE']['applications_packages'] == 'True':
             return True
         else:
             return None
@@ -238,7 +238,7 @@ class UPDATEINIFILE:
     def ini_restoring_is_running(self):
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        if CONFIG['RESTORE']['is_restore_running'] == 'false':
+        if CONFIG['RESTORE']['is_restore_running'] == 'False':
             return False
         else:
             return True
