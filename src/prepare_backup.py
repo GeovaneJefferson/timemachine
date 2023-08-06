@@ -65,13 +65,14 @@ class PREPAREBACKUP:
         # Send notification status
         notification_message("")
         
-        # Set backup now to Fasle
+        # Set backup now to False and unfinished_backup to True
         config = configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
             config.set('STATUS', 'backing_up_now', 'False')
+            # config.set('STATUS', 'unfinished_backup', 'True')
             config.write(configfile)
-            
+
         # Quit
         exit()
 

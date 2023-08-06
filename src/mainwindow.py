@@ -595,7 +595,7 @@ class MainWindow(QMainWindow):
                 shutil.copy(DST_BACKUP_CHECK_DESKTOP, dst_autostart_location)
 
                 # Write to INI file
-                CONFIG.set('STATUS', 'automatically_backup', 'true')
+                CONFIG.set('STATUS', 'automatically_backup', 'True')
                 CONFIG.write(configfile)
 
                 # call backup check
@@ -608,7 +608,7 @@ class MainWindow(QMainWindow):
                 sub.run(f"rm -f {dst_autostart_location}",shell=True)
 
                 # Write to INI file
-                CONFIG.set('STATUS', 'automatically_backup', 'false')
+                CONFIG.set('STATUS', 'automatically_backup', 'False')
                 CONFIG.write(configfile)
 
                 print("Auto backup was successfully deactivated!")
@@ -619,7 +619,7 @@ class MainWindow(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.showInSystemTrayCheckBox.isChecked():
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'true')
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'True')
                 CONFIG.write(configfile)
 
                 # Call system tray
@@ -628,7 +628,7 @@ class MainWindow(QMainWindow):
                 print("System tray was successfully enabled!")
 
             else:
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'false')
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'False')
                 CONFIG.write(configfile)
 
                 print("System tray was successfully disabled!")
@@ -1436,7 +1436,7 @@ class OPTION(QMainWindow):
             if CONFIG.has_option('FOLDER', output):
                 CONFIG.remove_option('FOLDER', output)
             else:
-                CONFIG.set('FOLDER', output, 'true')
+                CONFIG.set('FOLDER', output, 'True')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1464,10 +1464,10 @@ class OPTION(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.sun_checkbox.isChecked():
-                CONFIG.set('SCHEDULE', 'sun', 'true')
+                CONFIG.set('SCHEDULE', 'sun', 'True')
                 print("Sun")
             else:
-                CONFIG.set('SCHEDULE', 'sun', 'false')
+                CONFIG.set('SCHEDULE', 'sun', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1477,10 +1477,10 @@ class OPTION(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.mon_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'mon', 'true')
+                CONFIG.set('SCHEDULE', 'mon', 'True')
                 print("Mon")
             else:
-                CONFIG.set('SCHEDULE', 'mon', 'false')
+                CONFIG.set('SCHEDULE', 'mon', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1490,10 +1490,10 @@ class OPTION(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.tue_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'tue', 'true')
+                CONFIG.set('SCHEDULE', 'tue', 'True')
                 print("Tue")
             else:
-                CONFIG.set('SCHEDULE', 'tue', 'false')
+                CONFIG.set('SCHEDULE', 'tue', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1503,10 +1503,10 @@ class OPTION(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.wed_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'wed', 'true')
+                CONFIG.set('SCHEDULE', 'wed', 'True')
                 print("Wed")
             else:
-                CONFIG.set('SCHEDULE', 'wed', 'false')
+                CONFIG.set('SCHEDULE', 'wed', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1516,10 +1516,10 @@ class OPTION(QMainWindow):
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.thu_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'thu', 'true')
+                CONFIG.set('SCHEDULE', 'thu', 'True')
                 print("Thu")
             else:
-                CONFIG.set('SCHEDULE', 'thu', 'false')
+                CONFIG.set('SCHEDULE', 'thu', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
@@ -1530,10 +1530,10 @@ class OPTION(QMainWindow):
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.fri_checkBox.isChecked():
-                    CONFIG.set('SCHEDULE', 'fri', 'true')
+                    CONFIG.set('SCHEDULE', 'fri', 'True')
                     print("Fri")
                 else:
-                    CONFIG.set('SCHEDULE', 'fri', 'false')
+                    CONFIG.set('SCHEDULE', 'fri', 'False')
 
                 # Write to INI file
                 CONFIG.write(configfile)
@@ -1547,10 +1547,10 @@ class OPTION(QMainWindow):
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.sat_checkBox.isChecked():
-                    CONFIG.set('SCHEDULE', 'sat', 'true')
+                    CONFIG.set('SCHEDULE', 'sat', 'True')
                     print("Sat")
                 else:
-                    CONFIG.set('SCHEDULE', 'sat', 'false')
+                    CONFIG.set('SCHEDULE', 'sat', 'False')
 
                 # Write to INI file
                 CONFIG.write(configfile)
@@ -1593,9 +1593,9 @@ class OPTION(QMainWindow):
         # with open(src_user_config, 'w+') as configfile:
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.one_time_per_day_radio.isChecked():
-                CONFIG.set('MODE', 'one_time_mode', 'true')
+                CONFIG.set('MODE', 'one_time_mode', 'True')
                 # DISABLE MORE TIME MODE
-                CONFIG.set('MODE', 'more_time_mode', 'false')
+                CONFIG.set('MODE', 'more_time_mode', 'False')
 
                 self.multiple_time_per_day_comboBox.setEnabled(False)
                 self.hours_spinbox.setEnabled(True)
@@ -1612,10 +1612,10 @@ class OPTION(QMainWindow):
                 self.sat_checkBox.setEnabled(True)
 
             elif self.more_time_per_day_radio.isChecked():
-                CONFIG.set('MODE', 'more_time_mode', 'true')
+                CONFIG.set('MODE', 'more_time_mode', 'True')
                 print("Multiple time per day selected")
                 # DISABLE ONE TIME MODE
-                CONFIG.set('MODE', 'one_time_mode', 'false')
+                CONFIG.set('MODE', 'one_time_mode', 'False')
 
                 self.hours_spinbox.setEnabled(False)
                 self.minutes_spinBox.setEnabled(False)
@@ -1642,11 +1642,11 @@ class OPTION(QMainWindow):
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.allowFlatpakDataCheckBox.isChecked():
-                    CONFIG.set('STATUS', 'allow_flatpak_data', 'true')
+                    CONFIG.set('STATUS', 'allow_flatpak_data', 'True')
                     print("Allow flatpaks data to be backup.")
 
                 else:
-                    CONFIG.set('STATUS', 'allow_flatpak_data', 'false')
+                    CONFIG.set('STATUS', 'allow_flatpak_data', 'False')
 
                 # Write to INI file
                 CONFIG.write(configfile)
@@ -1670,31 +1670,31 @@ class OPTION(QMainWindow):
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 # Backup section
                 CONFIG.set('STATUS', 'unfinished_backup', 'no')
-                CONFIG.set('STATUS', 'automatically_backup', 'false')
-                CONFIG.set('STATUS', 'backing_up_now', 'false')
-                CONFIG.set('STATUS', 'first_startup', 'false')
-                CONFIG.set('STATUS', 'allow_flatpak_names', 'true')
-                CONFIG.set('STATUS', 'allow_flatpak_data', 'false')
+                CONFIG.set('STATUS', 'automatically_backup', 'False')
+                CONFIG.set('STATUS', 'backing_up_now', 'False')
+                CONFIG.set('STATUS', 'first_startup', 'False')
+                CONFIG.set('STATUS', 'allow_flatpak_names', 'True')
+                CONFIG.set('STATUS', 'allow_flatpak_data', 'False')
 
                 # External section
                 CONFIG.set('EXTERNAL', 'hd', 'None')
                 CONFIG.set('EXTERNAL', 'name', 'None')
 
                 # Mode section
-                CONFIG.set('MODE', 'one_time_mode', 'true')
-                CONFIG.set('MODE', 'more_time_mode', 'false')
+                CONFIG.set('MODE', 'one_time_mode', 'True')
+                CONFIG.set('MODE', 'more_time_mode', 'False')
 
                 # System tray  section
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'false')
+                CONFIG.set('SYSTEMTRAY', 'system_tray', 'False')
 
                 # Schedule section
-                CONFIG.set('SCHEDULE', 'sun', 'true')
-                CONFIG.set('SCHEDULE', 'mon', 'true')
-                CONFIG.set('SCHEDULE', 'tue', 'true')
-                CONFIG.set('SCHEDULE', 'wed', 'true')
-                CONFIG.set('SCHEDULE', 'thu', 'true')
-                CONFIG.set('SCHEDULE', 'fri', 'true')
-                CONFIG.set('SCHEDULE', 'sat', 'true')
+                CONFIG.set('SCHEDULE', 'sun', 'True')
+                CONFIG.set('SCHEDULE', 'mon', 'True')
+                CONFIG.set('SCHEDULE', 'tue', 'True')
+                CONFIG.set('SCHEDULE', 'wed', 'True')
+                CONFIG.set('SCHEDULE', 'thu', 'True')
+                CONFIG.set('SCHEDULE', 'fri', 'True')
+                CONFIG.set('SCHEDULE', 'sat', 'True')
                 CONFIG.set('SCHEDULE', 'hours', '10')
                 CONFIG.set('SCHEDULE', 'minutes', '00')
                 CONFIG.set('SCHEDULE', 'everytime', '60')
@@ -1713,19 +1713,19 @@ class OPTION(QMainWindow):
                 CONFIG.set('INFO', 'current_backing_up', '')
 
                 # Folders section
-                CONFIG.set('FOLDER', 'pictures', 'true')
-                CONFIG.set('FOLDER', 'documents', 'true')
-                CONFIG.set('FOLDER', 'music', 'true')
-                CONFIG.set('FOLDER', 'videos', 'true')
-                CONFIG.set('FOLDER', 'desktop', 'true')
+                CONFIG.set('FOLDER', 'pictures', 'True')
+                CONFIG.set('FOLDER', 'documents', 'True')
+                CONFIG.set('FOLDER', 'music', 'True')
+                CONFIG.set('FOLDER', 'videos', 'True')
+                CONFIG.set('FOLDER', 'desktop', 'True')
 
                 # Restore section
-                CONFIG.set('RESTORE', 'applications_packages', 'false')
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'false')
-                CONFIG.set('RESTORE', 'applications_data', 'false')
-                CONFIG.set('RESTORE', 'files_and_folders', 'false')
-                CONFIG.set('RESTORE', 'system_settings', 'false')
-                CONFIG.set('RESTORE', 'is_restore_running', 'false')
+                CONFIG.set('RESTORE', 'applications_packages', 'False')
+                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
+                CONFIG.set('RESTORE', 'applications_data', 'False')
+                CONFIG.set('RESTORE', 'files_and_folders', 'False')
+                CONFIG.set('RESTORE', 'system_settings', 'False')
+                CONFIG.set('RESTORE', 'is_restore_running', 'False')
 
                 CONFIG.write(configfile)
 
