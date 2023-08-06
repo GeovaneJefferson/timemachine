@@ -36,10 +36,10 @@ class PREPAREBACKUP:
         self.backing_up_now()
 
     def backing_up_now(self):
-        config=configparser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'backing_up_now', 'true')
+            config.set('STATUS', 'backing_up_now', 'True')
             config.write(configfile)
 
         self.begin_backup_process()
@@ -64,7 +64,14 @@ class PREPAREBACKUP:
 
         # Send notification status
         notification_message("")
-
+        
+        # Set backup now to Fasle
+        config = configparser.ConfigParser()
+        config.read(SRC_USER_CONFIG)
+        with open(SRC_USER_CONFIG, 'w') as configfile:
+            config.set('STATUS', 'backing_up_now', 'False')
+            config.write(configfile)
+            
         # Quit
         exit()
 
@@ -214,6 +221,8 @@ class PREPAREBACKUP:
         if backup_size_needeed > get_external_device_free_size():
             print("Not enough space for new backup")
             print("Deleting old backups folders...")
+            # Send notification status
+            notification_message(f"Deleting old backups folders...")
 
             # Delete old backups
             self.delete_old_backups()
