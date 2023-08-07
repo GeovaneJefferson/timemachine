@@ -1229,7 +1229,7 @@ class BackupScreen(QWidget):
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('INFO', 'auto_reboot', "true")
+            CONFIG.set('INFO', 'auto_reboot', 'True')
             CONFIG.write(configfile)
         
 

@@ -97,7 +97,7 @@ def get_next_backup():
 
    # MON
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_mon()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_mon()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
@@ -184,7 +184,7 @@ def get_next_backup():
          
    # TUE
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_tue()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_tue()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
@@ -271,7 +271,7 @@ def get_next_backup():
          
    # WED
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_wed()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_wed()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
@@ -358,7 +358,7 @@ def get_next_backup():
          
    # TUE
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_thu()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_thu()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
@@ -445,7 +445,7 @@ def get_next_backup():
          
    # FRI
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_fri()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_fri()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
@@ -532,7 +532,7 @@ def get_next_backup():
          
    # SAT
    elif str(MAIN_INI_FILE.day_name()) == get_days_name():
-      if str(MAIN_INI_FILE.ini_next_backup_sat()) == "true" and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
+      if str(MAIN_INI_FILE.ini_next_backup_sat()) == 'True' and int(MAIN_INI_FILE.current_time()) < int(MAIN_INI_FILE.backup_time_military()):
          return "Today"
       
       else:
