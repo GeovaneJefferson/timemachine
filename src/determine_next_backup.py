@@ -34,19 +34,19 @@ def check_days():
          return get_locale_settings_language(1)
       
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(6)
+         return get_locale_settings_language(6)
       
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(0)
@@ -58,19 +58,19 @@ def check_days():
    # MON
    elif get_day_index() == 1:
       if MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
       
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(6)
@@ -83,16 +83,16 @@ def check_days():
 
    elif get_day_index() == 2:
       if MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(6)
@@ -101,20 +101,20 @@ def check_days():
          return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
 
       else:
          return "None"
 
    elif get_day_index() == 3:
       if MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(6)
@@ -123,10 +123,10 @@ def check_days():
          return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
 
       else:
          return "None"
@@ -134,10 +134,10 @@ def check_days():
 
    elif get_day_index() == 4:
       if MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(6)
@@ -146,20 +146,20 @@ def check_days():
          return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       else:
          return "None"
 
    elif get_day_index() == 5:
       if MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
          return get_locale_settings_language(6)
@@ -168,16 +168,16 @@ def check_days():
          return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       if MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       else:
          return "None"
@@ -190,19 +190,19 @@ def check_days():
          return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-            return get_locale_settings_language(1)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-            return get_locale_settings_language(2)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-            return get_locale_settings_language(3)
+         return get_locale_settings_language(3)
       
       if MAIN_INI_FILE.ini_next_backup_fri():
-            return get_locale_settings_language(4)
+         return get_locale_settings_language(4)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-            return get_locale_settings_language(5)
+         return get_locale_settings_language(5)
 
       else:
          return "None"
@@ -235,5 +235,4 @@ def get_day_index():
 
 
 if __name__ == '__main__':
-   print(get_next_backup())
    pass
