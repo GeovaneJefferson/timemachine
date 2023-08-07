@@ -8,16 +8,16 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 
 def get_next_backup():
-   print(MAIN_INI_FILE.day_name())
-   print(get_days_name())
-   print(MAIN_INI_FILE.ini_next_backup_mon())
-   print(int(MAIN_INI_FILE.current_time()))
-   print(int(MAIN_INI_FILE.backup_time_military()))
+   # print(MAIN_INI_FILE.day_name())
+   # print(get_days_name())
+   # print(MAIN_INI_FILE.ini_next_backup_mon())
+   # print(int(MAIN_INI_FILE.current_time()))
+   # print(int(MAIN_INI_FILE.backup_time_military()))
    
    # Check if today is the day to backup
-   if str(MAIN_INI_FILE.day_name()) == get_days_name():  # Will return ex. Mon == Mon, so is today
-      # Had yet not backup today
-      if int(MAIN_INI_FILE.current_hour()) > int(MAIN_INI_FILE.ini_next_hour()) and int(MAIN_INI_FILE.current_minute()) <= int(MAIN_INI_FILE.ini_next_minute()):
+   if MAIN_INI_FILE.day_name() == get_days_name():  # Will return ex. Mon == Mon, so is today
+      # Had yet not backup today # 1000 1030
+      if int(MAIN_INI_FILE.current_hour()) <= int(MAIN_INI_FILE.ini_backup_hour()):  # and int(MAIN_INI_FILE.current_minute()) > int(MAIN_INI_FILE.ini_backup_minute())
          return "Today"
       # Has already made a backup
       else:

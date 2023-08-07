@@ -6,11 +6,11 @@ def calculate_time_left_to_backup():
     global time_left
 
     # Backup hour
-    backup_hour=MAININIFILE.ini_next_hour()
+    backup_hour=MAININIFILE.ini_backup_hour()
     # Current hour
     current_hour=MAININIFILE.current_hour()
     # Backup minute
-    backup_minute=MAININIFILE.ini_next_minute()
+    backup_minute=MAININIFILE.ini_backup_minute()
     # Current minute
     current_minute=MAININIFILE.current_minute()
 

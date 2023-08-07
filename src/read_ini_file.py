@@ -77,12 +77,12 @@ class UPDATEINIFILE:
         else:
             return True
 
-    def ini_next_hour(self):
+    def ini_backup_hour(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['SCHEDULE']['hours']
 
-    def ini_next_minute(self):
+    def ini_backup_minute(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['SCHEDULE']['minutes']
@@ -283,7 +283,7 @@ class UPDATEINIFILE:
     ####################################################################
     def day_name(self):
         NOW = datetime.now()
-        return NOW.strftime("%a")
+        return str(NOW.strftime("%a"))
 
     def current_date(self):
         NOW=datetime.now()
@@ -302,7 +302,7 @@ class UPDATEINIFILE:
 
     def current_hour(self):
         # With 'now', current time will update by each hour
-        NOW=datetime.now()
+        NOW = datetime.now()
         return  NOW.strftime("%H")
 
     def current_minute(self):
@@ -342,7 +342,7 @@ class UPDATEINIFILE:
         return  NOW.strftime("%M")
 
     def backup_time_military(self):
-        value=f"{str(self.ini_next_hour())}{str(self.ini_next_minute())}"
+        value=f"{str(self.ini_backup_hour())}{str(self.ini_backup_minute())}"
         return int(value)
 
     ####################################################################

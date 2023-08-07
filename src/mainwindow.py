@@ -499,7 +499,7 @@ class MainWindow(QMainWindow):
                             else:
                                 self.next_backup_label.setText(
                                     f"Next Backup: {get_next_backup().capitalize()}, "
-                                    f"{MAIN_INI_FILE.ini_next_hour()}:{MAIN_INI_FILE.ini_next_minute()}")
+                                    f"{MAIN_INI_FILE.ini_backup_hour()}:{MAIN_INI_FILE.ini_backup_minute()}")
 
                         else:
                             self.next_backup_label.setText("Next Backup: Automatic backups off")
@@ -1369,8 +1369,8 @@ class OPTION(QMainWindow):
         self.time_to_run()
 
     def time_to_run(self):
-        self.hours_spinbox.setValue(int(MAIN_INI_FILE.ini_next_hour()))
-        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.ini_next_minute()))
+        self.hours_spinbox.setValue(int(MAIN_INI_FILE.ini_backup_hour()))
+        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.ini_backup_minute()))
 
         ################################################################################
         # Get info from INI file
