@@ -10,6 +10,8 @@ import signal
 import asyncio
 import fcntl
 import threading
+import locale
+import datetime
 
 from stylesheet import *
 from pathlib import Path

@@ -2,7 +2,7 @@ from setup import *
 
 
 NOW=datetime.now()
-CONFIG=configparser.ConfigParser()
+CONFIG = configparser.ConfigParser()
 CONFIG.read(SRC_USER_CONFIG)
 
 
@@ -11,17 +11,17 @@ class UPDATEINIFILE:
     # INI
     ####################################################################
     def ini_hd_name(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return str(CONFIG['EXTERNAL']['name'])
 
     def ini_external_location(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['EXTERNAL']['hd']
 
     def ini_backing_up_now(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         # Not backing up
@@ -33,7 +33,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_unfinished_backup(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['STATUS']['unfinished_backup']) == 'No':
@@ -43,7 +43,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_automatically_backup(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         if CONFIG['STATUS']['automatically_backup'] == 'False':
             return False
@@ -51,7 +51,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_system_tray(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if CONFIG['SYSTEMTRAY']['system_tray'] == 'False':
@@ -60,7 +60,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_one_time_mode(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['MODE']['one_time_mode']) == 'False':
@@ -69,7 +69,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_multiple_time_mode(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['MODE']['more_time_mode']) == 'False':
@@ -78,17 +78,17 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_hour(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['SCHEDULE']['hours']
 
     def ini_next_minute(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['SCHEDULE']['minutes']
 
     def ini_next_backup_sun(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['sun']) == 'False':
@@ -98,7 +98,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_mon(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['mon']) == 'False':
@@ -108,7 +108,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_tue(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['tue']) == 'False':
@@ -118,7 +118,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_wed(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['wed']) == 'False':
@@ -128,7 +128,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_thu(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['thu']) == 'False':
@@ -138,7 +138,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_fri(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['fri']) == 'False':
@@ -147,7 +147,7 @@ class UPDATEINIFILE:
             return True
 
     def ini_next_backup_sat(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['DAYS']['sat']) == 'False':
@@ -157,19 +157,19 @@ class UPDATEINIFILE:
             return True
 
     def ini_everytime(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return str(CONFIG['SCHEDULE']['everytime'])
 
     def ini_time_left(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if CONFIG['SCHEDULE']['time_left'] == 'None':
             return None
 
     def ini_extra_information(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         try:
             return CONFIG['INFO']['notification_add_info']
@@ -177,12 +177,12 @@ class UPDATEINIFILE:
             return "None"
 
     def ini_current_backup_information(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return str(CONFIG['INFO']['current_backing_up'])
 
     def ini_allow_flatpak_data(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if str(CONFIG['STATUS']['allow_flatpak_data']) == 'False':
@@ -191,32 +191,32 @@ class UPDATEINIFILE:
             return True
 
     def ini_files_and_folders(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['RESTORE']['files_and_folders']
 
     def ini_system_settings(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['RESTORE']['system_settings']
 
     def ini_user_os(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['INFO']['os']
 
     def ini_folders(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG.options('FOLDER')
 
     def ini_package_manager(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return CONFIG['INFO']['packageManager']
 
     def ini_automatically_reboot(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if CONFIG['INFO']['auto_reboot'] == 'False':
@@ -225,7 +225,7 @@ class UPDATEINIFILE:
             return True 
 
     def ini_applications_packages(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
         if CONFIG['RESTORE']['applications_packages'] == 'False':
@@ -236,7 +236,7 @@ class UPDATEINIFILE:
             return None
 
     def ini_restoring_is_running(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         if CONFIG['RESTORE']['is_restore_running'] == 'False':
             return False
@@ -244,37 +244,37 @@ class UPDATEINIFILE:
             return True
 
     def ini_info_wallpaper(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['wallpaper']
 
     def ini_info_icon(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['icon']
 
     def ini_info_cursor(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['cursor']
 
     def ini_info_font(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['font']
 
     def ini_info_colortheme(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['colortheme']
 
     def ini_info_gtktheme(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['gtktheme']
 
     def ini_info_theme(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['theme']
 
@@ -282,9 +282,8 @@ class UPDATEINIFILE:
     # Date/time
     ####################################################################
     def day_name(self):
-        NOW=datetime.now()
-        self.dayName= NOW.strftime("%a")
-        return self.dayName
+        NOW = datetime.now()
+        return NOW.strftime("%a")
 
     def current_date(self):
         NOW=datetime.now()
