@@ -59,4 +59,5 @@ def get_locale_settings_language(day_number):
 
 
 if __name__ == '__main__':
+   print(get_next_backup())
    pass
