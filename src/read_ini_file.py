@@ -103,7 +103,6 @@ class UPDATEINIFILE:
 
         if str(CONFIG['DAYS']['mon']) == 'False':
             return False
-
         else:
             return True
 
@@ -113,7 +112,6 @@ class UPDATEINIFILE:
 
         if str(CONFIG['DAYS']['tue']) == 'False':
             return False
-
         else:
             return True
 

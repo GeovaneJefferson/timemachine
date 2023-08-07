@@ -427,7 +427,7 @@ class MainWindow(QMainWindow):
         self.startup_check()
 
         timer.timeout.connect(self.running)
-        timer.start(2000)
+        timer.start(1000)
         self.running()
 
     def running(self):
@@ -584,7 +584,7 @@ class MainWindow(QMainWindow):
             self.showInSystemTrayCheckBox.setChecked(False)
 
     def automatically_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.automatically_check_box.isChecked():
@@ -615,7 +615,7 @@ class MainWindow(QMainWindow):
 
     # TODO
     def system_tray_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.showInSystemTrayCheckBox.isChecked():
@@ -1307,7 +1307,7 @@ class OPTION(QMainWindow):
         ################################################################################
         # Read Ini File
         ################################################################################
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         getIniFolders=CONFIG.options('FOLDER')
 
@@ -1430,7 +1430,7 @@ class OPTION(QMainWindow):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if CONFIG.has_option('FOLDER', output):
@@ -1444,7 +1444,7 @@ class OPTION(QMainWindow):
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox=self.multiple_time_per_day_comboBox.currentIndex()
 
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if chooseMultipleTimePerDayCombox == 0:
@@ -1460,80 +1460,82 @@ class OPTION(QMainWindow):
             CONFIG.write(configfile)
 
     def on_check_sun_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.sun_checkbox.isChecked():
-                CONFIG.set('SCHEDULE', 'sun', 'True')
+                CONFIG.set('DAYS', 'sun', 'True')
                 print("Sun")
             else:
-                CONFIG.set('SCHEDULE', 'sun', 'False')
+                CONFIG.set('DAYS', 'sun', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
 
     def on_check_mon_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.mon_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'mon', 'True')
+                CONFIG.set('DAYS', 'mon', 'True')
                 print("Mon")
             else:
-                CONFIG.set('SCHEDULE', 'mon', 'False')
+                CONFIG.set('DAYS', 'mon', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
 
     def on_check_tue_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
+            print(configfile)
             if self.tue_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'tue', 'True')
-                print("Tue")
+                CONFIG.set('DAYS', 'tue', 'True')
+                print("Checked Tue")
             else:
-                CONFIG.set('SCHEDULE', 'tue', 'False')
+                CONFIG.set('DAYS', 'tue', 'False')
+                print("Unchecked Tue")
 
             # Write to INI file
             CONFIG.write(configfile)
 
     def on_check_wed_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.wed_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'wed', 'True')
+                CONFIG.set('DAYS', 'wed', 'True')
                 print("Wed")
             else:
-                CONFIG.set('SCHEDULE', 'wed', 'False')
+                CONFIG.set('DAYS', 'wed', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
 
     def on_check_thu_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.thu_checkBox.isChecked():
-                CONFIG.set('SCHEDULE', 'thu', 'True')
+                CONFIG.set('DAYS', 'thu', 'True')
                 print("Thu")
             else:
-                CONFIG.set('SCHEDULE', 'thu', 'False')
+                CONFIG.set('DAYS', 'thu', 'False')
 
             # Write to INI file
             CONFIG.write(configfile)
 
     def on_check_fri_clicked(self):
         try:
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.fri_checkBox.isChecked():
-                    CONFIG.set('SCHEDULE', 'fri', 'True')
+                    CONFIG.set('DAYS', 'fri', 'True')
                     print("Fri")
                 else:
-                    CONFIG.set('SCHEDULE', 'fri', 'False')
+                    CONFIG.set('DAYS', 'fri', 'False')
 
                 # Write to INI file
                 CONFIG.write(configfile)
@@ -1543,14 +1545,14 @@ class OPTION(QMainWindow):
 
     def on_check_sat_clicked(self):
         try:
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.sat_checkBox.isChecked():
-                    CONFIG.set('SCHEDULE', 'sat', 'True')
+                    CONFIG.set('DAYS', 'sat', 'True')
                     print("Sat")
                 else:
-                    CONFIG.set('SCHEDULE', 'sat', 'False')
+                    CONFIG.set('DAYS', 'sat', 'False')
 
                 # Write to INI file
                 CONFIG.write(configfile)
@@ -1562,7 +1564,7 @@ class OPTION(QMainWindow):
         hours=str(self.hours_spinbox.value())
 
         # Save hours
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             CONFIG.set('SCHEDULE', 'hours', hours)
@@ -1576,7 +1578,7 @@ class OPTION(QMainWindow):
         minutes=str(self.minutes_spinBox.value())
 
         # Save minutes
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         # with open(src_user_config, 'w+') as configfile:
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
@@ -1588,7 +1590,7 @@ class OPTION(QMainWindow):
             CONFIG.write(configfile)
 
     def on_frequency_clicked(self):
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         # with open(src_user_config, 'w+') as configfile:
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
@@ -1638,7 +1640,7 @@ class OPTION(QMainWindow):
         try:
             # If user allowAPP to back up data, auto activate
             # backup flatpaks name too.
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 if self.allowFlatpakDataCheckBox.isChecked():
