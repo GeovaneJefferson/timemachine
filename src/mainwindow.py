@@ -1669,7 +1669,7 @@ class OPTION(QMainWindow):
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 # Backup section
-                CONFIG.set('STATUS', 'unfinished_backup', 'no')
+                CONFIG.set('STATUS', 'unfinished_backup', 'No')
                 CONFIG.set('STATUS', 'automatically_backup', 'False')
                 CONFIG.set('STATUS', 'backing_up_now', 'False')
                 CONFIG.set('STATUS', 'first_startup', 'False')

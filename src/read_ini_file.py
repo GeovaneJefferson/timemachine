@@ -36,7 +36,7 @@ class UPDATEINIFILE:
         CONFIG=configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
 
-        if str(CONFIG['STATUS']['unfinished_backup']) == 'no':
+        if str(CONFIG['STATUS']['unfinished_backup']) == 'No':
             return False
 
         else:

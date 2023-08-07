@@ -273,7 +273,7 @@ def signal_exit(*args):
     CONFIG = configparser.ConfigParser()
     CONFIG.read(SRC_USER_CONFIG)
     with open(SRC_USER_CONFIG, 'w') as configfile:
-        CONFIG.set('STATUS', 'unfinished_backup', 'yes')
+        CONFIG.set('STATUS', 'unfinished_backup', 'Yes')
         CONFIG.write(configfile)
 
     # Quit
