@@ -1665,7 +1665,7 @@ class OPTION(QMainWindow):
             MAIN.oldest_backup_label.setText("Oldest Backup: None")
 
             # Reset settings
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
                 # Backup section
