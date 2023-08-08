@@ -1690,13 +1690,14 @@ class OPTION(QMainWindow):
                 CONFIG.set('SYSTEMTRAY', 'system_tray', 'False')
 
                 # Schedule section
-                CONFIG.set('SCHEDULE', 'sun', 'True')
-                CONFIG.set('SCHEDULE', 'mon', 'True')
-                CONFIG.set('SCHEDULE', 'tue', 'True')
-                CONFIG.set('SCHEDULE', 'wed', 'True')
-                CONFIG.set('SCHEDULE', 'thu', 'True')
-                CONFIG.set('SCHEDULE', 'fri', 'True')
-                CONFIG.set('SCHEDULE', 'sat', 'True')
+                CONFIG.set('DAYS', 'sun', 'True')
+                CONFIG.set('DAYS', 'mon', 'True')
+                CONFIG.set('DAYS', 'tue', 'True')
+                CONFIG.set('DAYS', 'wed', 'True')
+                CONFIG.set('DAYS', 'thu', 'True')
+                CONFIG.set('DAYS', 'fri', 'True')
+                CONFIG.set('DAYS', 'sat', 'True')
+                
                 CONFIG.set('SCHEDULE', 'hours', '10')
                 CONFIG.set('SCHEDULE', 'minutes', '00')
                 CONFIG.set('SCHEDULE', 'everytime', '60')

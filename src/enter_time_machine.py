@@ -381,18 +381,6 @@ class ENTERTIMEMACHINE(QWidget):
 
         asyncio.run(self.main())       
 
-    async def main(self):
-        print("Starting main")
-        self.loadingLabel.setVisible(False)
-        task=asyncio.create_task(self.show_on_screen())
-
-        print("Task created")
-        
-        await task
-        self.loadingLabel.setVisible(False)
-
-        print("Main finished")
-
     async def show_on_screen(self):
         # Clean screen
         self.clean_stuff_on_screen("clean_files")
@@ -861,7 +849,18 @@ class ENTERTIMEMACHINE(QWidget):
         except:
             pass
 
+    async def main(self):
+        print("Starting main")
+        self.loadingLabel.setVisible(False)
+        task=asyncio.create_task(self.show_on_screen())
 
+        print("Task created")
+        
+        await task
+        self.loadingLabel.setVisible(False)
+
+        print("Main finished")
+        
 if __name__ == '__main__':
     app=QApplication(sys.argv)
     main=ENTERTIMEMACHINE()

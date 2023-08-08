@@ -235,4 +235,5 @@ def get_day_index():
 
 
 if __name__ == '__main__':
+   print()
    pass
