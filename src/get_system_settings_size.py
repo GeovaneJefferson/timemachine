@@ -1,13 +1,14 @@
 from setup import *
-from package_manager import package_manager
+# from package_manager import package_manager
 from read_ini_file import UPDATEINIFILE
 
 dummySystemSettingsSizeList=[]
 dummy=[]
 result=[]
 
+# TODO
 def get_system_settings_size():
-    MAININIFILE=UPDATEINIFILE()
+    MAININIFILE = UPDATEINIFILE()
     
     try:
         # Icons size
@@ -65,20 +66,20 @@ def get_system_settings_size():
         ####################################
         # Aurorae
         ####################################
-        systemSettingsTheme=os.popen(f"du -hs {MAININIFILE.aurorae_main_folder()} 2>/dev/null")
-        systemSettingsTheme=systemSettingsTheme.read().strip("\t")
-        systemSettingsTheme=systemSettingsTheme.strip("\n")
-        systemSettingsTheme=systemSettingsTheme.replace(f"{AURORAEFOLDERNAME}", "")
+        # systemSettingsTheme=os.popen(f"du -hs {MAININIFILE.aurorae_main_folder()} 2>/dev/null")
+        # systemSettingsTheme=systemSettingsTheme.read().strip("\t")
+        # systemSettingsTheme=systemSettingsTheme.strip("\n")
+        # systemSettingsTheme=systemSettingsTheme.replace(f"{AURORAEFOLDERNAME}", "")
 
-        if systemSettingsTheme != "":
-            for string in systemSettingsTheme:
-                if string.isdigit():
-                    dummy.append(string)
+        # if systemSettingsTheme != "":
+        #     for string in systemSettingsTheme:
+        #         if string.isdigit():
+        #             dummy.append(string)
 
-            systemSettingsTheme=''.join(dummy)
-            dummy.clear()
-            systemSettingsTheme=int(systemSettingsTheme)
-            dummySystemSettingsSizeList.append(systemSettingsTheme)
+        #     systemSettingsTheme=''.join(dummy)
+        #     dummy.clear()
+        #     systemSettingsTheme=int(systemSettingsTheme)
+        #     dummySystemSettingsSizeList.append(systemSettingsTheme)
         
         if len(dummySystemSettingsSizeList) > 1:
             if sum(dummySystemSettingsSizeList) < 1000:
