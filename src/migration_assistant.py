@@ -1200,8 +1200,9 @@ class BackupScreen(QWidget):
             # if restoring is running
             if MAIN_INI_FILE.ini_restoring_is_running():
                 # Show restoring description
-                self.whileRestoringDescription.setText(f'Transferring '
-                    f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 
+                # TODO
+                # self.whileRestoringDescription.setText(f'Transferring '
+                #     f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 
                 # Hide more description
                 self.moreDescription.hide()
                 # Show restoring description
@@ -1255,7 +1256,8 @@ class StartRestoring(QWidget):
 
         current_status = QLabel()
         current_status.setFont(QFont(MAIN_FONT, 12))
-        current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
+        # TODO
+        # current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
         current_status.setAlignment(QtCore.Qt.AlignHCenter)
         current_status.setStyleSheet("""
         color:white;
@@ -1323,8 +1325,8 @@ class StartRestoring(QWidget):
 
 
 if __name__ == '__main__':
-    APP=QApplication(sys.argv)
-    WIDGET=QStackedWidget()
+    APP = QApplication(sys.argv)
+    WIDGET = QStackedWidget()
 
     MAIN_INI_FILE = UPDATEINIFILE()
     MAIN = WelcomeScreen()
