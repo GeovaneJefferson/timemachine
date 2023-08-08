@@ -839,7 +839,7 @@ class PreBackup(QWidget):
         with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
             if self.flatpak_data_Checkbox.isChecked():
                 # Set restore flatpak data to True
-                CONFIG.set('RESTORE', 'applications_data', 'True')
+                CONFIG.set('RESTORE', 'applications_flatpak_data', 'True')
                 # Check flatpak data checkbox
                 self.flatpak_data_Checkbox.setChecked(True)
                 # Enable continue button
@@ -852,7 +852,7 @@ class PreBackup(QWidget):
                 # Set restore flatpak program to False
                 CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
                 # Set restore flatpak data to False
-                CONFIG.set('RESTORE', 'applications_data', 'False')
+                CONFIG.set('RESTORE', 'applications_flatpak_data', 'False')
                 # Uncheck flatpak data checkbox
                 self.flatpak_data_Checkbox.setChecked(False)
                 # Remove "data" from list

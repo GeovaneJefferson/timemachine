@@ -11,9 +11,6 @@ from restore_backup_flatpaks_data import restore_backup_flatpaks_data
 from restore_kde_share_config import restore_kde_share_config
 from restore_kde_config import restore_kde_config
 from restore_kde_local_share import restore_kde_local_share
-from restore_settings import (
-    restore_system_settings, restore_home, restore_applications_packages,
-    restore_flatpaks_programs, restore_flatpaks_data)
 
 
 ################################################################################
@@ -32,7 +29,7 @@ class RESTORE:
 
     async def start_restoring(self):
         # First change the wallpaper
-        if restore_system_settings:
+        if MAIN_INI_FILE.ini_system_settings():
             # Update INI file
             CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
@@ -43,7 +40,7 @@ class RESTORE:
             await restore_backup_wallpaper()
         
         # Restore home folder
-        if restore_home:
+        if MAIN_INI_FILE.ini_files_and_folders():
             # Update INI file
             CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
@@ -54,7 +51,7 @@ class RESTORE:
             await restore_backup_home()
 
         # Restore applications packages (.deb, .rpm etc.)
-        if restore_applications_packages:
+        if  MAIN_INI_FILE.ini_applications_packages():
             # Update INI file
             CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
@@ -65,7 +62,7 @@ class RESTORE:
             await restore_backup_package_applications()
        
         # Restore flatpaks
-        if restore_flatpaks_programs:
+        if MAIN_INI_FILE.ini_restore_flatpaks_name():
             # Update INI file
             CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
@@ -76,7 +73,7 @@ class RESTORE:
             await restore_backup_flatpaks_applications()
         
         # Restore flatpaks data
-        if restore_flatpaks_data:
+        if MAIN_INI_FILE.ini_restore_flatpaks_data():
             # Update INI file
             CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
@@ -87,7 +84,7 @@ class RESTORE:
             await restore_backup_flatpaks_data()
         
         # Restore system settings
-        if restore_system_settings:
+        if MAIN_INI_FILE.ini_system_settings():
             # Only for kde
             if get_user_de() == 'kde':
                 # Update INI file

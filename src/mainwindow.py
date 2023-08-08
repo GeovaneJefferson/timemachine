@@ -1724,7 +1724,7 @@ class OPTION(QMainWindow):
                 # Restore section
                 CONFIG.set('RESTORE', 'applications_packages', 'False')
                 CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
-                CONFIG.set('RESTORE', 'applications_data', 'False')
+                CONFIG.set('RESTORE', 'applications_flatpak_data', 'False')
                 CONFIG.set('RESTORE', 'files_and_folders', 'False')
                 CONFIG.set('RESTORE', 'system_settings', 'False')
                 CONFIG.set('RESTORE', 'is_restore_running', 'False')

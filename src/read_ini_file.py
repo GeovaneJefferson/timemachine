@@ -1,7 +1,7 @@
 from setup import *
 
 
-NOW=datetime.now()
+NOW = datetime.now()
 CONFIG = configparser.ConfigParser()
 CONFIG.read(SRC_USER_CONFIG)
 
@@ -178,7 +178,24 @@ class UPDATEINIFILE:
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         return str(CONFIG['INFO']['current_backing_up'])
+    
+    def ini_restore_flatpaks_name(self):
+        CONFIG = configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
 
+        if str(CONFIG['RESTORE']['applications_flatpak_names']) == 'False':
+            return False
+        else:
+            return True
+    
+    def ini_restore_flatpaks_data(self):
+        CONFIG = configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        if str(CONFIG['RESTORE']['applications_flatpak_data']) == 'False':
+            return False
+        else:
+            return True
+        
     def ini_allow_flatpak_data(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
@@ -191,12 +208,18 @@ class UPDATEINIFILE:
     def ini_files_and_folders(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        return CONFIG['RESTORE']['files_and_folders']
+        if str(CONFIG['RESTORE']['files_and_folders']) == 'False':
+            return False
+        else:
+            return True
 
     def ini_system_settings(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        return CONFIG['RESTORE']['system_settings']
+        if str(CONFIG['RESTORE']['system_settings']) == 'False':
+            return False
+        else:
+            return True
 
     def ini_user_os(self):
         CONFIG = configparser.ConfigParser()
