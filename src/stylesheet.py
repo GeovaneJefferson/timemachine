@@ -1,4 +1,4 @@
-from setup import *
+# from setup import *
 
 # Font
 MAIN_FONT="Ubuntu"

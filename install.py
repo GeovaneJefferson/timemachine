@@ -1,33 +1,32 @@
-# import subprocess as sub
-# import os
-# import shutil
-# import pathlib
-# from pathlib import Path
-from src.setup import *
+import subprocess as sub
+import os
+import shutil
+import pathlib
+from pathlib import Path
 
 
 # Remember to change setup too!
-# HOME_USER=str(Path.home())
-# GET_CURRENT_LOCATION=pathlib.Path().resolve()
+HOME_USER = str(Path.home())
+GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
-# APP_NAME_CLOSE="timemachine"
-# APP_NAME="Time Machine"
-# APP_VERSION="v1.1.7 dev"
+APP_NAME_CLOSE = "timemachine"
+APP_NAME = "Time Machine"
+APP_VERSION = "v1.1.7.03 dev"
 
-# CREATE_CMD_FOLDER="mkdir"
+CREATE_CMD_FOLDER = "mkdir"
 
-# DST_FOLDER_INSTALL=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
-# DST_APPLICATIONS_LOCATION=f"{HOME_USER}/.local/share/applications"
-# DST_FILE_EXE_DESKTOP=f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
-# SRC_MAIN_WINDOW_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.py"
-# DST_MIGRATION_ASSISTANT_DESKTOP=f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"
-# SRC_MIGRATION_ASSISTANT_ICON_212PX=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
-# SRC_CALL_MIGRATION_ASSISTANT_PY=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
-# (SRC_MIGRATION_ASSISTANT_PY)=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
-# SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
-# DST_BACKUP_CHECK_DESKTOP=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/desktop/backup_check.desktop"
-# SRC_RESTORE_ICON=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
-# SRC_BACKUP_ICON=f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
+DST_FOLDER_INSTALL = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
+DST_APPLICATIONS_LOCATION = f"{HOME_USER}/.local/share/applications"
+SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
+DST_FILE_EXE_DESKTOP = f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
+SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.py"
+DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"
+SRC_MIGRATION_ASSISTANT_ICON_212PX = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
+SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
+(SRC_MIGRATION_ASSISTANT_PY) = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
+DST_BACKUP_CHECK_DESKTOP = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/desktop/backup_check.desktop"
+SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
+SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 
 
 # # DEB

@@ -33,7 +33,6 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
 timer = QtCore.QTimer()
 
 # Remember to change INSTALL too!
-
 ################################################################################
 ## Variables
 ################################################################################
@@ -154,6 +153,7 @@ BIGGER_FONT_SIZE = 12
 NORMAL_FONT_SIZE = 10
 SMALL_FONT_SIZE = 5
 
+
 ################################################################################
 ## Fonts
 ################################################################################
@@ -201,6 +201,8 @@ src_flatpak_local_folder_location = f"{HOME_USER}/.local/share/flatpak"
 # KDE
 src_color_scheme_folder_location = f"{HOME_USER}/.local/share/color-schemes"
 src_plasma_style_folder_location = f"{HOME_USER}/.local/share/plasma/desktoptheme"
+
+SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
 
 ################################################################################
 ## PY
