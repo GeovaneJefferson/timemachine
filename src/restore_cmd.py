@@ -23,6 +23,7 @@ from restore_settings import (
 signal.signal(signal.SIGINT, signal_exit)
 signal.signal(signal.SIGTERM, signal_exit)
 
+MAIN_INI_FILE = UPDATEINIFILE()
 
 class RESTORE:
     def __init__(self):
@@ -145,4 +146,3 @@ class RESTORE:
 
 if __name__ == '__main__':
     main = RESTORE()
-    MAIN_INI_FILE = UPDATEINIFILE()
