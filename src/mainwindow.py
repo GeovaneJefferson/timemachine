@@ -257,7 +257,7 @@ class MainWindow(QMainWindow):
         self.descriptionText.setText(
             "• Local HOME snapshots as space permits\n"
             "• Hourly or Daily backups\n"
-            "• Packages as: .DEB and .RPM\n"
+            "• Packages as: .DEB and .RPM inside Downloads folder\n"
             "• Installed flatpaks + Data (.var/app) and (.local/share/flatpak)\n"
             "• Some system files and folders\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
