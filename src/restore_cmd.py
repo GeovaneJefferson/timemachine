@@ -7,11 +7,7 @@ from restore_backup_home import restore_backup_home
 from restore_backup_flatpaks_applications import restore_backup_flatpaks_applications
 from restore_backup_package_applications import restore_backup_package_applications
 from restore_backup_flatpaks_data import restore_backup_flatpaks_data
-# from restore_backup_icons import restore_backup_icons
-# from restore_backup_cursor import restore_backup_cursor
-# from restore_backup_theme import restore_backup_theme
-from restart_kde_session import restart_kde_session
-# from restore_backup_fonts import restore_backup_fonts
+# from restart_kde_session import restart_kde_session
 from restore_kde_share_config import restore_kde_share_config
 from restore_kde_config import restore_kde_config
 from restore_kde_local_share import restore_kde_local_share
@@ -26,9 +22,6 @@ from restore_settings import (
 # If user turn off or kill the app, update INI file
 signal.signal(signal.SIGINT, signal_exit)
 signal.signal(signal.SIGTERM, signal_exit)
-
-
-AUTO_REBOOT=False
 
 
 class RESTORE:
@@ -144,7 +137,7 @@ class RESTORE:
         # After backup is done
         print("Restoring is done!")
 
-        if AUTO_REBOOT:
+        if MAIN_INI_FILE.ini_automatically_reboot():
             sub.run("sudo reboot", shell=True)
         else:
             exit()
@@ -152,3 +145,4 @@ class RESTORE:
 
 if __name__ == '__main__':
     main = RESTORE()
+    MAIN_INI_FILE = UPDATEINIFILE()

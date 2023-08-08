@@ -1226,7 +1226,7 @@ class BackupScreen(QWidget):
 
     def auto_reboot_clicked(self):
         # Update INI file
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
             CONFIG.set('INFO', 'auto_reboot', 'True')
