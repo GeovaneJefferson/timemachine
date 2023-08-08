@@ -1201,8 +1201,8 @@ class BackupScreen(QWidget):
             if MAIN_INI_FILE.ini_restoring_is_running():
                 # Show restoring description
                 # TODO
-                # self.whileRestoringDescription.setText(f'Transferring '
-                #     f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 
+                self.whileRestoringDescription.setText(f'Transferring '
+                    f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 
                 # Hide more description
                 self.moreDescription.hide()
                 # Show restoring description
@@ -1254,12 +1254,10 @@ class StartRestoring(QWidget):
         color:gray;
         """)
 
-        current_status = QLabel()
-        current_status.setFont(QFont(MAIN_FONT, 12))
-        # TODO
-        # current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
-        current_status.setAlignment(QtCore.Qt.AlignHCenter)
-        current_status.setStyleSheet("""
+        self.current_status = QLabel()
+        self.current_status.setFont(QFont(MAIN_FONT, 12))
+        self.current_status.setAlignment(QtCore.Qt.AlignHCenter)
+        self.current_status.setStyleSheet("""
         color:white;
         """)
 
@@ -1298,7 +1296,7 @@ class StartRestoring(QWidget):
         titlel_layout.addStretch()
         titlel_layout.addWidget(setting_up, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         titlel_layout.addWidget(image, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-        titlel_layout.addWidget(current_status, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        titlel_layout.addWidget(self.current_status, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         titlel_layout.addWidget(title, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         titlel_layout.addWidget(self.moreDescription, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         titlel_layout.addStretch()
@@ -1310,15 +1308,17 @@ class StartRestoring(QWidget):
         self.read_ini_file()
 
     def read_ini_file(self):
+        self.current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
+
         if not MAIN_INI_FILE.ini_restoring_is_running():
             ###############################################################################
             # Update INI file
             ###############################################################################
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 # Set auto rebooting to false
-                CONFIG.set('RESTORE', 'is_restore_running', 'none')
+                CONFIG.set('RESTORE', 'is_restore_running', 'None')
                 CONFIG.write(configfile)
 
             exit()
@@ -1329,7 +1329,7 @@ if __name__ == '__main__':
     WIDGET = QStackedWidget()
 
     MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN = WelcomeScreen()
+    MAIN = StartRestoring()
 
     WIDGET.addWidget(MAIN)   
     WIDGET.setCurrentWidget(MAIN)   

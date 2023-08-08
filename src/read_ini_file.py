@@ -259,7 +259,7 @@ class UPDATEINIFILE:
     def ini_restoring_is_running(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-        if CONFIG['RESTORE']['is_restore_running'] == 'False':
+        if str(CONFIG['RESTORE']['is_restore_running']) == 'False':
             return False
         else:
             return True
