@@ -227,8 +227,10 @@ src_restore_cmd_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/restore_cmd
 ## Desktop
 ################################################################################
 # Source
+SRC_TIMEMACHINE_DESKTOP = f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
+
 src_autostart_location = f"desktop/backup_check.desktop"
-src_timemachine_desktop = f"desktop/{APP_NAME_CLOSE}.desktop"
+# SRC_TIMEMACHINE_DESKTOP = f"desktop/{APP_NAME_CLOSE}.desktop"
 src_migration_assistant_desktop = "desktop/migration_assistant.desktop"
 src_backup_check_desktop = f"desktop/backup_check.desktop"
 

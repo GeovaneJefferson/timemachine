@@ -22,11 +22,14 @@ SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
 
 SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.py"
 SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
-(SRC_MIGRATION_ASSISTANT_PY) = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
+SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
+SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
 
-DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"
 SRC_MIGRATION_ASSISTANT_ICON_212PX = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
+
 DST_BACKUP_CHECK_DESKTOP = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/desktop/backup_check.desktop"
+SRC_TIMEMACHINE_DESKTOP = f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
+DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"
 
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
@@ -62,11 +65,12 @@ class CLI:
             pass
 
     def create_application_files(self):
-        # Create applications exe
+        # Create .local/share/applications
         if not os.path.exists(DST_APPLICATIONS_LOCATION):
             sub.run(f"{CREATE_CMD_FOLDER} {DST_APPLICATIONS_LOCATION}", shell=True)
 
-        with open(DST_FILE_EXE_DESKTOP, "w") as writer:
+        # Send to DST_FILE_EXE_DESKTOP
+        with open(SRC_TIMEMACHINE_DESKTOP, "w") as writer:
             writer.write(
                 f"[Desktop Entry]\n "
                 f"Version={APP_VERSION}\n "
