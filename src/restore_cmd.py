@@ -40,7 +40,7 @@ class RESTORE:
         # First change the wallpaper
         if restore_system_settings:
             # Update INI file
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 CONFIG.set('INFO', 'saved_notification', "Restoring wallpaper...")
@@ -51,7 +51,7 @@ class RESTORE:
         # Restore home folder
         if restore_home:
             # Update INI file
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 CONFIG.set('INFO', 'saved_notification', "Restoring Home...")
@@ -62,7 +62,7 @@ class RESTORE:
         # Restore applications packages (.deb, .rpm etc.)
         if restore_applications_packages:
             # Update INI file
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 CONFIG.set('INFO', 'saved_notification', "Restoring Applications...")
@@ -73,7 +73,7 @@ class RESTORE:
         # Restore flatpaks
         if restore_flatpaks_programs:
             # Update INI file
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 CONFIG.set('INFO', 'saved_notification', "Restoring Flatpaks Applications...")
@@ -84,7 +84,7 @@ class RESTORE:
         # Restore flatpaks data
         if restore_flatpaks_data:
             # Update INI file
-            CONFIG=configparser.ConfigParser()
+            CONFIG = configparser.ConfigParser()
             CONFIG.read(SRC_USER_CONFIG)
             with open(SRC_USER_CONFIG, 'w') as configfile:
                 CONFIG.set('INFO', 'saved_notification', "Restoring Flatpak Data...")
@@ -97,7 +97,7 @@ class RESTORE:
             # Only for kde
             if get_user_de() == 'kde':
                 # Update INI file
-                CONFIG=configparser.ConfigParser()
+                CONFIG = configparser.ConfigParser()
                 CONFIG.read(SRC_USER_CONFIG)
                 with open(SRC_USER_CONFIG, 'w') as configfile:
                     CONFIG.set('INFO', 'saved_notification', "Restoring KDE local/share...")
@@ -107,7 +107,7 @@ class RESTORE:
                 await restore_kde_local_share()
                 
                 # Update INI file
-                CONFIG=configparser.ConfigParser()
+                CONFIG = configparser.ConfigParser()
                 CONFIG.read(SRC_USER_CONFIG)
                 with open(SRC_USER_CONFIG, 'w') as configfile:
                     CONFIG.set('INFO', 'saved_notification', "Restoring KDE config...")
@@ -117,7 +117,7 @@ class RESTORE:
                 await restore_kde_config()
 
                 # Update INI file
-                CONFIG=configparser.ConfigParser()
+                CONFIG = configparser.ConfigParser()
                 CONFIG.read(SRC_USER_CONFIG)
                 with open(SRC_USER_CONFIG, 'w') as configfile:
                     CONFIG.set('INFO', 'saved_notification', "Restoring KDE share/CONFIG...")
@@ -135,7 +135,7 @@ class RESTORE:
         print("Ending restoring...")
 
         # Update INI file
-        CONFIG=configparser.ConfigParser()
+        CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
             CONFIG.set('INFO', 'saved_notification', "")
@@ -151,5 +151,4 @@ class RESTORE:
 
 
 if __name__ == '__main__':
-    MAININIFILE=UPDATEINIFILE()
-    main=RESTORE()
+    main = RESTORE()
