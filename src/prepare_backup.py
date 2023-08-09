@@ -29,9 +29,9 @@ signal.signal(signal.SIGTERM, signal_exit)
 class PREPAREBACKUP:
     def __init__(self):
         # System settings size list
-        self.system_settings_size_list=[]
+        self.system_settings_size_list = []
         # Safe added space
-        self.safe_added_space=1000000
+        self.safe_added_space = 1000000
 
         self.backing_up_now()
 

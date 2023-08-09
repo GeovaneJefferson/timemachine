@@ -128,10 +128,8 @@ class UPDATEINIFILE:
     def ini_next_backup_thu(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
-
         if str(CONFIG['DAYS']['thu']) == 'False':
             return False
-
         else:
             return True
 
@@ -374,8 +372,7 @@ class UPDATEINIFILE:
         return createBackupFolder
 
     def backup_folder_name(self):
-        createBackupFolder=f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
-        return createBackupFolder
+        return f"{str(self.ini_external_location())}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
 
     # Wallpaper
     def wallpaper_main_folder(self):
@@ -494,5 +491,4 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE=UPDATEINIFILE()
     pass

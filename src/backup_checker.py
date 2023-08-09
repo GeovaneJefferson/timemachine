@@ -3,8 +3,7 @@ from read_ini_file import UPDATEINIFILE
 from get_days_name import get_days_name
 from check_connection import is_connected
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-from get_time import today_date
-from get_backup_date import get_backup_date
+from backup_was_already_made import backup_was_already_made
 
 
 # Handle signal
@@ -13,16 +12,13 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 
 # Download folder location
-DOWNLOADS_FOLDER_LOCATION=f"{HOME_USER}/Downloads"
+DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
 # Found packages list
-FOUND_DEB_PACKAGES_LIST=[]
-FOUND_RPM_PACKAGES_LIST=[]
+FOUND_DEB_PACKAGES_LIST = []
+FOUND_RPM_PACKAGES_LIST = []
 
 
 class CHECKER:
-    def __init__(self):
-        pass
-
     # Check for previus interrupted backup
     def continue_interrupted_backup(self):
         # Call backup now .py
@@ -71,25 +67,25 @@ class CHECKER:
     def check_the_dates(self):
         # One time per day
         if MAIN_INI_FILE.ini_one_time_mode():
-            if str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_sun()):
+            if MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_sun():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_mon()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_mon():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_tue()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_tue():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_wed()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_wed():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_thu()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_thu():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_fri()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_fri():
                 self.take_action(True)
 
-            elif str(MAIN_INI_FILE.day_name()) == get_days_name() and str(MAIN_INI_FILE.ini_next_backup_sat()):
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_sat():
                 self.take_action(True)
 
         # Multiple time per day
@@ -104,9 +100,11 @@ class CHECKER:
             # If current time i higher or iqual to the 'saved' backup time to backup
             if MAIN_INI_FILE.current_time() >= MAIN_INI_FILE.backup_time_military():
                 # If todays date can not be found inside backup device
-                if today_date() not in get_backup_date():
+                if not backup_was_already_made():
                     # Prepare backup
                     self.call_prepare_backup()
+                else:
+                    print("A backup was already made today.")
 
             # Calculate time left to backup
             else:
@@ -131,7 +129,7 @@ class CHECKER:
         # Check if ini file is not locked, than write to it
         # Set time left to None
         # Set backup now to True, or create a file that shows that
-        config=configparser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
         with open(SRC_USER_CONFIG, 'w') as configfile:
             config.set('STATUS', 'backing_up_now', 'True')
@@ -145,7 +143,7 @@ class CHECKER:
 
 if __name__ == '__main__':
     # Objects
-    MAIN=CHECKER()
+    MAIN = CHECKER()
     MAIN_INI_FILE=UPDATEINIFILE()
 
     while True:
@@ -162,6 +160,7 @@ if __name__ == '__main__':
                     # Thread to check new packages at Downloads folders
                     # Search for new packages
                     MAIN.check_for_new_packages()
+
 
                     # Check dates
                     MAIN.check_the_dates()

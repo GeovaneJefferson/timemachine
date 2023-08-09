@@ -1,6 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_days_name import get_days_name
+from backup_was_already_made import backup_was_already_made
 import datetime
 
 
@@ -10,6 +11,7 @@ MAIN_INI_FILE = UPDATEINIFILE()
 def get_next_backup():
    # print(MAIN_INI_FILE.day_name())
    # print(get_days_name())
+   # print(get_day_index())
    # print(MAIN_INI_FILE.ini_next_backup_mon())
    # print(int(MAIN_INI_FILE.current_time()))
    # print(int(MAIN_INI_FILE.backup_time_military()))
@@ -17,8 +19,12 @@ def get_next_backup():
    # Check if today is the day to backup
    if MAIN_INI_FILE.day_name() == get_days_name():  # Will return ex. Mon == Mon, so is today
       # Had yet not backup today # 1000 1030
-      if int(MAIN_INI_FILE.current_hour()) <= int(MAIN_INI_FILE.ini_backup_hour()):  # and int(MAIN_INI_FILE.current_minute()) > int(MAIN_INI_FILE.ini_backup_minute())
-         return "Today"
+      if int(MAIN_INI_FILE.current_hour()) <= int(MAIN_INI_FILE.ini_backup_hour()) and int(MAIN_INI_FILE.current_minute()) > int(MAIN_INI_FILE.ini_backup_minute()):
+         # Check if a backup was made today
+         if not backup_was_already_made():      
+            return "Today"
+         else:
+            return check_days()
       # Has already made a backup
       else:
          return check_days()
@@ -54,7 +60,6 @@ def check_days():
       else:
          return "None"
       
-
    # MON
    elif get_day_index() == 1:
       if MAIN_INI_FILE.ini_next_backup_tue():
@@ -76,141 +81,146 @@ def check_days():
          return get_locale_settings_language(6)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(0)
+         return get_locale_settings_language(7)
       
       else:
          return "None"
 
+   # TUE
    elif get_day_index() == 2:
       if MAIN_INI_FILE.ini_next_backup_wed():
-         return get_locale_settings_language(2)
+         return get_locale_settings_language(1)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-         return get_locale_settings_language(3)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-         return get_locale_settings_language(4)
+         return get_locale_settings_language(3)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-         return get_locale_settings_language(5)
+         return get_locale_settings_language(4)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
-         return get_locale_settings_language(6)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(6)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(7)
 
       else:
          return "None"
-
+   # WED
    elif get_day_index() == 3:
       if MAIN_INI_FILE.ini_next_backup_thu():
-         return get_locale_settings_language(3)
+         return get_locale_settings_language(1)
       
       elif MAIN_INI_FILE.ini_next_backup_fri():
-         return get_locale_settings_language(4)
+         return get_locale_settings_language(2)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-         return get_locale_settings_language(5)
+         return get_locale_settings_language(3)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
-         return get_locale_settings_language(6)
+         return get_locale_settings_language(4)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(6)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-         return get_locale_settings_language(2)
+         return get_locale_settings_language(7)
 
       else:
          return "None"
 
-
+   # THU
    elif get_day_index() == 4:
       if MAIN_INI_FILE.ini_next_backup_fri():
-         return get_locale_settings_language(4)
+         return get_locale_settings_language(1)
       
       elif MAIN_INI_FILE.ini_next_backup_sat():
-         return get_locale_settings_language(5)
+         return get_locale_settings_language(2)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
-         return get_locale_settings_language(6)
+         return get_locale_settings_language(3)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(4)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(5)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-         return get_locale_settings_language(2)
+         return get_locale_settings_language(6)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-         return get_locale_settings_language(3)
+         return get_locale_settings_language(7)
       
       else:
          return "None"
-
+   
+   # FRI
    elif get_day_index() == 5:
       if MAIN_INI_FILE.ini_next_backup_sat():
-         return get_locale_settings_language(5)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_sun():
-         return get_locale_settings_language(6)
+         return get_locale_settings_language(2)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(3)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(4)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-         return get_locale_settings_language(2)
+         return get_locale_settings_language(5)
       
       elif MAIN_INI_FILE.ini_next_backup_thu():
-         return get_locale_settings_language(3)
+         return get_locale_settings_language(6)
       
       if MAIN_INI_FILE.ini_next_backup_fri():
-         return get_locale_settings_language(4)
+         return get_locale_settings_language(7)
       
       else:
          return "None"
-      
+   # SAT   
    elif get_day_index() == 6:
       if MAIN_INI_FILE.ini_next_backup_sun():
-         return get_locale_settings_language(6)
+         return get_locale_settings_language(1)
 
       elif MAIN_INI_FILE.ini_next_backup_mon():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(2)
 
       elif MAIN_INI_FILE.ini_next_backup_tue():
-         return get_locale_settings_language(1)
+         return get_locale_settings_language(3)
 
       elif MAIN_INI_FILE.ini_next_backup_wed():
-         return get_locale_settings_language(2)
-      
-      elif MAIN_INI_FILE.ini_next_backup_thu():
-         return get_locale_settings_language(3)
-      
-      if MAIN_INI_FILE.ini_next_backup_fri():
          return get_locale_settings_language(4)
       
-      elif MAIN_INI_FILE.ini_next_backup_sat():
+      elif MAIN_INI_FILE.ini_next_backup_thu():
          return get_locale_settings_language(5)
+      
+      if MAIN_INI_FILE.ini_next_backup_fri():
+         return get_locale_settings_language(6)
+      
+      elif MAIN_INI_FILE.ini_next_backup_sat():
+         return get_locale_settings_language(7)
 
       else:
          return "None"
       
 def get_locale_settings_language(day_number):
+   # print("NUMBER:", day_number)
+
    # Get users locale settings language
    user_locale = locale.getdefaultlocale()
    user_locale_str = f"{user_locale[0]}.{user_locale[1].lower()}"
+   # print("user_locale:", user_locale_str)
 
    # Set the locale for the current session to English (United States)
    locale.setlocale(locale.LC_TIME, user_locale_str)
@@ -235,5 +245,4 @@ def get_day_index():
 
 
 if __name__ == '__main__':
-   print()
    pass
