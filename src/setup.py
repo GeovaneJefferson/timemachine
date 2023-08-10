@@ -213,6 +213,7 @@ SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.
 SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
 SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
 src_enter_time_machine_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/enter_time_machine.py"
+src_enter_time_machine_test_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/test.py"
 src_package_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/auto-package.py"
 src_prepare_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
 src_update_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/update.py"

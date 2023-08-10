@@ -19,7 +19,7 @@ class APP:
         self.iniUI()
 
     def iniUI(self):
-        self.app=QApplication([])
+        self.app = QApplication([])
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(APP_NAME)
         self.app.setApplicationName(APP_NAME)
@@ -37,36 +37,36 @@ class APP:
 
     def widget(self):
         # Tray
-        self.tray=QSystemTrayIcon()
+        self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon(self.system_bar_icon_stylesheet_detector))
         self.tray.setVisible(True)
         self.tray.activated.connect(self.tray_icon_clicked)
 
         # Create a menu
-        self.menu=QMenu()
+        self.menu = QMenu()
 
         # Ini last backup information
-        self.iniLastBackupInformation=QAction()
+        self.iniLastBackupInformation = QAction()
         self.iniLastBackupInformation.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.iniLastBackupInformation.setEnabled(False)
         
-        self.iniLastBackupInformation2=QAction()
+        self.iniLastBackupInformation2 = QAction()
         self.iniLastBackupInformation2.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.iniLastBackupInformation2.setEnabled(False)
 
         # Backup now button
-        self.backupNowButton=QAction("Back Up Now")
+        self.backupNowButton = QAction("Back Up Now")
         self.backupNowButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
-        self.browseTimeMachineBackupsButton=QAction("Browse Time Machine Backups")
+        self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
         self.browseTimeMachineBackupsButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browseTimeMachineBackupsButton.triggered.connect(
-            lambda: sub.Popen(f"python3 {src_enter_time_machine_py}", shell=True))
+            lambda: sub.Popen(f"python3 {src_enter_time_machine_test_py}", shell=True))
 
         # Open Time Machine button
-        self.openTimeMachine=QAction(f"Open {APP_NAME}")
+        self.openTimeMachine = QAction(f"Open {APP_NAME}")
         self.openTimeMachine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.openTimeMachine.triggered.connect(
             lambda: sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}",shell=True))
@@ -154,7 +154,7 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def status_off(self):
-        if str(MAIN_INI_FILE.ini_automatically_backup()) == 'True':
+        if MAIN_INI_FILE.ini_automatically_backup():
             self.change_color("Red")
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
@@ -166,6 +166,13 @@ class APP:
             #     with open(src_user_config, 'w', encoding='utf8') as configfile:
             #         config.set('INFO', 'notification_add_info', ' ')
             #         config.write(configfile)
+
+    def is_current_restoring(self):
+        if not MAIN_INI_FILE.ini_automatically_backup():
+            if MAIN_INI_FILE.ini_is_restoring():
+                self.change_color("Yellow")
+                self.backupNowButton.setEnabled(False)
+                self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def backup_now(self):
         sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
@@ -185,7 +192,11 @@ class APP:
                     self.color=color
                     self.tray.setIcon(QIcon(src_system_bar_error_icon))
 
-        except Exception as error:
+                elif color == "Yellow":
+                    self.color=color
+                    self.tray.setIcon(QIcon(src_system_bar_restore_icon))
+
+        except Exception as e:
             self.exit()
 
     def exit(self):
@@ -196,7 +207,7 @@ class APP:
             config.write(configfile)
 
         self.tray.hide()
-        QtWidgets.QApplication.exit()
+        QtWidgets. cation.exit()
     
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:

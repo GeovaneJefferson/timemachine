@@ -27,8 +27,6 @@ class UPDATEINIFILE:
         # Not backing up
         if str(CONFIG['STATUS']['backing_up_now']) == 'False':
             return False
-
-        # Current backing up
         else:
             return True
 
@@ -38,7 +36,6 @@ class UPDATEINIFILE:
 
         if str(CONFIG['STATUS']['unfinished_backup']) == 'No':
             return False
-
         else:
             return True
 
@@ -46,6 +43,14 @@ class UPDATEINIFILE:
         CONFIG = configparser.ConfigParser()
         CONFIG.read(SRC_USER_CONFIG)
         if CONFIG['STATUS']['automatically_backup'] == 'False':
+            return False
+        else:
+            return True
+    
+    def ini_is_restoring(self):
+        CONFIG = configparser.ConfigParser()
+        CONFIG.read(SRC_USER_CONFIG)
+        if CONFIG['STATUS']['is_restoring'] == 'False':
             return False
         else:
             return True
@@ -491,4 +496,5 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
+    MAIN = UPDATEINIFILE()
     pass

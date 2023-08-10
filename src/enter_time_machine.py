@@ -365,20 +365,6 @@ class ENTERTIMEMACHINE(QWidget):
             # Return to Date
             self.get_date()
 
-        # try:
-        #     # Current folder that user is on
-        #     print("")
-        #     print("Date available: ", self.dateFolders)
-        #     print("Time available: ", self.timeFolders)
-        #     print("Current date: ", self.dateFolders[self.countForDate])
-        #     print("Current time: ", self.timeFolders[self.countForTime])
-        #     print("Current folder:", self.currentFolder)
-        #     print(f"{self.iniExternalLocation}/{baseFolderName}/{backupFolderName}"
-        #             f"/{self.dateFolders[self.countForDate]}/{self.timeFolders[self.countForTime]}/"
-        #             f"{self.currentFolder}")
-        # except:
-        #     pass
-
         asyncio.run(self.main())       
 
     async def show_on_screen(self):

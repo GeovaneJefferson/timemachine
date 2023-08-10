@@ -17,8 +17,8 @@ from notification_massage import notification_message
 from detect_theme_color import detect_theme_color
 
 
-CHOOSE_DEVICE=[]
-CAPTURE_DEVICE=[]
+CHOOSE_DEVICE = []
+CAPTURE_DEVICE = []
 
 
 class MainWindow(QMainWindow):
@@ -1677,6 +1677,7 @@ class OPTION(QMainWindow):
                 CONFIG.set('STATUS', 'first_startup', 'False')
                 CONFIG.set('STATUS', 'allow_flatpak_names', 'True')
                 CONFIG.set('STATUS', 'allow_flatpak_data', 'False')
+                CONFIG.set('STATUS', 'is_restoring', 'False')
 
                 # External section
                 CONFIG.set('EXTERNAL', 'hd', 'None')
@@ -1702,7 +1703,6 @@ class OPTION(QMainWindow):
                 CONFIG.set('SCHEDULE', 'minutes', '00')
                 CONFIG.set('SCHEDULE', 'everytime', '60')
                 CONFIG.set('SCHEDULE', 'time_left', 'None')
-
 
                 # Info section
                 CONFIG.set('INFO', 'language', 'None')
