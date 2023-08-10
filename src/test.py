@@ -447,18 +447,23 @@ class MainWindow(QMainWindow):
 
     def up_down_arrow(self):
         # Folder time Index
-        self.INDEX_TIME = self.LIST_FOR_TIME_FOLDERS.index(self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME])
-        
+        try:
+            self.INDEX_TIME = self.LIST_FOR_TIME_FOLDERS.index(self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME])
+        except IndexError:
+            pass
         ################################################################################
         # Up settings
         # If clicked on up, go back in time
         ################################################################################
-        # 0 = The latest time folder available
-        if self.INDEX_TIME  == 0: 
-            self.ui.btn_down.setEnabled(False)
-        else:
-            self.ui.btn_down.setEnabled(True)
-
+        try:
+            # 0 = The latest time folder available
+            if self.INDEX_TIME  == 0: 
+                self.ui.btn_down.setEnabled(False)
+            else:
+                self.ui.btn_down.setEnabled(True)
+        except:
+            pass
+        
         ################################################################################
         # Down settings
         # If clicked on down, go forward in time
@@ -477,14 +482,15 @@ class MainWindow(QMainWindow):
         self.currentLocationLabel.setText(f"<h1>{self.CURRENT_FOLDER}</h1>")
         self.currentLocationLabel.adjustSize()
 
-
-        if self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE] == str(date_now):
-            # Update date label
-            self.ui.label_gray_time.setText(f'Today ({self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        else:
-            self.ui.label_gray_time.setText(f'({self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        # self.ui.label_gray_time.setText(f'({self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-
+        try:
+            if self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE] == str(date_now):
+                # Update date label
+                self.ui.label_gray_time.setText(f'Today ({self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+            else:
+                self.ui.label_gray_time.setText(f'({self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+        except IndexError:
+            pass
+        
     def btn_up_clicked(self):
         # self.COUNTER_FOR_DATE = 0
         self.COUNTER_FOR_TIME += 1
