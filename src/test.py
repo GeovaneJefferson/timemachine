@@ -534,8 +534,14 @@ class MainWindow(QMainWindow):
         self.CURRENT_FOLDER = dir
         # Reset time
         self.COUNTER_FOR_TIME = 0
+        self.COUNTER_FOR_DATE = 0
         
-        self.clean_stuff_on_screen("clean_files")
+        # Auto selected first date button
+        for index in range(self.ui.dates_layout.count()):
+            button = self.ui.dates_layout.itemAt(index).widget()
+            if isinstance(button, QPushButton):
+                # Select the last button on the list
+                self.COUNTER_FOR_DATE = self.ui.dates_layout.count() - 1
 
         self.show_results()
     
@@ -678,9 +684,9 @@ class MainWindow(QMainWindow):
         
         counter = 0
         for _ in FILES_TO_RESTORE:
-            # print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
-            #     f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
-            #     f"{FILES_TO_RESTORE[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
+            print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
+                f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
+                f"{FILES_TO_RESTORE[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
             
             sub.Popen(
                 f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"

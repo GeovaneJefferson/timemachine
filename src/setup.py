@@ -42,7 +42,7 @@ GITHUB_HOME = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.7.03 dev"
+APP_VERSION = "v1.1.7.04 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -78,7 +78,7 @@ DEB_FOLDER_NAME = "deb"
 RPM_FOLDER_NAME = "rpm"
 
 # CMD commands
-COPY_RSYNC_CMD = "rsync -avr --exclude = {'cache','.cache'}"
+COPY_RSYNC_CMD = "rsync -avr"
 COPY_CP_CMD = "cp -rv"
 CREATE_CMD_FOLDER = "mkdir"
 CREATE_CMD_FILE = "touch"
