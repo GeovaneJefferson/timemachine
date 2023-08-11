@@ -45,22 +45,23 @@ class MainWindow(QMainWindow):
         # Down button
         self.ui.btn_down.clicked.connect(self.btn_down_clicked)
 
-        self.list_of_backup_folders()
+        self.get_folders()
 
-    def list_of_backup_folders(self):
+    def get_folders(self):
         FOLDERS_LIST = []
+
         for folder in MAIN_INI_FILE.ini_folders():
             FOLDERS_LIST.append(folder)
             FOLDERS_LIST.sort()
 
-        return FOLDERS_LIST
-
-    def create_backup_home_folders_buttons(self):        
+        # folders_layout
+        
         # Get available folders from INI file
-        for folder in self.list_of_backup_folders():
+        for folder in FOLDERS_LIST:
+            # Capitalize first letter
+            folder = folder.capitalize()
+            # Can folder be found inside Users Home?
             try:
-                # Can folder be found inside Users Home?
-                folder = folder.capitalize()
                 os.listdir(f"{HOME_USER}/{folder}")
             except:
                 # Lower folder first letter
@@ -114,9 +115,12 @@ class MainWindow(QMainWindow):
                 # Set already checked to True
                 self.ALREADY_CHECKED_FIRST_FOLDER = True 
 
-        self.list_of_backup_dates()
+        # Add strech to layout
+        self.ui.folders_layout.addStretch()
 
-    def list_of_backup_dates(self):
+        self.get_backup_dates()
+
+    def get_backup_dates(self):
         ALREADY_GOT_LIST_OF_DATES = []
         
         counter = 0
@@ -135,14 +139,11 @@ class MainWindow(QMainWindow):
                             datetime.strptime(date_folder_to_be_sort, "%d-%m-%y")
                     )
 
-                # Limit number of dates button on screen
                 counter += 1
+
                 if counter == 20:
                     break
 
-        return self.LIST_FOR_DATE_FOLDERS
-    
-    def create_backup_dates_buttons(self):
         # Show sorted dates folders 
         for date in self.LIST_FOR_DATE_FOLDERS:
             ################################################################################
@@ -202,7 +203,9 @@ class MainWindow(QMainWindow):
                 # Select the last button on the list
                 self.COUNTER_FOR_DATE = self.ui.dates_layout.count() - 1
 
-    def create_backup_times_buttons(self):
+        self.get_backup_times()
+
+    def get_backup_times(self):
         self.clean_stuff_on_screen("clean_files")
 
         try:
@@ -536,7 +539,7 @@ class MainWindow(QMainWindow):
         self.COUNTER_FOR_DATE = self.LIST_FOR_DATE_FOLDERS.index(date)
         
         # Return to get backup folders time after date has changed
-        self.create_backup_times_buttons()
+        self.get_backup_times()
 
     def change_dir(self, dir):
         # Update self.CURRENT_FOLDER
@@ -762,9 +765,6 @@ if __name__ == "__main__":
     APP = QApplication(sys.argv)
     
     MAIN = MainWindow()
-    MAIN.create_backup_home_folders_buttons()
-    MAIN.create_backup_dates_buttons()
-    MAIN.create_backup_times_buttons()
 
     MAIN.showFullScreen()
     MAIN.show()

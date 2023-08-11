@@ -1,18 +1,21 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 
+
+MAIN_INI_FILE = UPDATEINIFILE()
+
+
 def calculate_time_left_to_backup():
-    MAININIFILE=UPDATEINIFILE()
     global time_left
 
     # Backup hour
-    backup_hour=MAININIFILE.ini_backup_hour()
+    backup_hour = MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')
     # Current hour
-    current_hour=MAININIFILE.current_hour()
+    current_hour = MAIN_INI_FILE.current_hour()
     # Backup minute
-    backup_minute=MAININIFILE.ini_backup_minute()
+    backup_minute = MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes')
     # Current minute
-    current_minute=MAININIFILE.current_minute()
+    current_minute = MAIN_INI_FILE.current_minute()
 
     # If backup hour - current hour == 1, ex. backup hour=10, current hour=9
     if int(backup_hour) - int(current_hour) == 1:
@@ -40,12 +43,7 @@ def calculate_time_left_to_backup():
 
 def write_to_ini_file():
     print(f"In Approx. {time_left} minutes...")
-
-    config=configparser.ConfigParser()
-    config.read(SRC_USER_CONFIG)
-    with open(SRC_USER_CONFIG, 'w') as configfile:
-        config.set('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
-        config.write(configfile)
+    MAIN_INI_FILE.get_database_value('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
 
 
 if __name__ == '__main__':

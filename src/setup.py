@@ -12,6 +12,8 @@ import fcntl
 import threading
 import locale
 import datetime
+import sqlite3
+
 
 from stylesheet import *
 from pathlib import Path
@@ -246,6 +248,7 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 ################################################################################
 DST_FOLDER_INSTALL = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
 SRC_USER_CONFIG = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.ini"
+SRC_USER_CONFIG_DB = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.db"
 src_pycache = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 
 ################################################################################

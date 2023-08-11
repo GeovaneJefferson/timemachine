@@ -129,12 +129,8 @@ class CHECKER:
         # Check if ini file is not locked, than write to it
         # Set time left to None
         # Set backup now to True, or create a file that shows that
-        config = configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'backing_up_now', 'True')
-            config.set('SCHEDULE', 'time_left', 'None')
-            config.write(configfile)
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
+        MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
         # Call prepare backup
         print("Preparing the backup...")
@@ -152,15 +148,14 @@ if __name__ == '__main__':
                 print("Backup checker is running...")
 
                 # Get backup devices name and check connection
-                if is_connected(MAIN_INI_FILE.ini_hd_name()):
+                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
                     # If previus backup is unfinished
-                    if MAIN_INI_FILE.ini_unfinished_backup():
+                    if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
                         MAIN.continue_interrupted_backup()
 
                     # Thread to check new packages at Downloads folders
                     # Search for new packages
                     MAIN.check_for_new_packages()
-
 
                     # Check dates
                     MAIN.check_the_dates()

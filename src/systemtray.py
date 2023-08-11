@@ -97,7 +97,7 @@ class APP:
         print("System tray is running...")
         
         # Check if ini file is locked or not 
-        if not MAIN_INI_FILE.ini_system_tray():
+        if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             # Quit 
             self.exit()
 
@@ -106,9 +106,9 @@ class APP:
     def has_connection(self):
         try:
             # User has registered a device name
-            if MAIN_INI_FILE.ini_hd_name() != "None":
+            if MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd') != "None":
                 # Can device be found?
-                if is_connected(MAIN_INI_FILE.ini_hd_name()):
+                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
                     # Is backup now running? (chech if file exists)
                     self.status_on()
                 else:
@@ -136,10 +136,10 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
-                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.ini_hd_name()}":')
+                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "hd")}":')
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
-                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.ini_hd_name()}":')
+                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "hd")}":')
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
     
         else:
@@ -215,5 +215,5 @@ class APP:
     
 
 if __name__ == '__main__':
-    MAIN_INI_FILE=UPDATEINIFILE()
-    main=APP()
+    MAIN_INI_FILE = UPDATEINIFILE()
+    main = APP()

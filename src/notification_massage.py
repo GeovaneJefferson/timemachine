@@ -2,7 +2,7 @@ from setup import *
 
 
 def notification_message(message):
-    CONFIG=configparser.ConfigParser()
+    CONFIG = configparser.ConfigParser()
     CONFIG.read(SRC_USER_CONFIG)
     with open(SRC_USER_CONFIG, 'w') as configfile:
         CONFIG.set('INFO', 'current_backing_up', f'{message}')

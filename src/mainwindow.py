@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
             "}")
 
         # Select disk button
-        self.select_disk_button=QPushButton(self)
+        self.select_disk_button = QPushButton(self)
         self.select_disk_button.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.select_disk_button.setText("   Select Disk...   ")
         self.select_disk_button.adjustSize()
@@ -427,7 +427,7 @@ class MainWindow(QMainWindow):
         self.startup_check()
 
         timer.timeout.connect(self.running)
-        timer.start(1000)
+        timer.start(2000)
         self.running()
 
     def running(self):
@@ -436,7 +436,7 @@ class MainWindow(QMainWindow):
         # Check if a backup device was registered
         if self.device_registered():
             # Check connection to it
-            if is_connected(MAIN_INI_FILE.ini_hd_name()):
+            if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')):
                 ################################################
                 # Connection
                 ################################################
@@ -448,7 +448,7 @@ class MainWindow(QMainWindow):
                 ################################################
                 # Clean notification massage
                 ################################################
-                notification_message(" ")
+                # notification_message("")
 
                 ################################################
                 # Get backup devices size informations
@@ -465,7 +465,7 @@ class MainWindow(QMainWindow):
                 # Check if is current busy doing something
                 ################################################
                 # If is backing up right now
-                if MAIN_INI_FILE.ini_backing_up_now():
+                if MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
                     # Disable backup now
                     self.backup_now_button.setEnabled(False)
                     # Disable select disk
@@ -484,43 +484,40 @@ class MainWindow(QMainWindow):
                 ################################################
                 # One time per day
                 ################################################
-                if MAIN_INI_FILE.ini_one_time_mode():
+                if MAIN_INI_FILE.get_database_value('MODE', 'one_time_mode'):
                         ################################################
                         # Automatically backup
                         ################################################
-                        if MAIN_INI_FILE.ini_automatically_backup():
+                        if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
                             ################################################
                             # Time left calculation
                             ################################################
                             if calculate_time_left_to_backup() is not None:
                                 self.next_backup_label.setText(
                                     f"Next Backup: {calculate_time_left_to_backup()}")
-
                             else:
                                 self.next_backup_label.setText(
                                     f"Next Backup: {get_next_backup().capitalize()}, "
-                                    f"{MAIN_INI_FILE.ini_backup_hour()}:{MAIN_INI_FILE.ini_backup_minute()}")
-
+                                    f"{MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')}:{MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes')}")
                         else:
                             self.next_backup_label.setText("Next Backup: Automatic backups off")
-
                 else:
                     ################################################
                     # Automatically backup
                     ################################################
-                    if MAIN_INI_FILE.ini_automatically_backup():
+                    if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
                         ################################################
                         # Multiple times per day
                         ################################################
-                        if MAIN_INI_FILE.ini_everytime() == f'{TIME1}':
+                        if MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME1}':
                             self.next_backup_label.setText(f'Next Backup: Every 1 hour')
                             self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
-                        elif MAIN_INI_FILE.ini_everytime() == f'{TIME2}':
+                        elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME2}':
                             self.next_backup_label.setText(f'Next Backup: Every 2 hours')
                             self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
-                        elif MAIN_INI_FILE.ini_everytime() == f'{TIME3}':
+                        elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME3}':
                             self.next_backup_label.setText(f'Next Backup: Every 4 hours')
                             self.next_backup_label.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
 
@@ -557,9 +554,9 @@ class MainWindow(QMainWindow):
 
     def device_registered(self):
         # Check if a backup device was registered
-        if MAIN_INI_FILE.ini_hd_name() != "None":
+        if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":
             # Show devices name
-            self.external_name_label.setText(f"<h1>{MAIN_INI_FILE.ini_hd_name()}</h1>")
+            self.external_name_label.setText(f"<h1>{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}</h1>")
             # Show oldest backup label
             self.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
             # Show latest backup label
@@ -567,71 +564,70 @@ class MainWindow(QMainWindow):
 
             # Return True
             return True
+        else:
+            self.external_name_label.setText(f"asd asd ")
+
 
     ################################################################################
     # STATIC
     ################################################################################
     def startup_check(self):
-        if MAIN_INI_FILE.ini_automatically_backup():
+        if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
             self.automatically_check_box.setChecked(True)
         else:
             self.automatically_check_box.setChecked(False)
 
-        if MAIN_INI_FILE.ini_system_tray():
+        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.showInSystemTrayCheckBox.setChecked(True)
-
         else:
             self.showInSystemTrayCheckBox.setChecked(False)
 
     def automatically_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.automatically_check_box.isChecked():
-                # Create backup checker .desktop and move it to the destination
-                create_backup_checker_desktop()
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
 
-                # Copy backup_check.desktop
-                shutil.copy(DST_BACKUP_CHECK_DESKTOP, dst_autostart_location)
+        if self.automatically_check_box.isChecked():
+            # Create backup checker .desktop and move it to the destination
+            create_backup_checker_desktop()
 
-                # Write to INI file
-                CONFIG.set('STATUS', 'automatically_backup', 'True')
-                CONFIG.write(configfile)
+            # Copy backup_check.desktop
+            shutil.copy(DST_BACKUP_CHECK_DESKTOP, dst_autostart_location)
 
-                # call backup check
-                sub.Popen(f"python3 {SRC_BACKUP_CHECKER_PY}", shell=True)
+            MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'True')
 
-                print("Auto backup was successfully activated!")
+            # call backup check
+            sub.Popen(f"python3 {SRC_BACKUP_CHECKER_PY}", shell=True)
 
-            else:
-                # Remove autostart.desktop
-                sub.run(f"rm -f {dst_autostart_location}",shell=True)
+            print("Auto backup was successfully activated!")
 
-                # Write to INI file
-                CONFIG.set('STATUS', 'automatically_backup', 'False')
-                CONFIG.write(configfile)
+        else:
+            # Remove autostart.desktop
+            sub.run(f"rm -f {dst_autostart_location}",shell=True)
 
-                print("Auto backup was successfully deactivated!")
+            MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'False')
+
+            print("Auto backup was successfully deactivated!")
 
     # TODO
     def system_tray_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.showInSystemTrayCheckBox.isChecked():
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'True')
-                CONFIG.write(configfile)
 
-                # Call system tray
-                sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
 
-                print("System tray was successfully enabled!")
+        if self.showInSystemTrayCheckBox.isChecked():
+            MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'True')
 
-            else:
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'False')
-                CONFIG.write(configfile)
+            # Call system tray
+            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
 
-                print("System tray was successfully disabled!")
+            print("System tray was successfully enabled!")
+
+        else:
+            MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
+
+            print("System tray was successfully disabled!")
 
     def connected_action_to_take(self):
         self.select_disk_button.setEnabled(True)
@@ -712,7 +708,7 @@ class MainWindow(QMainWindow):
                         self.available_devices.setFixedSize(self.where_frame.width()-20,50)
                         self.available_devices.setCheckable(True)
 
-                        if MAIN_INI_FILE.ini_hd_name() != "None":
+                        if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":
                             self.available_devices.setAutoExclusive(True)
 
                         self.available_devices.setStyleSheet(self.availableDeviceButtonDetector)
@@ -736,7 +732,7 @@ class MainWindow(QMainWindow):
                         free_space_label.move(self.available_devices.width()-80, 30)
 
                         # Auto checked the choosed backup device
-                        if text == MAIN_INI_FILE.ini_hd_name():
+                        if text == MAIN_INI_FILE.get_database_value('EXTERNAL', 'name'):
                             self.available_devices.setChecked(True)
 
                         ################################################################################
@@ -789,7 +785,7 @@ class MainWindow(QMainWindow):
                         ################################################################################
                         # Auto checked this choosed external device
                         ################################################################################
-                        if device == MAIN_INI_FILE.ini_hd_name():
+                        if device == MAIN_INI_FILE.get_database_value('EXTERNAL', 'name'):
                             self.available_devices.setChecked(True)
 
                         ################################################################################
@@ -807,7 +803,7 @@ class MainWindow(QMainWindow):
 
         try:
             # Backup Ini File
-            backup_ini_file(False)
+            # backup_ini_file(False)
 
             self.external_close_animation()
 
@@ -1304,12 +1300,21 @@ class OPTION(QMainWindow):
         self.get_folders()
 
     def get_folders(self):
-        ################################################################################
-        # Read Ini File
-        ################################################################################
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        getIniFolders=CONFIG.options('FOLDER')
+        FOLDERS_LIST = []
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
+
+        # Query all keys from the specified table
+        cursor.execute(f"SELECT key FROM FOLDER")
+        keys = [row[0] for row in cursor.fetchall()]
+
+        # Close the connection
+        conn.close()
+
+        for key in keys:
+            FOLDERS_LIST.append(key)
 
         ################################################################################
         # Get Home Folders and Sort them alphabetically
@@ -1329,10 +1334,10 @@ class OPTION(QMainWindow):
                     "{"
                     "border-color: transparent;"
                     "}")
-                self.foldersCheckbox.clicked.connect(lambda *args, folder=folder: self.on_folder_clicked(folder))
+                self.foldersCheckbox.clicked.connect(lambda *args, folder = folder: self.on_folder_clicked(folder))
 
                 # Activate checkboxes in user.ini
-                if folder.lower() in getIniFolders:
+                if folder.lower() in FOLDERS_LIST:
                     self.foldersCheckbox.setChecked(True)
 
                 # Add to layout self.leftLayout
@@ -1341,42 +1346,38 @@ class OPTION(QMainWindow):
         self.dates()
 
     def dates(self):
-        ################################################################################
-        # Dates
-        # Check each dates
-        ################################################################################
-        if MAIN_INI_FILE.ini_next_backup_sun():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'sun'):
             self.sun_checkbox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_mon():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'mon'):
             self.mon_checkBox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_tue():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'tue'):
             self.tue_checkBox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_wed():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'wed'):
             self.wed_checkBox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_thu():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'thu'):
             self.thu_checkBox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_fri():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'fri'):
             self.fri_checkBox.setChecked(True)
 
-        if MAIN_INI_FILE.ini_next_backup_sat():
+        if MAIN_INI_FILE.get_database_value('DAYS', 'sat'):
             self.sat_checkBox.setChecked(True)
 
         self.time_to_run()
 
     def time_to_run(self):
-        self.hours_spinbox.setValue(int(MAIN_INI_FILE.ini_backup_hour()))
-        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.ini_backup_minute()))
+        self.hours_spinbox.setValue(int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')))
+        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')))
 
         ################################################################################
         # Get info from INI file
         # One time per day
         ################################################################################
-        if MAIN_INI_FILE.ini_one_time_mode():
+        if MAIN_INI_FILE.get_database_value('MODE', 'one_time_mode'):
             self.multiple_time_per_day_comboBox.setEnabled(False)
             self.hours_spinbox.setEnabled(True)
             self.minutes_spinBox.setEnabled(True)
@@ -1392,7 +1393,7 @@ class OPTION(QMainWindow):
             self.sat_checkBox.setEnabled(True)
 
         # Multiple time per day
-        elif MAIN_INI_FILE.ini_multiple_time_mode():
+        elif MAIN_INI_FILE.get_database_value('MODE', 'more_time_mode'):
             self.hours_spinbox.setEnabled(False)
             self.minutes_spinBox.setEnabled(False)
             self.multiple_time_per_day_comboBox.setEnabled(True)
@@ -1410,13 +1411,13 @@ class OPTION(QMainWindow):
         ################################################################################
         # Multiple time per day
         ################################################################################
-        if str(MAIN_INI_FILE.ini_everytime()) == "60":
+        if str(MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime')) == "60":
             self.multiple_time_per_day_comboBox.setCurrentIndex(0)
 
-        elif str(MAIN_INI_FILE.ini_everytime()) == "120":
+        elif str(MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime')) == "120":
             self.multiple_time_per_day_comboBox.setCurrentIndex(1)
 
-        elif str(MAIN_INI_FILE.ini_everytime()) == "240":
+        elif str(MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime')) == "240":
             self.multiple_time_per_day_comboBox.setCurrentIndex(2)
 
         self.flatpak_settings()
@@ -1426,235 +1427,220 @@ class OPTION(QMainWindow):
         # Flatpak data
         ################################################################################
         # Flatpak data
-        if MAIN_INI_FILE.ini_allow_flatpak_data():
+        if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if CONFIG.has_option('FOLDER', output):
-                CONFIG.remove_option('FOLDER', output)
-            else:
-                CONFIG.set('FOLDER', output, 'True')
+        if MAIN_INI_FILE.get_value_from_table_key('FOLDER', f'{output.lower()}'):
+            # Connect to the SQLite database
+            conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+            cursor = conn.cursor()
 
-            # Write to INI file
-            CONFIG.write(configfile)
+            # Delete the key-value pair from the 'STATUS' table
+            cursor.execute(f'DELETE FROM FOLDER WHERE key = ?', (f'{output.lower()}',))
+            conn.commit()
+            
+        else:
+            MAIN_INI_FILE.set_database_value('FOLDER', f'{output.lower()}', 'True')
 
     def on_every_combox_changed(self):
-        chooseMultipleTimePerDayCombox=self.multiple_time_per_day_comboBox.currentIndex()
+        chooseMultipleTimePerDayCombox = self.multiple_time_per_day_comboBox.currentIndex()
 
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if chooseMultipleTimePerDayCombox == 0:
-                CONFIG.set('SCHEDULE', 'everytime', f'{TIME1}')
+        if chooseMultipleTimePerDayCombox == 0:
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'everytime', f'{TIME1}')
 
-            elif chooseMultipleTimePerDayCombox == 1:
-                CONFIG.set('SCHEDULE', 'everytime', f'{TIME2}')
+        elif chooseMultipleTimePerDayCombox == 1:
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'everytime', f'{TIME2}')
 
-            elif chooseMultipleTimePerDayCombox == 2:
-                CONFIG.set('SCHEDULE', 'everytime', f'{TIME3}')
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        elif chooseMultipleTimePerDayCombox == 2:
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'everytime', f'{TIME3}')
 
     def on_check_sun_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.sun_checkbox.isChecked():
-                CONFIG.set('DAYS', 'sun', 'True')
-                print("Sun")
-            else:
-                CONFIG.set('DAYS', 'sun', 'False')
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        if self.sun_checkbox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'sun', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'sun', 'False')
 
     def on_check_mon_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.mon_checkBox.isChecked():
-                CONFIG.set('DAYS', 'mon', 'True')
-                print("Mon")
-            else:
-                CONFIG.set('DAYS', 'mon', 'False')
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        if self.mon_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'mon', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'mon', 'False')
 
     def on_check_tue_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            print(configfile)
-            if self.tue_checkBox.isChecked():
-                CONFIG.set('DAYS', 'tue', 'True')
-                print("Checked Tue")
-            else:
-                CONFIG.set('DAYS', 'tue', 'False')
-                print("Unchecked Tue")
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        if self.tue_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'tue', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'tue', 'False')
 
     def on_check_wed_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.wed_checkBox.isChecked():
-                CONFIG.set('DAYS', 'wed', 'True')
-                print("Wed")
-            else:
-                CONFIG.set('DAYS', 'wed', 'False')
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        if self.wed_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'wed', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'wed', 'False')
 
     def on_check_thu_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.thu_checkBox.isChecked():
-                CONFIG.set('DAYS', 'thu', 'True')
-                print("Thu")
-            else:
-                CONFIG.set('DAYS', 'thu', 'False')
-
-            # Write to INI file
-            CONFIG.write(configfile)
+        if self.thu_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'thu', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'thu', 'False')
 
     def on_check_fri_clicked(self):
-        try:
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                if self.fri_checkBox.isChecked():
-                    CONFIG.set('DAYS', 'fri', 'True')
-                    print("Fri")
-                else:
-                    CONFIG.set('DAYS', 'fri', 'False')
-
-                # Write to INI file
-                CONFIG.write(configfile)
-
-        except:
-            pass
+        if self.fri_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'fri', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'fri', 'False')
 
     def on_check_sat_clicked(self):
-        try:
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                if self.sat_checkBox.isChecked():
-                    CONFIG.set('DAYS', 'sat', 'True')
-                    print("Sat")
-                else:
-                    CONFIG.set('DAYS', 'sat', 'False')
-
-                # Write to INI file
-                CONFIG.write(configfile)
-
-        except:
-            pass
+        if self.sat_checkBox.isChecked():
+            MAIN_INI_FILE.set_database_value('DAYS', 'sat', 'True')
+        else:
+            MAIN_INI_FILE.set_database_value('DAYS', 'sat', 'False')
 
     def label_hours_changed(self):
-        hours=str(self.hours_spinbox.value())
+        hours = str(self.hours_spinbox.value())
 
-        # Save hours
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            CONFIG.set('SCHEDULE', 'hours', hours)
-            if hours in FIX_MINUTES:
-                CONFIG.set('SCHEDULE', 'hours', '0' + hours)
+         # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
+        
+        # Update SQLite database
+        cursor.execute(f'''
+            INSERT OR REPLACE INTO SCHEDULE (key, value)
+            VALUES (?, ?)
+        ''', ('hours', f'{hours}'))
+        conn.commit()
 
-            # Write to INI file
-            CONFIG.write(configfile)
+        if hours in FIX_MINUTES:
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO SCHEDULE (key, value)
+                VALUES (?, ?)
+            ''', ('hours', '0' + f'{hours}'))
+            conn.commit()
+            
+        # Close SQLite database
+        conn.close()
 
     def label_minutes_changed(self):
-        minutes=str(self.minutes_spinBox.value())
+        minutes = str(self.minutes_spinBox.value())
+        
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
 
-        # Save minutes
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        # with open(src_user_config, 'w+') as configfile:
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            CONFIG.set('SCHEDULE', 'minutes', minutes)
-            if minutes in FIX_MINUTES:
-                CONFIG.set('SCHEDULE', 'minutes', '0' + minutes)
+        # Update SQLite database
+        cursor.execute(f'''
+            INSERT OR REPLACE INTO SCHEDULE (key, value)
+            VALUES (?, ?)
+        ''', ('minutes', f'{minutes}'))
+        conn.commit()
 
-            # Write to INI file
-            CONFIG.write(configfile)
+        if minutes in FIX_MINUTES:
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO SCHEDULE (key, value)
+                VALUES (?, ?)
+            ''', ('minutes', '0' + f'{minutes}'))
+            conn.commit()
+
+        # Close SQLite database
+        conn.close()
 
     def on_frequency_clicked(self):
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        # with open(src_user_config, 'w+') as configfile:
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.one_time_per_day_radio.isChecked():
-                CONFIG.set('MODE', 'one_time_mode', 'True')
-                # DISABLE MORE TIME MODE
-                CONFIG.set('MODE', 'more_time_mode', 'False')
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
 
-                self.multiple_time_per_day_comboBox.setEnabled(False)
-                self.hours_spinbox.setEnabled(True)
-                self.minutes_spinBox.setEnabled(True)
-                self.one_time_per_day_radio.setChecked(True)
+        if self.one_time_per_day_radio.isChecked():
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO MODE (key, value)
+                VALUES (?, ?)
+            ''', ('one_time_mode', 'True'))
+            conn.commit()
 
-                # Enable all days
-                self.sun_checkbox.setEnabled(True)
-                self.mon_checkBox.setEnabled(True)
-                self.tue_checkBox.setEnabled(True)
-                self.wed_checkBox.setEnabled(True)
-                self.thu_checkBox.setEnabled(True)
-                self.fri_checkBox.setEnabled(True)
-                self.sat_checkBox.setEnabled(True)
+            # DISABLE MORE TIME MODE
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO MODE (key, value)
+                VALUES (?, ?)
+            ''', ('more_time_mode', 'False'))
+            conn.commit()
 
-            elif self.more_time_per_day_radio.isChecked():
-                CONFIG.set('MODE', 'more_time_mode', 'True')
-                print("Multiple time per day selected")
-                # DISABLE ONE TIME MODE
-                CONFIG.set('MODE', 'one_time_mode', 'False')
+            self.multiple_time_per_day_comboBox.setEnabled(False)
+            self.hours_spinbox.setEnabled(True)
+            self.minutes_spinBox.setEnabled(True)
+            self.one_time_per_day_radio.setChecked(True)
 
-                self.hours_spinbox.setEnabled(False)
-                self.minutes_spinBox.setEnabled(False)
-                self.multiple_time_per_day_comboBox.setEnabled(True)
-                self.more_time_per_day_radio.setChecked(True)
+            # Enable all days
+            self.sun_checkbox.setEnabled(True)
+            self.mon_checkBox.setEnabled(True)
+            self.tue_checkBox.setEnabled(True)
+            self.wed_checkBox.setEnabled(True)
+            self.thu_checkBox.setEnabled(True)
+            self.fri_checkBox.setEnabled(True)
+            self.sat_checkBox.setEnabled(True)
 
-                # Disable all days
-                self.sun_checkbox.setEnabled(False)
-                self.mon_checkBox.setEnabled(False)
-                self.tue_checkBox.setEnabled(False)
-                self.wed_checkBox.setEnabled(False)
-                self.thu_checkBox.setEnabled(False)
-                self.fri_checkBox.setEnabled(False)
-                self.sat_checkBox.setEnabled(False)
+        elif self.more_time_per_day_radio.isChecked():
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO MODE (key, value)
+                VALUES (?, ?)
+            ''', ('more_time_mode', 'True'))
+            conn.commit()
 
-            # Write to INI file
-            CONFIG.write(configfile)
+            print("Multiple time per day selected")
+
+            # DISABLE ONE TIME MODE
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO MODE (key, value)
+                VALUES (?, ?)
+            ''', ('one_time_mode', 'False'))
+            conn.commit()
+
+            self.hours_spinbox.setEnabled(False)
+            self.minutes_spinBox.setEnabled(False)
+            self.multiple_time_per_day_comboBox.setEnabled(True)
+            self.more_time_per_day_radio.setChecked(True)
+
+            # Disable all days
+            self.sun_checkbox.setEnabled(False)
+            self.mon_checkBox.setEnabled(False)
+            self.tue_checkBox.setEnabled(False)
+            self.wed_checkBox.setEnabled(False)
+            self.thu_checkBox.setEnabled(False)
+            self.fri_checkBox.setEnabled(False)
+            self.sat_checkBox.setEnabled(False)
+
+        # Close SQLite database
+        conn.close()
 
     def on_allow__flatpak_data_clicked(self):
-        try:
-            # If user allowAPP to back up data, auto activate
-            # backup flatpaks name too.
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                if self.allowFlatpakDataCheckBox.isChecked():
-                    CONFIG.set('STATUS', 'allow_flatpak_data', 'True')
-                    print("Allow flatpaks data to be backup.")
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
 
-                else:
-                    CONFIG.set('STATUS', 'allow_flatpak_data', 'False')
+        if self.allowFlatpakDataCheckBox.isChecked():
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO STATUS (key, value)
+                VALUES (?, ?)
+            ''', ('allow_flatpak_data', 'True'))
+            conn.commit()
 
-                # Write to INI file
-                CONFIG.write(configfile)
+            print("Allow flatpaks data to be backup.")
+        else:
+            # Update SQLite database
+            cursor.execute(f'''
+                INSERT OR REPLACE INTO STATUS (key, value)
+                VALUES (?, ?)
+            ''', ('allow_flatpak_data', 'False'))
+            conn.commit()
 
-        except:
-            pass
+        # Close SQLite database
+        conn.close()
 
     def on_button_fix_clicked(self):
         reset_confirmation=QMessageBox.question(
@@ -1665,72 +1651,65 @@ class OPTION(QMainWindow):
         if reset_confirmation == QMessageBox.Yes:
             MAIN.latest_backup_label.setText("Latest Backup: None")
             MAIN.oldest_backup_label.setText("Oldest Backup: None")
+            
+            # Connect to the SQLite database
+            conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+            cursor = conn.cursor()
 
             # Reset settings
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                # Backup section
-                CONFIG.set('STATUS', 'unfinished_backup', 'No')
-                CONFIG.set('STATUS', 'automatically_backup', 'False')
-                CONFIG.set('STATUS', 'backing_up_now', 'False')
-                CONFIG.set('STATUS', 'first_startup', 'False')
-                CONFIG.set('STATUS', 'allow_flatpak_names', 'True')
-                CONFIG.set('STATUS', 'allow_flatpak_data', 'False')
-                CONFIG.set('STATUS', 'is_restoring', 'False')
+            # Backup section
+            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
+            MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'False')
+            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+            MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'False')
+            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
+            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
+            MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+            
+            MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', 'None')
+            MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', 'None')
+            
+            MAIN_INI_FILE.set_database_value('MODE', 'one_time_mode', 'True')
+            MAIN_INI_FILE.set_database_value('MODE', 'more_time_mode', 'False')
+            
+            MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
+            
+            MAIN_INI_FILE.set_database_value('DAYS', 'sun', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'mon', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'tue', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'wed', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'thu', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'fri', 'True')
+            MAIN_INI_FILE.set_database_value('DAYS', 'sat', 'True')
+            
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', '10')
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', '00')
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'everytime', '60')
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
+            
+            MAIN_INI_FILE.set_database_value('INFO', 'language', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'os', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'packageManager', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'theme', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'icon', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'cursor', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'colortheme', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', 'None')
+            
+            MAIN_INI_FILE.set_database_value('FOLDER', 'pictures', 'True')
+            MAIN_INI_FILE.set_database_value('FOLDER', 'documents', 'True')
+            MAIN_INI_FILE.set_database_value('FOLDER', 'music', 'True')
+            MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
+            MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
 
-                # External section
-                CONFIG.set('EXTERNAL', 'hd', 'None')
-                CONFIG.set('EXTERNAL', 'name', 'None')
-
-                # Mode section
-                CONFIG.set('MODE', 'one_time_mode', 'True')
-                CONFIG.set('MODE', 'more_time_mode', 'False')
-
-                # System tray  section
-                CONFIG.set('SYSTEMTRAY', 'system_tray', 'False')
-
-                # Schedule section
-                CONFIG.set('DAYS', 'sun', 'True')
-                CONFIG.set('DAYS', 'mon', 'True')
-                CONFIG.set('DAYS', 'tue', 'True')
-                CONFIG.set('DAYS', 'wed', 'True')
-                CONFIG.set('DAYS', 'thu', 'True')
-                CONFIG.set('DAYS', 'fri', 'True')
-                CONFIG.set('DAYS', 'sat', 'True')
-                
-                CONFIG.set('SCHEDULE', 'hours', '10')
-                CONFIG.set('SCHEDULE', 'minutes', '00')
-                CONFIG.set('SCHEDULE', 'everytime', '60')
-                CONFIG.set('SCHEDULE', 'time_left', 'None')
-
-                # Info section
-                CONFIG.set('INFO', 'language', 'None')
-                CONFIG.set('INFO', 'os', 'None')
-                CONFIG.set('INFO', 'packageManager', 'None')
-                CONFIG.set('INFO', 'theme', 'None')
-                CONFIG.set('INFO', 'icon', 'None')
-                CONFIG.set('INFO', 'cursor', 'None')
-                CONFIG.set('INFO', 'colortheme', 'None')
-                CONFIG.set('INFO', 'saved_notification', '')
-                CONFIG.set('INFO', 'current_backing_up', '')
-
-                # Folders section
-                CONFIG.set('FOLDER', 'pictures', 'True')
-                CONFIG.set('FOLDER', 'documents', 'True')
-                CONFIG.set('FOLDER', 'music', 'True')
-                CONFIG.set('FOLDER', 'videos', 'True')
-                CONFIG.set('FOLDER', 'desktop', 'True')
-
-                # Restore section
-                CONFIG.set('RESTORE', 'applications_packages', 'False')
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
-                CONFIG.set('RESTORE', 'applications_flatpak_data', 'False')
-                CONFIG.set('RESTORE', 'files_and_folders', 'False')
-                CONFIG.set('RESTORE', 'system_settings', 'False')
-                CONFIG.set('RESTORE', 'is_restore_running', 'False')
-
-                CONFIG.write(configfile)
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
 
             print("All settings was reset!")
 
@@ -1751,13 +1730,13 @@ class OPTION(QMainWindow):
 
 
 if __name__ == '__main__':
-    APP=QApplication(sys.argv)
+    APP = QApplication(sys.argv)
 
-    MAIN_INI_FILE=UPDATEINIFILE()
-    MAIN=MainWindow()
+    MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN = MainWindow()
     MAIN_OPTIONS=OPTION()
 
-    WIDGET=QStackedWidget()
+    WIDGET = QStackedWidget()
     WIDGET.addWidget(MAIN)
     WIDGET.addWidget(MAIN_OPTIONS)
     WIDGET.setCurrentWidget(MAIN)
