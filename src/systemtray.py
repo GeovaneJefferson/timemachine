@@ -10,7 +10,7 @@ from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 
 
-DELAY_TO_UPDATE=2000
+DELAY_TO_UPDATE = 2000
 
 
 class APP:
@@ -154,7 +154,7 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def status_off(self):
-        if MAIN_INI_FILE.ini_automatically_backup():
+        if MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
             self.change_color("Red")
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
@@ -168,8 +168,8 @@ class APP:
             #         config.write(configfile)
 
     def is_current_restoring(self):
-        if not MAIN_INI_FILE.ini_automatically_backup():
-            if MAIN_INI_FILE.ini_is_restoring():
+        if not MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
+            if MAIN_INI_FILE.get_database_value("STATUS", "is_restoring"):
                 self.change_color("Yellow")
                 self.backupNowButton.setEnabled(False)
                 self.browseTimeMachineBackupsButton.setEnabled(False)
@@ -200,14 +200,10 @@ class APP:
             self.exit()
 
     def exit(self):
-        config=configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('SYSTEMTRAY', 'system_tray', 'False')
-            config.write(configfile)
-
+        MAIN_INI_FILE.set_database_value("SYSTEMTRAY", "system_tray", 'False')
+        
         self.tray.hide()
-        QtWidgets. cation.exit()
+        exit()
     
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:

@@ -29,13 +29,13 @@ class BACKUP:
         notification_message("Backing up: Wallpaper...")
 
         # Replace wallpaper inside the folder, only allow 1
-        if os.listdir(f"{str(MAIN_INI_FILE.wallpaper_main_folder())}"):
+        if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}"):
             # Delete all wallpapers inside wallpaper folder
-            for wallpaper in os.listdir(f"{str(MAIN_INI_FILE.ini_external_location())}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/"):
-                sub.run(f"rm -rf {str(MAIN_INI_FILE.ini_external_location())}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/{wallpaper}", shell=True)
+            for wallpaper in os.listdir(f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/"):
+                sub.run(f"rm -rf {MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/{wallpaper}", shell=True)
 
         # Backup current wallpaper
-        sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {str(MAIN_INI_FILE.wallpaper_main_folder())}/", shell=True)
+        sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
         
     async def backup_home(self):
         # Backup Home
@@ -44,11 +44,8 @@ class BACKUP:
 
         # Backup Home folder
         # Backup all (user.ini true folders)
-        try:
-            for folder in get_folders():
-                sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}",shell=True)
-        except:
-            pass
+        for folder in get_folders():
+            sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
 
     async def backup_home_hidden_files(self):
         # For GNOME
@@ -62,11 +59,12 @@ class BACKUP:
                 "gnome-shell"]
 
             for folder in os.listdir(f"{HOME_USER}/.local/share/"):
-                folders_list.append(folder)
-
+                # TODO
+                # folders_list.append(folder)
                 if folder in include_list:
                     try:
-                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.gnome_local_share_main_folder()}",shell=True)
+                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} \
+                            {MAIN_INI_FILE.gnome_local_share_main_folder()}", shell=True)
                     except:
                         pass
 
@@ -74,8 +72,9 @@ class BACKUP:
             notification_message("Backing up: .config/ ...")
 
             # Backup .config/ selected folders
-            include_list=[
-                "dconf"]
+            include_list = [
+                "dconf"
+            ]
 
             for folder in os.listdir(f"{HOME_USER}/.config/"):
                 if folder in include_list:
@@ -143,7 +142,7 @@ class BACKUP:
             # Backup share selected folders for KDE
             try:
                 folders_list=[]
-                includeList=[
+                includeList = [
                     # "icons",
                     "gtk-3.0",
                     "gtk-4.0",
@@ -164,7 +163,8 @@ class BACKUP:
                 for folders in os.listdir(f"{HOME_USER}/.kde/share/"):
                     folders_list.append(folders)
 
-                    sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} {str(MAIN_INI_FILE.kde_share_config_main_folder())}",shell=True)
+                    sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} \
+                        {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
             except:
                 pass
 
@@ -174,7 +174,7 @@ class BACKUP:
 
         # Backup flatpak installed apps by the name
         try:
-            count = 0
+            counter = 0
             flatpak_list = []
 
             CONFIG = configparser.ConfigParser()
@@ -184,36 +184,38 @@ class BACKUP:
                     flatpak_list.append(flatpak)
 
                     # Write USER installed flatpak to flatpak.txt inside external device
-                    configfile.write(flatpak_list[count])
+                    configfile.write(flatpak_list[counter])
 
-                    count += 1
+                    counter += 1
                     
         except Exception as e:
             print("Flatpak names ERROR:", e)
             pass
 
         # Backup flatpak data
-        if MAIN_INI_FILE.ini_allow_flatpak_data():
+        if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             # Send notification status
             notification_message("Backing up: Flatpak Data ...")
 
             # Backup flatpak data folder
             try:
                 # Start Flatpak (var/app) backup
-                count = 0
+                counter = 0
                 for _ in flatpak_var_list():
                     # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[count]} {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
+                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[counter]} \
+                            {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
 
-                    count += 1
+                    counter += 1
 
                 # Start Flatpak (.local/share/flatpak) backup
-                count=0
+                counter = 0
                 for _ in flatpak_local_list():
                     # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[count]} {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
+                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[counter]} \
+                            {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
 
-                    count += 1
+                    counter += 1
 
             except:
                 pass
@@ -224,42 +226,43 @@ class BACKUP:
         # Send notification status
         notification_message("")
 
-        # TODO
-        # Check if ini file is not locked, than write to it
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('STATUS', 'backing_up_now', 'False')
-            CONFIG.set('STATUS', 'unfinished_backup', 'No')
-            CONFIG.set('SCHEDULE', 'time_left', 'None')
-            CONFIG.write(configfile)
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
 
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(f"{MAIN_INI_FILE.restore_settings_location()}")
-        with open(f"{MAIN_INI_FILE.restore_settings_location()}", 'w') as configfile:
-            if not CONFIG.has_section('INFO'):
-                CONFIG.add_section('INFO')
+        MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
-            CONFIG.set('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
+        # RESTORE DATABASE 
+        # Connect to the SQLite database (creates a new database if it doesn't exist)
+        conn = sqlite3.connect(MAIN_INI_FILE.restore_settings_location())
+        # Create a cursor to interact with the database
+        cursor = conn.cursor()
 
-            # KDE
-            if get_user_de() == 'kde':
-                CONFIG.set('INFO', 'icon', f'{self.get_kde_users_icon_name()}')
-                CONFIG.set('INFO', 'cursor', f'{self.get_kde_users_cursor_name()}')
-                CONFIG.set('INFO', 'font', f'{self.get_kde_users_font_name()}, {self.get_kde_users_font_size()}')
-                CONFIG.set('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
-                CONFIG.set('INFO', 'theme', f'None')
+        # Execute the SQL command to create the table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS INFO;
+        ''')
 
-            # GNOME
-            else:
-                CONFIG.set('INFO', 'icon', f'{self.get_gtk_users_icon_name()}')
-                CONFIG.set('INFO', 'cursor', f'{self.get_gtk_users_cursor_name()}')
-                CONFIG.set('INFO', 'font', f'{self.get_gtk_user_font_name()}')
-                CONFIG.set('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
-                CONFIG.set('INFO', 'theme', f'None')
-                CONFIG.set('INFO', 'colortheme', f'None')
+        # Commit the changes and close the connection
+        conn.commit()
+        conn.close()
 
-            CONFIG.write(configfile)
+        self.set_database_value('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
+
+        # KDE
+        if get_user_de() == 'kde':
+            self.set_database_value('INFO', 'icon', f'{self.get_kde_users_icon_name()}')
+            self.set_database_value('INFO', 'cursor', f'{self.get_kde_users_cursor_name()}')
+            self.set_database_value('INFO', 'font', f'{self.get_kde_users_font_name()}, {self.get_kde_users_font_size()}')
+            self.set_database_value('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
+            self.set_database_value('INFO', 'theme', f'None')
+        # GNOME
+        else:
+            self.set_database_value('INFO', 'icon', f'{self.get_gtk_users_icon_name()}')
+            self.set_database_value('INFO', 'cursor', f'{self.get_gtk_users_cursor_name()}')
+            self.set_database_value('INFO', 'font', f'{self.get_gtk_user_font_name()}')
+            self.set_database_value('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
+            self.set_database_value('INFO', 'theme', f'None')
+            self.set_database_value('INFO', 'colortheme', f'None')
 
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
@@ -276,39 +279,39 @@ class BACKUP:
         with open(f"{HOME_USER}/.config/xsettingsd/xsettingsd.conf", "r") as read:
             read=read.readlines()
 
-            for count in range(len(read)):
-                if read[count].split()[0] == "Gtk/CursorThemeName":
+            for counter in range(len(read)):
+                if read[counter].split()[0] == "Gtk/CursorThemeName":
                     # Return users cursor name
-                    return read[count].split()[1].replace('"','')
+                    return read[counter].split()[1].replace('"','')
 
     # KDE font
     def get_kde_users_font_name(self):
         with open(f"{HOME_USER}/.config/kdeglobals", "r") as read:
             read=read.readlines()
 
-            for count in range(len(read)):
-                if read[count].startswith("font="):
+            for counter in range(len(read)):
+                if read[counter].startswith("font="):
                     # Return users kde font name
-                    return (read[count]).strip().split(",")[0].replace("font=","")
+                    return (read[counter]).strip().split(",")[0].replace("font=","")
 
     # KDE font size
     def get_kde_users_font_size(self):
         with open(f"{HOME_USER}/.config/kdeglobals", "r") as read:
             read=read.readlines()
 
-            for count in range(len(read)):
-                if read[count].startswith("font="):
+            for counter in range(len(read)):
+                if read[counter].startswith("font="):
                     # Return users kde font size
-                    return (read[count]).strip().split(",")[1]
+                    return (read[counter]).strip().split(",")[1]
 
     # KDE icon
     def get_kde_users_icon_name(self):
         with open(f"{HOME_USER}/.config/xsettingsd/xsettingsd.conf", "r") as read:
             read=read.readlines()
-            for count in range(len(read)):
-                if read[count].split()[0] == "Net/IconThemeName":
+            for counter in range(len(read)):
+                if read[counter].split()[0] == "Net/IconThemeName":
                     # Return users icon name
-                    return read[count].split()[1].replace('"','')
+                    return read[counter].split()[1].replace('"','')
 
     #########################################################
     # GNOME
@@ -390,6 +393,19 @@ class BACKUP:
         user_cursor_name=os.popen(GET_USER_CURSOR_CMD).read().strip().replace("'", "")
         # Return users GTK cursor name
         return user_cursor_name
+    
+    def set_database_value(self, table, key, value):
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
+            
+        cursor.execute(f'''
+            INSERT OR REPLACE INTO {table} (key, value)
+            VALUES (?, ?)
+        ''', (f'{key}', f'{value}'))
+
+        conn.commit()
+        conn.close()
 
     async def main(self):
         # Call the asynchronous functions using await.

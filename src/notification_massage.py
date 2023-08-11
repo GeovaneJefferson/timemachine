@@ -1,12 +1,10 @@
 from setup import *
+from read_ini_file import UPDATEINIFILE
 
+MAIN_INI_FILE = UPDATEINIFILE()
 
 def notification_message(message):
-    CONFIG = configparser.ConfigParser()
-    CONFIG.read(SRC_USER_CONFIG)
-    with open(SRC_USER_CONFIG, 'w') as configfile:
-        CONFIG.set('INFO', 'current_backing_up', f'{message}')
-        CONFIG.write(configfile)
+    MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', f'{message}')
 
 
 if __name__ == '__main__':

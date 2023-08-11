@@ -3,8 +3,9 @@ from stylesheet import *
 from check_connection import is_connected
 from device_location import device_location
 from get_home_folders import get_home_folders
-from get_flatpaks_folders_size import (get_external_device_used_size, get_external_device_max_size,
-                                        get_all_used_backup_device_space, get_all_max_backup_device_space)
+from get_flatpaks_folders_size import (
+    get_external_device_used_size, get_external_device_max_size,
+    get_all_used_backup_device_space, get_all_max_backup_device_space)
 from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
@@ -448,7 +449,7 @@ class MainWindow(QMainWindow):
                 ################################################
                 # Clean notification massage
                 ################################################
-                # notification_message("")
+                notification_message("")
 
                 ################################################
                 # Get backup devices size informations
@@ -611,11 +612,6 @@ class MainWindow(QMainWindow):
 
     # TODO
     def system_tray_clicked(self):
-
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
         if self.showInSystemTrayCheckBox.isChecked():
             MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'True')
 

@@ -338,37 +338,37 @@ class UPDATEINIFILE:
 
     def ini_info_wallpaper(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['wallpaper']
 
     def ini_info_icon(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['icon']
 
     def ini_info_cursor(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['cursor']
 
     def ini_info_font(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['font']
 
     def ini_info_colortheme(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['colortheme']
 
     def ini_info_gtktheme(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['gtktheme']
 
     def ini_info_theme(self):
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
+        CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
         return CONFIG['INFO']['theme']
 
     ####################################################################
@@ -412,8 +412,9 @@ class UPDATEINIFILE:
         return dateFolder
 
     def time_folder_format(self):
-        value=f"{str(self.backup_folder_name())}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
-        return value
+        return f"{str(self.backup_folder_name())}/{str(self.backup_date())}-\
+            {str(self.backup_month())}-{str(self.backup_year())}/\
+            {str(self.backup_hour())}-{str(self.backup_minute())}"
 
     def current_time(self):
         value=f"{self.current_hour()}{self.current_minute()}"
@@ -442,120 +443,119 @@ class UPDATEINIFILE:
     # Folder creation
     ####################################################################
     def create_base_folder(self):
-        createBackupFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}"
+        createBackupFolder=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}"
         return createBackupFolder
 
     def backup_folder_name(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
 
     # Wallpaper
     def wallpaper_main_folder(self):
-        wallpaperMainFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}"
-        return wallpaperMainFolder
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}"
 
     def application_main_folder(self):
-        applicationMainFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}"
+        applicationMainFolder=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}"
         return applicationMainFolder
 
     ####################################################################
     # System settings
     ####################################################################
     def icon_main_folder(self):
-        iconsMainFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{ICONS_FOLDER_NAME}"
+        iconsMainFolder=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{ICONS_FOLDER_NAME}"
         return iconsMainFolder
 
     def cursor_main_folder(self):
-        cursorMainFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{CURSORS_FOLDER_NAME}"
+        cursorMainFolder=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{CURSORS_FOLDER_NAME}"
         return cursorMainFolder
 
     def fonts_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FONTS_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FONTS_FOLDER_NAME}"
 
     def gtk_theme_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GTK_THEME_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GTK_THEME_FOLDER_NAME}"
 
     def theme_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{THEMES_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{THEMES_FOLDER_NAME}"
 
     ####################################################################
     # KDE
     ####################################################################
     # Create kde folder
     def kde_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}"
 
     # KDE configurration folder
     def kde_configurations_folder_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
 
     # KDE CONFIG folder
     def kde_config_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
 
     # KDE .local/share
     def kde_local_share_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
 
     def kde_share_config_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_CONFIG_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_CONFIG_FOLDER_NAME}"
 
     ####################################################################
     # GNOME
     ####################################################################
     # Create gnome folder
     def gnome_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}"
 
     def gnome_configurations_folder_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}"
 
     # GNOME CONFIG folder
     def gnome_config_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{CONFIG_FOLDER_NAME}"
 
     # GNOME share folder
     def gnome_local_share_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{GNOME_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
 
     ####################################################################
     # Packages managers
     ####################################################################
     # .rpm
     def rpm_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{RPM_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{RPM_FOLDER_NAME}"
 
     # .deb
     def deb_main_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{DEB_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{DEB_FOLDER_NAME}"
 
     ####################################################################
     # Flatpak
     ####################################################################
     def flatpak_txt_location(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
     
     def flatpak_var_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{VAR_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{VAR_FOLDER_NAME}"
 
     def flatpak_local_folder(self):
-        applicationLocalFolder=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{LOCAL_FOLDER_NAME}"
+        applicationLocalFolder=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{LOCAL_FOLDER_NAME}"
         return applicationLocalFolder
     
     def create_flatpak_folder(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}"
 
     ####################################################################
     # Exclude
     ####################################################################
     def exclude_apps_location(self):
-        excludeAppsLoc=f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
+        excludeAppsLoc=f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
         return excludeAppsLoc
 
     def exclude_applications_location(self):
-        return f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
 
     def restore_settings_location(self):
-        return f"{str(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}"
 
     def get_backup_home_folders(self):
         from get_latest_backup_date import latest_backup_date
@@ -565,5 +565,4 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
     pass
