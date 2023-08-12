@@ -104,42 +104,38 @@ class APP:
         self.has_connection()
         
     def has_connection(self):
-        try:
-            # User has registered a device name
-            if MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd') != "None":
-                # Can device be found?
-                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
-                    # Is backup now running? (chech if file exists)
-                    self.status_on()
-                else:
-                    self.status_off()
-                
-            # No backup device registered
+        # User has registered a device name
+        if MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd') != "None":
+            # Can device be found?
+            if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
+                # Is backup now running? (chech if file exists)
+                self.status_on()
             else:
-                self.iniLastBackupInformation.setText('First, select a backup device.')
-                self.iniLastBackupInformation2.setText('')
-                
-                # Backup now button to False
-                self.backupNowButton.setEnabled(False)
-                
-                # Browser Time Machine button to False 
-                self.browseTimeMachineBackupsButton.setEnabled(False)
-        
-        except Exception:
-            self.exit()
+                self.status_off()
+            
+        # No backup device registered
+        else:
+            self.iniLastBackupInformation.setText('First, select a backup device.')
+            self.iniLastBackupInformation2.setText('')
+            
+            # Backup now button to False
+            self.backupNowButton.setEnabled(False)
+            
+            # Browser Time Machine button to False 
+            self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def status_on(self):
         # Backing up right now False
-        if not MAIN_INI_FILE.ini_backing_up_now():
+        if not MAIN_INI_FILE.get_database_value("STATUS", "backing_up_now"):
             self.change_color("White")
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
-                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "hd")}":')
+                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
-                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "hd")}":')
+                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
     
         else:
