@@ -1,23 +1,11 @@
 from setup import *
-
 from get_folders_to_be_backup import home_folders_size
-
-# Get files/folders size
 from get_flatpaks_folders_size import get_external_device_free_size ,flatpak_var_size, flatpak_local_size
-
-# Backups date
 from get_backup_date import get_backup_date
-
-# user DE
 from get_users_de import get_user_de
-
 # Package manager
-from package_manager import package_manager
-
-# Notification manager
+# from package_manager import package_manager
 from notification_massage import notification_message
-
-# Read ini file
 from read_ini_file import UPDATEINIFILE
 
 
@@ -36,11 +24,7 @@ class PREPAREBACKUP:
         self.backing_up_now()
 
     def backing_up_now(self):
-        config = configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'backing_up_now', 'True')
-            config.write(configfile)
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
 
         self.begin_backup_process()
 
@@ -63,12 +47,8 @@ class PREPAREBACKUP:
             print("Please, manual delete old backups. ")
             
             # Set backup now to False and unfinished_backup to True
-            config = configparser.ConfigParser()
-            config.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                config.set('STATUS', 'backing_up_now', 'False')
-                # config.set('STATUS', 'unfinished_backup', 'True')
-                config.write(configfile)
+            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+            # MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'True')
 
         # Send notification status
         notification_message("")
@@ -115,7 +95,7 @@ class PREPAREBACKUP:
             ################################################################################
             # Create Flatpak DATA folder
             ################################################################################
-            if str(MAIN_INI_FILE.ini_allow_flatpak_data()) == "true":
+            if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
                 # Create inside external "Var" Folder
                 if not os.path.exists(MAIN_INI_FILE.flatpak_var_folder()):
                     sub.run(f"{CREATE_CMD_FOLDER} {MAIN_INI_FILE.flatpak_var_folder()}",shell=True)
@@ -208,7 +188,8 @@ class PREPAREBACKUP:
 
     def get_backup_sizes(self):
         # Home + System Settings + safe additional size
-        if MAIN_INI_FILE.ini_allow_flatpak_data():
+        # 
+        if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             backup_size_needeed = int(home_folders_size()) + self.safe_added_space
 
         # Home + System Settings + Flatpak data + safe additional size
@@ -240,8 +221,8 @@ class PREPAREBACKUP:
                 notification_message(f"Current backing up: {get_backup_date()[-1]}")
 
                 # Deleting old backups
-                print(f"Deleting {str(MAIN_INI_FILE.ini_external_location())}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}...")
-                sub.run(f"rm -rf {str(MAIN_INI_FILE.ini_external_location())}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}",shell=True)
+                print(f"Deleting {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}...")
+                sub.run(f"rm -rf {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}",shell=True)
 
                 # Deleting .trash inside backup device to get more free space
                 # print(f"Deleting .trash...")
@@ -272,12 +253,12 @@ class PREPAREBACKUP:
 
         # Create folder with current date
         try:
-            if not os.path.exists(str(MAIN_INI_FILE.date_folder_format())):
-                sub.run(f"{CREATE_CMD_FOLDER} {str(MAIN_INI_FILE.date_folder_format())}", shell=True)
+            if not os.path.exists(MAIN_INI_FILE.date_folder_format()):
+                sub.run(f"{CREATE_CMD_FOLDER} {MAIN_INI_FILE.date_folder_format()}", shell=True)
 
             # Create folder inside the current date with current time
-            if not os.path.exists(str(MAIN_INI_FILE.time_folder_format())):
-                sub.run(f"{CREATE_CMD_FOLDER} {str(MAIN_INI_FILE.time_folder_format())}", shell=True)
+            if not os.path.exists(MAIN_INI_FILE.time_folder_format()):
+                sub.run(f"{CREATE_CMD_FOLDER} {MAIN_INI_FILE.time_folder_format()}", shell=True)
 
         except FileNotFoundError as e:
             # Send error message

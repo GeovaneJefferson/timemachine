@@ -2,15 +2,15 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 def user_wallpaper():
-    MAININIFILE=UPDATEINIFILE()
+    MAIN_INI_FILE = UPDATEINIFILE()
 
     # Detect color scheme
-    get_color_scheme=os.popen(DETECT_THEME_MODE).read().strip().replace("'", "")
+    get_color_scheme = os.popen(DETECT_THEME_MODE).read().strip().replace("'", "")
         
     # Check if user DE is in the supported list
     count=0
     for _ in SUPPORT_OS:
-        if SUPPORT_OS[count] == str(MAININIFILE.ini_user_os()):
+        if SUPPORT_OS[count] == MAIN_INI_FILE.get_database_value('INFO', 'os'):
             # Light theme
             if get_color_scheme == "prefer-light":
                 # Get current wallpaper
@@ -38,7 +38,7 @@ def user_wallpaper():
             # After one supported item was found, go to backup_user_wallpaper()
             return get_wallpaper
 
-        elif str(MAININIFILE.ini_user_os()) == "kde":
+        elif MAIN_INI_FILE.get_database_value('INFO', 'os') == "kde":
             one_more=False
             with open(f"{HOME_USER}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
                 file=file.readlines()

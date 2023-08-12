@@ -408,13 +408,10 @@ class UPDATEINIFILE:
         return int(NOW.strftime("%S"))
 
     def date_folder_format(self):
-        dateFolder=f"{str(self.backup_folder_name())}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
-        return dateFolder
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
 
     def time_folder_format(self):
-        return f"{str(self.backup_folder_name())}/{str(self.backup_date())}-\
-            {str(self.backup_month())}-{str(self.backup_year())}/\
-            {str(self.backup_hour())}-{str(self.backup_minute())}"
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
 
     def current_time(self):
         value=f"{self.current_hour()}{self.current_minute()}"
@@ -436,7 +433,7 @@ class UPDATEINIFILE:
         return  NOW.strftime("%M")
 
     def backup_time_military(self):
-        value=f"{str(self.ini_backup_hour())}{str(self.ini_backup_minute())}"
+        value = f"{self.get_database_value('SCHEDULE', 'hours')}{self.get_database_value('SCHEDULE', 'minutes')}"
         return int(value)
 
     ####################################################################
@@ -565,4 +562,6 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
+    x = UPDATEINIFILE()
+    print(x.restore_settings_location())
     pass

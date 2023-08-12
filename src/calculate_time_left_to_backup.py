@@ -6,7 +6,7 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 
 def calculate_time_left_to_backup():
-    global time_left
+    # global time_left
 
     # Backup hour
     backup_hour = MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')
@@ -23,7 +23,7 @@ def calculate_time_left_to_backup():
 
         if time_left < 59 and time_left >= 0:
             # Write time left to ini file
-            write_to_ini_file()
+            write_to_ini_file(time_left)
 
             return f"In Approx. {time_left} minutes..."
         else:
@@ -31,19 +31,19 @@ def calculate_time_left_to_backup():
 
     # If backup hour - current hour == 0, ex. backup hour=10, current hour=10
     elif int(backup_hour) - int(current_hour) == 0:
-        time_left=int(backup_minute) - int(current_minute)
+        time_left = int(backup_minute) - int(current_minute)
 
         if time_left >= 0:
             # Write time left to ini file
-            write_to_ini_file()
+            write_to_ini_file(time_left)
 
             return f"In Approx. {time_left} minutes..."
         else:
             return None
 
-def write_to_ini_file():
+def write_to_ini_file(time_left):
     print(f"In Approx. {time_left} minutes...")
-    MAIN_INI_FILE.get_database_value('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
+    MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
 
 
 if __name__ == '__main__':

@@ -23,4 +23,6 @@ def is_connected(iniHDName):
 
 
 if __name__ == '__main__':
+    print(is_connected('/media/geovane/Backup_Drive'))
+    os.listdir(f"{MEDIA}/{USERNAME}/media/geovane/Backup_Drive") 
     pass

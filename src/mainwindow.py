@@ -584,10 +584,6 @@ class MainWindow(QMainWindow):
             self.showInSystemTrayCheckBox.setChecked(False)
 
     def automatically_clicked(self):
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
         if self.automatically_check_box.isChecked():
             # Create backup checker .desktop and move it to the destination
             create_backup_checker_desktop()
@@ -1435,7 +1431,6 @@ class OPTION(QMainWindow):
             # Delete the key-value pair from the 'STATUS' table
             cursor.execute(f'DELETE FROM FOLDER WHERE key = ?', (f'{output.lower()}',))
             conn.commit()
-            
         else:
             MAIN_INI_FILE.set_database_value('FOLDER', f'{output.lower()}', 'True')
 
@@ -1496,73 +1491,23 @@ class OPTION(QMainWindow):
     def label_hours_changed(self):
         hours = str(self.hours_spinbox.value())
 
-         # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-        
-        # Update SQLite database
-        cursor.execute(f'''
-            INSERT OR REPLACE INTO SCHEDULE (key, value)
-            VALUES (?, ?)
-        ''', ('hours', f'{hours}'))
-        conn.commit()
+        MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', f'{hours}')
 
         if hours in FIX_MINUTES:
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO SCHEDULE (key, value)
-                VALUES (?, ?)
-            ''', ('hours', '0' + f'{hours}'))
-            conn.commit()
-            
-        # Close SQLite database
-        conn.close()
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', '0' + f'{hours}')
 
     def label_minutes_changed(self):
         minutes = str(self.minutes_spinBox.value())
         
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
-        # Update SQLite database
-        cursor.execute(f'''
-            INSERT OR REPLACE INTO SCHEDULE (key, value)
-            VALUES (?, ?)
-        ''', ('minutes', f'{minutes}'))
-        conn.commit()
-
+        MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', f'{minutes}')
+        
         if minutes in FIX_MINUTES:
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO SCHEDULE (key, value)
-                VALUES (?, ?)
-            ''', ('minutes', '0' + f'{minutes}'))
-            conn.commit()
-
-        # Close SQLite database
-        conn.close()
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', '0' + f'{minutes}')
 
     def on_frequency_clicked(self):
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
         if self.one_time_per_day_radio.isChecked():
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO MODE (key, value)
-                VALUES (?, ?)
-            ''', ('one_time_mode', 'True'))
-            conn.commit()
-
-            # DISABLE MORE TIME MODE
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO MODE (key, value)
-                VALUES (?, ?)
-            ''', ('more_time_mode', 'False'))
-            conn.commit()
+            MAIN_INI_FILE.set_database_value('MODE', 'one_time_mode', 'True')
+            MAIN_INI_FILE.set_database_value('MODE', 'more_time_mode', 'False')
 
             self.multiple_time_per_day_comboBox.setEnabled(False)
             self.hours_spinbox.setEnabled(True)
@@ -1579,22 +1524,8 @@ class OPTION(QMainWindow):
             self.sat_checkBox.setEnabled(True)
 
         elif self.more_time_per_day_radio.isChecked():
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO MODE (key, value)
-                VALUES (?, ?)
-            ''', ('more_time_mode', 'True'))
-            conn.commit()
-
-            print("Multiple time per day selected")
-
-            # DISABLE ONE TIME MODE
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO MODE (key, value)
-                VALUES (?, ?)
-            ''', ('one_time_mode', 'False'))
-            conn.commit()
+            MAIN_INI_FILE.set_database_value('MODE', 'more_time_mode', 'True')
+            MAIN_INI_FILE.set_database_value('MODE', 'one_time_mode', 'False')
 
             self.hours_spinbox.setEnabled(False)
             self.minutes_spinBox.setEnabled(False)
@@ -1610,33 +1541,12 @@ class OPTION(QMainWindow):
             self.fri_checkBox.setEnabled(False)
             self.sat_checkBox.setEnabled(False)
 
-        # Close SQLite database
-        conn.close()
-
     def on_allow__flatpak_data_clicked(self):
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
         if self.allowFlatpakDataCheckBox.isChecked():
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO STATUS (key, value)
-                VALUES (?, ?)
-            ''', ('allow_flatpak_data', 'True'))
-            conn.commit()
-
+            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'True')
             print("Allow flatpaks data to be backup.")
         else:
-            # Update SQLite database
-            cursor.execute(f'''
-                INSERT OR REPLACE INTO STATUS (key, value)
-                VALUES (?, ?)
-            ''', ('allow_flatpak_data', 'False'))
-            conn.commit()
-
-        # Close SQLite database
-        conn.close()
+            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
 
     def on_button_fix_clicked(self):
         reset_confirmation=QMessageBox.question(
@@ -1648,10 +1558,6 @@ class OPTION(QMainWindow):
             MAIN.latest_backup_label.setText("Latest Backup: None")
             MAIN.oldest_backup_label.setText("Oldest Backup: None")
             
-            # Connect to the SQLite database
-            conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-            cursor = conn.cursor()
-
             # Reset settings
             # Backup section
             MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')

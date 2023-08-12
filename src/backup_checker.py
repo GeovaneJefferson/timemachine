@@ -67,27 +67,26 @@ class CHECKER:
     def check_the_dates(self):
         # One time per day
         if MAIN_INI_FILE.ini_one_time_mode():
-            if MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_sun():
+            if MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'sun'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_mon():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'mon'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_tue():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'tue'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_wed():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'wed'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_thu():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'thu'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_fri():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'fri'):
                 self.take_action(True)
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.ini_next_backup_sat():
+            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'sat'):
                 self.take_action(True)
-
         # Multiple time per day
         else:
             self.take_action(False)
@@ -113,15 +112,15 @@ class CHECKER:
         # Multiple time per day
         else:
             # 60 minutes
-            if MAIN_INI_FILE.ini_everytime() == f'{TIME1}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION1:
+            if MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME1}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION1:
                 self.call_prepare_backup()
 
             # 120 minutes
-            elif MAIN_INI_FILE.ini_everytime() == f'{TIME2}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION2:
+            elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME2}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION2:
                 self.call_prepare_backup()
 
             # 240 minutes
-            elif MAIN_INI_FILE.ini_everytime() == f'{TIME3}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION3:
+            elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME3}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION3:
                 self.call_prepare_backup()
 
     def call_prepare_backup(self):
@@ -144,11 +143,11 @@ if __name__ == '__main__':
 
     while True:
         try:
-            if MAIN_INI_FILE.ini_automatically_backup():
+            if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
                 print("Backup checker is running...")
 
                 # Get backup devices name and check connection
-                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
+                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')):
                     # If previus backup is unfinished
                     if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
                         MAIN.continue_interrupted_backup()

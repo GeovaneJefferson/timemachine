@@ -6,6 +6,7 @@ flatpakVarSizeList=[]
 flatpakVarToBeBackup=[]
 flatpakLocaloBeBackup=[]
 flatpakLocalSizeList=[]
+MAIN_INI_FILE = UPDATEINIFILE()
 
 def flatpak_var_size():
     ################################################################################
@@ -59,31 +60,34 @@ def flatpak_local_list():
     return flatpakLocaloBeBackup
 
 def get_external_device_max_size():
-    MAIN_INI_FILE=UPDATEINIFILE()
-
     # Get external max size
-    external_max_size=os.popen(f"df --output=size -h {str(MAIN_INI_FILE.ini_external_location())}")
-    external_max_size=external_max_size.read().strip().replace("1K-blocks", "").replace(
-        "Size", "").replace("\n", "").replace(" ", "")
+    external_max_size = os.popen(f"df --output=size -h {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}")
+    external_max_size = external_max_size.read().strip()\
+                            .replace("1K-blocks", "")\
+                            .replace("Size", "")\
+                            .replace("\n", "")\
+                            .replace(" ", "")
     
     return str(external_max_size)
 
 def get_external_device_used_size():
-    MAIN_INI_FILE=UPDATEINIFILE()
-    
-    used_space=os.popen(f"df --output=avail -h {str(MAIN_INI_FILE.ini_external_location())}").read().strip().replace(
-        "1K-blocks", "").replace("Avail", "").replace("\n", "").replace(" ", "")
+    used_space = os.popen(f"df --output=avail -h \
+                          {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}").read().strip()\
+                            .replace("1K-blocks", "")\
+                            .replace("Avail", "")\
+                            .replace("\n", "")\
+                            .replace(" ", "")
 
     return str(used_space)
 
 def get_external_device_free_size():
-    MAIN_INI_FILE=UPDATEINIFILE()
-
     try:
-        availDeviceSpace=os.popen(f"df --output=avail {str(MAIN_INI_FILE.ini_external_location())}")
-        availDeviceSpace=availDeviceSpace.read().strip().replace("1K-blocks", "").replace("Avail", "").replace(
-            "\n", "").replace(" ", "")
-        availDeviceSpace=int(availDeviceSpace)
+        availDeviceSpace = os.popen(f"df --output=avail {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}")
+        availDeviceSpace = availDeviceSpace.read().strip()\
+            .replace("1K-blocks", "")\
+            .replace("Avail", "")\
+            .replace("\n", "")\
+            .replace(" ", "")
 
         return int(availDeviceSpace)
     

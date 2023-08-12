@@ -31,8 +31,8 @@ class BACKUP:
         # Replace wallpaper inside the folder, only allow 1
         if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}"):
             # Delete all wallpapers inside wallpaper folder
-            for wallpaper in os.listdir(f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/"):
-                sub.run(f"rm -rf {MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/{wallpaper}", shell=True)
+            for wallpaper in os.listdir(f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/"):
+                sub.run(f"rm -rf {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/{wallpaper}", shell=True)
 
         # Backup current wallpaper
         sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
@@ -232,37 +232,31 @@ class BACKUP:
         MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
         # RESTORE DATABASE 
-        # Connect to the SQLite database (creates a new database if it doesn't exist)
-        conn = sqlite3.connect(MAIN_INI_FILE.restore_settings_location())
-        # Create a cursor to interact with the database
-        cursor = conn.cursor()
+        CONFIG = configparser.ConfigParser()
+        CONFIG.read(f"{MAIN_INI_FILE.restore_settings_location()}")
+        with open(f"{MAIN_INI_FILE.restore_settings_location()}", 'w') as configfile:
+            if not CONFIG.has_section('INFO'):
+                CONFIG.add_section('INFO')
 
-        # Execute the SQL command to create the table
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS INFO;
-        ''')
+            CONFIG.set('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
 
-        # Commit the changes and close the connection
-        conn.commit()
-        conn.close()
+            # KDE
+            if get_user_de() == 'kde':
+                CONFIG.set('INFO', 'icon', f'{self.get_kde_users_icon_name()}')
+                CONFIG.set('INFO', 'cursor', f'{self.get_kde_users_cursor_name()}')
+                CONFIG.set('INFO', 'font', f'{self.get_kde_users_font_name()}, {self.get_kde_users_font_size()}')
+                CONFIG.set('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
+                CONFIG.set('INFO', 'theme', f'None')
+            # GNOME
+            else:
+                CONFIG.set('INFO', 'icon', f'{self.get_gtk_users_icon_name()}')
+                CONFIG.set('INFO', 'cursor', f'{self.get_gtk_users_cursor_name()}')
+                CONFIG.set('INFO', 'font', f'{self.get_gtk_user_font_name()}')
+                CONFIG.set('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
+                CONFIG.set('INFO', 'theme', f'None')
+                CONFIG.set('INFO', 'colortheme', f'None')
 
-        self.set_database_value('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
-
-        # KDE
-        if get_user_de() == 'kde':
-            self.set_database_value('INFO', 'icon', f'{self.get_kde_users_icon_name()}')
-            self.set_database_value('INFO', 'cursor', f'{self.get_kde_users_cursor_name()}')
-            self.set_database_value('INFO', 'font', f'{self.get_kde_users_font_name()}, {self.get_kde_users_font_size()}')
-            self.set_database_value('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
-            self.set_database_value('INFO', 'theme', f'None')
-        # GNOME
-        else:
-            self.set_database_value('INFO', 'icon', f'{self.get_gtk_users_icon_name()}')
-            self.set_database_value('INFO', 'cursor', f'{self.get_gtk_users_cursor_name()}')
-            self.set_database_value('INFO', 'font', f'{self.get_gtk_user_font_name()}')
-            self.set_database_value('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
-            self.set_database_value('INFO', 'theme', f'None')
-            self.set_database_value('INFO', 'colortheme', f'None')
+            CONFIG.write(configfile)
 
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
@@ -394,19 +388,6 @@ class BACKUP:
         # Return users GTK cursor name
         return user_cursor_name
     
-    def set_database_value(self, table, key, value):
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-            
-        cursor.execute(f'''
-            INSERT OR REPLACE INTO {table} (key, value)
-            VALUES (?, ?)
-        ''', (f'{key}', f'{value}'))
-
-        conn.commit()
-        conn.close()
-
     async def main(self):
         # Call the asynchronous functions using await.
         await self.backup_wallpaper()
