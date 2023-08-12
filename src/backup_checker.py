@@ -147,7 +147,7 @@ if __name__ == '__main__':
                 print("Backup checker is running...")
 
                 # Get backup devices name and check connection
-                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')):
+                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
                     # If previus backup is unfinished
                     if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
                         MAIN.continue_interrupted_backup()

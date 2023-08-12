@@ -437,7 +437,7 @@ class MainWindow(QMainWindow):
         # Check if a backup device was registered
         if self.device_registered():
             # Check connection to it
-            if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')):
+            if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
                 ################################################
                 # Connection
                 ################################################

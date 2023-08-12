@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
         counter = 0
         if not ALREADY_GOT_LIST_OF_DATES:
             for date_folder_to_be_sort in os.listdir(
-                    f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
+                    f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
                 
                 # Hide hidden date_folder_to_be_sort
                 if "." not in date_folder_to_be_sort:
@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
         self.clean_stuff_on_screen("clean_files")
 
         try:
-            inside_this_date_folder = f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"\
+            inside_this_date_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"\
                 f"{BACKUP_FOLDER_NAME}/{self.LIST_FOR_DATE_FOLDERS[(self.COUNTER_FOR_DATE)]}/"
         
             ################################################################################
@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
                 
                 # Only add time button if self.CURRENT_FOLDER can be found inside current date and time
                 if os.path.exists(
-                        f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
+                        f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                         f"{self.LIST_FOR_DATE_FOLDERS[(self.COUNTER_FOR_DATE)]}/{time_folder}/"):
 
                     ################################################################################
@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
         self.clean_stuff_on_screen("clean_files")
         
         try:
-            inside_current_folder = f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"\
+            inside_current_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"\
                 f"{BACKUP_FOLDER_NAME}/{self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE]}/"\
                 f"{self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]}/{self.CURRENT_FOLDER}"
         
@@ -337,7 +337,7 @@ class MainWindow(QMainWindow):
                     if results.endswith(IMAGE_PREFIX):
                         scaledHTML='width:"5%" height="250"'
                         self.btn_backup_results.setToolTip(
-                            f"<img src={MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
+                            f"<img src={MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"
                             f"/{self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE]}/"
                             f"{self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]}/"
                             f"{self.CURRENT_FOLDER}/{results} {scaledHTML}/>")
@@ -355,7 +355,7 @@ class MainWindow(QMainWindow):
                         "}")
 
                     # if results.endswith(IMAGE_PREFIX):
-                    #     image = QImage(f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
+                    #     image = QImage(f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                     #         f"{self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE]}/{self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]}/"
                     #         f"{self.CURRENT_FOLDER}/{results}")
 
@@ -587,7 +587,7 @@ class MainWindow(QMainWindow):
                 if button.text().endswith(IMAGE_PREFIX):
                     image = QImage
                     (
-                        f"{MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
+                        f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                         f"{self.LIST_FOR_DATE_FOLDERS[self.COUNTER_FOR_DATE]}/{self.LIST_FOR_TIME_FOLDERS[self.COUNTER_FOR_TIME]}/"
                         f"{self.CURRENT_FOLDER}/{button.text()}"
                     )
@@ -694,12 +694,12 @@ class MainWindow(QMainWindow):
         
         counter = 0
         for _ in FILES_TO_RESTORE:
-            print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
+            print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"
                 f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
                 f"{FILES_TO_RESTORE[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
             
             sub.Popen(
-                f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
+                f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"
                 f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
                 f"{FILES_TO_RESTORE[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/",
                 shell=True)
@@ -712,12 +712,12 @@ class MainWindow(QMainWindow):
         ################################################################################
         counter = 0
         for _ in FILES_TO_RESTORE_WITH_SPACES:
-            # print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
+            # print(f"Restoring {COPY_RSYNC_CMD} {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"
             #     f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
             #     f"{FILES_TO_RESTORE_WITH_SPACES[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
             
             sub.Popen(
-                f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.ini_external_location()}/{BASE_FOLDER_NAME}/"
+                f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"
                 f"{BACKUP_FOLDER_NAME}/{date}/{time}/{self.CURRENT_FOLDER}/"
                 f"{FILES_TO_RESTORE_WITH_SPACES[counter]} {HOME_USER}/"
                 f"{self.CURRENT_FOLDER}/", shell=True)
