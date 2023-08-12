@@ -1488,22 +1488,19 @@ class OPTION(QMainWindow):
         else:
             MAIN_INI_FILE.set_database_value('DAYS', 'sat', 'False')
 
-    def label_hours_changed(self):
+    def label_hours_changed(self): 
         hours = str(self.hours_spinbox.value())
 
         MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', f'{hours}')
 
-        if hours in FIX_MINUTES:
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', '0' + f'{hours}')
-
     def label_minutes_changed(self):
         minutes = str(self.minutes_spinBox.value())
         
-        MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', f'{minutes}')
-        
         if minutes in FIX_MINUTES:
             MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', '0' + f'{minutes}')
-
+        else:
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', f'{minutes}')
+        
     def on_frequency_clicked(self):
         if self.one_time_per_day_radio.isChecked():
             MAIN_INI_FILE.set_database_value('MODE', 'one_time_mode', 'True')
