@@ -154,7 +154,7 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def status_off(self):
-        if MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
+        if not MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
             self.change_color("Red")
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)

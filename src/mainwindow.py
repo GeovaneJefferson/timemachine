@@ -1363,7 +1363,7 @@ class OPTION(QMainWindow):
 
     def time_to_run(self):
         self.hours_spinbox.setValue(int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')))
-        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')))
+        self.minutes_spinBox.setValue(int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes')))
 
         ################################################################################
         # Get info from INI file
@@ -1491,15 +1491,17 @@ class OPTION(QMainWindow):
     def label_hours_changed(self): 
         hours = str(self.hours_spinbox.value())
 
-        MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', f'{hours}')
+        MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', hours)
 
     def label_minutes_changed(self):
         minutes = str(self.minutes_spinBox.value())
         
         if minutes in FIX_MINUTES:
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', '0' + f'{minutes}')
+            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', f'0{minutes}')
         else:
             MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', f'{minutes}')
+       
+        print("GET", MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes'))
         
     def on_frequency_clicked(self):
         if self.one_time_per_day_radio.isChecked():
