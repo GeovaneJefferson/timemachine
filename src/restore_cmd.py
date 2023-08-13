@@ -29,90 +29,50 @@ class RESTORE:
 
     async def start_restoring(self):
         # First change the wallpaper
-        if MAIN_INI_FILE.ini_system_settings():
-            # Update INI file
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                CONFIG.set('INFO', 'saved_notification', "Restoring wallpaper...")
-                CONFIG.write(configfile)
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring wallpaper...')
 
             await restore_backup_wallpaper()
         
         # Restore home folder
-        if MAIN_INI_FILE.ini_files_and_folders():
-            # Update INI file
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                CONFIG.set('INFO', 'saved_notification', "Restoring Home...")
-                CONFIG.write(configfile)
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Home...')
 
             await restore_backup_home()
 
         # Restore applications packages (.deb, .rpm etc.)
-        if  MAIN_INI_FILE.ini_applications_packages():
-            # Update INI file
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                CONFIG.set('INFO', 'saved_notification', "Restoring Applications...")
-                CONFIG.write(configfile)
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_packages'):
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Applications...')
 
             await restore_backup_package_applications()
        
         # Restore flatpaks
-        if MAIN_INI_FILE.ini_restore_flatpaks_name():
-            # Update INI file
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                CONFIG.set('INFO', 'saved_notification', "Restoring Flatpaks Applications...")
-                CONFIG.write(configfile)
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_names'):
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Flatpaks Applications...')
 
             await restore_backup_flatpaks_applications()
         
         # Restore flatpaks data
-        if MAIN_INI_FILE.ini_restore_flatpaks_data():
-            # Update INI file
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                CONFIG.set('INFO', 'saved_notification', "Restoring Flatpak Data...")
-                CONFIG.write(configfile)
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
+            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Flatpak Data...')
             
             await restore_backup_flatpaks_data()
         
         # Restore system settings
-        if MAIN_INI_FILE.ini_system_settings():
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             # Only for kde
             if get_user_de() == 'kde':
-                # Update INI file
-                CONFIG = configparser.ConfigParser()
-                CONFIG.read(SRC_USER_CONFIG)
-                with open(SRC_USER_CONFIG, 'w') as configfile:
-                    CONFIG.set('INFO', 'saved_notification', "Restoring KDE local/share...")
-                    CONFIG.write(configfile)
-    
+                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE local/share...')
+
                 # Restore kde local share
                 await restore_kde_local_share()
                 
-                # Update INI file
-                CONFIG = configparser.ConfigParser()
-                CONFIG.read(SRC_USER_CONFIG)
-                with open(SRC_USER_CONFIG, 'w') as configfile:
-                    CONFIG.set('INFO', 'saved_notification', "Restoring KDE config...")
-                    CONFIG.write(configfile)
-     
+                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE config...')
+
                 # Restore kde CONFIG
                 await restore_kde_config()
 
-                # Update INI file
-                CONFIG = configparser.ConfigParser()
-                CONFIG.read(SRC_USER_CONFIG)
-                with open(SRC_USER_CONFIG, 'w') as configfile:
-                    CONFIG.set('INFO', 'saved_notification', "Restoring KDE share/CONFIG...")
-                    CONFIG.write(configfile)
+                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE share/CONFIG....')
 
                 # Restore kde share CONFIG
                 await restore_kde_share_config()
@@ -125,17 +85,12 @@ class RESTORE:
     def end_restoring(self):
         print("Ending restoring...")
 
-        # Update INI file
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('INFO', 'saved_notification', "")
-            CONFIG.write(configfile)
+        MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', '')
 
         # After backup is done
         print("Restoring is done!")
 
-        if MAIN_INI_FILE.ini_automatically_reboot():
+        if MAIN_INI_FILE.get_database_value('INFO', 'auto_reboot'):
             sub.run("sudo reboot", shell=True)
         else:
             exit()

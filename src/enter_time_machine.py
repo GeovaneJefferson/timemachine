@@ -39,7 +39,7 @@ class ENTERTIMEMACHINE(QWidget):
         ################################################################################
         # Read ini
         ################################################################################
-        config=configparser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(SRC_USER_CONFIG)
 
         self.iniExternalLocation=config['EXTERNAL']['hd']

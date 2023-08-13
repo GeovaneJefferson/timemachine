@@ -446,8 +446,6 @@ class PreBackup(QWidget):
             ################################################################################
             # Flatpak checkbox (names)
             ################################################################################
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
             with open(MAIN_INI_FILE.flatpak_txt_location(), "r") as read_file:
                 flatpaksToBeInstalled = len(read_file.readlines())
 
@@ -629,8 +627,6 @@ class PreBackup(QWidget):
         dummy=[]
         try:
             # Look for flatpakTxt inside external device
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
             with open(f"{MAIN_INI_FILE.flatpak_txt_location()}", 'r') as output:
                 dummy.append(output.read().strip())
 
@@ -735,11 +731,7 @@ class PreBackup(QWidget):
             self.already_showing_application_information=False
         
         if self.application_packages_Checkbox.isChecked():
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                CONFIG.set('RESTORE', 'applications_packages', 'True')
-                CONFIG.write(configfile)
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'True')
 
             self.application_packages_Checkbox.setChecked(True)
             self.continue_button.setEnabled(True)
@@ -773,11 +765,7 @@ class PreBackup(QWidget):
 
                     self.show_more_application_information_layout.addWidget(dummyCheckBox)
         else:
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-                CONFIG.set('RESTORE', 'applications_packages', 'False')
-                CONFIG.write(configfile)
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
 
             self.has_itens_inside_to_continue_list.remove("packages")
             self.exclude_app_list.clear()
@@ -801,27 +789,23 @@ class PreBackup(QWidget):
         #     self.showMoreFlatpakInformationWidget.setFixedHeight(0)
         #     self.alreadyShowingFlatpakInformation=False
                        
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile: 
-            if self.flatpakCheckBox.isChecked():
-                # Set restore flatpak program to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'True')
-                # Set flatpak checkbox to True
-                self.flatpakCheckBox.setChecked(True)
-                # Enable continue button
-                self.continue_button.setEnabled(True)
-                # Add "flatpak" from list
-                self.has_itens_inside_to_continue_list.append("flatpak")
-            else:
-                # Set restore flatpak applications to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
-                # Uncheck flatpak checkbox
-                self.flatpakCheckBox.setChecked(False)
-                # Remove "flatpak" from list
-                self.has_itens_inside_to_continue_list.remove("flatpak")
-            
-            CONFIG.write(configfile)
+
+        if self.flatpakCheckBox.isChecked():
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'True')
+
+            # Set flatpak checkbox to True
+            self.flatpakCheckBox.setChecked(True)
+            # Enable continue button
+            self.continue_button.setEnabled(True)
+            # Add "flatpak" from list
+            self.has_itens_inside_to_continue_list.append("flatpak")
+        else:
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+
+            # Uncheck flatpak checkbox
+            self.flatpakCheckBox.setChecked(False)
+            # Remove "flatpak" from list
+            self.has_itens_inside_to_continue_list.remove("flatpak")
 
         self.allow_to_continue()
 
@@ -834,32 +818,26 @@ class PreBackup(QWidget):
         #     self.showMoreFlatpakDataInformationWidget.setFixedHeight(0)
         #     self.alreadyShowingFlatpakDataInformation=False
                 
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.flatpak_data_Checkbox.isChecked():
-                # Set restore flatpak data to True
-                CONFIG.set('RESTORE', 'applications_flatpak_data', 'True')
-                # Check flatpak data checkbox
-                self.flatpak_data_Checkbox.setChecked(True)
-                # Enable continue button
-                self.continue_button.setEnabled(True)
-                # Add "data" from list
-                self.has_itens_inside_to_continue_list.append("data")
-                # Add "flatpak" from list
-                self.has_itens_inside_to_continue_list.append("flatpak")
-            else:
-                # Set restore flatpak program to False
-                CONFIG.set('RESTORE', 'applications_flatpak_names', 'False')
-                # Set restore flatpak data to False
-                CONFIG.set('RESTORE', 'applications_flatpak_data', 'False')
-                # Uncheck flatpak data checkbox
-                self.flatpak_data_Checkbox.setChecked(False)
-                # Remove "data" from list
-                self.has_itens_inside_to_continue_list.remove("data")
-            
-            CONFIG.write(configfile)
+        if self.flatpak_data_Checkbox.isChecked():
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'True')
 
+            # Check flatpak data checkbox
+            self.flatpak_data_Checkbox.setChecked(True)
+            # Enable continue button
+            self.continue_button.setEnabled(True)
+            # Add "data" from list
+            self.has_itens_inside_to_continue_list.append("data")
+            # Add "flatpak" from list
+            self.has_itens_inside_to_continue_list.append("flatpak")
+        else:
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+
+            # Uncheck flatpak data checkbox
+            self.flatpak_data_Checkbox.setChecked(False)
+            # Remove "data" from list
+            self.has_itens_inside_to_continue_list.remove("data")
+            
         self.allow_to_continue()
 
     def on_files_and_folders_clicked(self):
@@ -871,26 +849,21 @@ class PreBackup(QWidget):
         #     self.showMoreFileAndFoldersInformationWidget.setFixedHeight(0)
         #     self.alreadyShowingFilesAndSoldersInformation=False
         
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:
-            if self.fileAndFoldersCheckBox.isChecked():
-                # Set restore home to True
-                CONFIG.set('RESTORE', 'files_and_folders', 'True')
-                # Enable continue button
-                self.continue_button.setEnabled(True)
-                # Add "files" to list
-                self.has_itens_inside_to_continue_list.append("files")
-            else:
-                # Set restore home to False
-                CONFIG.set('RESTORE', 'files_and_folders', 'False')
-                # Disable continue button
-                self.continue_button.setEnabled(False)
-                # Remove "files" to list
-                self.has_itens_inside_to_continue_list.remove("files")
-            
-            CONFIG.write(configfile)
-            
+        if self.fileAndFoldersCheckBox.isChecked():
+            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'True')
+
+            # Enable continue button
+            self.continue_button.setEnabled(True)
+            # Add "files" to list
+            self.has_itens_inside_to_continue_list.append("files")
+        else:
+            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+
+            # Disable continue button
+            self.continue_button.setEnabled(False)
+            # Remove "files" to list
+            self.has_itens_inside_to_continue_list.remove("files")
+        
         self.allow_to_continue()
   
     def on_system_settings_clicked(self):
@@ -901,28 +874,23 @@ class PreBackup(QWidget):
         # else:
         #     self.showMoreSystemSettingsInformationWidget.setFixedHeight(0)
         #     self.alreadyShowingSystemSettingsInformation=False
-        
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:  
-            if self.systemSettingsCheckBox.isChecked():
-                # Set restore system settings to True
-                CONFIG.set('RESTORE', 'system_settings', 'True')
-                # Enable continue button
-                self.continue_button.setEnabled(True)
-                # Add "system_settings" to list
-                self.has_itens_inside_to_continue_list.append("system_settings")
-            else:
-                # Set restore system settings to False
-                CONFIG.set('RESTORE', 'system_settings', 'False')
-                # Disable continue button
-                self.continue_button.setEnabled(False)
-                
-                if "system_settings" in self.has_itens_inside_to_continue_list:
-                    self.has_itens_inside_to_continue_list.remove("system_settings")
-            
-            CONFIG.write(configfile)
 
+        if self.systemSettingsCheckBox.isChecked():
+            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'True')
+
+            # Enable continue button
+            self.continue_button.setEnabled(True)
+            # Add "system_settings" to list
+            self.has_itens_inside_to_continue_list.append("system_settings")
+        else:
+            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+
+            # Disable continue button
+            self.continue_button.setEnabled(False)
+            
+            if "system_settings" in self.has_itens_inside_to_continue_list:
+                self.has_itens_inside_to_continue_list.remove("system_settings")
+            
         self.allow_to_continue()
 
     def allow_to_continue(self):
@@ -946,7 +914,7 @@ class PreBackup(QWidget):
             # Write applications exclude list .exclude-application.txt
             # Create a .exclude-applications
             if not os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
-                    sub.run(f"{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_applications_location()}", shell=True)
+                sub.run(f"{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_applications_location()}", shell=True)
 
             else:
                 # Delete before continue
@@ -956,13 +924,11 @@ class PreBackup(QWidget):
 
             if self.exclude_app_list:
                 # Get user installed flatpaks
-                CONFIG=configparser.ConfigParser()
-                CONFIG.read(SRC_USER_CONFIG)
                 with open(MAIN_INI_FILE.exclude_applications_location(), 'w') as configfile:
                     for apps in self.exclude_app_list:  
                         configfile.write(f"{apps}\n")
             
-        main4=BackupScreen()
+        main4 = BackupScreen()
         WIDGET.addWidget(main4)
         WIDGET.setCurrentIndex(WIDGET.currentIndex()+1)
 
@@ -1107,10 +1073,8 @@ class BackupScreen(QWidget):
         self.externalDeviceName=QLabel()
         self.externalDeviceName.setFont(QFont(MAIN_FONT,14))
         try:
-            CONFIG=configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
             # Add userName 
-            self.externalDeviceName.setText(MAIN_INI_FILE.ini_hd_name())
+            self.externalDeviceName.setText(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name'))
             self.externalDeviceName.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.externalDeviceName.adjustSize()
         
@@ -1192,17 +1156,17 @@ class BackupScreen(QWidget):
 
     def read_ini_file(self):
         try:
-            self.externalDeviceName.setText(MAIN_INI_FILE.ini_hd_name())
+            self.externalDeviceName.setText(MAIN_INI_FILE.get_database_value('EXTERNAL', 'name'))
 
             ################################################################################
             # Update widgets
             ################################################################################
             # if restoring is running
-            if MAIN_INI_FILE.ini_restoring_is_running():
+            if MAIN_INI_FILE.get_database_value('RESTORE', 'is_restoring_running'):
                 # Show restoring description
                 # TODO
                 self.whileRestoringDescription.setText(f'Transferring '
-                    f"{MAIN_INI_FILE.ini_current_backup_information()} to the user {USERNAME}...") 
+                    f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')} to the user {USERNAME}...") 
                 # Hide more description
                 self.moreDescription.hide()
                 # Show restoring description
@@ -1212,26 +1176,17 @@ class BackupScreen(QWidget):
             pass
 
     def change_screen(self):
-        CONFIG=configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w', encoding='utf8') as configfile:  
-            CONFIG.set('RESTORE', 'is_restore_running', 'True')
-            CONFIG.write(configfile)
-        
+        MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'True')
+
         sub.Popen(f"python3 {src_restore_cmd_py}",shell=True)
+
         MAIN5 = StartRestoring()
         WIDGET.addWidget(MAIN5)
-        
         WIDGET.showFullScreen()
         WIDGET.setCurrentIndex(WIDGET.currentIndex()+1)
 
     def auto_reboot_clicked(self):
-        # Update INI file
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            CONFIG.set('INFO', 'auto_reboot', 'True')
-            CONFIG.write(configfile)
+        MAIN_INI_FILE.set_database_value('INFO', 'auto_reboot', 'True')
         
 
 class StartRestoring(QWidget):
@@ -1308,19 +1263,10 @@ class StartRestoring(QWidget):
         self.read_ini_file()
 
     def read_ini_file(self):
-        self.current_status.setText(MAIN_INI_FILE.ini_current_backup_information())
+        self.current_status.setText(MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
 
-        if not MAIN_INI_FILE.ini_restoring_is_running():
-            ###############################################################################
-            # Update INI file
-            ###############################################################################
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
-            with open(SRC_USER_CONFIG, 'w') as configfile:
-                # Set auto rebooting to false
-                CONFIG.set('RESTORE', 'is_restore_running', 'None')
-                CONFIG.write(configfile)
-
+        if not MAIN_INI_FILE.get_database_value('RESTORE', 'is_restoring_running'):
+            MAIN_INI_FILE.set_database_value('RESTORE', 'is_restoring_running', 'None')
             exit()
 
 

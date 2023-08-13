@@ -177,8 +177,7 @@ class BACKUP:
             counter = 0
             flatpak_list = []
 
-            CONFIG = configparser.ConfigParser()
-            CONFIG.read(SRC_USER_CONFIG)
+            # Write to flatpak.txt
             with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
                 for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
                     flatpak_list.append(flatpak)
@@ -187,7 +186,7 @@ class BACKUP:
                     configfile.write(flatpak_list[counter])
 
                     counter += 1
-                    
+                
         except Exception as e:
             print("Flatpak names ERROR:", e)
             pass

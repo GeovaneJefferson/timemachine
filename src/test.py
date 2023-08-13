@@ -49,7 +49,19 @@ class MainWindow(QMainWindow):
 
     def list_of_backup_folders(self):
         FOLDERS_LIST = []
-        for folder in MAIN_INI_FILE.ini_folders():
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        cursor = conn.cursor()
+
+        # Query all keys from the specified table
+        cursor.execute(f"SELECT key FROM FOLDER")
+        keys = [row[0] for row in cursor.fetchall()]
+
+        # Close the connection
+        conn.close()
+
+        for folder in keys:
             FOLDERS_LIST.append(folder)
             FOLDERS_LIST.sort()
 
@@ -617,6 +629,7 @@ class MainWindow(QMainWindow):
         ################################################################################
         # Enable/Disable functions if item(s) is/are selected
         ################################################################################
+        # TODO
         if len(FILES_TO_RESTORE) or len(FILES_TO_RESTORE_WITH_SPACES) >= 1:  # If something inside list
             self.ui.btn_restore.setEnabled(True)
             # Restore label + filesToRestore and FILES_TO_RESTORE_WITH_SPACES lenght
@@ -680,12 +693,7 @@ class MainWindow(QMainWindow):
         self.ui.btn_restore.clicked.connect(lambda *args, date = date, time = time: self.start_restore(date, time))
     
     def start_restore(self, date, time):
-        # Set restoring in INI to True
-        config = configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'is_restoring', 'True')
-            config.write(configfile)
+        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
 
         ################################################################################
         # Restore files without spaces
@@ -732,13 +740,8 @@ class MainWindow(QMainWindow):
             # Open folder manager
             sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}",shell=True)
         
-        # Set restoring in INI to True
-        config = configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
-        with open(SRC_USER_CONFIG, 'w') as configfile:
-            config.set('STATUS', 'is_restoring', 'False')
-            config.write(configfile)
-        
+        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+
         exit()
 
     def check_found_date_button(self):
@@ -753,6 +756,7 @@ class MainWindow(QMainWindow):
                         button.setChecked(True)  
                         button.click()  
                         break
+
         # If a non backup folder was clicked
         except IndexError as i:
             print(i)

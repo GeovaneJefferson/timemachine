@@ -247,7 +247,6 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 ## Config
 ################################################################################
 DST_FOLDER_INSTALL = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
-SRC_USER_CONFIG = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.ini"
 SRC_USER_CONFIG_DB = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.db"
 src_pycache = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 
@@ -275,25 +274,20 @@ SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 # LOG
 APP_LOGS = f"{DST_FOLDER_INSTALL}/app_logs.txt"
 
+
+from read_ini_file import UPDATEINIFILE
+MAIN_INI_FILE = UPDATEINIFILE()
 def signal_exit(*args):
     print("Updating INI settings...")
     print("Exiting...")
 
-    CONFIG = configparser.ConfigParser()
-    CONFIG.read(SRC_USER_CONFIG)
-    with open(SRC_USER_CONFIG, 'w') as configfile:
-        CONFIG.set('STATUS', 'unfinished_backup', 'Yes')
-        CONFIG.write(configfile)
+    MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup', 'Yes')
 
     # Quit
     exit()
 
 def error_trying_to_backup(e):
-    CONFIG = configparser.ConfigParser()
-    CONFIG.read(SRC_USER_CONFIG)
-    with open(SRC_USER_CONFIG, 'w') as configfile:
-        CONFIG.set('INFO', 'saved_notification', f"{e}")
-        CONFIG.write(configfile)
+    MAIN_INI_FILE.get_database_value('INFO', 'saved_notification', f'{e}')
 
     # Quit
     exit()

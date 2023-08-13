@@ -7,7 +7,7 @@ someImageInsideList=[]
 
 
 async def restore_backup_wallpaper():
-    MAININIFILE=UPDATEINIFILE()
+    MAININIFILE = UPDATEINIFILE()
 
     print("Restoring users wallpaper...")
     try:

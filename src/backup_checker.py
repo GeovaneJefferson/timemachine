@@ -66,7 +66,7 @@ class CHECKER:
     # Check the dates for backup, one or multiple times per day
     def check_the_dates(self):
         # One time per day
-        if MAIN_INI_FILE.ini_one_time_mode():
+        if MAIN_INI_FILE.get_database_value('MODE', 'one_time_mode'):
             if MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'sun'):
                 self.take_action(True)
 
@@ -139,7 +139,7 @@ class CHECKER:
 if __name__ == '__main__':
     # Objects
     MAIN = CHECKER()
-    MAIN_INI_FILE=UPDATEINIFILE()
+    MAIN_INI_FILE = UPDATEINIFILE()
 
     while True:
         try:
