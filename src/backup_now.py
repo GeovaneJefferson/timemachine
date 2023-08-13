@@ -24,6 +24,8 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 class BACKUP:
     async def backup_wallpaper(self):
+        print("Backing up: Wallpaper...")
+
         # GNOME/KDE
         # Send notification status
         notification_message("Backing up: Wallpaper...")
@@ -38,6 +40,8 @@ class BACKUP:
         sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
         
     async def backup_home(self):
+        print("Backing up: Home folders...")
+        
         # Backup Home
         # Send notification status
         notification_message("Backing up: Home folders...")
@@ -48,6 +52,8 @@ class BACKUP:
             sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
 
     async def backup_home_hidden_files(self):
+        print("Backing up: .local/share/ ...")
+
         # For GNOME
         if get_user_de() == 'gnome':
             # Send notification status
@@ -57,7 +63,7 @@ class BACKUP:
             # .local/share/gnome-shell
             include_list=[
                 "gnome-shell"]
-
+        
             for folder in os.listdir(f"{HOME_USER}/.local/share/"):
                 # TODO
                 # folders_list.append(folder)

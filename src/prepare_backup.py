@@ -39,6 +39,7 @@ class PREPAREBACKUP:
             # Create folders with date/time inside backup device
             self.create_date_time_folder()
             # Call backup now .py
+            print("Calling backup now...")
             sub.Popen(f"python3 {src_backup_now_py}", shell=True)
 
         else:
@@ -188,9 +189,9 @@ class PREPAREBACKUP:
 
     def get_backup_sizes(self):
         # Home + System Settings + safe additional size
-        # 
         if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             backup_size_needeed = int(home_folders_size()) + self.safe_added_space
+            print(backup_size_needeed)
 
         # Home + System Settings + Flatpak data + safe additional size
         else:
@@ -211,8 +212,9 @@ class PREPAREBACKUP:
 
         else:
             # Enough space to continue
+            print("Enough space to continue.")
             return True
-
+        
     def delete_old_backups(self):
         try:
             # Keep at least one backup folder
@@ -268,3 +270,4 @@ class PREPAREBACKUP:
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
     main = PREPAREBACKUP()
+    print(main.get_backup_sizes())

@@ -139,4 +139,5 @@ def get_all_max_backup_device_space(device):
 
 
 if __name__ == '__main__':
+    print(flatpak_local_size())
     pass

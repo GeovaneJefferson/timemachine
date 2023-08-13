@@ -6,7 +6,8 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 def get_folders():
     FOLDERS_LIST = []
-
+    FOLDERS_LIST_RETURN = []
+    
     # Connect to the SQLite database
     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
     cursor = conn.cursor()
@@ -32,14 +33,11 @@ def get_folders():
         except:
             # Backup folder was not capitalize
             folder = folder.lower() 
-
-        # Add folder inside home_folder_to_beBackup
-        FOLDERS_LIST.append(folder)
-
-        # Sort them
-        FOLDERS_LIST.sort()
+        
+        FOLDERS_LIST_RETURN.append(folder)
+        FOLDERS_LIST_RETURN.sort()
     
-    return FOLDERS_LIST 
+    return FOLDERS_LIST_RETURN 
 
 def home_folders_size():
     home_folder_to_backup_size_list = []

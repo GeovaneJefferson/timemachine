@@ -1,10 +1,9 @@
 from setup import *
 
 
-class UPDATEINIFILE:
-    def variables(self):
-        self.NOW = datetime.now()
+NOW = datetime.now()
 
+class UPDATEINIFILE:
     def get_database_value(self, table, key):
         # Connect to the SQLite database
         conn = sqlite3.connect(SRC_USER_CONFIG_DB)
@@ -140,19 +139,19 @@ class UPDATEINIFILE:
         return int(f"{self.current_hour()}{self.current_minute()}")
 
     def backup_year(self):
-        return self.NOW.strftime("%y")
+        return NOW.strftime("%y")
 
     def backup_month(self):
-        return self.NOW.strftime("%m")
+        return NOW.strftime("%m")
 
     def backup_date(self):
-        return self.NOW.strftime("%d")
+        return NOW.strftime("%d")
 
     def backup_hour(self):
-        return self.NOW.strftime("%H")
+        return NOW.strftime("%H")
 
     def backup_minute(self):
-        return self.NOW.strftime("%M")
+        return NOW.strftime("%M")
 
     def backup_time_military(self):
         return int(f"{self.get_database_value('SCHEDULE', 'hours')}{self.get_database_value('SCHEDULE', 'minutes')}")
@@ -276,4 +275,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
+    # print(MAIN_INI_FILE.backup_year())
     pass
