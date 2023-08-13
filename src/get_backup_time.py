@@ -4,8 +4,8 @@ from read_ini_file import UPDATEINIFILE
 from get_latest_backup_date import latest_backup_date
 
 
-TIME_FOLDER = []
 MAIN_INI_FILE = UPDATEINIFILE()
+TIME_FOLDER = []
 
 def get_latest_backup_time():
 
@@ -16,8 +16,8 @@ def get_latest_backup_time():
             TIME_FOLDER.sort(reverse=True)
         return TIME_FOLDER
 
-    except Exception as error:
-        print(error)
+    except Exception as e:
+        print(e)
         pass
 
 if __name__ == '__main__':

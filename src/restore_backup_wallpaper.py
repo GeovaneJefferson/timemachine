@@ -3,27 +3,25 @@ from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 
 
-someImageInsideList=[]
-
+MAIN_INI_FILE = UPDATEINIFILE()
+some_image_inside_list = []
 
 async def restore_backup_wallpaper():
-    MAININIFILE = UPDATEINIFILE()
-
     print("Restoring users wallpaper...")
     try:
         # Check if a wallpaper can be found
-        for wallpaper in os.listdir(f"{MAININIFILE.wallpaper_main_folder()}/"):
-            someImageInsideList.append(wallpaper)
+        for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
+            some_image_inside_list.append(wallpaper)
         
         # If has a wallpaper to restore and restoreSystemSettings:
-        if someImageInsideList: 
+        if some_image_inside_list: 
             # Create wallpapers folders
-            if not os.path.exists(str(MAININIFILE.create_base_folder())):
+            if not os.path.exists(str(MAIN_INI_FILE.create_base_folder())):
                 sub.run(f"{CREATE_CMD_FOLDER} {HOME_USER}/.local/share/wallpapers/",shell=True)
 
             # Copy to wallpapers folders
-            for image in os.listdir(f"{MAININIFILE.wallpaper_main_folder()}/"):
-                sub.run(f"{COPY_RSYNC_CMD} {MAININIFILE.wallpaper_main_folder()}/{image} {HOME_USER}/.local/share/wallpapers/", shell=True)
+            for image in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
+                sub.run(f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.wallpaper_main_folder()}/{image} {HOME_USER}/.local/share/wallpapers/", shell=True)
 
             # Check if user DE is in the supported list to Automatically apply
             ################################################################

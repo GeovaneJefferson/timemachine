@@ -1,12 +1,8 @@
-#! /usr/bin/python3
 from setup import *
 from stylesheet import *
 from detect_theme_color import detect_theme_color
 
-config=configparser.ConfigParser()
-config.read(SRC_USER_CONFIG)
-
-
+# TODO
 class ENTERTIMEMACHINE(QWidget):
     def __init__(self):
         super().__init__()

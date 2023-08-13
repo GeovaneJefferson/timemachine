@@ -4,6 +4,7 @@ from package_manager import package_manager
 from get_users_de import get_user_de
 from device_location import device_location
 
+
 MAIN_INI_FILE = UPDATEINIFILE()
 
 def save_info(chooseDevice):
@@ -30,6 +31,7 @@ def save_info(chooseDevice):
 
     # External name
     MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', f'{chooseDevice}')
+            
             
 if __name__ == '__main__':
     pass

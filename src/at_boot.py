@@ -12,7 +12,7 @@ class BOOT:
     def system_tray(self):
         MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'True')
 
-        if MAIN_INI_FILE.ini_system_tray():
+        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             sub.Popen(f"python3 {src_system_tray_py}",shell=True)
 
         if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":

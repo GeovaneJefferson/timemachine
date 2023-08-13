@@ -30,7 +30,7 @@ class PREPAREBACKUP:
 
     # Check backup size, as the backup device size
     def begin_backup_process(self):
-        print("Calculating backup sizes ...")
+        print("Calculating backup sizes...")
 
         # Check backup sizes needeed, delete old backup if is a must
         if self.get_backup_sizes():
@@ -226,7 +226,7 @@ class PREPAREBACKUP:
 
                 # Deleting .trash inside backup device to get more free space
                 # print(f"Deleting .trash...")
-                # sub.run(f"rm -rf {str(MAININIFILE.ini_external_location())}/.Trash-1000",shell=True)
+                # sub.run(f"rm -rf {str(MAIN_INI_FILE.ini_external_location())}/.Trash-1000",shell=True)
 
             else:
                 print(f"Please, manual delete file(s)/folder(s) inside your backup device, to make space for {APP_NAME}'s "

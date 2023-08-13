@@ -6,7 +6,6 @@ def get_user_de():
     
     if ":" in user_DE:
         return user_DE.split(":")[1]
-    
     else:
         return user_DE        
 

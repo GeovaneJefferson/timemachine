@@ -2,29 +2,26 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
+MAIN_INI_FILE=UPDATEINIFILE()
 DATA_FOLDERS=[]
 
-
 def get_backup_date():
-    MAININIFILE=UPDATEINIFILE()
     try:
         DATA_FOLDERS.clear()
-        for output in os.listdir(f"{str(MAININIFILE.backup_folder_name())}"):
+        for output in os.listdir(f"{str(MAIN_INI_FILE.backup_folder_name())}"):
             # Hide hidden outputs
             if "." not in output:
                 DATA_FOLDERS.append(output)
                 DATA_FOLDERS.sort(
-                    reverse=True, 
-                    key=lambda date: datetime.strptime(date, "%d-%m-%y"))
+                    reverse = True, 
+                    key = lambda date: datetime.strptime(date, "%d-%m-%y"))
 
         return DATA_FOLDERS
 
-    except Exception as error:
-        print(error)
-        print("Error trying to get backup dates!")
+    except Exception as e:
+        print(e)
         pass
     
 
 if __name__ == '__main__':
-    print(get_backup_date())
     pass

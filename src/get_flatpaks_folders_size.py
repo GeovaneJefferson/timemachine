@@ -2,11 +2,12 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 from device_location import device_location
 
-flatpakVarSizeList=[]
-flatpakVarToBeBackup=[]
-flatpakLocaloBeBackup=[]
-flatpakLocalSizeList=[]
+
 MAIN_INI_FILE = UPDATEINIFILE()
+flatpak_var_size_list = []
+flatpak_var_to_be_backup = []
+flatpak_local_to_be_backup = []
+flatpak_local_size_list = []
 
 def flatpak_var_size():
     ################################################################################
@@ -21,19 +22,19 @@ def flatpak_var_size():
         # If current folder (output inside var/app) is not higher than X MB
         # Add to list to be backup
         ################################################################################
-        # Add to flatpakVarSizeList KBytes size of the current output (folder inside var/app)
+        # Add to flatpak_var_size_list KBytes size of the current output (folder inside var/app)
         # inside external device
-        flatpakVarSizeList.append(int(getSize))
+        flatpak_var_size_list.append(int(getSize))
         # Add current output (folder inside var/app) to be backup later
-        flatpakVarToBeBackup.append(f"{src_flatpak_var_folder_location}/{output}")
+        flatpak_var_to_be_backup.append(f"{src_flatpak_var_folder_location}/{output}")
     
-    return sum(flatpakVarSizeList)
+    return sum(flatpak_var_size_list)
     
 def flatpak_var_list():
     # Get flapatk var/ size
     flatpak_var_size()
 
-    return flatpakVarToBeBackup
+    return flatpak_var_to_be_backup
 
 def flatpak_local_size():
     try:
@@ -47,17 +48,17 @@ def flatpak_local_size():
             getSize=int(getSize)
 
             # Add to list to be backup
-            flatpakLocalSizeList.append(getSize)
+            flatpak_local_size_list.append(getSize)
             # Add current output (folder inside var/app) to be backup later
-            flatpakLocaloBeBackup.append(f"{src_flatpak_local_folder_location}/{output}")
+            flatpak_local_to_be_backup.append(f"{src_flatpak_local_folder_location}/{output}")
 
-        return sum(flatpakLocalSizeList)
+        return sum(flatpak_local_size_list)
     except:
         pass
 
 def flatpak_local_list():
     flatpak_local_size()
-    return flatpakLocaloBeBackup
+    return flatpak_local_to_be_backup
 
 def get_external_device_max_size():
     # Get external max size

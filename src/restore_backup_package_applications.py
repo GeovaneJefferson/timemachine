@@ -5,10 +5,8 @@ from read_ini_file import UPDATEINIFILE
 MAIN_INI_FILE = UPDATEINIFILE()
 exclude_apps_list = []
 
-
 async def restore_backup_package_applications():
     print("Installing applications packages...")
-
     with open(f"{MAIN_INI_FILE.exclude_apps_location()}", 'r') as read_exclude:
         read_exclude = read_exclude.read().split("\n")
         exclude_apps_list.append(f"{(read_exclude)}")

@@ -2,9 +2,9 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
+MAIN_INI_FILE = UPDATEINIFILE()
+
 async def restore_backup_flatpaks_data():
-	MAIN_INI_FILE=UPDATEINIFILE()
-	
 	print("Restoring flatpaks data...")
 	for output in os.listdir(f"{MAIN_INI_FILE.flatpak_var_folder()}"):
 		MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', f'{output}')

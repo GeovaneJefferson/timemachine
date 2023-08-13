@@ -12,7 +12,6 @@ from read_ini_file import UPDATEINIFILE
 
 DELAY_TO_UPDATE = 2000
 
-
 class APP:
     def __init__(self):
         self.color = str()
@@ -126,16 +125,18 @@ class APP:
 
     def status_on(self):
         # Backing up right now False
-        if not MAIN_INI_FILE.get_database_value("STATUS", "backing_up_now"):
+        if not MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
             self.change_color("White")
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
-                self.iniLastBackupInformation.setText(f'Next Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
+                self.iniLastBackupInformation.setText(
+                    f"Next Backup to '{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}':")
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
-                self.iniLastBackupInformation.setText(f'Latest Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
+                self.iniLastBackupInformation.setText(
+                    f"Latest Backup to '{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}':")
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
     
         else:
@@ -143,7 +144,7 @@ class APP:
             self.change_color("Blue")
 
             # Notification information
-            self.iniLastBackupInformation.setText(f"{MAIN_INI_FILE.ini_current_backup_information()}")
+            self.iniLastBackupInformation.setText(f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
             self.iniLastBackupInformation2.setText('')
         
             self.backupNowButton.setEnabled(False)

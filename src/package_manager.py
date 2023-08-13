@@ -2,23 +2,18 @@ from setup import *
 
 
 def package_manager():
-    userPackageManager=os.popen(GET_USER_PACKAGE_MANAGER).read().strip().lower()
+    user_package_manager = os.popen(GET_USER_PACKAGE_MANAGER).read().strip().lower()
     
     # Distros
-    if "ubuntu" in userPackageManager:
+    if "ubuntu" in user_package_manager:
         return "deb"
-    
-    elif "debian" in userPackageManager:
+    elif "debian" in user_package_manager:
         return "deb"
-    
-    elif "fedora" in userPackageManager:
+    elif "fedora" in user_package_manager:
         return "rpm"
-    
-    elif "opensuse" in userPackageManager:
+    elif "opensuse" in user_package_manager:
         return "rpm"
-    
-    elif "arch" in userPackageManager:
+    elif "arch" in user_package_manager:
         return "pacman"
-    
     else:
         return "None"

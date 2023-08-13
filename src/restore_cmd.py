@@ -78,7 +78,7 @@ class RESTORE:
                 await restore_kde_share_config()
                 
                 # Restart KDE session
-                # restart_kde_session()
+                sub.Popen("kquitapp5 plasmashell; kstart5 plasmashell",shell=True)
         
         self.end_restoring()
 

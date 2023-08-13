@@ -281,13 +281,13 @@ def signal_exit(*args):
     print("Updating INI settings...")
     print("Exiting...")
 
-    MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup', 'Yes')
+    MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
     # Quit
     exit()
 
 def error_trying_to_backup(e):
-    MAIN_INI_FILE.get_database_value('INFO', 'saved_notification', f'{e}')
+    MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', f'{e}')
 
     # Quit
     exit()

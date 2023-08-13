@@ -93,7 +93,7 @@ class CHECKER:
 
     # Take actions after check the date
     def take_action(self, one_time_per_day):
-        # if not MAININIFILE.ini_unfinished_backup():
+        # if not MAIN_INI_FILE.ini_unfinished_backup():
         # only one time per day
         if one_time_per_day:
             # If current time i higher or iqual to the 'saved' backup time to backup
