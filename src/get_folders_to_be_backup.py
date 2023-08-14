@@ -43,12 +43,16 @@ def home_folders_size():
     home_folder_to_backup_size_list = []
 
     for folder in get_folders():
-        # Get folder size
-        get_size = os.popen(f"du -s {HOME_USER}/{folder}")
-        get_size = int(get_size.read().strip("\t").strip("\n").replace(f"{HOME_USER}/{folder}", "").replace("\t", ""))
+        try:
+            # Get folder size
+            get_size = os.popen(f"du -s {HOME_USER}/{folder}")
+            get_size = int(get_size.read().strip("\t").strip("\n").replace(f"{HOME_USER}/{folder}", "").replace("\t", ""))
 
-        # Add to list
-        home_folder_to_backup_size_list.append(get_size)
+            # Add to list
+            home_folder_to_backup_size_list.append(get_size)
+        except Exception as e:
+            print(e)
+            pass
 
     return sum(home_folder_to_backup_size_list)
 

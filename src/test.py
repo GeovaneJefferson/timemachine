@@ -8,9 +8,6 @@ from datetime import datetime
 
 MAIN_INI_FILE  = UPDATEINIFILE()
 
-CONFIG = configparser.ConfigParser()
-CONFIG.read(SRC_USER_CONFIG)
-
 LIST_TO_RESTORE = []
 FILES_TO_RESTORE = []
 FILES_TO_RESTORE_WITH_SPACES = []
