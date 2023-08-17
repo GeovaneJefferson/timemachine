@@ -42,22 +42,18 @@ When no backup is in progress, the menu bar will display the timestamp of the mo
 
 - Time Machine affords you the flexibility to schedule backups on an hourly, daily, or weekly basis. As your backup disk
 reaches its storage limit, the earliest backups will be automatically purged to create space for new ones.
+## Monitoring Backup Status
 
-## System Tray 
+- **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
+  - Normal color indicates that automatic backup is ON and your backup device is
+connected and mounted.
+  - Running backup icon signifies that Time Machine is currently in the
+process of backing up your files. Once the backup is complete, it will revert to the normal icon.
 
-- You will notice that your system tray will from time to time change its color from White to Blue or Red.
-- ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png)=Normal color, 
-automatically backup is ON and your backup device is connected and mounted.
+- **Error Alerts:** If automatic backup is ON but your backup device becomes disconnected or is not mounted, you'll see
+the ![Image Alt Text](src/icons/gitsystemtrayiconerror.png) error icon. This could also indicate an issue encountered during the backup process. In such cases, open the Time Machine main window and refer to the provided report for details.
 
-
--![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png)=Time Machine is current backing up your files, after is done,
-it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
-
-
-- ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png)=If automatically backup is ON but your backup device
-is disconnected or not mounted, you will see ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png).
-  - ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) can also mean that Time Machine had some problem to back up. Open Time Machine main window and 
-  read the report about it.
+Feel free to adapt these points to your README and let me know if you need further refinements or additional information!
 
 ## Installation:
 You will be asked for your password.
