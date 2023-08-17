@@ -52,11 +52,11 @@ reaches its storage limit, the earliest backups will be automatically purged to 
 ## Monitoring Backup Status
 
 - **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
-  - ![](/home/geovane/MEGA/python/timemachine/src/icons/systemtrayicon.png) indicates that automatic backup is ON and
+  - ![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) indicates that automatic backup is ON and
 your backup device is connected and mounted.
 
 
-  - ![](/home/geovane/MEGA/python/timemachine/src/icons/systemtrayiconrun.png) Running backup icon signifies that
+  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png) Running backup icon signifies that
 Time Machine is currently in the process of backing up your files. Once the backup is complete, it will revert to the
 normal icon.
 
