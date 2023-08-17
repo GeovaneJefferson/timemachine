@@ -34,21 +34,16 @@ class MainWindow(QMainWindow):
         
         self.files_to_restore = []
         self.files_to_Restore_with_space = []
+        self.list_of_preview_items = []
+        self.LIST_OF_ALL_BACKUP_DATES = []
+        self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE = []
         
         self.INDEX_TIME = 0
-        
-        self.list_of_preview_items = []
-
         self.COUNTER_FOR_DATE = 0
         self.COUNTER_FOR_TIME = 0
 
-        self.CURRENT_FOLDER = ""
-
-        self.LIST_OF_ALL_BACKUP_DATES = []
-        self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE = []
-
         self.currentLocationLabel = QLabel(self)
-
+        self.CURRENT_FOLDER = ""
         self.last_selected_item = ""
 
         # Connections
@@ -117,6 +112,8 @@ class MainWindow(QMainWindow):
     def add_backup_dates(self):
         # Show sorted dates folders
         counter = 0
+        horz = 0
+        vert = 0
         for date in self.LIST_OF_ALL_BACKUP_DATES:
             ################################################################################
             # PUSH BUTTON
@@ -148,12 +145,18 @@ class MainWindow(QMainWindow):
                 """)
 
             # Add widget to layout
-            self.ui.dates_layout.addWidget(self.btn_backup_date_folders, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horz, vert)
             
             # Limit number of dates on screen
+            horz += 1
             counter += 1
-            if counter == 12:
-                break
+            if horz == 3:
+                vert += 1
+                horz = 0
+
+                if counter == 24:
+                    break 
 
         """ Check it, so it wont auto check the first in the list
             again after just changing time or folder 
@@ -610,6 +613,9 @@ class MainWindow(QMainWindow):
             if self.last_selected_item_extension in IMAGE_TYPES:
                 pixmap = QPixmap(self.last_selected_item_full_location)
 
+                self.preview_window.file_directory = self.last_selected_item_full_location
+
+                # set_preview
                 # self.preview_window.set_preview(pixmap.scaledToWidth(round(900/2)))
                 self.preview_window.set_preview(pixmap)
                 self.preview_window.show()
@@ -680,9 +686,11 @@ class PreviewWindow(QDialog):
         self.setWindowTitle("Preview")
         self.setModal(True)
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        
+        self.file_directory = ""
 
         self.layout = QVBoxLayout(self)
-    
+
     def set_preview(self, pixmap):
         if isinstance(pixmap, QPixmap):
             try:
@@ -700,18 +708,34 @@ class PreviewWindow(QDialog):
                 self.text_browser.adjustSize()
                 self.text_browser.moveCursor(QTextCursor.Start)
                 self.layout.addWidget(self.text_browser)
+                self.layout.addWidget(self.open_file_button)
             except Exception as e:
                 pass
+        
+        self.open_file_button = QPushButton()
+        self.open_file_button.setText("Open File Directory")
+        self.open_file_button.setFocusPolicy(Qt.NoFocus)
+        self.open_file_button.clicked.connect(self.open_file_button_clicked)
 
+        self.layout.addWidget(self.open_file_button)
+        self.layout.setAlignment(self.open_file_button, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             for i in range(self.layout.count()):
                 widget_item = self.layout.itemAt(i)
 
                 if widget_item.widget():
+                    print("Removing items")
                     widget_item.widget().deleteLater()
 
             self.close()
+
+    def open_file_button_clicked(self):
+        file_directory = "/".join(self.file_directory.split("/")[:-1])
+        
+        print(f"Opening {file_directory}")
+        sub.Popen(f"xdg-open {file_directory}", shell=True)
 
 
 if __name__ == "__main__":

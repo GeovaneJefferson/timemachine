@@ -18,7 +18,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
       <item>
-       <layout class="QHBoxLayout" name="dates_layout"/>
+       <layout class="QGridLayout" name="dates_layout"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
