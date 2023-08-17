@@ -67,16 +67,27 @@ This could also indicate an issue
 encountered during the backup process. In such cases, open the Time Machine main window and refer to the provided report
 for details.
 
-## Installation:
-You will be asked for your password.
-- Copy and paste this command bellow to the terminal.
 
-Command:
+## Installation
+During the installation process, you will need to provide your system password. Follow these steps:
+
+1. Open a terminal.
+2. Copy and paste the following command:
+
+
+#### Command:
 
     git clone -b dev https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
 
 
-## Uninstall:
-Command:
+
+
+## Uninstall
+To uninstall the application, use the following steps:
+
+1. Open a terminal.
+2. Copy and paste the following command to navigate to the uninstallation directory:
+
+#### Command:
 
     cd .local/share/timemachine/; python3 uninstall.py
