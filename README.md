@@ -51,7 +51,7 @@ connected and mounted.
 process of backing up your files. Once the backup is complete, it will revert to the normal icon.
 
 - **Error Alerts:** If automatic backup is ON but your backup device becomes disconnected or is not mounted, you'll see
-the ![Image Alt Text](src/icons/gitsystemtrayiconerror.png) error icon. This could also indicate an issue encountered during the backup process. In such cases, open the Time Machine main window and refer to the provided report for details.
+the ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) error icon. This could also indicate an issue encountered during the backup process. In such cases, open the Time Machine main window and refer to the provided report for details.
 
 Feel free to adapt these points to your README and let me know if you need further refinements or additional information!
 
@@ -68,3 +68,4 @@ Command:
 Command:
 
     cd .local/share/timemachine/; python3 uninstall.py
+Z
