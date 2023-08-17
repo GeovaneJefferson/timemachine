@@ -45,7 +45,10 @@ class FileManager(QMainWindow):
 
     def preview_file(self, current, previous):
         file_path = self.model.filePath(current)
-        
+        print(current)
+        print(previous)
+        print(file_path)
+
         if os.path.isfile(file_path) and file_path.lower().endswith((".png", ".jpg", ".jpeg", ".gif")):
             image_reader = QImageReader(file_path)
             pixmap = QPixmap.fromImageReader(image_reader)

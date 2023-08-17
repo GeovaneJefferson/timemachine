@@ -21,16 +21,21 @@ from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
-    QEasingCurve, QPoint, QSocketNotifier)
-from PySide6.QtGui import (QFont, QPixmap , QIcon, QMovie, QAction,
-                            QPalette, QColor,QCursor,QImage)
+    QEasingCurve, QPoint, QSocketNotifier, QDir)
+from PySide6.QtGui import (
+    QFont, QPixmap , QIcon, QMovie, QAction,
+    QPalette, QColor,QCursor,QImage,QImageReader,
+    QTextCursor)
+
 from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QPushButton, QLabel, QCheckBox, QLineEdit,
                             QWidget, QFrame, QGridLayout, QHBoxLayout,
                             QVBoxLayout, QMessageBox, QRadioButton,
                             QScrollArea, QSpacerItem, QSizePolicy,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
-                            QSystemTrayIcon, QMenu, QStackedWidget)
+                            QSystemTrayIcon, QMenu, QStackedWidget,QListView,
+                            QFileSystemModel,QDialog,QTextBrowser,
+                            QTreeWidget, QTreeWidgetItem, QAbstractItemView)
 
 timer = QtCore.QTimer()
 
@@ -215,7 +220,7 @@ SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.
 SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
 SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
 src_enter_time_machine_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/enter_time_machine.py"
-src_enter_time_machine_test_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/test.py"
+src_enter_time_machine_test_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_enter_time_machine.py"
 src_package_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/auto-package.py"
 src_prepare_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
 src_update_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/update.py"
@@ -291,5 +296,3 @@ def error_trying_to_backup(e):
 
     # Quit
     exit()
-
-

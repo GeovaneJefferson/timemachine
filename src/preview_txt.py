@@ -17,7 +17,7 @@ class FileManager(QMainWindow):
         layout = QVBoxLayout()
 
         self.model = QFileSystemModel()
-        self.model.setRootPath(os.path.expanduser("~"))  
+        self.model.setRootPath(os.path.expanduser("~"))
         self.tree_view = QTreeView()
         self.tree_view.setModel(self.model)
         self.tree_view.setRootIndex(self.model.index(os.path.expanduser("~")))
@@ -39,6 +39,7 @@ class FileManager(QMainWindow):
 
     def preview_file(self, current, previous):
         file_path = self.model.filePath(current)
+
         if os.path.isfile(file_path):
             with open(file_path, "r") as file:
                 content = file.read()
