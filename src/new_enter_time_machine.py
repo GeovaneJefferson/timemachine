@@ -158,9 +158,9 @@ class MainWindow(QMainWindow):
 
             # Add widget to layout
             # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, Qt.AlignHCenter | Qt.AlignVCenter)
-            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horizontal, vert)
-            # self.button_group.addButton(self.btn_backup_date_folders)
             self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horizontal, vertical)
+            self.button_group.addButton(self.btn_backup_date_folders)
+            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horizontal, vertical)
 
             # Limit the number of dates on screen
             horizontal += 1
@@ -171,11 +171,6 @@ class MainWindow(QMainWindow):
 
                 if counter == 24:
                     break
-
-        # self.button_group.buttonClicked.connect(
-        #     lambda button, date=date: \
-        #         self.change_date(date)
-        #     )
 
         """ Check it, so it wont auto check the first in the list
             again after just changing time or folder 
