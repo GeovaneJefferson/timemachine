@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
         ################################################################################
         self.external_name_label=QLabel()
         self.external_name_label.setFont(QFont(MAIN_FONT, 6))
-        self.external_name_label.setAlignment(QtCore.Qt.AlignLeft)
+        self.external_name_label.setAlignment(Qt.AlignLeft)
 
         ################################################################################
         # Get external size
@@ -245,7 +245,7 @@ class MainWindow(QMainWindow):
         self.descriptionTitle.setFont(TOP_TITLE)
         self.descriptionTitle.setText(f"{APP_NAME} keeps:")
         self.descriptionTitle.adjustSize()
-        self.descriptionTitle.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.descriptionTitle.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         # self.descriptionTitle.setFixedSize(420, 24)
         self.descriptionTitle.setStyleSheet("""
             border-color: transparent;
@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
             "• Installed flatpaks + Data (.var/app) and (.local/share/flatpak)\n"
             "• Some system files and folders\n\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
-        self.descriptionText.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+        self.descriptionText.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.descriptionText.adjustSize()
         self.descriptionText.setStyleSheet("""
             border-color: transparent;
@@ -340,14 +340,14 @@ class MainWindow(QMainWindow):
         self.scroll.move(20,40)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.where_frame)
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.scroll.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Vertical layout V
         self.verticalLayout=QVBoxLayout(self.where_frame)
         self.verticalLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout.setSpacing(10)
-        self.verticalLayout.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.verticalLayout.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
 
         # Info
         self.notAllowed=QLabel(self.externalWindow)
@@ -419,8 +419,8 @@ class MainWindow(QMainWindow):
         self.optionsLayout.addWidget(self.helpButton, 0, Qt.AlignRight | Qt.AlignVCenter)
 
         widgetButtonLayout.addStretch()
-        widgetButtonLayout.addWidget(self.cancelButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
-        widgetButtonLayout.addWidget(self.useDiskButton,0, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+        widgetButtonLayout.addWidget(self.cancelButton,0, Qt.AlignVCenter | Qt.AlignRight)
+        widgetButtonLayout.addWidget(self.useDiskButton,0, Qt.AlignVCenter | Qt.AlignRight)
 
         self.setLayout(self.leftLayout)
 
@@ -711,7 +711,7 @@ class MainWindow(QMainWindow):
                         # Image
                         icon=QLabel(self.available_devices)
                         image=QPixmap(f"{SRC_RESTORE_ICON}")
-                        image=image.scaled(36,36,QtCore.Qt.KeepAspectRatio)
+                        image=image.scaled(36,36,Qt.KeepAspectRatio)
                         icon.move(7,7)
                         icon.setStyleSheet(transparentBackground)
                         icon.setPixmap(image)
@@ -720,7 +720,7 @@ class MainWindow(QMainWindow):
                         free_space_label=QLabel(self.available_devices)
                         free_space_label.setText(f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
                         free_space_label.setFont(QFont(MAIN_FONT, 8))
-                        free_space_label.setAlignment(QtCore.Qt.AlignRight)
+                        free_space_label.setAlignment(Qt.AlignRight)
                         free_space_label.move(self.available_devices.width()-80, 30)
 
                         # Auto checked the choosed backup device
@@ -731,7 +731,7 @@ class MainWindow(QMainWindow):
                         # Add widgets and Layouts
                         ################################################################################
                         # Vertical layout
-                        self.verticalLayout.addWidget(self.available_devices, 0, QtCore.Qt.AlignHCenter)
+                        self.verticalLayout.addWidget(self.available_devices, 0, Qt.AlignHCenter)
 
             except FileNotFoundError:
                 pass
@@ -763,7 +763,7 @@ class MainWindow(QMainWindow):
                         # Image
                         icon=QLabel(self.available_devices)
                         image=QPixmap(f"{SRC_RESTORE_ICON}")
-                        image=image.scaled(46, 46, QtCore.Qt.KeepAspectRatio)
+                        image=image.scaled(46, 46, Qt.KeepAspectRatio)
                         icon.move(7, 7)
                         icon.setPixmap(image)
 
@@ -771,7 +771,7 @@ class MainWindow(QMainWindow):
                         free_space_label=QLabel(self.available_devices)
                         free_space_label.setText(f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
                         free_space_label.setFont(QFont(MAIN_FONT, 8))
-                        free_space_label.setAlignment(QtCore.Qt.AlignRight)
+                        free_space_label.setAlignment(Qt.AlignRight)
                         free_space_label.move(self.available_devices.width()-80, 30)
 
                         ################################################################################
@@ -784,7 +784,7 @@ class MainWindow(QMainWindow):
                         # Add widgets and Layouts
                         ################################################################################
                         # Vertical layout
-                        self.verticalLayout.addWidget(self.available_devices, 0, QtCore.Qt.AlignHCenter)
+                        self.verticalLayout.addWidget(self.available_devices, 0, Qt.AlignHCenter)
 
             except FileNotFoundError:
                 pass
@@ -934,7 +934,7 @@ class OPTION(QMainWindow):
         self.daysToRunTitle=QLabel()
         self.daysToRunTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.daysToRunTitle.setText("<h1>Days to run:</h1>")
-        self.daysToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
+        self.daysToRunTitle.setAlignment(Qt.AlignLeft)
         self.daysToRunTitle.adjustSize()
         self.daysToRunTitle.setStyleSheet("""
             border-color: transparent;
@@ -1015,7 +1015,7 @@ class OPTION(QMainWindow):
         self.timeToRunTitle=QLabel(self.timeToRunWidget)
         self.timeToRunTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.timeToRunTitle.setText("<h1>Time to run:</h1>")
-        self.timeToRunTitle.setAlignment(QtCore.Qt.AlignLeft)
+        self.timeToRunTitle.setAlignment(Qt.AlignLeft)
         self.timeToRunTitle.adjustSize()
         self.timeToRunTitle.setStyleSheet("""
             border: transparent;
@@ -1079,7 +1079,7 @@ class OPTION(QMainWindow):
         self.hoursTitle=QLabel()
         self.hoursTitle.setFont(QFont(MAIN_FONT, 4))
         self.hoursTitle.setText("<h1>Hours</h1>")
-        self.hoursTitle.setAlignment(QtCore.Qt.AlignHCenter)
+        self.hoursTitle.setAlignment(Qt.AlignHCenter)
         self.hoursTitle.setStyleSheet("""
             border-color: transparent;
             border-radius: 5px;
@@ -1089,7 +1089,7 @@ class OPTION(QMainWindow):
         self.minutesTitle=QLabel()
         self.minutesTitle.setFont(QFont(MAIN_FONT, 4))
         self.minutesTitle.setText("<h1>Minutes</h1>")
-        self.minutesTitle.setAlignment(QtCore.Qt.AlignHCenter)
+        self.minutesTitle.setAlignment(Qt.AlignHCenter)
         self.minutesTitle.setStyleSheet("""
             border-color: transparent;
         """)
@@ -1141,7 +1141,7 @@ class OPTION(QMainWindow):
         self.flatpakTitle=QLabel()
         self.flatpakTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.flatpakTitle.setText("<h1>Flatpak Settings:</h1>")
-        self.flatpakTitle.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.flatpakTitle.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.flatpakTitle.setFixedSize(200, 30)
         self.flatpakTitle.setStyleSheet("""
             border: transparent;
@@ -1183,7 +1183,7 @@ class OPTION(QMainWindow):
         self.resetTitle.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.resetTitle.setText("<h1>Reset:</h1>")
         self.resetTitle.adjustSize()
-        self.resetTitle.setAlignment(QtCore.Qt.AlignLeft)
+        self.resetTitle.setAlignment(Qt.AlignLeft)
 
         # Reset label text
         self.resetText=QLabel()
@@ -1333,7 +1333,7 @@ class OPTION(QMainWindow):
                     self.foldersCheckbox.setChecked(True)
 
                 # Add to layout self.leftLayout
-                self.leftLayout.addWidget(self.foldersCheckbox, 0, QtCore.Qt.AlignTop)
+                self.leftLayout.addWidget(self.foldersCheckbox, 0, Qt.AlignTop)
 
         self.dates()
 

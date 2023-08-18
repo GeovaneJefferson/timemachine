@@ -1275,7 +1275,7 @@ if __name__ == '__main__':
     WIDGET = QStackedWidget()
 
     MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN = StartRestoring()
+    MAIN = WelcomeScreen()
 
     WIDGET.addWidget(MAIN)   
     WIDGET.setCurrentWidget(MAIN)   

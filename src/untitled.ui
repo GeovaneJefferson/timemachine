@@ -210,14 +210,14 @@
                 <widget class="QPushButton" name="btn_cancel">
                  <property name="minimumSize">
                   <size>
-                   <width>88</width>
-                   <height>34</height>
+                   <width>0</width>
+                   <height>0</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>88</width>
-                   <height>34</height>
+                   <width>16777215</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="styleSheet">
@@ -245,8 +245,8 @@
                 <widget class="QPushButton" name="btn_restore">
                  <property name="minimumSize">
                   <size>
-                   <width>88</width>
-                   <height>34</height>
+                   <width>0</width>
+                   <height>0</height>
                   </size>
                  </property>
                  <property name="maximumSize">

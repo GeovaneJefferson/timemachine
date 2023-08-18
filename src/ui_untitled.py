@@ -136,8 +136,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.btn_cancel = QPushButton(self.widget)
         self.btn_cancel.setObjectName(u"btn_cancel")
-        self.btn_cancel.setMinimumSize(QSize(88, 34))
-        self.btn_cancel.setMaximumSize(QSize(88, 34))
+        self.btn_cancel.setMinimumSize(QSize(0, 0))
+        self.btn_cancel.setMaximumSize(QSize(16777215, 16777215))
         self.btn_cancel.setStyleSheet(u"")
 
         self.horizontalLayout_4.addWidget(self.btn_cancel, 0, Qt.AlignTop)
@@ -148,7 +148,7 @@ class Ui_MainWindow(object):
 
         self.btn_restore = QPushButton(self.widget)
         self.btn_restore.setObjectName(u"btn_restore")
-        self.btn_restore.setMinimumSize(QSize(88, 34))
+        self.btn_restore.setMinimumSize(QSize(0, 0))
         self.btn_restore.setMaximumSize(QSize(88, 34))
         self.btn_restore.setStyleSheet(u"")
 

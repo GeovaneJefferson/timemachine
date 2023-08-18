@@ -42,9 +42,9 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.checked_items = []
 
         self.ALREADY_CHECKED_FIRST_FOLDER = False
-        self.ALREADY_OPENED_FILE_MANAGER = False
 
         self.files_to_restore = []
         self.files_to_Restore_with_space = []
@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         self.ui.tree_widget.setHeaderLabels(["Name", "Date Modified", "Size", "Type"])
         self.ui.tree_widget.setColumnWidth(0, 250)
         self.ui.tree_widget.setColumnWidth(1, 150)
-        self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
+        # self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
         self.ui.tree_widget.itemSelectionChanged.connect(self.selected_item_for_preview)
         self.ui.tree_widget.itemClicked.connect(self.qtree_checkbox_clicked)
 
@@ -138,7 +138,6 @@ class MainWindow(QMainWindow):
 
             # Set text to button
             self.btn_backup_date_folders = QPushButton()
-
             self.btn_backup_date_folders.setText(formatted_date)
             self.btn_backup_date_folders.setMinimumWidth(120)
             self.btn_backup_date_folders.setFixedHeight(28)
@@ -268,17 +267,18 @@ class MainWindow(QMainWindow):
             file_list.sort(key=lambda x: x[0])
 
             for item_data in file_list:
-                item = QTreeWidgetItem(self.ui.tree_widget, item_data[:-1])
-                item.setData(1, Qt.UserRole, item_data[-1])  # Store the timestamp as user data
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)  # Allow selection
-                item.setCheckState(0, Qt.Unchecked)
+                qt_item = QTreeWidgetItem(self.ui.tree_widget, item_data[:-1])
+                qt_item.setData(1, Qt.UserRole, item_data[-1])  # Store the timestamp as user data
+                qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                qt_item.setCheckState(0, Qt.Unchecked)
 
-            self.qtree_add_folders(inside_current_folder)
+            self.qtree_add_results(inside_current_folder)
 
         except FileNotFoundError:
             pass
 
-    def qtree_add_folders(self, inside_current_folder):
+
+    def qtree_add_results(self, inside_current_folder):
         for folder_name in os.listdir(inside_current_folder):
             folder_path = os.path.join(inside_current_folder, folder_name)
 
@@ -498,17 +498,6 @@ class MainWindow(QMainWindow):
             self.ui.small_preview_text.setPlainText(file.read())
             self.ui.small_preview_text.moveCursor(QTextCursor.Start)
 
-    def get_full_location(self, item):
-        location_parts = []
-
-        while item is not None:
-            location_parts.insert(0, item.text(0))
-            item = item.parent()
-
-        full_location = os.path.join(self.CURRENT_FOLDER, *location_parts)
-
-        return full_location
-
     def add_to_restore(self):
         ################################################################################
         # Enable/Disable functions if item(s) is/are selected
@@ -583,23 +572,27 @@ class MainWindow(QMainWindow):
         print("Your files are been restored...")
 
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
+        
+        file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
+            f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
+            f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
+            f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
+            f"/{self.CURRENT_FOLDER}"
 
         ################################################################################
         # Restore files without spaces
         ################################################################################
         counter = 0
         for _ in self.files_to_restore:
-            print(f"Restoring {COPY_RSYNC_CMD} {self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
-            sub.Popen(f"{COPY_RSYNC_CMD} {self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/",
+            print(f"Restoring {COPY_RSYNC_CMD} {file_path}/{self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
+            sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/",
                       shell=True)
 
             counter += 1
 
         # Open file manager
-        if not self.ALREADY_OPENED_FILE_MANAGER:
-            self.ALREADY_OPENED_FILE_MANAGER = True
-            # Open folder manager
-            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
+        # Open folder manager
+        sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
 
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
@@ -626,6 +619,16 @@ class MainWindow(QMainWindow):
                     self.files_to_restore.remove(item_txt)
 
             self.add_to_restore()
+
+        else:
+            item_txt = item.text(column)
+            print("Removing:", item_txt)
+            try:
+                self.files_to_restore.remove(item_txt)
+            except ValueError:
+                pass
+        
+        print(self.files_to_restore)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
