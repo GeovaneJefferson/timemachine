@@ -1,43 +1,57 @@
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
+
 from ui_untitled import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime
 
-
-MAIN_INI_FILE  = UPDATEINIFILE()
+MAIN_INI_FILE = UPDATEINIFILE()
 
 TXT_TYPES = [
     "txt", "py", "cpp", "h", "c", "cgi",
     "cs", "class", "java", "php", "sh",
     "swift", "vb", "doc", "docx", "odt",
     "pdf", "rtf", "tex", "wpd"
-    ]
+]
 
 IMAGE_TYPES = [
     "png", "jpg", "jpeg", "webp", "gif", "svg",
-    "eps", "pdf", "ai", "indd", "raw", "tiff",
+    "eps", "pdf", "ai", "raw", "tiff",
     "bmp", "ps", "tif"
-    ]
+]
+
+
+def size_format(size_bytes):
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size_bytes < 1024.0:
+            return f"{size_bytes:.2f} {unit}"
+
+        size_bytes /= 1024.0
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.folder_already_opened = False
+
+        self.button_group = QButtonGroup()
+        self.button_group.setExclusive(True)  # This ensures exclusive behavior
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.ALREADY_CHECKED_FIRST_FOLDER = False
         self.ALREADY_OPENED_FILE_MANAGER = False
-        
+
         self.files_to_restore = []
         self.files_to_Restore_with_space = []
         self.list_of_preview_items = []
         self.LIST_OF_ALL_BACKUP_DATES = []
         self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE = []
-        
+
         self.INDEX_TIME = 0
         self.COUNTER_FOR_DATE = 0
         self.COUNTER_FOR_TIME = 0
@@ -47,36 +61,36 @@ class MainWindow(QMainWindow):
         self.last_selected_item = ""
 
         # Connections
-        ## Up button
+        # Up button
         self.ui.btn_up.clicked.connect(self.btn_up_clicked)
-        ## Down button
+        # Down button
         self.ui.btn_down.clicked.connect(self.btn_down_clicked)
-        ## Cancel button
+        # Cancel button
         self.ui.btn_cancel.clicked.connect(self.btn_cancel_clicked)
-        ## Restore button
+        # Restore button
         self.ui.btn_restore.clicked.connect(self.start_restore)
-        
-        # Settings forom QTree
+
+        # Settings from QTree
         self.ui.tree_widget.setHeaderLabels(["Name", "Date Modified", "Size", "Type"])
-        self.ui.tree_widget.setColumnWidth(0, 250)  
-        self.ui.tree_widget.setColumnWidth(1, 150)  
+        self.ui.tree_widget.setColumnWidth(0, 250)
+        self.ui.tree_widget.setColumnWidth(1, 150)
         self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
         self.ui.tree_widget.itemSelectionChanged.connect(self.selected_item_for_preview)
-        self.ui.tree_widget.itemClicked.connect(self.QTree_checkbox_clicked)
+        self.ui.tree_widget.itemClicked.connect(self.qtree_checkbox_clicked)
 
-        # Settings for preview window
+        # Settings for the preview window
         self.preview_window = None
 
     def add_backup_folders(self):
         # Get backup folders names
         for folder in self.get_all_backup_folders():
             try:
-                # Can folder be found inside Users Home?
+                # Can the folder be found inside Users Home?
                 folder = folder.capitalize()
                 os.listdir(f"{HOME_USER}/{folder}")
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 # Lower folder first letter
-                folder = folder.lower() # Lower folder first letter
+                folder = folder.lower()  # Lower folder first letter
 
             ################################################################################
             # PUSH BUTTON
@@ -95,11 +109,11 @@ class MainWindow(QMainWindow):
                         font-size: 12px;
                     }
                 """)
-            self.btn_backup_home_folders.clicked.connect(lambda *args, dir = folder: self.change_dir(dir))
+            self.btn_backup_home_folders.clicked.connect(lambda *args, directory=folder: self.change_dir(directory))
             self.ui.folders_layout.addWidget(self.btn_backup_home_folders)
 
-            # Auto check the first folder in the list
-            if not self.ALREADY_CHECKED_FIRST_FOLDER:  
+            # Automatically check the first folder in the list
+            if not self.ALREADY_CHECKED_FIRST_FOLDER:
                 self.btn_backup_home_folders.setChecked(True)
                 # Set as current selected folder
                 self.CURRENT_FOLDER = folder
@@ -112,28 +126,26 @@ class MainWindow(QMainWindow):
     def add_backup_dates(self):
         # Show sorted dates folders
         counter = 0
-        horz = 0
-        vert = 0
+        horizontal = 0
+        vertical = 0
         for date in self.LIST_OF_ALL_BACKUP_DATES:
             ################################################################################
             # PUSH BUTTON
             ################################################################################
-            self.btn_backup_date_folders = QPushButton()
-
             # Convert date from 00-00-00 to Xxxxx 00, 000
             date_obj = datetime.strptime(date, "%d-%m-%y")
             formatted_date = date_obj.strftime("%B %d, %Y")
 
             # Set text to button
+            self.btn_backup_date_folders = QPushButton()
+
             self.btn_backup_date_folders.setText(formatted_date)
             self.btn_backup_date_folders.setMinimumWidth(120)
             self.btn_backup_date_folders.setFixedHeight(28)
             self.btn_backup_date_folders.setCheckable(True)
-            self.btn_backup_date_folders.setAutoExclusive(True)
+            # self.btn_backup_date_folders.setAutoExclusive(True)
             self.btn_backup_date_folders.clicked.connect(
-                    lambda *args, date = date:\
-                    self.change_date(date)
-                    )
+                lambda *args, send_date=date: self.change_date(send_date))
             self.btn_backup_date_folders.setStyleSheet(
                 """
                     QPushButton
@@ -145,18 +157,25 @@ class MainWindow(QMainWindow):
                 """)
 
             # Add widget to layout
-            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-            self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horz, vert)
-            
-            # Limit number of dates on screen
-            horz += 1
+            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, Qt.AlignHCenter | Qt.AlignVCenter)
+            # self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horizontal, vert)
+            # self.button_group.addButton(self.btn_backup_date_folders)
+            self.ui.dates_layout.addWidget(self.btn_backup_date_folders, horizontal, vertical)
+
+            # Limit the number of dates on screen
+            horizontal += 1
             counter += 1
-            if horz == 3:
-                vert += 1
-                horz = 0
+            if horizontal == 3:
+                vertical += 1
+                horizontal = 0
 
                 if counter == 24:
-                    break 
+                    break
+
+        # self.button_group.buttonClicked.connect(
+        #     lambda button, date=date: \
+        #         self.change_date(date)
+        #     )
 
         """ Check it, so it wont auto check the first in the list
             again after just changing time or folder 
@@ -177,8 +196,8 @@ class MainWindow(QMainWindow):
 
     def add_backup_times(self):
         try:
-            inside_this_date_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"\
-                f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"
+            inside_this_date_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/" \
+                                      f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"
 
             ################################################################################
             # If inside the external "date folders" has not "time folder", pass to avoid display error :D
@@ -189,23 +208,23 @@ class MainWindow(QMainWindow):
                 # Sort and reverse
                 self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE.sort(reverse=True)
 
-                # Check if choosed time folder exists
+                # Check if chose time folder exists
                 if os.path.exists(
                         f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"
                         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
-                        f"{self.LIST_OF_ALL_BACKUP_DATES[(self.COUNTER_FOR_DATE)]}/"
+                        f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"
                         f"{time_folder}/"):
                     ################################################################################
                     # PUSH BUTTON
                     ################################################################################
                     self.btn_backup_time_folders = QPushButton()
-                    self.btn_backup_time_folders.setText(time_folder.replace("-", ":")  )
+                    self.btn_backup_time_folders.setText(time_folder.replace("-", ":"))
                     # time_folder = time_folder.replace(":", "-")
                     self.btn_backup_time_folders.setFixedSize(100, 34)
                     # self.btn_backup_time_folders.setCheckable(True)
                     # self.btn_backup_time_folders.setAutoExclusive(True)
                     self.btn_backup_time_folders.setStyleSheet(
-                    """
+                        """
                         QPushButton
                         {
                             padding: 5px 12px 6px 12px;
@@ -217,21 +236,22 @@ class MainWindow(QMainWindow):
                 # Auto selected the last time option
                 self.btn_backup_time_folders.setChecked(True)
 
-        except IndexError as e:
+        except IndexError:
             # Reset counter for time
             self.COUNTER_FOR_TIME = 0
             # Add 1 for time counter
             self.COUNTER_FOR_TIME += 1
 
         # Show results
-        # Show results asynchronously
+        #  asynchronously
         thread = threading.Thread(target=self.show_results)
         thread.start()
 
     def show_results(self):
-        inside_current_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/"\
-                f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-                f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/{self.CURRENT_FOLDER}"
+        inside_current_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/" \
+                                f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
+                                f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
+                                f"{self.CURRENT_FOLDER}"
 
         # Add options to QTree
         file_list = []
@@ -240,12 +260,12 @@ class MainWindow(QMainWindow):
                 full_path = os.path.join(inside_current_folder, filename)
 
                 if os.path.isfile(full_path) and not filename.startswith('.'):  # Only include files, skip hidden files
-                    size = os.path.getsize(full_path)
+                    result_size = os.path.getsize(full_path)
                     date_modified = os.path.getmtime(full_path)
                     extension = os.path.splitext(filename)[1]
 
                     formatted_date = datetime.fromtimestamp(date_modified).strftime('%Y-%m-%d %H:%M:%S')
-                    formatted_size = self.size_format(size) if size is not None else ''
+                    formatted_size = size_format(result_size) if result_size is not None else ''
 
                     file_list.append((filename, formatted_date, formatted_size, extension, date_modified))
 
@@ -258,54 +278,55 @@ class MainWindow(QMainWindow):
                 item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)  # Allow selection
                 item.setCheckState(0, Qt.Unchecked)
 
-            self.QTree_add_folders(inside_current_folder)
+            self.qtree_add_folders(inside_current_folder)
 
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             pass
 
-    def QTree_add_folders(self, inside_current_folder):
+    def qtree_add_folders(self, inside_current_folder):
         for folder_name in os.listdir(inside_current_folder):
             folder_path = os.path.join(inside_current_folder, folder_name)
 
             if os.path.isdir(folder_path) and not folder_name.startswith('.'):
                 folder_item = QTreeWidgetItem(self.ui.tree_widget, [folder_name, '', '', 'Folder'])
-                self.QTree_add_subitems(folder_item, folder_path)
+                self.qtree_add_sub_items(folder_item, folder_path)
 
-    def QTree_add_subitems(self, parent_item, folder_path):
+    def qtree_add_sub_items(self, parent_item, folder_path):
         try:
             for item_name in os.listdir(folder_path):
                 item_path = os.path.join(folder_path, item_name)
                 if os.path.isdir(item_path):
-                    subfolder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
-                    self.QTree_add_subitems(subfolder_item, item_path)
-                
+                    sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
+                    self.qtree_add_sub_items(sub_folder_item, item_path)
+
                 elif os.path.isfile(item_path) and not item_name.startswith('.'):
-                    size = os.path.getsize(item_path)
+                    item_size = os.path.getsize(item_path)
                     date_modified = os.path.getmtime(item_path)
                     extension = os.path.splitext(item_name)[1]
 
                     formatted_date = datetime.fromtimestamp(date_modified).strftime('%Y-%m-%d %H:%M:%S')
-                    formatted_size = self.size_format(size) if size is not None else ''
+                    formatted_size = size_format(item_size) if item_size is not None else ''
 
                     item = QTreeWidgetItem(parent_item, [item_name, formatted_date, formatted_size, extension])
                     item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
                     # TODO
                     # item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)  # Allow selection
                     # item.setCheckState(0, Qt.Unchecked)
-        except PermissionError as e:
+        except PermissionError:
             pass
 
         self.up_down_settings()
 
     def up_down_settings(self):
         # Get index of the current time folder
-        self.INDEX_TIME = self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE.index(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME])
+        self.INDEX_TIME = self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE.index(
+            self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME])
 
         ################################################################################
         # DOWN ARROW
         ################################################################################
-        # If the first time from list is checked
-        if self.INDEX_TIME  == 0:  # 0 = The latest time folder available
+        # If the first time from the list is checked
+        if self.INDEX_TIME == 0:  # 0 = The latest time folder available
             # Disable down arrow, unable to go back from 0
             self.ui.btn_down.setEnabled(False)
         else:
@@ -315,18 +336,19 @@ class MainWindow(QMainWindow):
         ################################################################################
         # UP ARROW
         ################################################################################
-        # If is there more options to choosed from time list
-        if self.INDEX_TIME  + 1  == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
-            # Disable up arrow, unable to go forward, there is no more options to choose
+        # If is there more options to choose from the time list
+        if self.INDEX_TIME + 1 == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
+            # Disable up arrow, unable to go forward, there are no more options to choose
             self.ui.btn_up.setEnabled(False)
         else:
-            # Enable up arrow, able to go forward, there is more options to choose
+            # Enable up arrow, able to go forward, there are more options to choose
             self.ui.btn_up.setEnabled(True)
 
         self.update_labels()
 
     def update_labels(self):
-        date_now = MAIN_INI_FILE.current_date() + "-" + MAIN_INI_FILE.current_month()+ "-"+ MAIN_INI_FILE.current_year()
+        date_now = MAIN_INI_FILE.current_date() + "-" + MAIN_INI_FILE.current_month() + "-" + \
+                   MAIN_INI_FILE.current_year()
 
         # Display current folder on display
         # self.currentLocationLabel.setText(f"<h1>{self.CURRENT_FOLDER}</h1>")
@@ -335,11 +357,13 @@ class MainWindow(QMainWindow):
         try:
             if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == str(date_now):
                 # Update date label
-                self.ui.label_gray_time.setText(f'Today ({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+                self.ui.label_gray_time.setText(
+                    f'Today ({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
             else:
-                self.ui.label_gray_time.setText(f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        # If a non backup folder was clicked
-        except IndexError as i:
+                self.ui.label_gray_time.setText(
+                    f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+        # If a non-backup folder was clicked
+        except IndexError:
             pass
 
     ################################################################################
@@ -356,8 +380,9 @@ class MainWindow(QMainWindow):
         # Show results asynchronously
         thread = threading.Thread(target=self.show_results)
         thread.start()
-   
-    def btn_cancel_clicked(self):
+
+    @staticmethod
+    def btn_cancel_clicked():
         exit()
 
     def change_date(self, date):
@@ -376,12 +401,12 @@ class MainWindow(QMainWindow):
         # Add news time folders
         self.add_backup_times()
 
-    def change_dir(self, dir):
+    def change_dir(self, directory):
         # Clean QTree
         self.ui.tree_widget.clear()
 
         # Get current folder name
-        self.CURRENT_FOLDER = dir
+        self.CURRENT_FOLDER = directory
         # Reset counter for time
         self.COUNTER_FOR_TIME = 0
 
@@ -391,17 +416,18 @@ class MainWindow(QMainWindow):
 
     def selected_item_for_preview(self):
         selected_items = self.ui.tree_widget.selectedItems()
-       
+
         if selected_items:
             item = selected_items[-1]  # Get the last selected item
             item_txt = item.text(0)
             print("Last selected item:", item_txt)
             self.last_selected_item = item_txt
-        
+
             # TODO
-            # DECIFRAR ISSO DEPOIS LOL
             # Remove items from self.files_to_restore that are no longer selected
-            # self.files_to_restore = [item for item in self.files_to_restore if item in [item.text(0) for item in selected_items]]
+            # self.files_to_restore = [item for item in self.files_to_restore if item in [item.text(0)
+            # for item in selected_items]]
+
             # new_loc = []
             # for item in self.files_to_restore:
             #     found = False
@@ -412,34 +438,33 @@ class MainWindow(QMainWindow):
             #     if found:
             #         new_loc.append(item)
             # self.files_to_restore = new_loc
-            
 
             # file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
             #         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
             #         f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
             #         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
             #         f"/{self.CURRENT_FOLDER}/{item_txt}"
-            
+
         try:
             # Show small preview
             self.show_small_preview(item_txt)
-        except UnboundLocalError as e:
+        except UnboundLocalError:
             # Clear pixmap window
             self.ui.small_preview_label.clear()
 
     def show_small_preview(self, item_txt):
         # If a file
         if "." in item_txt:
-            self.last_selected_item_extension = str(item_txt).split('.')[-1]
-            self.last_selected_item_full_location = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
-                    f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
-                    f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-                    f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
-                    f"/{self.CURRENT_FOLDER}/{item_txt}"
-            
+            self.selected_item_extension = str(item_txt).split('.')[-1]
+            self.selected_item_full_location = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/" \
+                                               f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/" \
+                                               f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
+                                               f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}" \
+                                               f"/{self.CURRENT_FOLDER}/{item_txt}"
+
             # Image
-            if self.last_selected_item_extension in IMAGE_TYPES:
-                pixmap = QPixmap(self.last_selected_item_full_location)
+            if self.selected_item_extension in IMAGE_TYPES:
+                pixmap = QPixmap(self.selected_item_full_location)
                 pixmap = pixmap.scaledToWidth(196, Qt.SmoothTransformation)
                 self.ui.small_preview_label.setPixmap(pixmap)
 
@@ -451,21 +476,21 @@ class MainWindow(QMainWindow):
                 self.ui.small_preview_label.setFixedHeight(222)
                 self.ui.small_preview_label.show()
 
-            elif self.last_selected_item_extension in TXT_TYPES:
+            elif self.selected_item_extension in TXT_TYPES:
                 self.read_file()
-            
+
             # Non ok item
             else:
                 # Hide ui text
                 self.ui.small_preview_text.setFixedHeight(0)
                 self.ui.small_preview_text.hide()
-               
-               # Hide ui label
+
+                # Hide ui label
                 self.ui.small_preview_label.setFixedHeight(0)
                 self.ui.small_preview_label.hide()
 
     def read_file(self):
-        with open(self.last_selected_item_full_location, "r") as file:
+        with open(self.selected_item_full_location, "r") as file:
             # Hide ui label
             self.ui.small_preview_label.setFixedHeight(0)
             self.ui.small_preview_label.hide()
@@ -488,20 +513,20 @@ class MainWindow(QMainWindow):
         full_location = os.path.join(self.CURRENT_FOLDER, *location_parts)
 
         return full_location
-    
+
     def add_to_restore(self):
         ################################################################################
         # Enable/Disable functions if item(s) is/are selected
         ################################################################################
-        if len(self.files_to_restore) or len(self.files_to_Restore_with_space) >= 1:  # If something inside list
-            # If has at least one item, enable restore button
+        if len(self.files_to_restore) or len(self.files_to_Restore_with_space) >= 1:  # If something inside the list
+            # If it has at least one item, enable restore button
             self.ui.btn_restore.setEnabled(True)
             # Update restore label
             self.ui.btn_restore.setText(
                 f"   Restore({len(self.files_to_restore) + len(self.files_to_Restore_with_space)})   "
-                )
+            )
 
-            # Disable other buttons if items if been selected
+            # Disable other buttons if items have been selected
             self.ui.btn_up.setEnabled(False)
             self.ui.btn_down.setEnabled(False)
 
@@ -521,7 +546,7 @@ class MainWindow(QMainWindow):
                     widget.setEnabled(False)  # Disable function
                     i -= 1
 
-        # If not item was selected
+        # If not, item was selected
         else:
             # Disable restore button
             self.ui.btn_restore.setEnabled(False)
@@ -535,7 +560,7 @@ class MainWindow(QMainWindow):
                 if isinstance(widget, QPushButton):
                     widget.setEnabled(True)  # Disable function
                     i -= 1
-            
+
             # Enable all dates folders            
             for i in range(self.ui.dates_layout.count()):
                 item_from_list = self.ui.dates_layout.itemAt(i)
@@ -546,22 +571,22 @@ class MainWindow(QMainWindow):
 
         # Connection restore button
         # self.ui.btn_restore.clicked.connect(self.pre_start_restoring)
-    
+
     def pre_start_restoring(self):
         """
         After restore is done, open the item restore folder. 
         If is not opened already.
-        """        
-        if not self.folderAlreadyOpened:
-            self.folderAlreadyOpened=True
+        """
+        if not self.folder_already_opened:
+            self.folder_already_opened = True
             # Open folder manager
             print(f"Opening {HOME_USER}/{self.CURRENT_FOLDER}...")
-            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}",shell=True)
+            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
             exit()
 
     def start_restore(self):
         print("Your files are been restored...")
-        
+
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
 
         ################################################################################
@@ -570,38 +595,40 @@ class MainWindow(QMainWindow):
         counter = 0
         for _ in self.files_to_restore:
             print(f"Restoring {COPY_RSYNC_CMD} {self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
-            # sub.Popen(f"{COPY_RSYNC_CMD} {self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/", shell=True)
+            sub.Popen(f"{COPY_RSYNC_CMD} {self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/",
+                      shell=True)
+
             counter += 1
 
         # Open file manager
         if not self.ALREADY_OPENED_FILE_MANAGER:
             self.ALREADY_OPENED_FILE_MANAGER = True
             # Open folder manager
-            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}",shell=True)
+            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
 
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
 
-    def QTree_checkbox_clicked(self, item, column):
+    def qtree_checkbox_clicked(self, item, column):
         if item.checkState(column) == Qt.Checked:
             item_txt = item.text(column)
 
             # Spaces in item
             if " " in item_txt:
-                # Add to restore list for spaces
-                if not item_txt in self.files_to_Restore_with_space:  
-                    self.files_to_Restore_with_space.append(item_txt)  
+                # Add to the restore list for spaces
+                if item_txt not in self.files_to_Restore_with_space:
+                    self.files_to_Restore_with_space.append(item_txt)
                 else:
-                    self.files_to_Restore_with_space.remove(item_txt)  
+                    self.files_to_Restore_with_space.remove(item_txt)
 
-            # No spaces in item_txt
+                    # No spaces in item_txt
             else:
-                if item_txt not in self.files_to_restore:  
-                    # Add if not already in list
-                    self.files_to_restore.append(item_txt)  
+                if item_txt not in self.files_to_restore:
+                    # Add if not already in the list
+                    self.files_to_restore.append(item_txt)
                 else:
-                    # Remove from list
-                    self.files_to_restore.remove(item_txt)  
+                    # Remove from the list
+                    self.files_to_restore.remove(item_txt)
 
             self.add_to_restore()
 
@@ -610,18 +637,18 @@ class MainWindow(QMainWindow):
             if not self.preview_window:
                 self.preview_window = PreviewWindow(self)
 
-            if self.last_selected_item_extension in IMAGE_TYPES:
-                pixmap = QPixmap(self.last_selected_item_full_location)
+            if self.selected_item_extension in IMAGE_TYPES:
+                pixmap = QPixmap(self.selected_item_full_location)
 
-                self.preview_window.file_directory = self.last_selected_item_full_location
+                self.preview_window.file_directory = self.selected_item_full_location
 
                 # set_preview
                 # self.preview_window.set_preview(pixmap.scaledToWidth(round(900/2)))
                 self.preview_window.set_preview(pixmap)
                 self.preview_window.show()
 
-            elif self.last_selected_item_extension in TXT_TYPES:
-                with open(self.last_selected_item_full_location, "r") as file:
+            elif self.selected_item_extension in TXT_TYPES:
+                with open(self.selected_item_full_location, "r") as file:
                     # self.preview_window.preview_label.clear()
                     self.preview_window.set_preview(file.read())
 
@@ -630,8 +657,9 @@ class MainWindow(QMainWindow):
     ################################################################################
     # RETURN VALUES
     ################################################################################
-    def get_all_backup_folders(self):
-        FOLDERS_LIST = []
+    @staticmethod
+    def get_all_backup_folders():
+        folders_list = []
 
         # Connect to the SQLite database
         conn = sqlite3.connect(SRC_USER_CONFIG_DB)
@@ -643,40 +671,30 @@ class MainWindow(QMainWindow):
         conn.close()
 
         for folder in keys:
-            FOLDERS_LIST.append(folder)
-            FOLDERS_LIST.sort()
+            folders_list.append(folder)
+            folders_list.sort()
 
-        return FOLDERS_LIST
+        return folders_list
 
     def get_all_backup_dates(self):
-        counter = 0
-        for date_folder_to_be_sort in os.listdir(
-                f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"
-                f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
+        for date_folder in os.listdir(
+                f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
 
-            # Hide hidden date_folder_to_be_sort
-            if "." not in date_folder_to_be_sort:
-                print(date_folder_to_be_sort)
+            # Hide hidden date_folder
+            if "." not in date_folder:
+                print(date_folder)
                 # ALREADY_GOT_LIST_OF_DATES = True
 
-                self.LIST_OF_ALL_BACKUP_DATES.append(date_folder_to_be_sort)
+                self.LIST_OF_ALL_BACKUP_DATES.append(date_folder)
                 self.LIST_OF_ALL_BACKUP_DATES.sort(
-                    reverse = True,
-                    key = lambda date_folder_to_be_sort:\
-                    datetime.strptime(date_folder_to_be_sort, "%d-%m-%y")
-                    )
+                    reverse=True,
+                    key=lambda date_folder: datetime.strptime(date_folder, "%d-%m-%y"))
 
-    def size_format(self, size_bytes):
-        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-            if size_bytes < 1024.0:
-                return f"{size_bytes:.2f} {unit}"
-            
-            size_bytes /= 1024.0
-
-    def resize_image(self, pixmap, max_size):
+    @staticmethod
+    def resize_image(pixmap, max_size):
         if pixmap.width() > max_size or pixmap.height() > max_size:
             pixmap = pixmap.scaled(max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        
+
         return pixmap
 
 
@@ -685,41 +703,37 @@ class PreviewWindow(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Preview")
         self.setModal(True)
-        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
-        
+        self.setWindowFlag(Qt.FramelessWindowHint)
+
         self.file_directory = ""
 
         self.layout = QVBoxLayout(self)
 
     def set_preview(self, pixmap):
+        open_file_button = QPushButton()
+        open_file_button.setText("Open File Directory")
+        open_file_button.setFocusPolicy(Qt.NoFocus)
+        open_file_button.clicked.connect(self.open_file_button_clicked)
+
         if isinstance(pixmap, QPixmap):
-            try:
-                pixmap = pixmap.scaledToWidth((screen_height - 440), Qt.SmoothTransformation)
-                self.preview_label = QLabel(self)
-                self.preview_label.setPixmap(pixmap)
-                self.layout.addWidget(self.preview_label)
-            except Exception as e:
-                pass
+            pixmap = pixmap.scaledToWidth((screen_height - 440), Qt.SmoothTransformation)
+            preview_label = QLabel(self)
+            preview_label.setPixmap(pixmap)
+
+            self.layout.addWidget(preview_label)
 
         elif isinstance(pixmap, str):
-            try:
-                self.text_browser = QTextBrowser(self)
-                self.text_browser.setPlainText(pixmap)
-                self.text_browser.adjustSize()
-                self.text_browser.moveCursor(QTextCursor.Start)
-                self.layout.addWidget(self.text_browser)
-                self.layout.addWidget(self.open_file_button)
-            except Exception as e:
-                pass
-        
-        self.open_file_button = QPushButton()
-        self.open_file_button.setText("Open File Directory")
-        self.open_file_button.setFocusPolicy(Qt.NoFocus)
-        self.open_file_button.clicked.connect(self.open_file_button_clicked)
+            text_browser = QTextBrowser(self)
+            text_browser.setPlainText(pixmap)
+            text_browser.adjustSize()
+            text_browser.moveCursor(QTextCursor.Start)
 
-        self.layout.addWidget(self.open_file_button)
-        self.layout.setAlignment(self.open_file_button, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-            
+            self.layout.addWidget(text_browser)
+            self.layout.addWidget(open_file_button)
+
+        self.layout.addWidget(open_file_button)
+        self.layout.setAlignment(open_file_button, Qt.AlignHCenter | Qt.AlignVCenter)
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             for i in range(self.layout.count()):
@@ -733,7 +747,7 @@ class PreviewWindow(QDialog):
 
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
-        
+
         print(f"Opening {file_directory}")
         sub.Popen(f"xdg-open {file_directory}", shell=True)
 
@@ -743,9 +757,9 @@ if __name__ == "__main__":
 
     screen = APP.primaryScreen()  # Get the primary screen
     size = screen.size()  # Get the screen size
-    screen_width = size.width()   # Get the screen width
+    screen_width = size.width()  # Get the screen width
     screen_height = size.height()  # Get the screen height
-    
+
     MAIN = MainWindow()
     MAIN.setWindowTitle("Enter In Time Machine")
 

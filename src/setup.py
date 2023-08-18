@@ -35,7 +35,8 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
                             QSpinBox, QComboBox, QGraphicsBlurEffect,
                             QSystemTrayIcon, QMenu, QStackedWidget,QListView,
                             QFileSystemModel,QDialog,QTextBrowser,
-                            QTreeWidget, QTreeWidgetItem, QAbstractItemView)
+                            QTreeWidget, QTreeWidgetItem, QAbstractItemView,
+                            QButtonGroup)
 
 timer = QtCore.QTimer()
 
