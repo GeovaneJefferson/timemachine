@@ -144,29 +144,31 @@ if __name__ == '__main__':
     while True:
         try:
             if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
-                print("Backup checker is running...")
+                if not MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
+                    print("Backup checker is running...")
 
-                # Get backup devices name and check connection
-                if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
-                    # If previus backup is unfinished
-                    if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
-                        MAIN.continue_interrupted_backup()
+                    # Get backup devices name and check connection
+                    if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
+                        # If previus backup is unfinished
+                        if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
+                            MAIN.continue_interrupted_backup()
 
-                    # Thread to check new packages at Downloads folders
-                    # Search for new packages
-                    MAIN.check_for_new_packages()
+                        # Thread to check new packages at Downloads folders
+                        # Search for new packages
+                        MAIN.check_for_new_packages()
 
-                    # Check dates
-                    MAIN.check_the_dates()
+                        # Check dates
+                        MAIN.check_the_dates()
 
-                # Wait
+                    else:
+                        print("Backup device is not connected...")
+
                 time.sleep(5)
 
             else:
                 break
 
-        except Exception as e:
-            print("Backup Checker ERROR:", e)
+        except Exception:
             break
 
 print("Automatically backup is OFF.")

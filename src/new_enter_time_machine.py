@@ -58,7 +58,6 @@ class MainWindow(QMainWindow):
 
         self.currentLocationLabel = QLabel(self)
         self.CURRENT_FOLDER = ""
-        self.last_selected_item = ""
 
         # Connections
         # Up button
@@ -75,8 +74,8 @@ class MainWindow(QMainWindow):
         self.ui.tree_widget.setColumnWidth(0, 250)
         self.ui.tree_widget.setColumnWidth(1, 150)
         # self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
-        self.ui.tree_widget.itemSelectionChanged.connect(self.selected_item_for_preview)
-        self.ui.tree_widget.itemClicked.connect(self.qtree_checkbox_clicked)
+        # self.ui.tree_widget.itemSelectionChanged.connect(self.selected_item_for_preview)
+        self.ui.tree_widget.itemChanged.connect(self.qtree_checkbox_clicked)
 
         # Settings for the preview window
         self.preview_window = None
@@ -109,7 +108,7 @@ class MainWindow(QMainWindow):
                         font-size: 12px;
                     }
                 """)
-            self.btn_backup_home_folders.clicked.connect(lambda *args, directory=folder: self.change_dir(directory))
+            self.btn_backup_home_folders.clicked.connect(lambda *args, directory=folder: self.change_directory(directory))
             self.ui.folders_layout.addWidget(self.btn_backup_home_folders)
 
             # Automatically check the first folder in the list
@@ -269,14 +268,13 @@ class MainWindow(QMainWindow):
             for item_data in file_list:
                 qt_item = QTreeWidgetItem(self.ui.tree_widget, item_data[:-1])
                 qt_item.setData(1, Qt.UserRole, item_data[-1])  # Store the timestamp as user data
-                qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                # qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                 qt_item.setCheckState(0, Qt.Unchecked)
 
             self.qtree_add_results(inside_current_folder)
-
         except FileNotFoundError:
             pass
-
 
     def qtree_add_results(self, inside_current_folder):
         for folder_name in os.listdir(inside_current_folder):
@@ -284,6 +282,10 @@ class MainWindow(QMainWindow):
 
             if os.path.isdir(folder_path) and not folder_name.startswith('.'):
                 folder_item = QTreeWidgetItem(self.ui.tree_widget, [folder_name, '', '', 'Folder'])
+                # Chekbox for folders
+                folder_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                folder_item.setCheckState(0, Qt.Unchecked)
+
                 self.qtree_add_sub_items(folder_item, folder_path)
 
     def qtree_add_sub_items(self, parent_item, folder_path):
@@ -291,9 +293,18 @@ class MainWindow(QMainWindow):
             for item_name in os.listdir(folder_path):
                 item_path = os.path.join(folder_path, item_name)
                 if os.path.isdir(item_path):
-                    sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
-                    self.qtree_add_sub_items(sub_folder_item, item_path)
+                    # sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
+                    
+                    # Checkbox
+                    folder = QTreeWidgetItem(parent_item, [item_name, formatted_date, formatted_size, extension])
+                    folder.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
+                    folder.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                    folder.setCheckState(0, Qt.Unchecked)
 
+                    # TODO
+                    # By uncomment this, will add all subfolders and so on, but freezes ui
+                    # self.qtree_add_sub_items(sub_folder_item, item_path)
+                    
                 elif os.path.isfile(item_path) and not item_name.startswith('.'):
                     item_size = os.path.getsize(item_path)
                     date_modified = os.path.getmtime(item_path)
@@ -302,15 +313,13 @@ class MainWindow(QMainWindow):
                     formatted_date = datetime.fromtimestamp(date_modified).strftime('%Y-%m-%d %H:%M:%S')
                     formatted_size = size_format(item_size) if item_size is not None else ''
 
+                    # Checkbox
                     item = QTreeWidgetItem(parent_item, [item_name, formatted_date, formatted_size, extension])
                     item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
-                    # TODO
-                    # item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)  # Allow selection
-                    # item.setCheckState(0, Qt.Unchecked)
+                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                    item.setCheckState(0, Qt.Unchecked)
         except PermissionError:
             pass
-
-        self.up_down_settings()
 
     def up_down_settings(self):
         # Get index of the current time folder
@@ -396,7 +405,7 @@ class MainWindow(QMainWindow):
         # Add news time folders
         self.add_backup_times()
 
-    def change_dir(self, directory):
+    def change_directory(self, directory):
         # Clean QTree
         self.ui.tree_widget.clear()
 
@@ -416,7 +425,6 @@ class MainWindow(QMainWindow):
             item = selected_items[-1]  # Get the last selected item
             item_txt = item.text(0)
             print("Last selected item:", item_txt)
-            self.last_selected_item = item_txt
 
             # TODO
             # Remove items from self.files_to_restore that are no longer selected
@@ -497,11 +505,16 @@ class MainWindow(QMainWindow):
             self.ui.small_preview_text.adjustSize()
             self.ui.small_preview_text.setPlainText(file.read())
             self.ui.small_preview_text.moveCursor(QTextCursor.Start)
+            self.ui.small_preview_text.setStyleSheet(
+                """
+                    font-size: 8px;
+                """)
 
     def add_to_restore(self):
         ################################################################################
         # Enable/Disable functions if item(s) is/are selected
         ################################################################################
+        print(self.files_to_restore)
         if len(self.files_to_restore) or len(self.files_to_Restore_with_space) >= 1:  # If something inside the list
             # If it has at least one item, enable restore button
             self.ui.btn_restore.setEnabled(True)
@@ -599,36 +612,42 @@ class MainWindow(QMainWindow):
 
     def qtree_checkbox_clicked(self, item, column):
         if item.checkState(column) == Qt.Checked:
-            item_txt = item.text(column)
+            # item_txt = item.text(column)
+            full_location = self.get_full_location(item, column)
+            print("Full location:", full_location)
 
             # Spaces in item
-            if " " in item_txt:
+            if " " in full_location:
                 # Add to the restore list for spaces
-                if item_txt not in self.files_to_Restore_with_space:
-                    self.files_to_Restore_with_space.append(item_txt)
+                if full_location not in self.files_to_Restore_with_space:
+                    self.files_to_Restore_with_space.append(full_location)
                 else:
-                    self.files_to_Restore_with_space.remove(item_txt)
+                    self.files_to_Restore_with_space.remove(full_location)
 
-                    # No spaces in item_txt
+            # No spaces in full_location
             else:
-                if item_txt not in self.files_to_restore:
+                if full_location not in self.files_to_restore:
                     # Add if not already in the list
-                    self.files_to_restore.append(item_txt)
+                    self.files_to_restore.append(full_location)
                 else:
                     # Remove from the list
-                    self.files_to_restore.remove(item_txt)
+                    self.files_to_restore.remove(full_location)
 
-            self.add_to_restore()
+            # self.add_to_restore()
 
-        else:
-            item_txt = item.text(column)
-            print("Removing:", item_txt)
+        elif item.checkState(column) == Qt.Unchecked:
+            full_location = item.text(column)
             try:
-                self.files_to_restore.remove(item_txt)
+                self.files_to_restore.remove(full_location)
             except ValueError:
                 pass
-        
-        print(self.files_to_restore)
+            
+        self.add_to_restore()
+
+        if self.files_to_restore:
+            self.show_small_preview(self.files_to_restore[-1])
+        else:
+            self.ui.small_preview_label.clear()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
@@ -687,6 +706,19 @@ class MainWindow(QMainWindow):
                 self.LIST_OF_ALL_BACKUP_DATES.sort(
                     reverse=True,
                     key=lambda date_folder: datetime.strptime(date_folder, "%d-%m-%y"))
+   
+    @staticmethod
+    def get_full_location(item, column):
+        item_txt = item.text(column)
+        full_location = item_txt
+
+        parent_item = item.parent()
+        while parent_item:
+            parent_txt = parent_item.text(column)
+            full_location = f"{parent_txt}/{full_location}"
+            parent_item = parent_item.parent()
+
+        return full_location
 
     @staticmethod
     def resize_image(pixmap, max_size):
@@ -722,9 +754,14 @@ class PreviewWindow(QDialog):
 
         elif isinstance(pixmap, str):
             text_browser = QTextBrowser(self)
+            text_browser.setFixedSize((screen_height - 440), (screen_height - 440))
             text_browser.setPlainText(pixmap)
             text_browser.adjustSize()
             text_browser.moveCursor(QTextCursor.Start)
+            # text_browser.setStyleSheet(
+            #     """
+            #         font-size: 2px;
+            #     """)
 
             self.layout.addWidget(text_browser)
             self.layout.addWidget(open_file_button)
@@ -773,6 +810,8 @@ if __name__ == "__main__":
 
     # Add  backup times folders for the current date folder
     MAIN.add_backup_times()
+
+    MAIN.up_down_settings()
 
     # MAIN.showFullScreen()
     MAIN.show()

@@ -53,8 +53,6 @@ class PREPAREBACKUP:
 
         # Send notification status
         notification_message("")
-        
-        # Quit
         exit()
 
     def create_base_folders(self):
