@@ -42,10 +42,6 @@ async def restore_backup_wallpaper():
 
                     # Light or Dark wallpaper
                     if getColorScheme == "prefer-light" or getColorScheme == "default":
-                        print()
-                        print(getColorScheme)
-                        print()
-                        
                         # Light theme o default
                         print(f"{SET_GNOME_WALLPAPER} {HOME_USER}/.local/share/wallpapers/{image}")
                         sub.run(f"{SET_GNOME_WALLPAPER} {HOME_USER}/.local/share/wallpapers/{image}", shell=True)

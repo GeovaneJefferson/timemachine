@@ -21,7 +21,7 @@ from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
-    QEasingCurve, QPoint, QSocketNotifier, QDir)
+    QEasingCurve, QPoint, QSocketNotifier, QDir, QTimer)
 from PySide6.QtGui import (
     QFont, QPixmap , QIcon, QMovie, QAction,
     QPalette, QColor,QCursor,QImage,QImageReader,
@@ -261,7 +261,7 @@ src_pycache = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 ################################################################################
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
 src_monitor_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/applications-system.svg"
-src_settings_up_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/laptop-symbolic.svg"
+SRC_LAPTOP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/laptop-symbolic.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 SRC_MIGRATION_ASSISTANT_ICON_212PX = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
 src_migration_assistant_clean_icon_128px = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_clean_128px.svg"
@@ -270,12 +270,17 @@ src_system_bar_white_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icon
 SRC_SYSTEM_BAR_RUN_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrun.png"
 src_system_bar_error_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconerror.png"
 src_system_bar_restore_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrestore.png"
+SRC_ARROW_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/arrow.png"
+SRC_MONITOR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/monitor.png"
+SRC_HARDISK_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/harddisk.svg"
+SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"
 
 ################################################################################
 ## TXT
 ################################################################################
 # .Exclude-applications
 SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
+SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # LOG
 APP_LOGS = f"{DST_FOLDER_INSTALL}/app_logs.txt"

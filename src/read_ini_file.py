@@ -265,6 +265,9 @@ class UPDATEINIFILE:
     def exclude_applications_location(self):
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
 
+    def exclude_flatpaks_location(self):
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{SRC_EXCLUDE_FLATPAKS}"
+
     def restore_settings_location(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}"
 

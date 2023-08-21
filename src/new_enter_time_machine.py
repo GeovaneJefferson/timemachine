@@ -2,7 +2,7 @@
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 
-from ui_untitled import Ui_MainWindow
+from ui.ui_untitled import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime

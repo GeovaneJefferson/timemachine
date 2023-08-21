@@ -53,6 +53,7 @@ class FileManager(QMainWindow):
         self.central_widget.setLayout(self.layout)
 
         self.file_list_view = QListView()
+        self.file_list_view.setWordWrap(True)
         self.layout.addWidget(self.file_list_view)
 
         self.file_list_view.setIconSize(QSize(64, 64))
@@ -70,7 +71,8 @@ class FileManager(QMainWindow):
 
     def load_downloads_folder(self):
 
-        downloads_path = QDir.homePath() + "/Downloads"
+        # downloads_path = QDir.homePath() + "/Downloads"
+        downloads_path = "/media/geovane/"
         self.model = QFileSystemModel()
         self.model.setRootPath(downloads_path)
         self.file_list_view.setModel(self.model)

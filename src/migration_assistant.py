@@ -606,7 +606,7 @@ class PreBackup(QWidget):
         self.vertical_layout_for_options.addWidget(self.show_more_application_information_widget)
         
         self.vertical_layout_for_options.addWidget(self.flatpak_data_Checkbox)
-        self.vertical_layout_for_options.addWidget(self.showMoreFlatpakDataInformationWidget)
+        # self.vertical_layout_for_options.addWidget(self.showMoreFlatpakDataInformationWidget)
         
         self.vertical_layout_for_options.addWidget(self.fileAndFoldersCheckBox)
         self.vertical_layout_for_options.addWidget(self.showMoreFileAndFoldersInformationWidget)
@@ -1187,7 +1187,6 @@ class BackupScreen(QWidget):
 
     def auto_reboot_clicked(self):
         MAIN_INI_FILE.set_database_value('INFO', 'auto_reboot', 'True')
-        
 
 class StartRestoring(QWidget):
     def __init__(self):
@@ -1239,7 +1238,7 @@ class StartRestoring(QWidget):
         image.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({src_settings_up_icon});"
+            f"background-image: url({SRC_LAPTOP_ICON});"
             "background-repeat: no-repeat;"
             "background-color: transparent;"
             "background-position: center;"
@@ -1275,7 +1274,7 @@ if __name__ == '__main__':
     WIDGET = QStackedWidget()
 
     MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN = WelcomeScreen()
+    MAIN = BackupScreen()
 
     WIDGET.addWidget(MAIN)   
     WIDGET.setCurrentWidget(MAIN)   
