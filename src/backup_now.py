@@ -54,7 +54,7 @@ class BACKUP:
         if get_user_de() == 'gnome':
             # Backup .local/share/ selected folders for GNOME
             # .local/share/gnome-shell
-            include_list=[
+            include_list = [
                 "gnome-shell"
                 ]
         
@@ -99,7 +99,7 @@ class BACKUP:
                     notification_message(f'Backing up: .config/{folder}...')
 
         # For KDE
-        if get_user_de() == 'kde':
+        elif get_user_de() == 'kde':
             # Backup .local/share/ selected folder for KDE
             include_list=[
                 # "icons",
@@ -208,6 +208,9 @@ class BACKUP:
                         notification_message(f'Backing up: .kde/share/{folders}...')
             except:
                 pass
+        
+        else:
+            pass
 
     async def backup_flatpak(self):
         # Backup flatpak installed apps by the name
