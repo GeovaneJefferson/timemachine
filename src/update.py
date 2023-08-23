@@ -12,8 +12,8 @@ def update_git(update_now):
     # Git pull
     print("Updating...")
 
-    sub.Popen(["git", "stash"])
-    sub.Popen(["git", "pull"])
+    sub.run(["git", "stash"], check=True)
+    sub.run(["git", "pull"], check=True)
     
     if update_now:
         delete_ini_file(update_now)
