@@ -296,7 +296,8 @@ class MainWindow(QMainWindow):
         self.helpButton.setToolTip("Help")
         self.helpButton.setStyleSheet(self.buttonStylesheetDetector)
         self.helpButton.clicked.connect(
-            lambda: sub.Popen(f"xdg-open {GITHUB_HOME}", shell=True))
+            lambda: sub.Popen([f"xdg-open", {GITHUB_HOME}]))
+        
 
         # Show system tray
         self.showInSystemTrayCheckBox=QCheckBox(self)
@@ -597,7 +598,7 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'True')
 
             # call backup check
-            sub.Popen(f"python3 {SRC_BACKUP_CHECKER_PY}", shell=True)
+            sub.Popen(["python3", SRC_BACKUP_CHECKER_PY])
 
             print("Auto backup was successfully activated!")
 
@@ -615,7 +616,7 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'True')
 
             # Call system tray
-            sub.Popen(f"python3 {src_system_tray_py}", shell=True)
+            sub.Popen(["python3", src_system_tray_py])
 
             print("System tray was successfully enabled!")
 
@@ -641,7 +642,7 @@ class MainWindow(QMainWindow):
         self.backup_now_button.setEnabled(False)
 
     def backup_now_clicked(self):
-        sub.Popen(f"python3 {src_prepare_backup_py}",shell=True)
+        sub.Popen(["python3", src_prepare_backup_py])
 
     def on_options_clicked(self):
         WIDGET.setCurrentWidget(MAIN_OPTIONS)
@@ -1620,7 +1621,7 @@ class OPTION(QMainWindow):
             print("All settings was reset!")
 
             # Re-open Main Windows
-            sub.Popen(f'python3 {SRC_MAIN_WINDOW_PY}', shell=True)
+            sub.Popen(["python3", SRC_MAIN_WINDOW_PY])
 
             # Quit
             exit()
@@ -1629,7 +1630,7 @@ class OPTION(QMainWindow):
             QMessageBox.Close
 
     def donate_clicked(self):
-        sub.Popen("xdg-open https://ko-fi.com/geovanejeff", shell=True)
+        sub.Popen([f"xdg-open", "https://ko-fi.com/geovanejeff"])
 
     def on_back_button_clicked(self):
         WIDGET.setCurrentWidget(MAIN)

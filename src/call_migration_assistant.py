@@ -1,9 +1,12 @@
 from setup import *
 
-if os.geteuid() != 0:
-    print("Migration Assistant needs to run as root.")
-    sub.run(['sudo', 'python3', *sys.argv])
-    print("")
-    print("Please wait...")
-    print("")
-    sub.run(f"python3 {SRC_MIGRATION_ASSISTANT_PY}", shell=True)
+# sub.run(['sudo', 'python3', *sys.argv])
+# Message
+print('Migration Assistant needs to run as root.')
+# Request users password
+sub.run(['sudo', 'python3', *sys.argv])
+# Clear terminal
+sub.run(['clear'])
+# Open Migration Assistant
+sub.Popen(["python3", SRC_MIGRATION_ASSISTANT_PY])
+ 

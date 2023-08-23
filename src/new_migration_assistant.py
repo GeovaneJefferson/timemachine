@@ -279,7 +279,6 @@ class WelcomeScreen(QWidget):
 		system_settings_list = []
 
 		for output in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-			print("SYSTEM", system_settings_list)
 			system_settings_list.append(output)
 
 		if system_settings_list:
@@ -292,8 +291,6 @@ class WelcomeScreen(QWidget):
 		if self.ui.checkbox_applications_page3.isChecked():
 			# Add to list to restore
 			self.item_to_restore.append('Applications')
-			# Enable continue button
-			self.ui.button_continue_page3.setEnabled(True)
 			# Show applications sub checkboxes
 			self.ui.applications_sub_widget_page3.show()
 			# Update DB
@@ -308,13 +305,13 @@ class WelcomeScreen(QWidget):
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
 
+		self.check_checkboxes()
+
 	def on_flatpaks_checkbox_clicked_page3(self):
 		# Expand it if selected
 		if self.ui.checkbox_flatpaks_page3.isChecked():
 			# Add to list to restore
 			self.item_to_restore.append('Flatpaks')
-			# Enable continue button
-			self.ui.button_continue_page3.setEnabled(True)
 			# Show applications sub checkboxes
 			self.ui.flatpaks_sub_widget_page3.show()
 			# Update DB
@@ -328,14 +325,14 @@ class WelcomeScreen(QWidget):
 			# self.applications_to_be_exclude.clear()
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+		
+		self.check_checkboxes()
 
 	def on_files_and_folders_checkbox_clicked_page3(self):
 		# Expand it if selected
 		if self.ui.checkbox_files_folders_page3.isChecked():
 			# Add to list to restore
 			self.item_to_restore.append('Files/Folders')
-			# Enable continue button
-			self.ui.button_continue_page3.setEnabled(True)
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'True')
 		else:
@@ -346,20 +343,20 @@ class WelcomeScreen(QWidget):
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
 
+		self.check_checkboxes()
+
 	def on_system_settings_checkbox_clicked_page3(self):
 		if self.ui.checkbox_system_settings_page3.isChecked():
 			MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'True')
-			# Enable continue button
-			self.ui.button_continue_page3.setEnabled(True)
 			# Add "system_settings" to list
 			self.item_to_restore.append("System_Settings")
 		else:
 			MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-			# Disable continue button
-			self.ui.button_continue_page3.setEnabled(False)
 
 			if "System_Settings" in self.item_to_restore:
 				self.item_to_restore.remove("System_Settings")
+
+		self.check_checkboxes()
 
 	def exclude_applications(self, exclude):
 		print("Exclude application:", exclude)
@@ -451,6 +448,8 @@ class WelcomeScreen(QWidget):
 		self.stacked_widget_transition(self.ui.page_2, 'left')
 
 	def on_continue_button_clicked_page3(self):
+		print(self.item_to_restore)
+
 		#################################
 		# APPLICATIONS
 		#################################
@@ -485,6 +484,15 @@ class WelcomeScreen(QWidget):
 		# Animation
 		self.stacked_widget_transition(self.ui.page_4, 'right')
 
+	def check_checkboxes(self):
+		# If restore list is empty
+		if not self.item_to_restore:
+			# Disable
+			self.ui.button_continue_page3.setEnabled(False)
+		else:
+			# Enable
+			self.ui.button_continue_page3.setEnabled(True)
+			
 	########################################################
 	# PAGE 4
 	########################################################
