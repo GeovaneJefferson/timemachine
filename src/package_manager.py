@@ -17,3 +17,7 @@ def package_manager():
         return "pacman"
     else:
         return "None"
+
+
+if __name__=='__main__':
+    pass

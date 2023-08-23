@@ -1,6 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
+from notification_massage import notification_message_current_backing_up
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -8,6 +9,8 @@ some_image_inside_list = []
 
 async def restore_backup_wallpaper():
     print("Restoring users wallpaper...")
+    notification_message_current_backing_up("Restoring: Wallpaper...")
+
     try:
         # Check if a wallpaper can be found
         for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):

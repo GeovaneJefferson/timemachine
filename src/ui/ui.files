@@ -1,0 +1,14 @@
+__pycache__/ui_form.cpython-310.pyc
+__pycache__/ui_form.cpython-311.pyc
+__pycache__/ui_migration.cpython-310.pyc
+__pycache__/ui_migration.cpython-311.pyc
+__pycache__/ui_untitled.cpython-310.pyc
+__pycache__/ui_untitled.cpython-311.pyc
+enter_time_machine.ui
+migration.ui
+resources.qrc
+ui.cflags
+ui.cxxflags
+ui_migration.py
+ui_untitled.py
+welcomescreen.py

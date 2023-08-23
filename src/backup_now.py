@@ -1,20 +1,11 @@
 from setup import *
 from prepare_backup import *
-
-# Wallpaper
 from get_current_users_wallpaper import user_wallpaper
-
-# Update
 from read_ini_file import UPDATEINIFILE
-
-# Get users DE
 from get_users_de import get_user_de
-
-# Get backup folder
 from get_folders_to_be_backup import get_folders
-
-# Get flatpaks folders size
 from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
+from notification_massage import notification_message
 
 
 # Handle signal
@@ -27,7 +18,7 @@ class BACKUP:
         print("Backing up: Wallpaper...")
 
         # GNOME/KDE
-        # Send notification status
+        # Update notification status
         notification_message("Backing up: Wallpaper...")
 
         # Replace wallpaper inside the folder, only allow 1
@@ -40,29 +31,25 @@ class BACKUP:
         sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
         
     async def backup_home(self):
-        print("Backing up: Home folders...")
-        
-        # Backup Home
-        # Send notification status
-        notification_message("Backing up: Home folders...")
-
+ 
         # Backup Home folder
         # Backup all (user.ini true folders)
         for folder in get_folders():
             sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
+            
+            # Update notification status
+            print(f'Backing up: {HOME_USER}/{folder}...')
+            notification_message(f'Backing up: {HOME_USER}/{folder}...')
 
     async def backup_home_hidden_files(self):
-        print("Backing up: .local/share/ ...")
 
         # For GNOME
         if get_user_de() == 'gnome':
-            # Send notification status
-            notification_message("Backing up: .local/share/ ...")
-
             # Backup .local/share/ selected folders for GNOME
             # .local/share/gnome-shell
             include_list=[
-                "gnome-shell"]
+                "gnome-shell"
+                ]
         
             for folder in os.listdir(f"{HOME_USER}/.local/share/"):
                 # TODO
@@ -71,26 +58,27 @@ class BACKUP:
                     try:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} \
                             {MAIN_INI_FILE.gnome_local_share_main_folder()}", shell=True)
+                        
+                        # Update notification status
+                        print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        notification_message(f'Backing up: {HOME_USER}/.local/share/{folder}...')
                     except:
                         pass
-
-            # Send notification status
-            notification_message("Backing up: .config/ ...")
 
             # Backup .config/ selected folders
             include_list = [
                 "dconf"
-            ]
+                ]
 
             for folder in os.listdir(f"{HOME_USER}/.config/"):
                 if folder in include_list:
                     sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}",shell=True)
+                    # Update notification status
+                    print(f'Backing up: {HOME_USER}/.config/{folder}...')
+                    notification_message(f'Backing up: {HOME_USER}/.config/{folder}...')
 
         # For KDE
         if get_user_de() == 'kde':
-            # Send notification status
-            notification_message("Backing up: .local/share ...")
-
             # Backup .local/share/ selected folder for KDE
             include_list=[
                 # "icons",
@@ -110,11 +98,11 @@ class BACKUP:
                 if folder in include_list:
                     try:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.kde_local_share_main_folder()}",shell=True)
+                        # Update notification status
+                        print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        notification_message(f'Backing up: {HOME_USER}/.local/share/{folder}...')
                     except:
                         pass
-
-            # Send notification status
-            notification_message("Backing up: .config ...")
 
             # Backup .config/ selected folders for KDE
             try:
@@ -139,11 +127,11 @@ class BACKUP:
                 for folder in os.listdir(f"{HOME_USER}/.config/"):
                     if folder in include_list:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}",shell=True)
+                        # Update notification status
+                        print(f'Backing up: {HOME_USER}/.config/{folder}...')
+                        notification_message(f'Backing up: {HOME_USER}/.config/{folder}...')
             except:
                 pass
-
-            # Send notification status
-            notification_message("Backing up: .kde/share...")
 
             # Backup share selected folders for KDE
             try:
@@ -171,13 +159,13 @@ class BACKUP:
 
                     sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} \
                         {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
+                    # Update notification status
+                    print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
+                    notification_message(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
             except:
                 pass
 
     async def backup_flatpak(self):
-        # Send notification status
-        notification_message("Backing up: Flatpak Applications ...")
-
         # Backup flatpak installed apps by the name
         try:
             counter = 0
@@ -190,18 +178,18 @@ class BACKUP:
 
                     # Write USER installed flatpak to flatpak.txt inside external device
                     configfile.write(flatpak_list[counter])
+                    
+                    # Update notification status
+                    print(f'Backing up: {flatpak_list[counter]}...')
+                    notification_message(f'Backing up: {flatpak_list[counter]}...')
 
                     counter += 1
                 
-        except Exception as e:
-            print("Flatpak names ERROR:", e)
+        except Exception:
             pass
 
         # Backup flatpak data
         if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
-            # Send notification status
-            notification_message("Backing up: Flatpak Data ...")
-
             # Backup flatpak data folder
             try:
                 # Start Flatpak (var/app) backup
@@ -210,6 +198,10 @@ class BACKUP:
                     # Copy the Flatpak var/app folders
                     sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[counter]} \
                             {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
+                    
+                    # Update notification status
+                    print(f'Backing up: {flatpak_var_list()[counter]}...')
+                    notification_message(f'Backing up: {flatpak_var_list()[counter]}...')
 
                     counter += 1
 
@@ -219,6 +211,10 @@ class BACKUP:
                     # Copy the Flatpak var/app folders
                     sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[counter]} \
                             {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
+                   
+                    # Update notification status
+                    print(f'Backing up: {flatpak_local_list()[counter]}...')
+                    notification_message(f'Backing up: {flatpak_local_list()[counter]}...')
 
                     counter += 1
 
@@ -228,12 +224,11 @@ class BACKUP:
     async def end_backup(self):
         print("Ending backup...")
 
-        # Send notification status
+        # Update notification status
         notification_message("")
 
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
         MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
-
         MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
         # RESTORE DATABASE 
@@ -265,9 +260,9 @@ class BACKUP:
 
         print("Backup is done!")
         print("Sleeping for 60 seconds...")
+
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
-        # Quit
         exit()
 
     #########################################################

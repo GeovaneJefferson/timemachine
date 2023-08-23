@@ -14,29 +14,35 @@ import locale
 import datetime
 import sqlite3
 
-
 from stylesheet import *
 from pathlib import Path
 from datetime import datetime
 from PySide6 import QtCore, QtWidgets, QtGui
+
+
 from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
-    QEasingCurve, QPoint, QSocketNotifier, QDir, QTimer)
+    QEasingCurve, QPoint, QSocketNotifier, QDir, QTimer,
+    QResource)
+
 from PySide6.QtGui import (
     QFont, QPixmap , QIcon, QMovie, QAction,
     QPalette, QColor,QCursor,QImage,QImageReader,
     QTextCursor)
 
-from PySide6.QtWidgets import (QMainWindow, QWidget, QApplication,
-                            QPushButton, QLabel, QCheckBox, QLineEdit,
-                            QWidget, QFrame, QGridLayout, QHBoxLayout,
-                            QVBoxLayout, QMessageBox, QRadioButton,
-                            QScrollArea, QSpacerItem, QSizePolicy,
-                            QSpinBox, QComboBox, QGraphicsBlurEffect,
-                            QSystemTrayIcon, QMenu, QStackedWidget,QListView,
-                            QFileSystemModel,QDialog,QTextBrowser,
-                            QTreeWidget, QTreeWidgetItem, QAbstractItemView,
-                            QButtonGroup)
+from PySide6.QtWidgets import (
+    QMainWindow, QWidget, QApplication,
+    QPushButton, QLabel, QCheckBox, QLineEdit,
+    QWidget, QFrame, QGridLayout, QHBoxLayout,
+    QVBoxLayout, QMessageBox, QRadioButton,
+    QScrollArea, QSpacerItem, QSizePolicy,
+    QSpinBox, QComboBox, QGraphicsBlurEffect,
+    QSystemTrayIcon, QMenu, QStackedWidget,QListView,
+    QFileSystemModel,QDialog,QTextBrowser,
+    QTreeWidget, QTreeWidgetItem, QAbstractItemView,
+    QButtonGroup
+    )
+from PySide6.QtSvgWidgets import QSvgWidget
 
 timer = QtCore.QTimer()
 
@@ -50,7 +56,7 @@ GITHUB_HOME = "https://www.github.com/geovanejefferson/timemachine"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.7.04 dev"
+APP_VERSION = "v1.1.7.05 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -260,7 +266,7 @@ src_pycache = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 ## Icons
 ################################################################################
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
-src_monitor_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/applications-system.svg"
+SRC_MONITOR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/applications-system.svg"
 SRC_LAPTOP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/laptop-symbolic.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 SRC_MIGRATION_ASSISTANT_ICON_212PX = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
@@ -271,7 +277,6 @@ SRC_SYSTEM_BAR_RUN_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/
 src_system_bar_error_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconerror.png"
 src_system_bar_restore_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrestore.png"
 SRC_ARROW_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/arrow.png"
-SRC_MONITOR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/monitor.png"
 SRC_HARDISK_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/harddisk.svg"
 SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'form.ui'
+## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.0
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QHBoxLayout,
-    QLabel, QListView, QProgressBar, QPushButton,
-    QScrollArea, QSizePolicy, QSpacerItem, QStackedWidget,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QFrame,
+    QHBoxLayout, QLabel, QListView, QProgressBar,
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QStackedWidget, QVBoxLayout, QWidget)
 
 class Ui_WelcomeScreen(object):
     def setupUi(self, WelcomeScreen):
@@ -202,9 +202,12 @@ class Ui_WelcomeScreen(object):
 
         self.devices_area_page2 = QListView(self.page_2)
         self.devices_area_page2.setObjectName(u"devices_area_page2")
-        self.devices_area_page2.setMinimumSize(QSize(400, 260))
-        self.devices_area_page2.setMaximumSize(QSize(400, 300))
+        self.devices_area_page2.setMinimumSize(QSize(400, 220))
+        self.devices_area_page2.setMaximumSize(QSize(400, 220))
+        self.devices_area_page2.setFrameShape(QFrame.NoFrame)
+        self.devices_area_page2.setFrameShadow(QFrame.Sunken)
         self.devices_area_page2.setDragDropMode(QAbstractItemView.NoDragDrop)
+        self.devices_area_page2.setIconSize(QSize(48, 48))
         self.devices_area_page2.setViewMode(QListView.IconMode)
         self.devices_area_page2.setWordWrap(True)
         self.devices_area_page2.setItemAlignment(Qt.AlignHCenter)
@@ -293,14 +296,24 @@ class Ui_WelcomeScreen(object):
         self.scrollArea = QScrollArea(self.widget_4)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setMinimumSize(QSize(0, 0))
+        self.scrollArea.setFrameShape(QFrame.StyledPanel)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 221, 168))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 362, 262))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_applications_page3.setObjectName(u"checkbox_applications_page3")
+        icon = QIcon()
+        iconThemeName = u"applications-development"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon = QIcon.fromTheme(iconThemeName)
+        else:
+            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.checkbox_applications_page3.setIcon(icon)
+        self.checkbox_applications_page3.setIconSize(QSize(16, 16))
 
         self.verticalLayout_10.addWidget(self.checkbox_applications_page3)
 
@@ -328,6 +341,7 @@ class Ui_WelcomeScreen(object):
 
         self.checkbox_flatpaks_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_flatpaks_page3.setObjectName(u"checkbox_flatpaks_page3")
+        self.checkbox_flatpaks_page3.setIcon(icon)
 
         self.verticalLayout_10.addWidget(self.checkbox_flatpaks_page3)
 
@@ -350,16 +364,33 @@ class Ui_WelcomeScreen(object):
         self.checkBox_3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkBox_3.setObjectName(u"checkBox_3")
         self.checkBox_3.setEnabled(False)
+        icon1 = QIcon()
+        iconThemeName = u"system-file-manager"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon1 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon1.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.checkBox_3.setIcon(icon1)
 
         self.verticalLayout_10.addWidget(self.checkBox_3)
 
         self.checkbox_files_folders_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_files_folders_page3.setObjectName(u"checkbox_files_folders_page3")
+        self.checkbox_files_folders_page3.setIcon(icon1)
 
         self.verticalLayout_10.addWidget(self.checkbox_files_folders_page3)
 
         self.checkbox_system_settings_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_system_settings_page3.setObjectName(u"checkbox_system_settings_page3")
+        icon2 = QIcon()
+        iconThemeName = u"applications-system"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon2 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon2.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.checkbox_system_settings_page3.setIcon(icon2)
 
         self.verticalLayout_10.addWidget(self.checkbox_system_settings_page3)
 
@@ -451,6 +482,13 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.from_image_layout = QVBoxLayout()
         self.from_image_layout.setObjectName(u"from_image_layout")
+        self.from_image_widget = QLabel(self.from_image)
+        self.from_image_widget.setObjectName(u"from_image_widget")
+        self.from_image_widget.setMinimumSize(QSize(100, 80))
+        self.from_image_widget.setMaximumSize(QSize(100, 80))
+
+        self.from_image_layout.addWidget(self.from_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
         self.from_image_label = QLabel(self.from_image)
         self.from_image_label.setObjectName(u"from_image_label")
         font3 = QFont()
@@ -466,19 +504,18 @@ class Ui_WelcomeScreen(object):
 
         self.images_layout_page4.addWidget(self.from_image, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.arrow_image = QWidget(self.page_4)
-        self.arrow_image.setObjectName(u"arrow_image")
-        self.arrow_image.setMinimumSize(QSize(120, 140))
-        self.arrow_image.setMaximumSize(QSize(120, 120))
-        self.verticalLayout_23 = QVBoxLayout(self.arrow_image)
-        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
-        self.arrow_image_layout = QVBoxLayout()
-        self.arrow_image_layout.setObjectName(u"arrow_image_layout")
+        self.arrow_image_widget = QLabel(self.page_4)
+        self.arrow_image_widget.setObjectName(u"arrow_image_widget")
+        self.arrow_image_widget.setMinimumSize(QSize(80, 80))
+        self.arrow_image_widget.setMaximumSize(QSize(80, 80))
+        font4 = QFont()
+        font4.setPointSize(40)
+        font4.setBold(True)
+        self.arrow_image_widget.setFont(font4)
+        self.arrow_image_widget.setStyleSheet(u"")
+        self.arrow_image_widget.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_23.addLayout(self.arrow_image_layout)
-
-
-        self.images_layout_page4.addWidget(self.arrow_image, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.images_layout_page4.addWidget(self.arrow_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
         self.to_image = QWidget(self.page_4)
         self.to_image.setObjectName(u"to_image")
@@ -488,6 +525,13 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.to_image_layout = QVBoxLayout()
         self.to_image_layout.setObjectName(u"to_image_layout")
+        self.to_image_widget = QLabel(self.to_image)
+        self.to_image_widget.setObjectName(u"to_image_widget")
+        self.to_image_widget.setMinimumSize(QSize(100, 80))
+        self.to_image_widget.setMaximumSize(QSize(100, 80))
+
+        self.to_image_layout.addWidget(self.to_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
         self.to_image_label = QLabel(self.to_image)
         self.to_image_label.setObjectName(u"to_image_label")
         self.to_image_label.setFont(font3)
@@ -534,8 +578,9 @@ class Ui_WelcomeScreen(object):
         self.checkbox_automatically_reboot_page4 = QCheckBox(self.page_4)
         self.checkbox_automatically_reboot_page4.setObjectName(u"checkbox_automatically_reboot_page4")
         self.checkbox_automatically_reboot_page4.setFont(font2)
+        self.checkbox_automatically_reboot_page4.setLayoutDirection(Qt.LeftToRight)
 
-        self.restore.addWidget(self.checkbox_automatically_reboot_page4, 0, Qt.AlignHCenter)
+        self.restore.addWidget(self.checkbox_automatically_reboot_page4, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
         self.restore.setStretch(2, 1)
 
@@ -586,16 +631,16 @@ class Ui_WelcomeScreen(object):
         WelcomeScreen.setWindowTitle(QCoreApplication.translate("WelcomeScreen", u"Migration Assistant", None))
         self.title.setText(QCoreApplication.translate("WelcomeScreen", u"Migration Assistant", None))
         self.image.setText("")
-        self.description.setText(QCoreApplication.translate("WelcomeScreen", u"Use Migration Assistant to restore information such as Applications, Files, Folders and more to this PC.", None))
+        self.description.setText(QCoreApplication.translate("WelcomeScreen", u"Restore your applications, Documents, Pictures, Music, Videos, and more to this PC with Migration Assistant.", None))
         self.button_continue.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
         self.image_page5.setText("")
         self.title_5.setText(QCoreApplication.translate("WelcomeScreen", u"Migration Completed", None))
-        self.description_5.setText(QCoreApplication.translate("WelcomeScreen", u"Your data has been migrated and is ready to use.", None))
+        self.description_5.setText(QCoreApplication.translate("WelcomeScreen", u"Your data has been migrated, and is ready to use.", None))
         self.reboot_label.setText("")
         self.button_close_page5.setText(QCoreApplication.translate("WelcomeScreen", u"Close", None))
         self.title_2.setText(QCoreApplication.translate("WelcomeScreen", u"Restore Information To This PC", None))
-        self.description_2.setText(QCoreApplication.translate("WelcomeScreen", u"Select a Time Machine backup disk to retore it's information to this PC.", None))
-        self.label.setText(QCoreApplication.translate("WelcomeScreen", u"Make sure that your Backup external device with a Time Machine's backup is already connected to this PC.", None))
+        self.description_2.setText(QCoreApplication.translate("WelcomeScreen", u"Select a disk with a Time Machine's backup to retore it's information to this PC.", None))
+        self.label.setText(QCoreApplication.translate("WelcomeScreen", u"Make sure that your disk with a Time Machine's backup is already connected to this PC.", None))
         self.button_back_page2.setText(QCoreApplication.translate("WelcomeScreen", u"Back", None))
         self.button_continue_page2.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
         self.title_3.setText(QCoreApplication.translate("WelcomeScreen", u"Select The Information To Restore", None))
@@ -609,10 +654,16 @@ class Ui_WelcomeScreen(object):
         self.button_continue_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
         self.title_4.setText(QCoreApplication.translate("WelcomeScreen", u"Begin Restoring", None))
         self.description_4.setText(QCoreApplication.translate("WelcomeScreen", u"Backup from Time Machine will been transferred to this PC.", None))
+        self.from_image_widget.setText("")
         self.from_image_label.setText(QCoreApplication.translate("WelcomeScreen", u"Name", None))
+        self.arrow_image_widget.setText(QCoreApplication.translate("WelcomeScreen", u">", None))
+        self.to_image_widget.setText("")
         self.to_image_label.setText(QCoreApplication.translate("WelcomeScreen", u"Name", None))
         self.label_restoring_status.setText(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p align=\"center\"><br/></p></body></html>", None))
-        self.checkbox_automatically_reboot_page4.setText(QCoreApplication.translate("WelcomeScreen", u"Automatically reboot after restoring is done. (Recommended)", None))
+#if QT_CONFIG(whatsthis)
+        self.checkbox_automatically_reboot_page4.setWhatsThis(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p align=\"center\">Automatically reboot after restoring is done to ensure that some applications and system settings \\nwork properly. (Recommended)</p></body></html>", None))
+#endif // QT_CONFIG(whatsthis)
+        self.checkbox_automatically_reboot_page4.setText(QCoreApplication.translate("WelcomeScreen", u"Automatically reboot, to ensure that some applications, and system settings work properly. (Recommended)", None))
         self.button_back_page4.setText(QCoreApplication.translate("WelcomeScreen", u"Back", None))
         self.button_restore_page4.setText(QCoreApplication.translate("WelcomeScreen", u"Restore", None))
     # retranslateUi

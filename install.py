@@ -11,7 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.7.04 dev"
+APP_VERSION = "v1.1.7.05 dev"
 
 CREATE_CMD_FOLDER = "mkdir"
 
@@ -44,14 +44,10 @@ SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_1
 # USERS_DISTRO_NAME=os.popen("cat /etc/os-release").read()  # "ubuntu" in USERDISTRONAME:
 
 class CLI:
-    def __init__(self):
-        pass
-
     def install_dependencies(self):
         # Depedencies
         try:
             sub.run(f"pip install -r {GET_CURRENT_LOCATION}/requirements.txt", shell=True)
-
         except FileNotFoundError as e:
             print(e)
             exit()
@@ -60,8 +56,7 @@ class CLI:
         try:
             # Copy current folder to the destination folder
             shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL)
-
-        except FileExistsError as e:
+        except FileExistsError:
             pass
 
     def create_application_files(self):
@@ -118,21 +113,26 @@ class CLI:
             
             
 if __name__ == '__main__':
-    MAIN=CLI()
+    MAIN = CLI()
 
     try:
         # Install dependencies
+        print("Installing dependencies...")
         MAIN.install_dependencies()
+        
         # Begin installation
+        print(f"Copyng files to {HOME_USER}/.local/share/{APP_NAME_CLOSE}/...")
         MAIN.copy_files()
+
         # Create exe files
+        print(f"Creating {APP_NAME_CLOSE}.desktop...")
         MAIN.create_application_files()
+        
         # Create backup checker.dekstop
+        print(f"Creating backup_checker.desktop...")
         MAIN.create_backup_checker_desktop()
     except Exception as e:
-        print(f"Error:", e)
+        print(e)
     
     print("Program was successfully installed!")
-
-    # Quit
     exit()

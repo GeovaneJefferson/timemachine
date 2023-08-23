@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 from setup import *
 from get_users_de import *
 from read_ini_file import UPDATEINIFILE
@@ -11,6 +10,7 @@ from restore_backup_flatpaks_data import restore_backup_flatpaks_data
 from restore_kde_share_config import restore_kde_share_config
 from restore_kde_config import restore_kde_config
 from restore_kde_local_share import restore_kde_local_share
+from notification_massage import notification_message_current_backing_up
 
 
 ################################################################################
@@ -24,76 +24,100 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 class RESTORE:
     def __init__(self):
+        # Update DB
+        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
 
+        # Length of item to restore
+        self.item_to_restore = 0 
+
+        #  Get length of the restore list
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_packages'):
+            self.item_to_restore += 1
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_names'):
+            self.item_to_restore += 1
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
+            self.item_to_restore += 1
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
+            self.item_to_restore += 1
+        if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
+            self.item_to_restore += 1
+
+        # Only one item inside restore list
+        if self.item_to_restore == 1:
+            # Show 99%
+            self.progress_increment = 99 / self.item_to_restore
+        else:
+            self.progress_increment = 100 / self.item_to_restore
+        
+        # Start restoring
         asyncio.run(self.start_restoring())
-
+        
     async def start_restoring(self):
         # First change the wallpaper
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring wallpaper...')
+            self.update_progressbar_db()
 
             await restore_backup_wallpaper()
         
         # Restore home folder
         if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Home...')
+            self.update_progressbar_db()
 
             await restore_backup_home()
 
-        # Restore applications packages (.deb, .rpm etc.)
+        # Restore applications packages
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_packages'):
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Applications...')
-
+            self.update_progressbar_db()
             await restore_backup_package_applications()
        
         # Restore flatpaks
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_names'):
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Flatpaks Applications...')
-
+            self.update_progressbar_db()
             await restore_backup_flatpaks_applications()
         
         # Restore flatpaks data
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring Flatpak Data...')
-            
+            self.update_progressbar_db()
             await restore_backup_flatpaks_data()
         
-        # Restore system settings
+        # # Restore system settings
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             # Only for kde
             if get_user_de() == 'kde':
-                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE local/share...')
-
-                # Restore kde local share
+                self.update_progressbar_db()
                 await restore_kde_local_share()
-                
-                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE config...')
 
-                # Restore kde CONFIG
+                self.update_progressbar_db()
                 await restore_kde_config()
 
-                MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'Restoring KDE share/CONFIG....')
-
-                # Restore kde share CONFIG
+                self.update_progressbar_db()
                 await restore_kde_share_config()
                 
-                # Restart KDE session
-                sub.Popen("kquitapp5 plasmashell; kstart5 plasmashell",shell=True)
-        
+        # Restart KDE session
+        # sub.Popen("kquitapp5 plasmashell; kstart5 plasmashell",shell=True)
+
         self.end_restoring()
 
     def end_restoring(self):
-        print("Ending restoring...")
-
-        MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', '')
-
-        # After backup is done
         print("Restoring is done!")
 
-        if MAIN_INI_FILE.get_database_value('INFO', 'auto_reboot'):
-            sub.run("sudo reboot", shell=True)
-        else:
-            exit()
+        # Update DB
+        MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+        MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+        MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
+        MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+        MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+        MAIN_INI_FILE.set_database_value('RESTORE', 'restore_progress_bar', '0')
+        notification_message_current_backing_up('')
+        exit()
+
+    def update_progressbar_db(self):
+        new_value = self.progress_increment + \
+            int(MAIN_INI_FILE.get_database_value(
+                'RESTORE', 'restore_progress_bar').split('.')[0])
+        MAIN_INI_FILE.set_database_value(
+            'RESTORE', 'restore_progress_bar', f'{str(new_value)}')
 
 
 if __name__ == '__main__':

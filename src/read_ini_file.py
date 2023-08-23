@@ -39,28 +39,6 @@ class UPDATEINIFILE:
         conn.commit()
         conn.close()
 
-    def get_value_from_table_key(self, table, key):
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-
-        # Query the value from the specified table and key
-        cursor.execute(f"SELECT value FROM {table} WHERE key = ?", (key,))
-        result = cursor.fetchone()
-
-        # Close the connection
-        conn.close()
-
-        if result:
-            if result[0] == 'True':
-                return True
-            elif result[0] == 'False':
-                return False
-            else:
-                return result[0]  # The value is the first element in the result tuple
-        else:
-            return None  # Return None if the key doesn't exist
-
     def ini_info_wallpaper(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")

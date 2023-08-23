@@ -1,5 +1,6 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
+from notification_massage import notification_message_current_backing_up
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -7,6 +8,7 @@ exclude_apps_list = []
 
 async def restore_backup_package_applications():
     print("Installing applications packages...")
+    
     with open(f"{MAIN_INI_FILE.exclude_apps_location()}", 'r') as read_exclude:
         read_exclude = read_exclude.read().split("\n")
         exclude_apps_list.append(f"{(read_exclude)}")
@@ -23,7 +25,9 @@ async def restore_backup_package_applications():
                 if output not in str(exclude_apps_list):
                     # Install rpms applications
                     sub.run(f"{INSTALL_RPM} {MAIN_INI_FILE.rpm_main_folder()}/{output}",shell=True)
-        
+                    
+                    notification_message_current_backing_up(f'Restoring: {output}...')
+
         elif MAIN_INI_FILE.get_database_value('INFO', 'packagermanager') == f"{DEB_FOLDER_NAME}":
             ################################################################################
             # Restore DEBS
@@ -35,14 +39,15 @@ async def restore_backup_package_applications():
                 if output not in str(exclude_apps_list):
                     # Install deb applications
                     sub.run(f"{INSTALL_DEB} {MAIN_INI_FILE.deb_main_folder()}/{output}",shell=True)
+                    
+                    notification_message_current_backing_up(f'Restoring: {output}...')
 
             # Fix packages installation
             sub.run("sudo apt install -y -f", shell=True)
 
         return "Task completed: Wallpaper"
     
-    except Exception as e:
-        print(e)
+    except Exception:
         pass
 
 

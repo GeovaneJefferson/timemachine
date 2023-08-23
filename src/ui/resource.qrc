@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/new/prefix1">
-        <file>monitor.png</file>
-        <file>../icons/restore_64px.svg</file>
-    </qresource>
-</RCC>

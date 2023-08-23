@@ -88,14 +88,14 @@ class MainWindow(QMainWindow):
         self.leftLayout.setContentsMargins(0, 0, 10, 0)
 
         # Backup images
-        self.backupImageLabel=QLabel()
-        self.backupImageLabel.setFixedSize(128, 128)
-        self.backupImageLabel.setStyleSheet(
+        self.backup_image_label = QLabel()
+        self.backup_image_label.setFixedSize(128, 128)
+        self.backup_image_label.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({SRC_BACKUP_ICON});"
-            "border-color: transparent;"
-            "background-repeat: no-repeat;"
+                f"background-image: url({SRC_BACKUP_ICON});"
+                "border-color: transparent;"
+                "background-repeat: no-repeat;"
             "}")
 
         # App name
@@ -125,14 +125,14 @@ class MainWindow(QMainWindow):
         self.rightLayout.setSpacing(20)
 
         # Restore images
-        self.restoreImageLabel=QLabel()
-        self.restoreImageLabel.setFixedSize(74, 74)
-        self.restoreImageLabel.setStyleSheet(
+        self.restore_image_label = QLabel()
+        self.restore_image_label.setFixedSize(74, 74)
+        self.restore_image_label.setStyleSheet(
             "QLabel"
             "{"
-            f"background-image: url({SRC_RESTORE_ICON});"
-            "background-repeat: no-repeat;"
-            "background-position: top;"
+                f"background-image: url({SRC_RESTORE_ICON});"
+                "background-repeat: no-repeat;"
+                "background-position: top;"
             "}")
 
         # Select disk button
@@ -243,7 +243,7 @@ class MainWindow(QMainWindow):
         # Description Title
         self.descriptionTitle=QLabel()
         self.descriptionTitle.setFont(TOP_TITLE)
-        self.descriptionTitle.setText(f"{APP_NAME} keeps:")
+        self.descriptionTitle.setText(f"How {APP_NAME} works:")
         self.descriptionTitle.adjustSize()
         self.descriptionTitle.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         # self.descriptionTitle.setFixedSize(420, 24)
@@ -256,11 +256,11 @@ class MainWindow(QMainWindow):
         self.descriptionText=QLabel()
         self.descriptionText.setFont(ITEM)
         self.descriptionText.setText(
-            "• Local HOME snapshots as space permits\n"
-            "• Hourly or Daily backups\n"
-            "• Packages as: .DEB and .RPM inside Downloads folder\n"
-            "• Installed flatpaks + Data (.var/app) and (.local/share/flatpak)\n"
-            "• Some system files and folders\n\n"
+            "• Choose which folders to back up from HOME.\n"
+            "• Hourly, Daily or Weekly backups, depending on your preference.\n"
+            "• Packages such as .DEB, and .RPM that are stored\n"
+            "  in the Downloads folder, are backed up.\n"
+            "• Installed flatpaks and their data are also backed up.\n"
             "The oldest backups are deleted when your disk becomes full.\n\n")
         self.descriptionText.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.descriptionText.adjustSize()
@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
         # Buttons
         ################################################################################
         widgetButton=QWidget(self.externalWindow)
-        widgetButton.setFixedSize(self.externalWindow.width()-10,58)
+        widgetButton.setFixedSize((self.externalWindow.width() - 10), 58)
         widgetButton.move(5,220)
         widgetButton.setStyleSheet("""border:0px;""")
 
@@ -390,13 +390,13 @@ class MainWindow(QMainWindow):
         # Add widgets and Layouts
         ################################################################################
         # Left Layout
-        self.leftLayout.addWidget(self.backupImageLabel, 0, Qt.AlignHCenter | Qt.AlignTop)
+        self.leftLayout.addWidget(self.backup_image_label, 0, Qt.AlignHCenter | Qt.AlignTop)
         self.leftLayout.addWidget(self.APPNAME, 0, Qt.AlignHCenter | Qt.AlignTop)
         self.leftLayout.addWidget(self.automatically_check_box, 1, Qt.AlignHCenter | Qt.AlignTop)
 
         #  Right Layout
         self.rightLayout.addStretch(10)
-        self.rightLayout.addWidget(self.restoreImageLabel, 0, Qt.AlignVCenter | Qt.AlignHCenter)
+        self.rightLayout.addWidget(self.restore_image_label, 0, Qt.AlignVCenter | Qt.AlignHCenter)
         self.rightLayout.addWidget(self.select_disk_button, 1, Qt.AlignVCenter | Qt.AlignHCenter)
 
         #  Far Right Layout
@@ -1423,7 +1423,7 @@ class OPTION(QMainWindow):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, output):
-        if MAIN_INI_FILE.get_value_from_table_key('FOLDER', f'{output.lower()}'):
+        if MAIN_INI_FILE.get_database_value('FOLDER', f'{output.lower()}'):
             # Connect to the SQLite database
             conn = sqlite3.connect(SRC_USER_CONFIG_DB)
             cursor = conn.cursor()

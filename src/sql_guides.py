@@ -61,17 +61,25 @@ def print_status_data(table):
     # Connect to the SQLite database
     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
     cursor = conn.cursor()
+  
+    # Execute a query to fetch all rows from the table
+    query = f"SELECT * FROM {table}"
+    cursor.execute(query)
 
-    # Query all data from the 'STATUS' table
-    cursor.execute(f"SELECT key, value FROM {table}")
-    status_data = cursor.fetchall()
+    # Fetch all rows
+    rows = cursor.fetchall()
 
-    # Print status data
-    for key, value in status_data:
-        print(f"{key}: {value}")
+    # Fetch column names
+    column_names = [description[0] for description in cursor.description]
 
     # Close the connection
     conn.close()
+
+    # Print the keys and values for each row
+    for row in rows:
+        print("Row:")
+        for col_name, value in zip(column_names, row):
+            print(f"{col_name}: {value}")(f"{column_names}: {value}")
 
 def clear_db():
     if os.path.exists(SRC_USER_CONFIG_DB):
@@ -119,7 +127,7 @@ def print_all_tables_data():
     # Close the connection
     conn.close()
 
-def get_value_from_table_key(table, key):
+def get_database_value(table, key):
     # Connect to the SQLite database
     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
     cursor = conn.cursor()
@@ -139,7 +147,7 @@ def get_value_from_table_key(table, key):
 # create_table('RESTORE')
 # add_to_table('RESTORE', 'system_settings', 'False')
 # print_status_data('RESTORE')
-# print(get_value_from_table_key('RESTORE', 'applications_packages'))
+# print(get_database_value('RESTORE', 'applications_packages'))
 print(print_all_tables_data())
 
 # True
@@ -151,7 +159,7 @@ def get_keys_from_table():
     cursor = conn.cursor()
 
     # Query all keys from the specified table
-    cursor.execute(f"SELECT key FROM STATUS")
+    cursor.execute(f"SELECT key FROM RESTORE")
     keys = [row[0] for row in cursor.fetchall()]
 
     # Close the connection
@@ -163,55 +171,58 @@ def get_keys_from_table():
 
 # get_keys_from_table()
 
-import sqlite3
-import configparser
+# import sqlite3
+# import configparser
 
-# Load INI data
-config = configparser.ConfigParser()
-config.read('config.ini')
+# # Load INI data
+# config = configparser.ConfigParser()
+# config.read('config.ini')
 
-# Connect to the SQLite database
-conn = sqlite3.connect('config.db')
-cursor = conn.cursor()
+# # Connect to the SQLite database
+# conn = sqlite3.connect('config.db')
+# cursor = conn.cursor()
 
-# Create a table to store the INI data
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS config (
-        section TEXT,
-        key TEXT,
-        value TEXT
-    )
-''')
+# # Create a table to store the INI data
+# cursor.execute('''
+#     CREATE TABLE IF NOT EXISTS config (
+#         section TEXT,
+#         key TEXT,
+#         value TEXT
+#     )
+# ''')
 
-# Insert INI data into the database
-for section in config.sections():
-    for key, value in config.items(section):
-        cursor.execute('''
-            INSERT INTO config (section, key, value)
-            VALUES (?, ?, ?)
-        ''', (section, key, value))
+# # Insert INI data into the database
+# for section in config.sections():
+#     for key, value in config.items(section):
+#         cursor.execute('''
+#             INSERT INTO config (section, key, value)
+#             VALUES (?, ?, ?)
+#         ''', (section, key, value))
 
-# Commit changes and close the connection
-conn.commit()
-conn.close()
+# # Commit changes and close the connection
+# conn.commit()
+# conn.close()
 
-#  #################################
-# Connect to the SQLite database
-conn = sqlite3.connect('config.db')
-cursor = conn.cursor()
+# #  #################################
+# # Connect to the SQLite database
+# conn = sqlite3.connect('config.db')
+# cursor = conn.cursor()
 
-# Query the database for the value of 'unfinished_backup' in the 'STATUS' section
-section = 'STATUS'
-key = 'unfinished_backup'
+# # Query the database for the value of 'unfinished_backup' in the 'STATUS' section
+# section = 'STATUS'
+# key = 'unfinished_backup'
 
-cursor.execute('''
-    SELECT value
-    FROM config
-    WHERE section = ? AND key = ?
-''', (section, key))
+# cursor.execute('''
+#     SELECT value
+#     FROM config
+#     WHERE section = ? AND key = ?
+# ''', (section, key))
 
 
-print(cursor.fetchone()[0])
+# print(cursor.fetchone()[0])
 
-# Close the connection
-conn.close()
+# # Close the connection
+# conn.close()
+
+
+print(get_keys_from_table())

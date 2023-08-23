@@ -129,7 +129,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Use Migration Assistant to restore information such as Applications, Files, Folders and more to this PC.</string>
+            <string>Restore your applications, Documents, Pictures, Music, Videos, and more to this PC with Migration Assistant.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -280,7 +280,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Your data has been migrated and is ready to use.</string>
+            <string>Your data has been migrated, and is ready to use.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -426,7 +426,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Select a Time Machine backup disk to retore it's information to this PC.</string>
+            <string>Select a disk with a Time Machine's backup to retore it's information to this PC.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -441,17 +441,29 @@
            <property name="minimumSize">
             <size>
              <width>400</width>
-             <height>260</height>
+             <height>220</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>400</width>
-             <height>300</height>
+             <height>220</height>
             </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
            </property>
            <property name="dragDropMode">
             <enum>QAbstractItemView::NoDragDrop</enum>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>48</width>
+             <height>48</height>
+            </size>
            </property>
            <property name="viewMode">
             <enum>QListView::IconMode</enum>
@@ -472,7 +484,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Make sure that your Backup external device with a Time Machine's backup is already connected to this PC.</string>
+            <string>Make sure that your disk with a Time Machine's backup is already connected to this PC.</string>
            </property>
           </widget>
          </item>
@@ -661,6 +673,9 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
@@ -669,8 +684,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>221</width>
-                   <height>168</height>
+                   <width>362</width>
+                   <height>262</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -678,6 +693,16 @@
                    <widget class="QCheckBox" name="checkbox_applications_page3">
                     <property name="text">
                      <string>Applications</string>
+                    </property>
+                    <property name="icon">
+                     <iconset theme="applications-development">
+                      <normaloff>.</normaloff>.</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>16</width>
+                      <height>16</height>
+                     </size>
                     </property>
                    </widget>
                   </item>
@@ -735,6 +760,10 @@
                     <property name="text">
                      <string>Flatpaks</string>
                     </property>
+                    <property name="icon">
+                     <iconset theme="applications-development">
+                      <normaloff>.</normaloff>.</iconset>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -773,6 +802,10 @@
                     <property name="text">
                      <string>Flatpaks Data Coming soon...</string>
                     </property>
+                    <property name="icon">
+                     <iconset theme="system-file-manager">
+                      <normaloff>.</normaloff>.</iconset>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -780,12 +813,20 @@
                     <property name="text">
                      <string>Files and Folders</string>
                     </property>
+                    <property name="icon">
+                     <iconset theme="system-file-manager">
+                      <normaloff>.</normaloff>.</iconset>
+                    </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="checkbox_system_settings_page3">
                     <property name="text">
                      <string>System Settings</string>
+                    </property>
+                    <property name="icon">
+                     <iconset theme="applications-system">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                    </widget>
                   </item>
@@ -977,7 +1018,26 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_21">
               <item>
-               <layout class="QVBoxLayout" name="from_image_layout" stretch="0">
+               <layout class="QVBoxLayout" name="from_image_layout" stretch="0,0">
+                <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                 <widget class="QLabel" name="from_image_widget">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
                 <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
                  <widget class="QLabel" name="from_image_label">
                   <property name="font">
@@ -997,24 +1057,34 @@
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-            <widget class="QWidget" name="arrow_image" native="true">
+            <widget class="QLabel" name="arrow_image_widget">
              <property name="minimumSize">
               <size>
-               <width>120</width>
-               <height>140</height>
+               <width>80</width>
+               <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>120</width>
-               <height>120</height>
+               <width>80</width>
+               <height>80</height>
               </size>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_23">
-              <item>
-               <layout class="QVBoxLayout" name="arrow_image_layout"/>
-              </item>
-             </layout>
+             <property name="font">
+              <font>
+               <pointsize>40</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
@@ -1033,7 +1103,26 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_22">
               <item>
-               <layout class="QVBoxLayout" name="to_image_layout" stretch="0">
+               <layout class="QVBoxLayout" name="to_image_layout" stretch="0,0">
+                <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                 <widget class="QLabel" name="to_image_widget">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>80</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
                 <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
                  <widget class="QLabel" name="to_image_label">
                   <property name="font">
@@ -1124,15 +1213,21 @@
            </property>
           </spacer>
          </item>
-         <item alignment="Qt::AlignHCenter">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QCheckBox" name="checkbox_automatically_reboot_page4">
            <property name="font">
             <font>
              <pointsize>10</pointsize>
             </font>
            </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Automatically reboot after restoring is done to ensure that some applications and system settings \nwork properly. (Recommended)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
            <property name="text">
-            <string>Automatically reboot after restoring is done. (Recommended)</string>
+            <string>Automatically reboot, to ensure that some applications, and system settings work properly. (Recommended)</string>
            </property>
           </widget>
          </item>

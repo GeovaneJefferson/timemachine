@@ -7,11 +7,10 @@ from device_location import device_location
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-def save_info(chooseDevice):
+def save_info(device):
     # .deb
     if "deb" in package_manager():
         MAIN_INI_FILE.set_database_value('INFO', 'packageManager', f'{DEB_FOLDER_NAME}')
-
     # .rpm
     elif "rpm" in package_manager():
         MAIN_INI_FILE.set_database_value('INFO', 'packageManager', f'{RPM_FOLDER_NAME}')
@@ -24,13 +23,13 @@ def save_info(chooseDevice):
 
     # Device location
     if device_location():
-        MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', f'{MEDIA}/{USERNAME}/{chooseDevice}')
+        MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', f'{MEDIA}/{USERNAME}/{device}')
 
     elif not device_location():
-        MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', f'{RUN}/{USERNAME}/{chooseDevice}')
+        MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', f'{RUN}/{USERNAME}/{device}')
 
     # External name
-    MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', f'{chooseDevice}')
+    MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', f'{device}')
             
             
 if __name__ == '__main__':
