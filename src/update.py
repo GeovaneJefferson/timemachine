@@ -28,6 +28,7 @@ def delete_ini_file(update_now):
 
 def restore_ini_file(update_now):
     sub.run(f"{COPY_CP_CMD} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/user.ini {SRC_USER_CONFIG_DB}",shell=True)
+    
     if update_now:
         open_app()
 
