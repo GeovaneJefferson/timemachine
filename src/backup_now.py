@@ -31,15 +31,13 @@ class BACKUP:
         sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
         
     async def backup_home(self):
- 
         # Backup Home folder
-        # Backup all (user.ini true folders)
         for folder in get_folders():
             sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
             
             # Update notification status
             print(f'Backing up: {HOME_USER}/{folder}...')
-            notification_message(f'Backing up: {HOME_USER}/{folder}...')
+            notification_message(f'Backing up: {folder}...')
 
     async def backup_home_hidden_files(self):
 
@@ -61,7 +59,7 @@ class BACKUP:
                         
                         # Update notification status
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
-                        notification_message(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        notification_message(f'Backing up: .local/share/{folder}...')
                     except:
                         pass
 
@@ -75,7 +73,7 @@ class BACKUP:
                     sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}",shell=True)
                     # Update notification status
                     print(f'Backing up: {HOME_USER}/.config/{folder}...')
-                    notification_message(f'Backing up: {HOME_USER}/.config/{folder}...')
+                    notification_message(f'Backing up: .config/{folder}...')
 
         # For KDE
         if get_user_de() == 'kde':
@@ -100,7 +98,7 @@ class BACKUP:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.kde_local_share_main_folder()}",shell=True)
                         # Update notification status
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
-                        notification_message(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        notification_message(f'Backing up: .local/share/{folder}...')
                     except:
                         pass
 
@@ -129,7 +127,7 @@ class BACKUP:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}",shell=True)
                         # Update notification status
                         print(f'Backing up: {HOME_USER}/.config/{folder}...')
-                        notification_message(f'Backing up: {HOME_USER}/.config/{folder}...')
+                        notification_message(f'Backing up: .config/{folder}...')
             except:
                 pass
 
@@ -161,7 +159,7 @@ class BACKUP:
                         {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
                     # Update notification status
                     print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
-                    notification_message(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
+                    notification_message(f'Backing up: .kde/share/{folders}...')
             except:
                 pass
 
@@ -231,7 +229,7 @@ class BACKUP:
         MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
         MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
-        # RESTORE DATABASE 
+        # Write to restore ini file 
         CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{MAIN_INI_FILE.restore_settings_location()}")
         with open(f"{MAIN_INI_FILE.restore_settings_location()}", 'w') as configfile:
