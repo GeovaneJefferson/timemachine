@@ -665,9 +665,9 @@ class MainWindow(QMainWindow):
             print("No new updates available...")
 
     def on_update_button_clicked(self):
-        # Disable system tray
-        if os.path.isfile(f"{DST_FOLDER_INSTALL}/src/system_tray_is_running.txt"):
-            sub.run(f"rm {DST_FOLDER_INSTALL}/src/system_tray_is_running.txt",shell=True)
+        # # Disable system tray
+        # if os.path.isfile(f"{DST_FOLDER_INSTALL}/src/system_tray_is_running.txt"):
+        #     sub.run(f"rm {DST_FOLDER_INSTALL}/src/system_tray_is_running.txt",shell=True)
 
         # Call update and Exit
         backup_ini_file(True)
