@@ -28,6 +28,7 @@ def delete_ini_file(update_now):
         restore_ini_file(update_now)
 
 def restore_ini_file(update_now):
+    print("Moving the backup DB...")
     # Move the backup DB to the right location
     sub.run(f"mv -f {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/config.db {SRC_USER_CONFIG_DB}",shell=True)
     
