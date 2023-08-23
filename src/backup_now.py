@@ -80,7 +80,9 @@ class BACKUP:
             include_list = [
                 "dconf",
                 "plasmashellr",
-                "plasma-org.kde.plasma.desktop-appletsrc"
+                "plasma-org.kde.plasma.desktop-appletsrc",
+                "plasmarc",
+                "kdeglobals"
                 ]
 
             for folder in os.listdir(f"{HOME_USER}/.config/"):
@@ -147,7 +149,12 @@ class BACKUP:
                     "plasmarc",
                     "plasmarshellrc",
                     "kglobalshortcutsrc",
-                    "khotkeysrc"]
+                    "khotkeysrc",
+                    "kwinrulesrc"
+                    "dolphinrc",
+                    "ksmserverrc",
+                    "konsolerc",
+                    "kscreenlockerrc"]
 
                 for folder in os.listdir(f"{HOME_USER}/.config/"):
                     # Handle spaces
