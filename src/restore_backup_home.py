@@ -14,7 +14,9 @@ async def restore_backup_home():
     for folder in os.listdir(f"{MAIN_INI_FILE.backup_folder_name()}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}/"):
         # Handle spaces
         folder = handle_spaces(folder)
-
+    
+        notification_message_current_backing_up(f'Restoring: {HOME_USER}/{folder}...')
+    
         # If folder folder do not exist, create it
         if not os.path.exists(f"{HOME_USER}/{folder}/"):
             sub.run(f"{CREATE_CMD_FOLDER} {HOME_USER}/{folder}", shell=True)
@@ -24,8 +26,6 @@ async def restore_backup_home():
         sub.run(f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.backup_folder_name()}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}/"
             f"{folder}/ {HOME_USER}/{folder}/", shell=True)
 
-        notification_message_current_backing_up(f'Restoring: {HOME_USER}/{folder}...')
-    
     return "Task completed: Wallpaper"
 
 

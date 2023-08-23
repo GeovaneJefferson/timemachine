@@ -110,7 +110,8 @@ class APP:
                 # Is backup now running? (chech if file exists)
                 self.status_on()
             else:
-                self.status_off()
+                if MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
+                    self.status_off()
             
         # No backup device registered
         else:
@@ -153,20 +154,19 @@ class APP:
             self.browseTimeMachineBackupsButton.setEnabled(False)
    
     def status_off(self):
-        if not MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
-            # Change color to Red
-            self.change_color("Red")
-            
-            self.backupNowButton.setEnabled(False)
-            self.browseTimeMachineBackupsButton.setEnabled(False)
-            
-            # if self.iniNotificationID != " ":
-            #     # Clean notification add info, because auto backup is not enabled
-            #     config=configparser.ConfigParser()
-            #     config.read(src_user_config)
-            #     with open(src_user_config, 'w', encoding='utf8') as configfile:
-            #         config.set('INFO', 'notification_add_info', ' ')
-            #         config.write(configfile)
+        # Change color to Red
+        self.change_color("Red")
+        
+        self.backupNowButton.setEnabled(False)
+        self.browseTimeMachineBackupsButton.setEnabled(False)
+        
+        # if self.iniNotificationID != " ":
+        #     # Clean notification add info, because auto backup is not enabled
+        #     config=configparser.ConfigParser()
+        #     config.read(src_user_config)
+        #     with open(src_user_config, 'w', encoding='utf8') as configfile:
+        #         config.set('INFO', 'notification_add_info', ' ')
+        #         config.write(configfile)
 
     def is_current_restoring(self):
         if not MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
