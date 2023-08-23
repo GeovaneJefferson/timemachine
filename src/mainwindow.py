@@ -660,6 +660,8 @@ class MainWindow(QMainWindow):
 
             # Show button on screen
             self.leftLayout.addWidget(updateAvailable, 0, Qt.AlignHCenter | Qt.AlignBottom)
+        else:
+            print("No new updates available...")
 
     def on_update_button_clicked(self):
         # Disable system tray

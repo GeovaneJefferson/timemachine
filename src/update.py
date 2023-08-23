@@ -1,44 +1,36 @@
 from setup import *
 
-def backup_ini_file(updateNow):
+def backup_ini_file(update_now):
     # Check if ini file exist and can be found
     # Make a copy and move to /src
-    sub.run(f"{COPY_CP_CMD} {SRC_USER_CONFIG} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src",shell=True)
-    if updateNow:
-        delete_pycache_(updateNow)
+    sub.run(f"{COPY_CP_CMD} {SRC_USER_CONFIG_DB} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src", shell=True)
+    
+    if update_now:
+        sub.run(f"rm -rf {src_pycache}", shell=True)
+        update_git(update_now)
 
-def delete_pycache_(updateNow):
-    print(f"Deleting {src_pycache}")
-
-    sub.run(f"rm -rf {src_pycache}", shell=True)
-    if updateNow:
-        update_git(updateNow)
-
-def update_git(updateNow):
+def update_git(update_now):
     print("Updating...")
 
     sub.Popen(["git", "stash"])
     # sub.Popen(["git", "reset", "--hard"])
     sub.Popen(["git", "pull"])
     
-    if updateNow:
-        delete_ini_file(updateNow)
+    if update_now:
+        delete_ini_file(update_now)
 
-def delete_ini_file(updateNow):
+def delete_ini_file(update_now):
     print("Deleting old ini file...")
 
-    sub.run(f"rm -f {SRC_USER_CONFIG}", shell=True)
-    if updateNow:
-        restore_ini_file(updateNow)
+    sub.run(f"rm -f {SRC_USER_CONFIG_DB}", shell=True)
+    if update_now:
+        restore_ini_file(update_now)
 
-def restore_ini_file(updateNow):
-    sub.run(f"{COPY_CP_CMD} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/user.ini {SRC_USER_CONFIG}",shell=True)
-    if updateNow:
+def restore_ini_file(update_now):
+    sub.run(f"{COPY_CP_CMD} {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/user.ini {SRC_USER_CONFIG_DB}",shell=True)
+    if update_now:
         open_app()
 
 def open_app():
     sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}", shell=True)
-    # Close system tray
-    remove_system_tray_file()
-
     exit()
