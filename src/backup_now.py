@@ -27,20 +27,23 @@ class BACKUP:
                 # Handle spaces
                 wallpaper = handle_spaces(wallpaper)
                 
-                sub.run(f"rm -rf {MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}", shell=True)
+                command = f"{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}"
+                sub.run(["rm -rf", command])
 
         # Backup wallpaper
         if get_wallpaper_full_location() is not None:
-            sub.run(f"{COPY_CP_CMD} {get_wallpaper_full_location()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
-        
+            command = f"{get_wallpaper_full_location()} {MAIN_INI_FILE.wallpaper_main_folder()}/"
+            sub.run([COPY_CP_CMD, command])
+
     async def backup_home(self):
         # Backup Home folder
         for folder in get_folders():
             # Handle spaces
             folder = handle_spaces(folder)
 
-            sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
-            
+            command = f"{HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}"
+            sub.run([COPY_CP_CMD, command])
+
             print(f'Backing up: {HOME_USER}/{folder}...')
 
             # Update notification status
@@ -63,9 +66,10 @@ class BACKUP:
                 # folders_list.append(folder)
                 if folder in include_list:
                     try:
-                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} \
-                            {MAIN_INI_FILE.gnome_local_share_main_folder()}", shell=True)
-                        
+                        command = f"{HOME_USER}/.local/share/{folder} \
+                            {MAIN_INI_FILE.gnome_local_share_main_folder()}"
+                        sub.run([COPY_RSYNC_CMD, command])
+
                         # Update notification status
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
                         notification_message(f'Backing up: .local/share/{folder}...')
@@ -74,7 +78,9 @@ class BACKUP:
 
             # Backup .config/ selected folders
             include_list = [
-                "dconf"
+                "dconf",
+                "plasmashellr",
+                "plasma-org.kde.plasma.desktop-appletsrc"
                 ]
 
             for folder in os.listdir(f"{HOME_USER}/.config/"):
@@ -82,9 +88,12 @@ class BACKUP:
                 folder = handle_spaces(folder)
 
                 if folder in include_list:
-                    sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}",shell=True)
-                    # Update notification status
+                    command = f"{HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}"
+                    sub.run([COPY_RSYNC_CMD, command])
+                    
                     print(f'Backing up: {HOME_USER}/.config/{folder}...')
+
+                    # Update notification status
                     notification_message(f'Backing up: .config/{folder}...')
 
         # For KDE
@@ -110,9 +119,12 @@ class BACKUP:
                 # .local/share
                 if folder in include_list:
                     try:
-                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.kde_local_share_main_folder()}",shell=True)
-                        # Update notification status
+                        command = f"{HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.kde_local_share_main_folder()}"
+                        sub.run([COPY_RSYNC_CMD, command])
+                       
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        
+                        # Update notification status
                         notification_message(f'Backing up: .local/share/{folder}...')
                     except:
                         pass
@@ -142,9 +154,12 @@ class BACKUP:
                     folder = handle_spaces(folder)
 
                     if folder in include_list:
-                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}",shell=True)
-                        # Update notification status
+                        command = f"{HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}"
+                        sub.run([COPY_RSYNC_CMD, command])
+
                         print(f'Backing up: {HOME_USER}/.config/{folder}...')
+                        
+                        # Update notification status
                         notification_message(f'Backing up: .config/{folder}...')
             except:
                 pass
@@ -176,9 +191,10 @@ class BACKUP:
                 
                     # folders_list.append(folders)
                     if folder in include_list:
-                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} \
-                            {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
-                        
+                        command = f"{HOME_USER}/.kde/share/{folders} \
+                            {str(MAIN_INI_FILE.kde_share_config_main_folder())}"
+                        sub.run([COPY_RSYNC_CMD, command])
+
                         print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
                         
                         # Update notification status
@@ -217,9 +233,10 @@ class BACKUP:
                 counter = 0
                 for _ in flatpak_var_list():
                     # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_var_list()[counter]} \
-                            {MAIN_INI_FILE.flatpak_var_folder()}", shell=True)
-                    
+                    command = f"{flatpak_var_list()[counter]} \
+                            {MAIN_INI_FILE.flatpak_var_folder()}"
+                    sub.run([COPY_RSYNC_CMD, command])
+
                     # Update notification status
                     print(f'Backing up: {flatpak_var_list()[counter]}...')
                     notification_message(f'Backing up: {flatpak_var_list()[counter]}...')
@@ -230,9 +247,10 @@ class BACKUP:
                 counter = 0
                 for _ in flatpak_local_list():
                     # Copy the Flatpak var/app folders
-                    sub.run(f"{COPY_RSYNC_CMD} {flatpak_local_list()[counter]} \
-                            {MAIN_INI_FILE.flatpak_local_folder()}", shell=True)
-                   
+                    command = f"{flatpak_local_list()[counter]} \
+                            {MAIN_INI_FILE.flatpak_local_folder()}"
+                    sub.run([COPY_RSYNC_CMD, command])
+
                     # Update notification status
                     print(f'Backing up: {flatpak_local_list()[counter]}...')
                     notification_message(f'Backing up: {flatpak_local_list()[counter]}...')
