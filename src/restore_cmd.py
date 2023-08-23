@@ -1,5 +1,5 @@
 from setup import *
-from get_users_de import *
+from get_users_de import get_user_de
 from read_ini_file import UPDATEINIFILE
 from restore_backup_wallpaper import restore_backup_wallpaper
 from restore_backup_home import restore_backup_home
@@ -56,13 +56,11 @@ class RESTORE:
         # First change the wallpaper
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             self.update_progressbar_db()
-
             await restore_backup_wallpaper()
         
         # Restore home folder
         if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
             self.update_progressbar_db()
-
             await restore_backup_home()
 
         # Restore applications packages

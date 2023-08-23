@@ -18,13 +18,15 @@ async def restore_backup_flatpaks_applications():
         
         for flatpak in read_flatpak_file:
             flatpak = flatpak.strip('\n')
+            
             if flatpak not in read_exclude:
-                print("Installing", flatpak)     
-
                 # Install only if flatpak if not in the exclude app list
                 try:
+                    # Update DB
                     MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', f'{flatpak}')
-                    notification_message_current_backing_up(f'Restoring: {flatpak}...')
+                    # Update notification
+                    notification_message_current_backing_up(f'Installing: {flatpak}...')
+                    # Install it
                     sub.run(f"{FLATPAK_INSTALL_CMD} {flatpak}", shell=True)
                 except:
                     pass

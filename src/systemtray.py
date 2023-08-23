@@ -126,17 +126,19 @@ class APP:
     def status_on(self):
         # Backing up right now False
         if not MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
+            # Change color to White
             self.change_color("White")
+
             self.backupNowButton.setEnabled(True)
             self.browseTimeMachineBackupsButton.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
                 self.iniLastBackupInformation.setText(
-                    f"Next Backup to '{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}':")
+                    f'Next Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
                 self.iniLastBackupInformation2.setText(f'{calculate_time_left_to_backup()}\n')
             else:
                 self.iniLastBackupInformation.setText(
-                    f"Latest Backup to '{MAIN_INI_FILE.get_database_value('EXTERNAL', 'name')}':")
+                    f'Latest Backup to "{MAIN_INI_FILE.get_database_value("EXTERNAL", "name")}":')
                 self.iniLastBackupInformation2.setText(f'{str(latest_backup_date_label())}\n')
     
         else:
@@ -152,7 +154,9 @@ class APP:
    
     def status_off(self):
         if not MAIN_INI_FILE.get_database_value("STATUS", "automatically_backup"):
+            # Change color to Red
             self.change_color("Red")
+            
             self.backupNowButton.setEnabled(False)
             self.browseTimeMachineBackupsButton.setEnabled(False)
             

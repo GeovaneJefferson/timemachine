@@ -8,8 +8,9 @@ MAIN_INI_FILE = UPDATEINIFILE()
 some_image_inside_list = []
 
 async def restore_backup_wallpaper():
-    print("Restoring users wallpaper...")
-    notification_message_current_backing_up("Restoring: Wallpaper...")
+    print("Applying users wallpaper...")
+
+    notification_message_current_backing_up("Applying: Wallpaper...")
 
     try:
         # Check if a wallpaper can be found
@@ -38,19 +39,15 @@ async def restore_backup_wallpaper():
                     # Remove spaces if exist
                     if "," in image:
                         image=str(image.replace(", ", "\, "))
-                        
                     # Add \ if it has space
                     if " " in image:
                         image=str(image.replace(" ", "\ "))
-
                     # Light or Dark wallpaper
                     if getColorScheme == "prefer-light" or getColorScheme == "default":
                         # Light theme o default
-                        print(f"{SET_GNOME_WALLPAPER} {HOME_USER}/.local/share/wallpapers/{image}")
                         sub.run(f"{SET_GNOME_WALLPAPER} {HOME_USER}/.local/share/wallpapers/{image}", shell=True)
                     else:
                         # Dark theme
-                        print(f"{SET_GNOME_WALLPAPER_DARK} {HOME_USER}/.local/share/wallpapers/{image}")
                         sub.run(f"{SET_GNOME_WALLPAPER_DARK} {HOME_USER}/.local/share/wallpapers/{image}", shell=True)
 
                     # Set wallpaper to Zoom
@@ -59,7 +56,6 @@ async def restore_backup_wallpaper():
                     ################################################################
 
                 elif get_user_de() == "kde":
-                    print("Restoring users wallpaper (KDE)...")
                     # Apply to KDE desktop
                     os.popen("""
                             dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
@@ -74,11 +70,15 @@ async def restore_backup_wallpaper():
                         }'
                             """ % (HOME_USER, image))
                     break
-        
+
+                else:
+                    break
+
         return "Task completed: Wallpaper"
     
     except:
         pass
+
 
 if __name__ == '__main__':
     pass

@@ -118,8 +118,6 @@ class WelcomeScreen(QWidget):
 		self.get_devices_location_page2()
 
 	def on_continue_button_clicked_page1(self):
-		# self.ui.stackedWidget.setCurrentWidget(self.ui.page_2)
-
 		# Animation
 		self.stacked_widget_transition(self.ui.page_2, 'right')
 
@@ -177,7 +175,6 @@ class WelcomeScreen(QWidget):
 
 		for index in selected_indexes:
 			self.selected_device = self.model.data(index)
-			print(self.selected_device)
 			# self.selected_item_texts.append(f"{self.get_devices_location_page2()}/{USERNAME}/{self.selected_device}")
 
 		# Enable continue button
@@ -188,15 +185,13 @@ class WelcomeScreen(QWidget):
 			self.ui.button_continue_page2.setEnabled(False)
 
 	def on_back_button_page2_clicked(self):
-		# self.ui.stackedWidget.setCurrentWidget(self.ui.page_1)
-
 		# Animation
 		self.stacked_widget_transition(self.ui.page_1, 'left')
 
 	def on_continue_button_clicked_page2(self):
 		# Register backup device to DB 
 		save_info(self.selected_device)
-		# self.ui.stackedWidget.setCurrentWidget(self.ui.page_3)
+		
 		# Load application and sub checkboxes
 		self.load_applications_sub_checkbox_page3()
 		# Load flatpaks and sub checkboxes
@@ -264,7 +259,7 @@ class WelcomeScreen(QWidget):
 			self.ui.checkbox_flatpaks_page3.setEnabled(False)
 
 		# Expand it, 1 item = 20 height
-		self.ui.flatpaks_sub_widget_page3.setMinimumHeight(self.number_of_item_flatpaks*30)
+		self.ui.flatpaks_sub_widget_page3.setMinimumHeight(self.number_of_item_flatpaks*20)
 
 	def load_files_and_folders_page3(self):
 		home_to_restore = []
@@ -290,52 +285,6 @@ class WelcomeScreen(QWidget):
 			self.ui.checkbox_system_settings_page3.setEnabled(True)
 		else:
 			self.ui.checkbox_system_settings_page3.setEnabled(False)
-
-	def on_back_button_page3_clicked(self):
-		# APPLICATIONS
-		# Reset count of applications item
-		self.number_of_item_applications = 0
-
-		# Delete all added applications checkboxes
-		for i in range(self.ui.applications_sub_checkbox_layout_page3.count()):
-			item=self.ui.applications_sub_checkbox_layout_page3.itemAt(i)
-			widget=item.widget()
-			widget.deleteLater()
-			i -= 1
-
-		# FLATPAK
-		# Clean flaptak list
-		self.has_flatpak_to_restore.clear()
-		# Reset count of flatpaks
-		self.number_of_item_flatpaks = 0
-
-		# Delete all added flatpaks checkboxes
-		for i in range(self.ui.flatpaks_sub_checkbox_layout_page3.count()):
-			item=self.ui.flatpaks_sub_checkbox_layout_page3.itemAt(i)
-			widget=item.widget()
-			widget.deleteLater()
-			i -= 1
-
-		# Animation
-		self.stacked_widget_transition(self.ui.page_2, 'left')
-
-	def on_continue_button_clicked_page3(self):
-		# Create flatpak exlude file
-		if os.path.exists(MAIN_INI_FILE.exclude_flatpaks_location()):
-			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
-		else:
-			sub.run(f'{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_flatpaks_location()}', shell=True)
-
-		# Write exclude flatpaks to file
-		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
-			for exclude_flatpak in self.flatpaks_to_be_exclude:
-				exclude.write(exclude_flatpak + "\n")
-
-		# Load page4
-		self.load_restore_page4()
-
-		# Animation
-		self.stacked_widget_transition(self.ui.page_4, 'right')
 
 	def on_applications_checkbox_clicked_page3(self):
 		# Expand it if selected
@@ -466,6 +415,74 @@ class WelcomeScreen(QWidget):
 		else:
 			# Check applications checkbox
 			self.ui.checkbox_flatpaks_page3.setChecked(True)
+	
+	def on_back_button_page3_clicked(self):
+		#################################
+		# APPLICATIONS
+		#################################
+		# Reset count of applications item
+		self.number_of_item_applications = 0
+
+		# Delete all added applications checkboxes
+		for i in range(self.ui.applications_sub_checkbox_layout_page3.count()):
+			item = self.ui.applications_sub_checkbox_layout_page3.itemAt(i)
+			widget=item.widget()
+			widget.deleteLater()
+			i -= 1
+
+		#################################
+		# FLATPAK
+		#################################
+		# Clean flaptak list
+		self.has_flatpak_to_restore.clear()
+
+		# Reset count of flatpaks
+		self.number_of_item_flatpaks = 0
+
+		# Delete all added flatpaks checkboxes
+		for i in range(self.ui.flatpaks_sub_checkbox_layout_page3.count()):
+			item=self.ui.flatpaks_sub_checkbox_layout_page3.itemAt(i)
+			widget=item.widget()
+			widget.deleteLater()
+			i -= 1
+
+		# Animation
+		self.stacked_widget_transition(self.ui.page_2, 'left')
+
+	def on_continue_button_clicked_page3(self):
+		#################################
+		# APPLICATIONS
+		#################################
+		# Create a application exlude file
+		if os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
+			os.remove(MAIN_INI_FILE.exclude_applications_location())
+		else:
+			sub.run(f'{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_applications_location()}', shell=True)
+
+		# Write exclude flatpaks to file
+		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
+			for exclude_applications in self.applications_to_be_exclude:
+				exclude.write(exclude_applications + "\n")
+
+		#################################
+		# FLATPAK
+		#################################
+		# Create a flatpak exlude file
+		if os.path.exists(MAIN_INI_FILE.exclude_flatpaks_location()):
+			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
+		else:
+			sub.run(f'{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_flatpaks_location()}', shell=True)
+
+		# Write exclude flatpaks to file
+		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
+			for exclude_flatpak in self.flatpaks_to_be_exclude:
+				exclude.write(exclude_flatpak + "\n")
+
+		# Load page4
+		self.load_restore_page4()
+
+		# Animation
+		self.stacked_widget_transition(self.ui.page_4, 'right')
 
 	########################################################
 	# PAGE 4
@@ -563,7 +580,7 @@ class WelcomeScreen(QWidget):
 			page.setGeometry(QRect(-width, 0, -width, self.ui.stackedWidget.height()))
 
 		animation = QPropertyAnimation(page, b'geometry', page)
-		animation.setDuration(500)
+		animation.setDuration(1000)
 		animation.setEasingCurve(QEasingCurve.OutCubic)
 		animation.setStartValue(page.geometry())
 		animation.setEndValue(QRect(0, 0, width, self.ui.stackedWidget.height()))
@@ -622,6 +639,7 @@ if __name__ == '__main__':
 
 	WIDGET.setWindowTitle("Migration Assistant")
 	WIDGET.setWindowIcon(QPixmap(SRC_MIGRATION_ASSISTANT_ICON_212PX))
+	WIDGET.setFixedSize(900, 600)
 	WIDGET.addWidget(MAIN)
 	WIDGET.setCurrentWidget(MAIN)
 	WIDGET.show()

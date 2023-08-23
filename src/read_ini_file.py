@@ -237,9 +237,6 @@ class UPDATEINIFILE:
     ####################################################################
     # Exclude
     ####################################################################
-    def exclude_apps_location(self):
-        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
-
     def exclude_applications_location(self):
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
 
