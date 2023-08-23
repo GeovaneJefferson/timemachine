@@ -102,7 +102,11 @@ INSTALL_RPM = "sudo rpm -ivh --replacepkgs"
 FLATPAK_INSTALL_CMD = "flatpak install --system --noninteractive --assumeyes --or-update"
 
 # DE
-SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome", "unity", "pop", "kde"]
+SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
+            "unity", "pop", "kde",
+            "zorin:gnome", "pop:gnome", "budgie:gnome"
+               ]
+
 SUPPORT_DEB_PACKAGES_MANAGER = ["debian", "ubuntu"]
 SUPPORT_RPM_PACKAGE_MANAGER = ["fedora", "opensuse"]
 GET_USER_DE = "echo $XDG_CURRENT_DESKTOP"
