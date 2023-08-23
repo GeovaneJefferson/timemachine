@@ -67,6 +67,9 @@ def get_all_backup_folders():
 
     return folders_list
 
+def btn_cancel_clicked():
+    exit()
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -102,7 +105,7 @@ class MainWindow(QMainWindow):
         # Down button
         self.ui.btn_down.clicked.connect(self.btn_down_clicked)
         # Cancel button
-        self.ui.btn_cancel.clicked.connect(self.btn_cancel_clicked)
+        self.ui.btn_cancel.clicked.connect(btn_cancel_clicked)
         # Restore button
         self.ui.btn_restore.clicked.connect(self.start_restore)
 
@@ -213,7 +216,6 @@ class MainWindow(QMainWindow):
         for index in range(self.ui.dates_layout.count()):
             button = self.ui.dates_layout.itemAt(index).widget()
             if isinstance(button, QPushButton):
-                print(button.text())
                 # Check the latest date button found
                 button.setChecked(True)
                 # Counter for date is iqual to 0, so, the first one
@@ -274,10 +276,13 @@ class MainWindow(QMainWindow):
 
         # Show results
         #  asynchronously
-        thread = threading.Thread(target=self.show_results)
-        thread.start()
+        self.show_thread = threading.Thread(target=self.show_results)
+        self.show_thread.start()
 
     def show_results(self):
+        # Clean previous results
+        self.delete_all_results()
+
         inside_current_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/" \
                                 f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
                                 f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
@@ -288,8 +293,9 @@ class MainWindow(QMainWindow):
         try:
             for filename in os.listdir(inside_current_folder):
                 full_path = os.path.join(inside_current_folder, filename)
-
-                if os.path.isfile(full_path) and not filename.startswith('.'):  # Only include files, skip hidden files
+                
+                # Only include files, skip hidden files
+                if os.path.isfile(full_path) and not filename.startswith('.'): 
                     result_size = os.path.getsize(full_path)
                     date_modified = os.path.getmtime(full_path)
                     extension = os.path.splitext(filename)[1]
@@ -305,11 +311,11 @@ class MainWindow(QMainWindow):
             for item_data in file_list:
                 qt_item = QTreeWidgetItem(self.ui.tree_widget, item_data[:-1])
                 qt_item.setData(1, Qt.UserRole, item_data[-1])  # Store the timestamp as user data
-                # qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                 qt_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                 qt_item.setCheckState(0, Qt.Unchecked)
 
             self.qtree_add_results(inside_current_folder)
+
         except FileNotFoundError:
             pass
 
@@ -317,12 +323,12 @@ class MainWindow(QMainWindow):
         for folder_name in os.listdir(inside_current_folder):
             folder_path = os.path.join(inside_current_folder, folder_name)
 
-            if os.path.isdir(folder_path) and not folder_name.startswith('.'):
+            if os.path.isdir(folder_path) and not str(folder_name).startswith('.'):
                 folder_item = QTreeWidgetItem(self.ui.tree_widget, [folder_name, '', '', 'Folder'])
                 # Chekbox for folders
                 folder_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                 folder_item.setCheckState(0, Qt.Unchecked)
-
+                
                 self.qtree_add_sub_items(folder_item, folder_path)
 
     def qtree_add_sub_items(self, parent_item, folder_path):
@@ -355,8 +361,23 @@ class MainWindow(QMainWindow):
                     item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                     item.setCheckState(0, Qt.Unchecked)
-        except PermissionError:
-            pass
+        except UnboundLocalError:
+            # If folder is empty, change date, until find something
+            print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
+            self.COUNTER_FOR_DATE += 1
+            
+            for index in range(self.ui.dates_layout.count()):
+                button = self.ui.dates_layout.itemAt(index).widget()
+                if isinstance(button, QPushButton):
+                    # If index match counter for date int
+                    if index == self.COUNTER_FOR_DATE:
+                        # Check the latest date button found
+                        button.setChecked(True)
+                        break
+        # TODO
+        # Needs to reset or update the time gray label, is not
+        # self.COUNTER_FOR_TIME = 0
+        self.update_labels()
 
     def up_down_settings(self):
         # Get index of the current time folder
@@ -385,50 +406,50 @@ class MainWindow(QMainWindow):
             # Enable up arrow, able to go forward, there are more options to choose
             self.ui.btn_up.setEnabled(True)
 
-        self.update_labels()
-
     def update_labels(self):
-        date_now = MAIN_INI_FILE.current_date() + "-" + MAIN_INI_FILE.current_month() + "-" + \
-                   MAIN_INI_FILE.current_year()
+        # Get current date
+        date_now = MAIN_INI_FILE.current_date() + "-" \
+                 + MAIN_INI_FILE.current_month() + "-" \
+                 + MAIN_INI_FILE.current_year()
 
-        # Display current folder on display
-        # self.currentLocationLabel.setText(f"<h1>{self.CURRENT_FOLDER}</h1>")
-        # self.currentLocationLabel.adjustSize()
-
-        try:
-            if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == str(date_now):
-                # Update date label
-                self.ui.label_gray_time.setText(
-                    f'Today ({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-            else:
-                self.ui.label_gray_time.setText(
-                    f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        # If a non-backup folder was clicked
-        except IndexError:
-            pass
+        # If today, show "Today"
+        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == str(date_now):
+            # Update gray time label
+            self.ui.label_gray_time.setText(
+                f'Today ({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+        else:
+            self.ui.label_gray_time.setText(
+                f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+        
+        # Enable/Disable up, down button
+        self.up_down_settings()
 
     ################################################################################
     # CONNECTIONS
     ################################################################################
     def btn_up_clicked(self):
         self.COUNTER_FOR_TIME += 1
+
+        # Update ui informations
+        self.update_labels()
+
         # Show results asynchronously
-        thread = threading.Thread(target=self.show_results)
-        thread.start()
+        self.show_thread = threading.Thread(target=self.show_results)
+        self.show_thread.start()
 
     def btn_down_clicked(self):
         self.COUNTER_FOR_TIME -= 1
+        
+        # Update ui informations
+        self.update_labels()
+        
         # Show results asynchronously
-        thread = threading.Thread(target=self.show_results)
-        thread.start()
-
-    @staticmethod
-    def btn_cancel_clicked():
-        exit()
+        self.show_thread = threading.Thread(target=self.show_results)
+        self.show_thread.start()
 
     def change_date(self, date):
         # Clean QTree area
-        self.ui.tree_widget.clear()
+        self.delete_all_results()
 
         # Reset counter for time
         self.COUNTER_FOR_TIME = 0
@@ -452,45 +473,8 @@ class MainWindow(QMainWindow):
         self.COUNTER_FOR_TIME = 0
 
         # Show results asynchronously
-        thread = threading.Thread(target=self.show_results)
-        thread.start()
-
-    # def selected_item_for_preview(self):
-    #     selected_items = self.ui.tree_widget.selectedItems()
-
-    #     if selected_items:
-    #         item = selected_items[-1]  # Get the last selected item
-    #         item_txt = item.text(0)
-    #         print("Last selected item:", item_txt)
-
-    #         # TODO
-    #         # Remove items from self.files_to_restore that are no longer selected
-    #         # self.files_to_restore = [item for item in self.files_to_restore if item in [item.text(0)
-    #         # for item in selected_items]]
-
-    #         # new_loc = []
-    #         # for item in self.files_to_restore:
-    #         #     found = False
-    #         #     for selected_item_for_preview in selected_items:
-    #         #         if item == selected_item_for_preview.text(0):
-    #         #             found = True
-    #         #             break
-    #         #     if found:
-    #         #         new_loc.append(item)
-    #         # self.files_to_restore = new_loc
-
-    #         # file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
-    #         #         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
-    #         #         f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-    #         #         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
-    #         #         f"/{self.CURRENT_FOLDER}/{item_txt}"
-
-    #     try:
-    #         # Show small preview
-    #         self.show_small_preview(item_txt)
-    #     except UnboundLocalError:
-    #         # Clear pixmap window
-    #         self.ui.small_preview_label.clear()
+        self.show_thread = threading.Thread(target=self.show_results)
+        self.show_thread.start()
 
     def qtree_checkbox_clicked(self, item, column):
         if item.checkState(column) == Qt.Checked:
@@ -520,7 +504,6 @@ class MainWindow(QMainWindow):
         else:
             self.ui.small_preview_label.clear()
         
-        print(self.files_to_restore)
         self.add_to_restore()
 
     def show_small_preview(self, item_txt):
@@ -649,11 +632,6 @@ class MainWindow(QMainWindow):
             exit()
 
     def start_restore(self):
-        print("Your files are been restored...")
-        print()
-        print(self.files_to_restore)
-        print()
-
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
         
         file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
@@ -668,13 +646,20 @@ class MainWindow(QMainWindow):
         for counter in range(len(self.files_to_restore)):
             print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
             
-            sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
-                      shell=True)
+            # sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
+            #           shell=True)
+
+            command = f"{file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/"
+            sub.Popen([COPY_RSYNC_CMD, command])
+            
 
         # Open file manager
         # Open folder manager
-        sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
+        # sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
 
+        command = f"{HOME_USER}/{self.CURRENT_FOLDER}"
+        sub.Popen(["xdg-open", command])
+            
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
@@ -701,6 +686,9 @@ class MainWindow(QMainWindow):
 
                 self.preview_window.show()
 
+    def delete_all_results(self):
+        self.ui.tree_widget.clear()
+
     ################################################################################
     # RETURN VALUES
     ################################################################################
@@ -710,7 +698,6 @@ class MainWindow(QMainWindow):
 
             # Hide hidden date_folder
             if "." not in date_folder:
-                print(date_folder)
                 # ALREADY_GOT_LIST_OF_DATES = True
 
                 self.LIST_OF_ALL_BACKUP_DATES.append(date_folder)
@@ -774,9 +761,8 @@ class PreviewWindow(QDialog):
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
 
-        print(f"Opening {file_directory}")
-        sub.Popen(f"xdg-open {file_directory}", shell=True)
-
+        # sub.Popen(f"xdg-open {file_directory}", shell=True)
+        sub.Popen(["xdg-open", file_directory])
 
 if __name__ == "__main__":
     APP = QApplication(sys.argv)
@@ -802,7 +788,7 @@ if __name__ == "__main__":
     # Add  backup times folders for the current date folder
     MAIN.add_backup_times()
 
-    MAIN.up_down_settings()
+    MAIN.update_labels()
 
     # MAIN.showFullScreen()
     MAIN.show()

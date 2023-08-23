@@ -321,8 +321,6 @@ class WelcomeScreen(QWidget):
 			self.item_to_restore.remove('Flatpaks')
 			# Hide applications sub checkboxes
 			self.ui.flatpaks_sub_widget_page3.hide()
-			# Clear applications exclude list
-			# self.applications_to_be_exclude.clear()
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
 		
@@ -338,8 +336,6 @@ class WelcomeScreen(QWidget):
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Files/Folders')
-			# Clear applications exclude list
-			# self.applications_to_be_exclude.clear()
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
 
