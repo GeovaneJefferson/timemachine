@@ -427,6 +427,9 @@ class MainWindow(QMainWindow):
         # Startup checking
         self.startup_check()
 
+        # Check for update
+        self.check_for_updates()
+
         timer.timeout.connect(self.running)
         timer.start(2000)
         self.running()
@@ -645,11 +648,11 @@ class MainWindow(QMainWindow):
 
     def check_for_updates(self):
         # Check for git updates
-        gitUpdateCommand=os.popen("git remote update && git status -uno").read()
+        gitUpdateCommand = os.popen("git remote update && git status -uno").read()
 
         # Updates found
         if "Your branch is behind" in str(gitUpdateCommand):
-            updateAvailable=QPushButton()
+            updateAvailable = QPushButton()
             updateAvailable.setText("   Update Available   ")
             updateAvailable.adjustSize()
             updateAvailable.setStyleSheet(self.buttonStylesheetDetector)
