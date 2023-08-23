@@ -9,6 +9,7 @@ def backup_ini_file(update_now):
         update_git(update_now)
 
 def update_git(update_now):
+    # Git pull
     print("Updating...")
 
     sub.Popen(["git", "stash"])
@@ -34,5 +35,6 @@ def restore_ini_file(update_now):
         open_app()
 
 def open_app():
+    # Re-open application
     sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}", shell=True)
     exit()
