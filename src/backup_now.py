@@ -1,12 +1,11 @@
 from setup import *
-from prepare_backup import *
-from get_current_users_wallpaper import user_wallpaper
+from get_current_users_wallpaper import get_wallpaper_full_location
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
 from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 from notification_massage import notification_message
-
+from handle_spaces import handle_spaces
 
 # Handle signal
 signal.signal(signal.SIGINT, signal_exit)
@@ -21,26 +20,33 @@ class BACKUP:
         # Update notification status
         notification_message("Backing up: Wallpaper...")
 
-        # Replace wallpaper inside the folder, only allow 1
-        if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}"):
-            # Delete all wallpapers inside wallpaper folder
-            for wallpaper in os.listdir(f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/"):
-                sub.run(f"rm -rf {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{WALLPAPER_FOLDER_NAME}/{wallpaper}", shell=True)
+        # Check for at least a wallpaper
+        if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
+            # Delete all wallpapers
+            for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
+                # Handle spaces
+                wallpaper = handle_spaces(wallpaper)
+                
+                sub.run(f"rm -rf {MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}", shell=True)
 
-        # Backup current wallpaper
-        sub.run(f"{COPY_CP_CMD} {user_wallpaper()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
+        # Backup wallpaper
+        if get_wallpaper_full_location() is not None:
+            sub.run(f"{COPY_CP_CMD} {get_wallpaper_full_location()} {MAIN_INI_FILE.wallpaper_main_folder()}/", shell=True)
         
     async def backup_home(self):
         # Backup Home folder
         for folder in get_folders():
+            # Handle spaces
+            folder = handle_spaces(folder)
+
             sub.run(f"{COPY_CP_CMD} {HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}", shell=True)
             
-            # Update notification status
             print(f'Backing up: {HOME_USER}/{folder}...')
+
+            # Update notification status
             notification_message(f'Backing up: {folder}...')
 
     async def backup_home_hidden_files(self):
-
         # For GNOME
         if get_user_de() == 'gnome':
             # Backup .local/share/ selected folders for GNOME
@@ -50,6 +56,9 @@ class BACKUP:
                 ]
         
             for folder in os.listdir(f"{HOME_USER}/.local/share/"):
+                # Handle spaces
+                folder = handle_spaces(folder)
+                
                 # TODO
                 # folders_list.append(folder)
                 if folder in include_list:
@@ -69,6 +78,9 @@ class BACKUP:
                 ]
 
             for folder in os.listdir(f"{HOME_USER}/.config/"):
+                # Handle spaces
+                folder = handle_spaces(folder)
+
                 if folder in include_list:
                     sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}",shell=True)
                     # Update notification status
@@ -92,6 +104,9 @@ class BACKUP:
                 "themes"]
 
             for folder in os.listdir(f"{HOME_USER}/.local/share/"):
+                # Handle spaces
+                folder = handle_spaces(folder)
+
                 # .local/share
                 if folder in include_list:
                     try:
@@ -123,6 +138,9 @@ class BACKUP:
                     "khotkeysrc"]
 
                 for folder in os.listdir(f"{HOME_USER}/.config/"):
+                    # Handle spaces
+                    folder = handle_spaces(folder)
+
                     if folder in include_list:
                         sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}",shell=True)
                         # Update notification status
@@ -133,8 +151,8 @@ class BACKUP:
 
             # Backup share selected folders for KDE
             try:
-                folders_list=[]
-                includeList = [
+                # folders_list=[]
+                include_list = [
                     # "icons",
                     "gtk-3.0",
                     "gtk-4.0",
@@ -153,13 +171,18 @@ class BACKUP:
                     "khotkeysrc"]
 
                 for folders in os.listdir(f"{HOME_USER}/.kde/share/"):
-                    folders_list.append(folders)
-
-                    sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} \
-                        {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
-                    # Update notification status
-                    print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
-                    notification_message(f'Backing up: .kde/share/{folders}...')
+                    # Handle spaces
+                    folder = handle_spaces(folder)
+                
+                    # folders_list.append(folders)
+                    if folder in include_list:
+                        sub.run(f"{COPY_RSYNC_CMD} {HOME_USER}/.kde/share/{folders} \
+                            {str(MAIN_INI_FILE.kde_share_config_main_folder())}", shell=True)
+                        
+                        print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
+                        
+                        # Update notification status
+                        notification_message(f'Backing up: .kde/share/{folders}...')
             except:
                 pass
 
@@ -236,7 +259,7 @@ class BACKUP:
             if not CONFIG.has_section('INFO'):
                 CONFIG.add_section('INFO')
 
-            CONFIG.set('INFO', 'wallpaper', f'{user_wallpaper().split("/")[-1]}')
+            CONFIG.set('INFO', 'wallpaper', f'{get_wallpaper_full_location().split("/")[-1]}')
 
             # KDE
             if get_user_de() == 'kde':

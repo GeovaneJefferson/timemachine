@@ -457,7 +457,7 @@
             <enum>QFrame::Sunken</enum>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::NoDragDrop</enum>
+            <enum>QAbstractItemView::DragDrop</enum>
            </property>
            <property name="iconSize">
             <size>
@@ -691,6 +691,9 @@
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <item>
                    <widget class="QCheckBox" name="checkbox_applications_page3">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;- Install backed up applications.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>Applications</string>
                     </property>
@@ -757,6 +760,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="checkbox_flatpaks_page3">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;- Install backed up flatpaks.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>Flatpaks</string>
                     </property>
@@ -810,6 +816,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="checkbox_files_folders_page3">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;- Restore backed up HOME folders.&lt;/p&gt;&lt;p&gt;- Restore some hidden files and folder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>Files and Folders</string>
                     </property>
@@ -821,6 +830,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="checkbox_system_settings_page3">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;- Apply backed up wallpaper.&lt;/p&gt;&lt;p&gt;- Restore some system settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>System Settings</string>
                     </property>

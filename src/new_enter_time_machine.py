@@ -1,11 +1,12 @@
 # Important:
 # You need to run the following command to generate the ui_form.py file
-#     pyside6-uic form.ui -o ui_form.py, or
+#     pyside6-uic form.ui -o ui_form.py
 
 from ui.ui_untitled import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime
+from handle_spaces import handle_spaces
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
@@ -30,24 +31,60 @@ def size_format(size_bytes):
 
         size_bytes /= 1024.0
 
+def get_full_location(item, column):
+    item_txt = item.text(column)
+    full_location = item_txt
+
+    parent_item = item.parent()
+    while parent_item:
+        parent_txt = parent_item.text(column)
+        full_location = f"{parent_txt}/{full_location}"
+        parent_item = parent_item.parent()
+
+    return full_location
+
+def resize_image(pixmap, max_size):
+    if pixmap.width() > max_size or pixmap.height() > max_size:
+        pixmap = pixmap.scaled(max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
+    return pixmap
+
+def get_all_backup_folders():
+    folders_list = []
+
+    # Connect to the SQLite database
+    conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+    cursor = conn.cursor()
+    # Query all keys from the specified table
+    cursor.execute(f"SELECT key FROM FOLDER")
+    keys = [row[0] for row in cursor.fetchall()]
+    # Close the connection
+    conn.close()
+
+    for folder in keys:
+        folders_list.append(folder)
+        folders_list.sort()
+
+    return folders_list
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
 
         self.folder_already_opened = False
 
         self.button_group = QButtonGroup()
         self.button_group.setExclusive(True)  # This ensures exclusive behavior
 
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+
         self.checked_items = []
 
         self.ALREADY_CHECKED_FIRST_FOLDER = False
 
         self.files_to_restore = []
-        self.files_to_Restore_with_space = []
         self.list_of_preview_items = []
         self.LIST_OF_ALL_BACKUP_DATES = []
         self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE = []
@@ -82,7 +119,7 @@ class MainWindow(QMainWindow):
 
     def add_backup_folders(self):
         # Get backup folders names
-        for folder in self.get_all_backup_folders():
+        for folder in get_all_backup_folders():
             try:
                 # Can the folder be found inside Users Home?
                 folder = folder.capitalize()
@@ -418,42 +455,73 @@ class MainWindow(QMainWindow):
         thread = threading.Thread(target=self.show_results)
         thread.start()
 
-    def selected_item_for_preview(self):
-        selected_items = self.ui.tree_widget.selectedItems()
+    # def selected_item_for_preview(self):
+    #     selected_items = self.ui.tree_widget.selectedItems()
 
-        if selected_items:
-            item = selected_items[-1]  # Get the last selected item
-            item_txt = item.text(0)
-            print("Last selected item:", item_txt)
+    #     if selected_items:
+    #         item = selected_items[-1]  # Get the last selected item
+    #         item_txt = item.text(0)
+    #         print("Last selected item:", item_txt)
 
-            # TODO
-            # Remove items from self.files_to_restore that are no longer selected
-            # self.files_to_restore = [item for item in self.files_to_restore if item in [item.text(0)
-            # for item in selected_items]]
+    #         # TODO
+    #         # Remove items from self.files_to_restore that are no longer selected
+    #         # self.files_to_restore = [item for item in self.files_to_restore if item in [item.text(0)
+    #         # for item in selected_items]]
 
-            # new_loc = []
-            # for item in self.files_to_restore:
-            #     found = False
-            #     for selected_item_for_preview in selected_items:
-            #         if item == selected_item_for_preview.text(0):
-            #             found = True
-            #             break
-            #     if found:
-            #         new_loc.append(item)
-            # self.files_to_restore = new_loc
+    #         # new_loc = []
+    #         # for item in self.files_to_restore:
+    #         #     found = False
+    #         #     for selected_item_for_preview in selected_items:
+    #         #         if item == selected_item_for_preview.text(0):
+    #         #             found = True
+    #         #             break
+    #         #     if found:
+    #         #         new_loc.append(item)
+    #         # self.files_to_restore = new_loc
 
-            # file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
-            #         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
-            #         f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-            #         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
-            #         f"/{self.CURRENT_FOLDER}/{item_txt}"
+    #         # file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
+    #         #         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
+    #         #         f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
+    #         #         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
+    #         #         f"/{self.CURRENT_FOLDER}/{item_txt}"
 
-        try:
-            # Show small preview
-            self.show_small_preview(item_txt)
-        except UnboundLocalError:
-            # Clear pixmap window
+    #     try:
+    #         # Show small preview
+    #         self.show_small_preview(item_txt)
+    #     except UnboundLocalError:
+    #         # Clear pixmap window
+    #         self.ui.small_preview_label.clear()
+
+    def qtree_checkbox_clicked(self, item, column):
+        if item.checkState(column) == Qt.Checked:
+            # item_txt = item.text(column)
+            full_location = get_full_location(item, column)
+            # Handle spaces
+            # full_location = handle_spaces(full_location)
+
+            print("Full location:", full_location)
+
+            if full_location not in self.files_to_restore:
+                # Add if not already in the list
+                self.files_to_restore.append(full_location)
+            else:
+                # Remove from the list
+                self.files_to_restore.remove(full_location)
+
+        elif item.checkState(column) == Qt.Unchecked:
+            full_location = item.text(column)
+            try:
+                self.files_to_restore.remove(full_location)
+            except ValueError:
+                pass
+            
+        if self.files_to_restore:
+            self.show_small_preview(self.files_to_restore[-1])
+        else:
             self.ui.small_preview_label.clear()
+        
+        print(self.files_to_restore)
+        self.add_to_restore()
 
     def show_small_preview(self, item_txt):
         # If a file
@@ -480,7 +548,7 @@ class MainWindow(QMainWindow):
                 self.ui.small_preview_label.show()
 
             elif self.selected_item_extension in TXT_TYPES:
-                self.read_file()
+                self.read_file(self.selected_item_full_location)
 
             # Non ok item
             else:
@@ -491,9 +559,9 @@ class MainWindow(QMainWindow):
                 # Hide ui label
                 self.ui.small_preview_label.setFixedHeight(0)
                 self.ui.small_preview_label.hide()
-
-    def read_file(self):
-        with open(self.selected_item_full_location, "r") as file:
+     
+    def read_file(self, file):
+        with open(file, "r") as file:
             # Hide ui label
             self.ui.small_preview_label.setFixedHeight(0)
             self.ui.small_preview_label.hide()
@@ -514,13 +582,12 @@ class MainWindow(QMainWindow):
         ################################################################################
         # Enable/Disable functions if item(s) is/are selected
         ################################################################################
-        print(self.files_to_restore)
-        if len(self.files_to_restore) or len(self.files_to_Restore_with_space) >= 1:  # If something inside the list
+        if len(self.files_to_restore)  >= 1:  # If something inside the list
             # If it has at least one item, enable restore button
             self.ui.btn_restore.setEnabled(True)
             # Update restore label
             self.ui.btn_restore.setText(
-                f"   Restore({len(self.files_to_restore) + len(self.files_to_Restore_with_space)})   "
+                f"   Restore({len(self.files_to_restore)})   "
             )
 
             # Disable other buttons if items have been selected
@@ -583,6 +650,9 @@ class MainWindow(QMainWindow):
 
     def start_restore(self):
         print("Your files are been restored...")
+        print()
+        print(self.files_to_restore)
+        print()
 
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
         
@@ -595,59 +665,19 @@ class MainWindow(QMainWindow):
         ################################################################################
         # Restore files without spaces
         ################################################################################
-        counter = 0
-        for _ in self.files_to_restore:
-            print(f"Restoring {COPY_RSYNC_CMD} {file_path}/{self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/")
-            sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{self.files_to_restore[counter]} {HOME_USER}/{self.CURRENT_FOLDER}/",
+        for counter in range(len(self.files_to_restore)):
+            print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
+            
+            sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
                       shell=True)
-
-            counter += 1
 
         # Open file manager
         # Open folder manager
         sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
 
+        # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
-
-    def qtree_checkbox_clicked(self, item, column):
-        if item.checkState(column) == Qt.Checked:
-            # item_txt = item.text(column)
-            full_location = self.get_full_location(item, column)
-            print("Full location:", full_location)
-
-            # Spaces in item
-            if " " in full_location:
-                # Add to the restore list for spaces
-                if full_location not in self.files_to_Restore_with_space:
-                    self.files_to_Restore_with_space.append(full_location)
-                else:
-                    self.files_to_Restore_with_space.remove(full_location)
-
-            # No spaces in full_location
-            else:
-                if full_location not in self.files_to_restore:
-                    # Add if not already in the list
-                    self.files_to_restore.append(full_location)
-                else:
-                    # Remove from the list
-                    self.files_to_restore.remove(full_location)
-
-            # self.add_to_restore()
-
-        elif item.checkState(column) == Qt.Unchecked:
-            full_location = item.text(column)
-            try:
-                self.files_to_restore.remove(full_location)
-            except ValueError:
-                pass
-            
-        self.add_to_restore()
-
-        if self.files_to_restore:
-            self.show_small_preview(self.files_to_restore[-1])
-        else:
-            self.ui.small_preview_label.clear()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
@@ -674,25 +704,6 @@ class MainWindow(QMainWindow):
     ################################################################################
     # RETURN VALUES
     ################################################################################
-    @staticmethod
-    def get_all_backup_folders():
-        folders_list = []
-
-        # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
-        # Query all keys from the specified table
-        cursor.execute(f"SELECT key FROM FOLDER")
-        keys = [row[0] for row in cursor.fetchall()]
-        # Close the connection
-        conn.close()
-
-        for folder in keys:
-            folders_list.append(folder)
-            folders_list.sort()
-
-        return folders_list
-
     def get_all_backup_dates(self):
         for date_folder in os.listdir(
                 f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
@@ -707,26 +718,6 @@ class MainWindow(QMainWindow):
                     reverse=True,
                     key=lambda date_folder: datetime.strptime(date_folder, "%d-%m-%y"))
    
-    @staticmethod
-    def get_full_location(item, column):
-        item_txt = item.text(column)
-        full_location = item_txt
-
-        parent_item = item.parent()
-        while parent_item:
-            parent_txt = parent_item.text(column)
-            full_location = f"{parent_txt}/{full_location}"
-            parent_item = parent_item.parent()
-
-        return full_location
-
-    @staticmethod
-    def resize_image(pixmap, max_size):
-        if pixmap.width() > max_size or pixmap.height() > max_size:
-            pixmap = pixmap.scaled(max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
-        return pixmap
-
 
 class PreviewWindow(QDialog):
     def __init__(self, parent=None):
@@ -799,7 +790,7 @@ if __name__ == "__main__":
     MAIN.setWindowTitle("Enter In Time Machine")
 
     # Get all backup folders
-    MAIN.get_all_backup_folders()
+    get_all_backup_folders()
     # Add all backup folders
     MAIN.add_backup_folders()
 

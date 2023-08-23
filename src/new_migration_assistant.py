@@ -279,6 +279,7 @@ class WelcomeScreen(QWidget):
 		system_settings_list = []
 
 		for output in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
+			print("SYSTEM", system_settings_list)
 			system_settings_list.append(output)
 
 		if system_settings_list:

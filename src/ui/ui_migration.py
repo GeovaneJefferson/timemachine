@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -206,7 +206,7 @@ class Ui_WelcomeScreen(object):
         self.devices_area_page2.setMaximumSize(QSize(400, 220))
         self.devices_area_page2.setFrameShape(QFrame.NoFrame)
         self.devices_area_page2.setFrameShadow(QFrame.Sunken)
-        self.devices_area_page2.setDragDropMode(QAbstractItemView.NoDragDrop)
+        self.devices_area_page2.setDragDropMode(QAbstractItemView.DragDrop)
         self.devices_area_page2.setIconSize(QSize(48, 48))
         self.devices_area_page2.setViewMode(QListView.IconMode)
         self.devices_area_page2.setWordWrap(True)
@@ -645,10 +645,22 @@ class Ui_WelcomeScreen(object):
         self.button_continue_page2.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
         self.title_3.setText(QCoreApplication.translate("WelcomeScreen", u"Select The Information To Restore", None))
         self.description_3.setText(QCoreApplication.translate("WelcomeScreen", u"Choose which information you'd like to restore to this PC.", None))
+#if QT_CONFIG(tooltip)
+        self.checkbox_applications_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Install backed up applications.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkbox_applications_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Applications", None))
+#if QT_CONFIG(tooltip)
+        self.checkbox_flatpaks_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Install backed up flatpaks.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkbox_flatpaks_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Flatpaks", None))
         self.checkBox_3.setText(QCoreApplication.translate("WelcomeScreen", u"Flatpaks Data Coming soon...", None))
+#if QT_CONFIG(tooltip)
+        self.checkbox_files_folders_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Restore backed up HOME folders.</p><p>- Restore some hidden files and folder.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkbox_files_folders_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Files and Folders", None))
+#if QT_CONFIG(tooltip)
+        self.checkbox_system_settings_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Apply backed up wallpaper.</p><p>- Restore some system settings.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkbox_system_settings_page3.setText(QCoreApplication.translate("WelcomeScreen", u"System Settings", None))
         self.button_back_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Back", None))
         self.button_continue_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
