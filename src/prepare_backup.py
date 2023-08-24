@@ -40,8 +40,8 @@ class PREPAREBACKUP:
             self.create_date_time_folder()
             # Call backup now .py
             print("Calling backup now...")
-            sub.Popen(f"python3 {src_backup_now_py}", shell=True)
-
+            command = src_backup_now_py
+            sub.Popen(["python3", command])
         else:
             # Not enough space to make a new backup
             print("Not enough space for a new backup!")

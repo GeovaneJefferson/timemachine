@@ -7,7 +7,10 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 async def restore_kde_local_share():
     try:
-        sub.run(f"{"rsync", "-avr"} {MAIN_INI_FILE.kde_local_share_main_folder()}/ {HOME_USER}/.local/share/", shell=True)
+        src = MAIN_INI_FILE.kde_local_share_main_folder() + "/"
+        dst = HOME_USER + "/.local/share/"
+        sub.run(["rsync", "-avr", src, dst])
+
         notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_local_share_main_folder()}...')
     except Exception:
         pass

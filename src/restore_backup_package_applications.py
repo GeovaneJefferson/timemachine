@@ -47,9 +47,6 @@ async def restore_backup_package_applications():
 
                     # Update notification
                     notification_message_current_backing_up(f'Restoring: {package}...')
-
-        
-        return "Task completed: Wallpaper"
     
     except Exception:
         pass

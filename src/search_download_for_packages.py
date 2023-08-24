@@ -31,24 +31,27 @@ def search_download_for_packages():
                 # Delete the old version before back up
                 for deleteOutput in os.listdir(MAIN_INI_FILE.deb_main_folder()):
                     if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                        sub.run(f"rm -f {MAIN_INI_FILE.deb_main_folder()}/{deleteOutput}",shell=True)
-                
-                # Now back up
-                command = f"{downloads_folder_location}/{output} {MAIN_INI_FILE.deb_main_folder()}"
-                sub.run(["rsync", "-avr", command])
+                        action = MAIN_INI_FILE.deb_main_folder() + "/" + deleteOutput
+                        sub.run(["rm", "-rf", action])
 
+                # Now back up
+                src = downloads_folder_location + "/" + output
+                dst = MAIN_INI_FILE.deb_main_folder()
+                sub.run(["rsync", "-avr", src, dst])
+            
         elif output.endswith(".rpm"):
             if output.split("_")[0] in (f"{MAIN_INI_FILE.rpm_main_folder()}/{(output).split('_')[0]}"):
                 # Delete the old version before back up
                 for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
                     if deleteOutput.startswith(f"{output.split('_')[0]}"):
-                        command = f"{MAIN_INI_FILE.rpm_main_folder()}/{deleteOutput}"
-                        sub.run(["rm", "-rf", command])
+                        action = MAIN_INI_FILE.rpm_main_folder() + "/" + deleteOutput
+                        sub.run(["rm", "-rf", action])
 
                 # Now back up
-                command = f"{downloads_folder_location}/{output} {MAIN_INI_FILE.rpm_main_folder()}"
-                sub.run(["rsync", "-avr", command])
-
+                src = downloads_folder_location + "/" + output
+                dst = MAIN_INI_FILE.rpm_main_folder()
+                sub.run(["rsync", "-avr", src, dst])
+            
 
 if __name__ == '__main__':
     pass

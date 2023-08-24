@@ -31,9 +31,9 @@ class BACKUP:
 
         # Backup wallpaper
         if get_wallpaper_full_location() is not None:
-            command = f"{get_wallpaper_full_location()} {MAIN_INI_FILE.wallpaper_main_folder()}/"
-            
-            sub.run(["cp", "-rv", command])
+            src = get_wallpaper_full_location()
+            dst = MAIN_INI_FILE.wallpaper_main_folder() + "/"
+            sub.run(["cp", "-rv", src, dst])
 
     async def backup_home(self):
         for folder in get_folders():
@@ -41,8 +41,10 @@ class BACKUP:
             folder = handle_spaces(folder)
 
             # Backup Home folder
-            command = f"{HOME_USER}/{folder} {MAIN_INI_FILE.time_folder_format()}"
-            sub.run(["cp", "-rv", command])
+            src = HOME_USER + "/" + folder
+            dst = MAIN_INI_FILE.time_folder_format()
+            sub.run(["cp", "-rv", src, dst])
+            
             print(f'Backing up: {HOME_USER}/{folder}...')
             notification_message(f'Backing up: {folder}...')
 
@@ -61,9 +63,10 @@ class BACKUP:
                 
                 if folder in list_gnome_include:
                     try:
-                        command = f"{HOME_USER}/.local/share/{folder} \
-                            {MAIN_INI_FILE.gnome_local_share_main_folder()}"
-                        sub.run(["rsync", "-avr", command])
+                        src = HOME_USER + "/.local/share/" + folder
+                        dst = MAIN_INI_FILE.gnome_local_share_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
+                    
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
                         notification_message(f'Backing up: .local/share/{folder}...')
                     except:
@@ -75,8 +78,10 @@ class BACKUP:
                 folder = handle_spaces(folder)
 
                 if folder in list_gnome_include:
-                    command = f"{HOME_USER}/.config/{folder} {MAIN_INI_FILE.gnome_config_main_folder()}"
-                    sub.run(["rsync", "-avr", command])
+                    src = HOME_USER + "/.config/" + folder
+                    dst = MAIN_INI_FILE.gnome_config_main_folder()
+                    sub.run(["rsync", "-avr", src, dst])
+                    
                     print(f'Backing up: {HOME_USER}/.config/{folder}...')
                     notification_message(f'Backing up: .config/{folder}...')
 
@@ -145,8 +150,10 @@ class BACKUP:
                 # .local/share
                 if folder in list_include_kde:
                     try:
-                        command = f"{HOME_USER}/.local/share/{folder} {MAIN_INI_FILE.kde_local_share_main_folder()}"
-                        sub.run(["rsync", "-avr", command])
+                        src = HOME_USER + "/.local/share/" + folder
+                        dst = MAIN_INI_FILE.kde_local_share_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
+                    
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
                         notification_message(f'Backing up: .local/share/{folder}...')
                     except:
@@ -159,8 +166,10 @@ class BACKUP:
                     folder = handle_spaces(folder)
 
                     if folder in list_include_kde:
-                        command = f"{HOME_USER}/.config/{folder} {MAIN_INI_FILE.kde_config_main_folder()}"
-                        sub.run(["rsync", "-avr", command])
+                        src = HOME_USER + "/.config/" + folder
+                        dst = MAIN_INI_FILE.kde_config_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
+                    
                         print(f'Backing up: {HOME_USER}/.config/{folder}...')
                         notification_message(f'Backing up: .config/{folder}...')
             except:
@@ -173,9 +182,10 @@ class BACKUP:
                     folder = handle_spaces(folder)
                 
                     if folder in list_include_kde:
-                        command = f"{HOME_USER}/.kde/share/{folders} \
-                            {str(MAIN_INI_FILE.kde_share_config_main_folder())}"
-                        sub.run(["rsync", "-avr", command])
+                        src = HOME_USER + "}/.kde/share/" + folder
+                        dst = MAIN_INI_FILE.kde_share_config_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
+                    
                         print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
                         notification_message(f'Backing up: .kde/share/{folders}...')
             except:
@@ -192,10 +202,8 @@ class BACKUP:
             with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
                 for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
                     flatpak_list.append(flatpak)
-
                     # Write all installed flatpak apps by the name
                     configfile.write(flatpak_list[counter])
-                    print(f'Backing up: {flatpak_list[counter]}...')
                     notification_message(f'Backing up: {flatpak_list[counter]}...')
                     counter += 1
         except Exception:
@@ -208,20 +216,20 @@ class BACKUP:
                 # .var/app
                 for counter in range(len(flatpak_var_list())):
                     # Copy the Flatpak var/app folders
-                    command = f"{flatpak_var_list()[counter]} \
-                            {MAIN_INI_FILE.flatpak_var_folder()}"
+                    src = flatpak_var_list()[counter]
+                    dst = MAIN_INI_FILE.flatpak_var_folder()
+                    sub.run(["rsync", "-avr", src, dst])
                     
-                    sub.run(["rsync", "-avr", command])
                     print(f'Backing up: {flatpak_var_list()[counter]}...')
                     notification_message(f'Backing up: {flatpak_var_list()[counter]}...')
 
                 # Start Flatpak (.local/share/flatpak) backup
                 for counter in range(len(flatpak_local_list())):
                     # Copy the Flatpak var/app folders
-                    command = f"{flatpak_local_list()[counter]} \
-                            {MAIN_INI_FILE.flatpak_local_folder()}"
-
-                    sub.run(["rsync", "-avr", command])
+                    src = flatpak_local_list()[counter]
+                    dst = MAIN_INI_FILE.flatpak_local_folder()
+                    sub.run(["rsync", "-avr", src, dst])
+                    
                     print(f'Backing up: {flatpak_local_list()[counter]}...')
                     notification_message(f'Backing up: {flatpak_local_list()[counter]}...')
             except:

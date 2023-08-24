@@ -41,12 +41,13 @@ class CHECKER:
                         for old_package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
                             if old_package.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
-                                command = f"{MAIN_INI_FILE.deb_main_folder()}/{old_package}"
-                                sub.run(["rm", "-rf", command])
+                                dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
+                                sub.run(["rm", "-rf", dst])
 
                         # backup the found package
-                        command = f"{DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.deb_main_folder()}"
-                        sub.run(["rsync", "-avr", command])
+                        src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                        dst = MAIN_INI_FILE.deb_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
 
             # Search for .rpm packages inside Downloads folder
             if package.endswith(".rpm"):
@@ -60,12 +61,13 @@ class CHECKER:
                         for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
                             if deleteOutput.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
-                                command = f"{MAIN_INI_FILE.rpm_main_folder()}/{old_package}"
-                                sub.run(["rm", "-rf", command])
+                                dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
+                                sub.run(["rm", "-rf", src, dst])
 
                         # backup the found package
-                        command = f"{DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.rpm_main_folder()}"
-                        sub.run(["rsync", "-avr", command])
+                        src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                        dst = MAIN_INI_FILE.rpm_main_folder()
+                        sub.run(["rsync", "-avr", src, dst])
 
     # Check the dates for backup, one or multiple times per day
     def check_the_dates(self):

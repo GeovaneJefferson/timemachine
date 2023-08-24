@@ -201,7 +201,7 @@ class APP:
                     self.color=color
                     self.tray.setIcon(QIcon(src_system_bar_restore_icon))
 
-        except Exception as e:
+        except Exception:
             self.exit()
 
     def exit(self):

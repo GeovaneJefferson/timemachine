@@ -19,13 +19,15 @@ async def restore_backup_home():
     
         # If folder folder do not exist, create it
         if not os.path.exists(f"{HOME_USER}/{folder}/"):
-            sub.run(f"{CREATE_CMD_FOLDER} {HOME_USER}/{folder}", shell=True)
-        
+            dst = HOME_USER + "/" + folder 
+            sub.run(["mkdir", dst])
+            
         # Restore Home folders
         # Restore the latest backup
-        sub.run(f"{"rsync", "-avr"} {MAIN_INI_FILE.backup_folder_name()}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}/"
-            f"{folder}/ {HOME_USER}/{folder}/", shell=True)
-
+        src = MAIN_INI_FILE.backup_folder_name() + "/" + get_backup_date()[0] + "/" + get_latest_backup_time()[0] + "/" + folder + "/"
+        dst = HOME_USER + "/" + folder + "/"
+        sub.run(["rsync", "-avr", src, dst])
+            
     return "Task completed: Wallpaper"
 
 
