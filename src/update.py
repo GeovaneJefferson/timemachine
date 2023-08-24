@@ -37,7 +37,7 @@ def restore_ini_file(update_now):
     # Move the backup DB to the right location
     src = HOME_USER + "/" + ".local/share/{APP_NAME_CLOSE}/src/config.db" 
     dst = SRC_USER_CONFIG_DB
-    sub.run(["mv", "-rf", src, dst])
+    sub.run(["mv", "-f", src, dst])
             
     if update_now:
         open_app()
