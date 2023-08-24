@@ -100,7 +100,6 @@ class APP:
         
         # Check if ini file is locked or not 
         if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-            # Quit 
             self.exit()
 
         self.has_connection()
