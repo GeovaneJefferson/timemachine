@@ -7,6 +7,7 @@ from device_location import device_location
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
+
 def save_info(device):
     # .deb
     if "deb" in package_manager():

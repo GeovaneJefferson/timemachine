@@ -23,12 +23,14 @@ async def restore_backup_package_applications():
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:
                     # Install it
-                    sub.run(f"{INSTALL_DEB} {MAIN_INI_FILE.deb_main_folder()}/{package}",shell=True)
+                    command = f"{MAIN_INI_FILE.deb_main_folder()}/{package}"
+                    sub.run(["sudo", "dpkg", "-i", command])
+
                     # Update notification
                     notification_message_current_backing_up(f'Installing: {package}...')
 
             # Fix packages installation
-            sub.run("sudo apt install -y -f", shell=True)
+            sub.run(["sudo", "apt", "install", "-f"])
 
         elif MAIN_INI_FILE.get_database_value('INFO', 'packagermanager') == f"{RPM_FOLDER_NAME}":
             ################################################################################
@@ -40,7 +42,9 @@ async def restore_backup_package_applications():
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:
                     # Install rpms applications
-                    sub.run(f"{INSTALL_RPM} {MAIN_INI_FILE.rpm_main_folder()}/{package}",shell=True)
+                    command = f"{MAIN_INI_FILE.rpm_main_folder()}/{package}"
+                    sub.run(["sudo", "rpm", "-ivh", "--replacepkgs", command])
+
                     # Update notification
                     notification_message_current_backing_up(f'Restoring: {package}...')
 

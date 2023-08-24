@@ -1,0 +1,8 @@
+[Desktop Entry]
+ Type=Application
+ Exec=/bin/python3 /home/geovane/.local/share/timemachine/src/at_boot.py
+ Hidden=false
+ NoDisplay=false
+ Name=Time Machine
+ Comment=Time Machine's manager before boot.
+ Icon=/home/geovane/.local/share/timemachine/src/icons/restore_64px.svg

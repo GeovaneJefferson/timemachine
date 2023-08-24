@@ -5,20 +5,24 @@ from get_latest_backup_date import latest_backup_date
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
-TIME_FOLDER = []
+
+
+list_of_time_folder = []
 
 def get_latest_backup_time():
+    list_of_time_folder.clear()
 
     try:
-        TIME_FOLDER.clear()
         for output in os.listdir(f"{MAIN_INI_FILE.backup_folder_name()}/{latest_backup_date()}/"):
-            TIME_FOLDER.append(output)
-            TIME_FOLDER.sort(reverse=True)
-        return TIME_FOLDER
+            list_of_time_folder.append(output)
 
-    except Exception as e:
-        print(e)
+        # Sort list
+        list_of_time_folder.sort(reverse=True)
+        #  Return list
+        return list_of_time_folder
+    except Exception:
         pass
+
 
 if __name__ == '__main__':
     pass

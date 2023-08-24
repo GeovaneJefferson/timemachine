@@ -13,6 +13,7 @@ def device_location():
                 print(f"Devices found inside {RUN}")
                 return False
         except:
+            print(f"No devices found.")
             return None
 
 

@@ -5,8 +5,8 @@ from read_ini_file import UPDATEINIFILE
 MAIN_INI_FILE = UPDATEINIFILE()
 
 def get_folders():
-    FOLDERS_LIST = []
-    FOLDERS_LIST_RETURN = []
+    list_of_folders = []
+    list_of_folders_to_return = []
     
     # Connect to the SQLite database
     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
@@ -20,24 +20,20 @@ def get_folders():
     conn.close()
 
     for key in keys:
-        FOLDERS_LIST.append(key)
+        list_of_folders.append(key)
 
     # Get Backup Folders
-    for folder in FOLDERS_LIST:  
-        # Capitalize first letter
-        folder = folder.capitalize()
+    for folder in list_of_folders:  
+        folder = str(folder).capitalize()
 
-        try:
-            # Backup folder was capitalize
-            os.listdir(f"{HOME_USER}/{folder}")
-        except:
-            # Backup folder was not capitalize
+        # Check folder isUpper or not
+        if not os.path.exists(f"{HOME_USER}/{folder}"):
             folder = folder.lower() 
         
-        FOLDERS_LIST_RETURN.append(folder)
-        FOLDERS_LIST_RETURN.sort()
+        list_of_folders_to_return.append(folder)
+        list_of_folders_to_return.sort()
     
-    return FOLDERS_LIST_RETURN 
+    return list_of_folders_to_return 
 
 def home_folders_size():
     home_folder_to_backup_size_list = []
@@ -46,12 +42,12 @@ def home_folders_size():
         try:
             # Get folder size
             get_size = os.popen(f"du -s {HOME_USER}/{folder}")
-            get_size = int(get_size.read().strip("\t").strip("\n").replace(f"{HOME_USER}/{folder}", "").replace("\t", ""))
+            get_size = int(get_size.read().strip("\t").strip("\n").replace(
+                f"{HOME_USER}/{folder}", "").replace("\t", ""))
 
             # Add to list
             home_folder_to_backup_size_list.append(get_size)
-        except Exception as e:
-            print(e)
+        except Exception:
             pass
 
     return sum(home_folder_to_backup_size_list)

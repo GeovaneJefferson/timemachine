@@ -7,7 +7,7 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 async def restore_kde_config():
     try:
-        sub.run(f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.kde_config_main_folder()}/ {HOME_USER}/.config/", shell=True)
+        sub.run(f"{"rsync", "-avr"} {MAIN_INI_FILE.kde_config_main_folder()}/ {HOME_USER}/.config/", shell=True)
         notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_config_main_folder()}...')
     except:         
         pass

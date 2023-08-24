@@ -13,10 +13,18 @@ DST_BACKUP_CHECK_DESKTOP = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/deskt
 
 
 try:
-    sub.run(f"rm -rf {HOME_USER}/.local/share/{APP_NAME_CLOSE}/", shell=True)
-    sub.run(f"rm -f {DST_FILE_EXE_DESKTOP}", shell=True)
-    sub.run(f"rm -f {DST_MIGRATION_ASSISTANT_DESKTOP}", shell=True)
-    sub.run(f"rm -f {DST_BACKUP_CHECK_DESKTOP}", shell=True)
+    command = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/"
+    sub.run(["rm", "-rf", command])
+
+    command = DST_FILE_EXE_DESKTOP
+    sub.run(["rm", "-rf", command])
+
+    command = DST_MIGRATION_ASSISTANT_DESKTOP
+    sub.run(["rm", "-rf", command])
+
+    command = DST_BACKUP_CHECK_DESKTOP
+    sub.run(["rm", "-rf", command])
+
 except Exception as error:
     print(error)
     exit()

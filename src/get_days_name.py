@@ -7,4 +7,5 @@ def get_days_name():
     locale.setlocale(locale.LC_TIME, 'en_US.utf8')
     # Get the abbreviated day name (e.g., "Mon", "Tue", etc.) for the current day
     abbreviated_day_name = datetime.datetime.today().strftime('%a')
+    # Return days abreviated
     return str(abbreviated_day_name)

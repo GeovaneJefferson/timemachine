@@ -3,17 +3,18 @@ from read_ini_file import *
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
-oldest_list=[]
+
+
+OLDEST_BACKUP_DATE = []
 
 def oldest_backup_date():
     try:
-
         for dateList in os.listdir(str(MAIN_INI_FILE.backup_folder_name())):
-            if dateList not in oldest_list:
-                oldest_list.append(dateList)
+            if dateList not in OLDEST_BACKUP_DATE:
+                OLDEST_BACKUP_DATE.append(dateList)
                 break
-
-        return oldest_list[0]
+                
+        return OLDEST_BACKUP_DATE[0]
 
     except:
         pass

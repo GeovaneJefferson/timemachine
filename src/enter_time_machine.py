@@ -717,7 +717,7 @@ class ENTERTIMEMACHINE(QWidget):
             count=0
             for _ in self.filesToRestore:
                 sub.run(
-                    f"{COPY_RSYNC_CMD} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
+                    f"{"rsync", "-avr"} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
                     f"{BACKUP_FOLDER_NAME}/{getDate}/{getTime}/{self.currentFolder}/"
                     f"{self.filesToRestore[count]} {HOME_USER}/{self.currentFolder}/",
                     shell=True)
@@ -731,7 +731,7 @@ class ENTERTIMEMACHINE(QWidget):
             count=0
             for _ in self.filesToRestoreWithSpace:
                 sub.run(
-                    f"{COPY_RSYNC_CMD} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
+                    f"{"rsync", "-avr"} {self.iniExternalLocation}/{BASE_FOLDER_NAME}/"
                     f"{BACKUP_FOLDER_NAME}/{getDate}/{getTime}/{self.currentFolder}/"
                     f"{self.filesToRestoreWithSpace[count]} {HOME_USER}/"
                     f"{self.currentFolder}/", shell=True)

@@ -646,11 +646,11 @@ class MainWindow(QMainWindow):
         for counter in range(len(self.files_to_restore)):
             print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
             
-            # sub.Popen(f"{COPY_RSYNC_CMD} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
+            # sub.Popen(f"{"rsync", "-avr"} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
             #           shell=True)
 
             command = f"{file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/"
-            sub.Popen([COPY_RSYNC_CMD, command])
+            sub.Popen(["rsync", "-avr", command])
             
 
         # Open file manager

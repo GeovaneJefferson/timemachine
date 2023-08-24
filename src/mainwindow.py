@@ -15,7 +15,6 @@ from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
-from detect_theme_color import detect_theme_color
 
 
 CHOOSE_DEVICE = []
@@ -36,41 +35,10 @@ class MainWindow(QMainWindow):
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
 
-        self.begin_settings()
-
-    def begin_settings(self):
-        # Detect dark theme
-        if detect_theme_color(APP):
-            # Left background
-            self.leftBackgroundColorDetector=leftBackgroundColorStylesheetDark
-            # Button
-            self.buttonStylesheetDetector=buttonStylesheetDark
-            # External window
-            self.externalWindowbackgroundDetector=externalWindowbackgroundStylesheetDark
-            # Available devices
-            self.availableDeviceButtonDetector=availableDeviceButtonStylesheetDark
-            # Separator
-            self.separatorstylesheetDetector=separetorLineDark
-            # Separator left background
-            self.separatorLeftBackgroundStylesheetDetector=separetorLineLeftbackgroundDark
-
-        else:
-            # Left background
-            self.leftBackgroundColorDetector=leftBackgroundColorStylesheet
-            # Button
-            self.buttonStylesheetDetector=buttonStylesheet
-            # External window
-            self.externalWindowbackgroundDetector=externalWindowbackgroundStylesheet
-            # Available devices
-            self.availableDeviceButtonDetector=availableDeviceButtonStylesheet
-            # Separator
-            self.separatorstylesheetDetector=separetorLine
-            # Separator left background
-            self.separatorLeftBackgroundStylesheetDetector=separetorLineLeftbackground
-
-        leftBackgroundColor=QWidget(self)
-        leftBackgroundColor.setGeometry(0,0,220,self.height())
-        leftBackgroundColor.setStyleSheet(self.leftBackgroundColorDetector)
+        # Left line 
+        left_background_color = QWidget(self)
+        left_background_color.setGeometry(0,0,220,self.height())
+        # left_background_color.setStyleSheet(self.leftBackgroundColorDetector)
 
         self.widgets()
 
@@ -80,7 +48,6 @@ class MainWindow(QMainWindow):
         ################################################################################
         self.leftWidget=QWidget(self)
         self.leftWidget.setGeometry(20, 20, 200, 410)
-        self.leftWidget.setStyleSheet(self.separatorLeftBackgroundStylesheetDetector)
 
         # Left layout
         self.leftLayout=QVBoxLayout(self.leftWidget)
@@ -141,7 +108,6 @@ class MainWindow(QMainWindow):
         self.select_disk_button.setText("   Select Disk...   ")
         self.select_disk_button.adjustSize()
         self.select_disk_button.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.select_disk_button.setStyleSheet(self.buttonStylesheetDetector)
         self.select_disk_button.clicked.connect(self.external_open_animation)
 
         ################################################################################
@@ -220,7 +186,6 @@ class MainWindow(QMainWindow):
         self.backup_now_button.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.backup_now_button.adjustSize()
         self.backup_now_button.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.backup_now_button.setStyleSheet(self.buttonStylesheetDetector)
         self.backup_now_button.clicked.connect(self.backup_now_clicked)
         self.backup_now_button.setEnabled(False)
 
@@ -229,13 +194,12 @@ class MainWindow(QMainWindow):
         ################################################################################
         topLineWidget=QWidget(self)
         topLineWidget.setGeometry(240,30,440,1)
-        topLineWidget.setStyleSheet(self.separatorstylesheetDetector)
+
         ################################################################################
         # Description
         ################################################################################
         self.descriptionWidget=QWidget(self)
         self.descriptionWidget.setGeometry(240, 200, 440, 160)
-        self.descriptionWidget.setStyleSheet(self.separatorstylesheetDetector)
 
         # Description Layout
         self.descriptionLayout=QVBoxLayout(self.descriptionWidget)
@@ -285,7 +249,6 @@ class MainWindow(QMainWindow):
         self.optionsButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.optionsButton.setFixedHeight(BUTTONHEIGHT_SIZE)
         self.optionsButton.adjustSize()
-        self.optionsButton.setStyleSheet(self.buttonStylesheetDetector)
         self.optionsButton.clicked.connect(self.on_options_clicked)
 
         # Help button
@@ -294,7 +257,6 @@ class MainWindow(QMainWindow):
         self.helpButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.helpButton.setFixedSize(24,24)
         self.helpButton.setToolTip("Help")
-        self.helpButton.setStyleSheet(self.buttonStylesheetDetector)
         self.helpButton.clicked.connect(
             lambda: sub.Popen([f"xdg-open", {GITHUB_HOME}]))
         
@@ -327,13 +289,11 @@ class MainWindow(QMainWindow):
         self.externalWindow.setFixedSize(400,280)
         self.externalWindow.move(self.width()/4,-300)
         self.externalWindow.show()
-        self.externalWindow.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Frame
         self.where_frame=QFrame(self.externalWindow)
         self.where_frame.setFixedSize(self.externalWindow.width()-60,self.externalWindow.height())
         self.where_frame.move(20,40)
-        self.where_frame.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Scroll
         self.scroll=QScrollArea(self.externalWindow)
@@ -342,7 +302,6 @@ class MainWindow(QMainWindow):
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.where_frame)
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.scroll.setStyleSheet(self.externalWindowbackgroundDetector)
 
         # Vertical layout V
         self.verticalLayout=QVBoxLayout(self.where_frame)
@@ -374,7 +333,6 @@ class MainWindow(QMainWindow):
         self.cancelButton.setText("   Cancel   ")
         self.cancelButton.adjustSize()
         self.cancelButton.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.cancelButton.setStyleSheet(self.buttonStylesheetDetector)
         self.cancelButton.clicked.connect(self.on_button_cancel_clicked)
 
         # Use this device
@@ -656,7 +614,6 @@ class MainWindow(QMainWindow):
             updateAvailable = QPushButton()
             updateAvailable.setText("   Update Available   ")
             updateAvailable.adjustSize()
-            updateAvailable.setStyleSheet(self.buttonStylesheetDetector)
             updateAvailable.clicked.connect(self.on_update_button_clicked)
 
             # Show button on screen
@@ -867,15 +824,6 @@ class OPTION(QMainWindow):
         fg=self.frameGeometry()
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
-
-        self.begin_settings()
-
-    def begin_settings(self):
-        # Detect dark theme
-        if detect_theme_color(APP):
-            self.buttonStylesheetDetector=buttonStylesheetDark
-        else:
-            self.buttonStylesheetDetector=buttonStylesheet
 
         self.widgets()
 
@@ -1205,7 +1153,6 @@ class OPTION(QMainWindow):
         self.fixButton.setText("   Reset   ")
         self.fixButton.adjustSize()
         self.fixButton.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.fixButton.setStyleSheet(self.buttonStylesheetDetector)
         self.fixButton.clicked.connect(self.on_button_fix_clicked)
 
         ################################################################################
@@ -1223,7 +1170,6 @@ class OPTION(QMainWindow):
         self.donateButton.setText("   Donate   ")
         self.donateButton.setFont(QFont(MAIN_FONT,NORMAL_FONT_SIZE))
         self.donateButton.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.donateButton.setStyleSheet(self.buttonStylesheetDetector)
         self.donateButton.clicked.connect(self.donate_clicked)
 
         ################################################################################
@@ -1234,7 +1180,6 @@ class OPTION(QMainWindow):
         # self.applyButton.setText("   Apply   ")
         # self.applyButton.adjustSize()
         # self.applyButton.setFixedHeight(buttonHeightSize)
-        # self.applyButton.setStyleSheet(self.buttonStylesheetDetector)
         # self.applyButton.clicked.connect(self.on_save_button_clicked)
 
         self.backButton=QPushButton()
@@ -1242,7 +1187,6 @@ class OPTION(QMainWindow):
         self.backButton.setText("   Back   ")
         self.backButton.adjustSize()
         self.backButton.setFixedHeight(BUTTONHEIGHT_SIZE)
-        self.backButton.setStyleSheet(self.buttonStylesheetDetector)
         self.backButton.clicked.connect(self.on_back_button_clicked)
 
         ################################################################################

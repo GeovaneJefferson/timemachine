@@ -23,7 +23,7 @@ async def restore_backup_home():
         
         # Restore Home folders
         # Restore the latest backup
-        sub.run(f"{COPY_RSYNC_CMD} {MAIN_INI_FILE.backup_folder_name()}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}/"
+        sub.run(f"{"rsync", "-avr"} {MAIN_INI_FILE.backup_folder_name()}/{get_backup_date()[0]}/{get_latest_backup_time()[0]}/"
             f"{folder}/ {HOME_USER}/{folder}/", shell=True)
 
     return "Task completed: Wallpaper"

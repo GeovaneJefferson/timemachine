@@ -24,10 +24,13 @@ async def restore_backup_flatpaks_applications():
                 try:
                     # Update DB
                     MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', f'{flatpak}')
-                    # Update notification
+                    print(f'Installing: {flatpak}...')
                     notification_message_current_backing_up(f'Installing: {flatpak}...')
+                    
                     # Install it
-                    sub.run(f"{FLATPAK_INSTALL_CMD} {flatpak}", shell=True)
+                    action = "flatpak", "install", "--system", "--noninteractive",\
+                        "--assumeyes", "--or-update"
+                    sub.run([action, flatpak])
                 except:
                     pass
                 
@@ -35,4 +38,5 @@ async def restore_backup_flatpaks_applications():
 
 
 if __name__ == '__main__':
+    asyncio.run(restore_backup_flatpaks_applications())
     pass

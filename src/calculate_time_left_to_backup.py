@@ -22,9 +22,7 @@ def calculate_time_left_to_backup():
         time_left=(int(backup_minute) - int(current_minute) + 59)
 
         if time_left < 59 and time_left >= 0:
-            # Write time left to ini file
             write_to_ini_file(time_left)
-
             return f"In Approx. {time_left} minutes..."
         else:
             return None
@@ -34,9 +32,7 @@ def calculate_time_left_to_backup():
         time_left = int(backup_minute) - int(current_minute)
 
         if time_left >= 0:
-            # Write time left to ini file
             write_to_ini_file(time_left)
-
             return f"In Approx. {time_left} minutes..."
         else:
             return None

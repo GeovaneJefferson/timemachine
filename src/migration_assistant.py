@@ -9,7 +9,6 @@ from get_system_settings_size import get_system_settings_size
 from package_manager import package_manager
 from get_backup_home_name_and_size import get_backup_folders_size_pretty
 from save_info import save_info
-from detect_theme_color import detect_theme_color
 # from restore_cmd import RESTORE
 
 

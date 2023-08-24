@@ -12,6 +12,7 @@ from read_ini_file import UPDATEINIFILE
 
 DELAY_TO_UPDATE = 2000
 
+
 class APP:
     def __init__(self):
         self.color = str()
@@ -61,14 +62,16 @@ class APP:
         # Browse Time Machine Backups button
         self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
         self.browseTimeMachineBackupsButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        command = src_enter_time_machine_test_py
         self.browseTimeMachineBackupsButton.triggered.connect(
-            lambda: sub.Popen(f"python3 {src_enter_time_machine_test_py}", shell=True))
-
+            lambda: sub.Popen(["python3", command]))
+        
         # Open Time Machine button
         self.openTimeMachine = QAction(f"Open {APP_NAME}")
         self.openTimeMachine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        command = SRC_MAIN_WINDOW_PY
         self.openTimeMachine.triggered.connect(
-            lambda: sub.Popen(f"python3 {SRC_MAIN_WINDOW_PY}",shell=True))
+            lambda: sub.Popen(["python3", command]))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
@@ -176,7 +179,8 @@ class APP:
                 self.browseTimeMachineBackupsButton.setEnabled(False)
 
     def backup_now(self):
-        sub.Popen(f"python3 {src_prepare_backup_py}", shell=True)
+        command = src_prepare_backup_py
+        sub.run(["python3", command])
 
     def change_color(self,color):
         try:

@@ -22,7 +22,7 @@ class CHECKER:
     # Check for previus interrupted backup
     def continue_interrupted_backup(self):
         # Call backup now .py
-        sub.run(f"python3 {src_backup_now_py}", shell=True)
+        sub.run(["python3", src_backup_now_py])
 
     # Check for new .deb, .rpm etc. inside Downloads folder and back up
     def check_for_new_packages(self):
@@ -41,10 +41,12 @@ class CHECKER:
                         for old_package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
                             if old_package.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
-                                sub.run(f"rm -f {MAIN_INI_FILE.deb_main_folder()}/{old_package}",shell=True)
+                                command = f"{MAIN_INI_FILE.deb_main_folder()}/{old_package}"
+                                sub.run(["rm", "-rf", command])
 
                         # backup the found package
-                        sub.run(f"{COPY_RSYNC_CMD} {DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.deb_main_folder()}", shell=True)
+                        command = f"{DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.deb_main_folder()}"
+                        sub.run(["rsync", "-avr", command])
 
             # Search for .rpm packages inside Downloads folder
             if package.endswith(".rpm"):
@@ -58,10 +60,12 @@ class CHECKER:
                         for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
                             if deleteOutput.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
-                                sub.run(f"rm -f {MAIN_INI_FILE.rpm_main_folder()}/{deleteOutput}",shell=True)
+                                command = f"{MAIN_INI_FILE.rpm_main_folder()}/{old_package}"
+                                sub.run(["rm", "-rf", command])
 
                         # backup the found package
-                        sub.run(f"{COPY_RSYNC_CMD} {DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.rpm_main_folder()}", shell=True)
+                        command = f"{DOWNLOADS_FOLDER_LOCATION}/{package} {MAIN_INI_FILE.rpm_main_folder()}"
+                        sub.run(["rsync", "-avr", command])
 
     # Check the dates for backup, one or multiple times per day
     def check_the_dates(self):
@@ -133,7 +137,7 @@ class CHECKER:
 
         # Call prepare backup
         print("Preparing the backup...")
-        sub.run(f"python3 {src_prepare_backup_py}", shell=True)
+        sub.run(["python3", src_prepare_backup_py])
 
 
 if __name__ == '__main__':

@@ -92,14 +92,14 @@ DEB_FOLDER_NAME = "deb"
 RPM_FOLDER_NAME = "rpm"
 
 # CMD commands
-COPY_RSYNC_CMD = "rsync -avr"
-COPY_CP_CMD = "cp -rv"
-CREATE_CMD_FOLDER = "mkdir"
+# "rsync", "-avr" = "rsync", "-avr"
+# COPY_CP_CMD = "cp", "-rv"
+# CREATE_CMD_FOLDER = "mkdir"
 CREATE_CMD_FILE = "touch"
-GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
-INSTALL_DEB = "sudo dpkg -i"
-INSTALL_RPM = "sudo rpm -ivh --replacepkgs"
-FLATPAK_INSTALL_CMD = "flatpak install --system --noninteractive --assumeyes --or-update"
+GET_FLATPAKS_APPLICATIONS_NAME = "flatpak", "list", "--app", "--columns=application"
+INSTALL_DEB = "sudo", "dpkg", "-i"
+INSTALL_RPM = "sudo", "rpm", "-ivh", "--replacepkgs"
+FLATPAK_INSTALL_CMD = "flatpak", "install", "--system", "--noninteractive", "--assumeyes", "--or-update"
 
 # DE
 SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
@@ -111,13 +111,6 @@ SUPPORT_DEB_PACKAGES_MANAGER = ["debian", "ubuntu"]
 SUPPORT_RPM_PACKAGE_MANAGER = ["fedora", "opensuse"]
 GET_USER_DE = "echo $XDG_CURRENT_DESKTOP"
 GET_USER_PACKAGE_MANAGER = "cat /etc/os-release"
-
-# Theme
-ICON_THEME_NAME = "Adwaita"
-
-systemTrayPipeName = "/tmp/system_tray.pipe"
-appPipeName = f"/tmp/{APP_NAME_CLOSE}.pipe"
-backupNowPipeName = f"/tmp/backup_now.pipe"
 
 ################################################################################
 # GNOME
@@ -291,23 +284,14 @@ SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"
 SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
-# LOG
-APP_LOGS = f"{DST_FOLDER_INSTALL}/app_logs.txt"
-
 
 from read_ini_file import UPDATEINIFILE
 MAIN_INI_FILE = UPDATEINIFILE()
+
 def signal_exit(*args):
-    print("Updating INI settings...")
-    print("Exiting...")
-
     MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
-
-    # Quit
     exit()
 
 def error_trying_to_backup(e):
     MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', f'{e}')
-
-    # Quit
     exit()

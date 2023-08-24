@@ -47,9 +47,9 @@ class CLI:
     def install_dependencies(self):
         # Depedencies
         try:
-            sub.run(f"pip install -r {GET_CURRENT_LOCATION}/requirements.txt", shell=True)
-        except FileNotFoundError as e:
-            print(e)
+            command = f"{GET_CURRENT_LOCATION}/requirements.txt"
+            sub.run(["pip", "install", "-r", command])
+        except FileNotFoundError:
             exit()
 
     def copy_files(self):
@@ -62,7 +62,8 @@ class CLI:
     def create_application_files(self):
         # Create .local/share/applications
         if not os.path.exists(DST_APPLICATIONS_LOCATION):
-            sub.run(f"{CREATE_CMD_FOLDER} {DST_APPLICATIONS_LOCATION}", shell=True)
+            command = DST_APPLICATIONS_LOCATION
+            sub.run(["mkdir", command])
 
         # Send to DST_FILE_EXE_DESKTOP
         with open(SRC_TIMEMACHINE_DESKTOP, "w") as writer:
@@ -97,7 +98,8 @@ class CLI:
     def create_backup_checker_desktop(self):
         # Create autostart folder if necessary
         if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
-            sub.run(f"{CREATE_CMD_FOLDER} {SRC_AUTOSTARTFOLDER_LOCATION}", shell=True)
+            command = SRC_AUTOSTARTFOLDER_LOCATION
+            sub.run(["mkdir", command])
 
         # Edit file startup with system
         with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:
@@ -131,8 +133,8 @@ if __name__ == '__main__':
         # Create backup checker.dekstop
         print(f"Creating backup_checker.desktop...")
         MAIN.create_backup_checker_desktop()
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
     
     print("Program was successfully installed!")
     exit()

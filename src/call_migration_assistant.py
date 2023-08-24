@@ -9,4 +9,3 @@ sub.run(['sudo', 'python3', *sys.argv])
 sub.run(['clear'])
 # Open Migration Assistant
 sub.run(["python3", SRC_MIGRATION_ASSISTANT_PY])
- 
