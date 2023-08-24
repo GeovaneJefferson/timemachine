@@ -275,7 +275,7 @@ class MainWindow(QMainWindow):
         ################################################################################
         # External Window
         ################################################################################
-        self.externalBackgroundShadow=QWidget(self)
+        self.externalBackgroundShadow = QWidget(self)
         self.externalBackgroundShadow.setFixedSize(700,self.height())
         self.externalBackgroundShadow.move(0,0)
         self.externalBackgroundShadow.setVisible(False)
@@ -285,9 +285,16 @@ class MainWindow(QMainWindow):
                 "background-color:rgba(14,14,14,0.6);"
             "}")
 
-        self.externalWindow=QWidget(self)
+        self.externalWindow = QWidget(self)
         self.externalWindow.setFixedSize(400,280)
         self.externalWindow.move(self.width()/4,-300)
+        self.externalWindow.setStyleSheet(
+            "QWidget"
+            "{"
+                "background-color: white;"
+                "border-radius: 2px;;"
+
+            "}")
         self.externalWindow.show()
 
         # Frame
@@ -665,8 +672,6 @@ class MainWindow(QMainWindow):
 
                         if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":
                             self.available_devices.setAutoExclusive(True)
-
-                        self.available_devices.setStyleSheet(self.availableDeviceButtonDetector)
 
                         text=self.available_devices.text()
                         self.available_devices.clicked.connect(lambda *args, text=text: self.on_device_clicked(text))
