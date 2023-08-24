@@ -453,8 +453,9 @@ class WelcomeScreen(QWidget):
 		if os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
 			os.remove(MAIN_INI_FILE.exclude_applications_location())
 		else:
-			sub.run(f'{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_applications_location()}', shell=True)
-
+			dst = MAIN_INI_FILE.exclude_applications_location()
+			sub.run(["touch", dst])
+            
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
 			for exclude_applications in self.applications_to_be_exclude:
@@ -467,8 +468,9 @@ class WelcomeScreen(QWidget):
 		if os.path.exists(MAIN_INI_FILE.exclude_flatpaks_location()):
 			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
 		else:
-			sub.run(f'{CREATE_CMD_FILE} {MAIN_INI_FILE.exclude_flatpaks_location()}', shell=True)
-
+			dst = MAIN_INI_FILE.exclude_flatpaks_location()
+			sub.run(["touch", dst])
+            
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
 			for exclude_flatpak in self.flatpaks_to_be_exclude:
@@ -555,7 +557,8 @@ class WelcomeScreen(QWidget):
 		self.ui.progress_bar_restoring.show()
 
 		# Call restore class
-		sub.Popen(f'python3 {src_restore_cmd_py}', shell=True)
+		command = src_restore_cmd_py
+		sub.run(["python3", command])
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
@@ -611,7 +614,7 @@ class WelcomeScreen(QWidget):
 			if MAIN.on_automatically_reboot_clicked():
 				# Reboot system
 				print("Rebooting now...")
-				sub.run("sudo reboot", shell=True)
+				sub.run(["sudo", "reboot"])
 			else:
 				print("All done.")
 

@@ -628,7 +628,9 @@ class MainWindow(QMainWindow):
             self.folder_already_opened = True
             # Open folder manager
             print(f"Opening {HOME_USER}/{self.CURRENT_FOLDER}...")
-            sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
+
+            dst = HOME_USER + "/" + self.CURRENT_FOLDER
+            sub.run(["xdg-open", dst])
             exit()
 
     def start_restore(self):
@@ -646,20 +648,14 @@ class MainWindow(QMainWindow):
         for counter in range(len(self.files_to_restore)):
             print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
             
-            # sub.Popen(f"{"rsync", "-avr"} {file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/",
-            #           shell=True)
-
-            command = f"{file_path}/{handle_spaces(self.files_to_restore[counter])} {HOME_USER}/{self.CURRENT_FOLDER}/"
-            sub.Popen(["rsync", "-avr", command])
+            src = file_path + "/" + handle_spaces(self.files_to_restore[counter])
+            dst = HOME_USER + "/" + self.CURRENT_FOLDER + "/"
+            sub.Popen(["rsync", "-avr", src, dst])
             
-
         # Open file manager
-        # Open folder manager
-        # sub.Popen(f"xdg-open {HOME_USER}/{self.CURRENT_FOLDER}", shell=True)
+        dst = HOME_USER + "/" + self.CURRENT_FOLDER
+        sub.Popen(["xdg-open", "-avr", src, dst])
 
-        command = f"{HOME_USER}/{self.CURRENT_FOLDER}"
-        sub.Popen(["xdg-open", command])
-            
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
@@ -749,20 +745,26 @@ class PreviewWindow(QDialog):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
-            for i in range(self.layout.count()):
-                widget_item = self.layout.itemAt(i)
+            self.remove_items()
 
-                if widget_item.widget():
-                    print("Removing items")
-                    widget_item.widget().deleteLater()
+    def remove_items(self):
+        for i in range(self.layout.count()):
+            widget_item = self.layout.itemAt(i)
 
-            self.close()
+            if widget_item.widget():
+                print("Removing items")
+                widget_item.widget().deleteLater()
+
+        self.close()
 
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
-
-        # sub.Popen(f"xdg-open {file_directory}", shell=True)
+        # Open file directory
         sub.Popen(["xdg-open", file_directory])
+        
+        # Close external preview window
+        self.remove_items()
+
 
 if __name__ == "__main__":
     APP = QApplication(sys.argv)

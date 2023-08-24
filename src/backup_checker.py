@@ -150,6 +150,7 @@ if __name__ == '__main__':
     while True:
         try:
             if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
+                # Pause while a backup is running
                 if not MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
                     print("Backup checker is running...")
 
