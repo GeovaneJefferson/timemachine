@@ -46,3 +46,4 @@ def open_app():
     command = SRC_MAIN_WINDOW_PY
     sub.Popen(["python3", command])
     exit()
+    
