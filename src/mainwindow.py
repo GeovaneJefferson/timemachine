@@ -629,18 +629,15 @@ class MainWindow(QMainWindow):
             print("No new updates available...")
 
     def on_update_button_clicked(self):
-        # # Disable system tray
-        # if os.path.isfile(f"{DST_FOLDER_INSTALL}/src/system_tray_is_running.txt"):
-        #     sub.run(f"rm {DST_FOLDER_INSTALL}/src/system_tray_is_running.txt",shell=True)
-
-        # Call update and Exit
+        # Uncheck
+        # Update and make save the DB
         backup_ini_file(True)
 
     ################################################################################
     # EXTERNAL
     ################################################################################
     def external_open_animation(self):
-        self.anim=QPropertyAnimation(self.externalWindow, b"pos")
+        self.anim  =QPropertyAnimation(self.externalWindow, b"pos")
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         self.anim.setEndValue(QPoint(160,0))
         self.anim.setDuration(500)
