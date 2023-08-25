@@ -573,10 +573,8 @@ class WelcomeScreen(QWidget):
 
 	def on_automatically_reboot_clicked(self):
 		if self.ui.checkbox_automatically_reboot_page4.isChecked():
-			print("Reboot True")
 			return True
 		else:
-			print("Reboot False")
 			return False
 
 	def stacked_widget_transition(self, page, direction):
