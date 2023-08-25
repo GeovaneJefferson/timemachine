@@ -261,15 +261,15 @@ class MainWindow(QMainWindow):
             lambda: sub.Popen([f"xdg-open", {GITHUB_HOME}]))
 
         # Show system tray
-        self.showInSystemTrayCheckBox = QCheckBox(self)
-        self.showInSystemTrayCheckBox.setFont(ITEM)
-        self.showInSystemTrayCheckBox.setText(f"Show {APP_NAME} in menu bar")
-        self.showInSystemTrayCheckBox.setFixedSize(280, 20)
-        self.showInSystemTrayCheckBox.move(240, 410)
-        self.showInSystemTrayCheckBox.setStyleSheet("""
+        self.show_in_system_tray_checkBox = QCheckBox(self)
+        self.show_in_system_tray_checkBox.setFont(ITEM)
+        self.show_in_system_tray_checkBox.setText(f"Show {APP_NAME} in menu bar")
+        self.show_in_system_tray_checkBox.setFixedSize(280, 20)
+        self.show_in_system_tray_checkBox.move(240, 410)
+        self.show_in_system_tray_checkBox.setStyleSheet("""
             border-color: transparent;
         """)
-        self.showInSystemTrayCheckBox.clicked.connect(self.system_tray_clicked)
+        self.show_in_system_tray_checkBox.clicked.connect(self.system_tray_clicked)
 
         ################################################################################
         # External Window
@@ -547,9 +547,9 @@ class MainWindow(QMainWindow):
             self.automatically_check_box.setChecked(False)
 
         if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-            self.showInSystemTrayCheckBox.setChecked(True)
+            self.show_in_system_tray_checkBox.setChecked(True)
         else:
-            self.showInSystemTrayCheckBox.setChecked(False)
+            self.show_in_system_tray_checkBox.setChecked(False)
 
     def automatically_clicked(self):
         if self.automatically_check_box.isChecked():
@@ -576,7 +576,7 @@ class MainWindow(QMainWindow):
 
     # TODO
     def system_tray_clicked(self):
-        if self.showInSystemTrayCheckBox.isChecked():
+        if self.show_in_system_tray_checkBox.isChecked():
             MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'True')
 
             # Call system tray
@@ -593,13 +593,13 @@ class MainWindow(QMainWindow):
         self.select_disk_button.setEnabled(True)
         self.backup_now_button.setEnabled(True)
         self.automatically_check_box.setEnabled(True)
-        self.showInSystemTrayCheckBox.setEnabled(True)
+        self.show_in_system_tray_checkBox.setEnabled(True)
 
     def not_connected_action_to_take(self):
         self.select_disk_button.setEnabled(False)
         self.backup_now_button.setEnabled(False)
         self.automatically_check_box.setEnabled(False)
-        self.showInSystemTrayCheckBox.setEnabled(False)
+        self.show_in_system_tray_checkBox.setEnabled(False)
 
     def not_registered_action_to_take(self):
         self.external_name_label.setText("<h1>None</h1>")
@@ -632,7 +632,7 @@ class MainWindow(QMainWindow):
         MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
 
         # Uncheck system tray
-        self.showInSystemTrayCheckBox.setChecked(False)
+        self.show_in_system_tray_checkBox.setChecked(False)
 
         # Update and make save the DB
         backup_ini_file(True)
