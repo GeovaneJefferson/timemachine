@@ -1177,7 +1177,7 @@ class BackupScreen(QWidget):
     def change_screen(self):
         MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'True')
 
-        sub.Popen(f"python3 {src_restore_cmd_py}",shell=True)
+        sub.Popen(f"python3 {SRC_RESTORE_CMD_PY}",shell=True)
 
         MAIN5 = StartRestoring()
         WIDGET.addWidget(MAIN5)

@@ -557,8 +557,8 @@ class WelcomeScreen(QWidget):
 		self.ui.progress_bar_restoring.show()
 
 		# Call restore class
-		command = src_restore_cmd_py
-		sub.run(["python3", command])
+		command = SRC_RESTORE_CMD_PY
+		sub.Popen(["python3", command])
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')

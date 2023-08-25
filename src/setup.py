@@ -232,7 +232,7 @@ src_backup_now_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_now.p
 src_system_tray_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/systemtray.py"
 src_notification_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/notification.py"
 src_search_for_devices_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/search_for_devices.py"
-src_restore_cmd_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/restore_cmd.py"
+SRC_RESTORE_CMD_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/restore_cmd.py"
 
 ################################################################################
 ## Desktop
