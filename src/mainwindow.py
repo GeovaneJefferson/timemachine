@@ -259,10 +259,9 @@ class MainWindow(QMainWindow):
         self.helpButton.setToolTip("Help")
         self.helpButton.clicked.connect(
             lambda: sub.Popen([f"xdg-open", {GITHUB_HOME}]))
-        
 
         # Show system tray
-        self.showInSystemTrayCheckBox=QCheckBox(self)
+        self.showInSystemTrayCheckBox = QCheckBox(self)
         self.showInSystemTrayCheckBox.setFont(ITEM)
         self.showInSystemTrayCheckBox.setText(f"Show {APP_NAME} in menu bar")
         self.showInSystemTrayCheckBox.setFixedSize(280, 20)
@@ -629,7 +628,12 @@ class MainWindow(QMainWindow):
             print("No new updates available...")
 
     def on_update_button_clicked(self):
-        # Uncheck
+        # Set system tray to False
+        MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
+
+        # Uncheck system tray
+        self.showInSystemTrayCheckBox.setChecked(False)
+
         # Update and make save the DB
         backup_ini_file(True)
 
