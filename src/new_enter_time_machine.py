@@ -6,6 +6,7 @@ from ui.ui_untitled import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime
+from get_latest_backup_date import latest_backup_date_label
 from handle_spaces import handle_spaces
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -96,7 +97,7 @@ class MainWindow(QMainWindow):
         self.COUNTER_FOR_DATE = 0
         self.COUNTER_FOR_TIME = 0
 
-        self.currentLocationLabel = QLabel(self)
+        self.current_location_label = QLabel(self)
         self.CURRENT_FOLDER = ""
 
         # Connections
@@ -274,6 +275,9 @@ class MainWindow(QMainWindow):
             # Add 1 for time counter
             self.COUNTER_FOR_TIME += 1
 
+        # Update ui informations 
+        self.update_labels()
+
         # Show results
         #  asynchronously
         self.show_thread = threading.Thread(target=self.show_results)
@@ -364,7 +368,7 @@ class MainWindow(QMainWindow):
         except UnboundLocalError:
             # If folder is empty, change date, until find something
             print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
-            self.COUNTER_FOR_DATE += 1
+            # self.COUNTER_FOR_DATE += 1
             
             for index in range(self.ui.dates_layout.count()):
                 button = self.ui.dates_layout.itemAt(index).widget()
@@ -411,16 +415,39 @@ class MainWindow(QMainWindow):
         date_now = MAIN_INI_FILE.current_date() + "-" \
                  + MAIN_INI_FILE.current_month() + "-" \
                  + MAIN_INI_FILE.current_year()
+        
+        # TODO
+        # Re-code this
+        replaced_the_time = str(latest_backup_date_label().split(
+            ",")[0] +  ", " + 
+            self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]).replace("-",":")
+
+
+        date_checker1 = str(self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]).split('-')[0] 
+        date_checker2 = str(self.LIST_OF_ALL_BACKUP_DATES[1]).split('-')[0] 
 
         # If today, show "Today"
-        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == str(date_now):
+        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] != str(date_now):
             # Update gray time label
             self.ui.label_gray_time.setText(
-                f'Today ({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        else:
-            self.ui.label_gray_time.setText(
                 f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-        
+
+        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == date_now:
+            # 
+            if self.COUNTER_FOR_TIME == 0:
+                # Today or Yesterday
+                self.ui.label_gray_time.setText(latest_backup_date_label())
+            # Edit date, keep text before ",", and update the label time 
+            else:
+                self.ui.label_gray_time.setText(replaced_the_time)
+
+        elif int(date_checker1) - int(date_checker2) == 1:
+            if self.COUNTER_FOR_TIME == 0:
+                # Today or Yesterday
+                self.ui.label_gray_time.setText(latest_backup_date_label())
+            else:
+                self.ui.label_gray_time.setText(replaced_the_time)
+
         # Enable/Disable up, down button
         self.up_down_settings()
 
@@ -469,6 +496,7 @@ class MainWindow(QMainWindow):
 
         # Get current folder name
         self.CURRENT_FOLDER = directory
+
         # Reset counter for time
         self.COUNTER_FOR_TIME = 0
 
