@@ -9,13 +9,11 @@ async def restore_kde_config():
     try:
         src = MAIN_INI_FILE.kde_config_main_folder() + "/"
         dst = HOME_USER + "/.config/"
-        sub.run(["rsync", "-avr", src, dst])
+        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
         
         notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_config_main_folder()}...')
     except:         
         pass
-
-    return "Task completed: restore kde config"
 
 
 if __name__ == '__main__':

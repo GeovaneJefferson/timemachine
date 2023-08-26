@@ -673,8 +673,14 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Sunken</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
@@ -703,8 +709,8 @@
                     </property>
                     <property name="iconSize">
                      <size>
-                      <width>16</width>
-                      <height>16</height>
+                      <width>32</width>
+                      <height>32</height>
                      </size>
                     </property>
                    </widget>
@@ -770,6 +776,12 @@
                      <iconset theme="applications-development">
                       <normaloff>.</normaloff>.</iconset>
                     </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>32</width>
+                      <height>32</height>
+                     </size>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -812,6 +824,12 @@
                      <iconset theme="system-file-manager">
                       <normaloff>.</normaloff>.</iconset>
                     </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>32</width>
+                      <height>32</height>
+                     </size>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -826,6 +844,12 @@
                      <iconset theme="system-file-manager">
                       <normaloff>.</normaloff>.</iconset>
                     </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>32</width>
+                      <height>32</height>
+                     </size>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -839,6 +863,12 @@
                     <property name="icon">
                      <iconset theme="applications-system">
                       <normaloff>.</normaloff>.</iconset>
+                    </property>
+                    <property name="iconSize">
+                     <size>
+                      <width>32</width>
+                      <height>32</height>
+                     </size>
                     </property>
                    </widget>
                   </item>

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.0
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -296,7 +296,9 @@ class Ui_WelcomeScreen(object):
         self.scrollArea = QScrollArea(self.widget_4)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setMinimumSize(QSize(0, 0))
+        self.scrollArea.setAutoFillBackground(True)
         self.scrollArea.setFrameShape(QFrame.StyledPanel)
+        self.scrollArea.setFrameShadow(QFrame.Sunken)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
@@ -313,7 +315,7 @@ class Ui_WelcomeScreen(object):
             icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
         self.checkbox_applications_page3.setIcon(icon)
-        self.checkbox_applications_page3.setIconSize(QSize(16, 16))
+        self.checkbox_applications_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_applications_page3)
 
@@ -342,6 +344,7 @@ class Ui_WelcomeScreen(object):
         self.checkbox_flatpaks_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_flatpaks_page3.setObjectName(u"checkbox_flatpaks_page3")
         self.checkbox_flatpaks_page3.setIcon(icon)
+        self.checkbox_flatpaks_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_flatpaks_page3)
 
@@ -372,12 +375,14 @@ class Ui_WelcomeScreen(object):
             icon1.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
         self.checkBox_3.setIcon(icon1)
+        self.checkBox_3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkBox_3)
 
         self.checkbox_files_folders_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_files_folders_page3.setObjectName(u"checkbox_files_folders_page3")
         self.checkbox_files_folders_page3.setIcon(icon1)
+        self.checkbox_files_folders_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_files_folders_page3)
 
@@ -391,6 +396,7 @@ class Ui_WelcomeScreen(object):
             icon2.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
         self.checkbox_system_settings_page3.setIcon(icon2)
+        self.checkbox_system_settings_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_system_settings_page3)
 

@@ -22,7 +22,7 @@ class CHECKER:
     # Check for previus interrupted backup
     def continue_interrupted_backup(self):
         # Call backup now .py
-        sub.run(["python3", src_backup_now_py])
+        sub.run(["python3", src_backup_now_py], stdout=sub.PIPE, stderr=sub.PIPE)
 
     # Check for new .deb, .rpm etc. inside Downloads folder and back up
     def check_for_new_packages(self):
@@ -42,12 +42,12 @@ class CHECKER:
                             if old_package.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
                                 dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
-                                sub.run(["rm", "-rf", dst])
+                                sub.run(["rm", "-rf", dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
                         # backup the found package
                         src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                         dst = MAIN_INI_FILE.deb_main_folder()
-                        sub.run(["rsync", "-avr", src, dst])
+                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
             # Search for .rpm packages inside Downloads folder
             if package.endswith(".rpm"):
@@ -62,12 +62,12 @@ class CHECKER:
                             if deleteOutput.startswith(f"{package.split('_')[0]}"):
                                 # Delete old package
                                 dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
-                                sub.run(["rm", "-rf", src, dst])
+                                sub.run(["rm", "-rf", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
                         # backup the found package
                         src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                         dst = MAIN_INI_FILE.rpm_main_folder()
-                        sub.run(["rsync", "-avr", src, dst])
+                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
     # Check the dates for backup, one or multiple times per day
     def check_the_dates(self):
@@ -139,7 +139,7 @@ class CHECKER:
 
         # Call prepare backup
         print("Preparing the backup...")
-        sub.run(["python3", src_prepare_backup_py])
+        sub.run(["python3", src_prepare_backup_py], stdout=sub.PIPE, stderr=sub.PIPE)
 
 
 if __name__ == '__main__':

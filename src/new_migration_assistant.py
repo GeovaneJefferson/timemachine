@@ -454,7 +454,7 @@ class WelcomeScreen(QWidget):
 			os.remove(MAIN_INI_FILE.exclude_applications_location())
 		else:
 			dst = MAIN_INI_FILE.exclude_applications_location()
-			sub.run(["touch", dst])
+			sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
@@ -469,7 +469,7 @@ class WelcomeScreen(QWidget):
 			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
 		else:
 			dst = MAIN_INI_FILE.exclude_flatpaks_location()
-			sub.run(["touch", dst])
+			sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
@@ -558,7 +558,7 @@ class WelcomeScreen(QWidget):
 
 		# Call restore class
 		command = SRC_RESTORE_CMD_PY
-		sub.Popen(["python3", command])
+		sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
@@ -612,7 +612,7 @@ class WelcomeScreen(QWidget):
 			if MAIN.on_automatically_reboot_clicked():
 				# Reboot system
 				print("Rebooting now...")
-				sub.run(["sudo", "reboot"])
+				sub.run(["sudo", "reboot"], stdout=sub.PIPE, stderr=sub.PIPE)
 			else:
 				print("All done.")
 

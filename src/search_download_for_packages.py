@@ -32,12 +32,12 @@ def search_download_for_packages():
                 for deleteOutput in os.listdir(MAIN_INI_FILE.deb_main_folder()):
                     if deleteOutput.startswith(f"{output.split('_')[0]}"):
                         action = MAIN_INI_FILE.deb_main_folder() + "/" + deleteOutput
-                        sub.run(["rm", "-rf", action])
+                        sub.run(["rm", "-rf", action], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Now back up
                 src = downloads_folder_location + "/" + output
                 dst = MAIN_INI_FILE.deb_main_folder()
-                sub.run(["rsync", "-avr", src, dst])
+                sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
         elif output.endswith(".rpm"):
             if output.split("_")[0] in (f"{MAIN_INI_FILE.rpm_main_folder()}/{(output).split('_')[0]}"):
@@ -45,12 +45,12 @@ def search_download_for_packages():
                 for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
                     if deleteOutput.startswith(f"{output.split('_')[0]}"):
                         action = MAIN_INI_FILE.rpm_main_folder() + "/" + deleteOutput
-                        sub.run(["rm", "-rf", action])
+                        sub.run(["rm", "-rf", action], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Now back up
                 src = downloads_folder_location + "/" + output
                 dst = MAIN_INI_FILE.rpm_main_folder()
-                sub.run(["rsync", "-avr", src, dst])
+                sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 
 if __name__ == '__main__':

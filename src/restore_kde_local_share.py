@@ -1,23 +1,28 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from notification_massage import notification_message_current_backing_up
-
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-async def restore_kde_local_share():
-    try:
-        src = MAIN_INI_FILE.kde_local_share_main_folder() + "/"
-        dst = HOME_USER + "/.local/share/"
-        sub.run(["rsync", "-avr", src, dst])
+class BOOT:
+    def __init__(self):
+        # Delay startup for x seconds
+        time.sleep(0) 
+        self.system_tray()
 
-        notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_local_share_main_folder()}...')
-    except Exception:
-        pass
+    def system_tray(self):
+        MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'True')
 
-    return "Task completed: restore kde local share"
+        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
+            sub.Popen(["python3", src_system_tray_py], stdout=sub.PIPE, stderr=sub.PIPE)
+
+        if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":
+            if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup',):
+                self.call_backup_checker()
+        exit()
+
+    def call_backup_checker(self):
+        sub.Popen(["python3", SRC_BACKUP_CHECKER_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
 
-if __name__ == '__main__':
-    pass
-
+if __name__=='__main__':
+    main = BOOT()

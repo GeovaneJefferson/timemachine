@@ -19,7 +19,7 @@ class APP:
         self.iniUI()
 
     def iniUI(self):
-        self.app = QApplication([])
+        self.app = QApplication([], stdout=sub.PIPE, stderr=sub.PIPE)
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setApplicationDisplayName(APP_NAME)
         self.app.setApplicationName(APP_NAME)
@@ -64,14 +64,14 @@ class APP:
         self.browseTimeMachineBackupsButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         command = src_enter_time_machine_test_py
         self.browseTimeMachineBackupsButton.triggered.connect(
-            lambda: sub.Popen(["python3", command]))
+            lambda: sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
         self.openTimeMachine = QAction(f"Open {APP_NAME}")
         self.openTimeMachine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         command = SRC_MAIN_WINDOW_PY
         self.openTimeMachine.triggered.connect(
-            lambda: sub.Popen(["python3", command]))
+            lambda: sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
@@ -179,7 +179,7 @@ class APP:
 
     def backup_now(self):
         command = src_prepare_backup_py
-        sub.run(["python3", command])
+        sub.run(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
     def change_color(self,color):
         try:

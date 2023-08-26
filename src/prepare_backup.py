@@ -41,7 +41,7 @@ class PREPAREBACKUP:
             # Call backup now .py
             print("Calling backup now...")
             command = src_backup_now_py
-            sub.Popen(["python3", command])
+            sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE)
         else:
             # Not enough space to make a new backup
             print("Not enough space for a new backup!")
@@ -65,35 +65,35 @@ class PREPAREBACKUP:
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.create_base_folder())):
                 command = f"{str(MAIN_INI_FILE.create_base_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create backup folder
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.backup_folder_name())):
                 command = f"{str(MAIN_INI_FILE.backup_folder_name())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create Application folder
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.application_main_folder())):
                 command = f"{str(MAIN_INI_FILE.application_main_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create flatpak folder
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.create_flatpak_folder())):
                 command = f"{str(MAIN_INI_FILE.create_flatpak_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create flatpak text
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.flatpak_txt_location())):
                 command = f"{str(MAIN_INI_FILE.flatpak_txt_location())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create Flatpak DATA folder
@@ -102,19 +102,19 @@ class PREPAREBACKUP:
                 # Create inside external "Var" Folder
                 if not os.path.exists(MAIN_INI_FILE.flatpak_var_folder()):
                     command = f"{str(MAIN_INI_FILE.flatpak_var_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Create inside external "Local" Folder
                 if not os.path.exists(str(MAIN_INI_FILE.flatpak_local_folder())):
                     command = f"{str(MAIN_INI_FILE.flatpak_local_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create wallpaper folder
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.wallpaper_main_folder())):
                 command = f"{str(MAIN_INI_FILE.wallpaper_main_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Package manager
@@ -123,12 +123,12 @@ class PREPAREBACKUP:
             ################################################################################
             if not os.path.exists(str(MAIN_INI_FILE.rpm_main_folder())):
                 command = f"{str(MAIN_INI_FILE.rpm_main_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             # Create Deb folder (Folder to manual place deb apps)
             if not os.path.exists(str(MAIN_INI_FILE.deb_main_folder())):
                 command = f"{str(MAIN_INI_FILE.deb_main_folder())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # GNOME
@@ -137,26 +137,26 @@ class PREPAREBACKUP:
                 # Create gnome folder
                 if not os.path.exists(str(MAIN_INI_FILE.gnome_main_folder())):
                     command = f"{str(MAIN_INI_FILE.gnome_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
                 
                 # Create configuration folder
                 if not os.path.exists(str(MAIN_INI_FILE.gnome_configurations_folder_main_folder())):
                     command = f"{str(MAIN_INI_FILE.gnome_configurations_folder_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 ################################################################################
                 # Create gnome LOCAL SHARE
                 ################################################################################
                 if not os.path.exists(str(MAIN_INI_FILE.gnome_local_share_main_folder())):
                     command = f"{str(MAIN_INI_FILE.gnome_local_share_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 ################################################################################
                 # Create gnome CONFIG
                 ################################################################################
                 if not os.path.exists(str(MAIN_INI_FILE.gnome_config_main_folder())):
                     command = f"{str(MAIN_INI_FILE.gnome_config_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # KDE
@@ -165,33 +165,33 @@ class PREPAREBACKUP:
                 # Create kde folder
                 if not os.path.exists(str(MAIN_INI_FILE.kde_main_folder())):
                     command = f"{str(MAIN_INI_FILE.kde_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Create configuration folder
                 if not os.path.exists(str(MAIN_INI_FILE.kde_configurations_folder_main_folder())):
                     command = f"{str(MAIN_INI_FILE.kde_configurations_folder_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 ################################################################################
                 # Create KDE LOCAL SHARE
                 ################################################################################
                 if not os.path.exists(str(MAIN_INI_FILE.kde_local_share_main_folder())):
                     command = f"{str(MAIN_INI_FILE.kde_local_share_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 ################################################################################
                 # Create KDE CONFIG
                 ################################################################################
                 if not os.path.exists(str(MAIN_INI_FILE.kde_config_main_folder())):
                     command = f"{str(MAIN_INI_FILE.kde_config_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 ################################################################################
                 # Create KDE SHARE CONFIG
                 ################################################################################
                 if not os.path.exists(str(MAIN_INI_FILE.kde_share_config_main_folder())):
                     command = f"{str(MAIN_INI_FILE.kde_share_config_main_folder())}"
-                    sub.run(["mkdir", command])
+                    sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             ################################################################################
             # Create restore_settings.ini
@@ -199,7 +199,7 @@ class PREPAREBACKUP:
             if not os.path.exists(str(MAIN_INI_FILE.restore_settings_location())):
                 print("Restore Settings ini inside external, was created.")
                 command = f"{str(MAIN_INI_FILE.restore_settings_location())}"
-                sub.run(["touch", command])
+                sub.run(["touch", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
         except FileNotFoundError as e:
             error_trying_to_backup(e)
@@ -242,7 +242,7 @@ class PREPAREBACKUP:
                 print(f"Deleting {MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}...")
                 command = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
                     f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{get_backup_date()[-1]}"
-                sub.run(["rm", "-rf", command])
+                sub.run(["rm", "-rf", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Deleting .trash inside backup device to get more free space
                 # print(f"Deleting .trash...")
@@ -275,12 +275,12 @@ class PREPAREBACKUP:
         try:
             if not os.path.exists(MAIN_INI_FILE.date_folder_format()):
                 command = f"{str(MAIN_INI_FILE.date_folder_format())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
             # Create folder inside the current date with current time
             if not os.path.exists(MAIN_INI_FILE.time_folder_format()):
                 command = f"{str(MAIN_INI_FILE.time_folder_format())}"
-                sub.run(["mkdir", command])
+                sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
         except FileNotFoundError as e:
             # Send error message

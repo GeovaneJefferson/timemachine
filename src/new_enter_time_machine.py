@@ -658,7 +658,7 @@ class MainWindow(QMainWindow):
             print(f"Opening {HOME_USER}/{self.CURRENT_FOLDER}...")
 
             dst = HOME_USER + "/" + self.CURRENT_FOLDER
-            sub.run(["xdg-open", dst])
+            sub.run(["xdg-open", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             exit()
 
     def start_restore(self):
@@ -678,11 +678,11 @@ class MainWindow(QMainWindow):
             
             src = file_path + "/" + handle_spaces(self.files_to_restore[counter])
             dst = HOME_USER + "/" + self.CURRENT_FOLDER + "/"
-            sub.Popen(["rsync", "-avr", src, dst])
+            sub.Popen(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
         # Open file manager
         dst = HOME_USER + "/" + self.CURRENT_FOLDER
-        sub.Popen(["xdg-open", "-avr", src, dst])
+        sub.Popen(["xdg-open", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
@@ -788,7 +788,7 @@ class PreviewWindow(QDialog):
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
         # Open file directory
-        sub.Popen(["xdg-open", file_directory])
+        sub.Popen(["xdg-open", file_directory], stdout=sub.PIPE, stderr=sub.PIPE)
         
         # Close external preview window
         self.remove_items()

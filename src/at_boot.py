@@ -13,7 +13,7 @@ class BOOT:
         MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'True')
 
         if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-            sub.Popen(["python3", src_system_tray_py])
+            sub.Popen(["python3", src_system_tray_py], stdout=sub.PIPE, stderr=sub.PIPE)
 
         if MAIN_INI_FILE.get_database_value('EXTERNAL', 'name') != "None":
             if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup',):
@@ -21,7 +21,7 @@ class BOOT:
         exit()
 
     def call_backup_checker(self):
-        sub.Popen(["python3", SRC_BACKUP_CHECKER_PY])
+        sub.Popen(["python3", SRC_BACKUP_CHECKER_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
 
 if __name__=='__main__':

@@ -9,41 +9,41 @@ MAIN_INI_FILE = UPDATEINIFILE()
 async def restore_backup_package_applications():
     print("Installing applications packages...")
     
-    with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'r') as read_exclude:
-        read_exclude = read_exclude.read().split("\n")
-
     try:             
+        with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'r') as read_exclude:
+            read_exclude = read_exclude.read().split("\n")
+
         if MAIN_INI_FILE.get_database_value('INFO', 'packagermanager') == f"{DEB_FOLDER_NAME}":
             ################################################################################
             # Restore DEBS
             ################################################################################
             for package in os.listdir(f"{MAIN_INI_FILE.deb_main_folder()}"):
-                print(f"{INSTALL_DEB} {MAIN_INI_FILE.deb_main_folder()}")
+                print(f"{INSTALL_DEB} {MAIN_INI_FILE.deb_main_folder()}/{package}")
 
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:
                     # Install it
-                    command = f"{MAIN_INI_FILE.deb_main_folder()}/{package}"
-                    sub.run(["sudo", "dpkg", "-i", command])
+                    command = MAIN_INI_FILE.deb_main_folder() + "/" + package
+                    sub.run(["sudo", "dpkg", "-i", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                     # Update notification
                     notification_message_current_backing_up(f'Installing: {package}...')
 
             # Fix packages installation
-            sub.run(["sudo", "apt", "install", "-f"])
+            sub.run(["sudo", "apt", "install", "-f"], stdout=sub.PIPE, stderr=sub.PIPE)
 
         elif MAIN_INI_FILE.get_database_value('INFO', 'packagermanager') == f"{RPM_FOLDER_NAME}":
             ################################################################################
             # Restore RPMS
             ################################################################################
             for package in os.listdir(f"{MAIN_INI_FILE.rpm_main_folder()}"):
-                print(f"{INSTALL_RPM} {MAIN_INI_FILE.rpm_main_folder()}")
+                print(f"{INSTALL_RPM} {MAIN_INI_FILE.rpm_main_folder()}/{package}")
 
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:
                     # Install rpms applications
                     command = f"{MAIN_INI_FILE.rpm_main_folder()}/{package}"
-                    sub.run(["sudo", "rpm", "-ivh", "--replacepkgs", command])
+                    sub.run(["sudo", "rpm", "-ivh", "--replacepkgs", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
                     # Update notification
                     notification_message_current_backing_up(f'Restoring: {package}...')
