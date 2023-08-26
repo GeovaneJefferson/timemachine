@@ -2,7 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 from notification_massage import notification_message_current_backing_up
-from handle_spaces import handle_spaces
+# from handle_spaces import handle_spaces
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
