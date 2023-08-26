@@ -15,6 +15,7 @@ from determine_next_backup import get_next_backup
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
+from handle_spaces import handle_spaces
 
 
 CHOOSE_DEVICE = []
@@ -1282,7 +1283,8 @@ class OPTION(QMainWindow):
                     "{"
                     "border-color: transparent;"
                     "}")
-                self.foldersCheckbox.clicked.connect(lambda *args, folder = folder: self.on_folder_clicked(folder))
+                self.foldersCheckbox.clicked.connect(
+                    lambda *args, folder = folder: self.on_folder_clicked(folder))
 
                 # Activate checkboxes in user.ini
                 if folder.lower() in FOLDERS_LIST:
@@ -1378,17 +1380,20 @@ class OPTION(QMainWindow):
         if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
-    def on_folder_clicked(self, output):
-        if MAIN_INI_FILE.get_database_value('FOLDER', f'{output.lower()}'):
+    def on_folder_clicked(self, folder):
+        if MAIN_INI_FILE.get_database_value('FOLDER', f'{folder.lower()}'):
+            # Handle spaces 
+            folder = handle_spaces(folder)
+            
             # Connect to the SQLite database
             conn = sqlite3.connect(SRC_USER_CONFIG_DB)
             cursor = conn.cursor()
 
             # Delete the key-value pair from the 'STATUS' table
-            cursor.execute(f'DELETE FROM FOLDER WHERE key = ?', (f'{output.lower()}',))
+            cursor.execute(f'DELETE FROM FOLDER WHERE key = ?', (f'{folder.lower()}',))
             conn.commit()
         else:
-            MAIN_INI_FILE.set_database_value('FOLDER', f'{output.lower()}', 'True')
+            MAIN_INI_FILE.set_database_value('FOLDER', f'{folder.lower()}', 'True')
 
     def on_every_combox_changed(self):
         chooseMultipleTimePerDayCombox = self.multiple_time_per_day_comboBox.currentIndex()
