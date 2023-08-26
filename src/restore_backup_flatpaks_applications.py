@@ -17,7 +17,7 @@ async def restore_backup_flatpaks_applications():
         read_flatpak_file = read_flatpak_file.readlines()
         
     for flatpak in read_flatpak_file:
-        flatpak = flatpak.strip('\n')
+        flatpak = flatpak.strip()
 
         if flatpak not in read_exclude:
             # Install only if flatpak if not in the exclude app list
@@ -29,10 +29,11 @@ async def restore_backup_flatpaks_applications():
                 
                 notification_message_current_backing_up(f'Installing: {flatpak}...')
                 
-                # Install it
+                # Install them
                 sub.run(["flatpak", "install", "--system",
                         "--noninteractive", "--assumeyes", "--or-update",
                         flatpak], stdout=sub.PIPE, stderr=sub.PIPE)
+                
             except Exception:
                 pass
 
