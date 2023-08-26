@@ -1381,10 +1381,10 @@ class OPTION(QMainWindow):
             self.allowFlatpakDataCheckBox.setChecked(True)
 
     def on_folder_clicked(self, folder):
+        # Handle spaces 
+        folder = handle_spaces(folder)
+        
         if MAIN_INI_FILE.get_database_value('FOLDER', f'{folder.lower()}'):
-            # Handle spaces 
-            folder = handle_spaces(folder)
-            
             # Connect to the SQLite database
             conn = sqlite3.connect(SRC_USER_CONFIG_DB)
             cursor = conn.cursor()

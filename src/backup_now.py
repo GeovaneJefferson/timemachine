@@ -46,6 +46,7 @@ class BACKUP:
             sub.run(["cp", "-rv", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
             print(f'Backing up: {HOME_USER}/{folder}...')
+
             notification_message(f'Backing up: {folder}...')
 
     async def backup_home_hidden_files(self):
@@ -83,6 +84,7 @@ class BACKUP:
                     sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                     print(f'Backing up: {HOME_USER}/.config/{folder}...')
+                    
                     notification_message(f'Backing up: .config/{folder}...')
 
         # For KDE
@@ -155,7 +157,9 @@ class BACKUP:
                         sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                         print(f'Backing up: {HOME_USER}/.local/share/{folder}...')
+                        
                         notification_message(f'Backing up: .local/share/{folder}...')
+                    
                     except:
                         pass
 
@@ -171,6 +175,7 @@ class BACKUP:
                         sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                         print(f'Backing up: {HOME_USER}/.config/{folder}...')
+                        
                         notification_message(f'Backing up: .config/{folder}...')
             except:
                 pass
@@ -187,6 +192,7 @@ class BACKUP:
                         sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                         print(f'Backing up: {HOME_USER}/.kde/share/{folders}...')
+                        
                         notification_message(f'Backing up: .kde/share/{folders}...')
             except:
                 pass
@@ -202,10 +208,14 @@ class BACKUP:
             with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
                 for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
                     flatpak_list.append(flatpak)
+                    
                     # Write all installed flatpak apps by the name
                     configfile.write(flatpak_list[counter])
+                    
                     notification_message(f'Backing up: {flatpak_list[counter]}...')
+                    
                     counter += 1
+        
         except Exception:
             pass
 
@@ -221,6 +231,7 @@ class BACKUP:
                     sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                     print(f'Backing up: {flatpak_var_list()[counter]}...')
+                    
                     notification_message(f'Backing up: {flatpak_var_list()[counter]}...')
 
                 # Start Flatpak (.local/share/flatpak) backup
@@ -231,7 +242,9 @@ class BACKUP:
                     sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
                     print(f'Backing up: {flatpak_local_list()[counter]}...')
+                    
                     notification_message(f'Backing up: {flatpak_local_list()[counter]}...')
+            
             except:
                 pass
 
@@ -260,6 +273,7 @@ class BACKUP:
                 CONFIG.set('INFO', 'font', f'{self.get_kde_users_font_name()}, {self.get_kde_users_font_size()}')
                 CONFIG.set('INFO', 'gtktheme', f'{self.get_gtk_users_theme_name()}')
                 CONFIG.set('INFO', 'theme', f'None')
+            
             # GNOME
             else:
                 CONFIG.set('INFO', 'icon', f'{self.get_gtk_users_icon_name()}')
@@ -276,6 +290,7 @@ class BACKUP:
 
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
+        
         exit()
 
     #########################################################
@@ -326,6 +341,7 @@ class BACKUP:
     # GTK theme
     def get_gtk_users_theme_name(self):
         user_theme_name = os.popen(GET_USER_THEME_CMD).read().strip().replace("'", "")
+        
         return user_theme_name
 
         # def users_theme_size():
@@ -352,6 +368,7 @@ class BACKUP:
     def get_gtk_user_font_name(self):
         user_font_name = os.popen(GET_USER_FONT_CMD).read().replace("'", "")
         user_font_name = " ".join(user_font_name.split())
+        
         return user_font_name
 
         # def get_user_font():
@@ -368,6 +385,7 @@ class BACKUP:
     # GTK icon
     def get_gtk_users_icon_name(self):
         userIconName = os.popen(GET_USER_ICON_CMD).read().strip().replace("'", "")
+        
         return userIconName
 
         # def users_icon_size():
@@ -396,6 +414,7 @@ class BACKUP:
     # GTK cursor
     def get_gtk_users_cursor_name(self):
         user_cursor_name = os.popen(GET_USER_CURSOR_CMD).read().strip().replace("'", "")
+        
         return user_cursor_name
     
     async def main(self):
