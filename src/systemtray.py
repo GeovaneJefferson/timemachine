@@ -24,21 +24,12 @@ class APP:
         self.app.setApplicationDisplayName(APP_NAME)
         self.app.setApplicationName(APP_NAME)
 
-        self.begin_settings()
-
-    def begin_settings(self):
-        # Detect dark theme
-        if self.app.palette().windowText().color().getRgb()[0] < 55:
-            self.system_bar_icon_stylesheet_detector = src_system_bar_icon
-        else:
-            self.system_bar_icon_stylesheet_detector = src_system_bar_white_icon
-
         self.widget()
 
     def widget(self):
         # Tray
         self.tray = QSystemTrayIcon()
-        self.tray.setIcon(QIcon(self.system_bar_icon_stylesheet_detector))
+        self.tray.setIcon(QIcon(self.get_system_color()))
         self.tray.setVisible(True)
         self.tray.activated.connect(self.tray_icon_clicked)
 
@@ -91,6 +82,8 @@ class APP:
         
         timer.timeout.connect(self.should_be_running)
         timer.start(DELAY_TO_UPDATE) 
+
+        # CHeck if system tray should be running
         self.should_be_running()
 
         self.app.exec()
@@ -190,7 +183,7 @@ class APP:
 
                 elif color == "White":
                     self.color=color
-                    self.tray.setIcon(QIcon(self.system_bar_icon_stylesheet_detector))
+                    self.tray.setIcon(QIcon(self.get_system_color()))
 
                 elif color == "Red":
                     self.color=color
@@ -212,7 +205,16 @@ class APP:
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:
             self.tray.contextMenu().exec(QCursor.pos())
-    
+
+    def get_system_color(self):
+        # Detect dark theme
+        if self.app.palette().windowText().color().getRgb()[0] < 55:
+            self.system_bar_icon_stylesheet_detector = src_system_bar_icon
+        else:
+            self.system_bar_icon_stylesheet_detector = src_system_bar_white_icon
+        
+        return self.system_bar_icon_stylesheet_detector
+
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
