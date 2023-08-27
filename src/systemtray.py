@@ -53,9 +53,9 @@ class APP:
         # Browse Time Machine Backups button
         self.browse_time_machine_backups = QAction("Browse Time Machine Backups")
         self.browse_time_machine_backups.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
-        command = src_enter_time_machine_test_py
+        enter_in_time_machine_command = src_enter_time_machine_test_py
         self.browse_time_machine_backups.triggered.connect(
-            lambda: sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE))
+            lambda: sub.Popen(["python3", enter_in_time_machine_command], stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
         self.open_Time_machine = QAction(f"Open {APP_NAME}")
