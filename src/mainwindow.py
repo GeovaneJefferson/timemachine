@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
             "}")
 
         # App name
-        self.APPNAME=QLabel()
+        self.APPNAME = QLabel()
         self.APPNAME.setFont(QFont(MAIN_FONT,SMALL_FONT_SIZE))
         self.APPNAME.setText(f"<h1>{APP_NAME}</h1>")
         self.APPNAME.adjustSize()
@@ -85,11 +85,11 @@ class MainWindow(QMainWindow):
         ################################################################################
         # Right Widget
         ################################################################################
-        self.rightWidget=QWidget(self)
+        self.rightWidget  =QWidget(self)
         self.rightWidget.setGeometry(240, 40, 120, 154)
 
         # Right layout
-        self.rightLayout=QVBoxLayout(self.rightWidget)
+        self.rightLayout = QVBoxLayout(self.rightWidget)
         self.rightLayout.setSpacing(20)
 
         # Restore images
@@ -114,21 +114,21 @@ class MainWindow(QMainWindow):
         ################################################################################
         # Far right Widget
         ################################################################################
-        self.farRightWidget=QWidget(self)
-        self.farRightWidget.setContentsMargins(0, 0, 0, 0)
-        self.farRightWidget.setGeometry(360, 40, 280, 154)
+        self.far_right_widget = QWidget(self)
+        self.far_right_widget.setContentsMargins(0, 0, 0, 0)
+        self.far_right_widget.setGeometry(360, 40, 280, 154)
 
         # Right WIDGET
-        self.farRightLayout=QVBoxLayout(self.farRightWidget)
-        self.farRightLayout.setSpacing(0)
-        # self.farRightWidget.setStyleSheet("""
+        self.far_right_layout = QVBoxLayout(self.far_right_widget)
+        self.far_right_layout.setSpacing(0)
+        # self.far_right_widget.setStyleSheet("""
         #     border: 1px solid red;
         #     """)
 
         ################################################################################
         # Set external name
         ################################################################################
-        self.external_name_label=QLabel()
+        self.external_name_label = QLabel()
         self.external_name_label.setFont(QFont(MAIN_FONT, 6))
         self.external_name_label.setAlignment(Qt.AlignLeft)
 
@@ -366,14 +366,14 @@ class MainWindow(QMainWindow):
         self.rightLayout.addWidget(self.select_disk_button, 1, Qt.AlignVCenter | Qt.AlignHCenter)
 
         #  Far Right Layout
-        self.farRightLayout.addWidget(self.external_name_label, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.external_size_label, 0, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.oldest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.latest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.next_backup_label, 2, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addWidget(self.external_status_label, 3, Qt.AlignLeft | Qt.AlignTop)
-        self.farRightLayout.addStretch(10)
-        self.farRightLayout.addWidget(self.backup_now_button, 4, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.external_name_label, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.external_size_label, 0, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.oldest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.latest_backup_label, 1, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.next_backup_label, 2, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addWidget(self.external_status_label, 3, Qt.AlignLeft | Qt.AlignTop)
+        self.far_right_layout.addStretch(10)
+        self.far_right_layout.addWidget(self.backup_now_button, 4, Qt.AlignLeft | Qt.AlignTop)
 
         # Description Layout
         self.descriptionLayout.addWidget(self.descriptionTitle, 0, Qt.AlignVCenter | Qt.AlignLeft)

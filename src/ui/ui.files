@@ -5,6 +5,7 @@ __pycache__/ui_migration.cpython-311.pyc
 __pycache__/ui_untitled.cpython-310.pyc
 __pycache__/ui_untitled.cpython-311.pyc
 enter_time_machine.ui
+mainwindow.ui
 migration.ui
 resources.qrc
 ui.cflags

@@ -51,17 +51,17 @@ class APP:
         self.backupNowButton.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
-        self.browseTimeMachineBackupsButton = QAction("Browse Time Machine Backups")
-        self.browseTimeMachineBackupsButton.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        self.browse_time_machine_backups = QAction("Browse Time Machine Backups")
+        self.browse_time_machine_backups.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         command = src_enter_time_machine_test_py
-        self.browseTimeMachineBackupsButton.triggered.connect(
+        self.browse_time_machine_backups.triggered.connect(
             lambda: sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
-        self.openTimeMachine = QAction(f"Open {APP_NAME}")
-        self.openTimeMachine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        self.open_Time_machine = QAction(f"Open {APP_NAME}")
+        self.open_Time_machine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         command = SRC_MAIN_WINDOW_PY
-        self.openTimeMachine.triggered.connect(
+        self.open_Time_machine.triggered.connect(
             lambda: sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE))
 
         # Add all to menu
@@ -71,10 +71,10 @@ class APP:
         self.menu.addSeparator()
 
         self.menu.addAction(self.backupNowButton)
-        self.menu.addAction(self.browseTimeMachineBackupsButton)
+        self.menu.addAction(self.browse_time_machine_backups)
         self.menu.addSeparator()
         
-        self.menu.addAction(self.openTimeMachine)
+        self.menu.addAction(self.open_Time_machine)
         self.menu.addSeparator()
         
         # Adding options to the System Tray
@@ -117,7 +117,7 @@ class APP:
             self.backupNowButton.setEnabled(False)
             
             # Browser Time Machine button to False 
-            self.browseTimeMachineBackupsButton.setEnabled(False)
+            self.browse_time_machine_backups.setEnabled(False)
 
     def status_on(self):
         # Backing up right now False
@@ -126,7 +126,7 @@ class APP:
             self.change_color("White")
 
             self.backupNowButton.setEnabled(True)
-            self.browseTimeMachineBackupsButton.setEnabled(True)
+            self.browse_time_machine_backups.setEnabled(True)
 
             if calculate_time_left_to_backup() is not None:
                 self.iniLastBackupInformation.setText(
@@ -146,14 +146,14 @@ class APP:
             self.iniLastBackupInformation2.setText('')
         
             self.backupNowButton.setEnabled(False)
-            self.browseTimeMachineBackupsButton.setEnabled(False)
+            self.browse_time_machine_backups.setEnabled(False)
    
     def status_off(self):
         # Change color to Red
         self.change_color("Red")
         
         self.backupNowButton.setEnabled(False)
-        self.browseTimeMachineBackupsButton.setEnabled(False)
+        self.browse_time_machine_backups.setEnabled(False)
         
         # if self.iniNotificationID != " ":
         #     # Clean notification add info, because auto backup is not enabled
@@ -168,7 +168,7 @@ class APP:
             if MAIN_INI_FILE.get_database_value("STATUS", "is_restoring"):
                 self.change_color("Yellow")
                 self.backupNowButton.setEnabled(False)
-                self.browseTimeMachineBackupsButton.setEnabled(False)
+                self.browse_time_machine_backups.setEnabled(False)
 
     def backup_now(self):
         command = src_prepare_backup_py
