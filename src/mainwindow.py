@@ -155,7 +155,7 @@ class MainWindow(QMainWindow):
 
         self.latest_backup_label=QLabel()
         self.latest_backup_label.setFont(ITEM)
-        self.latest_backup_label.setText("Lastest Backup: None")
+        self.latest_backup_label.setText("Latest Backup: None")
         self.latest_backup_label.setFixedSize(200, 18)
         self.latest_backup_label.setStyleSheet("""
             color: gray;
@@ -530,7 +530,7 @@ class MainWindow(QMainWindow):
             # Show oldest backup label
             self.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
             # Show latest backup label
-            self.latest_backup_label.setText(f"Lastest Backup: {latest_backup_date_label()}")
+            self.latest_backup_label.setText(f"Latest Backup: {latest_backup_date_label()}")
 
             # Return True
             return True
