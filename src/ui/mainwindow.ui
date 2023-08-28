@@ -10,9 +10,15 @@
     <height>450</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="minimumSize">
    <size>
-    <width>700</width>
+    <width>660</width>
     <height>450</height>
    </size>
   </property>
@@ -27,20 +33,44 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QWidget" name="widget_2" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+       <widget class="QWidget" name="widget_2" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>220</width>
+          <height>0</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
             <widget class="QLabel" name="label_2">
              <property name="minimumSize">
               <size>
@@ -55,11 +85,11 @@
               </size>
              </property>
              <property name="text">
-              <string>BACKUP IMAGE</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;IMAGE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
-           <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+           <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
@@ -71,7 +101,7 @@
              </property>
             </widget>
            </item>
-           <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+           <item alignment="Qt::AlignHCenter">
             <widget class="QCheckBox" name="checkBox">
              <property name="text">
               <string>Back Up Automatically</string>
@@ -92,26 +122,48 @@
             </spacer>
            </item>
           </layout>
-         </widget>
-        </item>
-       </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="widget" native="true">
-        <widget class="QWidget" name="verticalLayoutWidget">
+        <widget class="QWidget" name="horizontalLayoutWidget_3">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>351</width>
-           <height>164</height>
+           <x>0</x>
+           <y>50</y>
+           <width>451</width>
+           <height>98</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-             <widget class="QLabel" name="label_3">
+           <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0">
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_17">
               <property name="minimumSize">
                <size>
                 <width>64</width>
@@ -124,84 +176,72 @@
                 <height>64</height>
                </size>
               </property>
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;IMAGE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="text">
-               <string>TextLabel</string>
+               <string>IMAGE</string>
               </property>
              </widget>
             </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Backup_Drive</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Space</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Oldest Backup:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Latest Backup:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Next Backup:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Status: Connected</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="select_disk_button">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>   Select Disk...   </string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <widget class="QLabel" name="label_4">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <bold>true</bold>
+               </font>
               </property>
               <property name="text">
-               <string>Select DIsk</string>
+               <string>Backup_Drive</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+             <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>Backup Now</string>
+               <string>Space</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Oldest Backup:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Latest Backup:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Next Backup:</string>
               </property>
              </widget>
             </item>
@@ -209,13 +249,157 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>410</y>
+           <width>441</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>Show Time Machine in system tray</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Options...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>?</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>441</width>
+           <height>166</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,0,0,0,0,1">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>How Time Machine works:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>• Choose which folders to back up from HOME.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>• Hourly, Daily or Weekly backups.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>• Packages such as .DEB, and .RPM that are stored in the 
+   Downloads folder, wiil be backed up.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>• Installed flatpaks and their data are also backed up.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>• Installed flatpaks and their data are also backed up.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>The oldest backups are deleted when your disk becomes full.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="Line" name="line">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>441</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>160</y>
+           <width>441</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </widget>
       </item>
      </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

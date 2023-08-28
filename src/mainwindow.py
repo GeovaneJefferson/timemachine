@@ -534,9 +534,6 @@ class MainWindow(QMainWindow):
 
             # Return True
             return True
-        else:
-            self.external_name_label.setText(f"asd asd ")
-
 
     ################################################################################
     # STATIC
@@ -763,14 +760,10 @@ class MainWindow(QMainWindow):
         # Update INI file
         save_info(CHOOSE_DEVICE[-1])
 
-        try:
-            # Backup Ini File
-            # backup_ini_file(False)
+        # Backup Ini File
+        # backup_ini_file(False)
 
-            self.external_close_animation()
-
-        except:
-            pass
+        self.external_close_animation()
 
     def on_device_clicked(self, device):
         # Add to the list
@@ -798,7 +791,6 @@ class MainWindow(QMainWindow):
 
         if len(CHOOSE_DEVICE) == 0:
             self.useDiskButton.setEnabled(False)
-
 
         print(CHOOSE_DEVICE)
 

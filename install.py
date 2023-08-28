@@ -35,13 +35,7 @@ SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 
 
-# # DEB
-# # ARCH
-# # INSTALLDEPENDECIESArch="python3-pip flatpak"
-# # PIP
-# INSTALL_PIP3="python3-pip"
-# # User distro name
-# USERS_DISTRO_NAME=os.popen("cat /etc/os-release").read()  # "ubuntu" in USERDISTRONAME:
+USERS_DISTRO_NAME = os.popen("cat /etc/os-release").read()  # "ubuntu" in USERDISTRONAME:
 
 class CLI:
     def install_dependencies(self):
@@ -49,6 +43,12 @@ class CLI:
         try:
             command = f"{GET_CURRENT_LOCATION}/requirements.txt"
             sub.run(["pip", "install", "-r", command])
+
+            # Arch
+            if 'arch' in USERS_DISTRO_NAME:
+                command = "qt6-wayland"
+                sub.run(["sudo", "pacman", "-Syu", command])
+
         except FileNotFoundError:
             exit()
 
@@ -56,6 +56,7 @@ class CLI:
         try:
             # Copy current folder to the destination folder
             shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL)
+            
         except FileExistsError:
             pass
 

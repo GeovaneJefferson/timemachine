@@ -23,7 +23,7 @@ async def restore_backup_wallpaper():
     if has_wallpaper_to_restore: 
         # Create .local/share/wallpapers/
         if not os.path.exists(str(MAIN_INI_FILE.create_base_folder())):
-            command = f"{HOME_USER}/.local/share/wallpapers/"
+            command = HOME_USER + "/.local/share/wallpapers/"
             sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Copy backed up wallpaper to .local/share/wallpapers/
@@ -67,7 +67,7 @@ def apply_wallpaper(wallpaper):
         ################################################################
 
     elif get_user_de() == "kde":
-        # Apply to KDE desktop
+        # Apply KDE wallpaper
         os.system("""
             dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
             var Desktops=desktops();
@@ -80,6 +80,25 @@ def apply_wallpaper(wallpaper):
                                             "General");
                 d.writeConfig("Image", "file://%s/.local/share/wallpapers/%s");
             }'""" % (HOME_USER, wallpaper))
+        
+        # TODO
+        # Testing
+        try:
+            # Apply KDE screenlock wallpaper, will be the same as desktop wallpaper
+            wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
+            sub.run([
+                'kwriteconfig5',
+                '--file', 'kscreenlockerrc',
+                '--group', 'Greeter',
+                '--group', 'Wallpaper',
+                '--group', 'org.kde.image',
+                '--group', 'General',
+                '--key', 'Image',
+                wallpaper_full_location
+            ])
+            
+        except:
+            pass
     else:
         return None
 
