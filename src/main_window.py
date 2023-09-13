@@ -225,6 +225,12 @@ class MainWindow(QMainWindow):
 
         # Uncheck system tray
         self.ui.show_in_system_tray_checkbox.setChecked(False)
+        
+        # Uncheck automatically backup
+        self.ui.automatically_backup_checkbox.setChecked(False)
+
+        # Call update python
+        sub.run(["python3", SRC_UPDATE_PY])
 
         # Update and make save the DB
         # backup_ini_file(True)

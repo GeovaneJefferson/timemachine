@@ -36,14 +36,13 @@ def restore_ini_file(update_now):
     print("Moving the backup DB...")
     # Move the backup DB to the right location
     src = HOME_USER + "/" + ".local/share/" + APP_NAME_CLOSE + "/src/config.db" 
-    dst = SRC_USER_CONFIG_DB
-    sub.run(["mv", "-f", src, dst])
+    dst = src + ' ' + SRC_USER_CONFIG_DB
+    sub.run(["mv", "-f", dst])
             
     if update_now:
         open_app()
 
 def open_app():
     # Re-open application
-    command = SRC_MAIN_WINDOW_PY
-    sub.Popen(["python3", command])
+    sub.Popen(["python3", SRC_MAIN_WINDOW_PY])
     exit()

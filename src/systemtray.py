@@ -174,7 +174,7 @@ class APP:
                 # Current hour + 1
                 next_backup_time = MAIN_INI_FILE.current_hour() + 1 
                 self.last_backup_information2.setText(
-                    str(next_backup_time) + ':00\n')
+                    str(next_backup_time) + ':00')
 
         else:
             # Next backup alert
