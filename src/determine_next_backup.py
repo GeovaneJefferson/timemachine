@@ -1,27 +1,33 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_days_name import get_days_name
-from backup_was_already_made import backup_was_already_made
+from get_time import today_date
 import datetime
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-
 def get_next_backup():
    # Check if today is the day to backup
    if MAIN_INI_FILE.day_name() == get_days_name():  # Will return ex. Mon == Mon, so is today
       # Had yet not backup today # 1000 1030
-      if int(MAIN_INI_FILE.current_hour()) <= int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')) and int(MAIN_INI_FILE.current_minute()) > int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes')):
-         # Check if a backup was made today
-         if not backup_was_already_made():      
-            return "Today"
-         else:
-            return check_days()
-      # Has already made a backup
-      else:
-         return check_days()
-   else:
+      if (
+         int(MAIN_INI_FILE.current_hour()) 
+         <= 
+         int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')) 
+         and 
+         int(MAIN_INI_FILE.current_minute()) 
+         > 
+         int(MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes'))):
+         # Not backup was made yet
+         # Get the last checked backup date from DB
+         try:
+            if today_date() not in MAIN_INI_FILE.get_database_value(
+                     'STATUS', 'checked_backup_date'):   
+               return "Today"
+         except:
+               return "Today"
+
       return check_days()
 
 def check_days():
@@ -29,16 +35,22 @@ def check_days():
    if get_day_index() == 0:
       if MAIN_INI_FILE.get_database_value('DAYS', 'mon'):
          return get_locale_settings_language(1)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'tue'):
          return get_locale_settings_language(2)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'wed'):
          return get_locale_settings_language(3)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'thu'):
          return get_locale_settings_language(4)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'fri'):
          return get_locale_settings_language(5)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'sat'):
          return get_locale_settings_language(6)
+      
       elif MAIN_INI_FILE.get_database_value('DAYS', 'sun'):
          return get_locale_settings_language(0)
       else:

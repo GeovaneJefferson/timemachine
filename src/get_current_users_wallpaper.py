@@ -32,9 +32,10 @@ def get_wallpaper_full_location():
             wallpaper = "".join(wallpaper)
             wallpaper = wallpaper.strip().replace("[", "").replace("'", "")
             wallpaper = wallpaper.replace("]", "").replace(",", "")
-        
+
         # Handle spaces
         wallpaper = handle_spaces(wallpaper)
+        
         # Return wallpapers full location
         return wallpaper
     
@@ -42,25 +43,23 @@ def get_wallpaper_full_location():
     # Kde
     ###################################
     elif MAIN_INI_FILE.get_database_value('INFO', 'os') == "kde":
-        # Go in loop one more time, and exit
-        one_more_loop = False
         
         # Search wallaper inside plasma-org.kde.plasma.desktop-appletsrc
         with open(f"{HOME_USER}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
             # Strips the newline character
-            for wallpaper in file.readlines():
-                wallpaper = wallpaper.strip()
+            for line in file.readlines():
+                line = line.strip()
 
-                if one_more_loop:
-                    wallpaper = wallpaper.replace("Image=", "").replace("file://", "")
+                # Search for
+                if line.startswith('Image='):
+                    # Replace line
+                    line = line.replace('Image=', '')
 
                     # Handle spaces
-                    wallpaper = handle_spaces(wallpaper)
-                    # Return wallpapers full location
-                    return wallpaper
+                    # line = handle_spaces(line)
 
-                if wallpaper == "[Containments][1][Wallpaper][org.kde.image][General]" and not one_more_loop:
-                    one_more_loop = True
+                    # Return lines full location
+                    return line
 
     # No compatibility found, return None
     return None

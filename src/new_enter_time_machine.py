@@ -46,7 +46,8 @@ def get_full_location(item, column):
 
 def resize_image(pixmap, max_size):
     if pixmap.width() > max_size or pixmap.height() > max_size:
-        pixmap = pixmap.scaled(max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(
+            max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
     return pixmap
 
@@ -124,10 +125,12 @@ class MainWindow(QMainWindow):
     def add_backup_folders(self):
         # Get backup folders names
         for folder in get_all_backup_folders():
+            print(folder)
             try:
                 # Can the folder be found inside Users Home?
                 folder = folder.capitalize()
                 os.listdir(f"{HOME_USER}/{folder}")
+
             except FileNotFoundError:
                 # Lower folder first letter
                 folder = folder.lower()  # Lower folder first letter
@@ -229,7 +232,7 @@ class MainWindow(QMainWindow):
 
     def add_backup_times(self):
         try:
-            inside_this_date_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/" \
+            inside_this_date_folder = f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/" \
                                       f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"
 
             ################################################################################
@@ -243,7 +246,7 @@ class MainWindow(QMainWindow):
 
                 # Check if chose time folder exists
                 if os.path.exists(
-                        f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"
+                        f"{MAIN_INI_FILE.hd_hd()}/"
                         f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"
                         f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"
                         f"{time_folder}/"):
@@ -287,7 +290,7 @@ class MainWindow(QMainWindow):
         # Clean previous results
         self.delete_all_results()
 
-        inside_current_folder = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/" \
+        inside_current_folder = f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/" \
                                 f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
                                 f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
                                 f"{self.CURRENT_FOLDER}"
@@ -384,31 +387,34 @@ class MainWindow(QMainWindow):
         self.update_labels()
 
     def up_down_settings(self):
-        # Get index of the current time folder
-        self.INDEX_TIME = self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE.index(
-            self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME])
+        try:
+            # Get index of the current time folder
+            self.INDEX_TIME = self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE.index(
+                self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME])
 
-        ################################################################################
-        # DOWN ARROW
-        ################################################################################
-        # If the first time from the list is checked
-        if self.INDEX_TIME == 0:  # 0 = The latest time folder available
-            # Disable down arrow, unable to go back from 0
-            self.ui.btn_down.setEnabled(False)
-        else:
-            # Enable down arrow, able to go back from current index
-            self.ui.btn_down.setEnabled(True)
+            ################################################################################
+            # DOWN ARROW
+            ################################################################################
+            # If the first time from the list is checked
+            if self.INDEX_TIME == 0:  # 0 = The latest time folder available
+                # Disable down arrow, unable to go back from 0
+                self.ui.btn_down.setEnabled(False)
+            else:
+                # Enable down arrow, able to go back from current index
+                self.ui.btn_down.setEnabled(True)
 
-        ################################################################################
-        # UP ARROW
-        ################################################################################
-        # If is there more options to choose from the time list
-        if self.INDEX_TIME + 1 == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
-            # Disable up arrow, unable to go forward, there are no more options to choose
-            self.ui.btn_up.setEnabled(False)
-        else:
-            # Enable up arrow, able to go forward, there are more options to choose
-            self.ui.btn_up.setEnabled(True)
+            ################################################################################
+            # UP ARROW
+            ################################################################################
+            # If is there more options to choose from the time list
+            if self.INDEX_TIME + 1 == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
+                # Disable up arrow, unable to go forward, there are no more options to choose
+                self.ui.btn_up.setEnabled(False)
+            else:
+                # Enable up arrow, able to go forward, there are more options to choose
+                self.ui.btn_up.setEnabled(True)
+        except:
+            pass
 
     def update_labels(self):
         # Get current date
@@ -418,35 +424,35 @@ class MainWindow(QMainWindow):
         
         # TODO
         # Re-code this
-        replaced_the_time = str(latest_backup_date_label().split(
-            ",")[0] +  ", " + 
-            self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]).replace("-",":")
+        # replaced_the_time = str(latest_backup_date_label().split(
+        #     ",")[0] +  ", " + 
+        #     self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]).replace("-",":")
 
 
-        date_checker1 = str(self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]).split('-')[0] 
-        date_checker2 = str(self.LIST_OF_ALL_BACKUP_DATES[1]).split('-')[0] 
+        # date_checker1 = str(self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]).split('-')[0] 
+        # date_checker2 = str(self.LIST_OF_ALL_BACKUP_DATES[1]).split('-')[0] 
 
-        # If today, show "Today"
-        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] != str(date_now):
-            # Update gray time label
-            self.ui.label_gray_time.setText(
-                f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
+        # # If today, show "Today"
+        # if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] != str(date_now):
+        #     # Update gray time label
+        #     self.ui.label_gray_time.setText(
+        #         f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
 
-        if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == date_now:
-            # 
-            if self.COUNTER_FOR_TIME == 0:
-                # Today or Yesterday
-                self.ui.label_gray_time.setText(latest_backup_date_label())
-            # Edit date, keep text before ",", and update the label time 
-            else:
-                self.ui.label_gray_time.setText(replaced_the_time)
+        # if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == date_now:
+        #     # 
+        #     if self.COUNTER_FOR_TIME == 0:
+        #         # Today or Yesterday
+        #         self.ui.label_gray_time.setText(latest_backup_date_label())
+        #     # Edit date, keep text before ",", and update the label time 
+        #     else:
+        #         self.ui.label_gray_time.setText(replaced_the_time)
 
-        elif int(date_checker1) - int(date_checker2) == 1:
-            if self.COUNTER_FOR_TIME == 0:
-                # Today or Yesterday
-                self.ui.label_gray_time.setText(latest_backup_date_label())
-            else:
-                self.ui.label_gray_time.setText(replaced_the_time)
+        # elif int(date_checker1) - int(date_checker2) == 1:
+        #     if self.COUNTER_FOR_TIME == 0:
+        #         # Today or Yesterday
+        #         self.ui.label_gray_time.setText(latest_backup_date_label())
+        #     else:
+        #         self.ui.label_gray_time.setText(replaced_the_time)
 
         # Enable/Disable up, down button
         self.up_down_settings()
@@ -538,7 +544,7 @@ class MainWindow(QMainWindow):
         # If a file
         if "." in item_txt:
             self.selected_item_extension = str(item_txt).split('.')[-1]
-            self.selected_item_full_location = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/" \
+            self.selected_item_full_location = f"{MAIN_INI_FILE.hd_hd()}/" \
                                                f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/" \
                                                f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
                                                f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}" \
@@ -664,7 +670,7 @@ class MainWindow(QMainWindow):
     def start_restore(self):
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
         
-        file_path = f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/"\
+        file_path = f"{MAIN_INI_FILE.hd_hd()}/"\
             f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
             f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
             f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
@@ -718,7 +724,7 @@ class MainWindow(QMainWindow):
     ################################################################################
     def get_all_backup_dates(self):
         for date_folder in os.listdir(
-                f"{MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
+                f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}"):
 
             # Hide hidden date_folder
             if "." not in date_folder:

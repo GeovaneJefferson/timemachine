@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/new/prefix1">
-        <file>arrow.png</file>
-        <file>applications-system.svg</file>
+    <qresource prefix="/app_icons">
+        <file>backup_128px.png</file>
     </qresource>
 </RCC>

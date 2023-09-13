@@ -26,19 +26,34 @@
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
      <property name="spacing">
-      <number>20</number>
+      <number>12</number>
      </property>
      <property name="leftMargin">
-      <number>20</number>
+      <number>12</number>
      </property>
      <property name="topMargin">
-      <number>20</number>
+      <number>12</number>
      </property>
      <property name="rightMargin">
-      <number>20</number>
+      <number>12</number>
      </property>
      <property name="bottomMargin">
       <number>10</number>
@@ -53,10 +68,64 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>340</width>
-          <height>184</height>
+          <width>374</width>
+          <height>218</height>
          </rect>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(128, 128, 128);</string>
+           </property>
+           <property name="text">
+            <string>Backup Disk</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="backup_disk_dialog_layout"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(128, 128, 128);</string>
+           </property>
+           <property name="text">
+            <string>Available Disk</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="available_disk_dialog_layout"/>
+         </item>
+        </layout>
        </widget>
       </widget>
      </item>
@@ -89,7 +158,7 @@
         </widget>
        </item>
        <item alignment="Qt::AlignRight">
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="use_disk_button_dialog">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>

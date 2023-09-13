@@ -52,6 +52,69 @@ def home_folders_size():
 
     return sum(home_folder_to_backup_size_list)
 
+def may_create_date_time_folder():
+    # Read the include file and process each item's information
+    with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
+        lines = f.readlines()
+        
+        for i in range(0, len(lines), 5):
+            try:
+                filename = lines[i + 0].split(':')[-1].strip()
+                size_string = lines[i + 1].split(':')[-1].strip()
+                # size = int(size_string.split()[0])
+                location = lines[i + 2].split(':')[-1].strip()
+                status = lines[i + 3].split(':')[-1].strip()
+                
+                ##########################################################
+                # .MAIN BACKUP
+                ##########################################################
+                if status == 'UPDATED':
+                    # Latest date/time with only close file location
+                    # Remove home name
+                    remove_home_name = location.replace(f'{HOME_USER}', ' ').strip()
+
+                    # Fx. /Desktop/test.txt
+                    destination_location = f'{MAIN_INI_FILE.time_folder_format()}{remove_home_name}'
+                    
+                    # One is necessary to create date/time folder 
+                    return True
+            
+            except IndexError:
+                pass
+
+        return False
+
+# def may_create_date_time_folder():
+#     # Read the include file and process each item's information
+#     with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
+#         lines = f.readlines()
+        
+#         for i in range(0, len(lines), 5):
+#             try:
+#                 filename = lines[i + 0].split(':')[-1].strip()
+#                 size_string = lines[i + 1].split(':')[-1].strip()
+#                 # size = int(size_string.split()[0])
+#                 location = lines[i + 2].split(':')[-1].strip()
+#                 status = lines[i + 3].split(':')[-1].strip()
+                
+#                 ##########################################################
+#                 # .MAIN BACKUP
+#                 ##########################################################
+#                 if status == 'NEW':
+#                     # Remove home name
+#                     remove_backup_name = location.replace(f'{HOME_USER}', ' ').strip()
+
+#                     # Fx. /Desktop/test.txt
+#                     destination_location = f'{MAIN_INI_FILE.main_backup_folder()}{remove_backup_name}'
+                        
+#                     # One is necessary to create date/time folder 
+#                     return True
+            
+#             except IndexError:
+#                 pass
+                
+#         return False
+
 
 if __name__ == '__main__':
     pass

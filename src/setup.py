@@ -51,12 +51,12 @@ timer = QtCore.QTimer()
 ## Variables
 ################################################################################
 # Github
-GITHUB_HOME = "https://www.github.com/geovanejefferson/timemachine"
+GITHUB_HOME = "https://github.com/GeovaneJefferson/timemachine/issues"
 
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.6.06 dev"
+APP_VERSION = "v1.1.6.07 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -174,14 +174,10 @@ ITEM = QFont("Ubuntu", 10)
 ################################################################################
 ## Times
 ################################################################################
-MULTIPLE_TIME_OPTION1 = ['0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
-                      '0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500',
-                      '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300']
-
-MULTIPLE_TIME_OPTION2 = ['0000', '0200', '0400', '0600', '0800', '1000', '1200', '1400',
-                       '1600', '1800', '2000', '2200']
-
-MULTIPLE_TIME_OPTION3 = ['0000', '0400', '0800', '1200', '1600', '2000']
+MILITARY_TIME_OPTION = [
+    '0000', '0100', '0200', '0300', '0400', '0500', '0600', '0700',
+    '0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500',
+    '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300']
 
 ################################################################################
 ## FIX
@@ -189,11 +185,9 @@ MULTIPLE_TIME_OPTION3 = ['0000', '0400', '0800', '1200', '1600', '2000']
 FIX_MINUTES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 ################################################################################
-## Time options
+## Time
 #################################################################################
-TIME1 = '60'
-TIME2 = '120'
-TIME3 = '240'
+TIME_LEFT_WINDOW = 30  # Minutes
 
 ################################################################################
 ## LOCATION
@@ -217,18 +211,17 @@ SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
 ################################################################################
 ## PY
 ################################################################################
-src_options_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/options.py"
-src_schedule_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/schedule.py"
+SRC_ANALYSE_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/analyse.py"
 SRC_BACKUP_CHECKER_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_checker.py"
-SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/mainwindow.py"
-SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_migration_assistant.py"
+SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/main_window.py"
+SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
 SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
 src_enter_time_machine_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/enter_time_machine.py"
-src_enter_time_machine_test_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_enter_time_machine.py"
+SRC_ENTER_TIME_MACHINE_NEW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_enter_time_machine.py"
 src_package_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/auto-package.py"
-src_prepare_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
+SRC_PREPARE_BACKUP_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
 src_update_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/update.py"
-src_backup_now_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_now.py"
+SRC_BACKUP_NOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_now.py"
 src_system_tray_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/systemtray.py"
 src_notification_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/notification.py"
 src_search_for_devices_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/search_for_devices.py"

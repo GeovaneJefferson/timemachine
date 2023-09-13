@@ -3,7 +3,12 @@ from read_ini_file import UPDATEINIFILE
 from get_days_name import get_days_name
 from check_connection import is_connected
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-from backup_was_already_made import backup_was_already_made
+from get_time import today_date
+from get_backup_date import (
+    get_backup_date,
+    has_backup_dates,
+    last_backup_date,
+    last_backup_time)
 
 
 # Handle signal
@@ -13,170 +18,169 @@ signal.signal(signal.SIGTERM, signal_exit)
 
 # Download folder location
 DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
+
 # Found packages list
-FOUND_DEB_PACKAGES_LIST = []
-FOUND_RPM_PACKAGES_LIST = []
+list_of_found_deb_pakages = []
+list_of_found_rpm_packages = []
 
+# Check for new .deb, .rpm etc. inside Downloads folder and back up
+async def check_for_new_packages():
+    print("Searching new packages inside Downloads folder...")
 
-class CHECKER:
-    # Check for previus interrupted backup
-    def continue_interrupted_backup(self):
-        # Call backup now .py
-        sub.run(["python3", src_backup_now_py], stdout=sub.PIPE, stderr=sub.PIPE)
+    # Search for .deb packages inside Downloads folder
+    for package in os.listdir(DOWNLOADS_FOLDER_LOCATION):
+        if package.endswith(".deb"):
+            # Check if the found .deb is has not alredy been back up
+            if package.split("_")[0] in (f"{MAIN_INI_FILE.deb_main_folder()}/{(package).split('_')[0]}"):
+                # Add to list, so it wont back up every time the same file
+                if package not in list_of_found_deb_pakages:
+                    list_of_found_deb_pakages.append(package)
 
-    # Check for new .deb, .rpm etc. inside Downloads folder and back up
-    def check_for_new_packages(self):
-        print("Searching new packages inside Downloads folder...")
+                    # Delete the old version before back up
+                    for old_package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
+                        if old_package.startswith(f"{package.split('_')[0]}"):
+                            # Delete old package
+                            dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
+                            sub.run(["rm", "-rf", dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
-        # Search for .deb packages inside Downloads folder
-        for package in os.listdir(DOWNLOADS_FOLDER_LOCATION):
-            if package.endswith(".deb"):
-                # Check if the found .deb is has not alredy been back up
-                if package.split("_")[0] in (f"{MAIN_INI_FILE.deb_main_folder()}/{(package).split('_')[0]}"):
-                    # Add to list, so it wont back up every time the same file
-                    if package not in FOUND_DEB_PACKAGES_LIST:
-                        FOUND_DEB_PACKAGES_LIST.append(package)
+                    # backup the found package
+                    src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                    dst = MAIN_INI_FILE.deb_main_folder()
+                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
-                        # Delete the old version before back up
-                        for old_package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
-                            if old_package.startswith(f"{package.split('_')[0]}"):
-                                # Delete old package
-                                dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
-                                sub.run(["rm", "-rf", dst], stdout=sub.PIPE, stderr=sub.PIPE)
+        # Search for .rpm packages inside Downloads folder
+        if package.endswith(".rpm"):
+            # Check if the found .rpm is has not alredy been back up
+            if package.split("_")[0] in (f"{MAIN_INI_FILE.rpm_main_folder()}/{(package).split('_')[0]}"):
+                # Add to list, so it wont back up every time the same file
+                if package not in list_of_found_rpm_packages:
+                    list_of_found_rpm_packages.append(package)
 
-                        # backup the found package
-                        src = DOWNLOADS_FOLDER_LOCATION + "/" + package
-                        dst = MAIN_INI_FILE.deb_main_folder()
-                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    # Delete the old version before back up
+                    for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
+                        if deleteOutput.startswith(f"{package.split('_')[0]}"):
+                            # Delete old package
+                            dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
+                            sub.run(["rm", "-rf", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
-            # Search for .rpm packages inside Downloads folder
-            if package.endswith(".rpm"):
-                # Check if the found .rpm is has not alredy been back up
-                if package.split("_")[0] in (f"{MAIN_INI_FILE.rpm_main_folder()}/{(package).split('_')[0]}"):
-                    # Add to list, so it wont back up every time the same file
-                    if package not in FOUND_RPM_PACKAGES_LIST:
-                        FOUND_RPM_PACKAGES_LIST.append(package)
+                    # backup the found package
+                    src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                    dst = MAIN_INI_FILE.rpm_main_folder()
+                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
-                        # Delete the old version before back up
-                        for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
-                            if deleteOutput.startswith(f"{package.split('_')[0]}"):
-                                # Delete old package
-                                dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
-                                sub.run(["rm", "-rf", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+async def check_backup():
+    current_time_list = []
+    
+    # Get the current time
+    current_time = MAIN_INI_FILE.current_time()
 
-                        # backup the found package
-                        src = DOWNLOADS_FOLDER_LOCATION + "/" + package
-                        dst = MAIN_INI_FILE.rpm_main_folder()
-                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+    # Add 0 if is there only 3 strings
+    for i in str(current_time):
+        current_time_list.append(i)
 
-    # Check the dates for backup, one or multiple times per day
-    def check_the_dates(self):
-        # One time per day
-        if MAIN_INI_FILE.get_database_value('MODE', 'one_time_mode'):
-            if MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'sun'):
-                self.take_action(True)
+    # Add 0 to the sring if needed
+    if len(current_time_list) == 3:
+        current_time_list.insert(2, '0')
+        current_time = str(','.join(current_time_list).replace(',',''))
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'mon'):
-                self.take_action(True)
+    #  has backup dates
+    # if has_backup_dates():
+        # current_hour = MAIN_INI_FILE.current_hour()
+        # dates_loc = MAIN_INI_FILE.backup_dates_location()
+        # edited_time_folde = last_backup_time()
+        # '''
+        # if current_hour - 1: 
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'tue'):
-                self.take_action(True)
+        # # Check if the current time - 1 hour can not be found
+        # if not os.path.exist(
+        #     dates_loc
+        #     + '/' + last_backup_date() 
+        #     + '/' + last_backup_time()):
+        
+        # '''        
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'wed'):
-                self.take_action(True)
+        # # Check if time to backup has passed
+        # last_backup_time_folder = (
+        #     dates_loc
+        #     + '/' + last_backup_date() 
+        #     + '/' + last_backup_time())
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'thu'):
-                self.take_action(True)
+    print('Current time:', current_time)
+    print('Next backup :', calculate_time_left_to_backup())
+    print()
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'fri'):
-                self.take_action(True)
+    # Check if is time to backup
+    if current_time in MILITARY_TIME_OPTION:
+        await call_analyses()
 
-            elif MAIN_INI_FILE.day_name() == get_days_name() and MAIN_INI_FILE.get_database_value('DAYS', 'sat'):
-                self.take_action(True)
-        # Multiple time per day
-        else:
-            self.take_action(False)
+async def call_analyses():
+    # Call prepare backup
+    print("Calling analyses...")
+    sub.run(
+        ["python3", SRC_ANALYSE_PY], 
+        stdout=sub.PIPE, 
+        stderr=sub.PIPE)
 
-    # Take actions after check the date
-    def take_action(self, one_time_per_day):
-        # if not MAIN_INI_FILE.ini_unfinished_backup():
-        # only one time per day
-        if one_time_per_day:
-            # If current time i higher or iqual to the 'saved' backup time to backup
-            if MAIN_INI_FILE.current_time() >= MAIN_INI_FILE.backup_time_military():
-                # If todays date can not be found inside backup device
-                if not backup_was_already_made():
-                    # Prepare backup
-                    self.call_prepare_backup()
-                else:
-                    print("A backup was already made today.")
+# # Check for previus interrupted backup
+# def continue_interrupted_backup():
+#     # Resume interrupted backup
+#     sub.run(
+#         ["python3", SRC_BACKUP_NOW_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
-            # Calculate time left to backup
-            else:
-                calculate_time_left_to_backup()
-
-        # Multiple time per day
-        else:
-            # 60 minutes
-            if MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME1}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION1:
-                self.call_prepare_backup()
-
-            # 120 minutes
-            elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME2}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION2:
-                self.call_prepare_backup()
-
-            # 240 minutes
-            elif MAIN_INI_FILE.get_database_value('SCHEDULE', 'everytime') == f'{TIME3}' and str(MAIN_INI_FILE.current_time()) in MULTIPLE_TIME_OPTION3:
-                self.call_prepare_backup()
-
-    def call_prepare_backup(self):
-        # TODO
-        # Check if ini file is not locked, than write to it
-        # Set time left to None
-        # Set backup now to True, or create a file that shows that
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
-        MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
-
-        # Call prepare backup
-        print("Preparing the backup...")
-        sub.run(["python3", src_prepare_backup_py], stdout=sub.PIPE, stderr=sub.PIPE)
-
-
-if __name__ == '__main__':
-    # Objects
-    MAIN = CHECKER()
-    MAIN_INI_FILE = UPDATEINIFILE()
+async def main():
+    # Create the main backup folder
+    if not os.listdir(MAIN_INI_FILE.main_backup_folder()):
+        await call_analyses()
 
     while True:
         try:
-            if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
-                # Pause while a backup is running
-                if not MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
-                    print("Backup checker is running...")
+            # Checker status
+            print('Backup Checker: Running.')
 
-                    # Get backup devices name and check connection
-                    if is_connected(MAIN_INI_FILE.get_database_value('EXTERNAL', 'hd')):
-                        # If previus backup is unfinished
-                        if MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
-                            MAIN.continue_interrupted_backup()
-
-                        # Thread to check new packages at Downloads folders
-                        # Search for new packages
-                        MAIN.check_for_new_packages()
-
-                        # Check dates
-                        MAIN.check_the_dates()
-
-                    else:
-                        print("Backup device is not connected...")
-
-                time.sleep(5)
+            # Turn on/off backup checker
+            if not MAIN_INI_FILE.automatically_backup():
+                print("Automatically backup is OFF.")
+                
+                # Exit
+                break
+            
+            # No connection
+            if not is_connected(MAIN_INI_FILE.hd_hd()):
+                # Device is not connected
+                print('Backup device is not connected.')
 
             else:
-                break
+                # Backing up now
+                if MAIN_INI_FILE.get_database_value(
+                    'STATUS', 'backing_up_now'):
+                    print('Closing backup checker, reason: Backing up now.')
+                    
+                    # Exit
+                    break
 
-        except Exception:
+                # TODO
+                # # If previus backup is unfinished
+                # if MAIN_INI_FILE.get_database_value(
+                #     'STATUS', 'unfinished_backup'):
+                #     continue_interrupted_backup()
+
+                # backup new packages
+                await check_for_new_packages()
+
+                # Check for a new backup
+                await check_backup()
+
+            # wait 
+            time.sleep(5)
+
+        except:
+            # Exit
             break
 
-print("Automatically backup is OFF.")
-exit()
+    exit()
+
+
+if __name__ == '__main__':
+    MAIN_INI_FILE = UPDATEINIFILE()
+    asyncio.run(main())
+    

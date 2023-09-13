@@ -96,12 +96,12 @@ class UPDATEINIFILE:
     def current_hour(self):
         # With 'now', current time will update by each hour
         NOW = datetime.now()
-        return NOW.strftime("%H")
+        return int(NOW.strftime("%H"))
 
     def current_minute(self):
         # With 'now', current time will update by each minute
         NOW = datetime.now()
-        return NOW.strftime("%M")
+        return int(NOW.strftime("%M"))
 
     def current_second(self):
         NOW = datetime.now()
@@ -114,7 +114,7 @@ class UPDATEINIFILE:
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
 
     def current_time(self):
-        return int(f"{self.current_hour()}{self.current_minute()}")
+        return int(self.current_hour() + self.current_minute())
 
     def backup_year(self):
         return NOW.strftime("%y")
@@ -133,7 +133,43 @@ class UPDATEINIFILE:
 
     def backup_time_military(self):
         return int(f"{self.get_database_value('SCHEDULE', 'hours')}{self.get_database_value('SCHEDULE', 'minutes')}")
+    
+    def backup_dates_location(self):
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}" 
+    
+    ####################################################################
+    # HD
+    ####################################################################
+    def hd_name(self):
+        return self.get_database_value('EXTERNAL', 'name')
+    
+    def hd_hd(self):
+        return self.get_database_value('EXTERNAL', 'hd')
 
+    ####################################################################
+    # SCHEDULE
+    ####################################################################
+    def next_backup_hour(self):
+        return int(self.get_database_value('SCHEDULE', 'hours')) 
+    
+    def next_backup_minutes(self):
+        return self.get_database_value('SCHEDULE', 'minutes') 
+
+    ####################################################################
+    # STATUS
+    ####################################################################
+    def checked_backup_date(self):
+        return self.get_database_value('STATUS', 'checked_backup_date') 
+    
+    def automatically_backup(self):
+        return self.get_database_value('STATUS', 'automatically_backup') 
+    
+    ####################################################################
+    # MODE
+    ####################################################################
+    def one_time_mode(self):
+        return self.get_database_value('MODE', 'one_time_mode') 
+            
     ####################################################################
     # Folder creation
     ####################################################################
@@ -149,6 +185,15 @@ class UPDATEINIFILE:
 
     def application_main_folder(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}"
+
+    def main_backup_folder(self):
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/.main_backup"
+
+    ####################################################################
+    # File creation
+    ####################################################################
+    def include_to_backup(self):
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/.include_to_backup.txt"
 
     ####################################################################
     # System settings
@@ -253,5 +298,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.backup_year())
+     #print(MAIN_INI_FILE.backup_dates_location())
     pass

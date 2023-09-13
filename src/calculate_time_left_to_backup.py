@@ -6,40 +6,35 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 
 def calculate_time_left_to_backup():
-    # global time_left
+    # Current time
+    current_time = datetime.now()
 
-    # Backup hour
-    backup_hour = MAIN_INI_FILE.get_database_value('SCHEDULE', 'hours')
-    # Current hour
-    current_hour = MAIN_INI_FILE.current_hour()
-    # Backup minute
-    backup_minute = MAIN_INI_FILE.get_database_value('SCHEDULE', 'minutes')
-    # Current minute
-    current_minute = MAIN_INI_FILE.current_minute()
+    # Next hour
+    next_hour = int(MAIN_INI_FILE.current_hour()) + 1
 
-    # If backup hour - current hour == 1, ex. backup hour=10, current hour=9
-    if int(backup_hour) - int(current_hour) == 1:
-        time_left=(int(backup_minute) - int(current_minute) + 59)
+    # Time of the next backup
+    next_backup_time = current_time.replace(
+        hour=next_hour, minute=0, second=0)
 
-        if time_left < 59 and time_left >= 0:
-            write_to_ini_file(time_left)
-            return f"In Approx. {time_left} minutes..."
-        else:
-            return None
+    # Calculate the time left
+    time_left = next_backup_time - current_time
 
-    # If backup hour - current hour == 0, ex. backup hour=10, current hour=10
-    elif int(backup_hour) - int(current_hour) == 0:
-        time_left = int(backup_minute) - int(current_minute)
+    # Extract hours and minutes from the time left
+    # hours_left = time_left.seconds // 3600
+    minutes_left = (time_left.seconds // 60) % 60
 
-        if time_left >= 0:
-            write_to_ini_file(time_left)
-            return f"In Approx. {time_left} minutes..."
-        else:
-            return None
+    write_to_ini_file(minutes_left)
 
+    # Return calculation
+    return calculation(minutes_left)
+
+def calculation(time_left):
+    return f"In Approx. {time_left} minutes..."
+            
 def write_to_ini_file(time_left):
     MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
 
 
 if __name__ == '__main__':
+    print(calculate_time_left_to_backup())
     pass

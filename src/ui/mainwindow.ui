@@ -66,12 +66,12 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0">
            <property name="spacing">
-            <number>6</number>
+            <number>20</number>
            </property>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="app_logo_image">
              <property name="minimumSize">
               <size>
                <width>128</width>
@@ -102,7 +102,7 @@
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter">
-            <widget class="QCheckBox" name="checkBox">
+            <widget class="QCheckBox" name="automatically_backup_checkbox">
              <property name="text">
               <string>Back Up Automatically</string>
              </property>
@@ -121,6 +121,13 @@
              </property>
             </spacer>
            </item>
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QPushButton" name="update_available_button">
+             <property name="text">
+              <string>Update Available</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
@@ -128,6 +135,12 @@
       </item>
       <item>
        <widget class="Line" name="line_3">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(128, 128, 128);</string>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -141,7 +154,7 @@
            <x>0</x>
            <y>50</y>
            <width>451</width>
-           <height>98</height>
+           <height>111</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1">
@@ -163,7 +176,7 @@
              <number>0</number>
             </property>
             <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-             <widget class="QLabel" name="label_17">
+             <widget class="QLabel" name="app_disk_image">
               <property name="minimumSize">
                <size>
                 <width>64</width>
@@ -193,7 +206,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>   Select Disk...   </string>
+               <string>Select Disk...</string>
               </property>
              </widget>
             </item>
@@ -205,7 +218,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="external_name_label">
               <property name="font">
                <font>
                 <pointsize>11</pointsize>
@@ -218,30 +231,52 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_5">
+             <widget class="QLabel" name="external_size_label">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(128, 128, 128);</string>
+              </property>
               <property name="text">
-               <string>Space</string>
+               <string>No information available</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="oldest_backup_label">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(128, 128, 128);</string>
+              </property>
               <property name="text">
                <string>Oldest Backup:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_7">
+             <widget class="QLabel" name="latest_backup_label">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(128, 128, 128);</string>
+              </property>
               <property name="text">
                <string>Latest Backup:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_8">
+             <widget class="QLabel" name="next_backup_label">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(128, 128, 128);</string>
+              </property>
               <property name="text">
                <string>Next Backup:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="backing_up_label">
+              <property name="styleSheet">
+               <string notr="true">color: rgb(128, 128, 128);</string>
+              </property>
+              <property name="text">
+               <string>Backing up:</string>
               </property>
              </widget>
             </item>
@@ -252,22 +287,27 @@
         <widget class="QWidget" name="horizontalLayoutWidget">
          <property name="geometry">
           <rect>
-           <x>10</x>
+           <x>20</x>
            <y>410</y>
-           <width>441</width>
+           <width>421</width>
            <height>31</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="show_in_system_tray_checkbox">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Show Time Machine in system tray</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="options_button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -280,7 +320,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="help_button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -309,15 +349,18 @@
         <widget class="QWidget" name="verticalLayoutWidget">
          <property name="geometry">
           <rect>
-           <x>10</x>
+           <x>20</x>
            <y>190</y>
-           <width>441</width>
+           <width>421</width>
            <height>166</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,0,0,0,0,1">
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,0,0,0,1">
           <item>
            <widget class="QLabel" name="label_3">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
              <string>How Time Machine works:</string>
             </property>
@@ -325,6 +368,14 @@
           </item>
           <item>
            <widget class="QLabel" name="label_9">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
              <string>• Choose which folders to back up from HOME.</string>
             </property>
@@ -332,6 +383,14 @@
           </item>
           <item>
            <widget class="QLabel" name="label_10">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
              <string>• Hourly, Daily or Weekly backups.</string>
             </property>
@@ -339,6 +398,14 @@
           </item>
           <item>
            <widget class="QLabel" name="label_11">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
              <string>• Packages such as .DEB, and .RPM that are stored in the 
    Downloads folder, wiil be backed up.</string>
@@ -347,20 +414,29 @@
           </item>
           <item>
            <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>• Installed flatpaks and their data are also backed up.</string>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_13">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
-             <string>• Installed flatpaks and their data are also backed up.</string>
+             <string>• Installed flatpaks and their data can also be backed up.</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_15">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(128, 128, 128);</string>
+            </property>
             <property name="text">
              <string>The oldest backups are deleted when your disk becomes full.</string>
             </property>
@@ -377,6 +453,9 @@
            <height>20</height>
           </rect>
          </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(128, 128, 128);</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -385,10 +464,13 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>160</y>
+           <y>170</y>
            <width>441</width>
            <height>20</height>
           </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(128, 128, 128);</string>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout, QPushButton,
-    QScrollArea, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QHBoxLayout,
+    QLabel, QPushButton, QScrollArea, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -27,17 +27,62 @@ class Ui_Dialog(object):
         Dialog.setMinimumSize(QSize(400, 280))
         Dialog.setMaximumSize(QSize(400, 280))
         self.verticalLayout_2 = QVBoxLayout(Dialog)
+        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setSpacing(20)
+        self.verticalLayout.setSpacing(12)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(20, 20, 20, 10)
+        self.verticalLayout.setContentsMargins(12, 12, 12, 10)
         self.scrollArea = QScrollArea(Dialog)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 340, 184))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 374, 218))
+        self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.label = QLabel(self.scrollAreaWidgetContents)
+        self.label.setObjectName(u"label")
+        font = QFont()
+        font.setPointSize(9)
+        font.setBold(True)
+        self.label.setFont(font)
+        self.label.setStyleSheet(u"color: rgb(128, 128, 128);")
+
+        self.verticalLayout_4.addWidget(self.label)
+
+        self.line = QFrame(self.scrollAreaWidgetContents)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_4.addWidget(self.line)
+
+        self.backup_disk_dialog_layout = QVBoxLayout()
+        self.backup_disk_dialog_layout.setObjectName(u"backup_disk_dialog_layout")
+
+        self.verticalLayout_4.addLayout(self.backup_disk_dialog_layout)
+
+        self.label_2 = QLabel(self.scrollAreaWidgetContents)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setFont(font)
+        self.label_2.setStyleSheet(u"color: rgb(128, 128, 128);")
+
+        self.verticalLayout_4.addWidget(self.label_2)
+
+        self.line_2 = QFrame(self.scrollAreaWidgetContents)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.HLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_4.addWidget(self.line_2)
+
+        self.available_disk_dialog_layout = QVBoxLayout()
+        self.available_disk_dialog_layout.setObjectName(u"available_disk_dialog_layout")
+
+        self.verticalLayout_4.addLayout(self.available_disk_dialog_layout)
+
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
         self.verticalLayout.addWidget(self.scrollArea)
@@ -58,12 +103,12 @@ class Ui_Dialog(object):
 
         self.horizontalLayout.addWidget(self.cancel_button_dialog, 0, Qt.AlignRight)
 
-        self.pushButton = QPushButton(Dialog)
-        self.pushButton.setObjectName(u"pushButton")
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
+        self.use_disk_button_dialog = QPushButton(Dialog)
+        self.use_disk_button_dialog.setObjectName(u"use_disk_button_dialog")
+        sizePolicy.setHeightForWidth(self.use_disk_button_dialog.sizePolicy().hasHeightForWidth())
+        self.use_disk_button_dialog.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout.addWidget(self.pushButton, 0, Qt.AlignRight)
+        self.horizontalLayout.addWidget(self.use_disk_button_dialog, 0, Qt.AlignRight)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -79,7 +124,9 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
+        self.label.setText(QCoreApplication.translate("Dialog", u"Backup Disk", None))
+        self.label_2.setText(QCoreApplication.translate("Dialog", u"Available Disk", None))
         self.cancel_button_dialog.setText(QCoreApplication.translate("Dialog", u"Cancel", None))
-        self.pushButton.setText(QCoreApplication.translate("Dialog", u"Use Disk", None))
+        self.use_disk_button_dialog.setText(QCoreApplication.translate("Dialog", u"Use Disk", None))
     # retranslateUi
 
