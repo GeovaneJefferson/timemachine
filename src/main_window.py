@@ -163,10 +163,19 @@ class MainWindow(QMainWindow):
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
-                    self.ui.next_backup_label.setText(f"Next Backup: {calculate_time_left_to_backup()}")
-
+                    if MAIN_INI_FILE.current_minute() <= TIME_LEFT_WINDOW:
+                        self.ui.next_backup_label.setText(
+                            f'Next Backup: {calculate_time_left_to_backup()}\n')
+                    
+                    else:
+                        # Current hour + 1
+                        next_backup_time = MAIN_INI_FILE.current_hour() + 1 
+                        self.ui.next_backup_label.setText(
+                            f'Next Backup: {str(next_backup_time)}:00')
+                
                 else:
-                    self.ui.next_backup_label.setText("Next Backup: Automatic backups off")
+                    self.ui.next_backup_label.setText(
+                        'Next Backup: Automatic backups off')
 
             ################################################
             # Has no connection to it

@@ -2,7 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
-from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
+# from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
 from get_backup_date import get_backup_date
