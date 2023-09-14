@@ -125,6 +125,7 @@ async def check_backup():
 async def call_analyses():
     # Call prepare backup
     print("Calling analyses...")
+    
     sub.run(
         ["python3", SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
