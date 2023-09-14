@@ -110,6 +110,7 @@ async def main():
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
         # Prepare backup
+        MAIN_PREPARE = PREPAREBACKUP()
         if MAIN_PREPARE.prepare_the_backup():
             # Backup now
             sub.Popen(
@@ -172,6 +173,5 @@ async def main():
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN_PREPARE = PREPAREBACKUP()
     asyncio.run(main())
     
