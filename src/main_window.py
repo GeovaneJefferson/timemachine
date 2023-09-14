@@ -18,9 +18,8 @@ from get_sizes import (
 # from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
-# from update import backup_ini_file
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-from determine_next_backup import get_next_backup
+from update import backup_ini_file
 from save_info import save_info
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
@@ -221,7 +220,12 @@ class MainWindow(QMainWindow):
     
     def on_update_button_clicked(self):
         # Set system tray to False
-        MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
+        MAIN_INI_FILE.set_database_value(
+            'SYSTEMTRAY', 'system_tray', 'False')
+
+        # Set automatically backupt to False
+        MAIN_INI_FILE.set_database_value(
+            'STATUS', 'automatically_backup', 'False')
 
         # Uncheck system tray
         self.ui.show_in_system_tray_checkbox.setChecked(False)
@@ -229,11 +233,8 @@ class MainWindow(QMainWindow):
         # Uncheck automatically backup
         self.ui.automatically_backup_checkbox.setChecked(False)
 
-        # Call update python
-        sub.run(["python3", SRC_UPDATE_PY])
-
         # Update and make save the DB
-        # backup_ini_file(True)
+        backup_ini_file(True)
 
     def on_automatically_checkbox_clicked(self):
         if self.ui.automatically_backup_checkbox.isChecked():

@@ -250,7 +250,7 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 ################################################################################
 DST_FOLDER_INSTALL = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
 SRC_USER_CONFIG_DB = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.db"
-src_pycache = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
+SRC_PYCACHE = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/__pycache__"
 
 ################################################################################
 ## Icons

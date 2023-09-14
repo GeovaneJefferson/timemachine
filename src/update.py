@@ -7,8 +7,7 @@ def backup_ini_file(update_now):
     sub.run(["cp", "-f", src, dst])
             
     if update_now:
-        command = src_pycache
-        sub.run(["rm", "-rf", command])
+        sub.run(["rm", "-rf", SRC_PYCACHE])
 
         update_git(update_now)
 
@@ -26,18 +25,18 @@ def delete_ini_file(update_now):
     # Delete DB 
     print("Deleting old ini file...")
 
-    command = SRC_USER_CONFIG_DB
-    sub.run(["rm", "-rf", command])
+    sub.run(["rm", "-rf", SRC_USER_CONFIG_DB])
 
     if update_now:
         restore_ini_file(update_now)
 
 def restore_ini_file(update_now):
     print("Moving the backup DB...")
+
     # Move the backup DB to the right location
     src = HOME_USER + "/" + ".local/share/" + APP_NAME_CLOSE + "/src/config.db" 
-    dst = src + ' ' + SRC_USER_CONFIG_DB
-    sub.run(["mv", "-f", dst])
+    dst = SRC_USER_CONFIG_DB
+    sub.run(["mv", "-f", src, dst])
             
     if update_now:
         open_app()
@@ -45,4 +44,6 @@ def restore_ini_file(update_now):
 def open_app():
     # Re-open application
     sub.Popen(["python3", SRC_MAIN_WINDOW_PY])
+
+    # Exit
     exit()

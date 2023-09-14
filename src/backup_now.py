@@ -1,5 +1,4 @@
 from setup import *
-from get_current_users_wallpaper import get_wallpaper_full_location
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
