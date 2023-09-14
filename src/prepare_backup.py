@@ -290,39 +290,13 @@ class PREPAREBACKUP:
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
 
     # Check backup size, as the backup device size
-    def may_continue_to_backup(self):
+    def prepare_the_backup(self):
 
         # Create base folders
         create_base_folders()
 
         # Backup to MAIN backup folder
         if is_first_backup():
-            # # Sum of all sizes needed
-            # total_home_size = 0
-            
-            # # Get selected HOME folders size
-            # for folder in get_folders():
-            #     total_home_size += get_directory_size(folder)
-            
-            # # Include flatpak's data too
-            # if MAIN_INI_FILE.get_database_value(
-            #     'STATUS', 'allow_flatpak_data'):
-            #     # Home + 
-            #     # hidden files/folders +
-            #     # Flatpak data +
-            #     # safe additional size
-            #     size_needed_to_backup = (
-            #         total_home_size +
-            #         flatpak_var_size() +
-            #         flatpak_local_size() +
-            #         safe_added_space)
-
-            # else:
-            #     # Home + 
-            #     # hidden files/folders +
-            #     # safe additional size
-            #     size_needed_to_backup = total_home_size + safe_added_space
-            
             # Check if backup device has space enough 
             if has_enough_space(needeed_size_to_backup_home()):
                 # May continue to backup
@@ -355,10 +329,10 @@ class PREPAREBACKUP:
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN = PREPAREBACKUP()
+    MAIN_PREPARE = PREPAREBACKUP()
 
     # Start preparation
-    MAIN.may_continue_to_backup()
+    MAIN_PREPARE.prepare_the_backup()
 
     # Send notification status
     notification_message('')

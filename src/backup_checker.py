@@ -6,6 +6,7 @@ from calculate_time_left_to_backup import calculate_time_left_to_backup
 # from get_time import today_date
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
+from prepare_backup import PREPAREBACKUP
 from get_backup_date import (
     get_backup_date,
     has_backup_dates,
@@ -71,44 +72,12 @@ async def check_for_new_packages():
                     sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
 async def check_backup():
-    current_time_list = []
-    
     # Get the current time
-    current_time = MAIN_INI_FILE.current_time()
-
-    # Add 0 if is there only 3 strings
-    for i in str(current_time):
-        current_time_list.append(i)
-
-    # Add 0 to the sring if needed
-    if len(current_time_list) == 3:
-        current_time_list.insert(2, '0')
-        current_time = str(','.join(current_time_list).replace(',',''))
-
-    #  has backup dates
-    # if has_backup_dates():
-        # current_hour = MAIN_INI_FILE.current_hour()
-        # dates_loc = MAIN_INI_FILE.backup_dates_location()
-        # edited_time_folde = last_backup_time()
-        # '''
-        # if current_hour - 1: 
-
-        # # Check if the current time - 1 hour can not be found
-        # if not os.path.exist(
-        #     dates_loc
-        #     + '/' + last_backup_date() 
-        #     + '/' + last_backup_time()):
-        
-        # '''        
-
-        # # Check if time to backup has passed
-        # last_backup_time_folder = (
-        #     dates_loc
-        #     + '/' + last_backup_date() 
-        #     + '/' + last_backup_time())
+    current_time = MAIN_INI_FILE.current_hour() + 00
 
     print('Current time:', current_time)
     print('Next backup :', calculate_time_left_to_backup())
+    print(MILITARY_TIME_OPTION)
     print()
 
     # Check if is time to backup
@@ -139,8 +108,17 @@ async def call_analyses():
 
 async def main():
     # Create the main backup folder
-    if not os.listdir(MAIN_INI_FILE.main_backup_folder()):
-        await call_analyses()
+    if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+        # Prepare backup
+        if MAIN_PREPARE.prepare_the_backup():
+            # Backup now
+            sub.Popen(
+                ["python3", SRC_BACKUP_NOW_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)
+
+            # Exit
+            exit()
 
     while True:
         try:
@@ -183,14 +161,17 @@ async def main():
             # wait 
             time.sleep(5)
 
-        except:
+        except Exception as e:
+            print(e)
             # Exit
             break
 
+    # Exit
     exit()
 
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN_PREPARE = PREPAREBACKUP()
     asyncio.run(main())
     

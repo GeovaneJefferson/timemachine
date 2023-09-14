@@ -101,8 +101,6 @@ class MainWindow(QMainWindow):
         self.running()
 
     def running(self):
-        print(f"Main Windows ({APP_NAME_CLOSE}) is running...")
-
         # Check if a backup device was registered
         if self.is_device_registered():
             # Device was registered
@@ -152,7 +150,7 @@ class MainWindow(QMainWindow):
                     self.ui.automatically_backup_checkbox.setEnabled(False)
 
                 else:
-                    # Hide process bar
+                    # Hide backing up label
                     self.ui.backing_up_label.hide()
 
                     # Enable select disk
@@ -163,9 +161,9 @@ class MainWindow(QMainWindow):
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
-                    if (MAIN_INI_FILE.current_minute() - 59) <= TIME_LEFT_WINDOW:
+                    if (59 - MAIN_INI_FILE.current_minute()) <= TIME_LEFT_WINDOW:
                         self.ui.next_backup_label.setText(
-                            f'Next Backup: {calculate_time_left_to_backup()}\n')
+                            f'Next Backup: {calculate_time_left_to_backup()}')
                     
                     else:
                         # Current hour + 1
@@ -181,12 +179,6 @@ class MainWindow(QMainWindow):
             # Has no connection to it
             ################################################
             else:
-                # Show backing up labe
-                self.ui.backing_up_label.show()
-                # Show current backing up
-                self.ui.backing_up_label.setText(
-                    f"Backing up: {MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
-                    
                 self.ui.external_size_label.setText("No information available")
 
         else:
@@ -257,7 +249,9 @@ class MainWindow(QMainWindow):
                 'STATUS', 'automatically_backup', 'True')
 
             # call backup check
-            sub.Popen(["python3", SRC_BACKUP_CHECKER_PY])
+            sub.Popen(["python3", SRC_BACKUP_CHECKER_PY],
+             stdout=sub.PIPE, 
+             stderr=sub.PIPE)
 
             print("Auto backup was successfully activated!")
 

@@ -501,7 +501,7 @@ if __name__ == '__main__':
     # Start analyses
     if asyncio.run(MAIN.need_to_backup_analyse()):
         # Prepare backup
-        if MAIN_PREPARE.may_continue_to_backup():
+        if MAIN_PREPARE.prepare_the_backup():
             # Backup now
             sub.Popen(
                 ["python3", SRC_BACKUP_NOW_PY], 

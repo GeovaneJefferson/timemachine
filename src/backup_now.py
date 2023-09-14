@@ -341,7 +341,10 @@ class BACKUP:
         # Check for something inside main folder
         list_of_main_item = []
         for i in os.listdir(MAIN_INI_FILE.main_backup_folder()):
-            list_of_main_item.append(i)
+            # Exclude hidden files/folders
+            if '.' not in i:
+                list_of_main_item.append(i)
+                break
 
         # Main folder is empty
         if not list_of_main_item:
@@ -355,10 +358,6 @@ class BACKUP:
                 
                 print(f'Backing up: {HOME_USER}/{folder}')
                 
-                sub.run(
-                    ["cp", "-rvf", src, dst], 
-                        stdout=sub.PIPE, stderr=sub.PIPE)
-                
                 # Add to counters
                 item_sum_size += get_item_size(f'{HOME_USER}/{folder}')
                 item_minus += 1 
@@ -366,8 +365,14 @@ class BACKUP:
                 # Send backup current status to the notification DB
                 notification_message(
                     backup_status(
-                        item_minus, item_sum_size, len(get_folders())))
+                        item_minus, 
+                        item_sum_size, 
+                        len(get_folders())))
 
+                sub.run(
+                    ["cp", "-rvf", src, dst], 
+                        stdout=sub.PIPE, stderr=sub.PIPE)
+                
         else:
             # Read the include file and process each item's information
             with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
@@ -412,35 +417,52 @@ class BACKUP:
 
                         # Backup file
                         if os.path.isfile(location):
-                            print('Backing up file:', location, 'to', destination_location)
+                            print(
+                                'Backing up file:', location, 'to', destination_location)
+                            
+                            # Add to counters
+                            item_sum_size += size   # Bytes
+                            item_minus += 1 
+
+                            # Send backup current status to the notification DB
+                            notification_message(
+                                backup_status(
+                                    item_minus, 
+                                    item_sum_size, 
+                                    number_of_item_to_backup()))
 
                             # Copy files
-                            sub.run(["cp", "-rvf", location, destination_location],
-                                stdout=sub.PIPE, stderr=sub.PIPE)
+                            sub.run(
+                                ["cp", "-rvf", location, destination_location],
+                                stdout=sub.PIPE, 
+                                stderr=sub.PIPE)
 
                         # Backup folder
                         elif os.path.isdir(location):
-                            print('Backing up folder:', location, 'to', destination_location)
+                            print(
+                                'Backing up folder:', location, 'to', destination_location)
+                            
+                            # Add to counters
+                            item_sum_size += size   # Bytes
+                            item_minus += 1 
+
+                            # Send backup current status to the notification DB
+                            notification_message(
+                                backup_status(
+                                    item_minus, 
+                                    item_sum_size, 
+                                    number_of_item_to_backup()))
 
                             # Backup directories using shutil.copytree()
-                            sub.run(["cp", "-rvf", location, destination_location],
-                                stdout=sub.PIPE, stderr=sub.PIPE)
-    
+                            sub.run(
+                                ["cp", "-rvf", location, destination_location],
+                                stdout=sub.PIPE, 
+                                stderr=sub.PIPE)
+
                         # Set current date to 'latest_backup_to_main'
                         MAIN_INI_FILE.set_database_value(
                             'INFO', 'latest_backup_to_main', today_date())
                         
-                        # Add to counters
-                        item_sum_size += size   # Bytes
-                        item_minus += 1 
-
-                        # Send backup current status to the notification DB
-                        notification_message(
-                            backup_status(
-                                item_minus, 
-                                item_sum_size, 
-                                number_of_item_to_backup()))
-
                     except IndexError:
                         pass
 

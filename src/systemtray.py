@@ -94,8 +94,6 @@ class APP:
         self.app.exec()
     
     def should_be_running(self):
-        print("System tray is running...")
-        
         # Check if ini file is locked or not 
         if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.exit()
@@ -143,7 +141,7 @@ class APP:
 
             # Notification information
             self.last_backup_information.setText(
-                f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
+                MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
 
             self.last_backup_information2.setText(' ')
         
@@ -166,7 +164,7 @@ class APP:
                 (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
             
             # Show time left only if current minute is higher then x value
-            if (MAIN_INI_FILE.current_minute() - 59) <= TIME_LEFT_WINDOW:
+            if (59 - MAIN_INI_FILE.current_minute()) <= TIME_LEFT_WINDOW:
                 self.last_backup_information2.setText(
                     f'{calculate_time_left_to_backup()}\n')
             
