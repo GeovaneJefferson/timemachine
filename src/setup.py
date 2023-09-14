@@ -93,7 +93,7 @@ RPM_FOLDER_NAME = "rpm"
 
 # CMD commands
 # "rsync", "-avr" = "rsync", "-avr"
-# COPY_CP_CMD = "cp", "-rv"
+# COPY_CP_CMD = "cp", "-f"
 # CREATE_CMD_FOLDER = "mkdir"
 CREATE_CMD_FILE = "touch"
 GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
@@ -187,7 +187,7 @@ FIX_MINUTES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 ################################################################################
 ## Time
 #################################################################################
-TIME_LEFT_WINDOW = 30  # Minutes
+TIME_LEFT_WINDOW = 10  # Minutes
 
 ################################################################################
 ## LOCATION

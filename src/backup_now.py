@@ -197,28 +197,6 @@ def get_gtk_users_cursor_name():
     
 
 class BACKUP:
-    async def backup_wallpaper(self):
-        print("Backing up: Wallpaper")
-
-        # GNOME/KDE
-        notification_message("Backing up: Wallpaper")
-
-        # Check for at least a wallpaper
-        if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-            for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-                # Handle spaces
-                wallpaper = handle_spaces(wallpaper)
-
-                # Delete all wallpapers
-                command = f"{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}"
-                sub.run(["rm", "-rf", command], stdout=sub.PIPE, stderr=sub.PIPE)
-
-        # Backup wallpaper
-        if get_wallpaper_full_location() is not None:
-            src = get_wallpaper_full_location()
-            dst = MAIN_INI_FILE.wallpaper_main_folder() + "/"
-            sub.run(["cp", "-rv", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-
     async def backup_home(self):
         # Check for something inside main folder
         list_of_main_item = []
@@ -240,7 +218,7 @@ class BACKUP:
                 print(f'Backing up: {HOME_USER}/{folder}')
                 
                 sub.run(
-                    ["cp", "-rv", src, dst], 
+                    ["cp", "-f", src, dst], 
                         stdout=sub.PIPE, stderr=sub.PIPE)
         
         else:
@@ -292,7 +270,7 @@ class BACKUP:
                             print('Backing up file:', location, 'to', destination_location)
 
                             # Copy files
-                            sub.run(["cp", "-rv", location, destination_location],
+                            sub.run(["cp", "-f", location, destination_location],
                                 stdout=sub.PIPE, stderr=sub.PIPE)
 
                         # Backup folder
@@ -302,7 +280,7 @@ class BACKUP:
                             print('Backing up folder:', location, 'to', destination_location)
 
                             # Backup directories using shutil.copytree()
-                            sub.run(["cp", "-rv", location, destination_location],
+                            sub.run(["cp", "-f", location, destination_location],
                                 stdout=sub.PIPE, stderr=sub.PIPE)
     
                         # Set current date to 'latest_backup_to_main'
@@ -441,57 +419,6 @@ class BACKUP:
             except FileNotFoundError:
                 pass
 
-    async def backup_flatpak(self):
-        try:
-            counter = 0
-            flatpak_list = []
-
-            # Write to flatpak.txt
-            with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
-                for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
-                    flatpak_list.append(flatpak)
-                    
-                    # Write all installed flatpak apps by the name
-                    configfile.write(flatpak_list[counter])
-                    
-                    notification_message(f'Backing up: {flatpak_list[counter]}')
-                    
-                    counter += 1
-        
-        except Exception:
-            pass
-
-        # Backup flatpak data
-        if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
-            # Backup flatpak data folder
-            try:
-                # .var/app
-                for counter in range(len(flatpak_var_list())):
-                    # Copy the Flatpak var/app folders
-                    src = flatpak_var_list()[counter]
-                    dst = MAIN_INI_FILE.flatpak_var_folder()
-                    
-                    notification_message(f'Backing up: {flatpak_var_list()[counter]}')
-                    
-                    print(f'Backing up: {flatpak_var_list()[counter]}')
-                    
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-                    
-                # Start Flatpak (.local/share/flatpak) backup
-                for counter in range(len(flatpak_local_list())):
-                    # Copy the Flatpak var/app folders
-                    src = flatpak_local_list()[counter]
-                    dst = MAIN_INI_FILE.flatpak_local_folder()
-
-                    notification_message(f'Backing up: {flatpak_local_list()[counter]}')
-
-                    print(f'Backing up: {flatpak_local_list()[counter]}')
-
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-            
-            except:
-                pass
-
     async def end_backup(self):
         print('Ending backup')
 
@@ -508,9 +435,6 @@ class BACKUP:
         with open(f"{MAIN_INI_FILE.restore_settings_location()}", 'w') as configfile:
             if not CONFIG.has_section('INFO'):
                 CONFIG.add_section('INFO')
-
-            if get_wallpaper_full_location() is not None:
-                CONFIG.set('INFO', 'wallpaper', f'{get_wallpaper_full_location().split("/")[-1]}')
 
             # KDE
             if get_user_de() == 'kde':
@@ -540,16 +464,15 @@ class BACKUP:
         # Re-run backup checker
         sub.Popen(
             ["python3", SRC_BACKUP_CHECKER_PY], 
-                stdout=sub.PIPE, stderr=sub.PIPE)
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
         
         # Exit
         exit()
 
     async def main(self):
-        await self.backup_wallpaper()
         await self.backup_home()
         await self.backup_home_hidden_files()
-        await self.backup_flatpak()
         await self.end_backup()
 
 

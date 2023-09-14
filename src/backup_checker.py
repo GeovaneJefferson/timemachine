@@ -1,9 +1,11 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from get_days_name import get_days_name
+# from get_days_name import get_days_name
 from check_connection import is_connected
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-from get_time import today_date
+# from get_time import today_date
+from backup_flatpak import backup_flatpak
+from backup_wallpaper import backup_wallpaper
 from get_backup_date import (
     get_backup_date,
     has_backup_dates,
@@ -111,6 +113,13 @@ async def check_backup():
 
     # Check if is time to backup
     if current_time in MILITARY_TIME_OPTION:
+        # Backup flatpak
+        await backup_flatpak()
+        
+        # Backup wallpaper
+        await backup_wallpaper()
+        
+        # Start backup analyses
         await call_analyses()
 
 async def call_analyses():
