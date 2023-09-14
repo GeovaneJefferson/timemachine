@@ -283,9 +283,6 @@ def delete_old_backups():
         # Exit
         exit()
 
-def may_continue_to_backup(may_continue=True):
-    return may_continue
-
 
 class PREPAREBACKUP:
     def __init__(self):
@@ -293,7 +290,7 @@ class PREPAREBACKUP:
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
 
     # Check backup size, as the backup device size
-    def begin_backup_process(self):
+    def may_continue_to_backup(self):
 
         # Create base folders
         create_base_folders()
@@ -329,11 +326,11 @@ class PREPAREBACKUP:
             # Check if backup device has space enough 
             if has_enough_space(needeed_size_to_backup_home()):
                 # May continue to backup
-                may_continue_to_backup(True)
+                return True
 
             else:
                 # May not continue to backup
-                may_continue_to_backup(False)
+                return False
 
         else:
             # Check if backup device has space enough 
@@ -341,7 +338,7 @@ class PREPAREBACKUP:
                 create_date_and_time_folder()
 
                 # May continue to backup
-                may_continue_to_backup(True)
+                return True
 
             else:
                 # Not enough space to make a new backup
@@ -353,13 +350,7 @@ class PREPAREBACKUP:
                 # MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'True')
                 
                 # May not continue to backup
-                may_continue_to_backup(False)
-                
-        # Send notification status
-        notification_message('')
-
-        # Exit
-        exit()
+                return False
 
 
 if __name__ == '__main__':
@@ -367,5 +358,10 @@ if __name__ == '__main__':
     MAIN = PREPAREBACKUP()
 
     # Start preparation
-    MAIN.begin_backup_process()
+    MAIN.may_continue_to_backup()
 
+    # Send notification status
+    notification_message('')
+
+    # Exit
+    exit()

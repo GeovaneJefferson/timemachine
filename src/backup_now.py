@@ -8,6 +8,8 @@ from handle_spaces import handle_spaces
 from get_backup_date import get_backup_date
 from get_time import today_date
 from backup_status import backup_status
+from get_sizes import get_item_size
+from get_sizes import number_of_item_to_backup
 
 
 # Handle signal
@@ -197,110 +199,6 @@ def get_gtk_users_cursor_name():
     
 
 class BACKUP:
-    async def backup_home(self):
-        item_minus = 0
-        item_sum_size = 0 
-
-        # Check for something inside main folder
-        list_of_main_item = []
-        for i in os.listdir(MAIN_INI_FILE.main_backup_folder()):
-            list_of_main_item.append(i)
-
-        # Main folder is empty
-        if not list_of_main_item:
-            # Backup home to the main backup folder
-            for folder in get_folders():
-                folder = handle_spaces(folder)
-
-                # Backup Home folder
-                src = HOME_USER + "/" + folder
-                dst = MAIN_INI_FILE.main_backup_folder() + '/'
-                
-                notification_message(f'Backing up: {folder}')
-                
-                print(f'Backing up: {HOME_USER}/{folder}')
-                
-                sub.run(
-                    ["cp", "-f", src, dst], 
-                        stdout=sub.PIPE, stderr=sub.PIPE)
-        
-        else:
-            # Read the include file and process each item's information
-            with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
-                lines = f.readlines()
-                
-                for i in range(0, len(lines), 5):
-                    try:
-                        # filename = lines[i + 0].split(':')[-1].strip()
-                        size_string = lines[i + 1].split(':')[-1].strip()
-                        size = int(size_string.split()[0])
-                        location = lines[i + 2].split(':')[-1].strip()
-                        status = lines[i + 3].split(':')[-1].strip()
-                        
-                        # Remove home username
-                        remove_username = os.path.relpath(location, os.curdir)
-                        
-                        # Extract location's folder name
-                        extracted_folder_name = (
-                            os.path.basename(os.path.dirname(remove_username)))
-
-                        ##########################################################
-                        # .MAIN BACKUP
-                        ##########################################################
-                        # Copy to .main backup
-                        if status == 'NEW':
-                            # Destination for the item
-                            destination_location = (
-                                f'{MAIN_INI_FILE.main_backup_folder()}/{extracted_folder_name}')
-                        
-                        ##########################################################
-                        # LATEST DATE/TIME
-                        ##########################################################
-                        elif status == 'UPDATED':
-                            # Destination for the item
-                            destination_location = (
-                                f'{MAIN_INI_FILE.time_folder_format()}/{extracted_folder_name}')
-                        
-                        # Create current directory in backup device
-                        if not os.path.exists(destination_location):
-                            # Create folder
-                            os.makedirs(destination_location, exist_ok=True)
-
-                        # Backup file
-                        if os.path.isfile(location):
-                            notification_message(f'Backing up file: {location}')
-
-                            print('Backing up file:', location, 'to', destination_location)
-
-                            # Copy files
-                            sub.run(["cp", "-f", location, destination_location],
-                                stdout=sub.PIPE, stderr=sub.PIPE)
-
-                        # Backup folder
-                        elif os.path.isdir(location):
-                            notification_message(f'Backing up folder: {location}')
-                            
-                            print('Backing up folder:', location, 'to', destination_location)
-
-                            # Backup directories using shutil.copytree()
-                            sub.run(["cp", "-f", location, destination_location],
-                                stdout=sub.PIPE, stderr=sub.PIPE)
-    
-                        # Set current date to 'latest_backup_to_main'
-                        MAIN_INI_FILE.set_database_value(
-                            'INFO', 'latest_backup_to_main', today_date())
-                        
-                        # Add to counters
-                        item_sum_size += size   # Bytes
-                        item_minus += 1 
-
-                        # Send backup current status to the notification DB
-                        notification_message(
-                            backup_status(item_minus, item_sum_size))
-
-                    except IndexError:
-                        pass
-
     async def backup_home_hidden_files(self):
         # For GNOME
         if get_user_de() == 'gnome':
@@ -375,7 +273,10 @@ class BACKUP:
                     
                     print(f'Backing up: {HOME_USER}/.local/share/{folder}')
                     
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(
+                        ["rsync", "-avr", src, dst], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
                     
             try:
                 # .config/
@@ -398,7 +299,10 @@ class BACKUP:
                         
                         print(f'Backing up: {HOME_USER}/.config/{folder}')
                         
-                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                        sub.run(
+                            ["rsync", "-avr", src, dst], 
+                            stdout=sub.PIPE, 
+                            stderr=sub.PIPE)
                     
             except FileNotFoundError as e:
                 print(e)
@@ -429,6 +333,116 @@ class BACKUP:
                         
             except FileNotFoundError:
                 pass
+
+    async def backup_home(self):
+        item_minus = 0
+        item_sum_size = 0 
+
+        # Check for something inside main folder
+        list_of_main_item = []
+        for i in os.listdir(MAIN_INI_FILE.main_backup_folder()):
+            list_of_main_item.append(i)
+
+        # Main folder is empty
+        if not list_of_main_item:
+            # Backup home to the main backup folder
+            for folder in get_folders():
+                folder = handle_spaces(folder)
+
+                # Backup Home folder
+                src = HOME_USER + "/" + folder
+                dst = MAIN_INI_FILE.main_backup_folder() + '/'
+                
+                print(f'Backing up: {HOME_USER}/{folder}')
+                
+                sub.run(
+                    ["cp", "-rvf", src, dst], 
+                        stdout=sub.PIPE, stderr=sub.PIPE)
+                
+                # Add to counters
+                item_sum_size += get_item_size(f'{HOME_USER}/{folder}')
+                item_minus += 1 
+
+                # Send backup current status to the notification DB
+                notification_message(
+                    backup_status(
+                        item_minus, item_sum_size, len(get_folders())))
+
+        else:
+            # Read the include file and process each item's information
+            with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
+                lines = f.readlines()
+                
+                for i in range(0, len(lines), 5):
+                    try:
+                        # filename = lines[i + 0].split(':')[-1].strip()
+                        size_string = lines[i + 1].split(':')[-1].strip()
+                        size = int(size_string.split()[0])
+                        location = lines[i + 2].split(':')[-1].strip()
+                        status = lines[i + 3].split(':')[-1].strip()
+                        
+                        # Remove home username
+                        remove_username = os.path.relpath(location, os.curdir)
+                        
+                        # Extract location's folder name
+                        extracted_folder_name = (
+                            os.path.basename(os.path.dirname(remove_username)))
+
+                        ##########################################################
+                        # .MAIN BACKUP
+                        ##########################################################
+                        # Copy to .main backup
+                        if status == 'NEW':
+                            # Destination for the item
+                            destination_location = (
+                                f'{MAIN_INI_FILE.main_backup_folder()}/{extracted_folder_name}')
+                        
+                        ##########################################################
+                        # LATEST DATE/TIME
+                        ##########################################################
+                        elif status == 'UPDATED':
+                            # Destination for the item
+                            destination_location = (
+                                f'{MAIN_INI_FILE.time_folder_format()}/{extracted_folder_name}')
+                        
+                        # Create current directory in backup device
+                        if not os.path.exists(destination_location):
+                            # Create folder
+                            os.makedirs(destination_location, exist_ok=True)
+
+                        # Backup file
+                        if os.path.isfile(location):
+                            print('Backing up file:', location, 'to', destination_location)
+
+                            # Copy files
+                            sub.run(["cp", "-rvf", location, destination_location],
+                                stdout=sub.PIPE, stderr=sub.PIPE)
+
+                        # Backup folder
+                        elif os.path.isdir(location):
+                            print('Backing up folder:', location, 'to', destination_location)
+
+                            # Backup directories using shutil.copytree()
+                            sub.run(["cp", "-rvf", location, destination_location],
+                                stdout=sub.PIPE, stderr=sub.PIPE)
+    
+                        # Set current date to 'latest_backup_to_main'
+                        MAIN_INI_FILE.set_database_value(
+                            'INFO', 'latest_backup_to_main', today_date())
+                        
+                        # Add to counters
+                        item_sum_size += size   # Bytes
+                        item_minus += 1 
+
+                        # Send backup current status to the notification DB
+                        notification_message(
+                            backup_status(
+                                item_minus, 
+                                item_sum_size, 
+                                number_of_item_to_backup()))
+
+                    except IndexError:
+                        pass
 
     async def end_backup(self):
         print('Ending backup')
@@ -482,8 +496,8 @@ class BACKUP:
         exit()
 
     async def main(self):
-        await self.backup_home()
         await self.backup_home_hidden_files()
+        await self.backup_home()
         await self.end_backup()
 
 

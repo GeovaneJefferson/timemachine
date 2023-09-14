@@ -48,7 +48,7 @@ class APP:
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
-        self.backup_now_button.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        # self.backup_now_button.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.backup_now_button.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
@@ -192,10 +192,7 @@ class APP:
                 self.browse_time_machine_backups.setEnabled(False)
 
     def backup_now(self):
-        sub.run(
-            ["python3", SRC_ANALYSE_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+        sub.run(["python3", SRC_ANALYSE_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
     def change_color(self,color):
         try:

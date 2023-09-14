@@ -3,7 +3,7 @@ from get_folders_to_be_backup import get_folders
 from handle_spaces import handle_spaces
 from get_sizes import number_of_item_to_backup, get_item_size
 from get_users_de import get_user_de
-from prepare_backup import may_continue_to_backup
+from prepare_backup import PREPAREBACKUP
 from get_time import today_date
 
 
@@ -114,7 +114,7 @@ async def run_algo():
                 MAIN_INI_FILE.main_backup_folder() + 
                 '/' + 
                 str(home_item_path).replace(HOME_USER + '/', ' ').strip()) 
-           
+        
             # Destination dirname 
             main_item_full_location_dirname = main_custom_full_location.split(
                 '/')[1:-1]
@@ -465,28 +465,35 @@ class Analyse:
             pass
 
     async def need_to_backup_analyse(self):
-        await self.get_select_backup_home() 
-        await run_algo()
-        await write_to_file()
+        # First backup to main backup folder
+        if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+            await self.get_select_backup_home() 
+            await run_algo()
+            await write_to_file()
 
-        # # Set todays date to DB to the 'Checked date for backup'
-        # latest_checked_date = MAIN_INI_FILE.set_database_value(
-        #     'INFO', 'checked_backup_date', today_date())
+            # # Set todays date to DB to the 'Checked date for backup'
+            # latest_checked_date = MAIN_INI_FILE.set_database_value(
+            #     'INFO', 'checked_backup_date', today_date())
 
-        # print('Latest checked date:', today_date())
+            # print('Latest checked date:', today_date())
 
-        # If number of item > 0
-        if number_of_item_to_backup() > 0:
+            # If number of item > 0
+            if number_of_item_to_backup() > 0:
+                print(GREEN + 'ANALYSE: Need to backup.' + RESET)
+                return True 
+            
+            else:
+                print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
+                return False
+            
+        else:
             print(GREEN + 'ANALYSE: Need to backup.' + RESET)
             return True 
-        
-        else:
-            print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
-            return False
 
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN_PREPARE = PREPAREBACKUP()
     MAIN = Analyse()
 
     # print(asyncio.run(MAIN.need_to_backup_analyse()))
@@ -494,7 +501,7 @@ if __name__ == '__main__':
     # Start analyses
     if asyncio.run(MAIN.need_to_backup_analyse()):
         # Prepare backup
-        if may_continue_to_backup():
+        if MAIN_PREPARE.may_continue_to_backup():
             # Backup now
             sub.Popen(
                 ["python3", SRC_BACKUP_NOW_PY], 

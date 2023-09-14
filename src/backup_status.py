@@ -1,15 +1,10 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from get_sizes import number_of_item_to_backup
 
 
-total_items = number_of_item_to_backup()
-# total_items = 22
+def backup_status(item_minus, item_sum_size, total_items):
+    percentage = (item_minus / total_items) * 100
 
-def backup_status(item_minus, item_sum_size):
-    item_lenght = total_items - item_minus
-
-    percentage = (item_lenght / total_items) * 100
     # Convert item size to GB
     item_sum_size = item_sum_size / 1024**3
 
