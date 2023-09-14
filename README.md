@@ -48,6 +48,17 @@ relevant details.
 - Time Machine affords you the flexibility to schedule backups on an hourly, daily, or weekly basis. As your backup disk
 reaches its storage limit, the earliest backups will be automatically purged to create space for new ones.
 
+## Backup Frequency and Retention
+
+- Time Machine follows a comprehensive backup strategy:
+
+    Hourly Backups: Time Machine automatically creates backups every hour, preserving the last 24 hours of your selected home's data. This ensures that you can quickly recover files or data from the past day.
+
+    Efficient Storage Management: When your backup disk reaches its capacity, Time Machine intelligently manages your backups. It automatically deletes the oldest backups to make room for new ones, maintaining an efficient storage balance.
+
+    Minimal Disruption: The initial backup may take some time to complete, but you can continue using your computer without interruption. Subsequent backups are much faster since Time Machine only copies files that have changed since the last backup.
+
+Time Machine's backup strategy combines convenience and efficiency to safeguard your data without disrupting your workflow.
 
 ## Monitoring Backup Status
 

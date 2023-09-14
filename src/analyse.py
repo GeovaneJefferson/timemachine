@@ -166,14 +166,12 @@ def check_this_item(
     if os.path.exists(main_item_full_location_dirname):
         # Has date/time folders
         if has_date_folders:
-            print('A')
             search_in_all_date_time_file(
                 main_item_full_location_dirname,
                 home_item_name, 
                 home_item_path)
         
         else:
-            print('B')
             search_in_main_file(    
                 main_item_full_location_dirname,
                 home_item_name, 
