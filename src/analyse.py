@@ -469,11 +469,11 @@ class Analyse:
         await run_algo()
         await write_to_file()
 
-        # Set todays date to DB to the 'Checked date for backup'
-        latest_checked_date = MAIN_INI_FILE.set_database_value(
-            'INFO', 'checked_backup_date', today_date())
+        # # Set todays date to DB to the 'Checked date for backup'
+        # latest_checked_date = MAIN_INI_FILE.set_database_value(
+        #     'INFO', 'checked_backup_date', today_date())
 
-        print('Latest checked date:', today_date())
+        # print('Latest checked date:', today_date())
 
         # If number of item > 0
         if number_of_item_to_backup() > 0:

@@ -145,7 +145,7 @@ class APP:
             self.last_backup_information.setText(
                 f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
 
-            self.last_backup_information2.setText('')
+            self.last_backup_information2.setText(' ')
         
             # Disable
             self.backup_now_button.setEnabled(False)

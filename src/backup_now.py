@@ -7,6 +7,7 @@ from notification_massage import notification_message
 from handle_spaces import handle_spaces
 from get_backup_date import get_backup_date
 from get_time import today_date
+from backup_status import backup_status
 
 
 # Handle signal
@@ -197,6 +198,9 @@ def get_gtk_users_cursor_name():
 
 class BACKUP:
     async def backup_home(self):
+        item_minus = 0
+        item_sum_size = 0 
+
         # Check for something inside main folder
         list_of_main_item = []
         for i in os.listdir(MAIN_INI_FILE.main_backup_folder()):
@@ -228,8 +232,8 @@ class BACKUP:
                 for i in range(0, len(lines), 5):
                     try:
                         # filename = lines[i + 0].split(':')[-1].strip()
-                        # size_string = lines[i + 1].split(':')[-1].strip()
-                        # size = int(size_string.split()[0])
+                        size_string = lines[i + 1].split(':')[-1].strip()
+                        size = int(size_string.split()[0])
                         location = lines[i + 2].split(':')[-1].strip()
                         status = lines[i + 3].split(':')[-1].strip()
                         
@@ -285,6 +289,14 @@ class BACKUP:
                         # Set current date to 'latest_backup_to_main'
                         MAIN_INI_FILE.set_database_value(
                             'INFO', 'latest_backup_to_main', today_date())
+                        
+                        # Add to counters
+                        item_sum_size += size   # Bytes
+                        item_minus += 1 
+
+                        # Send backup current status to the notification DB
+                        notification_message(
+                            backup_status(item_minus, item_sum_size))
 
                     except IndexError:
                         pass
