@@ -166,7 +166,7 @@ class APP:
                 (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
             
             # Show time left only if current minute is higher then x value
-            if MAIN_INI_FILE.current_minute() <= TIME_LEFT_WINDOW:
+            if (MAIN_INI_FILE.current_minute() - 59) <= TIME_LEFT_WINDOW:
                 self.last_backup_information2.setText(
                     f'{calculate_time_left_to_backup()}\n')
             
@@ -192,7 +192,10 @@ class APP:
                 self.browse_time_machine_backups.setEnabled(False)
 
     def backup_now(self):
-        sub.run(["python3", SRC_ANALYSE_PY], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.run(
+            ["python3", SRC_ANALYSE_PY],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
 
     def change_color(self,color):
         try:

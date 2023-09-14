@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
-                    if MAIN_INI_FILE.current_minute() <= TIME_LEFT_WINDOW:
+                    if (MAIN_INI_FILE.current_minute() - 59) <= TIME_LEFT_WINDOW:
                         self.ui.next_backup_label.setText(
                             f'Next Backup: {calculate_time_left_to_backup()}\n')
                     
