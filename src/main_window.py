@@ -21,6 +21,7 @@ from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from update import backup_ini_file
 from save_info import save_info
+from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
 
@@ -166,10 +167,8 @@ class MainWindow(QMainWindow):
                             f'Next Backup: {calculate_time_left_to_backup()}')
                     
                     else:
-                        # Current hour + 1
-                        next_backup_time = MAIN_INI_FILE.current_hour() + 1 
-                        self.ui.next_backup_label.setText(
-                            f'Next Backup: {str(next_backup_time)}:00')
+                        # Next backup label
+                        self.ui.next_backup_label.setText('Next Backup: ' + next_backup_label())
                 
                 else:
                     self.ui.next_backup_label.setText(

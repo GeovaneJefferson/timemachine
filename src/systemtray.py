@@ -5,10 +5,10 @@ from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
 from get_time import *
-from get_latest_backup_date import latest_backup_date_label
+# from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
-from determine_next_backup import get_next_backup
+from next_backup_label import next_backup_label
 
 
 DELAY_TO_UPDATE = 2000
@@ -114,7 +114,7 @@ class APP:
         # No backup device registered
         else:
             self.last_backup_information.setText('First, select a backup device.')
-            self.last_backup_information2.setText('')
+            self.last_backup_information2.setText(' ')
             
             # Backup now button to False
             self.backup_now_button.setEnabled(False)
@@ -169,17 +169,15 @@ class APP:
                     f'{calculate_time_left_to_backup()}\n')
             
             else:
-                # Current hour + 1
-                next_backup_time = MAIN_INI_FILE.current_hour() + 1 
-                self.last_backup_information2.setText(
-                    str(next_backup_time) + ':00')
+                # Next backup label
+                self.last_backup_information2.setText(next_backup_label())
 
         else:
             # Next backup alert
             self.last_backup_information.setText('Automatically backup off')
             
             # Clean information 2
-            self.last_backup_information2.setText('')
+            self.last_backup_information2.setText(' ')
 
     def is_current_restoring(self):
         if not MAIN_INI_FILE.automatically_backup():
