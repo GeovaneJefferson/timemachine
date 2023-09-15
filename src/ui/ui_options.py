@@ -110,6 +110,11 @@ class Ui_Options(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.version_label = QLabel(Options)
+        self.version_label.setObjectName(u"version_label")
+
+        self.horizontalLayout_2.addWidget(self.version_label)
+
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
@@ -141,6 +146,7 @@ class Ui_Options(object):
         self.label_7.setText(QCoreApplication.translate("Options", u"<html><head/><body><p>If something seems broken, click on Reset, to reset all settings.</p></body></html>", None))
         self.reset_button.setText(QCoreApplication.translate("Options", u"Reset", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.others_tab), QCoreApplication.translate("Options", u"Others", None))
+        self.version_label.setText(QCoreApplication.translate("Options", u"Version", None))
         self.cancel_button_options.setText(QCoreApplication.translate("Options", u"Close", None))
     # retranslateUi
 

@@ -533,6 +533,8 @@ class OptionsWindow(QDialog):
         if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
             self.options_ui.allow_flatpak_data_checkBox.setChecked(True)
 
+        # Version
+        self.options_ui.version_label.setText(APP_VERSION)
         ######################################################################
         # Connection
         ######################################################################
@@ -540,37 +542,6 @@ class OptionsWindow(QDialog):
         self.options_ui.cancel_button_options.clicked.connect(
             self.on_cancel_options_button_clicked)
         
-        # Save options button dialog
-        # self.options_ui.save_button_options.clicked.connect(
-        # self.on_save_options_button_clicked)
-
-        # # Frequency combo box
-        # self.options_ui.frequency_comboBox.currentIndexChanged.connect(
-        #     self.on_frequency_clicked)
-
-        # # At radio button
-        # self.options_ui.at_radio_button.clicked.connect(
-        #     self.on_radio_checkbox_clicked)
-        # # Every radio button
-        # self.options_ui.every_radio_button.clicked.connect(
-        #     self.on_radio_checkbox_clicked)
-
-        # # Dates
-        # self.options_ui.sun_checkBox.clicked.connect(self.on_check_sun_clicked)
-        # self.options_ui.mon_checkBox.clicked.connect(self.on_check_mon_clicked)
-        # self.options_ui.tue_checkBox.clicked.connect(self.on_check_tue_clicked)
-        # self.options_ui.wed_checkBox.clicked.connect(self.on_check_wed_clicked)
-        # self.options_ui.thu_checkBox.clicked.connect(self.on_check_thu_clicked)
-        # self.options_ui.fri_checkBox.clicked.connect(self.on_check_fri_clicked)
-        # self.options_ui.sat_checkBox.clicked.connect(self.on_check_sat_clicked)
-
-        # # Times
-        # self.options_ui.hours_spinbox.valueChanged.connect(
-        #     self.label_hours_changed)
-        
-        # self.options_ui.minutes_spinBox.valueChanged.connect(
-        #     self.label_minutes_changed)
-
         # Flatpaks
         self.options_ui.allow_flatpak_data_checkBox.clicked.connect(
             self.on_allow__flatpak_data_clicked)
