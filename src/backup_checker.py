@@ -73,7 +73,8 @@ async def check_for_new_packages():
 
 async def check_backup():
     # Get the current time
-    current_time = MAIN_INI_FILE.current_hour() + 00
+    current_time = str(MAIN_INI_FILE.current_hour() + 
+                       MAIN_INI_FILE.current_minute())
 
     print('Current time:', current_time)
     print('Next backup :', calculate_time_left_to_backup())
