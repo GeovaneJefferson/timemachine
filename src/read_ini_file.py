@@ -116,6 +116,11 @@ class UPDATEINIFILE:
     def current_time(self):
         return int(self.current_hour() + self.current_minute())
 
+    def latest_backup_date(self):
+        # Get current date to 'latest_backup_to_main'
+        return str(self.get_database_value(
+                    'INFO', 'latest_backup_to_main'))
+
     def backup_year(self):
         return NOW.strftime("%y")
 

@@ -658,29 +658,17 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
-            MAIN_INI_FILE.set_database_value('INFO', 'checked_backup_date', 'None')
 
+            # INFO
+            MAIN_INI_FILE.set_database_value('INFO', 'checked_backup_date', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_to_main', 'None')
+
+            # EXTERNAL  
             MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', 'None')
             MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', 'None')
             
-            MAIN_INI_FILE.set_database_value('MODE', 'one_time_mode', 'False')
-            MAIN_INI_FILE.set_database_value('MODE', 'more_time_mode', 'True')
-            
+            # SYSTEMTRAY 
             MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
-            
-            MAIN_INI_FILE.set_database_value('DAYS', 'sun', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'mon', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'tue', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'wed', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'thu', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'fri', 'True')
-            MAIN_INI_FILE.set_database_value('DAYS', 'sat', 'True')
-            
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'hours', '10')
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'minutes', '00')
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'everytime', '60')
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
-            MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
             
             MAIN_INI_FILE.set_database_value('INFO', 'language', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'os', 'None')
@@ -743,13 +731,16 @@ if __name__ == "__main__":
 
     # Main window
     MAIN = MainWindow()
-    # window icon
+
+    # Window icon
     MAIN.setWindowIcon(QIcon(SRC_BACKUP_ICON))
 
     # Options window
     options_window_class = OptionsWindow()
 
-    MAIN.show()
+    # Window size
     MAIN.setFixedSize(700, 450)
+    
+    MAIN.show()
 
     sys.exit(app.exec())

@@ -459,7 +459,8 @@ class BACKUP:
                                 stdout=sub.PIPE, 
                                 stderr=sub.PIPE)
 
-                        # Set current date to 'latest_backup_to_main'
+                        # If only new file/folder was backup, save the backup
+                        # date to main folder
                         MAIN_INI_FILE.set_database_value(
                             'INFO', 'latest_backup_to_main', today_date())
                         
