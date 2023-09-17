@@ -242,7 +242,7 @@ class MainWindow(QMainWindow):
             create_backup_checker_desktop()
 
             # Copy backup_check.desktop
-            shutil.copy(DST_BACKUP_CHECK_DESKTOP, dst_autostart_location)
+            shutil.copy(DST_BACKUP_CHECK_DESKTOP, DST_AUTOSTART_LOCATION)
 
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'automatically_backup', 'True')
@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
 
         else:
             # Remove autostart.desktop
-            sub.run(f"rm -f {dst_autostart_location}",shell=True)
+            sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
 
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'automatically_backup', 'False')
@@ -584,8 +584,6 @@ class OptionsWindow(QDialog):
                     # Checkboxes
                     self.home_folders_checkbox = QCheckBox()
                     self.home_folders_checkbox.setText(folder)
-                    self.home_folders_checkbox.setFont(
-                        QFont(MAIN_FONT,NORMAL_FONT_SIZE))
                     self.home_folders_checkbox.adjustSize()
                     # self.home_folders_checkbox.setIcon(
                     # QIcon(f"{homeUser}/.local/share/{APPNAMEClose}/src/icons/folder.png"))

@@ -18,7 +18,7 @@ async def restore_backup_package_applications():
             # Restore DEBS
             ################################################################################
             for package in os.listdir(f"{MAIN_INI_FILE.deb_main_folder()}"):
-                print(f"{INSTALL_DEB} {MAIN_INI_FILE.deb_main_folder()}/{package}")
+                print(f"Installing {MAIN_INI_FILE.deb_main_folder()}/{package}")
 
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:
@@ -37,7 +37,7 @@ async def restore_backup_package_applications():
             # Restore RPMS
             ################################################################################
             for package in os.listdir(f"{MAIN_INI_FILE.rpm_main_folder()}"):
-                print(f"{INSTALL_RPM} {MAIN_INI_FILE.rpm_main_folder()}/{package}")
+                print(f"Installing {MAIN_INI_FILE.rpm_main_folder()}/{package}")
 
                 # Install only if package if not in the exclude app list
                 if package not in read_exclude:

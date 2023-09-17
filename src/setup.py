@@ -91,24 +91,14 @@ RESTORE_SETTINGS_INI = "restore_settings.ini"
 DEB_FOLDER_NAME = "deb"
 RPM_FOLDER_NAME = "rpm"
 
-# CMD commands
-# "rsync", "-avr" = "rsync", "-avr"
-# COPY_CP_CMD = "cp", "-f"
-# CREATE_CMD_FOLDER = "mkdir"
-CREATE_CMD_FILE = "touch"
+# Flatpak
 GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
-INSTALL_DEB = "sudo", "dpkg", "-i"
-INSTALL_RPM = "sudo", "rpm", "-ivh", "--replacepkgs"
-FLATPAK_INSTALL_CMD = "flatpak", "install", "--system", "--noninteractive", "--assumeyes", "--or-update"
 
 # DE
 SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
-            "unity", "pop", "kde",
-            "zorin:gnome", "pop:gnome", "budgie:gnome"
-               ]
+            "unity", "pop", "kde","zorin:gnome", 
+            "pop:gnome", "budgie:gnome"]
 
-SUPPORT_DEB_PACKAGES_MANAGER = ["debian", "ubuntu"]
-SUPPORT_RPM_PACKAGE_MANAGER = ["fedora", "opensuse"]
 GET_USER_DE = "echo $XDG_CURRENT_DESKTOP"
 GET_USER_PACKAGE_MANAGER = "cat /etc/os-release"
 
@@ -157,19 +147,11 @@ GET_KDE_USER_PLASMA_STYLE_CMD = "plasma-apply-desktoptheme --list-themes"
 MEDIA = "/media"
 RUN = "/run/media"
 
-# Fonts
-MAIN_FONT = "Ubuntu"
-BIGGER_FONT_SIZE = 12
-NORMAL_FONT_SIZE = 10
-SMALL_FONT_SIZE = 5
-
 
 ################################################################################
 ## Fonts
 ################################################################################
-BIG_TITLE = QFont("DeJaVu Sans", 18)
-TOP_TITLE = QFont("DeJaVu Sans", 10.5)
-ITEM = QFont("Ubuntu", 10)
+MAIN_FONT = "Ubuntu"
 
 ################################################################################
 ## Times
@@ -180,13 +162,9 @@ MILITARY_TIME_OPTION = [
     '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300']
 
 ################################################################################
-## FIX
-#################################################################################
-FIX_MINUTES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-################################################################################
 ## Time
 #################################################################################
+# Time left to calculate 'time left'
 TIME_LEFT_WINDOW = 10  # Minutes
 
 ################################################################################
@@ -216,31 +194,18 @@ SRC_BACKUP_CHECKER_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_c
 SRC_MAIN_WINDOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/main_window.py"
 SRC_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/migration_assistant.py"
 SRC_CALL_MIGRATION_ASSISTANT_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/call_migration_assistant.py"
-src_enter_time_machine_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/enter_time_machine.py"
-SRC_ENTER_TIME_MACHINE_NEW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_enter_time_machine.py"
-src_package_backup_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/auto-package.py"
+SRC_ENTER_TIME_MACHINE_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/new_enter_time_machine.py"
 SRC_PREPARE_BACKUP_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/prepare_backup.py"
 SRC_UPDATE_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/update.py"
 SRC_BACKUP_NOW_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/backup_now.py"
 SRC_SYSTEM_TRAY_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/systemtray.py"
-src_notification_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/notification.py"
-src_search_for_devices_py = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/search_for_devices.py"
 SRC_RESTORE_CMD_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/restore_cmd.py"
 
 ################################################################################
 ## Desktop
 ################################################################################
-# Source
-SRC_TIMEMACHINE_DESKTOP = f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
-
-src_autostart_location = f"desktop/backup_check.desktop"
-# SRC_TIMEMACHINE_DESKTOP = f"desktop/{APP_NAME_CLOSE}.desktop"
-src_migration_assistant_desktop = "desktop/migration_assistant.desktop"
-src_backup_check_desktop = f"desktop/backup_check.desktop"
-
-
 # Destination
-dst_autostart_location = f"{HOME_USER}/.config/autostart/backup_check.desktop"
+DST_AUTOSTART_LOCATION = f"{HOME_USER}/.config/autostart/backup_check.desktop"
 DST_BACKUP_CHECK_DESKTOP = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/desktop/backup_check.desktop"
 DST_FILE_EXE_DESKTOP = f"{HOME_USER}/.local/share/applications/{APP_NAME_CLOSE}.desktop"
 DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migration_assistant.desktop"

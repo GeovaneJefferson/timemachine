@@ -58,7 +58,7 @@ class APP:
             QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browse_time_machine_backups.triggered.connect(
             lambda: sub.Popen(
-                ["python3", SRC_ENTER_TIME_MACHINE_NEW_PY], 
+                ["python3", SRC_ENTER_TIME_MACHINE_PY], 
                     stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
