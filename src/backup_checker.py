@@ -80,6 +80,7 @@ async def check_backup():
     print('Current time:', current_time)
     print('Next backup :', calculate_time_left_to_backup())
     print(MILITARY_TIME_OPTION)
+    print(bool(current_time in MILITARY_TIME_OPTION))
     print()
 
     # Check if is time to backup

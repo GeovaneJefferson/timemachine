@@ -45,7 +45,14 @@ def install_dependencies():
         # Arch
         if 'arch' in USERS_DISTRO_NAME:
             command = "qt6-wayland"
-            sub.run(["sudo", "pacman", "-Sy", command])
+            
+            # Check if the package is already installed
+            try:
+                sub.run(["pacman", "-Qq", command], check=True)
+                print(f"{command} is already installed.")
+            except sub.CalledProcessError:
+                # If not installed, install the package
+                sub.run(["sudo", "pacman", "-S", command], check=True)
 
     except FileNotFoundError:
         exit()

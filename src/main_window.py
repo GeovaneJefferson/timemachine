@@ -269,7 +269,7 @@ class MainWindow(QMainWindow):
                 'SYSTEMTRAY', 'system_tray', 'True')
 
             # Call system tray
-            sub.Popen(["python3", src_system_tray_py])
+            sub.Popen(["python3", SRC_SYSTEM_TRAY_PY])
 
             print("System tray was successfully enabled!")
 
