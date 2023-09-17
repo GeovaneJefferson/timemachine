@@ -291,7 +291,6 @@ class PREPAREBACKUP:
 
     # Check backup size, as the backup device size
     def prepare_the_backup(self):
-
         # Create base folders
         create_base_folders()
 

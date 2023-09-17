@@ -509,9 +509,6 @@ if __name__ == '__main__':
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 
-            # Exit
-            exit()
-
     else:
         # Backing up to False
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False') 
@@ -521,7 +518,3 @@ if __name__ == '__main__':
             ["python3", SRC_BACKUP_CHECKER_PY], 
             stdout=sub.PIPE, 
             stderr=sub.PIPE)
-        
-        # Exit
-        exit()
-        
