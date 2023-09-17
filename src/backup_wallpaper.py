@@ -79,9 +79,6 @@ async def backup_wallpaper():
     # Check for at least a wallpaper
     if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
         for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-            # Handle spaces
-            wallpaper = handle_spaces(wallpaper)
-
             # Delete all wallpapers
             command = f"{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}"
             sub.run(
@@ -114,4 +111,5 @@ async def update_db():
 
 
 if __name__ == '__main__':
+    asyncio.run(backup_wallpaper())
     pass
