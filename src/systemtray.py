@@ -188,7 +188,7 @@ class APP:
                 self.browse_time_machine_backups.setEnabled(False)
 
     def backup_now(self):
-        sub.run(
+        sub.Popen(
             ["python3", SRC_ANALYSE_PY],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
