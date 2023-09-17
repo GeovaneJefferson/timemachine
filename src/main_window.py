@@ -19,7 +19,7 @@ from get_sizes import (
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
-from update import backup_ini_file
+from update import backup_db_file
 from save_info import save_info
 from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
@@ -234,7 +234,7 @@ class MainWindow(QMainWindow):
         self.ui.automatically_backup_checkbox.setChecked(False)
 
         # Update and make save the DB
-        backup_ini_file(True)
+        backup_db_file(True)
 
     def on_automatically_checkbox_clicked(self):
         if self.ui.automatically_backup_checkbox.isChecked():

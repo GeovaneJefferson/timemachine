@@ -11,7 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.08 dev"
+APP_VERSION = "v1.1.6.09 dev"
 
 CREATE_CMD_FOLDER = "mkdir"
 
@@ -50,6 +50,7 @@ def install_dependencies():
             try:
                 sub.run(["pacman", "-Qq", command], check=True)
                 print(f"{command} is already installed.")
+                
             except sub.CalledProcessError:
                 # If not installed, install the package
                 sub.run(["sudo", "pacman", "-S", command], check=True)

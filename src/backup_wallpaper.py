@@ -111,5 +111,4 @@ async def update_db():
 
 
 if __name__ == '__main__':
-    asyncio.run(backup_wallpaper())
     pass

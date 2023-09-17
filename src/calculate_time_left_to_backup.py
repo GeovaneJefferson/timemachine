@@ -23,17 +23,12 @@ def calculate_time_left_to_backup():
     # hours_left = time_left.seconds // 3600
     minutes_left = (time_left.seconds // 60) % 60
 
-    write_to_ini_file(minutes_left)
-
     # Return calculation
     return calculation(minutes_left)
 
 def calculation(time_left):
     return f"In Approx. {time_left} minutes..."
             
-def write_to_ini_file(time_left):
-    MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', f'In Approx. {time_left} minutes...')
-
 
 if __name__ == '__main__':
     pass

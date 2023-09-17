@@ -1,6 +1,6 @@
 from setup import *
 
-def backup_ini_file(update_now):
+def backup_db_file(update_now):
     # Make a copy of DB, and move it to src/
     src = SRC_USER_CONFIG_DB 
     dst = HOME_USER + "/.local/share/" + APP_NAME_CLOSE + "/src"
@@ -19,18 +19,18 @@ def update_git(update_now):
     sub.run(["git", "pull"])
     
     if update_now:
-        delete_ini_file(update_now)
+        delete_db_file(update_now)
 
-def delete_ini_file(update_now):
+def delete_db_file(update_now):
     # Delete DB 
     print("Deleting old ini file...")
 
     sub.run(["rm", "-rf", SRC_USER_CONFIG_DB])
 
     if update_now:
-        restore_ini_file(update_now)
+        restore_db_file(update_now)
 
-def restore_ini_file(update_now):
+def restore_db_file(update_now):
     print("Moving the backup DB...")
 
     # Move the backup DB to the right location
