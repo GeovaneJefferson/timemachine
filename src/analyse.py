@@ -505,7 +505,8 @@ if __name__ == '__main__':
             # Backup now
             sub.Popen(
                 ["python3", SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, stderr=sub.PIPE)
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)
 
             # Exit
             exit()
