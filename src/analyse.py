@@ -522,3 +522,6 @@ if __name__ == '__main__':
             stdout=sub.PIPE, 
             stderr=sub.PIPE)
         
+        # Exit
+        exit()
+        

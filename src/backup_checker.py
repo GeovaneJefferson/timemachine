@@ -107,10 +107,13 @@ async def call_analyses():
     # Call prepare backup
     print("Calling analyses...")
     
-    sub.run(
+    sub.Popen(
         ["python3", SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
         stderr=sub.PIPE)
+    
+    # Exit backup checker
+    exit()
 
 # # Check for previus interrupted backup
 # def continue_interrupted_backup():
@@ -151,14 +154,6 @@ async def main():
                 print('Backup device is not connected.')
 
             else:
-                # Backing up now
-                if MAIN_INI_FILE.get_database_value(
-                    'STATUS', 'backing_up_now'):
-                    print('Closing backup checker, reason: Backing up now.')
-                    
-                    # Exit
-                    break
-
                 # TODO
                 # # If previus backup is unfinished
                 # if MAIN_INI_FILE.get_database_value(
