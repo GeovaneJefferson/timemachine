@@ -120,6 +120,11 @@ class UPDATEINIFILE:
         # Get current date to 'oldest_backup_to_main'
         return str(self.get_database_value(
                     'INFO', 'oldest_backup_to_main'))
+    
+    def latest_backup_date(self):
+        # Get current date to 'oldest_backup_to_main'
+        return str(self.get_database_value(
+                    'INFO', 'latest_backup_to_main'))
 
     def backup_year(self):
         return NOW.strftime("%y")

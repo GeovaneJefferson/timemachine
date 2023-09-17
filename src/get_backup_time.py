@@ -7,10 +7,9 @@ from get_latest_backup_date import latest_backup_date
 MAIN_INI_FILE = UPDATEINIFILE()
 
 
-list_of_time_folder = []
 
 def get_latest_backup_time():
-    list_of_time_folder.clear()
+    list_of_time_folder = []
 
     try:
         for output in os.listdir(f"{MAIN_INI_FILE.backup_folder_name()}/{latest_backup_date()}/"):

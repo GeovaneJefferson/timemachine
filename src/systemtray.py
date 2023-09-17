@@ -5,7 +5,7 @@ from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
 from get_time import *
-# from get_latest_backup_date import latest_backup_date_label
+from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 from next_backup_label import next_backup_label
@@ -169,8 +169,15 @@ class APP:
                     f'{calculate_time_left_to_backup()}\n')
             
             else:
-                # Next backup label
-                self.last_backup_information2.setText(next_backup_label())
+                # Show latest backup date
+                if latest_backup_date() is not None:
+                    self.last_backup_information.setText(
+                        f"Latest backup to: {MAIN_INI_FILE.hd_name()}")
+                    self.last_backup_information2.setText(latest_backup_date_label())
+                
+                else:
+                    # Next backup label
+                    self.last_backup_information2.setText(next_backup_label())
 
         else:
             # Next backup alert
