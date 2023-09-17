@@ -81,6 +81,9 @@ async def backup_wallpaper():
         for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
             # Delete all wallpapers
             command = f"{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}"
+
+            print('Deleting', command)
+
             sub.run(
                 ["rm", "-rf", command], 
                 stdout=sub.PIPE, 
@@ -108,6 +111,7 @@ async def update_db():
             
             # Write to file
             CONFIG.write(configfile)
+
 
 
 if __name__ == '__main__':

@@ -475,7 +475,6 @@ class BACKUP:
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
         MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
-        MAIN_INI_FILE.set_database_value('SCHEDULE', 'time_left', 'None')
 
         # Write to restore ini file 
         CONFIG = configparser.ConfigParser()

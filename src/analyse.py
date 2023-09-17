@@ -4,8 +4,7 @@ from handle_spaces import handle_spaces
 from get_sizes import number_of_item_to_backup, get_item_size
 from get_users_de import get_user_de
 from prepare_backup import PREPAREBACKUP
-from get_time import today_date
-
+from notification_massage import notification_message
 
 backup_home_dict = {}
 items_to_backup_dict = {}
@@ -478,27 +477,29 @@ class Analyse:
             # print('Latest checked date:', today_date())
 
             # If number of item > 0
-            if number_of_item_to_backup() > 0:
-                print(GREEN + 'ANALYSE: Need to backup.' + RESET)
-                return True 
-            
-            else:
+            if number_of_item_to_backup() == 0:
+                notification_message(' ')
+
                 print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
                 return False
+        
+        # Needs to backup
+        print(GREEN + 'ANALYSE: Need to backup.' + RESET)
+        return True 
             
-        else:
-            print(GREEN + 'ANALYSE: Need to backup.' + RESET)
-            return True 
-
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
     MAIN_PREPARE = PREPAREBACKUP()
     MAIN = Analyse()
 
+    # Update notification
+    print('Analysing backup...')
+    notification_message('Analysing backup...')
+
     # print(asyncio.run(MAIN.need_to_backup_analyse()))
 
-    # Start analyses
+    # Need to backup
     if asyncio.run(MAIN.need_to_backup_analyse()):
         # Prepare backup
         if MAIN_PREPARE.prepare_the_backup():
@@ -510,3 +511,8 @@ if __name__ == '__main__':
 
             # Exit
             exit()
+
+    else:
+        # Backing up to False
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False') 
+
