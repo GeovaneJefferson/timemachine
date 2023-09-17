@@ -77,6 +77,16 @@ async def check_backup():
         str(MAIN_INI_FILE.current_hour()) + 
         str(MAIN_INI_FILE.current_minute()))
 
+    # Add current time to list
+    digit_lenght = []
+    for i in current_time:
+        digit_lenght.append(i)
+    
+    # Fix 3 lenght in current in minute
+    if len(digit_lenght) <= 3:
+        digit_lenght.insert(2, '0')
+        current_time = ''.join(digit_lenght[0:])
+
     print('Current time:', current_time)
     print('Next backup :', calculate_time_left_to_backup())
     print(MILITARY_TIME_OPTION)
