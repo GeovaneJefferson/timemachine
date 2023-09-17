@@ -87,10 +87,10 @@ async def check_backup():
         digit_lenght.insert(2, '0')
         current_time = ''.join(digit_lenght[0:])
 
-    print('Current time:', current_time)
-    print('Next backup :', calculate_time_left_to_backup())
-    print(MILITARY_TIME_OPTION)
-    print()
+    # print('Current time:', current_time)
+    # print('Next backup :', calculate_time_left_to_backup())
+    # print(MILITARY_TIME_OPTION)
+    # print()
 
     # Check if is time to backup
     if current_time in MILITARY_TIME_OPTION:

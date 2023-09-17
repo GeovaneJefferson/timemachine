@@ -462,7 +462,7 @@ class BACKUP:
                         # If only new file/folder was backup, save the backup
                         # date to main folder
                         MAIN_INI_FILE.set_database_value(
-                            'INFO', 'latest_backup_to_main', today_date())
+                            'INFO', 'oldest_backup_to_main', today_date())
                         
                     except IndexError:
                         pass
@@ -504,6 +504,9 @@ class BACKUP:
 
         print("Backup is done!")
         print("Sleeping for 60 seconds")
+
+        # Save todays date to file
+        
 
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
