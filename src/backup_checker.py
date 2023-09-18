@@ -26,6 +26,18 @@ DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
 list_of_found_deb_pakages = []
 list_of_found_rpm_packages = []
 
+def call_analyses():
+    # Call prepare backup
+    print("Calling analyses...")
+    
+    sub.Popen(
+        ['python3', SRC_ANALYSE_PY], 
+        stdout=sub.PIPE, 
+        stderr=sub.PIPE)
+    
+    # Exit backup checker
+    exit()
+
 # Check for new .deb, .rpm etc. inside Downloads folder and back up
 async def check_for_new_packages():
     print("Searching new packages inside Downloads folder...")
@@ -102,19 +114,7 @@ async def check_backup():
         await backup_wallpaper()
         
         # Start backup analyses
-        await call_analyses()
-
-async def call_analyses():
-    # Call prepare backup
-    print("Calling analyses...")
-    
-    sub.Popen(
-        ['python3', SRC_ANALYSE_PY], 
-        stdout=sub.PIPE, 
-        stderr=sub.PIPE)
-    
-    # Exit backup checker
-    exit()
+        call_analyses()
 
 # # Check for previus interrupted backup
 # def continue_interrupted_backup():
@@ -170,8 +170,7 @@ async def main():
             # wait 
             time.sleep(5)
 
-        except Exception as e:
-            print(e)
+        except:
             # Exit
             break
 
