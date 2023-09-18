@@ -285,10 +285,6 @@ def delete_old_backups():
 
 
 class PREPAREBACKUP:
-    def __init__(self):
-        # Set DB backup now to True
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True')
-
     # Check backup size, as the backup device size
     def prepare_the_backup(self):
         # Create base folders

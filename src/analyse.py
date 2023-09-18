@@ -485,6 +485,8 @@ class Analyse:
         
         # Needs to backup
         print(GREEN + 'ANALYSE: Need to backup.' + RESET)
+        print()
+        print('Calling backup now...')
         return True 
             
 
@@ -503,6 +505,10 @@ if __name__ == '__main__':
     if asyncio.run(MAIN.need_to_backup_analyse()):
         # Prepare backup
         if MAIN_PREPARE.prepare_the_backup():
+            # Backing up to True
+            MAIN_INI_FILE.set_database_value(
+                'STATUS', 'backing_up_now', 'True') 
+
             # Backup now
             sub.Popen(
                 ['python3', SRC_BACKUP_NOW_PY], 
@@ -511,7 +517,8 @@ if __name__ == '__main__':
 
     else:
         # Backing up to False
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False') 
+        MAIN_INI_FILE.set_database_value(
+            'STATUS', 'backing_up_now', 'False') 
 
         # Re-run backup checker
         sub.Popen(

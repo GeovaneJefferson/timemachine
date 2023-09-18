@@ -101,5 +101,4 @@ def date_timeframe():
     return ''
 
 if __name__ == '__main__':
-    print(latest_backup_date_label())
     pass

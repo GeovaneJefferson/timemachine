@@ -122,11 +122,11 @@ def needeed_size_to_backup_home():
                 pass
 
     # Conver to GB
-    gb_value = total_size / 1024**3
+    # gb_value = total_size / 1024**3
 
-    print()
-    print(f"Total size of all items: {total_size} bytes")
-    print(f"Total size of all items: {gb_value:.2f} GB")
+    # print()
+    # print(f"Total size of all items: {total_size} bytes")
+    # print(f"Total size of all items: {gb_value:.2f} GB")
 
     return int(total_size)
    
