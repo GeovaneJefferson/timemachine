@@ -26,7 +26,7 @@ async def restore_backup_home():
         # Restore the latest backup
         src = MAIN_INI_FILE.backup_folder_name() + "/" + get_backup_date()[0] + "/" + get_latest_backup_time()[0] + "/" + folder + "/"
         dst = HOME_USER + "/" + folder + "/"
-        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 
 if __name__ == '__main__':

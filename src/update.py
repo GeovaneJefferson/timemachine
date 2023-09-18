@@ -4,7 +4,7 @@ def backup_db_file(update_now):
     # Make a copy of DB, and move it to src/
     src = SRC_USER_CONFIG_DB 
     dst = HOME_USER + "/.local/share/" + APP_NAME_CLOSE + "/src"
-    sub.run(["cp", "-rvf", src, dst])
+    sub.run(['cp', '-rvf', src, dst])
             
     if update_now:
         sub.run(["rm", "-rf", SRC_PYCACHE])
@@ -43,7 +43,7 @@ def restore_db_file(update_now):
 
 def open_app():
     # Re-open application
-    sub.Popen(["python3", SRC_MAIN_WINDOW_PY])
+    sub.Popen(['python3', SRC_MAIN_WINDOW_PY])
 
     # Exit
     exit()

@@ -93,7 +93,7 @@ async def backup_wallpaper():
     if get_wallpaper_full_location() is not None:
         src = get_wallpaper_full_location()
         dst = MAIN_INI_FILE.wallpaper_main_folder() + "/"
-        sub.run(["cp", "-rvf", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
     # Write to file
     await update_db()

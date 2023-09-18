@@ -49,7 +49,7 @@ async def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -69,7 +69,7 @@ async def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
 async def check_backup():
     # Get the current time
@@ -82,8 +82,9 @@ async def check_backup():
     for i in current_time:
         digit_lenght.append(i)
     
-    # Fix 3 lenght in current in minute
+    # Fix 3 lenght in current in minute, from fx. 090 -> 0900
     if len(digit_lenght) <= 3:
+        # Insert 0 to the second place
         digit_lenght.insert(2, '0')
         current_time = ''.join(digit_lenght[0:])
 
@@ -108,7 +109,7 @@ async def call_analyses():
     print("Calling analyses...")
     
     sub.Popen(
-        ["python3", SRC_ANALYSE_PY], 
+        ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
         stderr=sub.PIPE)
     
@@ -119,7 +120,7 @@ async def call_analyses():
 # def continue_interrupted_backup():
 #     # Resume interrupted backup
 #     sub.run(
-#         ["python3", SRC_BACKUP_NOW_PY], stdout=sub.PIPE, stderr=sub.PIPE)
+#         ['python3', SRC_BACKUP_NOW_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
 async def main():
     # Create the main backup folder
@@ -129,7 +130,7 @@ async def main():
         if MAIN_PREPARE.prepare_the_backup():
             # Backup now
             sub.Popen(
-                ["python3", SRC_BACKUP_NOW_PY], 
+                ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 

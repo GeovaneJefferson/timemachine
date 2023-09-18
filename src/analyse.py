@@ -505,7 +505,7 @@ if __name__ == '__main__':
         if MAIN_PREPARE.prepare_the_backup():
             # Backup now
             sub.Popen(
-                ["python3", SRC_BACKUP_NOW_PY], 
+                ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 
@@ -515,6 +515,6 @@ if __name__ == '__main__':
 
         # Re-run backup checker
         sub.Popen(
-            ["python3", SRC_BACKUP_CHECKER_PY], 
+            ['python3', SRC_BACKUP_CHECKER_PY], 
             stdout=sub.PIPE, 
             stderr=sub.PIPE)

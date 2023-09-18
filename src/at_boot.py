@@ -12,7 +12,7 @@ def system_tray():
     # System tray
     if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
         sub.Popen(
-            ["python3", SRC_SYSTEM_TRAY_PY],
+            ['python3', SRC_SYSTEM_TRAY_PY],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
@@ -26,7 +26,7 @@ def system_tray():
 
 def call_backup_checker():
     sub.Popen(
-        ["python3", SRC_BACKUP_CHECKER_PY],
+        ['python3', SRC_BACKUP_CHECKER_PY],
         stdout=sub.PIPE,
         stderr=sub.PIPE)
 

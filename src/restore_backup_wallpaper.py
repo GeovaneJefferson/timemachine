@@ -32,7 +32,7 @@ async def restore_backup_wallpaper():
             # Restore
             src = MAIN_INI_FILE.wallpaper_main_folder() + "/" + wallpaper
             dst = HOME_USER + "/.local/share/wallpapers"
-            sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Handle spaces
         # wallpaper = handle_spaces(wallpaper)

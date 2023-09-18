@@ -58,7 +58,7 @@ class APP:
             QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browse_time_machine_backups.triggered.connect(
             lambda: sub.Popen(
-                ["python3", SRC_ENTER_TIME_MACHINE_PY], 
+                ['python3', SRC_ENTER_TIME_MACHINE_PY], 
                     stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
@@ -66,7 +66,7 @@ class APP:
         self.open_Time_machine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.open_Time_machine.triggered.connect(
             lambda: sub.Popen(
-                ["python3", SRC_MAIN_WINDOW_PY], 
+                ['python3', SRC_MAIN_WINDOW_PY], 
                     stdout=sub.PIPE, stderr=sub.PIPE))
 
         # Add all to menu
@@ -196,7 +196,7 @@ class APP:
 
     def backup_now(self):
         sub.Popen(
-            ["python3", SRC_ANALYSE_PY],
+            ['python3', SRC_ANALYSE_PY],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
