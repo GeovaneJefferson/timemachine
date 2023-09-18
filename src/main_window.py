@@ -661,6 +661,7 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('INFO', 'checked_backup_date', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_to_main', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_to_main', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_time_check', 'None')
 
             # EXTERNAL  
             MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', 'None')

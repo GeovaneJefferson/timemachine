@@ -2,8 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 # from get_days_name import get_days_name
 from check_connection import is_connected
-# from calculate_time_left_to_backup import calculate_time_left_to_backup
-# from get_time import today_date
+from calculate_time_left_to_backup import calculate_time_left_to_backup
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
@@ -25,6 +24,12 @@ DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
 # Found packages list
 list_of_found_deb_pakages = []
 list_of_found_rpm_packages = []
+
+# # Check for previus interrupted backup
+# def continue_interrupted_backup():
+#     # Resume interrupted backup
+#     sub.run(
+#         ['python3', SRC_BACKUP_NOW_PY], stdout=sub.PIPE, stderr=sub.PIPE)
 
 def call_analyses():
     # Call prepare backup
@@ -89,38 +94,38 @@ async def check_backup():
         str(MAIN_INI_FILE.current_hour()) + 
         str(MAIN_INI_FILE.current_minute()))
 
-    # Add current time to list
-    digit_lenght = []
-    for i in current_time:
-        digit_lenght.append(i)
-    
-    # Fix 3 lenght in current in minute, from fx. 090 -> 0900
-    if len(digit_lenght) <= 3:
-        # Insert 0 to the second place
-        digit_lenght.insert(2, '0')
-        current_time = ''.join(digit_lenght[0:])
+    # Ensure that the hour part is at least 4 digits Fx. 1200
+    if len(current_time) == 3:
+        current_time = current_time + '0'
 
     # print('Current time:', current_time)
     # print('Next backup :', calculate_time_left_to_backup())
     # print(MILITARY_TIME_OPTION)
     # print()
 
-    # Check if is time to backup
+    # Time to backup
     if current_time in MILITARY_TIME_OPTION:
-        # Backup flatpak
-        await backup_flatpak()
-        
-        # Backup wallpaper
-        await backup_wallpaper()
-        
-        # Start backup analyses
-        call_analyses()
+        await time_to_backup(current_time)
 
-# # Check for previus interrupted backup
-# def continue_interrupted_backup():
-#     # Resume interrupted backup
-#     sub.run(
-#         ['python3', SRC_BACKUP_NOW_PY], stdout=sub.PIPE, stderr=sub.PIPE)
+    # Compare current hour with last checked backup time
+    # Fx. 1200 -> 12 - 12 >= 1 = last backup was more then 1 hour
+    elif (int(str(current_time)[:2]) - 
+        int(str(MAIN_INI_FILE.latest_checked_backup_time())[:2])) >= 1:  
+        await time_to_backup(current_time)
+
+async def time_to_backup(current_time):
+    # Save current time of check
+    MAIN_INI_FILE.set_database_value(
+        'INFO', 'latest_backup_time_check', current_time) 
+
+    # Backup flatpak
+    await backup_flatpak()
+    
+    # Backup wallpaper
+    await backup_wallpaper()
+    
+    # Start backup analyses
+    call_analyses()
 
 async def main():
     # Create the main backup folder
