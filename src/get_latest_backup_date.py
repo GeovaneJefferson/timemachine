@@ -41,10 +41,8 @@ def latest_backup_date_label():
         
     else:
         # check date timeframe
-
         # Return latest backup to main folder
-        return date_timeframe() + MAIN_INI_FILE.latest_backup_date()
-
+        return date_timeframe() + MAIN_INI_FILE.latest_backup_date_to_main()
 
 def latest_backup_date():
     # Has date folder inside
@@ -66,39 +64,41 @@ def latest_backup_date():
         '''
         
         # Return latest backup to main folder
-        return MAIN_INI_FILE.latest_backup_date()
+        return MAIN_INI_FILE.latest_backup_date_to_main()
 
 def date_timeframe():
-    todays_date = (
-            f'{MAIN_INI_FILE.current_date()}-{MAIN_INI_FILE.current_month()}-{MAIN_INI_FILE.current_year()}')
-    
+    todays_full_date = (
+        MAIN_INI_FILE.current_date() + '-' +
+        MAIN_INI_FILE.current_month() + '-' +
+        MAIN_INI_FILE.current_year())
+
     # Date/time
     if has_date_folder():
         # Last backup date match with todays date
-        if all_date_folder_list[0] == todays_date:
+        if MAIN_INI_FILE.latest_backup_date_to_main() == todays_full_date:
             return 'Today, '
         
         # Yesterday
         # Last backup date match with yesterdays date
         else:
             # Check todays date, if last backup was Yesterday, return Yesterday
-            if int(MAIN_INI_FILE.current_date()) - int(MAIN_INI_FILE.latest_backup_date()[0][:2]) == 1:
+            if int(MAIN_INI_FILE.current_date()) - int(all_date_folder_list[0][:2]) == 1:
                 # return 'Yesterday,', latest_backup
                 return 'Yesterday, '
             
     # Main
     else:
-        # Latest backup to main match with todays date
-        if todays_date in MAIN_INI_FILE.latest_backup_date():
-            return 'Today, '
-        
-        # Check todays date, if last backup was Yesterday, return Yesterday
-        elif int(MAIN_INI_FILE.current_date()) - int(MAIN_INI_FILE.latest_backup_date()[0][:2]) == 1:
-            # return 'Yesterday,', latest_backup
-            return 'Yesterday, '
-        
-        else:
-            return ''
+        if MAIN_INI_FILE.latest_backup_date_to_main() != 'None':
+            # Latest backup to main match with todays date
+            if todays_full_date in MAIN_INI_FILE.latest_backup_date_to_main():
+                return 'Today, '
+            
+            # Check todays date, if last backup was Yesterday, return Yesterday
+            elif int(MAIN_INI_FILE.current_date()) - int(all_date_folder_list[0][:2]) == 1:
+                # return 'Yesterday,', latest_backup
+                return 'Yesterday, '
+            
+    return ''
 
 if __name__ == '__main__':
     print(latest_backup_date_label())

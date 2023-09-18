@@ -121,7 +121,7 @@ class UPDATEINIFILE:
         return str(self.get_database_value(
                     'INFO', 'oldest_backup_to_main'))
     
-    def latest_backup_date(self):
+    def latest_backup_date_to_main(self):
         # Get current date to 'oldest_backup_to_main'
         return str(self.get_database_value(
                     'INFO', 'latest_backup_to_main'))
