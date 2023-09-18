@@ -41,7 +41,7 @@ async def backup_flatpak():
     #             print(f'Backing up: {flatpak_var_list()[counter]}')
                 
     #             sub.run(
-    #                 ["cp", "-rvf", command], 
+    #                 ['cp', '-rvf', command], 
     #                 stdout=sub.PIPE, 
     #                 stderr=sub.PIPE)
 
@@ -59,7 +59,7 @@ async def backup_flatpak():
     #             print(f'Backing up: {flatpak_local_list()[counter]}')
 
     #             sub.run(
-    #                 ["cp", "-rvf", command],
+    #                 ['cp', '-rvf', command],
     #                 stdout=sub.PIPE,
     #                 stderr=sub.PIPE)
         

@@ -248,7 +248,7 @@ class MainWindow(QMainWindow):
                 'STATUS', 'automatically_backup', 'True')
 
             # call backup check
-            sub.Popen(["python3", SRC_BACKUP_CHECKER_PY],
+            sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
              stdout=sub.PIPE, 
              stderr=sub.PIPE)
 
@@ -269,7 +269,7 @@ class MainWindow(QMainWindow):
                 'SYSTEMTRAY', 'system_tray', 'True')
 
             # Call system tray
-            sub.Popen(["python3", SRC_SYSTEM_TRAY_PY])
+            sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
 
             print("System tray was successfully enabled!")
 
@@ -310,7 +310,7 @@ class MainWindow(QMainWindow):
             self.ui.automatically_backup_checkbox.setEnabled(False)
 
     def backup_now_clicked(self):
-        sub.Popen(["python3", SRC_PREPARE_BACKUP_PY])
+        sub.Popen(['python3', SRC_PREPARE_BACKUP_PY])
 
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
@@ -708,7 +708,7 @@ class OptionsWindow(QDialog):
             print("All settings was reset!")
 
             # Re-open Main Windows
-            sub.Popen(["python3", SRC_MAIN_WINDOW_PY])
+            sub.Popen(['python3', SRC_MAIN_WINDOW_PY])
 
             # Quit
             exit()

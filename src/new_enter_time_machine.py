@@ -684,7 +684,7 @@ class MainWindow(QMainWindow):
             
             src = file_path + "/" + handle_spaces(self.files_to_restore[counter])
             dst = HOME_USER + "/" + self.CURRENT_FOLDER + "/"
-            sub.Popen(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            sub.Popen(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
         # Open file manager
         dst = HOME_USER + "/" + self.CURRENT_FOLDER

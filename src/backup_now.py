@@ -24,7 +24,6 @@ list_gnome_include = [
 
 # Backup .local/share/ selected folder for KDE
 list_include_kde = [
-    # "icons",
     "kwin",
     "plasma_notes",
     "plasma",
@@ -222,7 +221,7 @@ class BACKUP:
                     
                     print(f'Backing up: {HOME_USER}/.local/share/{folder}')
                     
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
             # .config/
             for folder in os.listdir(f"{HOME_USER}/.config/"):
@@ -248,7 +247,7 @@ class BACKUP:
 
                     print(f'Backing up: {HOME_USER}/.config/{folder}')
                     
-                    sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
                     
         # For KDE
         elif get_user_de() == 'kde':
@@ -274,7 +273,7 @@ class BACKUP:
                     print(f'Backing up: {HOME_USER}/.local/share/{folder}')
                     
                     sub.run(
-                        ["rsync", "-avr", src, dst], 
+                        ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, 
                         stderr=sub.PIPE)
                     
@@ -300,7 +299,7 @@ class BACKUP:
                         print(f'Backing up: {HOME_USER}/.config/{folder}')
                         
                         sub.run(
-                            ["rsync", "-avr", src, dst], 
+                            ['cp', '-rvf', src, dst], 
                             stdout=sub.PIPE, 
                             stderr=sub.PIPE)
                     
@@ -329,7 +328,10 @@ class BACKUP:
                         
                         print(f'Backing up: {HOME_USER}/.kde/share/{folders}')
                         
-                        sub.run(["rsync", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                        sub.run(
+                            ['cp', '-rvf', src, dst],
+                            stdout=sub.PIPE,
+                            stderr=sub.PIPE)
                         
             except FileNotFoundError:
                 pass
@@ -370,7 +372,7 @@ class BACKUP:
                         len(get_folders())))
 
                 sub.run(
-                    ["cp", "-rvf", src, dst], 
+                    ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, stderr=sub.PIPE)
                 
         else:
@@ -398,7 +400,7 @@ class BACKUP:
                         ##########################################################
                         # Copy to .main backup
                         if status == 'NEW':
-                            # Destination for the item
+                            # Sent to main backup folder
                             destination_location = (
                                 f'{MAIN_INI_FILE.main_backup_folder()}/{extracted_folder_name}')
                         
@@ -406,7 +408,7 @@ class BACKUP:
                         # LATEST DATE/TIME
                         ##########################################################
                         elif status == 'UPDATED':
-                            # Destination for the item
+                            # Sent to a new date/time backup folder
                             destination_location = (
                                 f'{MAIN_INI_FILE.time_folder_format()}/{extracted_folder_name}')
                         
@@ -433,7 +435,7 @@ class BACKUP:
 
                             # Copy files
                             sub.run(
-                                ["cp", "-rvf", location, destination_location],
+                                ['cp', '-rvf', location, destination_location],
                                 stdout=sub.PIPE, 
                                 stderr=sub.PIPE)
 
@@ -455,7 +457,7 @@ class BACKUP:
 
                             # Backup directories using shutil.copytree()
                             sub.run(
-                                ["cp", "-rvf", location, destination_location],
+                                ['cp', '-rvf', location, destination_location],
                                 stdout=sub.PIPE, 
                                 stderr=sub.PIPE)
 
@@ -516,15 +518,12 @@ class BACKUP:
         print("Backup is done!")
         print("Sleeping for 60 seconds")
 
-        # Save todays date to file
-
-
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
 
         # Re-run backup checker
         sub.Popen(
-            ["python3", SRC_BACKUP_CHECKER_PY], 
+            ['python3', SRC_BACKUP_CHECKER_PY], 
             stdout=sub.PIPE, 
             stderr=sub.PIPE)
         

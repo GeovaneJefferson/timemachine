@@ -558,7 +558,7 @@ class WelcomeScreen(QWidget):
 
 		# Call restore class
 		command = SRC_RESTORE_CMD_PY
-		sub.Popen(["python3", command], stdout=sub.PIPE, stderr=sub.PIPE)
+		sub.Popen(['python3', command], stdout=sub.PIPE, stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
