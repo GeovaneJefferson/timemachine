@@ -82,10 +82,7 @@ def date_timeframe():
         # Last backup date match with yesterdays date
         else:
             # Check todays date, if last backup was Yesterday, return Yesterday
-            if (int(
-                MAIN_INI_FILE.current_date()) - 
-                int(all_date_folder_list[0][:2]) == 1):
-                
+            if int(MAIN_INI_FILE.current_date()) - int(MAIN_INI_FILE.latest_backup_date()[0][:2]) == 1:
                 # return 'Yesterday,', latest_backup
                 return 'Yesterday, '
             
@@ -94,11 +91,9 @@ def date_timeframe():
         # Latest backup to main match with todays date
         if todays_date in MAIN_INI_FILE.latest_backup_date():
             return 'Today, '
+        
         # Check todays date, if last backup was Yesterday, return Yesterday
-        elif (int(
-            MAIN_INI_FILE.current_date()) - 
-            int(all_date_folder_list[0][:2]) == 1):
-            
+        elif int(MAIN_INI_FILE.current_date()) - int(MAIN_INI_FILE.latest_backup_date()[0][:2]) == 1:
             # return 'Yesterday,', latest_backup
             return 'Yesterday, '
         
