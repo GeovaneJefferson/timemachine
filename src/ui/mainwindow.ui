@@ -362,7 +362,7 @@
              <string notr="true">color: rgb(128, 128, 128);</string>
             </property>
             <property name="text">
-             <string>How Time Machine works:</string>
+             <string>Time Machine keeps:</string>
             </property>
            </widget>
           </item>
@@ -377,7 +377,7 @@
              <string notr="true">color: rgb(128, 128, 128);</string>
             </property>
             <property name="text">
-             <string>• Choose which folders to back up from HOME.</string>
+             <string>• Local snapshots as space permits</string>
             </property>
            </widget>
           </item>
@@ -392,7 +392,7 @@
              <string notr="true">color: rgb(128, 128, 128);</string>
             </property>
             <property name="text">
-             <string>• Hourly, Daily or Weekly backups.</string>
+             <string>• Hourly backups for the past 24 hours</string>
             </property>
            </widget>
           </item>
@@ -408,7 +408,7 @@
             </property>
             <property name="text">
              <string>• Packages such as .DEB, and .RPM that are stored in the 
-   Downloads folder, wiil be backed up.</string>
+   Downloads folder, wiil be backed up</string>
             </property>
            </widget>
           </item>
@@ -423,7 +423,7 @@
              <string notr="true">color: rgb(128, 128, 128);</string>
             </property>
             <property name="text">
-             <string>• Installed flatpaks and their data can also be backed up.</string>
+             <string>• Installed flatpaks and their data can also be backed up</string>
             </property>
            </widget>
           </item>

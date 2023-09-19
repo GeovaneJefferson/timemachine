@@ -293,12 +293,12 @@ class Ui_MainWindow(object):
         self.show_in_system_tray_checkbox.setText(QCoreApplication.translate("MainWindow", u"Show Time Machine in system tray", None))
         self.options_button.setText(QCoreApplication.translate("MainWindow", u"Options...", None))
         self.help_button.setText(QCoreApplication.translate("MainWindow", u"?", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"How Time Machine works:", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"\u2022 Choose which folders to back up from HOME.", None))
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"\u2022 Hourly, Daily or Weekly backups.", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Time Machine keeps:", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"\u2022 Local snapshots as space permits", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"\u2022 Hourly backups for the past 24 hours", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"\u2022 Packages such as .DEB, and .RPM that are stored in the \n"
-"   Downloads folder, wiil be backed up.", None))
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"\u2022 Installed flatpaks and their data can also be backed up.", None))
+"   Downloads folder, wiil be backed up", None))
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"\u2022 Installed flatpaks and their data can also be backed up", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"The oldest backups are deleted when your disk becomes full.", None))
     # retranslateUi
 
