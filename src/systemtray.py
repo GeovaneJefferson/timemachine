@@ -159,20 +159,19 @@ class APP:
     def informations_label(self):
         # Automatically backup is ON
         if MAIN_INI_FILE.automatically_backup():
-            #  Next backup
-            self.last_backup_information.setText(
-                (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
-            
             # Show time left only if current minute is higher then x value
             if (59 - MAIN_INI_FILE.current_minute()) <= TIME_LEFT_WINDOW:
                 self.last_backup_information2.setText(
                     f'{calculate_time_left_to_backup()}\n')
-            
+                # Next backup
+                self.last_backup_information.setText(
+                    (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
+                
             else:
                 # Show latest backup date
                 if latest_backup_date() is not None:
                     self.last_backup_information.setText(
-                        f"Latest backup to: {MAIN_INI_FILE.hd_name()}")
+                        f'Latest backup to: {MAIN_INI_FILE.hd_name()}')
                     self.last_backup_information2.setText(latest_backup_date_label())
                 
                 else:
