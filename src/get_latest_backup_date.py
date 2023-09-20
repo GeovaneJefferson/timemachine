@@ -30,15 +30,17 @@ def latest_backup_date_label():
         
         # Get latest backup time
         from get_backup_time import get_latest_backup_time
-        
-        # has time
         if get_latest_backup_time is not None:
             latest_backup = str(
                 get_latest_backup_time()[0]).replace("-",":")
         
             # Return 'Today', 'yesterday' or Nothing ''
-            return date_timeframe() + latest_backup
-        
+            if not date_timeframe() == '':
+                return date_timeframe() + latest_backup
+            
+            else:
+                return MAIN_INI_FILE.latest_backup_date_to_main()
+            
     else:
         # check date timeframe
         # Return latest backup to main folder
@@ -75,7 +77,7 @@ def date_timeframe():
     # Date/time
     if has_date_folder():
         # Last backup date match with todays date
-        if MAIN_INI_FILE.latest_backup_date_to_main() == todays_full_date:
+        if todays_full_date in MAIN_INI_FILE.latest_backup_date_to_main():
             return 'Today, '
         
         # Yesterday
@@ -97,7 +99,7 @@ def date_timeframe():
             elif int(MAIN_INI_FILE.current_date()) - int(all_date_folder_list[0][:2]) == 1:
                 # return 'Yesterday,', latest_backup
                 return 'Yesterday, '
-            
+
     return ''
 
 if __name__ == '__main__':
