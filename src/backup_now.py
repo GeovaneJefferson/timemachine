@@ -10,73 +10,13 @@ from get_time import today_date
 from backup_status import backup_status
 from get_sizes import get_item_size
 from get_sizes import number_of_item_to_backup
+from backup_hidden import start_backup_hidden_home
 
 
 # Handle signal
 signal.signal(signal.SIGINT, signal_exit)
 signal.signal(signal.SIGTERM, signal_exit)
     
-# .local/share/
-list_gnome_include = [
-    "gnome-shell",
-    "dconf"
-    ]
-
-# Backup .local/share/ selected folder for KDE
-list_include_kde = [
-    "kwin",
-    "plasma_notes",
-    "plasma",
-    "aurorae",
-    "color-schemes",
-    "fonts",
-    "kate",
-    "kxmlgui5",
-    "icons",
-    "themes",
-
-    "gtk-3.0",
-    "gtk-4.0",
-    "kdedefaults",
-    "dconf",
-    "fontconfig",
-    "xsettingsd",
-    "dolphinrc",
-    "gtkrc",
-    "gtkrc-2.0",
-    "kdeglobals",
-    "kwinrc",
-    "plasmarc",
-    "plasmarshellrc",
-    "kglobalshortcutsrc",
-    "khotkeysrc",
-    "kwinrulesrc"
-    "dolphinrc",
-    "ksmserverrc",
-    "konsolerc",
-    "kscreenlockerrc",
-    "plasmashellr",
-    "plasma-org.kde.plasma.desktop-appletsrc",
-    "plasmarc",
-    "kdeglobals",
-    
-    "gtk-3.0",
-    "gtk-4.0",
-    "kdedefaults",
-    "dconf",
-    "fontconfig",
-    "xsettingsd",
-    "dolphinrc",
-    "gtkrc",
-    "gtkrc-2.0",
-    "kdeglobals",
-    "kwinrc",
-    "plasmarc",
-    "plasmarshellrc",
-    "kglobalshortcutsrc",
-    "khotkeysrc"
-    ]
-
 #########################################################
 # KDE
 #########################################################
@@ -126,25 +66,6 @@ def get_kde_users_icon_name():
 def get_gtk_users_theme_name():
     user_theme_name = os.popen(GET_USER_THEME_CMD).read().strip().replace("'", "")
     return user_theme_name
-        # def users_theme_size():
-        #     try:
-        #         userThemeSize=os.popen(f"du -s {homeUser}/.themes/{users_theme_name()}")
-        #         userThemeSize=userThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.themes/{users_theme_name()}", "").replace("\t", "")
-        #         userThemeSize=int(userThemeSize)
-        #     except ValueError:
-        #         try:
-        #             userThemeSize=os.popen(f"du -s {homeUser}/.local/share/themes/{users_theme_name()}")
-        #             userThemeSize=userThemeSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.local/share/themes/{users_theme_name()}", "").replace("\t", "")
-        #             userThemeSize=int(userThemeSize)
-        #         except ValueError:
-        #             try:
-        #                 userThemeSize=os.popen(f"du -s /usr/share/themes/{users_theme_name()}")
-        #                 userThemeSize=userThemeSize.read().strip("\t").strip("\n").replace(f"/usr/share/themes/{users_theme_name()}", "").replace("\t", "")
-        #                 userThemeSize=int(userThemeSize)
-        #             except ValueError:
-        #                 return None
-
-        #     return userThemeSize
 
 # GTK font
 def get_gtk_user_font_name():
@@ -193,149 +114,16 @@ def get_gtk_users_icon_name():
 
 # GTK cursor
 def get_gtk_users_cursor_name():
-    user_cursor_name = os.popen(GET_USER_CURSOR_CMD).read().strip().replace("'", "")
+    user_cursor_name = os.popen(
+        GET_USER_CURSOR_CMD).read().strip().replace("'", "")
     return user_cursor_name
     
 
 class BACKUP:
-    async def backup_home_hidden_files(self):
-        # For GNOME
-        if get_user_de() == 'gnome':
-            for folder in os.listdir(f"{HOME_USER}/.local/share/"):
-                # Handle spaces
-                folder = handle_spaces(folder)
-                
-                if folder in list_gnome_include:
-                    src = HOME_USER + "/.local/share/" + folder
-                    dst = (
-                        MAIN_INI_FILE.main_backup_folder() + "/.local/share/" + folder)
-                    
-                    # Create current directory in backup device
-                    dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-                    dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-  
-                    if not os.path.exists(dst_moded):
-                        os.makedirs(dst_moded, exist_ok=True)
-
-                    notification_message(f'Backing up: .local/share/{folder}')
-                    
-                    print(f'Backing up: {HOME_USER}/.local/share/{folder}')
-                    
-                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-
-            # .config/
-            for folder in os.listdir(f"{HOME_USER}/.config/"):
-                # Handle spaces
-                folder = handle_spaces(folder)
-
-                if folder in list_gnome_include:
-                    src = HOME_USER + "/.config/" + folder
-                    # First backup
-                    if not get_backup_date():
-                        dst = MAIN_INI_FILE.main_backup_folder() + "/.config/" + folder
-                    else:
-                        dst = MAIN_INI_FILE.time_folder_format() + "/.config/" + folder
-                    
-                    # Create current directory in backup device
-                    dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-                    dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-
-                    if not os.path.exists(dst_moded):
-                        os.makedirs(dst_moded, exist_ok=True)
-
-                    notification_message(f'Backing up: .config/{folder}')
-
-                    print(f'Backing up: {HOME_USER}/.config/{folder}')
-                    
-                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-                    
-        # For KDE
-        elif get_user_de() == 'kde':
-            for folder in os.listdir(f"{HOME_USER}/.local/share/"):
-                # Handle spaces
-                folder = handle_spaces(folder)
-
-                # .local/share
-                if folder in list_include_kde:
-                    src = HOME_USER + "/.local/share/" + folder
-                    # First backup
-                    dst = MAIN_INI_FILE.main_backup_folder() + "/.local/share/" + folder
-
-                    # Create current directory in backup device
-                    dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-                    dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-                    
-                    if not os.path.exists(dst_moded):
-                        os.makedirs(dst_moded, exist_ok=True)
-
-                    notification_message(f'Backing up: .local/share/{folder}')
-                    
-                    print(f'Backing up: {HOME_USER}/.local/share/{folder}')
-                    
-                    sub.run(
-                        ['cp', '-rvf', src, dst], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
-                    
-            try:
-                # .config/
-                for folder in os.listdir(f"{HOME_USER}/.config/"):
-                    # Handle spaces
-                    folder = handle_spaces(folder)
-
-                    if folder in list_include_kde:
-                        src = HOME_USER + "/.config/" + folder
-                        dst = MAIN_INI_FILE.main_backup_folder() + "/.config/" + folder
-                        
-                        # Create current directory in backup device
-                        dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-                        dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-                        
-                        if not os.path.exists(dst_moded):
-                            os.makedirs(dst_moded, exist_ok=True)
-
-                        notification_message(f'Backing up: .config/{folder}')
-                        
-                        print(f'Backing up: {HOME_USER}/.config/{folder}')
-                        
-                        sub.run(
-                            ['cp', '-rvf', src, dst], 
-                            stdout=sub.PIPE, 
-                            stderr=sub.PIPE)
-                    
-            except FileNotFoundError as e:
-                print(e)
-                pass
-            
-            try:
-                # .kde/share/
-                for folders in os.listdir(f"{HOME_USER}/.kde/share/"):
-                    # Handle spaces
-                    folder = handle_spaces(folder)
-                
-                    if folder in list_include_kde:
-                        src = HOME_USER + "/.kde/share/" + folder
-                        dst = MAIN_INI_FILE.main_backup_folder() + "/.kde/share/" + folder
-                        
-                        # Create current directory in backup device
-                        dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-                        dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-                        
-                        if not os.path.exists(dst_moded):
-                            os.makedirs(dst_moded, exist_ok=True)
-
-                        notification_message(f'Backing up: .kde/share/{folders}')
-                        
-                        print(f'Backing up: {HOME_USER}/.kde/share/{folders}')
-                        
-                        sub.run(
-                            ['cp', '-rvf', src, dst],
-                            stdout=sub.PIPE,
-                            stderr=sub.PIPE)
-                        
-            except FileNotFoundError:
-                pass
-
+    async def backup_hidden_home(self):
+        # Start backing up hidden files/folder by getting users DE name
+        await start_backup_hidden_home(get_user_de())
+ 
     async def backup_home(self):
         item_minus = 0
         item_sum_size = 0 
@@ -485,10 +273,6 @@ class BACKUP:
 
         notification_message('')
 
-        # Update DB
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
-
         # Write to restore ini file 
         CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{MAIN_INI_FILE.restore_settings_location()}")
@@ -517,21 +301,18 @@ class BACKUP:
 
         print("Backup is done!")
         print("Sleeping for 60 seconds")
-
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
 
-        # Re-run backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
-        
+        # Update DB
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
+
         # Exit
         exit()
 
     async def main(self):
-        await self.backup_home_hidden_files()
+        await self.backup_hidden_home()
         await self.backup_home()
         await self.end_backup()
 

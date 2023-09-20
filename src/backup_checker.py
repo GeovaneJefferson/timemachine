@@ -39,9 +39,6 @@ def call_analyses():
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
         stderr=sub.PIPE)
-    
-    # Exit backup checker
-    exit()
 
 # Check for new .deb, .rpm etc. inside Downloads folder and back up
 async def check_for_new_packages():
@@ -139,19 +136,12 @@ async def main():
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 
-            # Exit
-            exit()
-
     while True:
-        try:
-            # Checker status
-            print('Backup Checker: Running.')
-
+        # Not current backing up
+        if not MAIN_INI_FILE.current_backing_up():
             # Turn on/off backup checker
             if not MAIN_INI_FILE.automatically_backup():
                 print("Automatically backup is OFF.")
-                
-                # Exit
                 break
             
             # No connection
@@ -172,12 +162,8 @@ async def main():
                 # Check for a new backup
                 await check_backup()
 
-            # wait 
-            time.sleep(5)
-
-        except:
-            # Exit
-            break
+        # wait 
+        time.sleep(5)
 
     # Exit
     exit()

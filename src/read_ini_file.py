@@ -178,6 +178,9 @@ class UPDATEINIFILE:
     def automatically_backup(self):
         return self.get_database_value('STATUS', 'automatically_backup') 
     
+    def current_backing_up(self):
+        return self.get_database_value('STATUS', 'backing_up_now') 
+
     ####################################################################
     # MODE
     ####################################################################
