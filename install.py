@@ -11,7 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.091 dev"
+APP_VERSION = "v1.1.6.092 dev"
 
 CREATE_CMD_FOLDER = "mkdir"
 
