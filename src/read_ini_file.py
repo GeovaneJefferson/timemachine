@@ -96,12 +96,12 @@ class UPDATEINIFILE:
     def current_hour(self):
         # With 'now', current time will update by each hour
         NOW = datetime.now()
-        return int(NOW.strftime("%H"))
+        return NOW.strftime("%H")
 
     def current_minute(self):
         # With 'now', current time will update by each minute
         NOW = datetime.now()
-        return int(NOW.strftime("%M"))
+        return NOW.strftime("%M")
 
     def current_second(self):
         NOW = datetime.now()
@@ -114,7 +114,8 @@ class UPDATEINIFILE:
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
 
     def current_time(self):
-        return int(self.current_hour() + self.current_minute())
+        return NOW.strftime("%I%M")
+        # return int(self.current_hour() + self.current_minute())
 
     def oldest_backup_date(self):
         # Get current date to 'oldest_backup_to_main'
@@ -315,5 +316,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.hd_name())
+    # print(MAIN_INI_FILE.current_hour())
     pass

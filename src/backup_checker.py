@@ -87,18 +87,12 @@ async def check_for_new_packages():
 
 async def check_backup():
     # Get the current time
-    current_time = (
-        str(MAIN_INI_FILE.current_hour()) + 
-        str(MAIN_INI_FILE.current_minute()))
+    current_time = str(MAIN_INI_FILE.current_time()) 
 
-    # Ensure that the hour part is at least 4 digits Fx. 1200
-    if len(current_time) == 3:
-        current_time = current_time + '0'
-
-    # print('Current time:', current_time)
-    # print('Next backup :', calculate_time_left_to_backup())
-    # print(MILITARY_TIME_OPTION)
-    # print()
+    print('Current time:', current_time)
+    print('Next backup :', calculate_time_left_to_backup())
+    print(MILITARY_TIME_OPTION)
+    print()
 
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
