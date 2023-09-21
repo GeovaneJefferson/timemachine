@@ -5,7 +5,7 @@ def next_backup_label():
     int_list = []
     
     # Current hour + 1
-    next_backup_time = MAIN_INI_FILE.current_hour() + 1 
+    next_backup_time = int(MAIN_INI_FILE.current_hour()) + 1 
 
     # Under 10:00
     for i in str(next_backup_time):
