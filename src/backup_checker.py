@@ -103,13 +103,14 @@ async def check_backup():
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
         await time_to_backup(current_time)
-
+    
     # Compare current hour with last checked backup time
     # Fx. 1200 -> 12 - 12 >= 1 = last backup was more then 1 hour
-    elif (int(str(current_time)[:2]) - 
-        int(str(MAIN_INI_FILE.latest_checked_backup_time())[:2])) >= 1:  
-        await time_to_backup(current_time)
-
+    if MAIN_INI_FILE.latest_checked_backup_time() != 'None':
+        if (int(str(current_time)[:2]) - 
+            int(str(MAIN_INI_FILE.latest_checked_backup_time())[:2])) >= 1:  
+            await time_to_backup(current_time)
+    
 async def time_to_backup(current_time):
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
