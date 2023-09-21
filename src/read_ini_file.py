@@ -114,6 +114,7 @@ class UPDATEINIFILE:
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
 
     def current_time(self):
+        NOW = datetime.now()
         return NOW.strftime("%I%M")
         # return int(self.current_hour() + self.current_minute())
 
