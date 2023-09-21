@@ -1,6 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-
+from handle_spaces import handle_spaces
+from notification_massage import notification_message
 
 local_share_loc = f'{HOME_USER}/.local/share/'
 config_loc = f'{HOME_USER}/.config/'
@@ -141,7 +142,7 @@ async def backup_hidden_config(user_de):
 async def backup_hidden_kde_share():
     try:
         # .kde/share/
-        for folders in os.listdir(kde_share_loc):
+        for folder in os.listdir(kde_share_loc):
             # Handle spaces
             folder = handle_spaces(folder)
         
@@ -156,9 +157,9 @@ async def backup_hidden_kde_share():
                 if not os.path.exists(dst_moded):
                     os.makedirs(dst_moded, exist_ok=True)
 
-                notification_message(f'Backing up: .kde/share/{folders}')
+                notification_message(f'Backing up: .kde/share/{folder}')
                 
-                print(f'Backing up: {kde_share_loc}{folders}')
+                print(f'Backing up: {kde_share_loc}{folder}')
                 
                 sub.run(
                     ['cp', '-rvf', src, dst],
