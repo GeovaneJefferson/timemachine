@@ -246,8 +246,11 @@ SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 from read_ini_file import UPDATEINIFILE
 MAIN_INI_FILE = UPDATEINIFILE()
 
-def signal_exit(*args):
+def signal_exit(e):
     MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+    with open('/home/geovane/Desktop/log.txt', "w") as writer:
+        writer.write(e)
+        
     exit()
 
 def error_trying_to_backup(e):
