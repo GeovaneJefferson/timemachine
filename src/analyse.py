@@ -499,29 +499,29 @@ if __name__ == '__main__':
     print('Analysing backup...')
     notification_message('Analysing backup...')
 
-    # print(asyncio.run(MAIN.need_to_backup_analyse()))
+    asyncio.run(MAIN.need_to_backup_analyse())
 
-    # Need to backup
-    if asyncio.run(MAIN.need_to_backup_analyse()):
-        # Prepare backup
-        if MAIN_PREPARE.prepare_the_backup():
-            # Backing up to True
-            MAIN_INI_FILE.set_database_value(
-                'STATUS', 'backing_up_now', 'True') 
+    # # Need to backup
+    # if asyncio.run(MAIN.need_to_backup_analyse()):
+    #     # Prepare backup
+    #     if MAIN_PREPARE.prepare_the_backup():
+    #         # Backing up to True
+    #         MAIN_INI_FILE.set_database_value(
+    #             'STATUS', 'backing_up_now', 'True') 
 
-            # Backup now
-            sub.Popen(
-                ['python3', SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+    #         # Backup now
+    #         sub.Popen(
+    #             ['python3', SRC_BACKUP_NOW_PY], 
+    #                 stdout=sub.PIPE, 
+    #                 stderr=sub.PIPE)
 
-    else:
-        # Backing up to False
-        MAIN_INI_FILE.set_database_value(
-            'STATUS', 'backing_up_now', 'False') 
+    # else:
+    #     # Backing up to False
+    #     MAIN_INI_FILE.set_database_value(
+    #         'STATUS', 'backing_up_now', 'False') 
 
-        # Re-run backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+    #     # Re-run backup checker
+    #     sub.Popen(
+    #         ['python3', SRC_BACKUP_CHECKER_PY], 
+    #         stdout=sub.PIPE, 
+    #         stderr=sub.PIPE)
