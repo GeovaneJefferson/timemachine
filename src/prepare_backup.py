@@ -231,7 +231,6 @@ def create_date_and_time_folder():
         command = f"{str(MAIN_INI_FILE.time_folder_format())}"
         sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
     
-
 def delete_old_backups():
     try:
         # Keep at the minimum date folder(s)
@@ -268,7 +267,7 @@ def delete_old_backups():
             notification_message(f"Please, manual delete file(s)/folder(s) inside your backup device!")
 
         # Go back and check the backup size needeed
-        has_enough_space()
+        has_enough_space(needeed_size_to_backup_home())
 
     # Error while deleting old backup
     except Exception as e:
@@ -323,7 +322,6 @@ class PREPAREBACKUP:
                         except:
                             pass
                                 
-
                 # May continue to backup
                 return True
 

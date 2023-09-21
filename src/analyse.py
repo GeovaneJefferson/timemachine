@@ -508,6 +508,8 @@ if __name__ == '__main__':
             # Backing up to True
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'backing_up_now', 'True') 
+            
+            print('Calling backup now...')
 
             # Backup now
             sub.Popen(
