@@ -36,8 +36,8 @@ def call_analyses():
     
     sub.Popen(
         ['python3', SRC_ANALYSE_PY], 
-        stdout=sub.PIPE, 
-        stderr=sub.PIPE)
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
 
 # Check for new .deb, .rpm etc. inside Downloads folder and back up
 def check_for_new_packages():
@@ -95,25 +95,25 @@ def check_for_new_packages():
 def check_backup():
     # Get the current time
     current_time = str(MAIN_INI_FILE.current_time()) 
-    current_hour = int(MAIN_INI_FILE.current_hour())
-    short_last_backup_time = int(MAIN_INI_FILE.latest_checked_backup_time()[:2]) 
+    # current_hour = int(MAIN_INI_FILE.current_hour())
+    # short_last_backup_time = int(MAIN_INI_FILE.latest_checked_backup_time()[:2]) 
 
-    print('Current time:', current_time)
-    print('Next backup :', calculate_time_left_to_backup())
-    print(MILITARY_TIME_OPTION)
-    print()
+    # print('Current time:', current_time)
+    # print('Next backup :', calculate_time_left_to_backup())
+    # print(MILITARY_TIME_OPTION)
+    # print()
 
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
         # Time to backup
         time_to_backup(current_time)
     
-    # Compare the first 2 digits of current and latest backup to main hour
-    # Fx. 1200 -> 12
-    elif MAIN_INI_FILE.latest_checked_backup_time() != 'None':
-        if current_hour - short_last_backup_time >= 1:
-            # Time to backup
-            time_to_backup(current_time)
+    # # Compare the first 2 digits of current and latest backup to main hour
+    # # Fx. 1200 -> 12
+    # elif MAIN_INI_FILE.latest_checked_backup_time() != 'None':
+    #     if current_hour - short_last_backup_time >= 1:
+    #         # Time to backup
+    #         time_to_backup(current_time)
 
 def time_to_backup(current_time):
     # Save current time of check
@@ -129,7 +129,10 @@ def time_to_backup(current_time):
     # Start backup analyses
     call_analyses()
 
-def main():
+
+if __name__ == '__main__':
+    MAIN_INI_FILE = UPDATEINIFILE()
+    
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
         # Prepare backup
@@ -144,35 +147,21 @@ def main():
     while True:
         # Not current backing up
         if not MAIN_INI_FILE.current_backing_up():
+            print('Backup checker: ON')
+
             # Turn on/off backup checker
             if not MAIN_INI_FILE.automatically_backup():
                 print("Automatically backup is OFF.")
-                break
+                exit()
             
-            # No connection
-            if not is_connected(MAIN_INI_FILE.hd_hd()):
-                # Device is not connected
-                print('Backup device is not connected.')
-
-            else:
-                # TODO
-                # # If previus backup is unfinished
-                # if MAIN_INI_FILE.get_database_value(
-                #     'STATUS', 'unfinished_backup'):
-                #     continue_interrupted_backup()
-
+            # Has connection
+            if is_connected(MAIN_INI_FILE.hd_hd()):
                 # backup new packages
-                check_for_new_packages()
+                # check_for_new_packages()
 
                 # Check for a new backup
                 check_backup()
 
-        # wait 
+        print('Backup checker: PAUSED')
+        
         time.sleep(5)
-    
-    exit()
-
-
-if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
-    main()
