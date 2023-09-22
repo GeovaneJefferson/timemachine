@@ -247,10 +247,12 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'automatically_backup', 'True')
 
-            # call backup check
-            sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
-                stdout=sub.PIPE, 
-                stderr=sub.PIPE)
+            # # call backup check
+            # sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
+            #     stdout=sub.PIPE, 
+            #     stderr=sub.PIPE)
+            
+            sub.Popen(f'pythone3 {SRC_BACKUP_CHECKER_PY}', shell=True)
 
             print("Auto backup was successfully activated!")
 
