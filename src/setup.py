@@ -242,13 +242,26 @@ SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"
 SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
+# Log
+log_location = f'{HOME_USER}/Documents/log_time_machine.txt' 
+
 
 from read_ini_file import UPDATEINIFILE
 MAIN_INI_FILE = UPDATEINIFILE()
 
 def signal_exit(e):
+    # Set unafineshed backup to Yes
     MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
-    with open('/home/geovane/Desktop/log.txt', "w") as writer:
+
+    # Check if location exist
+    if not os.path.exist(log_location):
+        # Create file
+        sub.run(['touch', log_location],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
+        
+
+    with open(log_lcoation, 'w') as writer:
         writer.write(e)
         
     exit()

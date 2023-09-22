@@ -58,12 +58,16 @@ async def check_for_new_packages():
                         if old_package.startswith(f"{package.split('_')[0]}"):
                             # Delete old package
                             dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
-                            sub.run(["rm", "-rf", dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                            sub.run(["rm", "-rf", dst], 
+                                stdout=sub.PIPE, 
+                                stderr=sub.PIPE)
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
 
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -78,16 +82,22 @@ async def check_for_new_packages():
                         if deleteOutput.startswith(f"{package.split('_')[0]}"):
                             # Delete old package
                             dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
-                            sub.run(["rm", "-rf", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                            sub.run(["rm", "-rf", src, dst], 
+                                stdout=sub.PIPE, 
+                                stderr=sub.PIPE)
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+                    sub.run(['cp', '-rvf', src, dst], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
 
 async def check_backup():
     # Get the current time
     current_time = str(MAIN_INI_FILE.current_time()) 
+    current_hour = int(MAIN_INI_FILE.current_hour())
+    short_last_backup_time = int(MAIN_INI_FILE.latest_checked_backup_time()[:2]) 
 
     print('Current time:', current_time)
     print('Next backup :', calculate_time_left_to_backup())
@@ -96,13 +106,14 @@ async def check_backup():
 
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
+        # Time to backup
         await time_to_backup(current_time)
     
-    # Compare current hour with last checked backup time
-    # Fx. 1200 -> 12 - 12 >= 1 = last backup was more then 1 hour
+    # Compare the first 2 digits of current and latest backup to main hour
+    # Fx. 1200 -> 12
     if MAIN_INI_FILE.latest_checked_backup_time() != 'None':
-        if (int(MAIN_INI_FILE.current_hour()) - 
-            int(MAIN_INI_FILE.latest_checked_backup_time()[:2])) >= 1:  
+        if current_hour - short_last_backup_time >= 1:
+            # Time to backup
             await time_to_backup(current_time)
 
 async def time_to_backup(current_time):
