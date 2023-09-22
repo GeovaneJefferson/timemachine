@@ -6,7 +6,7 @@ from notification_massage import notification_message
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-async def backup_flatpak():
+def backup_flatpak():
     counter = 0
     flatpak_list = []
 

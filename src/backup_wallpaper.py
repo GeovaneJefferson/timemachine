@@ -70,7 +70,7 @@ def get_wallpaper_full_location():
                     # Return lines full location
                     return line
 
-async def backup_wallpaper():
+def backup_wallpaper():
     print("Backing up: Wallpaper")
 
     # GNOME/KDE
@@ -96,9 +96,9 @@ async def backup_wallpaper():
         sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
     # Write to file
-    await update_db()
+    update_db()
 
-async def update_db():
+def update_db():
     CONFIG = configparser.ConfigParser()
     CONFIG.read(MAIN_INI_FILE.restore_settings_location())
     with open(MAIN_INI_FILE.restore_settings_location(), 'w') as configfile:

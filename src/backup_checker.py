@@ -12,12 +12,6 @@ from prepare_backup import PREPAREBACKUP
 #     last_backup_date,
 #     last_backup_time)
 
-logging.basicConfig(
-filename= f'{HOME_USER}/Downloads/app.log',  # Specify the log file
-level=logging.INFO,
-format='%(asctime)s [%(levelname)s]: %(message)s',
-datefmt='%Y-%m-%d %H:%M:%S'
-)
 
 # Handle signal
 signal.signal(signal.SIGINT, signal_exit)
@@ -46,7 +40,7 @@ def call_analyses():
         stderr=sub.PIPE)
 
 # Check for new .deb, .rpm etc. inside Downloads folder and back up
-async def check_for_new_packages():
+def check_for_new_packages():
     print("Searching new packages inside Downloads folder...")
 
     # Search for .deb packages inside Downloads folder
@@ -98,7 +92,7 @@ async def check_for_new_packages():
                         stdout=sub.PIPE, 
                         stderr=sub.PIPE)
 
-async def check_backup():
+def check_backup():
     # Get the current time
     current_time = str(MAIN_INI_FILE.current_time()) 
     current_hour = int(MAIN_INI_FILE.current_hour())
@@ -112,30 +106,30 @@ async def check_backup():
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
         # Time to backup
-        await time_to_backup(current_time)
+        time_to_backup(current_time)
     
     # Compare the first 2 digits of current and latest backup to main hour
     # Fx. 1200 -> 12
     elif MAIN_INI_FILE.latest_checked_backup_time() != 'None':
         if current_hour - short_last_backup_time >= 1:
             # Time to backup
-            await time_to_backup(current_time)
+            time_to_backup(current_time)
 
-async def time_to_backup(current_time):
+def time_to_backup(current_time):
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 
 
     # Backup flatpak
-    await backup_flatpak()
+    backup_flatpak()
     
     # Backup wallpaper
-    await backup_wallpaper()
+    backup_wallpaper()
     
     # Start backup analyses
     call_analyses()
 
-async def main():
+def main():
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
         # Prepare backup
@@ -168,10 +162,10 @@ async def main():
                 #     continue_interrupted_backup()
 
                 # backup new packages
-                await check_for_new_packages()
+                check_for_new_packages()
 
                 # Check for a new backup
-                await check_backup()
+                check_backup()
 
         # wait 
         time.sleep(5)
@@ -181,4 +175,4 @@ async def main():
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
-    asyncio.run(main())
+    main()
