@@ -243,7 +243,7 @@ SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # Log
-log_location = f'{HOME_USER}/Documents/log_time_machine.txt' 
+LOG_LOCATION = f'{HOME_USER}/Documents/.log_time_machine.txt' 
 
 
 from read_ini_file import UPDATEINIFILE
@@ -254,14 +254,13 @@ def signal_exit(e):
     MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
     # Check if location exist
-    if not os.path.exists(log_location):
+    if not os.path.exists(LOG_LOCATION):
         # Create file
-        sub.run(['touch', log_location],
+        sub.run(['touch', LOG_LOCATION],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
         
-
-    with open(log_location, 'w') as writer:
+    with open(LOG_LOCATION, 'w') as writer:
         writer.write(e)
         
     exit()
