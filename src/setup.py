@@ -261,7 +261,7 @@ def signal_exit(e):
             stderr=sub.PIPE)
         
     with open(LOG_LOCATION, 'w') as writer:
-        writer.write(e)
+        writer.write(e, 'a')
         
     exit()
 
