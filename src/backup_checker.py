@@ -163,7 +163,7 @@ async def main():
                 #     continue_interrupted_backup()
 
                 # backup new packages
-                await check_for_new_packages()
+                # await check_for_new_packages()
 
                 # Check for a new backup
                 await check_backup()
@@ -171,17 +171,6 @@ async def main():
         # wait 
         time.sleep(5)
     
-    # Check if location exist
-    if not os.path.exists(LOG_LOCATION):
-        # Create file
-        sub.run(['touch', LOG_LOCATION],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
-        
-    with open(LOG_LOCATION, 'w') as writer:
-        writer.write('Exited')
-
-    # Exit
     exit()
 
 
