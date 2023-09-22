@@ -254,14 +254,14 @@ def signal_exit(e):
     MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
     # Check if location exist
-    if not os.path.exist(log_location):
+    if not os.path.exists(log_location):
         # Create file
         sub.run(['touch', log_location],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
         
 
-    with open(log_lcoation, 'w') as writer:
+    with open(log_location, 'w') as writer:
         writer.write(e)
         
     exit()
