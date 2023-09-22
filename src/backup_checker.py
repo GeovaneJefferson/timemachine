@@ -13,7 +13,7 @@ from prepare_backup import PREPAREBACKUP
 #     last_backup_time)
 
 logging.basicConfig(
-filename='app.log',  # Specify the log file
+filename= f'{HOME_USER}/Downloads/app.log',  # Specify the log file
 level=logging.INFO,
 format='%(asctime)s [%(levelname)s]: %(message)s',
 datefmt='%Y-%m-%d %H:%M:%S'
