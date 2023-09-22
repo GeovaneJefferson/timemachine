@@ -116,7 +116,7 @@ async def check_backup():
     
     # Compare the first 2 digits of current and latest backup to main hour
     # Fx. 1200 -> 12
-    if MAIN_INI_FILE.latest_checked_backup_time() != 'None':
+    elif MAIN_INI_FILE.latest_checked_backup_time() != 'None':
         if current_hour - short_last_backup_time >= 1:
             # Time to backup
             await time_to_backup(current_time)
