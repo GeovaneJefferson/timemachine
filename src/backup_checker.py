@@ -12,11 +12,16 @@ from prepare_backup import PREPAREBACKUP
 #     last_backup_date,
 #     last_backup_time)
 
+logging.basicConfig(
+filename='app.log',  # Specify the log file
+level=logging.INFO,
+format='%(asctime)s [%(levelname)s]: %(message)s',
+datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 # Handle signal
 signal.signal(signal.SIGINT, signal_exit)
 signal.signal(signal.SIGTERM, signal_exit)
-
 
 # Download folder location
 DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
@@ -163,7 +168,7 @@ async def main():
                 #     continue_interrupted_backup()
 
                 # backup new packages
-                # await check_for_new_packages()
+                await check_for_new_packages()
 
                 # Check for a new backup
                 await check_backup()
@@ -177,4 +182,3 @@ async def main():
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
     asyncio.run(main())
-    

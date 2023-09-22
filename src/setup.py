@@ -13,6 +13,7 @@ import threading
 import locale
 import datetime
 import sqlite3
+import logging
 
 from stylesheet import *
 from pathlib import Path
