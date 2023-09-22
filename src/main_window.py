@@ -247,10 +247,27 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'automatically_backup', 'True')
 
-            # call backup check
-            sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
-             stdout=sub.PIPE, 
-             stderr=sub.PIPE)
+            # # call backup check
+            # sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
+            #     stdout=sub.PIPE, 
+            #     stderr=sub.PIPE)
+            
+            try:
+                result = sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
+                                stdout=sub.PIPE,
+                                stderr=sub.PIPE,
+                                timeout=3600)  # Adjust the timeout value as needed (in seconds)
+                stdout, stderr = result.communicate()
+                if result.returncode != 0:
+                    logging.error(f"Backup checker exited with an error code {result.returncode}")
+                    logging.error("Standard Output:")
+                    logging.error(stdout.decode())
+                    logging.error("Standard Error:")
+                    logging.error(stderr.decode())
+            except sub.TimeoutExpired:
+                logging.error("Backup checker timed out and was terminated")
+            except Exception as e:
+                logging.error(f"An error occurred: {str(e)}")
 
             print("Auto backup was successfully activated!")
 
