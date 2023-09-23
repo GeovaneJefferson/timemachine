@@ -241,6 +241,16 @@ def search_in_all_date_time_file(
     # List of all not found item in date/time
     list_of_found_in_date_time = []
 
+    # all_dates = MAIN_INI_FILE.backup_dates_location()
+    # all_dates_list = []
+
+    # Add all dates to list
+    for date in MAIN_INI_FILE.backup_dates_location():
+        all_dates_list.append(date)
+
+    # Reverse all dates list
+    all_dates_list.reverse()
+
     # Loop through each date folder
     for date_path in os.listdir(MAIN_INI_FILE.backup_dates_location()):
         if not date_path.startswith('.'):

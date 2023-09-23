@@ -135,8 +135,6 @@ if __name__ == '__main__':
     
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
-        # Prepare backup
-        MAIN_PREPARE = PREPAREBACKUP()
         if MAIN_PREPARE.prepare_the_backup():
             # Backup now
             sub.Popen(
