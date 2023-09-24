@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         self.startup_read_db()
 
         # Check for update
-        self.check_for_updates()
+        # self.check_for_updates()
 
         timer.timeout.connect(self.running)
         timer.start(2000)
@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
                 ################################################
                 # Clean notification massage
                 ################################################
-                notification_message("")
+                # notification_message("")
 
                 ################################################
                 # Get backup devices size informations
@@ -131,7 +131,8 @@ class MainWindow(QMainWindow):
                         f"{get_external_device_max_size()} available")
 
                 except:
-                    self.ui.external_size_label.setText("No information available")
+                    self.ui.external_size_label.setText(
+                        "No information available")
 
                 ################################################
                 # Check if is current busy doing something
@@ -140,6 +141,7 @@ class MainWindow(QMainWindow):
                 if MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
                     # Show backing up labe
                     self.ui.backing_up_label.show()
+
                     # Show current backing up
                     self.ui.backing_up_label.setText(
                         f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")

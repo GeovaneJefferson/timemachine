@@ -1,17 +1,9 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-# from get_days_name import get_days_name
 from check_connection import is_connected
-from calculate_time_left_to_backup import calculate_time_left_to_backup
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
-# from get_backup_date import (
-#     get_backup_date,
-#     has_backup_dates,
-#     last_backup_date,
-#     last_backup_time)
-
 
 # Handle signal
 signal.signal(signal.SIGINT, signal_exit)
@@ -132,6 +124,7 @@ def time_to_backup(current_time):
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN_PREPARE = PREPAREBACKUP()
     
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
