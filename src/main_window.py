@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         self.startup_read_db()
 
         # Check for update
-        # self.check_for_updates()
+        self.check_for_updates()
 
         timer.timeout.connect(self.running)
         timer.start(2000)
@@ -208,6 +208,8 @@ class MainWindow(QMainWindow):
             self.ui.show_in_system_tray_checkbox.setChecked(False)
     
     def check_for_updates(self):
+        print('Checking for updates...')
+        
         # Check for git updates
         git_update_command = os.popen(
             'git remote update && git status -uno').read()
