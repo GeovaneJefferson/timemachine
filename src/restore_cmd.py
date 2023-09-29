@@ -91,9 +91,18 @@ class RESTORE:
                 self.update_progressbar_db()
                 await restore_kde_share_config()
                 
-        # Restart KDE session
-        # sub.Popen("kquitapp5 plasmashell; kstart5 plasmashell",shell=True)
-
+                # # Restart KDE session
+                # sub.run(
+                #     ['kquitapp5', 'plasmashell'],
+                #     stdout=sub.PIPE,
+                #     stderr=sub.PIPE)
+            
+                # sub.run(
+                #     ['kstart5', 'plasmashell'],
+                #     stdout=sub.PIPE,
+                #     stderr=sub.PIPE)
+            
+        
         self.end_restoring()
 
     def end_restoring(self):
@@ -107,7 +116,9 @@ class RESTORE:
         MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         MAIN_INI_FILE.set_database_value('RESTORE', 'restore_progress_bar', '0')
+        
         notification_message_current_backing_up('')
+        
         exit()
 
     def update_progressbar_db(self):

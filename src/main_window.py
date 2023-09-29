@@ -499,7 +499,7 @@ class SelectDisk(QDialog):
         self.dialog_ui.use_disk_button_dialog.setEnabled(True)
         self.dialog_ui.use_disk_button_dialog.setStyleSheet(
             """
-                background-color: blue;
+                background-color: #246dec;
                 color: white;
             """)
         

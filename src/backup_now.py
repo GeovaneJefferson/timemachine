@@ -180,8 +180,7 @@ class BACKUP:
                         remove_username = os.path.relpath(location, os.curdir)
                         
                         # Extract location's folder name
-                        extracted_folder_name = (
-                            os.path.basename(os.path.dirname(remove_username)))
+                        extracted_folder_name = remove_username.replace('../../../', '')
 
                         ##########################################################
                         # .MAIN BACKUP

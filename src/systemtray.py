@@ -212,11 +212,11 @@ class APP:
 
                 elif color == "Red":
                     self.color=color
-                    self.tray.setIcon(QIcon(src_system_bar_error_icon))
+                    self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_ERROR_ICON))
 
                 elif color == "Yellow":
                     self.color=color
-                    self.tray.setIcon(QIcon(src_system_bar_restore_icon))
+                    self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_RESTORE_ICON))
 
         except Exception:
             self.exit()
@@ -235,9 +235,9 @@ class APP:
         # print(self.app.palette().windowText().color().getRgb()[0] < 55)
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
-            return src_system_bar_icon
+            return SRC_SYSTEM_BAR_ICON
         else:
-            return src_system_bar_white_icon
+            return SRC_SYSTEM_BAR_WHITE_ICON
         
 
 if __name__ == '__main__':

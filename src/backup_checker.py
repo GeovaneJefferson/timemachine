@@ -90,10 +90,9 @@ def check_backup():
     # current_hour = int(MAIN_INI_FILE.current_hour())
     # short_last_backup_time = int(MAIN_INI_FILE.latest_checked_backup_time()[:2]) 
 
-    # print('Current time:', current_time)
-    # print('Next backup :', calculate_time_left_to_backup())
-    # print(MILITARY_TIME_OPTION)
-    # print()
+    print('Current time:', current_time)
+    print(MILITARY_TIME_OPTION)
+    print()
 
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
@@ -153,6 +152,7 @@ if __name__ == '__main__':
                 # Check for a new backup
                 check_backup()
 
-        print('Backup checker: PAUSED')
+        else:
+            print('Backup checker: PAUSED')
         
         time.sleep(5)

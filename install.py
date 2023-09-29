@@ -11,7 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.092 dev"
+APP_VERSION = "v1.1.6.093 dev"
 
 CREATE_CMD_FOLDER = "mkdir"
 
@@ -55,7 +55,8 @@ def install_dependencies():
                 # If not installed, install the package
                 sub.run(["sudo", "pacman", "-S", command], check=True)
 
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        print(e)
         exit()
 
 def copy_files():
@@ -87,20 +88,20 @@ def create_application_files():
             f"StartupWMClass={SRC_MAIN_WINDOW_PY.split('/')[-1]}\n "
             f"Terminal=false")
 
-    # # Migration_assistant .desktop
-    # with open(DST_MIGRATION_ASSISTANT_DESKTOP, "w") as writer:
-    #     writer.write(
-    #         f"[Desktop Entry]\n "
-    #         f"Version={APP_VERSION}\n "
-    #         f"Type=Application\n "
-    #         f"Name=Migration Assistant\n "
-    #         f"Comment=Restore files/folders etc. from a {APP_NAME}'s backup\n "
-    #         f"Icon={SRC_MIGRATION_ASSISTANT_ICON_212PX}\n "
-    #         f"Exec=python3 {SRC_CALL_MIGRATION_ASSISTANT_PY}\n "
-    #         f"Path={HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/\n "
-    #         f"Categories=System\n "
-    #         f"StartupWMClass={(SRC_MIGRATION_ASSISTANT_PY).split('/')[-1]}\n "
-    #         f"Terminal=true")
+    # Migration_assistant .desktop
+    with open(DST_MIGRATION_ASSISTANT_DESKTOP, "w") as writer:
+        writer.write(
+            f"[Desktop Entry]\n "
+            f"Version={APP_VERSION}\n "
+            f"Type=Application\n "
+            f"Name=Migration Assistant\n "
+            f"Comment=Restore files/folders etc. from a {APP_NAME}'s backup\n "
+            f"Icon={SRC_MIGRATION_ASSISTANT_ICON_212PX}\n "
+            f"Exec=python3 {SRC_CALL_MIGRATION_ASSISTANT_PY}\n "
+            f"Path={HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/\n "
+            f"Categories=System\n "
+            f"StartupWMClass={(SRC_MIGRATION_ASSISTANT_PY).split('/')[-1]}\n "
+            f"Terminal=true")
 
 def create_backup_checker_desktop():
     # Create autostart folder if necessary
@@ -140,8 +141,8 @@ if __name__ == '__main__':
         print(f"Creating backup_checker.desktop...")
         create_backup_checker_desktop()
 
-    except Exception:
-        pass
+    except Exception as e:
+        print(e)
     
     print()
     print("Program was successfully installed!")

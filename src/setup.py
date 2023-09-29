@@ -57,7 +57,7 @@ GITHUB_HOME = "https://github.com/GeovaneJefferson/timemachine/issues"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.6.092 dev"
+APP_VERSION = "v1.1.6.093 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -72,8 +72,6 @@ PLASMA_FOLDER_NAME = "plasma"
 KDE_SCRIPT_FOLDER_NAME = "kde-scripts"
 KDE_NOTES_FOLDER_NAME = "plasma-notes"
 KDEGLOBALDSFOLDERNAME = "kdeglobals"
-kGlobalShortcutSrcFolderName = "kglobalshortcutsrc"
-kWinRcFolderName = "kwinrc"
 GNOME_SHELL_FOLDER_NAME = "gnome-shell"
 VAR_FOLDER_NAME = "var"
 LOCAL_FOLDER_NAME = "share"
@@ -178,13 +176,10 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 DST_APPLICATIONS_LOCATION = f"{HOME_USER}/.local/share/applications"
 SRC_AUTOSTART_FOLDER_LOCATION = f"{HOME_USER}/.config/autostart"
-src_flatpak_var_folder_location = f"{HOME_USER}/.var/app"
-src_flatpak_local_folder_location = f"{HOME_USER}/.local/share/flatpak"
+SRC_FLATPAK_VAR_FOLDER_LOCATION = f"{HOME_USER}/.var/app"
+SRC_FLATPAK_LOCAL_FOLDER_LOCATION = f"{HOME_USER}/.local/share/flatpak"
 
-# KDE
-src_color_scheme_folder_location = f"{HOME_USER}/.local/share/color-schemes"
-src_plasma_style_folder_location = f"{HOME_USER}/.local/share/plasma/desktoptheme"
-
+# AUTOSTART
 SRC_AUTOSTARTFOLDER_LOCATION=f"{HOME_USER}/.config/autostart"
 
 ################################################################################
@@ -226,12 +221,11 @@ SRC_MONITOR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/applica
 SRC_LAPTOP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/laptop-symbolic.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 SRC_MIGRATION_ASSISTANT_ICON_212PX = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_212px.png"
-src_migration_assistant_clean_icon_128px = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/migration_assistant_clean_128px.svg"
-src_system_bar_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayicon.png"
-src_system_bar_white_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtraywhiteicon.png"
+SRC_SYSTEM_BAR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayicon.png"
+SRC_SYSTEM_BAR_WHITE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtraywhiteicon.png"
 SRC_SYSTEM_BAR_RUN_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrun.png"
-src_system_bar_error_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconerror.png"
-src_system_bar_restore_icon = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrestore.png"
+SRC_SYSTEM_BAR_ERROR_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconerror.png"
+SRC_SYSTEM_BAR_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/systemtrayiconrestore.png"
 SRC_ARROW_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/arrow.png"
 SRC_HARDISK_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/harddisk.svg"
 SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"

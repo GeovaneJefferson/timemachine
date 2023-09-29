@@ -17,7 +17,7 @@ async def restore_backup_flatpaks_data():
 
 		# Restore flatpak data (var) folders from external device
 		src = MAIN_INI_FILE.flatpak_var_folder() + "/" + data
-		dst = src_flatpak_var_folder_location
+		dst = SRC_FLATPAK_VAR_FOLDER_LOCATION
 		sub.run(['cp', '-rvf', src, dst])
                     
 	for data in os.listdir(f"{MAIN_INI_FILE.flatpak_local_folder()}"):
@@ -28,7 +28,7 @@ async def restore_backup_flatpaks_data():
 
 		# Restore flatpak data (Local) folders from external device
 		src = MAIN_INI_FILE.flatpak_local_folder() + "/" + data
-		dst = src_flatpak_local_folder_location
+		dst = SRC_FLATPAK_LOCAL_FOLDER_LOCATION
 		sub.run(['cp', '-rvf', src, dst])
                          
 

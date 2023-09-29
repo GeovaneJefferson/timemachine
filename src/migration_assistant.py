@@ -557,8 +557,10 @@ class WelcomeScreen(QWidget):
 		self.ui.progress_bar_restoring.show()
 
 		# Call restore class
-		command = SRC_RESTORE_CMD_PY
-		sub.Popen(['python3', command], stdout=sub.PIPE, stderr=sub.PIPE)
+		sub.Popen(
+			['python3', SRC_RESTORE_CMD_PY],
+			stdout=sub.PIPE,
+			stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
@@ -581,12 +583,15 @@ class WelcomeScreen(QWidget):
 		width = self.ui.stackedWidget.width()
 
 		if direction == 'right':
-			page.setGeometry(QRect(width, 0, width, self.ui.stackedWidget.height()))
+			page.setGeometry(
+				QRect(width, 0, width, self.ui.stackedWidget.height()))
+		
 		else:
-			page.setGeometry(QRect(-width, 0, -width, self.ui.stackedWidget.height()))
+			page.setGeometry(
+				QRect(-width, 0, -width, self.ui.stackedWidget.height()))
 
 		animation = QPropertyAnimation(page, b'geometry', page)
-		animation.setDuration(1000)
+		animation.setDuration(500)
 		animation.setEasingCurve(QEasingCurve.OutCubic)
 		animation.setStartValue(page.geometry())
 		animation.setEndValue(QRect(0, 0, width, self.ui.stackedWidget.height()))
@@ -595,14 +600,17 @@ class WelcomeScreen(QWidget):
 		self.ui.stackedWidget.setCurrentWidget(page)
 
 	def update_status_feedback(self):
-		self.ui.label_restoring_status.setText(MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
+		self.ui.label_restoring_status.setText(
+			MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
 		self.ui.label_restoring_status.adjustSize()
-		self.ui.label_restoring_status.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		self.ui.label_restoring_status.setAlignment(
+			Qt.AlignHCenter | Qt.AlignVCenter)
 
-		pb_value = MAIN_INI_FILE.get_database_value('RESTORE', 'restore_progress_bar').split('.')[0]
+		pb_value = MAIN_INI_FILE.get_database_value(
+			'RESTORE', 'restore_progress_bar').split('.')[0]
 		MAIN.ui.progress_bar_restoring.setValue(int(pb_value))
 
-		if not MAIN_INI_FILE.get_database_value('STATUS', 'is_restoring') :
+		if not MAIN_INI_FILE.get_database_value('STATUS', 'is_restoring'):
 			# Stop previous timer
 			timer.stop()
 			# Change to page5
@@ -612,7 +620,11 @@ class WelcomeScreen(QWidget):
 			if MAIN.on_automatically_reboot_clicked():
 				# Reboot system
 				print("Rebooting now...")
-				sub.run(["sudo", "reboot"], stdout=sub.PIPE, stderr=sub.PIPE)
+				sub.run(
+					["sudo", "reboot"],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+			
 			else:
 				print("All done.")
 
@@ -649,4 +661,5 @@ if __name__ == '__main__':
 	WIDGET.addWidget(MAIN)
 	WIDGET.setCurrentWidget(MAIN)
 	WIDGET.show()
+
 	APP.exit(APP.exec())
