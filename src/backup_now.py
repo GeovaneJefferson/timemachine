@@ -307,9 +307,6 @@ class BACKUP:
         MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
         MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
 
-        # Exit
-        exit()
-
     async def main(self):
         await self.backup_hidden_home()
         await self.backup_home()
