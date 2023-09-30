@@ -232,20 +232,29 @@ def search_in_main_dir(
         if files:
             for item_name in files:
                 file_full_location = os.path.join(root, item_name)
-       
+
                 short_dst_loc = os.path.dirname(file_full_location)
                 short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
                 short_dst_loc = short_dst_loc.split('/')[3:]
                 short_dst_loc = ('/').join(short_dst_loc) + '/'
        
-                # Backup destination full location
-                dst_backup_full_location = os.path.join(
-                    main_custom_full_location, short_dst_loc, item_name)
-                
-                # Is a new item
-                if is_new_item(dst_backup_full_location):
-                    add_to_backup_dict(
-                        item_name, os.path.dirname(file_full_location), 'NEW')
+                # Exclude invalid location, like: '/car.fbx'
+                if short_dst_loc != '/':
+                    # Backup destination full location
+                    dst_backup_full_location = os.path.join(
+                        main_custom_full_location, short_dst_loc, item_name)
+                    
+                    # print(short_dst_loc)
+                    # print(item_name)
+                    # print(dst_backup_full_location)
+                    # print()
+
+                    # Is a new item
+                    if is_new_item(dst_backup_full_location):
+                        add_to_backup_dict(
+                            item_name, 
+                            os.path.dirname(file_full_location), 
+                            'NEW')
 
 def search_in_all_date_time_file(
     item_name, 
@@ -254,7 +263,9 @@ def search_in_all_date_time_file(
     # Loop through each date folder
     for i in range(len(all_dates_list)):
         # Get date path
-        date_path = MAIN_INI_FILE.backup_dates_location() + '/' + all_dates_list[i]
+        date_path = (MAIN_INI_FILE.backup_dates_location() 
+            + '/' 
+            + all_dates_list[i])
 
         # Loop through each time folder in the current date folder
         for time_path in reversed(os.listdir(date_path)):  # Start from the latest time_path folder
@@ -268,18 +279,18 @@ def search_in_all_date_time_file(
                     for file in files:
                         dst_date_time_path = os.path.join(root, file)
 
-                        relative_path = os.path.relpath(
-                            dst_date_time_path, time_path)
+                        # relative_path = os.path.relpath(
+                        #     dst_date_time_path, time_path)
 
                         # Match found in date/time folder
                         if item_name == file:
-                            print('DATE/TIME')
-                            print('Compare   :', file, '->', item_name )
-                            print('Item path :', item_path)
-                            print('D/T path  :', dst_date_time_path)
-                            print('Compare to:', time_path)
-                            print('Rel. path :', relative_path)
-                            print()
+                            # print('DATE/TIME')
+                            # print('Compare   :', file, '->', item_name )
+                            # print('Item path :', item_path)
+                            # print('D/T path  :', dst_date_time_path)
+                            # print('Compare to:', time_path)
+                            # print('Rel. path :', relative_path)
+                            # print()
 
                             # Add to found list
                             if (item_name not in 
@@ -295,7 +306,9 @@ def search_in_all_date_time_file(
                                     
                                     # Item has been updated
                                     add_to_backup_dict(
-                                        item_name, item_path, 'UPDATED')
+                                        item_name, 
+                                        item_path, 
+                                        'UPDATED')
                       
                         else:
                             # Search in manin backup folder
@@ -339,14 +352,22 @@ def add_to_backup_dict(item_name, item_path, status):
     # print(f"        -Status   : {status}")
     # print()
 
+    # if os.path.isdir(item_path):
+    #     # Add item to dict
+    #     items_to_backup_dict[item_name] = {
+    #         "size": get_item_size(item_path),
+    #         "location": item_path + '/' + item_name,
+    #         "status": status
+    #         }
+    
     if os.path.isdir(item_path):
         # Add item to dict
         items_to_backup_dict[item_name] = {
             "size": get_item_size(item_path),
-            "location": item_path + '/' + item_name,
+            "location": item_path,
             "status": status
             }
-        
+    
     else:
         # Add item to dict
         items_to_backup_dict[item_name] = {
