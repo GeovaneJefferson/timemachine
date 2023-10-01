@@ -252,7 +252,8 @@ class MainWindow(QMainWindow):
                 'STATUS', 'automatically_backup', 'True')
 
             # call backup check
-            sub.Popen(['python3', SRC_BACKUP_CHECKER_PY],
+            sub.Popen(
+                ['python3', SRC_BACKUP_CHECKER_PY],
                 stdout=sub.PIPE, 
                 stderr=sub.PIPE)
             
@@ -312,9 +313,6 @@ class MainWindow(QMainWindow):
 
             # Disable automatically backup checkbox
             self.ui.automatically_backup_checkbox.setEnabled(False)
-
-    def backup_now_clicked(self):
-        sub.Popen(['python3', SRC_PREPARE_BACKUP_PY])
 
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
