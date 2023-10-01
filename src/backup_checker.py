@@ -24,9 +24,9 @@ def check_backup():
     # Time to backup
     if current_time in MILITARY_TIME_OPTION:
         # Time to backup
-        time_to_backup(current_time)
+        time_to_backup()
     
-def time_to_backup(current_time):
+def time_to_backup():
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 

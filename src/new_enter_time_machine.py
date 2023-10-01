@@ -368,6 +368,7 @@ class MainWindow(QMainWindow):
                     item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                     item.setCheckState(0, Qt.Unchecked)
+
         except UnboundLocalError:
             # If folder is empty, change date, until find something
             print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
@@ -535,6 +536,7 @@ class MainWindow(QMainWindow):
             
         if self.files_to_restore:
             self.show_small_preview(self.files_to_restore[-1])
+
         else:
             self.ui.small_preview_label.clear()
         

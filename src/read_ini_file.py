@@ -115,8 +115,7 @@ class UPDATEINIFILE:
 
     def current_time(self):
         NOW = datetime.now()
-        return NOW.strftime("%I%M")
-        # return int(self.current_hour() + self.current_minute())
+        return NOW.strftime("%H%M")
 
     def oldest_backup_date(self):
         # Get current date to 'oldest_backup_to_main'
@@ -316,6 +315,6 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.current_hour())
+    MAIN_INI_FILE = UPDATEINIFILE()
+    print(MAIN_INI_FILE.current_time())
     pass

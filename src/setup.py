@@ -239,3 +239,17 @@ SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # Log
 LOG_LOCATION = f'{HOME_USER}/Documents/.log_time_machine.txt' 
+
+# File extensions
+TXT_TYPES = [
+    "txt", "py", "cpp", "h", "c", "cgi",
+    "cs", "class", "java", "php", "sh",
+    "swift", "vb", "doc", "docx", "odt",
+    "pdf", "rtf", "tex", "wpd"
+]
+
+IMAGE_TYPES = [
+    "png", "jpg", "jpeg", "webp", "gif", "svg",
+    "eps", "pdf", "ai", "raw", "tiff",
+    "bmp", "ps", "tif"
+]
