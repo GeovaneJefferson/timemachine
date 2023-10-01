@@ -8,6 +8,7 @@ from check_connection import is_connected
 from device_location import device_location
 from get_home_folders import get_home_folders
 from handle_spaces import handle_spaces
+from read_ini_file import UPDATEINIFILE
 
 from get_sizes import (
     get_external_device_max_size,
@@ -15,7 +16,6 @@ from get_sizes import (
     get_external_device_used_size,
     get_all_used_backup_device_space)
 
-# from read_ini_file import UPDATEINIFILE
 from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
@@ -732,6 +732,7 @@ class OptionsWindow(QDialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    MAIN_INI_FILE = UPDATEINIFILE()
 
     # Main window
     MAIN = MainWindow()

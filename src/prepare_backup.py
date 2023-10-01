@@ -1,6 +1,8 @@
 from setup import *
-from get_folders_to_be_backup import home_folders_size, may_create_date_time_folder
-from get_flatpaks_folders_size import flatpak_var_size, flatpak_local_size
+# from get_folders_to_be_backup import home_folders_size, may_create_date_time_folder
+# from get_flatpaks_folders_size import flatpak_var_size, flatpak_local_size
+from read_ini_file import UPDATEINIFILE
+import error_catcher
 
 from get_sizes import (
     get_external_device_free_size
@@ -11,12 +13,12 @@ from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
 from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
-from get_sizes import get_directory_size, needeed_size_to_backup_home
+from get_sizes import needeed_size_to_backup_home
 
 
 # Handle signal
-signal.signal(signal.SIGINT, signal_exit)
-signal.signal(signal.SIGTERM, signal_exit)
+signal.signal(signal.SIGINT, error_catcher.signal_exit)
+signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
 # Minimum folders to be saved
 min_folder_num = 1
@@ -284,7 +286,7 @@ def create_base_folders():
                 stderr=sub.PIPE)
 
     except FileNotFoundError as e:
-        error_trying_to_backup(e)
+        error_catcher.signal_exit.error_trying_to_backup(e)
 
 def create_date_and_time_folder():
     # Create folder with current date

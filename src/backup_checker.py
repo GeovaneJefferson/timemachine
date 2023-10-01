@@ -4,10 +4,11 @@ from check_connection import is_connected
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
+import src.error_catcher as error_catcher
 
 # Handle signal
-signal.signal(signal.SIGINT, signal_exit)
-signal.signal(signal.SIGTERM, signal_exit)
+signal.signal(signal.SIGINT, error_catcher.signal_exit)
+signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
 # Download folder location
 DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
