@@ -2,7 +2,6 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
-
 def calculate_time_left_to_backup():
     # Current time
     current_time = datetime.now()

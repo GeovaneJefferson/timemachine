@@ -1,5 +1,7 @@
 from setup import *
+from read_ini_file import UPDATEINIFILE
 
+MAIN_INI_FILE = UPDATEINIFILE()
 
 def next_backup_label():
     int_list = []
