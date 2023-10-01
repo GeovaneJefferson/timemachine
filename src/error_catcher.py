@@ -10,15 +10,14 @@ def signal_exit(message):
     # Check if location exist
     if not os.path.exists(LOG_LOCATION):
         # Create file
-        sub.run(['touch', LOG_LOCATION],
+        sub.run(
+            ['touch', LOG_LOCATION],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
         
     with open(LOG_LOCATION, 'w') as writer:
         writer.write(message)
         
-    exit()
-
 def error_trying_to_backup(e):
     MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', f'{e}')
     exit()
