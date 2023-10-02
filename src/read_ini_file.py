@@ -19,8 +19,10 @@ class UPDATEINIFILE:
         if result:
             if result[0] == 'True' or result[0] == 'Yes':
                 return True
+            
             elif result[0] == 'False' or result[0] == 'No':
                 return False
+
             else:
                 return result[0]  # The value is the first element in the result tuple
         else:
@@ -250,6 +252,7 @@ class UPDATEINIFILE:
     def kde_local_share_main_folder(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
 
+    # KDE .kde/share
     def kde_share_config_main_folder(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{KDE_FOLDER_NAME}/{CONFIGURATIONS_FOLDER_NAME}/{SHARE_CONFIG_FOLDER_NAME}"
 
@@ -292,7 +295,7 @@ class UPDATEINIFILE:
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{VAR_FOLDER_NAME}"
 
     def flatpak_local_folder(self):
-        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{LOCAL_FOLDER_NAME}"
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{SHARE_FOLDER_NAME}"
     
     def create_flatpak_folder(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}"
@@ -315,6 +318,6 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
-    print(MAIN_INI_FILE.current_time())
+    # MAIN_INI_FILE = UPDATEINIFILE()
+    # print(MAIN_INI_FILE.get_database_value('INFO', 'packagermanager'))
     pass

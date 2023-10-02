@@ -5,7 +5,6 @@ from notification_massage import notification_message_current_backing_up
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-
 async def restore_backup_flatpaks_applications():
     print("Installing flatpaks apps...")
     
@@ -30,11 +29,13 @@ async def restore_backup_flatpaks_applications():
                 notification_message_current_backing_up(f'Installing: {flatpak}...')
                 
                 # Install them
-                sub.run(["flatpak", "install", "--system",
-                        "--noninteractive", "--assumeyes", "--or-update",
-                        flatpak], stdout=sub.PIPE, stderr=sub.PIPE)
+                sub.run(
+                    ["flatpak", "install", "--system",
+                    "--noninteractive", "--assumeyes", "--or-update",
+                    flatpak], stdout=sub.PIPE, stderr=sub.PIPE)
                 
-            except Exception:
+            except Exception as e:
+                print(e)
                 pass
 
 

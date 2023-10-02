@@ -12,10 +12,11 @@ from get_sizes import get_item_size
 from get_sizes import number_of_item_to_backup
 from backup_hidden import start_backup_hidden_home
 
+import error_catcher
 
 # Handle signal
-signal.signal(signal.SIGINT, signal_exit)
-signal.signal(signal.SIGTERM, signal_exit)
+signal.signal(signal.SIGINT, error_catcher.signal_exit)
+signal.signal(signal.SIGTERM, error_catcher.signal_exit)
     
 #########################################################
 # KDE
@@ -274,27 +275,29 @@ class BACKUP:
 
         # Write to restore ini file 
         CONFIG = configparser.ConfigParser()
-        CONFIG.read(f"{MAIN_INI_FILE.restore_settings_location()}")
-        with open(f"{MAIN_INI_FILE.restore_settings_location()}", 'w') as configfile:
+        CONFIG.read(MAIN_INI_FILE.restore_settings_location())
+        with open(MAIN_INI_FILE.restore_settings_location(), 'w') as configfile:
             if not CONFIG.has_section('INFO'):
                 CONFIG.add_section('INFO')
 
             # KDE
             if get_user_de() == 'kde':
-                CONFIG.set('INFO', 'icon', f'{get_kde_users_icon_name()}')
-                CONFIG.set('INFO', 'cursor', f'{get_kde_users_cursor_name()}')
+                CONFIG.set('INFO', 'icon', get_kde_users_icon_name())
+                CONFIG.set('INFO', 'cursor', get_kde_users_cursor_name())
                 CONFIG.set('INFO', 'font', f'{get_kde_users_font_name()}, {get_kde_users_font_size()}')
-                CONFIG.set('INFO', 'gtktheme', f'{get_gtk_users_theme_name()}')
+                CONFIG.set('INFO', 'gtktheme', get_gtk_users_theme_name())
                 CONFIG.set('INFO', 'theme', f'None')
+                CONFIG.set('INFO', 'os', get_user_de())
             
             # GNOME
             else:
-                CONFIG.set('INFO', 'icon', f'{get_gtk_users_icon_name()}')
-                CONFIG.set('INFO', 'cursor', f'{get_gtk_users_cursor_name()}')
-                CONFIG.set('INFO', 'font', f'{get_gtk_user_font_name()}')
-                CONFIG.set('INFO', 'gtktheme', f'{get_gtk_users_theme_name()}')
-                CONFIG.set('INFO', 'theme', f'None')
-                CONFIG.set('INFO', 'colortheme', f'None')
+                CONFIG.set('INFO', 'icon', get_gtk_users_icon_name())
+                CONFIG.set('INFO', 'cursor', get_gtk_users_cursor_name())
+                CONFIG.set('INFO', 'font', get_gtk_user_font_name())
+                CONFIG.set('INFO', 'gtktheme', get_gtk_users_theme_name())
+                CONFIG.set('INFO', 'theme', 'None')
+                CONFIG.set('INFO', 'colortheme', 'None')
+                CONFIG.set('INFO', 'os', get_user_de())
 
             CONFIG.write(configfile)
 

@@ -33,12 +33,14 @@ safe_added_space = 2147483648  # 2 GB
 def is_first_backup():
     # First backup made by Time Machine
     check_inside = [] 
+
     for search in os.listdir(MAIN_INI_FILE.main_backup_folder()):
         check_inside.append(search)
 
     # Nothing inside MAIN backup folder
     if not check_inside:
         return True
+    
     else:
         return False
     
@@ -189,16 +191,16 @@ def create_base_folders():
         ################################################################################
         if get_user_de() == 'gnome':
             # Create gnome folder
-            if not os.path.exists(str(MAIN_INI_FILE.gnome_main_folder())):
-                command = f"{str(MAIN_INI_FILE.gnome_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.gnome_main_folder()):
+                command = MAIN_INI_FILE.gnome_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
             
             # Create configuration folder
-            if not os.path.exists(str(MAIN_INI_FILE.gnome_configurations_folder_main_folder())):
-                command = f"{str(MAIN_INI_FILE.gnome_configurations_folder_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.gnome_configurations_folder_main_folder()):
+                command = MAIN_INI_FILE.gnome_configurations_folder_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 
@@ -207,8 +209,8 @@ def create_base_folders():
             ################################################################################
             # Create gnome LOCAL SHARE
             ################################################################################
-            if not os.path.exists(str(MAIN_INI_FILE.gnome_local_share_main_folder())):
-                command = f"{str(MAIN_INI_FILE.gnome_local_share_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.gnome_local_share_main_folder()):
+                command = MAIN_INI_FILE.gnome_local_share_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 
@@ -217,8 +219,8 @@ def create_base_folders():
             ################################################################################
             # Create gnome CONFIG
             ################################################################################
-            if not os.path.exists(str(MAIN_INI_FILE.gnome_config_main_folder())):
-                command = f"{str(MAIN_INI_FILE.gnome_config_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.gnome_config_main_folder()):
+                command = MAIN_INI_FILE.gnome_config_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 
@@ -229,16 +231,16 @@ def create_base_folders():
         ################################################################################
         elif get_user_de() == 'kde':
             # Create kde folder
-            if not os.path.exists(str(MAIN_INI_FILE.kde_main_folder())):
-                command = f"{str(MAIN_INI_FILE.kde_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.kde_main_folder()):
+                command = MAIN_INI_FILE.kde_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 
             # Create configuration folder
-            if not os.path.exists(str(MAIN_INI_FILE.kde_configurations_folder_main_folder())):
-                command = f"{str(MAIN_INI_FILE.kde_configurations_folder_main_folder())}"
+            if not os.path.exists(MAIN_INI_FILE.kde_configurations_folder_main_folder()):
+                command = MAIN_INI_FILE.kde_configurations_folder_main_folder()
                 sub.run(
                     ["mkdir", command], 
                     stdout=sub.PIPE, 

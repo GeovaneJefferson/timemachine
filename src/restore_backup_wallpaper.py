@@ -21,17 +21,12 @@ async def restore_backup_wallpaper():
     
     # If has a wallpaper to restore and restoreSystemSettings:
     if has_wallpaper_to_restore: 
-        # Create .local/share/wallpapers/
-        if not os.path.exists(str(MAIN_INI_FILE.create_base_folder())):
-            command = HOME_USER + "/.local/share/wallpapers/"
-            sub.run(["mkdir", command], stdout=sub.PIPE, stderr=sub.PIPE)
-
         # Copy backed up wallpaper to .local/share/wallpapers/
         for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
 
             # Restore
             src = MAIN_INI_FILE.wallpaper_main_folder() + "/" + wallpaper
-            dst = HOME_USER + "/.local/share/wallpapers"
+            dst = HOME_USER + "/Pictures"
             sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Handle spaces
@@ -53,17 +48,35 @@ def apply_wallpaper(wallpaper):
 
         # Light or Dark wallpaper
         if get_color_scheme == "prefer-light" or get_color_scheme == "default":
-            command = f"{HOME_USER}/.local/share/wallpapers/{wallpaper}"
-            action = "gsettings", "set", "org.gnome.desktop.background", "picture-uri"
-            sub.run([action, command], stdout=sub.PIPE, stderr=sub.PIPE)
+            sub.run(
+                ['gsettings',
+                'set',
+                'org.gnome.desktop.background',
+                'picture-uri',
+                f'{HOME_USER}/Pictures/{wallpaper}'], 
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
+        
         else:
-            command = f"{HOME_USER}/.local/share/wallpapers/{wallpaper}"
-            action = "gsettings", "set", "org.gnome.desktop.background", "picture-uri-dark"
-            sub.run([action, command], stdout=sub.PIPE, stderr=sub.PIPE)
+            sub.run(
+                ['gsettings',
+                'set',
+                'org.gnome.desktop.background',
+                'picture-uri-dark',
+                f'{HOME_USER}/Pictures/{wallpaper}'], 
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
 
         # Set wallpaper to Zoom
-        action = "gsettings", "set", "org.gnome.desktop.background", "picture-options", "zoom"
-        sub.run([action], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.run(
+            ["gsettings",
+            "set",
+            "org.gnome.desktop.background",
+            "picture-options",
+            "zoom"],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
+        
         ################################################################
 
     elif get_user_de() == "kde":
@@ -99,6 +112,7 @@ def apply_wallpaper(wallpaper):
             
         except:
             pass
+    
     else:
         return None
 

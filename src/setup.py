@@ -74,16 +74,15 @@ KDE_NOTES_FOLDER_NAME = "plasma-notes"
 KDEGLOBALDSFOLDERNAME = "kdeglobals"
 GNOME_SHELL_FOLDER_NAME = "gnome-shell"
 VAR_FOLDER_NAME = "var"
-LOCAL_FOLDER_NAME = "share"
 KDE_FOLDER_NAME = "kde"
 GNOME_FOLDER_NAME = "gnome"
 FLATPAK_FOLDER_NAME = "flatpak"
 
 CONFIGURATIONS_FOLDER_NAME = "configurations"
-SHARE_FOLDER_NAME = "share"
 
 CONFIG_FOLDER_NAME = "config"
-SHARE_CONFIG_FOLDER_NAME = "share_config"
+SHARE_FOLDER_NAME = "share"
+SHARE_CONFIG_FOLDER_NAME = 'share_config'
 FLATPAK_TXT = "flatpak.txt"
 RESTORE_SETTINGS_INI = "restore_settings.ini"
 
@@ -97,7 +96,6 @@ GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
 SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
             "unity", "pop", "kde","zorin:gnome", 
             "pop:gnome", "budgie:gnome"]
-
 GET_USER_DE = "echo $XDG_CURRENT_DESKTOP"
 GET_USER_PACKAGE_MANAGER = "cat /etc/os-release"
 
@@ -142,10 +140,11 @@ GET_KDE_USER_COLOR_SCHEME_CMD = "plasma-apply-colorscheme --list-schemes"
 # Plasma Style
 GET_KDE_USER_PLASMA_STYLE_CMD = "plasma-apply-desktoptheme --list-themes"
 
-# Locations
+################################################################################
+# Location
+################################################################################
 MEDIA = "/media"
 RUN = "/run/media"
-
 
 ################################################################################
 ## Fonts

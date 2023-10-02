@@ -13,13 +13,6 @@ from restore_kde_local_share import restore_kde_local_share
 from notification_massage import notification_message_current_backing_up
 
 
-################################################################################
-## Signal
-################################################################################
-# If user turn off or kill the app, update INI file
-signal.signal(signal.SIGINT, signal_exit)
-signal.signal(signal.SIGTERM, signal_exit)
-
 MAIN_INI_FILE = UPDATEINIFILE()
 
 class RESTORE:
@@ -33,12 +26,16 @@ class RESTORE:
         #  Get length of the restore list
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_packages'):
             self.item_to_restore += 1
+        
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_names'):
             self.item_to_restore += 1
+        
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
             self.item_to_restore += 1
+        
         if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
             self.item_to_restore += 1
+        
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             self.item_to_restore += 1
 
@@ -46,6 +43,7 @@ class RESTORE:
         if self.item_to_restore == 1:
             # Show 99%
             self.progress_increment = 99 / self.item_to_restore
+
         else:
             self.progress_increment = 100 / self.item_to_restore
         
@@ -102,7 +100,6 @@ class RESTORE:
                 #     stdout=sub.PIPE,
                 #     stderr=sub.PIPE)
             
-        
         self.end_restoring()
 
     def end_restoring(self):
@@ -125,9 +122,10 @@ class RESTORE:
         new_value = self.progress_increment + \
             int(MAIN_INI_FILE.get_database_value(
                 'RESTORE', 'restore_progress_bar').split('.')[0])
+        
         MAIN_INI_FILE.set_database_value(
             'RESTORE', 'restore_progress_bar', f'{str(new_value)}')
 
 
 if __name__ == '__main__':
-    main = RESTORE()
+    MAIN = RESTORE()

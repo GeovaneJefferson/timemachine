@@ -478,7 +478,6 @@ class SelectDisk(QDialog):
             except FileNotFoundError:
                 pass
 
-        
         # Add strech to layout
         self.dialog_ui.available_disk_dialog_layout.addStretch()
 
