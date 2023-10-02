@@ -24,6 +24,7 @@ from save_info import save_info
 from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
+from prepare_backup import create_base_folders
 
 
 choose_device = []
@@ -96,6 +97,12 @@ class MainWindow(QMainWindow):
 
         # Check for update
         self.check_for_updates()
+
+        # Create essential folders, if a backup device was registered
+        if self.is_device_registered():
+            if not os.path.exists(MAIN_INI_FILE.backup_folder_name()):
+                # Create essensial folder exists in backup device
+                create_base_folders()
 
         timer.timeout.connect(self.running)
         timer.start(2000)
@@ -297,12 +304,17 @@ class MainWindow(QMainWindow):
     #     self.ui.show_in_system_tray_checkbox.setEnabled(False)
     
     def registered_action_to_take(self):
-        # Show devices name
-        self.ui.external_name_label.setText(f"{MAIN_INI_FILE.hd_name()}")
-        # Show oldest backup label
-        self.ui.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
-        # Show latest backup label
-        self.ui.latest_backup_label.setText(f"Latest Backup: {latest_backup_date_label()}")
+        try:
+            # Show devices name
+            self.ui.external_name_label.setText(f"{MAIN_INI_FILE.hd_name()}")
+            # Show oldest backup label
+            self.ui.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
+            # Show latest backup label
+            self.ui.latest_backup_label.setText(f"Latest Backup: {latest_backup_date_label()}")
+        
+        except FileNotFoundError:
+            # TMB was not yet created in backup device
+            pass
 
     def not_registered_action_to_take(self):
             # Set external size label to No information
@@ -556,7 +568,7 @@ class OptionsWindow(QDialog):
         self.options_ui.tabWidget.setCurrentIndex(0)
 
         if not self.home_folder_added:
-            home_folers_list = []
+            home_folders_list = []
 
             # Connect to the SQLite database
             conn = sqlite3.connect(SRC_USER_CONFIG_DB)
@@ -570,7 +582,7 @@ class OptionsWindow(QDialog):
             conn.close()
 
             for key in keys:
-                home_folers_list.append(key)
+                home_folders_list.append(key)
 
             ################################################################################
             # Get Home Folders and Sort them alphabetically
@@ -598,7 +610,7 @@ class OptionsWindow(QDialog):
                             folder))
 
                     # Activate checkboxes in user.ini
-                    if folder.lower() in home_folers_list:
+                    if folder.lower() in home_folders_list:
                         self.home_folders_checkbox.setChecked(True)
 
                     # Add to layout self.leftLayout

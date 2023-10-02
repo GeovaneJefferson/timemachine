@@ -129,16 +129,8 @@ class BACKUP:
         item_minus = 0
         item_sum_size = 0 
 
-        # Check for something inside main folder
-        list_of_main_item = []
-        for i in os.listdir(MAIN_INI_FILE.main_backup_folder()):
-            # Exclude hidden files/folders
-            if '.' not in i:
-                list_of_main_item.append(i)
-                break
-
         # Main folder is empty
-        if not list_of_main_item:
+        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
             # Backup home to the main backup folder
             for folder in get_folders():
                 folder = handle_spaces(folder)

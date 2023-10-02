@@ -15,6 +15,7 @@ from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
 from get_sizes import needeed_size_to_backup_home
 
+MAIN_INI_FILE = UPDATEINIFILE()
 
 # Handle signal
 signal.signal(signal.SIGINT, error_catcher.signal_exit)
@@ -69,8 +70,8 @@ def create_base_folders():
         ################################################################################
         # Create TMB (Base)
         ################################################################################
-        if not os.path.exists(str(MAIN_INI_FILE.create_base_folder())):
-            command = f"{str(MAIN_INI_FILE.create_base_folder())}"
+        if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
+            command = MAIN_INI_FILE.create_base_folder()
             sub.run(
                 ["mkdir", command], 
                 stdout=sub.PIPE, 
@@ -412,7 +413,6 @@ class PREPAREBACKUP:
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
     MAIN_PREPARE = PREPAREBACKUP()
 
     # Start preparation

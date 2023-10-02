@@ -10,6 +10,7 @@ def get_home_folders():
     
     # Sort list
     home_folders_list.sort()
+
     # Return list
     return home_folders_list
 

@@ -30,7 +30,8 @@ class APP:
     def widget(self):
         # Tray
         self.tray = QSystemTrayIcon()
-        self.tray.setIcon(QIcon(self.get_system_color()))
+        # self.tray.setIcon(QIcon(self.get_system_color()))
+        self.tray.setIcon(QIcon(SRC_BACKUP_ICON))
         self.tray.setVisible(True)
         self.tray.activated.connect(self.tray_icon_clicked)
 
@@ -173,11 +174,10 @@ class APP:
                     self.last_backup_information.setText(
                         f'Latest backup to: {MAIN_INI_FILE.hd_name()}')
                     self.last_backup_information2.setText(latest_backup_date_label())
-                
                 else:
                     # Next backup label
                     self.last_backup_information2.setText(next_backup_label())
-
+                
         else:
             # Next backup alert
             self.last_backup_information.setText('Automatically backup off')
@@ -208,7 +208,8 @@ class APP:
 
                 elif color == "White":
                     self.color=color
-                    self.tray.setIcon(QIcon(self.get_system_color()))
+                    # self.tray.setIcon(QIcon(self.get_system_color()))
+                    self.tray.setIcon(QIcon(SRC_BACKUP_ICON))
 
                 elif color == "Red":
                     self.color=color

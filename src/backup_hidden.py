@@ -3,6 +3,8 @@ from read_ini_file import UPDATEINIFILE
 from handle_spaces import handle_spaces
 from notification_massage import notification_message
 
+MAIN_INI_FILE = UPDATEINIFILE()
+
 local_share_loc = f'{HOME_USER}/.local/share/'
 config_loc = f'{HOME_USER}/.config/'
 kde_share_loc = f'{HOME_USER}/.kde/share/'
@@ -191,5 +193,4 @@ async def backup_hidden_kde_share():
 
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
     pass

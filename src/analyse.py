@@ -499,7 +499,7 @@ def get_select_backup_home():
 
 def need_to_backup_analyse():
     # First backup to main backup folder
-    if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+    if any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
         # Get all backup dates
         get_all_dates()
 
