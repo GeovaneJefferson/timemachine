@@ -553,9 +553,3 @@ if __name__ == '__main__':
         # Backing up to False
         MAIN_INI_FILE.set_database_value(
             'STATUS', 'backing_up_now', 'False') 
-
-        # Re-run backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)

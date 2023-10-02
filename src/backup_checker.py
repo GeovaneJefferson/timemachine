@@ -40,7 +40,7 @@ def time_to_backup():
     # Start backup analyses
     print("Calling analyses...")
     
-    sub.Popen(
+    sub.run(
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
         stderr=sub.PIPE)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
         if MAIN_PREPARE.prepare_the_backup():
             # Backup now
-            sub.Popen(
+            sub.run(
                 ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
