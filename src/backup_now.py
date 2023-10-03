@@ -307,6 +307,12 @@ class BACKUP:
         await self.backup_home()
         await self.end_backup()
 
+        # Re-open backup checker
+        sub.Popen(
+            ['python3', SRC_BACKUP_CHECKER_PY], 
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
+    
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()

@@ -7,6 +7,10 @@ from prepare_backup import PREPAREBACKUP
 from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
 
+
+MAIN_INI_FILE = UPDATEINIFILE()
+MAIN_PREPARE = PREPAREBACKUP()
+
 backup_home_dict = {}
 items_to_backup_dict = {}
 
@@ -524,9 +528,6 @@ def need_to_backup_analyse():
         
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN_PREPARE = PREPAREBACKUP()
-
     # Update notification
     print('Analysing backup...')
     notification_message('Analysing backup...')
@@ -538,8 +539,7 @@ if __name__ == '__main__':
         # Prepare backup
         if MAIN_PREPARE.prepare_the_backup():
             # Backing up to True
-            MAIN_INI_FILE.set_database_value(
-                'STATUS', 'backing_up_now', 'True') 
+            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
             
             print('Calling backup now...')
 
@@ -551,5 +551,10 @@ if __name__ == '__main__':
 
     else:
         # Backing up to False
-        MAIN_INI_FILE.set_database_value(
-            'STATUS', 'backing_up_now', 'False') 
+        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')   
+
+        # Re.open backup checker
+        sub.Popen(
+            ['python3', SRC_BACKUP_CHECKER_PY], 
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
