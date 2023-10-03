@@ -47,31 +47,39 @@ def time_to_backup():
     
 
 if __name__ == '__main__':
-    # Create the main backup folder
-    if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
-        if MAIN_PREPARE.prepare_the_backup():
-            # Backup now
-            sub.run(
-                ['python3', SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+    # Has connection to the backup device
+    if is_connected(MAIN_INI_FILE.hd_hd()):
+        # Create the main backup folder
+        if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+            if MAIN_PREPARE.prepare_the_backup():
+                # Backup now
+                sub.run(
+                    ['python3', SRC_BACKUP_NOW_PY], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
 
     while True:
         # Not current backing up
         if not MAIN_INI_FILE.current_backing_up():
-            print('Backup checker: ON')
+            print('Backup checker   : ON')
 
             # Turn on/off backup checker
             if not MAIN_INI_FILE.automatically_backup():
                 print("Automatically backup is OFF.")
                 exit()
             
-            # Has connection
+            # Has connection to the backup device
             if is_connected(MAIN_INI_FILE.hd_hd()):
+                print('Backup connection: ON')
+
                 # Check for a new backup
                 check_backup()
+
+            else:
+                print('Backup connection: OFF')
 
         else:
             print('Backup checker: PAUSED')
         
+        print()
         time.sleep(5)

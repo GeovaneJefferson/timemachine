@@ -2,6 +2,8 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 
 
+MAIN_INI_FILE = UPDATEINIFILE()
+
 def calculate_time_left_to_backup():
     # Current time
     current_time = datetime.now()
@@ -28,5 +30,4 @@ def calculation(time_left):
             
 
 if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
     pass
