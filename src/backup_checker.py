@@ -23,11 +23,14 @@ def check_backup():
     print()
 
     # Time to backup
-    if current_time in str(1432):
+    if current_time in MILITARY_TIME_OPTION:
         # Time to backup
         time_to_backup(current_time)
     
 def time_to_backup(current_time):
+    # Start backup analyses
+    print("Calling analyses...")
+    
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 
@@ -37,10 +40,7 @@ def time_to_backup(current_time):
     
     # Backup wallpaper
     backup_wallpaper()
-    
-    # Start backup analyses
-    print("Calling analyses...")
-    
+
     sub.Popen(
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
