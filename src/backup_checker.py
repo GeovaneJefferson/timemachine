@@ -4,7 +4,7 @@ from check_connection import is_connected
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
-import error_catcher as error_catcher
+import error_catcher
 
 # Handle signal
 signal.signal(signal.SIGINT, error_catcher.signal_exit)
@@ -49,6 +49,9 @@ def time_to_backup(current_time):
     exit()
 
 if __name__ == '__main__':
+    # Boken pipe retries
+    retries = 0
+
     # Has connection to the backup device
     if is_connected(MAIN_INI_FILE.hd_hd()):
         # Create the main backup folder
@@ -61,27 +64,31 @@ if __name__ == '__main__':
                         stderr=sub.PIPE)
 
     while True:
-        # Not current backing up
-        if not MAIN_INI_FILE.current_backing_up():
-            print('Backup checker   : ON')
+        try:
+            # Not current backing up
+            if not MAIN_INI_FILE.current_backing_up():
+                print('Backup checker   : ON')
 
-            # Turn on/off backup checker
-            if not MAIN_INI_FILE.automatically_backup():
-                print("Automatically backup is OFF.")
-                exit()
-            
-            # Has connection to the backup device
-            if is_connected(MAIN_INI_FILE.hd_hd()):
-                print('Backup connection: ON')
+                # Turn on/off backup checker
+                if not MAIN_INI_FILE.automatically_backup():
+                    print("Automatically backup is OFF.")
+                    break
+                
+                # Has connection to the backup device
+                if is_connected(MAIN_INI_FILE.hd_hd()):
+                    print('Backup connection: ON')
 
-                # Check for a new backup
-                check_backup()
+                    # Check for a new backup
+                    check_backup()
+
+                else:
+                    print('Backup connection: OFF')
 
             else:
-                print('Backup connection: OFF')
+                print('Backup checker: PAUSED')
+            
+            print()
+            time.sleep(5)
 
-        else:
-            print('Backup checker: PAUSED')
-        
-        print()
-        time.sleep(5)
+        except Exception as e:
+            pass

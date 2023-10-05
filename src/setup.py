@@ -14,6 +14,7 @@ import locale
 import datetime
 import sqlite3
 import logging
+import traceback
 
 from stylesheet import *
 from pathlib import Path
@@ -237,7 +238,7 @@ SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # Log
-LOG_LOCATION = f'{HOME_USER}/Documents/.log_time_machine.txt' 
+LOG_LOCATION = f'{HOME_USER}/.log_time_machine.txt' 
 
 # File extensions
 TXT_TYPES = [

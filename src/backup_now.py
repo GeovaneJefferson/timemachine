@@ -157,6 +157,9 @@ class BACKUP:
                         stdout=sub.PIPE, stderr=sub.PIPE)
                 
         else:
+            # Static time value, fx. 10-00
+            STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
+
             # Read the include file and process each item's information
             with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
                 lines = f.readlines()
@@ -183,6 +186,9 @@ class BACKUP:
                             # Sent to main backup folder
                             destination_location = (
                                 f'{MAIN_INI_FILE.main_backup_folder()}/{extracted_folder_name}')
+
+                            # Remove invalid keys
+                            destination_location = destination_location.replace('../','')
                         
                         ##########################################################
                         # LATEST DATE/TIME
@@ -191,11 +197,21 @@ class BACKUP:
                             # Sent to a new date/time backup folder
                             destination_location = (
                                 f'{MAIN_INI_FILE.time_folder_format()}/{extracted_folder_name}')
-                        
-                        # Create current directory in backup device
-                        if not os.path.exists(destination_location):
-                            # Create folder
-                            os.makedirs(destination_location, exist_ok=True)
+                            
+                            # Static time folder 
+                            # So it won't update if backup passes more than one minute
+                            destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
+                            destination_location = '/'.join(destination_location)
+                            # Add static time to it
+                            destination_location = (destination_location + 
+                                '/' + STATIC_TIME_FOLDER)
+
+                        # Is a dir
+                        if os.path.isdir(destination_location):
+                            # Create current dir in backup device
+                            if not os.path.exists(destination_location):
+                                # Create folder
+                                os.makedirs(destination_location, exist_ok=True)
 
                         # Backup file
                         if os.path.isfile(location):

@@ -198,27 +198,32 @@ def check_this_item(
     else:
         # Is a dir
         if os.path.isdir(item_path):
-            # Dir has been updated at size
-            if get_item_diff(
-                item_path,
-                dst_full_location):
-            
-                # Search in the current dir
-                search_in_main_dir(
-                    item_name, 
+            # Check if custom dst exists
+            if os.path.exists(dst_full_location):
+                # Dir has been updated at size
+                if get_item_diff(
                     item_path,
-                    dst_full_location)
+                    dst_full_location):
+                
+                    # Search in the current dir
+                    search_in_main_dir(
+                        item_name, 
+                        item_path,
+                        dst_full_location)
         
         else:
-            # File has been updated at size
-            if get_item_diff(
-                item_path,
-                dst_full_location):
-            
-                # Item has been updated
-                add_to_backup_dict(
-                    item_name, item_path, 'UPDATED')
-  
+            # Check if custom dst exists
+            if os.path.exists(dst_full_location):
+                    
+                # File has been updated at size
+                if get_item_diff(
+                    item_path,
+                    dst_full_location):
+                
+                    # Item has been updated
+                    add_to_backup_dict(
+                        item_name, item_path, 'UPDATED')
+      
 def is_new_item(main_custom_full_location):
     # Check if item location in backup exist
     if not os.path.exists(main_custom_full_location):
@@ -342,7 +347,7 @@ def add_to_home_dict(item_name, item_path):
 def get_item_diff(
         item_path,
         dst):
-    
+
     # Compare item from home -> item from .main bakckup
     if (get_item_size(item_path) != get_item_size(dst)): 
         return True
@@ -351,11 +356,11 @@ def get_item_diff(
         return False
 
 def add_to_backup_dict(item_name, item_path, status):
-    # print('Added:')
-    # print(f"        -Filename : {item_name}")
-    # print(f"        -Location : {item_path}")
-    # print(f"        -Status   : {status}")
-    # print()
+    print('Added:')
+    print(f"        -Filename : {item_name}")
+    print(f"        -Location : {item_path}")
+    print(f"        -Status   : {status}")
+    print()
 
     # if os.path.isdir(item_path):
     #     # Add item to dict

@@ -294,7 +294,8 @@ def create_base_folders():
 def create_date_and_time_folder():
     # Create folder with current date
     if not os.path.exists(MAIN_INI_FILE.date_folder_format()):
-        command = f"{str(MAIN_INI_FILE.date_folder_format())}"
+        command = MAIN_INI_FILE.date_folder_format()
+
         sub.run(
             ["mkdir", command], 
             stdout=sub.PIPE, 
@@ -302,7 +303,8 @@ def create_date_and_time_folder():
 
     # Create folder inside the current date with current time
     if not os.path.exists(MAIN_INI_FILE.time_folder_format()):
-        command = f"{str(MAIN_INI_FILE.time_folder_format())}"
+        command = MAIN_INI_FILE.time_folder_format()
+        
         sub.run(
             ["mkdir", command], 
             stdout=sub.PIPE, 

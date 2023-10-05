@@ -4,43 +4,72 @@ from setup import *
 NOW = datetime.now()
 
 class UPDATEINIFILE:
+    def report_error(self, e):
+        # TODO
+        # Need to limit log size
+        
+        # Capture the current timestamp
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Get the exception traceback as a string
+        traceback_str = traceback.format_exc()
+        
+        # Write the timestamp, exception message, and traceback to the log file
+        with open(LOG_LOCATION, 'a') as writer:
+            writer.write(f"Timestamp: {timestamp}\n")
+            writer.write(f"Exception: {str(e)}\n")
+            writer.write(f"Traceback:\n{traceback_str}\n")
+        
     def get_database_value(self, table, key):
         # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
+        # conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+        
+        try:
+            with sqlite3.connect(SRC_USER_CONFIG_DB) as conn:
+                cursor = conn.cursor()
 
-        # Query the value from the specified table and key
-        cursor.execute(f"SELECT value FROM {table} WHERE key = ?", (f'{key}',))
-        result = cursor.fetchone()
+                # Query the value from the specified table and key
+                cursor.execute(f"SELECT value FROM {table} WHERE key = ?", (f'{key}',))
+                result = cursor.fetchone()
 
-        # Close the connection
-        conn.close()
+            # Close the connection
+            # conn.close()
 
-        if result:
-            if result[0] == 'True' or result[0] == 'Yes':
-                return True
-            
-            elif result[0] == 'False' or result[0] == 'No':
-                return False
+            if result:
+                if result[0] == 'True' or result[0] == 'Yes':
+                    return True
+                
+                elif result[0] == 'False' or result[0] == 'No':
+                    return False
 
+                else:
+                    return result[0]  # The value is the first element in the result tuple
             else:
-                return result[0]  # The value is the first element in the result tuple
-        else:
-            return None  # Return None if the key doesn't exist
+                return None  # Return None if the key doesn't exist
+
+        except Exception as e:
+            pass
 
     def set_database_value(self, table, key, value):
         # Connect to the SQLite database
-        conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-        cursor = conn.cursor()
+        # conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+
+        try:
+            with sqlite3.connect(SRC_USER_CONFIG_DB) as conn:
+                cursor = conn.cursor()
+                    
+                cursor.execute(f'''
+                    INSERT OR REPLACE INTO {table} (key, value)
+                    VALUES (?, ?)
+                ''', (f'{key}', f'{value}'))
+
+                conn.commit()
+
+            # conn.close()
+        
+        except Exception as e:
+            pass
             
-        cursor.execute(f'''
-            INSERT OR REPLACE INTO {table} (key, value)
-            VALUES (?, ?)
-        ''', (f'{key}', f'{value}'))
-
-        conn.commit()
-        conn.close()
-
     def ini_info_wallpaper(self):
         CONFIG = configparser.ConfigParser()
         CONFIG.read(f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}")
@@ -319,5 +348,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.get_database_value('INFO', 'packagermanager'))
+    # print(MAIN_INI_FILE.current_time())
     pass
