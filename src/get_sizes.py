@@ -167,7 +167,9 @@ def get_item_size(item_path):
         item_size = os.path.getsize(item_path)
   
     try:
+        # In bytes
         return item_size
+    
     except UnboundLocalError:
         return 0
 

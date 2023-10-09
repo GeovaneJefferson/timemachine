@@ -452,6 +452,7 @@ class WelcomeScreen(QWidget):
 		# Create a application exlude file
 		if os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
 			os.remove(MAIN_INI_FILE.exclude_applications_location())
+			
 		else:
 			dst = MAIN_INI_FILE.exclude_applications_location()
 			sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)

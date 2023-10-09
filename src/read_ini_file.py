@@ -5,9 +5,20 @@ NOW = datetime.now()
 
 class UPDATEINIFILE:
     def report_error(self, e):
-        # TODO
-        # Need to limit log size
+        from get_sizes import get_item_size
         
+        # TODO
+        # Max 1M size
+        if get_item_size(LOG_LOCATION) == 1000000:
+            if os.path.exists(LOG_LOCATION):
+                os.remove(LOG_LOCATION)
+
+                # Re create it
+                sub.run(
+                    ['touch', LOG_LOCATION],
+                    stdout=sub.PIPE,
+                    stderr=sub.PIPE)
+                
         # Capture the current timestamp
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         

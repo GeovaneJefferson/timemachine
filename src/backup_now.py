@@ -5,13 +5,10 @@ from get_folders_to_be_backup import get_folders
 # from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
-from get_backup_date import get_backup_date
 from get_time import today_date
 from backup_status import backup_status
-from get_sizes import get_item_size
-from get_sizes import number_of_item_to_backup
+from get_sizes import get_item_size, number_of_item_to_backup
 from backup_hidden import start_backup_hidden_home
-
 import error_catcher
 
 # Handle signal
