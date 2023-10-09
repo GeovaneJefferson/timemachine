@@ -100,7 +100,10 @@ class MainWindow(QMainWindow):
         self.startup_read_db()
 
         # Check for update
-        self.check_for_updates()
+        try:
+            self.check_for_updates()
+        except:
+            pass
 
         # Create essential folders, if a backup device was registered
         if self.is_device_registered():
