@@ -33,13 +33,8 @@ safe_added_space = 2147483648  # 2 GB
 
 def is_first_backup():
     # First backup made by Time Machine
-    check_inside = [] 
-
-    for search in os.listdir(MAIN_INI_FILE.main_backup_folder()):
-        check_inside.append(search)
-
     # Nothing inside MAIN backup folder
-    if not check_inside:
+    if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
         return True
     
     else:
@@ -416,9 +411,6 @@ class PREPAREBACKUP:
 
 if __name__ == '__main__':
     MAIN_PREPARE = PREPAREBACKUP()
-
-    # Start preparation
-    MAIN_PREPARE.prepare_the_backup()
 
     # Send notification status
     notification_message('')

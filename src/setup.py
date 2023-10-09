@@ -42,7 +42,7 @@ from PySide6.QtWidgets import (
     QSystemTrayIcon, QMenu, QStackedWidget,QListView,
     QFileSystemModel,QDialog,QTextBrowser,
     QTreeWidget, QTreeWidgetItem, QAbstractItemView,
-    QButtonGroup
+    QButtonGroup, QProgressBar
     )
 from PySide6.QtSvgWidgets import QSvgWidget
 

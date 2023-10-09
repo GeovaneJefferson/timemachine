@@ -25,6 +25,10 @@ from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
 from prepare_backup import create_base_folders
+from analyse import need_to_backup_analyse
+
+
+MAIN_INI_FILE = UPDATEINIFILE()
 
 
 choose_device = []
@@ -502,6 +506,18 @@ class SelectDisk(QDialog):
 
         # Close dialog window
         self.on_cancel_dialog_button_clicked()
+
+        # if need_to_backup_analyse():
+        #     # Show preparing backup dialog
+        #     MAIN_PREPARING.show_preparing_dialog()
+
+        #     # Call analyses
+        #     sub.run(
+        #         ['python3', SRC_ANALYSE_PY], 
+        #             stdout=sub.PIPE, 
+        #             stderr=sub.PIPE)
+            
+        #     MAIN_PREPARING.close()
     
     def on_device_clicked(self, device):
         # Enable use disk button
@@ -739,12 +755,35 @@ class OptionsWindow(QDialog):
     #     self.close()
 
 
+# class PreparingDialog(QDialog):
+#     def __init__(self, parent=True):
+#         super().__init__()
+#         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        
+#         self.setModal(True)
+
+#     def show_preparing_dialog(self):
+#         # Progress bar
+#         self.pb_bar = QProgressBar(self, minimum=0, maximum=0)
+#         self.pb_bar.setValue(0)
+
+#         layout = QVBoxLayout()
+#         self.label = QLabel(f'Preparing "{MAIN_INI_FILE.hd_name()}..."')
+        
+#         layout.addWidget(self.label)
+#         layout.addWidget(self.pb_bar)
+
+#         self.setLayout(layout)
+
+#         self.show()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    MAIN_INI_FILE = UPDATEINIFILE()
 
     # Main window
     MAIN = MainWindow()
+    # MAIN_PREPARING = PreparingDialog()
 
     # Window icon
     MAIN.setWindowIcon(QIcon(SRC_BACKUP_ICON))

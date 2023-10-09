@@ -124,7 +124,7 @@ class BACKUP:
         item_sum_size = 0 
 
         # Base backup folder is empty. (TMB)
-        if not any(os.scandir(MAIN_INI_FILE.backup_dates_location())):
+        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
             # Backup home to the main backup folder
             for folder in get_folders():
                 folder = handle_spaces(folder)
