@@ -507,6 +507,13 @@ def get_select_backup_home():
         pass
 
 def need_to_backup_analyse():
+    # Create main backup folder
+    if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+        sub.run(
+            ['mkdir', MAIN_INI_FILE.main_backup_folder()], 
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
+    
     # First backup to main backup folder
     if any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
         # Get all backup dates
