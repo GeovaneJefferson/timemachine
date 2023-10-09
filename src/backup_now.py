@@ -18,6 +18,7 @@ import error_catcher
 signal.signal(signal.SIGINT, error_catcher.signal_exit)
 signal.signal(signal.SIGTERM, error_catcher.signal_exit)
     
+
 #########################################################
 # KDE
 #########################################################
@@ -121,16 +122,12 @@ def get_gtk_users_cursor_name():
     
 
 class BACKUP:
-    async def backup_hidden_home(self):
-        # Start backing up hidden files/folder by getting users DE name
-        await start_backup_hidden_home(get_user_de())
- 
     async def backup_home(self):
         item_minus = 0
         item_sum_size = 0 
 
-        # Main folder is empty
-        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+        # Base backup folder is empty. (TMB)
+        if not any(os.scandir(MAIN_INI_FILE.backup_dates_location())):
             # Backup home to the main backup folder
             for folder in get_folders():
                 folder = handle_spaces(folder)
@@ -155,7 +152,10 @@ class BACKUP:
                 sub.run(
                     ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, stderr=sub.PIPE)
-                
+
+                # Get output
+                # print(process.stdout)
+
         else:
             # Static time value, fx. 10-00
             STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
@@ -276,6 +276,10 @@ class BACKUP:
                     except IndexError:
                         pass
 
+    async def backup_hidden_home(self):
+        # Start backing up hidden files/folder by getting users DE name
+        await start_backup_hidden_home(get_user_de())
+ 
     async def end_backup(self):
         print('Ending backup')
 
@@ -319,9 +323,20 @@ class BACKUP:
         MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
 
     async def main(self):
-        await self.backup_hidden_home()
-        await self.backup_home()
-        await self.end_backup()
+        try:
+            await self.backup_home()
+            # await self.backup_hidden_home()
+            await self.end_backup()
+
+        except Exception as e:
+            print(e)
+            MAIN_INI_FILE.report_error(e)
+
+            # Set backup now to False
+            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+
+            # Exit
+            exit()
 
         # Re-open backup checker
         sub.Popen(

@@ -58,7 +58,7 @@ GITHUB_HOME = "https://github.com/GeovaneJefferson/timemachine/issues"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.6.093 dev"
+APP_VERSION = "v1.1.6.094 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"

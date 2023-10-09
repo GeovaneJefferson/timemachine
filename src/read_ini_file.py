@@ -41,7 +41,10 @@ class UPDATEINIFILE:
                 
                 elif result[0] == 'False' or result[0] == 'No':
                     return False
-
+      
+                elif result[0] == 'None':
+                   return None
+                   
                 else:
                     return result[0]  # The value is the first element in the result tuple
             else:

@@ -103,11 +103,12 @@ class APP:
         
     def has_connection(self):
         # User has registered a device name
-        if MAIN_INI_FILE.hd_hd() != "None":
+        if MAIN_INI_FILE.hd_hd() is not None:
             # Can device be found?
             if is_connected(MAIN_INI_FILE.hd_hd()):
                 # Is backup now running? (chech if file exists)
                 self.status_on()
+
             else:
                 if MAIN_INI_FILE.automatically_backup():
                     self.status_off()
@@ -125,8 +126,7 @@ class APP:
 
     def status_on(self):
         # Backing up right now False
-        if not MAIN_INI_FILE.get_database_value(
-            'STATUS', 'backing_up_now'):
+        if not MAIN_INI_FILE.current_backing_up():
             # Change color to White
             self.change_color("White")
 
@@ -141,9 +141,7 @@ class APP:
             self.change_color("Blue")
 
             # Notification information
-            self.last_backup_information.setText(
-                MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
-
+            self.last_backup_information.setText(MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
             self.last_backup_information2.setText(' ')
         
             # Disable
@@ -184,14 +182,6 @@ class APP:
             
             # Clean information 2
             self.last_backup_information2.setText(' ')
-
-    def is_current_restoring(self):
-        if not MAIN_INI_FILE.automatically_backup():
-            if MAIN_INI_FILE.get_database_value("STATUS", "is_restoring"):
-                self.change_color("Yellow")
-
-                self.backup_now_button.setEnabled(False)
-                self.browse_time_machine_backups.setEnabled(False)
 
     def backup_now(self):
         sub.Popen(
@@ -237,6 +227,7 @@ class APP:
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
             return SRC_SYSTEM_BAR_ICON
+        
         else:
             return SRC_SYSTEM_BAR_WHITE_ICON
         

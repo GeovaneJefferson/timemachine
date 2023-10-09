@@ -49,19 +49,22 @@ def time_to_backup(current_time):
     exit()
 
 if __name__ == '__main__':
-    # Boken pipe retries
-    retries = 0
-
     # Has connection to the backup device
     if is_connected(MAIN_INI_FILE.hd_hd()):
         # Create the main backup folder
         if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
             if MAIN_PREPARE.prepare_the_backup():
+                # Set backup now to True
+                MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
+
                 # Backup now
-                sub.run(
+                sub.Popen(
                     ['python3', SRC_BACKUP_NOW_PY], 
                         stdout=sub.PIPE, 
                         stderr=sub.PIPE)
+
+                # Exit
+                exit()
 
     while True:
         try:
