@@ -100,10 +100,7 @@ class MainWindow(QMainWindow):
         self.startup_read_db()
 
         # Check for update
-        try:
-            self.check_for_updates()
-        except:
-            pass
+        self.check_for_updates()
 
         # Create essential folders, if a backup device was registered
         if self.is_device_registered():
@@ -224,18 +221,22 @@ class MainWindow(QMainWindow):
     def check_for_updates(self):
         print('Checking for updates...')
         
-        # Check for git updates
-        git_update_command = os.popen(
-            'git remote update && git status -uno').read()
+        try:
+            # Check for git updates
+            git_update_command = os.popen(
+                'git remote update && git status -uno').read()
 
-        # Updates found
-        if "Your branch is behind" in git_update_command:
-            # Show update button
-            self.ui.update_available_button.show()
-        
-        else:
-            print("No new updates available...")
-    
+            # Updates found
+            if "Your branch is behind" in git_update_command:
+                # Show update button
+                self.ui.update_available_button.show()
+            
+            else:
+                print("No new updates available...")
+
+        except:
+            pass
+
     def on_update_button_clicked(self):
         # Set system tray to False
         MAIN_INI_FILE.set_database_value(
