@@ -26,6 +26,7 @@ from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
 from prepare_backup import create_base_folders
 from analyse import need_to_backup_analyse
+from prepare_backup import PREPAREBACKUP
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -102,11 +103,11 @@ class MainWindow(QMainWindow):
         # Check for update
         self.check_for_updates()
 
-        # Create essential folders, if a backup device was registered
-        if self.is_device_registered():
-            if not os.path.exists(MAIN_INI_FILE.backup_folder_name()):
-                # Create essensial folder exists in backup device
-                create_base_folders()
+        # # Create essential folders, if a backup device was registered
+        # if self.is_device_registered():
+        #     if not os.path.exists(MAIN_INI_FILE.backup_folder_name()):
+        #         # Create essensial folder exists in backup device
+        #         create_base_folders()
 
         timer.timeout.connect(self.running)
         timer.start(2000)
@@ -199,7 +200,7 @@ class MainWindow(QMainWindow):
             
     def is_device_registered(self):
         # Check if a backup device was registered
-        if MAIN_INI_FILE.hd_name() != "None":
+        if MAIN_INI_FILE.hd_name() is not None:
             return True
     
     ################################################################################
@@ -511,18 +512,33 @@ class SelectDisk(QDialog):
         # Close dialog window
         self.on_cancel_dialog_button_clicked()
 
-        # if need_to_backup_analyse():
-        #     # Show preparing backup dialog
-        #     MAIN_PREPARING.show_preparing_dialog()
+        # Make the first backup
+        self.make_first_backup()
 
-        #     # Call analyses
-        #     sub.run(
-        #         ['python3', SRC_ANALYSE_PY], 
-        #             stdout=sub.PIPE, 
-        #             stderr=sub.PIPE)
+    def make_first_backup(self):
+        # Base folder do no exists (TMB)
+        if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
+            MAIN_PREPARING_DIALOG.show_preparing_dialog()
             
-        #     MAIN_PREPARING.close()
-    
+            # Create essential folders
+            create_base_folders()
+        
+            # Check backup device sizes for the backup
+            if MAIN_PREPARE.prepare_the_backup():
+                # Close preparing dialog
+                MAIN_PREPARING_DIALOG.close()
+
+                # Backing up to True
+                MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
+                
+                print('Calling backup now...')
+
+                # Backup now
+                sub.Popen(
+                    ['python3', SRC_BACKUP_NOW_PY], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
+
     def on_device_clicked(self, device):
         # Enable use disk button
         self.dialog_ui.use_disk_button_dialog.setEnabled(True)
@@ -759,27 +775,26 @@ class OptionsWindow(QDialog):
     #     self.close()
 
 
-# class PreparingDialog(QDialog):
-#     def __init__(self, parent=True):
-#         super().__init__()
-#         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+class PreparingDialog(QDialog):
+    def __init__(self, parent=True):
+        super().__init__()
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setModal(True)
+
+    def show_preparing_dialog(self):
+        # Progress bar
+        self.pb_bar = QProgressBar(self, minimum=0, maximum=0)
+        self.pb_bar.setValue(0)
+
+        layout = QVBoxLayout()
+        self.label = QLabel(f'Preparing "{MAIN_INI_FILE.hd_name()}..."')
         
-#         self.setModal(True)
+        layout.addWidget(self.label)
+        layout.addWidget(self.pb_bar)
 
-#     def show_preparing_dialog(self):
-#         # Progress bar
-#         self.pb_bar = QProgressBar(self, minimum=0, maximum=0)
-#         self.pb_bar.setValue(0)
+        self.setLayout(layout)
 
-#         layout = QVBoxLayout()
-#         self.label = QLabel(f'Preparing "{MAIN_INI_FILE.hd_name()}..."')
-        
-#         layout.addWidget(self.label)
-#         layout.addWidget(self.pb_bar)
-
-#         self.setLayout(layout)
-
-#         self.show()
+        self.show()
 
 
 if __name__ == "__main__":
@@ -787,7 +802,8 @@ if __name__ == "__main__":
 
     # Main window
     MAIN = MainWindow()
-    # MAIN_PREPARING = PreparingDialog()
+    MAIN_PREPARING_DIALOG = PreparingDialog()
+    MAIN_PREPARE = PREPAREBACKUP()
 
     # Window icon
     MAIN.setWindowIcon(QIcon(SRC_BACKUP_ICON))
