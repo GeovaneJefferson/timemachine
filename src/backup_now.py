@@ -167,14 +167,9 @@ class BACKUP:
                         size_string = lines[i + 1].split(':')[-1].strip()
                         size = int(size_string.split()[0])
                         location = lines[i + 2].split(':')[-1].strip()
-                        status = lines[i + 3].split(':')[-1].strip()
+                        destination = lines[i + 3].split(':')[-1].strip()
+                        status = lines[i + 4].split(':')[-1].strip()
                         
-                        # Remove home username
-                        remove_username = os.path.relpath(location, os.curdir)
-                        
-                        # Extract location's folder name
-                        extracted_folder_name = remove_username.replace('../../../', '')
-
                         ##########################################################
                         # .MAIN BACKUP
                         ##########################################################
@@ -182,7 +177,7 @@ class BACKUP:
                         if status == 'NEW':
                             # Sent to main backup folder
                             destination_location = (
-                                f'{MAIN_INI_FILE.main_backup_folder()}/{extracted_folder_name}')
+                                f'{MAIN_INI_FILE.main_backup_folder()}/{destination}')
 
                             # Remove invalid keys
                             destination_location = destination_location.replace('../','')
@@ -193,28 +188,52 @@ class BACKUP:
                         elif status == 'UPDATED':
                             # Sent to a new date/time backup folder
                             destination_location = (
-                                f'{MAIN_INI_FILE.time_folder_format()}/{extracted_folder_name}')
+                                f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
                             
                             # Static time folder 
                             # So it won't update if backup passes more than one minute
                             destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
                             destination_location = '/'.join(destination_location)
+                            
                             # Add static time to it
                             destination_location = (destination_location + 
-                                '/' + STATIC_TIME_FOLDER)
+                                '/' + STATIC_TIME_FOLDER + destination)
+                        
+                        print(
+                            'Backing up item:', location, 'to', destination_location)
+                        
+                        # # Remove home username
+                        # remove_username = os.path.relpath(location, os.curdir)
+                        
+                        # # Extract location's folder name
+                        # extracted_folder_name = remove_username.replace('../../../', '')
+                        # extracted_folder_name = remove_username.replace('../', '')
+
+                        print(destination_location)
+
+                        # CREATE DIR IF NECESSARY
+                        # Is a file
+                        if os.path.isfile(destination_location):
+                            # Remove file name
+                            destination_location = destination_location.split('/')[:-1]
+                            destination_location = '/'.join(destination_location)
+                            
+                            # Create folder
+                            os.makedirs(destination_location, exist_ok=True)
 
                         # Is a dir
-                        if os.path.isdir(destination_location):
+                        else:
+                            # Remove file name
+                            destination_location = destination_location.split('/')[:-1]
+                            destination_location = '/'.join(destination_location)
+                            
                             # Create current dir in backup device
-                            if not os.path.exists(destination_location):
-                                # Create folder
-                                os.makedirs(destination_location, exist_ok=True)
+                            # if not os.path.exists(destination_location):
+                            # Create folder
+                            os.makedirs(destination_location, exist_ok=True)
 
                         # Backup file
                         if os.path.isfile(location):
-                            print(
-                                'Backing up file:', location, 'to', destination_location)
-                            
                             # Add to counters
                             item_sum_size += size   # Bytes
                             item_minus += 1 
@@ -234,9 +253,6 @@ class BACKUP:
 
                         # Backup folder
                         elif os.path.isdir(location):
-                            print(
-                                'Backing up folder:', location, 'to', destination_location)
-                            
                             # Add to counters
                             item_sum_size += size   # Bytes
                             item_minus += 1 

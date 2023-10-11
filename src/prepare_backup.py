@@ -387,7 +387,7 @@ class PREPAREBACKUP:
                         # size_string = lines[i + 1].split(':')[-1].strip()
                         # size = int(size_string.split()[0])
                         # location = lines[i + 2].split(':')[-1].strip()
-                        status = lines[i + 3].split(':')[-1].strip()
+                        status = lines[i + 4].split(':')[-1].strip()
 
                         if status == 'UPDATED':
                             create_date_and_time_folder()

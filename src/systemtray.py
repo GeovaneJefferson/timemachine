@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 from setup import *
 from stylesheet import *
 from check_connection import *

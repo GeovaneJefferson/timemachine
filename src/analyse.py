@@ -356,9 +356,12 @@ def get_item_diff(
         return False
 
 def add_to_backup_dict(item_name, item_path, status):
+    destination = item_path.replace(HOME_USER, '')
+    
     print('Added:')
     print(f"        -Filename : {item_name}")
     print(f"        -Location : {item_path}")
+    print(f"        -Destinat.: {destination}")
     print(f"        -Status   : {status}")
     print()
 
@@ -375,6 +378,7 @@ def add_to_backup_dict(item_name, item_path, status):
         items_to_backup_dict[item_name] = {
             "size": get_item_size(item_path),
             "location": item_path,
+            "destination": destination,
             "status": status
             }
     
@@ -383,6 +387,7 @@ def add_to_backup_dict(item_name, item_path, status):
         items_to_backup_dict[item_name] = {
             "size": get_item_size(item_path),
             "location": item_path,
+            "destination": destination,
             "status": status
             }
         
@@ -393,11 +398,13 @@ def write_to_file():
     with open(MAIN_INI_FILE.include_to_backup(), "w") as f:
         for item_name, info in items_to_backup_dict.items():
             item_path = info['location']
+            destination = info['destination']
             status = info['status']
 
             f.write(f"Filename: {item_name}\n")
             f.write(f"Size: {info['size']} bytes\n")
             f.write(f"Location: {item_path}\n")
+            f.write(f"Destination: {destination}\n")
             f.write(f"Status: {status}\n")
             f.write("\n")
 
