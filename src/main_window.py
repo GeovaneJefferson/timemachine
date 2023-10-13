@@ -518,7 +518,7 @@ class SelectDisk(QDialog):
     def make_first_backup(self):
         # Base folder do no exists (TMB)
         if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
-            MAIN_PREPARING_DIALOG.show_preparing_dialog()
+            # MAIN_PREPARING_DIALOG.show_preparing_dialog()
             
             # Create essential folders
             create_base_folders()
@@ -526,7 +526,7 @@ class SelectDisk(QDialog):
             # Check backup device sizes for the backup
             if MAIN_PREPARE.prepare_the_backup():
                 # Close preparing dialog
-                MAIN_PREPARING_DIALOG.close()
+                # MAIN_PREPARING_DIALOG.close()
 
                 # Backing up to True
                 MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 

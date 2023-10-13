@@ -169,7 +169,7 @@ class APP:
                 # Show latest backup date
                 if latest_backup_date() is not None:
                     self.last_backup_information.setText(
-                        f'Latest backup to: {MAIN_INI_FILE.hd_name()}')
+                        f'Latest Backup to: "{MAIN_INI_FILE.hd_name()}"')
                     self.last_backup_information2.setText(latest_backup_date_label())
                 else:
                     # Next backup label

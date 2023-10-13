@@ -342,14 +342,17 @@ class BACKUP:
             await self.end_backup()
 
         except Exception as e:
-            print(e)
             MAIN_INI_FILE.report_error(e)
 
             # Set backup now to False
             MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+            
+            # Unfinished to Yes 
+            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
-            # Exit
-            exit()
+
+        # Wait few seconds
+        time.sleep(60)
 
         # Re-open backup checker
         sub.Popen(
