@@ -57,9 +57,11 @@ def get_all_backup_folders():
     # Connect to the SQLite database
     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
     cursor = conn.cursor()
+
     # Query all keys from the specified table
     cursor.execute(f"SELECT key FROM FOLDER")
     keys = [row[0] for row in cursor.fetchall()]
+    
     # Close the connection
     conn.close()
 
@@ -290,10 +292,14 @@ class MainWindow(QMainWindow):
         # Clean previous results
         self.delete_all_results()
 
-        inside_current_folder = f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/" \
-                                f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
-                                f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
-                                f"{self.CURRENT_FOLDER}"
+        # inside_current_folder = f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/" \
+        #                         f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
+        #                         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
+        #                         f"{self.CURRENT_FOLDER}"
+
+        inside_current_folder = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}'
+
+        print(inside_current_folder)
 
         # Add options to QTree
         file_list = []
@@ -371,7 +377,7 @@ class MainWindow(QMainWindow):
 
         except UnboundLocalError:
             # If folder is empty, change date, until find something
-            print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
+            # print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
             # self.COUNTER_FOR_DATE += 1
             
             for index in range(self.ui.dates_layout.count()):
@@ -546,11 +552,14 @@ class MainWindow(QMainWindow):
         # If a file
         if "." in item_txt:
             self.selected_item_extension = str(item_txt).split('.')[-1]
-            self.selected_item_full_location = f"{MAIN_INI_FILE.hd_hd()}/" \
-                                               f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/" \
-                                               f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
-                                               f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}" \
-                                               f"/{self.CURRENT_FOLDER}/{item_txt}"
+            # self.selected_item_full_location = f"{MAIN_INI_FILE.hd_hd()}/" \
+            #                                    f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/" \
+            #                                    f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
+            #                                    f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}" \
+            #                                    f"/{self.CURRENT_FOLDER}/{item_txt}"
+            
+            self.selected_item_full_location = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}/{item_txt}'
+
 
             # Image
             if self.selected_item_extension in IMAGE_TYPES:
@@ -594,7 +603,7 @@ class MainWindow(QMainWindow):
             self.ui.small_preview_text.moveCursor(QTextCursor.Start)
             self.ui.small_preview_text.setStyleSheet(
                 """
-                    font-size: 8px;
+                    font-size: 11px;
                 """)
 
     def add_to_restore(self):
@@ -666,7 +675,11 @@ class MainWindow(QMainWindow):
             print(f"Opening {HOME_USER}/{self.CURRENT_FOLDER}...")
 
             dst = HOME_USER + "/" + self.CURRENT_FOLDER
-            sub.run(["xdg-open", dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            sub.run(
+                ["xdg-open", dst],
+                stdout=sub.PIPE,
+                stderr=sub.PIPE)
+            
             exit()
 
     def start_restore(self):
@@ -745,7 +758,7 @@ class PreviewWindow(QDialog):
         self.setModal(True)
         self.setWindowFlag(Qt.FramelessWindowHint)
 
-        self.file_directory = ""
+        self.file_directory = ''
 
         self.layout = QVBoxLayout(self)
 
@@ -756,7 +769,7 @@ class PreviewWindow(QDialog):
         open_file_button.clicked.connect(self.open_file_button_clicked)
 
         if isinstance(pixmap, QPixmap):
-            pixmap = pixmap.scaledToWidth((screen_height - 440), Qt.SmoothTransformation)
+            pixmap = pixmap.scaledToWidth((screen_height - 240), Qt.SmoothTransformation)
             preview_label = QLabel(self)
             preview_label.setPixmap(pixmap)
 
@@ -815,16 +828,17 @@ if __name__ == "__main__":
 
     # Get all backup folders
     get_all_backup_folders()
+
     # Add all backup folders
     MAIN.add_backup_folders()
 
-    # Get all backup dates
-    MAIN.get_all_backup_dates()
-    # Add all backup dates
-    MAIN.add_backup_dates()
+    # # Get all backup dates
+    # MAIN.get_all_backup_dates()
+    # # Add all backup dates
+    # MAIN.add_backup_dates()
 
     # Add  backup times folders for the current date folder
-    MAIN.add_backup_times()
+    # MAIN.add_backup_times()
 
     MAIN.update_labels()
 
