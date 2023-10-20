@@ -3,7 +3,6 @@ from stylesheet import *
 from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
-from get_time import *
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
@@ -124,8 +123,17 @@ class APP:
             self.browse_time_machine_backups.setEnabled(False)
 
     def status_on(self):
-        # Backing up right now False
-        if not MAIN_INI_FILE.current_backing_up():
+        # Is not restoring
+        if MAIN_INI_FILE.current_restoring():
+            # Change color to yellow
+            self.change_color("Yellow")
+            
+            # Disable
+            self.backup_now_button.setEnabled(False)
+            self.browse_time_machine_backups.setEnabled(False)
+   
+        # No backup is been made
+        elif not MAIN_INI_FILE.current_backing_up():
             # Change color to White
             self.change_color("White")
 
@@ -166,14 +174,20 @@ class APP:
                     (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
                 
             else:
-                # Show latest backup date
-                if latest_backup_date() is not None:
-                    self.last_backup_information.setText(
+                self.last_backup_information.setText(
                         f'Latest Backup to: "{MAIN_INI_FILE.hd_name()}"')
-                    self.last_backup_information2.setText(latest_backup_date_label())
-                else:
-                    # Next backup label
-                    self.last_backup_information2.setText(next_backup_label())
+                
+                # Show latest backup label
+                self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
+        
+                # # Show latest backup date
+                # if latest_backup_date() is not None:
+                #     self.last_backup_information.setText(
+                #         f'Latest Backup to: "{MAIN_INI_FILE.hd_name()}"')
+                #     self.last_backup_information2.setText(latest_backup_date_label())
+                # else:
+                #     # Next backup label
+                #     self.last_backup_information2.setText(next_backup_label())
                 
         else:
             # Next backup alert
@@ -188,7 +202,7 @@ class APP:
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
-    def change_color(self,color):
+    def change_color(self, color):
         try:
             if self.color != color:
                 if color == "Blue":

@@ -368,9 +368,11 @@ class PREPAREBACKUP:
             # Check if backup device has space enough 
             if has_enough_space(needeed_size_to_backup_home()):
                 # May continue to backup
+                print('Prepare backup: True')
                 return True
 
             else:
+                print('Prepare backup: False')
                 # May not continue to backup
                 return False
 
@@ -394,6 +396,7 @@ class PREPAREBACKUP:
                             break          
 
                 # May continue to backup
+                print('Prepare backup: True')
                 return True
 
             else:
@@ -406,11 +409,14 @@ class PREPAREBACKUP:
                 # MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'True')
                 
                 # May not continue to backup
+                print('Prepare backup: False')
                 return False
 
 
 if __name__ == '__main__':
     MAIN_PREPARE = PREPAREBACKUP()
+
+    MAIN_PREPARE.prepare_the_backup()
 
     # Send notification status
     notification_message('')

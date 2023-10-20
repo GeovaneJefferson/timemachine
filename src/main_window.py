@@ -16,7 +16,6 @@ from get_sizes import (
     get_external_device_used_size,
     get_all_used_backup_device_space)
 
-from get_oldest_backup_date import oldest_backup_date
 from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from update import backup_db_file
@@ -317,9 +316,10 @@ class MainWindow(QMainWindow):
             # Show devices name
             self.ui.external_name_label.setText(f"{MAIN_INI_FILE.hd_name()}")
             # Show oldest backup label
-            self.ui.oldest_backup_label.setText(f"Oldest Backup: {oldest_backup_date()}")
+            self.ui.oldest_backup_label.setText(f"Oldest Backup: {MAIN_INI_FILE.oldest_backup_date()}")
+
             # Show latest backup label
-            self.ui.latest_backup_label.setText(f"Latest Backup: {latest_backup_date_label()}")
+            self.ui.latest_backup_label.setText(f"Latest Backup: {MAIN_INI_FILE.latest_backup_date()}")
         
         except FileNotFoundError:
             # TMB was not yet created in backup device
@@ -513,7 +513,7 @@ class SelectDisk(QDialog):
         self.on_cancel_dialog_button_clicked()
 
         # Make the first backup
-        self.make_first_backup()
+        # self.make_first_backup()
 
     def make_first_backup(self):
         # Base folder do no exists (TMB)
@@ -707,8 +707,8 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
 
             # INFO
-            MAIN_INI_FILE.set_database_value('INFO', 'checked_backup_date', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_to_main', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', 'None')
+            MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_date', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_to_main', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_time_check', 'None')
 

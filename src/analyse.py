@@ -522,7 +522,7 @@ def need_to_backup_analyse():
             stderr=sub.PIPE)
     
     # First backup to main backup folder
-    if any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+    if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
         # Get all backup dates
         get_all_dates()
 
@@ -538,13 +538,13 @@ def need_to_backup_analyse():
 
             print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
             return False
-    
+
     # Needs to backup
     print(GREEN + 'ANALYSE: Need to backup.' + RESET)
     print()
     print('Calling backup now...')
     return True 
-        
+    
 
 if __name__ == '__main__':
     # Update notification

@@ -155,6 +155,12 @@ class UPDATEINIFILE:
     def date_folder_format(self):
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}"
 
+    def current_full_date(self):
+        return f'{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}'
+
+    def current_full_date_plus_time_str(self):
+        return f'{str(self.current_date())}-{str(self.current_month())}-{str(self.current_year())}, {str(self.current_hour())}:{str(self.current_minute())}'
+    
     def time_folder_format(self):
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/{str(self.backup_date())}-{str(self.backup_month())}-{str(self.backup_year())}/{str(self.backup_hour())}-{str(self.backup_minute())}"
 
@@ -163,18 +169,14 @@ class UPDATEINIFILE:
         return NOW.strftime("%H%M")
 
     def oldest_backup_date(self):
-        # Get current date to 'oldest_backup_to_main'
+        # Get current date to 'oldest_backup_date'
         return str(self.get_database_value(
-                'INFO', 'oldest_backup_to_main'))
+                'INFO', 'oldest_backup_date'))
     
-    def latest_backup_date_to_main(self):
-        # Get current date to 'oldest_backup_to_main'
+    def latest_backup_date(self):
+        # Get current date to 'oldest_backup_date'
         return str(self.get_database_value(
-                'INFO', 'latest_backup_to_main'))
-        
-    def latest_checked_backup_time(self):
-        return str(self.get_database_value(
-                'INFO', 'latest_backup_time_check')) 
+                'INFO', 'latest_backup_date'))
 
     def backup_year(self):
         return NOW.strftime("%y")
@@ -218,14 +220,17 @@ class UPDATEINIFILE:
     ####################################################################
     # STATUS
     ####################################################################
-    def checked_backup_date(self):
-        return self.get_database_value('STATUS', 'checked_backup_date') 
+    def last_checked_time(self):
+        return self.get_database_value('STATUS', 'latest_backup_date') 
     
     def automatically_backup(self):
         return self.get_database_value('STATUS', 'automatically_backup') 
     
     def current_backing_up(self):
         return self.get_database_value('STATUS', 'backing_up_now') 
+    
+    def current_restoring(self):
+        return self.get_database_value('STATUS', 'is_restoring') 
 
     ####################################################################
     # MODE
@@ -362,5 +367,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.current_time())
+    # print(MAIN_INI_FILE.current_full_date_plus_time_str())
     pass

@@ -688,11 +688,13 @@ class MainWindow(QMainWindow):
     def start_restore(self):
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
         
-        file_path = f"{MAIN_INI_FILE.hd_hd()}/"\
-            f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
-            f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-            f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
-            f"/{self.CURRENT_FOLDER}"
+        # file_path = f"{MAIN_INI_FILE.hd_hd()}/"\
+        #     f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
+        #     f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
+        #     f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
+        #     f"/{self.CURRENT_FOLDER}"
+        
+        file_path = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}'
 
         ################################################################################
         # Restore files without spaces
@@ -702,14 +704,20 @@ class MainWindow(QMainWindow):
             
             src = file_path + "/" + handle_spaces(self.files_to_restore[counter])
             dst = HOME_USER + "/" + self.CURRENT_FOLDER + "/"
-            sub.Popen(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            
+            asyncio.run(self.restore_items(src, dst))
             
         # Open file manager
-        dst = HOME_USER + "/" + self.CURRENT_FOLDER
-        sub.Popen(["xdg-open", "-avr", src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+        dst = HOME_USER + '/' + self.CURRENT_FOLDER
+        sub.Popen(
+            ['xdg-open', dst],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
 
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+
+        # Exit
         exit()
 
     def time_machine_this_item(self, item_name):
@@ -723,6 +731,7 @@ class MainWindow(QMainWindow):
             if self.selected_item_extension in IMAGE_TYPES:
                 pixmap = QPixmap(self.selected_item_full_location)
 
+                # Get item directory
                 self.preview_window.file_directory = self.selected_item_full_location
 
                 # set_preview
@@ -733,6 +742,10 @@ class MainWindow(QMainWindow):
             elif self.selected_item_extension in TXT_TYPES:
                 with open(self.selected_item_full_location, "r") as file:
                     # self.preview_window.preview_label.clear()
+
+                    # Get item directory
+                    self.preview_window.file_directory = self.selected_item_full_location
+
                     self.preview_window.set_preview(file.read())
 
                 self.preview_window.show()
@@ -740,6 +753,12 @@ class MainWindow(QMainWindow):
     def delete_all_results(self):
         self.ui.tree_widget.clear()
 
+    async def restore_items(self, src, dst):
+        sub.run(
+            ['cp', '-rvf', src, dst],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
+            
     ################################################################################
     # RETURN VALUES
     ################################################################################
@@ -814,8 +833,14 @@ class PreviewWindow(QDialog):
 
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
+        print('Open', file_directory, 'directory...')
+
         # Open file directory
-        sub.Popen(["xdg-open", file_directory], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.Popen(
+            ["xdg-open",
+            file_directory],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
         
         # Close external preview window
         self.remove_items()

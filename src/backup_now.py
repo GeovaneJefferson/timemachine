@@ -5,7 +5,6 @@ from get_folders_to_be_backup import get_folders
 # from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
-from get_time import today_date
 from backup_status import backup_status
 from get_sizes import get_item_size, number_of_item_to_backup
 from backup_hidden import start_backup_hidden_home
@@ -125,6 +124,9 @@ class BACKUP:
 
         # Base backup folder is empty. (TMB)
         if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+            # Save todays as oldest backup date
+            MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+
             # Backup home to the main backup folder
             for folder in get_folders():
                 folder = handle_spaces(folder)
@@ -146,12 +148,12 @@ class BACKUP:
                         item_sum_size, 
                         len(get_folders())))
 
-                sub.run(
+                process = sub.run(
                     ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, stderr=sub.PIPE)
 
                 # Get output
-                # print(process.stdout)
+                print(process.stdout)
 
         else:
             # Static time value, fx. 10-00
@@ -271,20 +273,20 @@ class BACKUP:
                                 stderr=sub.PIPE)
 
                         # If only new file/folder was backup, save the backup
-                        # date to main folder
+                        # Oldest backup date is None
                         if MAIN_INI_FILE.oldest_backup_date() is None:
-                            # Oldest backup to main
+                            # Oldest backup today
                             MAIN_INI_FILE.set_database_value(
-                                'INFO', 'oldest_backup_to_main', today_date())
-                        
-                            # Latest backup to main
+                                'INFO', 'oldest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+
+                            # Latest backup today
                             MAIN_INI_FILE.set_database_value(
-                                'INFO', 'latest_backup_to_main', today_date())
+                                'INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
                         
                         else:
-                            # Latest backup to main
+                            # Latest backup today
                             MAIN_INI_FILE.set_database_value(
-                                'INFO', 'latest_backup_to_main', today_date())
+                                'INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
                             
                     except IndexError:
                         pass
@@ -337,6 +339,13 @@ class BACKUP:
 
     async def main(self):
         try:
+            # Save last backup date
+            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+
+        except:
+            pass
+ 
+        try:
             await self.backup_home()
             # await self.backup_hidden_home()
             await self.end_backup()
@@ -349,7 +358,6 @@ class BACKUP:
             
             # Unfinished to Yes 
             MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
-
 
         # Wait few seconds
         time.sleep(60)

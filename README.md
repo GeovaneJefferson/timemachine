@@ -102,3 +102,9 @@ To uninstall the application, use the following steps:
 #### Command:
 
     cd .local/share/timemachine/; python3 uninstall.py
+
+### To-Do List
+- [x] Backup files/folders, flatpaks, wallpaper
+- [x] System tray
+- [ ] Enter in Time Machine (To restore files/folder)
+- [ ] Migration Assistant (To restore and reinstall all files/folders, .debs, .rpm, wallpaper)
