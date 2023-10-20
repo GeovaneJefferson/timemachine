@@ -299,8 +299,6 @@ class MainWindow(QMainWindow):
 
         inside_current_folder = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}'
 
-        print(inside_current_folder)
-
         # Add options to QTree
         file_list = []
         try:
@@ -520,23 +518,28 @@ class MainWindow(QMainWindow):
     def qtree_checkbox_clicked(self, item, column):
         if item.checkState(column) == Qt.Checked:
             # item_txt = item.text(column)
-            full_location = get_full_location(item, column)
+            item_name = get_full_location(item, column)
             # Handle spaces
-            # full_location = handle_spaces(full_location)
+            # item_name = handle_spaces(item_name)
 
-            print("Full location:", full_location)
+            print("Item name:", item_name)
 
-            if full_location not in self.files_to_restore:
+            # Check this item for 'Time Machine'
+            self.time_machine_this_item(item_name)
+            
+            if item_name not in self.files_to_restore:
                 # Add if not already in the list
-                self.files_to_restore.append(full_location)
+                self.files_to_restore.append(item_name)
+            
             else:
                 # Remove from the list
-                self.files_to_restore.remove(full_location)
+                self.files_to_restore.remove(item_name)
 
         elif item.checkState(column) == Qt.Unchecked:
-            full_location = item.text(column)
+            item_name = item.text(column)
             try:
-                self.files_to_restore.remove(full_location)
+                self.files_to_restore.remove(item_name)
+            
             except ValueError:
                 pass
             
@@ -709,6 +712,9 @@ class MainWindow(QMainWindow):
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
         exit()
 
+    def time_machine_this_item(self, item_name):
+        pass
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             if not self.preview_window:
@@ -764,7 +770,7 @@ class PreviewWindow(QDialog):
 
     def set_preview(self, pixmap):
         open_file_button = QPushButton()
-        open_file_button.setText("Open File Directory")
+        open_file_button.setText("Open File's Directory")
         open_file_button.setFocusPolicy(Qt.NoFocus)
         open_file_button.clicked.connect(self.open_file_button_clicked)
 
