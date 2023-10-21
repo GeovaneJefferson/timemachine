@@ -63,11 +63,8 @@ Time Machine's backup strategy combines convenience and efficiency to safeguard 
 ## Monitoring Backup Status
 
 - **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
-  - ![systemtrayicon.png](src%2Ficons%2Fsystemtrayicon.png) indicates that automatic backup is ON and
-your backup device is connected and mounted.
+  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png){:width="100px"} Running backup icon signifies that
 
-
-  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png) Running backup icon signifies that
 Time Machine is currently in the process of backing up your files. Once the backup is complete, it will revert to the
 normal icon.
 
