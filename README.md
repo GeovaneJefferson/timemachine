@@ -63,7 +63,7 @@ Time Machine's backup strategy combines convenience and efficiency to safeguard 
 ## Monitoring Backup Status
 
 - **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
-  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png){:width="100px"} Running backup icon signifies that
+  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png) Running backup icon signifies that
 
 Time Machine is currently in the process of backing up your files. Once the backup is complete, it will revert to the
 normal icon.
@@ -86,7 +86,6 @@ During the installation process, you will need to provide your system password. 
 #### Command:
 
     git clone -b dev https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
-
 
 
 
