@@ -115,7 +115,7 @@ class WelcomeScreen(QWidget):
 		# Disable continue button
 		self.ui.button_continue_page2.setEnabled(False)
 
-		self.get_devices_location_page2()
+		self.show_availables_devices_page2()
 
 	def on_continue_button_clicked_page1(self):
 		# Animation
@@ -127,62 +127,62 @@ class WelcomeScreen(QWidget):
 	def get_devices_location_page2(self):
 		# Search external inside media
 		if device_location():
-			self.show_availables_devices_page2(MEDIA)
-			# return MEDIA
+			return MEDIA
+
 		elif not device_location():
-			self.show_availables_devices_page2(RUN)
-			# return RUN
+			return RUN
+
 		else:
-			self.show_availables_devices_page2(None)
-			# return None
+			return None
 
-	def show_availables_devices_page2(self, location):
-		added_devices = []
-
+	def show_availables_devices_page2(self):
 		self.model = QFileSystemModel()
 		self.ui.devices_area_page2.setModel(self.model)
-
+		
 		try:
-			# Show availables devices
-			for device in os.listdir(f"{location}/{USERNAME}/"):
-				# Only show disk the have TMB inside
-				if BASE_FOLDER_NAME in os.listdir(f"{location}/{USERNAME}/{device}/"):
-					# If not already added
-					if device not in added_devices:
-						added_devices.append(device)
-
-						self.ui.devices_area_page2.setWordWrap(True)
-						self.ui.devices_area_page2.setIconSize(QSize(64, 64))
-						self.ui.devices_area_page2.setViewMode(QListView.IconMode)
-						self.ui.devices_area_page2.setResizeMode(QListView.Adjust)
-						self.ui.devices_area_page2.setSelectionMode(QListView.SingleSelection)
-						self.ui.devices_area_page2.setSpacing(10)
-						self.ui.devices_area_page2.setDragEnabled(False)
-						self.ui.devices_area_page2.selectionModel().selectionChanged.connect(self.on_device_selected_page2)
-						self.ui.devices_area_page2.viewport().installEventFilter(self)
+			self.ui.devices_area_page2.setWordWrap(True)
+			self.ui.devices_area_page2.setIconSize(QSize(64, 64))
+			self.ui.devices_area_page2.setViewMode(QListView.IconMode)
+			self.ui.devices_area_page2.setResizeMode(QListView.Adjust)
+			self.ui.devices_area_page2.setSelectionMode(QListView.SingleSelection)
+			self.ui.devices_area_page2.setSpacing(10)
+			self.ui.devices_area_page2.setDragEnabled(False)
+			self.ui.devices_area_page2.selectionModel().selectionChanged.connect(
+				self.on_device_selected_page2)
+			self.ui.devices_area_page2.viewport().installEventFilter(self)
 
 			# Search inside MEDIA or RUN
-			self.model.setRootPath(f"{location}/{USERNAME}/")
+			self.model.setRootPath(f'{self.get_devices_location_page2()}/{USERNAME}/')
 			self.ui.devices_area_page2.setModel(self.model)
-			self.ui.devices_area_page2.setRootIndex(self.model.index(f"{location}/{USERNAME}/"))
+			self.ui.devices_area_page2.setRootIndex(self.model.index(f'{self.get_devices_location_page2()}/{USERNAME}/'))
 
 		except FileNotFoundError:
 			pass
 
-	def on_device_selected_page2(self, selected, deselected):
+	def on_device_selected_page2(
+			self, selected, deselected):
+		
 		# This slot will be called when the selection changes
 		selected_indexes = selected.indexes()
 
 		for index in selected_indexes:
 			self.selected_device = self.model.data(index)
-			# self.selected_item_texts.append(f"{self.get_devices_location_page2()}/{USERNAME}/{self.selected_device}")
+			print(self.selected_device)
 
-		# Enable continue button
-		if selected.indexes():
-			self.ui.button_continue_page2.setEnabled(True)
+			# Enable continue button
+			if selected.indexes():
+				# # Check if is 'TMB' inside selected drive
+				if os.path.exists(
+					f'{self.get_devices_location_page2()}/{USERNAME}/{self.selected_device}/{BASE_FOLDER_NAME}'):
+					self.ui.button_continue_page2.setEnabled(True)
 
-		elif deselected.indexes():
-			self.ui.button_continue_page2.setEnabled(False)
+				# Disable continue button
+				else:
+					self.ui.button_continue_page2.setEnabled(False)
+
+			# Disable continue button
+			elif deselected.indexes():
+				self.ui.button_continue_page2.setEnabled(False)
 
 	def on_back_button_page2_clicked(self):
 		# Animation

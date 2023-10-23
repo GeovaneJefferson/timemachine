@@ -34,7 +34,7 @@ SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 
 
-USERS_DISTRO_NAME = os.popen("cat /etc/os-release").read()  # "ubuntu" in USERDISTRONAME:
+USERS_DISTRO_NAME = os.popen("t").read()  # "ubuntu" in USERDISTRONAME:
 
 def install_dependencies():
     # Depedencies
@@ -42,20 +42,48 @@ def install_dependencies():
         command = f"{GET_CURRENT_LOCATION}/requirements.txt"
         sub.run(["pip", "install", "-r", command])
 
+        # Deb
+        if 'debian' in USERS_DISTRO_NAME:
+            command = 'pip flatpak gnome-software-plugin-flatpak' 
+
+            try:            
+                sub.run(
+                    ['sudo', 'apt', 'install', '-y', command],
+                    check=True)
+
+            except sub.CalledProcessError as e:
+                print(e)
+                pass
+
         # Arch
-        if 'arch' in USERS_DISTRO_NAME:
-            command = "qt6-wayland"
+        elif 'arch' in USERS_DISTRO_NAME:
+            command = "qt6-wayland flatpak"
             
             # Check if the package is already installed
             try:
-                sub.run(["pacman", "-Qq", command], check=True)
-                print(f"{command} is already installed.")
+                sub.run(
+                    ["pacman", "-Qq", command],
+                    check=True)
                 
             except sub.CalledProcessError:
                 # If not installed, install the package
-                sub.run(["sudo", "pacman", "-S", command], check=True)
+                sub.run(
+                    ['sudo', 'pacman', '-S', command],
+                    check=True)
 
-    except FileNotFoundError as e:
+        # Install flathub
+        command = 'flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo' 
+
+        try:            
+            sub.run(
+                [command],
+                check=True)
+
+        except sub.CalledProcessError as e:
+            print(e)
+            pass
+        
+    except Exception as e:
         print(e)
         exit()
 
