@@ -110,7 +110,7 @@ class WelcomeScreen(QWidget):
 				"background-color: transparent;"
 				"background-position: center;"
 			"}")
-
+        
 		# Page 2
 		# Disable continue button
 		self.ui.button_continue_page2.setEnabled(False)
@@ -503,12 +503,14 @@ class WelcomeScreen(QWidget):
 		for wallpaper in os.listdir(f'{MAIN_INI_FILE.wallpaper_main_folder()}'):
 			set_wallpaper = f'{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}'
 
-		# From image
-		pixmap = QPixmap(SRC_RESTORE_ICON)
-		pixmap = pixmap.scaledToWidth(60, Qt.SmoothTransformation)  # Adjust width and transformation mode as needed
+		# Load the system icon 'drive-removable-media'
+		audio_headset_icon = QIcon.fromTheme('drive-removable-media')
+
+		# Convert the QIcon to a QPixmap
+		audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
 
 		from_image = QLabel(self.ui.from_image_widget)
-		from_image.setPixmap(pixmap)
+		from_image.setPixmap(audio_headset_pixmap)
 		from_image.setScaledContents(True)
 		from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 		from_image.move(10, 10)
@@ -529,13 +531,17 @@ class WelcomeScreen(QWidget):
 		#     to_image.setScaledContents(True)
 		#     to_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-		pixmap = QPixmap(SRC_MONITOR_ICON)
-		pixmap = pixmap.scaledToWidth(100, Qt.SmoothTransformation)  # Adjust width and transformation mode as needed
+		# Load the system icon 'drive-removable-media'
+		audio_headset_icon = QIcon.fromTheme('computer')
 
-		to_image = QLabel(self.ui.to_image_widget)
-		to_image.setPixmap(pixmap)
-		to_image.setScaledContents(True)
-		to_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		# Convert the QIcon to a QPixmap
+		audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
+
+		from_image = QLabel(self.ui.to_image_widget)
+		from_image.setPixmap(audio_headset_pixmap)
+		from_image.setScaledContents(True)
+		from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		from_image.move(10, 10)
 
 		# Current pcs name
 		self.ui.from_image_label.setText(f"{USERNAME.capitalize()}")
@@ -603,17 +609,20 @@ class WelcomeScreen(QWidget):
 	def update_status_feedback(self):
 		self.ui.label_restoring_status.setText(
 			MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
+		
 		self.ui.label_restoring_status.adjustSize()
 		self.ui.label_restoring_status.setAlignment(
 			Qt.AlignHCenter | Qt.AlignVCenter)
 
 		pb_value = MAIN_INI_FILE.get_database_value(
 			'RESTORE', 'restore_progress_bar').split('.')[0]
+		
 		MAIN.ui.progress_bar_restoring.setValue(int(pb_value))
 
 		if not MAIN_INI_FILE.get_database_value('STATUS', 'is_restoring'):
 			# Stop previous timer
 			timer.stop()
+
 			# Change to page5
 			self.ui.stackedWidget.setCurrentWidget(self.ui.page_5)
 
@@ -621,6 +630,7 @@ class WelcomeScreen(QWidget):
 			if MAIN.on_automatically_reboot_clicked():
 				# Reboot system
 				print("Rebooting now...")
+
 				sub.run(
 					["sudo", "reboot"],
 					stdout=sub.PIPE,
@@ -631,6 +641,7 @@ class WelcomeScreen(QWidget):
 
 	def update_progressbar(self):
 		pb_value = int(MAIN_INI_FILE.get_database_value('RESTORE', 'restore_progress_bar'))
+		
 		MAIN.ui.progress_bar_restoring.setValue(pb_value)
 
 	########################################################
