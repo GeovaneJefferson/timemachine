@@ -16,7 +16,6 @@ from get_sizes import (
     get_external_device_used_size,
     get_all_used_backup_device_space)
 
-from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from update import backup_db_file
 from save_info import save_info
@@ -24,7 +23,6 @@ from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
 from notification_massage import notification_message
 from prepare_backup import create_base_folders
-from analyse import need_to_backup_analyse
 from prepare_backup import PREPAREBACKUP
 
 
@@ -76,9 +74,9 @@ class MainWindow(QMainWindow):
         logo_image = QPixmap(SRC_BACKUP_ICON)
         self.ui.app_logo_image.setPixmap(logo_image)
 
-        # Disk image
-        disk_image = QPixmap(SRC_RESTORE_ICON)
-        self.ui.app_disk_image.setPixmap(disk_image)
+        # # Disk image
+        # disk_image = QPixmap(SRC_RESTORE_ICON)
+        # self.ui.app_disk_image.setPixmap(disk_image)
         
         ######################################################################
         # Hide or disable 
@@ -400,16 +398,18 @@ class SelectDisk(QDialog):
                         # if MAIN_INI_FILE.hd_name() != "None":
                         #     self.available_devices.setAutoExclusive(True)
        
-                        # Image
-                        icon = QLabel(self.available_devices)
-                        image = QPixmap(f"{SRC_RESTORE_ICON}")
-                        image = image.scaled(
-                            36, 36, 
-                            Qt.KeepAspectRatio, 
-                            Qt.SmoothTransformation)
-                        icon.move(7,7)
-                        icon.setStyleSheet(transparentBackground)
-                        icon.setPixmap(image)
+                        # Load the system icon 'audio-headset'
+                        audio_headset_icon = QIcon.fromTheme(
+                            'drive-removable-media')
+
+                        # Convert the QIcon to a QPixmap
+                        audio_headset_pixmap = audio_headset_icon.pixmap(36, 36)
+
+                        from_image = QLabel(self.available_devices)
+                        from_image.setPixmap(audio_headset_pixmap)
+                        from_image.setScaledContents(True)
+                        from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                        from_image.move(10, 10)
 
                         # Free Space Label
                         free_space_label = QLabel(self.available_devices)

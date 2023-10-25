@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -97,7 +97,7 @@ class Ui_MainWindow(object):
         self.widget.setObjectName(u"widget")
         self.horizontalLayoutWidget_3 = QWidget(self.widget)
         self.horizontalLayoutWidget_3.setObjectName(u"horizontalLayoutWidget_3")
-        self.horizontalLayoutWidget_3.setGeometry(QRect(0, 50, 451, 111))
+        self.horizontalLayoutWidget_3.setGeometry(QRect(0, 50, 451, 130))
         self.horizontalLayout_7 = QHBoxLayout(self.horizontalLayoutWidget_3)
         self.horizontalLayout_7.setSpacing(20)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
@@ -105,12 +105,22 @@ class Ui_MainWindow(object):
         self.verticalLayout_7 = QVBoxLayout()
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(-1, -1, 0, -1)
-        self.app_disk_image = QLabel(self.horizontalLayoutWidget_3)
-        self.app_disk_image.setObjectName(u"app_disk_image")
-        self.app_disk_image.setMinimumSize(QSize(64, 64))
-        self.app_disk_image.setMaximumSize(QSize(64, 64))
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_7.addWidget(self.app_disk_image, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.verticalLayout_7.addItem(self.verticalSpacer_4)
+
+        self.pushButton = QPushButton(self.horizontalLayoutWidget_3)
+        self.pushButton.setObjectName(u"pushButton")
+        icon = QIcon(QIcon.fromTheme(u"drive-removable-media"))
+        self.pushButton.setIcon(icon)
+        self.pushButton.setIconSize(QSize(56, 56))
+        self.pushButton.setFlat(True)
+
+        self.verticalLayout_7.addWidget(self.pushButton, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_7.addItem(self.verticalSpacer_3)
 
         self.select_disk_button = QPushButton(self.horizontalLayoutWidget_3)
         self.select_disk_button.setObjectName(u"select_disk_button")
@@ -118,6 +128,10 @@ class Ui_MainWindow(object):
         self.select_disk_button.setSizePolicy(sizePolicy)
 
         self.verticalLayout_7.addWidget(self.select_disk_button, 0, Qt.AlignHCenter)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_7.addItem(self.verticalSpacer_2)
 
 
         self.horizontalLayout_7.addLayout(self.verticalLayout_7)
@@ -279,10 +293,7 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"Time Machine", None))
         self.automatically_backup_checkbox.setText(QCoreApplication.translate("MainWindow", u"Back Up Automatically", None))
         self.update_available_button.setText(QCoreApplication.translate("MainWindow", u"Update Available", None))
-#if QT_CONFIG(whatsthis)
-        self.app_disk_image.setWhatsThis(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\">IMAGE</p></body></html>", None))
-#endif // QT_CONFIG(whatsthis)
-        self.app_disk_image.setText(QCoreApplication.translate("MainWindow", u"IMAGE", None))
+        self.pushButton.setText("")
         self.select_disk_button.setText(QCoreApplication.translate("MainWindow", u"Select Disk...", None))
         self.external_name_label.setText(QCoreApplication.translate("MainWindow", u"Backup_Drive", None))
         self.external_size_label.setText(QCoreApplication.translate("MainWindow", u"No information available", None))

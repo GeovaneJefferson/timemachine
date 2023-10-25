@@ -17,6 +17,8 @@ from notification_massage import notification_message_current_backing_up
 from save_info import save_info
 
 
+reboot_after_restore = False
+
 class WelcomeScreen(QWidget):
 	def __init__(self):
 		super(WelcomeScreen, self).__init__()
@@ -159,8 +161,7 @@ class WelcomeScreen(QWidget):
 		except FileNotFoundError:
 			pass
 
-	def on_device_selected_page2(
-			self, selected, deselected):
+	def on_device_selected_page2(self, selected, deselected):
 		
 		# This slot will be called when the selection changes
 		selected_indexes = selected.indexes()
@@ -295,6 +296,7 @@ class WelcomeScreen(QWidget):
 			self.ui.applications_sub_widget_page3.show()
 			# Update DB
 			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'True')
+		
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Applications')
@@ -488,6 +490,7 @@ class WelcomeScreen(QWidget):
 		if not self.item_to_restore:
 			# Disable
 			self.ui.button_continue_page3.setEnabled(False)
+		
 		else:
 			# Enable
 			self.ui.button_continue_page3.setEnabled(True)
@@ -503,45 +506,45 @@ class WelcomeScreen(QWidget):
 		for wallpaper in os.listdir(f'{MAIN_INI_FILE.wallpaper_main_folder()}'):
 			set_wallpaper = f'{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}'
 
-		# Load the system icon 'drive-removable-media'
-		audio_headset_icon = QIcon.fromTheme('drive-removable-media')
+		# # Load the system icon 'drive-removable-media'
+		# audio_headset_icon = QIcon.fromTheme('drive-removable-media')
 
-		# Convert the QIcon to a QPixmap
-		audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
+		# # Convert the QIcon to a QPixmap
+		# audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
 
-		from_image = QLabel(self.ui.from_image_widget)
-		from_image.setPixmap(audio_headset_pixmap)
-		from_image.setScaledContents(True)
-		from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-		from_image.move(10, 10)
+		# from_image = QLabel(self.ui.from_image_widget)
+		# from_image.setPixmap(audio_headset_pixmap)
+		# from_image.setScaledContents(True)
+		# from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		# from_image.move(10, 10)
 
-		# To image
-		# Wallpaper
-		# svg_widget = QSvgWidget()
-		# if set_wallpaper.split('.')[-1].endswith('svg'):
-		#     svg_widget.load(set_wallpaper)
-		#     svg_widget.setFixedSize(80, 80)
-		#     svg_widget.setContentsMargins(0, 0, 0, 0)
-		#     svg_widget.setAspectRatioMode(Qt.IgnoreAspectRatio)
+		# # To image
+		# # Wallpaper
+		# # svg_widget = QSvgWidget()
+		# # if set_wallpaper.split('.')[-1].endswith('svg'):
+		# #     svg_widget.load(set_wallpaper)
+		# #     svg_widget.setFixedSize(80, 80)
+		# #     svg_widget.setContentsMargins(0, 0, 0, 0)
+		# #     svg_widget.setAspectRatioMode(Qt.IgnoreAspectRatio)
 
-		#     # svg_widget.move(5, 5)
-		# else:
-		#     to_image = QLabel(self.ui.to_image_widget)
-		#     to_image.setPixmap(QPixmap(set_wallpaper))
-		#     to_image.setScaledContents(True)
-		#     to_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		# #     # svg_widget.move(5, 5)
+		# # else:
+		# #     to_image = QLabel(self.ui.to_image_widget)
+		# #     to_image.setPixmap(QPixmap(set_wallpaper))
+		# #     to_image.setScaledContents(True)
+		# #     to_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-		# Load the system icon 'drive-removable-media'
-		audio_headset_icon = QIcon.fromTheme('computer')
+		# # Load the system icon 'drive-removable-media'
+		# audio_headset_icon = QIcon.fromTheme('computer')
 
-		# Convert the QIcon to a QPixmap
-		audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
+		# # Convert the QIcon to a QPixmap
+		# audio_headset_pixmap = audio_headset_icon.pixmap(64, 64)  # Adjust the size as needed
 
-		from_image = QLabel(self.ui.to_image_widget)
-		from_image.setPixmap(audio_headset_pixmap)
-		from_image.setScaledContents(True)
-		from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-		from_image.move(10, 10)
+		# from_image = QLabel(self.ui.to_image_widget)
+		# from_image.setPixmap(audio_headset_pixmap)
+		# from_image.setScaledContents(True)
+		# from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		# from_image.move(10, 10)
 
 		# Current pcs name
 		self.ui.from_image_label.setText(f"{USERNAME.capitalize()}")
@@ -581,10 +584,12 @@ class WelcomeScreen(QWidget):
 		self.stacked_widget_transition(self.ui.page_3, 'left')
 
 	def on_automatically_reboot_clicked(self):
+		# Automatically backup
 		if self.ui.checkbox_automatically_reboot_page4.isChecked():
-			return True
+			reboot_after_restore = True
+		
 		else:
-			return False
+			reboot_after_restore = False
 
 	def stacked_widget_transition(self, page, direction):
 		width = self.ui.stackedWidget.width()
@@ -627,7 +632,7 @@ class WelcomeScreen(QWidget):
 			self.ui.stackedWidget.setCurrentWidget(self.ui.page_5)
 
 			# Automatically reboot
-			if MAIN.on_automatically_reboot_clicked():
+			if reboot_after_restore:
 				# Reboot system
 				print("Rebooting now...")
 

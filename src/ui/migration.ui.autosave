@@ -690,8 +690,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>362</width>
-                   <height>262</height>
+                   <width>275</width>
+                   <height>243</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -704,7 +704,8 @@
                      <string>Applications</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="application-x-executable"/>
+                     <iconset theme="application-x-executable">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -772,7 +773,8 @@
                      <string>Flatpaks</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="application-x-executable"/>
+                     <iconset theme="application-x-executable">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -1074,11 +1076,18 @@
                 </item>
                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                  <widget class="QPushButton" name="pushButton">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset theme="drive-removable-media"/>
+                   <iconset theme="drive-removable-media">
+                    <normaloff>.</normaloff>.</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1128,7 +1137,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="go-next"/>
+              <iconset theme="go-next">
+               <normaloff>.</normaloff>.</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1177,7 +1187,8 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset theme="computer"/>
+                   <iconset theme="computer">
+                    <normaloff>.</normaloff>.</iconset>
                   </property>
                   <property name="iconSize">
                    <size>

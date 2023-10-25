@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -307,13 +307,7 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_applications_page3.setObjectName(u"checkbox_applications_page3")
-        icon = QIcon()
-        iconThemeName = u"applications-development"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon = QIcon.fromTheme(iconThemeName)
-        else:
-            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-
+        icon = QIcon(QIcon.fromTheme(u"application-x-executable"))
         self.checkbox_applications_page3.setIcon(icon)
         self.checkbox_applications_page3.setIconSize(QSize(32, 32))
 
@@ -488,12 +482,22 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.from_image_layout = QVBoxLayout()
         self.from_image_layout.setObjectName(u"from_image_layout")
-        self.from_image_widget = QLabel(self.from_image)
-        self.from_image_widget.setObjectName(u"from_image_widget")
-        self.from_image_widget.setMinimumSize(QSize(100, 80))
-        self.from_image_widget.setMaximumSize(QSize(100, 80))
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.from_image_layout.addWidget(self.from_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.from_image_layout.addItem(self.verticalSpacer_2)
+
+        self.pushButton = QPushButton(self.from_image)
+        self.pushButton.setObjectName(u"pushButton")
+        icon3 = QIcon(QIcon.fromTheme(u"drive-removable-media"))
+        self.pushButton.setIcon(icon3)
+        self.pushButton.setIconSize(QSize(64, 64))
+        self.pushButton.setFlat(True)
+
+        self.from_image_layout.addWidget(self.pushButton, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.from_image_layout.addItem(self.verticalSpacer_4)
 
         self.from_image_label = QLabel(self.from_image)
         self.from_image_label.setObjectName(u"from_image_label")
@@ -510,18 +514,14 @@ class Ui_WelcomeScreen(object):
 
         self.images_layout_page4.addWidget(self.from_image, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.arrow_image_widget = QLabel(self.page_4)
-        self.arrow_image_widget.setObjectName(u"arrow_image_widget")
-        self.arrow_image_widget.setMinimumSize(QSize(80, 80))
-        self.arrow_image_widget.setMaximumSize(QSize(80, 80))
-        font4 = QFont()
-        font4.setPointSize(40)
-        font4.setBold(True)
-        self.arrow_image_widget.setFont(font4)
-        self.arrow_image_widget.setStyleSheet(u"")
-        self.arrow_image_widget.setAlignment(Qt.AlignCenter)
+        self.pushButton_3 = QPushButton(self.page_4)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+        icon4 = QIcon(QIcon.fromTheme(u"go-next"))
+        self.pushButton_3.setIcon(icon4)
+        self.pushButton_3.setIconSize(QSize(48, 48))
+        self.pushButton_3.setFlat(True)
 
-        self.images_layout_page4.addWidget(self.arrow_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.images_layout_page4.addWidget(self.pushButton_3)
 
         self.to_image = QWidget(self.page_4)
         self.to_image.setObjectName(u"to_image")
@@ -531,12 +531,22 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.to_image_layout = QVBoxLayout()
         self.to_image_layout.setObjectName(u"to_image_layout")
-        self.to_image_widget = QLabel(self.to_image)
-        self.to_image_widget.setObjectName(u"to_image_widget")
-        self.to_image_widget.setMinimumSize(QSize(100, 80))
-        self.to_image_widget.setMaximumSize(QSize(100, 80))
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.to_image_layout.addWidget(self.to_image_widget, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+        self.to_image_layout.addItem(self.verticalSpacer_5)
+
+        self.pushButton_2 = QPushButton(self.to_image)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        icon5 = QIcon(QIcon.fromTheme(u"computer"))
+        self.pushButton_2.setIcon(icon5)
+        self.pushButton_2.setIconSize(QSize(64, 64))
+        self.pushButton_2.setFlat(True)
+
+        self.to_image_layout.addWidget(self.pushButton_2, 0, Qt.AlignHCenter|Qt.AlignVCenter)
+
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.to_image_layout.addItem(self.verticalSpacer_6)
 
         self.to_image_label = QLabel(self.to_image)
         self.to_image_label.setObjectName(u"to_image_label")
@@ -672,10 +682,10 @@ class Ui_WelcomeScreen(object):
         self.button_continue_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Continue", None))
         self.title_4.setText(QCoreApplication.translate("WelcomeScreen", u"Begin Restoring", None))
         self.description_4.setText(QCoreApplication.translate("WelcomeScreen", u"Backup from Time Machine will been transferred to this PC.", None))
-        self.from_image_widget.setText("")
+        self.pushButton.setText("")
         self.from_image_label.setText(QCoreApplication.translate("WelcomeScreen", u"Name", None))
-        self.arrow_image_widget.setText(QCoreApplication.translate("WelcomeScreen", u">", None))
-        self.to_image_widget.setText("")
+        self.pushButton_3.setText("")
+        self.pushButton_2.setText("")
         self.to_image_label.setText(QCoreApplication.translate("WelcomeScreen", u"Name", None))
         self.label_restoring_status.setText(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p align=\"center\"><br/></p></body></html>", None))
 #if QT_CONFIG(whatsthis)
