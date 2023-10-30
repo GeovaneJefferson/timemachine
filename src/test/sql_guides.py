@@ -1,14 +1,21 @@
-from setup import *
 import sqlite3
+from pathlib import Path
+
+APP_NAME_CLOSE = "timemachine"
+HOME_USER = str(Path.home())
+SRC_USER_CONFIG_DB = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/ini/config.db"
 
 
-# def connect_to_database():
-#     # Connect to the SQLite database
-#     conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-#     cursor = conn.cursor()
-
+def connect_to_database():
+    # Connect to the SQLite database
+    conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+    cursor = conn.cursor()
 
 def update_database(section, key, value):
+    # Connect to the SQLite database
+    conn = sqlite3.connect(SRC_USER_CONFIG_DB)
+    cursor = conn.cursor()
+
     cursor.execute('''
         UPDATE app_settings
         SET value = ?
@@ -224,5 +231,3 @@ def get_keys_from_table():
 # # Close the connection
 # conn.close()
 
-
-print(get_keys_from_table())

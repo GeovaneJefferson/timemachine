@@ -37,6 +37,8 @@ SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_1
 USERS_DISTRO_NAME = os.popen("t").read()  # "ubuntu" in USERDISTRONAME:
 
 def install_dependencies():
+    # sudo apt install libxcb-*
+    # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
     try:
         command = f"{GET_CURRENT_LOCATION}/requirements.txt"

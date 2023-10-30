@@ -19,11 +19,11 @@ def get_external_device_max_size():
 
 def get_external_device_used_size():
     used_space = os.popen(
-        f"df --output=avail -h {MAIN_INI_FILE.hd_hd()}").read().strip()\
-                            .replace("1K-blocks", "")\
-                            .replace("Avail", "")\
-                            .replace("\n", "")\
-                            .replace(" ", "")
+        f'df --output=avail -h {MAIN_INI_FILE.hd_hd()}').read().strip()\
+                .replace('1K-blocks', '')\
+                .replace('Avail', '')\
+                .replace('\n', '')\
+                .replace(' ', '')
 
     return str(used_space)
 
@@ -175,4 +175,5 @@ def get_item_size(item_path):
 
 
 if __name__ == '__main__':
+    print(get_external_device_used_size())
     pass

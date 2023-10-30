@@ -65,9 +65,6 @@ class UPDATEINIFILE:
             pass
 
     def set_database_value(self, table, key, value):
-        # Connect to the SQLite database
-        # conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-
         try:
             with sqlite3.connect(SRC_USER_CONFIG_DB) as conn:
                 cursor = conn.cursor()
@@ -367,5 +364,5 @@ class UPDATEINIFILE:
 
 if __name__ == '__main__':
     # MAIN_INI_FILE = UPDATEINIFILE()
-    # print(MAIN_INI_FILE.current_full_date_plus_time_str())
+    # MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
     pass

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'options.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -31,14 +31,47 @@ class Ui_Options(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.tabWidget = QTabWidget(Options)
         self.tabWidget.setObjectName(u"tabWidget")
+        self.tab_3 = QWidget()
+        self.tab_3.setObjectName(u"tab_3")
+        self.verticalLayout_6 = QVBoxLayout(self.tab_3)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.label_10 = QLabel(self.tab_3)
+        self.label_10.setObjectName(u"label_10")
+        font = QFont()
+        font.setBold(True)
+        self.label_10.setFont(font)
+
+        self.verticalLayout_6.addWidget(self.label_10)
+
+        self.automatically_backup_checkbox = QCheckBox(self.tab_3)
+        self.automatically_backup_checkbox.setObjectName(u"automatically_backup_checkbox")
+        self.automatically_backup_checkbox.setEnabled(True)
+
+        self.verticalLayout_6.addWidget(self.automatically_backup_checkbox)
+
+        self.label_11 = QLabel(self.tab_3)
+        self.label_11.setObjectName(u"label_11")
+        self.label_11.setFont(font)
+
+        self.verticalLayout_6.addWidget(self.label_11)
+
+        self.show_in_system_tray_checkbox = QCheckBox(self.tab_3)
+        self.show_in_system_tray_checkbox.setObjectName(u"show_in_system_tray_checkbox")
+        self.show_in_system_tray_checkbox.setEnabled(True)
+
+        self.verticalLayout_6.addWidget(self.show_in_system_tray_checkbox)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_6.addItem(self.verticalSpacer)
+
+        self.tabWidget.addTab(self.tab_3, "")
         self.back_up_tab = QWidget()
         self.back_up_tab.setObjectName(u"back_up_tab")
         self.gridLayout_3 = QGridLayout(self.back_up_tab)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.label_4 = QLabel(self.back_up_tab)
         self.label_4.setObjectName(u"label_4")
-        font = QFont()
-        font.setBold(True)
         self.label_4.setFont(font)
 
         self.gridLayout_3.addWidget(self.label_4, 0, 0, 1, 1)
@@ -48,7 +81,7 @@ class Ui_Options(object):
         self.scroll_area_folders.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 375, 179))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 375, 175))
         self.gridLayout_4 = QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.grid_folders_layout = QGridLayout()
@@ -138,7 +171,12 @@ class Ui_Options(object):
 
     def retranslateUi(self, Options):
         Options.setWindowTitle(QCoreApplication.translate("Options", u"Dialog", None))
-        self.label_4.setText(QCoreApplication.translate("Options", u"Folders to be back up:", None))
+        self.label_10.setText(QCoreApplication.translate("Options", u"Startup Applications Preferences:", None))
+        self.automatically_backup_checkbox.setText(QCoreApplication.translate("Options", u"Back Up Automatically", None))
+        self.label_11.setText(QCoreApplication.translate("Options", u"System Tray:", None))
+        self.show_in_system_tray_checkbox.setText(QCoreApplication.translate("Options", u"Show Time Machine in System Tray", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Options", u"Settings", None))
+        self.label_4.setText(QCoreApplication.translate("Options", u"Select Folders To Be Back Up:", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.back_up_tab), QCoreApplication.translate("Options", u"Back Up", None))
         self.label_5.setText(QCoreApplication.translate("Options", u"Flatpak Settings:", None))
         self.allow_flatpak_data_checkBox.setText(QCoreApplication.translate("Options", u"Back up flatpaks Data", None))

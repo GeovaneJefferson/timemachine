@@ -1,5 +1,5 @@
 from setup import *
-from ui.ui_new_2mainwindow import Ui_MainWindow
+from ui.ui_mainwindow import Ui_MainWindow
 from ui.ui_dialog import Ui_Dialog
 from ui.ui_options import Ui_Options
 
@@ -46,16 +46,16 @@ class MainWindow(QMainWindow):
         # Connection
         ######################################################################
         # Automatically backup checkbox
-        # self.ui.automatically_backup_checkbox.clicked.connect(
-        #     self.on_automatically_checkbox_clicked)
+        self.ui.automatically_backup_checkbox.clicked.connect(
+            self.on_automatically_checkbox_clicked)
         
         # Use select disk button
         self.ui.select_disk_button.clicked.connect(
             self.on_selected_disk_button_clicked)
         
         # System tray button
-        # self.ui.show_in_system_tray_checkbox.clicked.connect(
-        #     self.on_system_tray_checkbox_clicked)
+        self.ui.show_in_system_tray_checkbox.clicked.connect(
+            self.on_system_tray_checkbox_clicked)
         
         # Options button
         self.ui.options_button.clicked.connect(self.on_options_button_clicked)
@@ -66,18 +66,13 @@ class MainWindow(QMainWindow):
 
         # Update button
         self.ui.update_available_button.clicked.connect(self.on_update_button_clicked)
-        
-        # Remove device
-        self.ui.remove_backup_device.clicked.connect(
-            self.on_remove_device_clicked)
 
         ######################################################################
         # Add images 
         ######################################################################
         # Logo image
         logo_image = QPixmap(SRC_BACKUP_ICON)
-        resized_logo_image = logo_image.scaledToWidth(32, Qt.SmoothTransformation)
-        self.ui.app_logo_image.setPixmap(resized_logo_image)
+        self.ui.app_logo_image.setPixmap(logo_image)
 
         # # Disk image
         # disk_image = QPixmap(SRC_RESTORE_ICON)
@@ -86,11 +81,8 @@ class MainWindow(QMainWindow):
         ######################################################################
         # Hide or disable 
         ######################################################################
-        # Hide 
-        self.ui.progressbar_main_window.hide()
-
-        # self.ui.backing_up_label.hide()
-        # self.ui.select_disk_button.hide()
+        # Hide process bar
+        self.ui.backing_up_label.hide()
 
         self.center_main_window()
 
@@ -103,7 +95,7 @@ class MainWindow(QMainWindow):
         self.move(fg.topLeft())
 
         # Startup checking
-        # self.startup_read_db()
+        self.startup_read_db()
 
         # Check for update
         self.check_for_updates()
@@ -143,61 +135,41 @@ class MainWindow(QMainWindow):
                 # Get backup devices size informations
                 ################################################
                 try:
-                    # Color 
-                    self.ui.external_size_label.setStyleSheet(
-                        '''
-                        color: gray;
-                        ''')
                     self.ui.external_size_label.setText(
-                        f'{get_external_device_used_size()} of available')
+                        f"{get_external_device_used_size()} of "
+                        f"{get_external_device_max_size()} available")
 
                 except:
-                    self.ui.external_size_label.setText('None')
+                    self.ui.external_size_label.setText(
+                        "No information available")
 
                 ################################################
                 # Check if is current busy doing something
                 ################################################
                 # If is backing up right now
                 if MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
-                    # Hide
-                    self.ui.next_backup_label.hide()
-                    
-                    # Show 
-                    self.ui.progressbar_main_window.show()
-
-                    # Notification information
-                    self.ui.backups_label.setText(
-                        MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
-            
-                    # TODO
                     # Show backing up labe
-                    # self.ui.backing_up_label.show()
+                    self.ui.backing_up_label.show()
 
                     # Show current backing up
-                    # self.ui.backing_up_label.setText(
-                    #     f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
+                    self.ui.backing_up_label.setText(
+                        f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
                     
-                    # TODO
                     # Disable select disk
                     self.ui.select_disk_button.setEnabled(False)
 
                     # Disable automatically backup
-                    # self.ui.automatically_backup_checkbox.setEnabled(False)
+                    self.ui.automatically_backup_checkbox.setEnabled(False)
 
                 else:
-                    # Show
-                    self.ui.next_backup_label.show()
-                    
-                    # Hide
-                    self.ui.progressbar_main_window.hide()
-
-                    # self.ui.backing_up_label.hide()
+                    # Hide backing up label
+                    self.ui.backing_up_label.hide()
 
                     # Enable select disk
                     self.ui.select_disk_button.setEnabled(True)
 
                     # Enable automatically backup
-                    # self.ui.automatically_backup_checkbox.setEnabled(True)
+                    self.ui.automatically_backup_checkbox.setEnabled(True)
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
@@ -212,13 +184,7 @@ class MainWindow(QMainWindow):
                 else:
                     self.ui.next_backup_label.setText(
                         'Next Backup: Automatic backups off')
-                    
-                # Color 
-                self.ui.next_backup_label.setStyleSheet(
-                    '''
-                    color: gray;
-                    ''')
-                
+
             ################################################
             # Has no connection to it
             ################################################
@@ -237,18 +203,18 @@ class MainWindow(QMainWindow):
     ################################################################################
     # STATIC
     ################################################################################
-    # def startup_read_db(self):
-    #     # if MAIN_INI_FILE.automatically_backup():
-    #     #     # self.ui.automatically_backup_checkbox.setChecked(True)
+    def startup_read_db(self):
+        if MAIN_INI_FILE.automatically_backup():
+            self.ui.automatically_backup_checkbox.setChecked(True)
         
-    #     # else:
-    #     #     # self.ui.automatically_backup_checkbox.setChecked(False)
+        else:
+            self.ui.automatically_backup_checkbox.setChecked(False)
 
-    #     if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-    #         # self.ui.show_in_system_tray_checkbox.setChecked(True)
+        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
+            self.ui.show_in_system_tray_checkbox.setChecked(True)
         
-    #     else:
-    #         # self.ui.show_in_system_tray_checkbox.setChecked(False)
+        else:
+            self.ui.show_in_system_tray_checkbox.setChecked(False)
     
     def check_for_updates(self):
         print('Checking for updates...')
@@ -279,100 +245,93 @@ class MainWindow(QMainWindow):
             'STATUS', 'automatically_backup', 'False')
 
         # Uncheck system tray
-        # self.ui.show_in_system_tray_checkbox.setChecked(False)
+        self.ui.show_in_system_tray_checkbox.setChecked(False)
         
         # Uncheck automatically backup
-        # self.ui.automatically_backup_checkbox.setChecked(False)
+        self.ui.automatically_backup_checkbox.setChecked(False)
 
         # Update and make save the DB
         backup_db_file(True)
 
-    # def on_automatically_checkbox_clicked(self):
-    #     if # self.ui.automatically_backup_checkbox.isChecked():
-    #         # Create backup checker .desktop and move it to the destination
-    #         create_backup_checker_desktop()
+    def on_automatically_checkbox_clicked(self):
+        if self.ui.automatically_backup_checkbox.isChecked():
+            # Create backup checker .desktop and move it to the destination
+            create_backup_checker_desktop()
 
-    #         # Copy backup_check.desktop
-    #         shutil.copy(DST_BACKUP_CHECK_DESKTOP, DST_AUTOSTART_LOCATION)
+            # Copy backup_check.desktop
+            shutil.copy(DST_BACKUP_CHECK_DESKTOP, DST_AUTOSTART_LOCATION)
 
-    #         MAIN_INI_FILE.set_database_value(
-    #             'STATUS', 'automatically_backup', 'True')
+            MAIN_INI_FILE.set_database_value(
+                'STATUS', 'automatically_backup', 'True')
 
-    #         # call backup check
-    #         sub.Popen(
-    #             ['python3', SRC_BACKUP_CHECKER_PY],
-    #             stdout=sub.PIPE, 
-    #             stderr=sub.PIPE)
+            # call backup check
+            sub.Popen(
+                ['python3', SRC_BACKUP_CHECKER_PY],
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
             
-    #         print("Auto backup was successfully activated!")
+            print("Auto backup was successfully activated!")
 
-    #     else:
-    #         # Remove autostart.desktop
-    #         sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
+        else:
+            # Remove autostart.desktop
+            sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
 
-    #         MAIN_INI_FILE.set_database_value(
-    #             'STATUS', 'automatically_backup', 'False')
+            MAIN_INI_FILE.set_database_value(
+                'STATUS', 'automatically_backup', 'False')
 
-    #         print("Auto backup was successfully deactivated!")
+            print("Auto backup was successfully deactivated!")
    
-    # def on_system_tray_checkbox_clicked(self):
-    #     if # self.ui.show_in_system_tray_checkbox.isChecked():
-    #         MAIN_INI_FILE.set_database_value(
-    #             'SYSTEMTRAY', 'system_tray', 'True')
+    def on_system_tray_checkbox_clicked(self):
+        if self.ui.show_in_system_tray_checkbox.isChecked():
+            MAIN_INI_FILE.set_database_value(
+                'SYSTEMTRAY', 'system_tray', 'True')
 
-    #         # Call system tray
-    #         sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
+            # Call system tray
+            sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
 
-    #         print("System tray was successfully enabled!")
+            print("System tray was successfully enabled!")
 
-    #     else:
-    #         MAIN_INI_FILE.set_database_value(
-    #             'SYSTEMTRAY', 'system_tray', 'False')
+        else:
+            MAIN_INI_FILE.set_database_value(
+                'SYSTEMTRAY', 'system_tray', 'False')
 
-    #         print("System tray was successfully disabled!")
+            print("System tray was successfully disabled!")
     
     def connected_action_to_take(self):
         self.ui.select_disk_button.setEnabled(True)
         # self.backup_now_button.setEnabled(True)
-        # self.ui.automatically_backup_checkbox.setEnabled(True)
-        # self.ui.show_in_system_tray_checkbox.setEnabled(True)
+        self.ui.automatically_backup_checkbox.setEnabled(True)
+        self.ui.show_in_system_tray_checkbox.setEnabled(True)
 
     # def not_connected_action_to_take(self):
     #     self.ui.select_disk_button.setEnabled(False)
     #     # self.backup_now_button.setEnabled(False)
-    #     # self.ui.automatically_backup_checkbox.setEnabled(False)
-    #     # self.ui.show_in_system_tray_checkbox.setEnabled(False)
+    #     self.ui.automatically_backup_checkbox.setEnabled(False)
+    #     self.ui.show_in_system_tray_checkbox.setEnabled(False)
     
     def registered_action_to_take(self):
         try:
             # Show devices name
             self.ui.external_name_label.setText(f"{MAIN_INI_FILE.hd_name()}")
-            
             # Show oldest backup label
-            self.ui.backups_label.setText(f'Backups: {MAIN_INI_FILE.oldest_backup_date()} - {MAIN_INI_FILE.latest_backup_date()}')
-
-            # Color
-            self.ui.backups_label.setStyleSheet('color: gray')
+            self.ui.oldest_backup_label.setText(f"Oldest Backup: {MAIN_INI_FILE.oldest_backup_date()}")
 
             # Show latest backup label
-            # self.ui.latest_backup_label.setText(f"Latest Backup: {MAIN_INI_FILE.latest_backup_date()}")
+            self.ui.latest_backup_label.setText(f"Latest Backup: {MAIN_INI_FILE.latest_backup_date()}")
         
         except FileNotFoundError:
             # TMB was not yet created in backup device
             pass
 
     def not_registered_action_to_take(self):
-            # Resize backup device frame
-            self.ui.backup_device_informations.setFixedHeight(0)
-
             # Set external size label to No information
-            self.ui.external_size_label.setText('None')
+            self.ui.external_size_label.setText("No information available")
 
             # Set external name label to None
             self.ui.external_name_label.setText("None")
 
             # Disable automatically backup checkbox
-            # self.ui.automatically_backup_checkbox.setEnabled(False)
+            self.ui.automatically_backup_checkbox.setEnabled(False)
 
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
@@ -386,97 +345,6 @@ class MainWindow(QMainWindow):
         # Show dialog window
         select_disk_class.show_disk_dialog()
     
-    def on_remove_device_clicked(self):
-        reset_confirmation = QMessageBox.question(
-            self,
-            'Remove Device as Backup Storage',
-            'Are you sure you want to remove this device as backup storage?',
-            QMessageBox.Yes
-            |
-            QMessageBox.No)
-
-        if reset_confirmation == QMessageBox.Yes:
-            # MAIN.latest_backup_label.setText("Latest Backup: None")
-            # MAIN.oldest_backup_label.setText("Oldest Backup: None")
-            
-            # Reset settings
-            # Backup section
-            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
-            # MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
-            MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
-
-            # INFO
-            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_date', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_to_main', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_time_check', 'None')
-
-            # EXTERNAL  
-            MAIN_INI_FILE.set_database_value('EXTERNAL', 'hd', 'None')
-            MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', 'None')
-            
-            # SYSTEMTRAY 
-            MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
-            
-            MAIN_INI_FILE.set_database_value('INFO', 'language', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'os', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'packageManager', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'theme', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'icon', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'cursor', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'colortheme', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'saved_notification', 'None')
-            MAIN_INI_FILE.set_database_value('INFO', 'current_backing_up', 'None')
-            
-            # Remove all keys first
-            # Connect to the SQLite database
-            conn = sqlite3.connect(SRC_USER_CONFIG_DB)
-            cursor = conn.cursor()
-
-            # Execute the DELETE statement to remove all rows from a table
-            table_name = 'FOLDER'
-            cursor.execute(f"DELETE FROM {table_name}")
-
-            # Commit the changes and close the connection
-            conn.commit()
-            conn.close()
-
-            MAIN_INI_FILE.set_database_value('FOLDER', 'pictures', 'True')
-            MAIN_INI_FILE.set_database_value('FOLDER', 'documents', 'True')
-            MAIN_INI_FILE.set_database_value('FOLDER', 'music', 'True')
-            MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
-            MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
-
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
-
-            print("All settings was reset!")
-
-            # Re-open Main Windows
-            # sub.Popen(['python3', SRC_MAIN_WINDOW_PY])
-
-            # Resize backup device frame
-            self.ui.backup_device_informations.setFixedHeight(0)
-
-            # Show add backup devices button
-            MAIN.ui.select_disk_button.show()
-
-            # Reset
-            self.ui.next_backup_label.setText('Next Backup: None')
-
-            # Quit
-            # exit()
-
-        else:
-            QMessageBox.Close
 
 class SelectDisk(QDialog):
     def __init__(self, parent=True):
@@ -644,12 +512,6 @@ class SelectDisk(QDialog):
         # Close dialog window
         self.on_cancel_dialog_button_clicked()
 
-        # Resize backup device frame
-        MAIN.ui.backup_device_informations.setFixedHeight(120)
-
-        # Hide add backup devices button
-        MAIN.ui.select_disk_button.hide()
-
         # Make the first backup
         # self.make_first_backup()
 
@@ -722,20 +584,6 @@ class OptionsWindow(QDialog):
 
         # Version
         self.options_ui.version_label.setText(APP_VERSION)
-
-
-        if MAIN_INI_FILE.automatically_backup():
-            self.options_ui.automatically_backup_checkbox.setChecked(True)
-        
-        else:
-            self.options_ui.automatically_backup_checkbox.setChecked(False)
-
-        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-            self.options_ui.show_in_system_tray_checkbox.setChecked(True)
-        
-        else:
-            self.options_ui.show_in_system_tray_checkbox.setChecked(False)
-    
         ######################################################################
         # Connection
         ######################################################################
@@ -747,17 +595,9 @@ class OptionsWindow(QDialog):
         self.options_ui.allow_flatpak_data_checkBox.clicked.connect(
             self.on_allow__flatpak_data_clicked)
 
-        # Automatically backup checkbox
-        self.options_ui.automatically_backup_checkbox.clicked.connect(
-            self.on_automatically_checkbox_clicked)
-        
-        # System tray button
-        self.options_ui.show_in_system_tray_checkbox.clicked.connect(
-            self.on_system_tray_checkbox_clicked)
-        
-        # # Reset
-        # self.options_ui.reset_button.clicked.connect(
-        #     self.on_button_fix_clicked)
+        # Reset
+        self.options_ui.reset_button.clicked.connect(
+            self.on_button_fix_clicked)
 
     def get_folders(self):
         # start tab index from 0
@@ -849,11 +689,8 @@ class OptionsWindow(QDialog):
     def on_button_fix_clicked(self):
         reset_confirmation = QMessageBox.question(
             self,
-            'Remove Device as Backup Storage',
-            'Are you sure you want to remove this device as backup storage?',
-            QMessageBox.Yes
-            |
-            QMessageBox.No)
+            'Reset',
+            'Are you sure you want to reset settings?', QMessageBox.Yes | QMessageBox.No)
 
         if reset_confirmation == QMessageBox.Yes:
             # MAIN.latest_backup_label.setText("Latest Backup: None")
@@ -862,7 +699,7 @@ class OptionsWindow(QDialog):
             # Reset settings
             # Backup section
             MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
-            # MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'False')
+            MAIN_INI_FILE.set_database_value('STATUS', 'automatically_backup', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
@@ -937,51 +774,7 @@ class OptionsWindow(QDialog):
     #     # Close dialog window 
     #     self.close()
 
-    def on_automatically_checkbox_clicked(self):
-        if self.options_ui.automatically_backup_checkbox.isChecked():
-            # Create backup checker .desktop and move it to the destination
-            create_backup_checker_desktop()
 
-            # Copy backup_check.desktop
-            shutil.copy(DST_BACKUP_CHECK_DESKTOP, DST_AUTOSTART_LOCATION)
-
-            MAIN_INI_FILE.set_database_value(
-                'STATUS', 'automatically_backup', 'True')
-
-            # call backup check
-            sub.Popen(
-                ['python3', SRC_BACKUP_CHECKER_PY],
-                stdout=sub.PIPE, 
-                stderr=sub.PIPE)
-            
-            print("Auto backup was successfully activated!")
-
-        else:
-            # Remove autostart.desktop
-            sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
-
-            MAIN_INI_FILE.set_database_value(
-                'STATUS', 'automatically_backup', 'False')
-
-            print("Auto backup was successfully deactivated!")
-   
-    def on_system_tray_checkbox_clicked(self):
-        if self.options_ui.show_in_system_tray_checkbox.isChecked():
-            MAIN_INI_FILE.set_database_value(
-                'SYSTEMTRAY', 'system_tray', 'True')
-
-            # Call system tray
-            sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
-
-            print("System tray was successfully enabled!")
-
-        else:
-            MAIN_INI_FILE.set_database_value(
-                'SYSTEMTRAY', 'system_tray', 'False')
-
-            print("System tray was successfully disabled!")
-    
-                  
 class PreparingDialog(QDialog):
     def __init__(self, parent=True):
         super().__init__()
@@ -1019,10 +812,7 @@ if __name__ == "__main__":
     options_window_class = OptionsWindow()
 
     # Window size
-    MAIN.setFixedSize(620, 336)
-
-    # Window title
-    MAIN.setWindowTitle('Time Machine')
+    MAIN.setFixedSize(700, 450)
     
     MAIN.show()
 

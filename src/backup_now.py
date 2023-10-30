@@ -131,29 +131,41 @@ class BACKUP:
             for folder in get_folders():
                 folder = handle_spaces(folder)
 
-                # Backup Home folder
-                src = HOME_USER + "/" + folder
-                dst = MAIN_INI_FILE.main_backup_folder() + '/'
-                
-                print(f'Backing up: {HOME_USER}/{folder}')
-                
-                # Add to counters
-                item_sum_size += get_item_size(f'{HOME_USER}/{folder}')
-                item_minus += 1 
+                try:
+                    # Backup Home folder
+                    src = HOME_USER + "/" + folder
+                    dst = MAIN_INI_FILE.main_backup_folder() + '/'
+                    
+                    print(f'Backing up: {HOME_USER}/{folder}')
+                    
+                    # Add to counters
+                    item_sum_size += get_item_size(f'{HOME_USER}/{folder}')
+                    item_minus += 1 
 
-                # Send backup current status to the notification DB
-                notification_message(
-                    backup_status(
-                        item_minus, 
-                        item_sum_size, 
-                        len(get_folders())))
+                    # Send backup current status to the notification DB
+                    notification_message(
+                        backup_status(
+                            item_minus, 
+                            item_sum_size, 
+                            len(get_folders())))
 
-                process = sub.run(
-                    ['cp', '-rvf', src, dst], 
-                        stdout=sub.PIPE, stderr=sub.PIPE)
+                    process = sub.run(
+                        ['cp', '-rvf', src, dst], 
+                            stdout=sub.PIPE, 
+                            stderr=sub.PIPE)
 
-                # Get output
-                print(process.stdout)
+                    # Get output
+                    print(process.stdout)
+
+                except Exception as e:
+                    if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+                        MAIN_INI_FILE.report_error(e)
+
+                        # Set backup now to False
+                        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+                        
+                        # Unfinished to Yes 
+                        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
         else:
             # Static time value, fx. 10-00
@@ -287,9 +299,20 @@ class BACKUP:
                             # Latest backup today
                             MAIN_INI_FILE.set_database_value(
                                 'INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
-                            
+             
                     except IndexError:
                         pass
+                
+                    except Exception as e:
+                        if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+                            MAIN_INI_FILE.report_error(e)
+
+                            # Set backup now to False
+                            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+                            
+                            # Unfinished to Yes 
+                            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+                    
 
     async def backup_hidden_home(self):
         # Start backing up hidden files/folder by getting users DE name
@@ -347,17 +370,20 @@ class BACKUP:
  
         try:
             await self.backup_home()
+
             # await self.backup_hidden_home()
             await self.end_backup()
 
         except Exception as e:
-            MAIN_INI_FILE.report_error(e)
+            if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+                MAIN_INI_FILE.report_error(e)
 
-            # Set backup now to False
-            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-            
-            # Unfinished to Yes 
-            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+                # Set backup now to False
+                MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+                
+                # Unfinished to Yes 
+                MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+
 
         # Wait few seconds
         time.sleep(60)
