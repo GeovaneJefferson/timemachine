@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>618</width>
-    <height>336</height>
+    <height>312</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,17 +29,11 @@
     </property>
     <item>
      <widget class="QFrame" name="frame">
-      <property name="minimumSize">
-       <size>
-        <width>600</width>
-        <height>120</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>600</width>
-        <height>120</height>
-       </size>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="frameShape">
        <enum>QFrame::WinPanel</enum>
@@ -58,8 +52,11 @@
           </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item alignment="Qt::AlignTop">
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
@@ -71,7 +68,7 @@
              </property>
             </widget>
            </item>
-           <item>
+           <item alignment="Qt::AlignTop">
             <widget class="QLabel" name="label_2">
              <property name="font">
               <font>

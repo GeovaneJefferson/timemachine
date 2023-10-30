@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(618, 336)
+        MainWindow.resize(618, 312)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -31,8 +31,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(9, 9, 9, 0)
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setMinimumSize(QSize(600, 120))
-        self.frame.setMaximumSize(QSize(600, 120))
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
+        self.frame.setSizePolicy(sizePolicy)
         self.frame.setFrameShape(QFrame.WinPanel)
         self.frame.setFrameShadow(QFrame.Sunken)
         self.horizontalLayout_2 = QHBoxLayout(self.frame)
@@ -45,6 +48,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.app_logo_image, 0, Qt.AlignTop)
 
         self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
@@ -52,7 +56,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.label.setFont(font)
 
-        self.verticalLayout_3.addWidget(self.label)
+        self.verticalLayout_3.addWidget(self.label, 0, Qt.AlignTop)
 
         self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
@@ -63,8 +67,9 @@ class Ui_MainWindow(object):
         self.label_2.setScaledContents(True)
         self.label_2.setWordWrap(True)
 
-        self.verticalLayout_3.addWidget(self.label_2)
+        self.verticalLayout_3.addWidget(self.label_2, 0, Qt.AlignTop)
 
+        self.verticalLayout_3.setStretch(1, 1)
 
         self.horizontalLayout.addLayout(self.verticalLayout_3)
 

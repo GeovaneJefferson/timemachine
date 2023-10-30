@@ -121,4 +121,5 @@ def update_db():
 
 
 if __name__ == '__main__':
+    backup_wallpaper()
     pass

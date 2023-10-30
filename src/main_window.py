@@ -356,7 +356,10 @@ class MainWindow(QMainWindow):
 
             # Show latest backup label
             # self.ui.latest_backup_label.setText(f"Latest Backup: {MAIN_INI_FILE.latest_backup_date()}")
-        
+
+            # Hide
+            self.ui.select_disk_button.hide()
+
         except FileNotFoundError:
             # TMB was not yet created in backup device
             pass
@@ -373,6 +376,9 @@ class MainWindow(QMainWindow):
 
             # Disable automatically backup checkbox
             # self.ui.automatically_backup_checkbox.setEnabled(False)
+
+            # Show
+            self.ui.select_disk_button.show()
 
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
@@ -645,7 +651,7 @@ class SelectDisk(QDialog):
         self.on_cancel_dialog_button_clicked()
 
         # Resize backup device frame
-        MAIN.ui.backup_device_informations.setFixedHeight(120)
+        MAIN.ui.backup_device_informations.setFixedHeight(118)
 
         # Hide add backup devices button
         MAIN.ui.select_disk_button.hide()
@@ -1019,7 +1025,7 @@ if __name__ == "__main__":
     options_window_class = OptionsWindow()
 
     # Window size
-    MAIN.setFixedSize(620, 336)
+    MAIN.setFixedSize(618, 312)
 
     # Window title
     MAIN.setWindowTitle('Time Machine')

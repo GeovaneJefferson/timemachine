@@ -1,4 +1,5 @@
 from setup import *
+from ui.ui_new_2mainwindow import Ui_MainWindow
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
@@ -116,6 +117,7 @@ def get_gtk_users_cursor_name():
         GET_USER_CURSOR_CMD).read().strip().replace("'", "")
     return user_cursor_name
     
+
 
 class BACKUP:
     async def backup_home(self):
@@ -259,6 +261,12 @@ class BACKUP:
                                     item_sum_size, 
                                     number_of_item_to_backup()))
 
+                            # self.process = QProcess(self)
+                            # self.process.setProcessChannelMode(QProcess.MergedChannels)
+                            # self.process.readyReadStandardOutput.connect(self.handle_output)
+                            
+                            # self.process.start(['cp', '-rvf', location, destination_location])
+
                             # Copy files
                             sub.run(
                                 ['cp', '-rvf', location, destination_location],
@@ -277,6 +285,8 @@ class BACKUP:
                                     item_minus, 
                                     item_sum_size, 
                                     number_of_item_to_backup()))
+                            
+                            # self.process.start(['cp', '-rvf', location, destination_location])
 
                             # Backup directories using shutil.copytree()
                             sub.run(
@@ -397,5 +407,5 @@ class BACKUP:
 
 if __name__ == '__main__':
     MAIN_INI_FILE = UPDATEINIFILE()
-    main = BACKUP()
-    asyncio.run(main.main())
+    MAIN = BACKUP()
+    asyncio.run(MAIN.main())

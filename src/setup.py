@@ -16,6 +16,7 @@ import sqlite3
 import logging
 import traceback
 
+
 from stylesheet import *
 from pathlib import Path
 from datetime import datetime
@@ -25,7 +26,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import (
     Qt, QSize, QRect, QPropertyAnimation,
     QEasingCurve, QPoint, QSocketNotifier, QDir, QTimer,
-    QResource)
+    QResource, QProcess, QTextStream)
 
 from PySide6.QtGui import (
     QFont, QPixmap , QIcon, QMovie, QAction,
