@@ -156,18 +156,15 @@ class BACKUP:
                             stdout=sub.PIPE, 
                             stderr=sub.PIPE)
 
-                    # Get output
-                    print(process.stdout)
-
                 except Exception as e:
-                    if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-                        MAIN_INI_FILE.report_error(e)
+                    # if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+                    MAIN_INI_FILE.report_error(e)
 
-                        # Set backup now to False
-                        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-                        
-                        # Unfinished to Yes 
-                        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+                    # Set backup now to False
+                    MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+                    
+                    # Unfinished to Yes 
+                    MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
         else:
             # Static time value, fx. 10-00
@@ -363,6 +360,10 @@ class BACKUP:
 
         print("Backup is done!")
         print("Sleeping for 60 seconds")
+        
+        # Finnish notification
+        notification_message('Finalizing backup...')
+
         # Wait x, so if it finish fast, won't repeat the backup
         time.sleep(60)
 
@@ -385,14 +386,14 @@ class BACKUP:
             await self.end_backup()
 
         except Exception as e:
-            if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-                MAIN_INI_FILE.report_error(e)
+            # if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+            MAIN_INI_FILE.report_error(e)
 
-                # Set backup now to False
-                MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-                
-                # Unfinished to Yes 
-                MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+            # Set backup now to False
+            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+            
+            # Unfinished to Yes 
+            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
 
 
         # Wait few seconds

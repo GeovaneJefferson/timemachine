@@ -74,11 +74,13 @@ def install_dependencies():
                     check=True)
 
         # Install flathub
-        command = 'flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo' 
-
         try:            
             sub.run(
-                [command],
+                ['flatpak',
+                 'remote-add',
+                 '--if-not-exists',
+                 'flathub',
+                 'https://dl.flathub.org/repo/flathub.flatpakrepo'],
                 check=True)
 
         except sub.CalledProcessError as e:

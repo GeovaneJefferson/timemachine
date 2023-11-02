@@ -63,14 +63,14 @@ Time Machine's backup strategy combines convenience and efficiency to safeguard 
 ## Monitoring Backup Status
 
 - **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
-  - ![systemtrayiconrun.png](src%2Ficons%2Fsystemtrayiconrun.png) Running backup icon signifies that
+  - Green dot, a backup is been made right now.
 
 Time Machine is currently in the process of backing up your files. Once the backup is complete, it will revert to the
 normal icon.
 
 
 - **Error Alerts:** If automatic backup is ON but your backup device becomes disconnected or is not mounted, you'll see
-the ![systemtrayiconerror.png](src%2Ficons%2Fsystemtrayiconerror.png) error icon.
+a red dot.
 This could also indicate an issue
 encountered during the backup process. In such cases, open the Time Machine main window and refer to the provided report
 for details.
