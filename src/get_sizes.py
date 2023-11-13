@@ -118,6 +118,7 @@ def needeed_size_to_backup_home():
             
             except ValueError:
                 total_size += 0
+
             except IndexError:
                 pass
 
@@ -138,12 +139,38 @@ def number_of_item_to_backup():
         # Num. of item to be backed up
         num_of_item = round(len(lines) / 5)
 
-        print(f"Num. of itens to backup: {num_of_item}")
+        print(f'Num. of itens to backup: {num_of_item}')
 
         return num_of_item
 
     except:
         return 0
+
+# def number_of_item_to_backup():
+#     file_count = 0
+    
+#     # Read each line from the input file
+#     with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
+#         lines = f.readlines()
+
+#         # Location
+#         file_loc = lines[2].split('/')[1:]
+#         file_loc = '/'.join(file_loc) 
+#         file_loc = '/' + file_loc.strip()
+#         print(file_loc)
+
+#         # Is a directory
+#         # if '.' not in file_loc.split('/')[-1]:
+#         if os.path.isdir(file_loc):
+#             # Read from dict text file
+#             for root, dirs, files in os.walk(file_loc):
+#                 print('FIle:', files)
+#                 file_count += len(files)
+
+#         # Is a file
+#         file_count += 1
+
+#     return file_count
 
 def get_directory_size(directory):
     total_size = 0
@@ -175,5 +202,4 @@ def get_item_size(item_path):
 
 
 if __name__ == '__main__':
-    print(get_external_device_used_size())
     pass

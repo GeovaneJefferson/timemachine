@@ -7,6 +7,7 @@ from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 from next_backup_label import next_backup_label
+from backup_status import progress_bar_status
 
 
 DELAY_TO_UPDATE = 2000
@@ -148,8 +149,9 @@ class APP:
             self.change_color("Blue")
 
             # Notification information
-            self.last_backup_information.setText(MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
-            self.last_backup_information2.setText(' ')
+            self.last_backup_information.setText(MAIN_INI_FILE.get_database_value(
+                'INFO', 'current_backing_up'))
+            self.last_backup_information2.setText(progress_bar_status())
         
             # Disable
             self.backup_now_button.setEnabled(False)
@@ -190,12 +192,12 @@ class APP:
                 #     self.last_backup_information2.setText(next_backup_label())
                 
         else:
-            # Next backup alert
-            self.last_backup_information.setText('Automatically backup off')
-            
-            # Clean information 2
-            self.last_backup_information2.setText(' ')
-
+            self.last_backup_information.setText(
+                    f'Latest Backup to "{MAIN_INI_FILE.hd_name()}:"')
+                
+            # Show latest backup label
+            self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
+        
     def backup_now(self):
         sub.Popen(
             ['python3', SRC_ANALYSE_PY],

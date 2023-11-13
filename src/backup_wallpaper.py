@@ -49,6 +49,7 @@ def get_wallpaper_full_location():
     # Kde
     ###################################
     elif MAIN_INI_FILE.get_database_value('INFO', 'os') == "kde":
+        
         # Search wallaper inside plasma-org.kde.plasma.desktop-appletsrc
         with open(f"{HOME_USER}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
             # Strips the newline character
@@ -66,7 +67,6 @@ def get_wallpaper_full_location():
                     # Handle spaces
                     # line = handle_spaces(line)
 
-                    print(line)
                     # Return lines full location
                     return line
 
@@ -92,33 +92,31 @@ def backup_wallpaper():
     # Backup wallpaper
     if get_wallpaper_full_location() is not None:
         src = get_wallpaper_full_location()
-        dst = MAIN_INI_FILE.wallpaper_main_folder() + '/'
+        dst = MAIN_INI_FILE.wallpaper_main_folder() + "/"
         
-        print()
         print('Copying', src)
-        print('To', dst)
 
         sub.run(
             ['cp', '-rvf', src, dst],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
-#     # Write to file
-#     update_db()
+    # Write to file
+    update_db()
 
-# def update_db():
-#     CONFIG = configparser.ConfigParser()
-#     CONFIG.read(MAIN_INI_FILE.restore_settings_location())
-#     with open(MAIN_INI_FILE.restore_settings_location(), 'w') as configfile:
-#         if not CONFIG.has_section('INFO'):
-#             CONFIG.add_section('INFO')
+def update_db():
+    CONFIG = configparser.ConfigParser()
+    CONFIG.read(MAIN_INI_FILE.restore_settings_location())
+    with open(MAIN_INI_FILE.restore_settings_location(), 'w') as configfile:
+        if not CONFIG.has_section('INFO'):
+            CONFIG.add_section('INFO')
 
-#         if get_wallpaper_full_location() is not None:
-#             CONFIG.set(
-#                 'INFO', 'wallpaper', f'{get_wallpaper_full_location().split("/")[-1]}')
+        if get_wallpaper_full_location() is not None:
+            CONFIG.set(
+                'INFO', 'wallpaper', f'{get_wallpaper_full_location().split("/")[-1]}')
             
-#             # Write to file
-#             CONFIG.write(configfile)
+            # Write to file
+            CONFIG.write(configfile)
 
 
 

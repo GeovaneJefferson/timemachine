@@ -204,7 +204,7 @@ def check_this_item(
                 if get_item_diff(
                     item_path,
                     dst_full_location):
-                
+
                     # Search in the current dir
                     search_in_main_dir(
                         item_name, 
@@ -236,6 +236,7 @@ def search_in_main_dir(
     item_name, 
     item_path,
     main_custom_full_location):
+
     # Loop through the files to find updates
     for root, _, files in os.walk(item_path):
         # Has files inside
@@ -247,18 +248,25 @@ def search_in_main_dir(
                 short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
                 short_dst_loc = short_dst_loc.split('/')[3:]
                 short_dst_loc = ('/').join(short_dst_loc) + '/'
-       
+                
+                # Compare sizes
+                if get_item_diff(
+                    file_full_location,
+                    main_custom_full_location + '/' + item_name):
+                    
+                    # Item has been updated
+                    add_to_backup_dict(
+                        item_name, 
+                        item_path, 
+                        'UPDATED')
+
+
                 # Exclude invalid location, like: '/car.fbx'
                 if short_dst_loc != '/':
                     # Backup destination full location
                     dst_backup_full_location = os.path.join(
                         main_custom_full_location, short_dst_loc, item_name)
                     
-                    # print(short_dst_loc)
-                    # print(item_name)
-                    # print(dst_backup_full_location)
-                    # print()
-
                     # Is a new item
                     if is_new_item(dst_backup_full_location):
                         add_to_backup_dict(
@@ -357,7 +365,10 @@ def get_item_diff(
 
 def add_to_backup_dict(item_name, item_path, status):
     destination = item_path.replace(HOME_USER, '')
-    
+
+    # Analysing right now
+    notification_message(f'Analysing: {item_name}' )
+
     print('Added:')
     print(f"        -Filename : {item_name}")
     print(f"        -Location : {item_path}")
@@ -534,7 +545,7 @@ def need_to_backup_analyse():
 
         # If number of item > 0
         if number_of_item_to_backup() == 0:
-            notification_message(' ')
+            # notification_message(' ')
 
             print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
             return False
@@ -549,31 +560,34 @@ def need_to_backup_analyse():
 if __name__ == '__main__':
     # Update notification
     print('Analysing backup...')
+
     notification_message('Analysing backup...')
 
-    # need_to_backup_analyse()
+    # Set backing up now to True
+    MAIN_INI_FILE.set_database_value(
+        'STATUS', 'backing_up_now', 'True') 
 
-    # Need to backup
-    if need_to_backup_analyse():
-        # Prepare backup
-        if MAIN_PREPARE.prepare_the_backup():
-            # Backing up to True
-            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
-            
-            print('Calling backup now...')
+    need_to_backup_analyse()
 
-            # Backup now
-            sub.Popen(
-                ['python3', SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+    # # Need to backup
+    # if need_to_backup_analyse():
+    #     # Prepare backup
+    #     if MAIN_PREPARE.prepare_the_backup():
+    #         print('Calling backup now...')
 
-    else:
-        # Backing up to False
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')   
+    #         # Backup now
+    #         sub.Popen(
+    #             ['python3', SRC_BACKUP_NOW_PY], 
+    #                 stdout=sub.PIPE, 
+    #                 stderr=sub.PIPE)
 
-        # Re.open backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+    # else:
+    #     # Backing up to False
+    #     MAIN_INI_FILE.set_database_value(
+    #         'STATUS', 'backing_up_now', 'False')   
+
+    #     # Re.open backup checker
+    #     sub.Popen(
+    #         ['python3', SRC_BACKUP_CHECKER_PY], 
+    #         stdout=sub.PIPE, 
+    #         stderr=sub.PIPE)

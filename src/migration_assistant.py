@@ -217,20 +217,24 @@ class WelcomeScreen(QWidget):
 		else:
 			package_location = None
 
+		# Disable Application checkbox
+		self.ui.checkbox_applications_page3.setEnabled(False)
+	
 		if package_location is not None:
-			for package in os.listdir(package_location):
-				sub_applications_checkboxes = QCheckBox()
-				sub_applications_checkboxes.setText(package.capitalize().split('_')[0])
-				sub_applications_checkboxes.setChecked(True)
-				sub_applications_checkboxes.clicked.connect(
-					lambda *args, package=package: self.exclude_applications(package))
-				self.ui.applications_sub_checkbox_layout_page3.addWidget(sub_applications_checkboxes)
+			# Has packages inside
+			if any(os.scandir(package_location)):
+				# Enable Application checkbox
+				self.ui.checkbox_applications_page3.setEnabled(True)
+	
+				for package in os.listdir(package_location):
+					sub_applications_checkboxes = QCheckBox()
+					sub_applications_checkboxes.setText(package.capitalize().split('_')[0])
+					sub_applications_checkboxes.setChecked(True)
+					sub_applications_checkboxes.clicked.connect(
+						lambda *args, package=package: self.exclude_applications(package))
+					self.ui.applications_sub_checkbox_layout_page3.addWidget(sub_applications_checkboxes)
 
-				self.number_of_item_applications += 1
-
-		else:
-			# Disable Application checkbox
-			self.ui.checkbox_applications_page3.setEnabled(False)
+					self.number_of_item_applications += 1
 
 		# Expand it, 1 item = 20 height
 		self.ui.applications_sub_widget_page3.setMinimumHeight(self.number_of_item_applications*30)

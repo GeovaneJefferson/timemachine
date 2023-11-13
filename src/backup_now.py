@@ -1,412 +1,428 @@
 from setup import *
-from ui.ui_new_2mainwindow import Ui_MainWindow
 from read_ini_file import UPDATEINIFILE
-from get_users_de import get_user_de
 from get_folders_to_be_backup import get_folders
-# from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
-from backup_status import backup_status
-from get_sizes import get_item_size, number_of_item_to_backup
-from backup_hidden import start_backup_hidden_home
-import error_catcher
 
 # Handle signal
+import error_catcher
 signal.signal(signal.SIGINT, error_catcher.signal_exit)
 signal.signal(signal.SIGTERM, error_catcher.signal_exit)
-    
 
-#########################################################
-# KDE
-#########################################################
-# KDE cursor
-def get_kde_users_cursor_name():
-    with open(f"{HOME_USER}/.config/xsettingsd/xsettingsd.conf", "r") as read:
-        read = read.readlines()
 
-        for counter in range(len(read)):
-            if read[counter].split()[0] == "Gtk/CursorThemeName":
-                # Return users cursor name
-                return read[counter].split()[1].replace('"','')
+list_gnome_include = [
+	'gnome-shell',
+	'dconf'
+	]
 
-# KDE font
-def get_kde_users_font_name():
-    with open(f"{HOME_USER}/.config/kdeglobals", "r") as read:
-        read = read.readlines()
+# Backup .local/share/ selected folder for KDE
+list_include_kde = [
+	'kwin',
+	'plasma_notes',
+	'plasma',
+	'aurorae',
+	'color-schemes',
+	'fonts',
+	'kate',
+	'kxmlgui5',
+	'icons',
+	'themes',
 
-        for counter in range(len(read)):
-            if read[counter].startswith("font="):
-                # Return users kde font name
-                return (read[counter]).strip().split(",")[0].replace("font=","")
+	'gtk-3.0',
+	'gtk-4.0',
+	'kdedefaults',
+	'dconf',
+	'fontconfig',
+	'xsettingsd',
+	'dolphinrc',
+	'gtkrc',
+	'gtkrc-2.0',
+	'kdeglobals',
+	'kwinrc',
+	'plasmarc',
+	'plasmarshellrc',
+	'kglobalshortcutsrc',
+	'khotkeysrc',
+	'kwinrulesrc'
+	'dolphinrc',
+	'ksmserverrc',
+	'konsolerc',
+	'kscreenlockerrc',
+	'plasmashellr',
+	'plasma-org.kde.plasma.desktop-appletsrc',
+	'plasmarc',
+	'kdeglobals',
+	
+	'gtk-3.0',
+	'gtk-4.0',
+	'kdedefaults',
+	'dconf',
+	'fontconfig',
+	'xsettingsd',
+	'dolphinrc',
+	'gtkrc',
+	'gtkrc-2.0',
+	'kdeglobals',
+	'kwinrc',
+	'plasmarc',
+	'plasmarshellrc',
+	'kglobalshortcutsrc',
+	'khotkeysrc'
+	]
 
-# KDE font size
-def get_kde_users_font_size():
-    with open(f"{HOME_USER}/.config/kdeglobals", "r") as read:
-        read = read.readlines()
+# HOME
+def count_files():
+	file_count = 0
+	subdirectories = get_folders()
 
-        for counter in range(len(read)):
-            if read[counter].startswith("font="):
-                # Return users kde font size
-                return (read[counter]).strip().split(",")[1]
+	print('Counting total files...')
+	for i in subdirectories:
+		source_folder = os.path.join(HOME_USER, i)
 
-# KDE icon
-def get_kde_users_icon_name():
-    with open(f"{HOME_USER}/.config/xsettingsd/xsettingsd.conf", "r") as read:
-        read = read.readlines()
-        for counter in range(len(read)):
-            if read[counter].split()[0] == "Net/IconThemeName":
-                # Return users icon name
-                return read[counter].split()[1].replace('"','')
+		# Sum all files from selected HOME folders
+		for root, dirs, files in os.walk(source_folder):
+			# Add to count
+			file_count += len(files)
 
-#########################################################
-# GNOME
-#########################################################
-# GTK theme
-def get_gtk_users_theme_name():
-    user_theme_name = os.popen(GET_USER_THEME_CMD).read().strip().replace("'", "")
-    return user_theme_name
+	return file_count
 
-# GTK font
-def get_gtk_user_font_name():
-    user_font_name = os.popen(GET_USER_FONT_CMD).read().replace("'", "")
-    user_font_name = " ".join(user_font_name.split())
-    return user_font_name
+def make_first_backup():
+	# Get a list of subdirectories to back up
+	subdirectories = get_folders()
+	
+	# Target location
+	target_folder = MAIN_INI_FILE.main_backup_folder() + '/'
+	# target_folder = '/media/macbook/Backup_Drive/TMB/test'
 
-    # def get_user_font():
-    #     if get_user_de() == 'kde':
-    #         mainFont=FONT()
-    #         return  f"{mainFont.get_kde_font()}, {mainFont.get_kde_font_size()}"
+	# Number of total files to back up
+	total_files = count_files()
+	
+	# Copied file value
+	copied_files = 0
 
-    #     else:
-    #         userFontName=os.popen(getUserFontCMD)
-    #         userFontName=userFontName.read().replace("'", "")
-    #         userFontName=" ".join(userFontName.split())
-    #         return userFontName
+	# Loop through selected HOME folders to back up
+	for i in subdirectories:
+		source_folder = os.path.join(HOME_USER, i)
 
-# GTK icon
-def get_gtk_users_icon_name():
-    userIconName = os.popen(GET_USER_ICON_CMD).read().strip().replace("'", "")
-    return userIconName
+		# Loop through current HOME folder location
+		for root, dirs, files in os.walk(source_folder):
+			for file in files:
+				source_path = os.path.join(root, file)
+				relative_path = os.path.relpath(source_path, source_folder)
+				target_path = os.path.join(target_folder, i, relative_path)
+				
+				# Create dst folder with relative name is necessary
+				os.makedirs(os.path.dirname(target_path), exist_ok=True)
 
-# def users_icon_size():
-#     try:
-#         userIconSize=os.popen(f"du -s {homeUser}/.icons/{users_icon_name()}")
-#         userIconSize=userIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.icons/{users_icon_name()}", "").replace("\t", "")
-#         userIconSize=int(userIconSize)
+				try:
+					# Back up 
+					shutil.copy(source_path, target_path)
+					print(f"Backed up: {source_path}")
 
-#     except ValueError:
-#         try:
-#             userIconSize=os.popen(f"du -s {homeUser}/.local/share/icons/{users_icon_name()}")
-#             userIconSize=userIconSize.read().strip("\t").strip("\n").replace(f"{homeUser}/.local/share/icons/{users_icon_name()}", "").replace("\t", "")
-#             userIconSize=int(userIconSize)
+				except Exception as e:
+					print(f"Error while backing up {source_path}: {e}")
+				
+				# Add 1 to copied file value
+				copied_files += 1
 
-#         except ValueError:
-#             try:
-#                 userIconSize=os.popen(f"du -s /usr/share/icons/{users_icon_name()}")
-#                 userIconSize=userIconSize.read().strip("\t").strip("\n").replace(f"/usr/share/icons/{users_icon_name()}", "").replace("\t", "")
-#                 userIconSize=int(userIconSize)
+				# Caculate the progress bar
+				progress = int(copied_files / total_files * 100)
+				print(progress)
+				print('Copied file:', copied_files, '/', total_files)
+				
+				# Save current progress value to DB
+				MAIN_INI_FILE.set_database_value(
+					'STATUS', 'progress_bar', str(progress))
 
-#             except ValueError:
-#                 return None
+				# Save current backing up
+				MAIN_INI_FILE.set_database_value(
+	            	'INFO', 'current_backing_up', source_path)
 
-#     return userIconSize
 
-# GTK cursor
-def get_gtk_users_cursor_name():
-    user_cursor_name = os.popen(
-        GET_USER_CURSOR_CMD).read().strip().replace("'", "")
-    return user_cursor_name
-    
+	# Set progress bar value to None
+	MAIN_INI_FILE.set_database_value(
+			'STATUS', 'progress_bar', 'None')
 
 
 class BACKUP:
-    async def backup_home(self):
-        item_minus = 0
-        item_sum_size = 0 
+	# Backup USER HOME 
+	def backup_home(self, first_backup):
+		# Target location is empty
+		if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+			# Save time informations
+			MAIN_INI_FILE.set_database_value(
+				'INFO',
+				'oldest_backup_date',
+				MAIN_INI_FILE.current_full_date_plus_time_str())
 
-        # Base backup folder is empty. (TMB)
-        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
-            # Save todays as oldest backup date
-            MAIN_INI_FILE.set_database_value('INFO', 'oldest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+			# Make first backup 
+			make_first_backup()
 
-            # Backup home to the main backup folder
-            for folder in get_folders():
-                folder = handle_spaces(folder)
+		else:
+			# Static time value, fx. 10-00
+			STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
 
-                try:
-                    # Backup Home folder
-                    src = HOME_USER + "/" + folder
-                    dst = MAIN_INI_FILE.main_backup_folder() + '/'
-                    
-                    print(f'Backing up: {HOME_USER}/{folder}')
-                    
-                    # Add to counters
-                    item_sum_size += get_item_size(f'{HOME_USER}/{folder}')
-                    item_minus += 1 
+			# Read the include file and process each item's information
+			with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
+				lines = f.readlines()
+				
+				for i in range(0, len(lines), 5):
+					try:
+						filename = lines[i + 0].split(':')[-1].strip()
+						size_string = lines[i + 1].split(':')[-1].strip()
+						size = int(size_string.split()[0])
+						location = lines[i + 2].split(':')[-1].strip()
+						destination = lines[i + 3].split(':')[-1].strip()
+						status = lines[i + 4].split(':')[-1].strip()
+						
+						##########################################################
+						# .MAIN BACKUP
+						##########################################################
+						if status == 'NEW':  # Is a new file/folder
+							# Copy to .main backup
+							destination_location = (
+								f'{MAIN_INI_FILE.main_backup_folder()}/{destination}')
 
-                    # Send backup current status to the notification DB
-                    notification_message(
-                        backup_status(
-                            item_minus, 
-                            item_sum_size, 
-                            len(get_folders())))
+							# Remove invalid keys
+							destination_location = destination_location.replace('../','')
+						
+						##########################################################
+						# LATEST DATE/TIME
+						##########################################################
+						elif status == 'UPDATED':
+							# Sent to a new date/time backup folder
+							destination_location = (
+								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
+							
+							# Static time folder 
+							# So it won't update if backup passes more than one minute
+							destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
+							destination_location = '/'.join(destination_location)
 
-                    process = sub.run(
-                        ['cp', '-rvf', src, dst], 
-                            stdout=sub.PIPE, 
-                            stderr=sub.PIPE)
+							# Add static time to it
+							destination_location = (destination_location + 
+								'/' + STATIC_TIME_FOLDER + destination)
+							
+						# Create dst folder with relative name is necessary
+						os.makedirs(
+							os.path.dirname(
+							os.path.join(destination_location, filename)), exist_ok=True)
+						
+						try:
+							# Back up 
+							shutil.copy(os.path.join(location, filename), destination_location)
+							print(f"Backed up: {os.path.join(location, filename)}")
 
-                except Exception as e:
-                    # if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-                    MAIN_INI_FILE.report_error(e)
+						except Exception as e:
+							print(f"Error while backing up {os.path.join(location, filename)}: {e}")
+			
+						# print(filename)
+						# print(location)
+						# print(destination)
+						# print(destination_location)
+						# print(os.path.join(destination_location, filename))
+						
+					except Exception as e:
+						print(e)
+						exit()
 
-                    # Set backup now to False
-                    MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-                    
-                    # Unfinished to Yes 
-                    MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+	# HIDDEN FILES/FOLDERS
+	def backup_hidden_home(self, user_de):
+		# Gnome and KDE
+		if user_de == 'gnome' or user_de == 'kde': 
+			self.backup_hidden_local_share(user_de)
+			self.backup_hidden_config(user_de)
 
-        else:
-            # Static time value, fx. 10-00
-            STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
+			# Extra step for kde
+			if user_de == 'kde':
+				self.backup_hidden_kde_share() 
 
-            # Read the include file and process each item's information
-            with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
-                lines = f.readlines()
-                
-                for i in range(0, len(lines), 5):
-                    try:
-                        # filename = lines[i + 0].split(':')[-1].strip()
-                        size_string = lines[i + 1].split(':')[-1].strip()
-                        size = int(size_string.split()[0])
-                        location = lines[i + 2].split(':')[-1].strip()
-                        destination = lines[i + 3].split(':')[-1].strip()
-                        status = lines[i + 4].split(':')[-1].strip()
-                        
-                        ##########################################################
-                        # .MAIN BACKUP
-                        ##########################################################
-                        # Copy to .main backup
-                        if status == 'NEW':
-                            # Sent to main backup folder
-                            destination_location = (
-                                f'{MAIN_INI_FILE.main_backup_folder()}/{destination}')
+	def backup_hidden_local_share(self, user_de):
+		# Local share
+		for folder in os.listdir(LOCAL_SHARE_LOCATION):
+			# Handle spaces
+			folder = handle_spaces(folder)
+			
+			# Gnome or KDE
+			if user_de == 'gnome':
+				compare_list = list_gnome_include
+				
+				# Destination
+				dst = MAIN_INI_FILE.gnome_local_share_main_folder() + '/' + folder
 
-                            # Remove invalid keys
-                            destination_location = destination_location.replace('../','')
-                        
-                        ##########################################################
-                        # LATEST DATE/TIME
-                        ##########################################################
-                        elif status == 'UPDATED':
-                            # Sent to a new date/time backup folder
-                            destination_location = (
-                                f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
-                            
-                            # Static time folder 
-                            # So it won't update if backup passes more than one minute
-                            destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
-                            destination_location = '/'.join(destination_location)
-                            
-                            # Add static time to it
-                            destination_location = (destination_location + 
-                                '/' + STATIC_TIME_FOLDER + destination)
-                        
-                        print(
-                            'Backing up item:', location, 'to', destination_location)
-                        
-                        # # Remove home username
-                        # remove_username = os.path.relpath(location, os.curdir)
-                        
-                        # # Extract location's folder name
-                        # extracted_folder_name = remove_username.replace('../../../', '')
-                        # extracted_folder_name = remove_username.replace('../', '')
+			elif user_de == 'kde':
+				compare_list = list_include_kde
 
-                        print(destination_location)
+				# Destination
+				dst = MAIN_INI_FILE.kde_local_share_main_folder() + '/' + folder
 
-                        # CREATE DIR IF NECESSARY
-                        # Is a file
-                        if os.path.isfile(destination_location):
-                            # Remove file name
-                            destination_location = destination_location.split('/')[:-1]
-                            destination_location = '/'.join(destination_location)
-                            
-                            # Create folder
-                            os.makedirs(destination_location, exist_ok=True)
+			# Find match in list
+			if folder in compare_list:
+				src = LOCAL_SHARE_LOCATION + folder
+				# dst = MAIN_INI_FILE.main_backup_folder() + '/.local/share/' + folder
+				
+				# Create current directory in backup device
+				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
 
-                        # Is a dir
-                        else:
-                            # Remove file name
-                            destination_location = destination_location.split('/')[:-1]
-                            destination_location = '/'.join(destination_location)
-                            
-                            # Create current dir in backup device
-                            # if not os.path.exists(destination_location):
-                            # Create folder
-                            os.makedirs(destination_location, exist_ok=True)
+				if not os.path.exists(dst_moded):
+					os.makedirs(dst_moded, exist_ok=True)
 
-                        # Backup file
-                        if os.path.isfile(location):
-                            # Add to counters
-                            item_sum_size += size   # Bytes
-                            item_minus += 1 
+				print(f'Backing up: {LOCAL_SHARE_LOCATION}{folder}')
 
-                            # Send backup current status to the notification DB
-                            notification_message(
-                                backup_status(
-                                    item_minus, 
-                                    item_sum_size, 
-                                    number_of_item_to_backup()))
+				notification_message(f'Backing up: .local/share/{folder}')
+				
+				sub.run(
+					['cp', '-rvf', src, dst],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
 
-                            # self.process = QProcess(self)
-                            # self.process.setProcessChannelMode(QProcess.MergedChannels)
-                            # self.process.readyReadStandardOutput.connect(self.handle_output)
-                            
-                            # self.process.start(['cp', '-rvf', location, destination_location])
+	def backup_hidden_config(self, user_de):
+		# Config
+		for folder in os.listdir(CONFIG_LOCATION):
+			# Handle spaces
+			folder = handle_spaces(folder)
 
-                            # Copy files
-                            sub.run(
-                                ['cp', '-rvf', location, destination_location],
-                                stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+			# Adapt for users DE
+			if user_de == 'gnome':
+				compare_list = list_gnome_include
+		   
+				# Destination
+				dst = MAIN_INI_FILE.gnome_config_main_folder() + '/' + folder
 
-                        # Backup folder
-                        elif os.path.isdir(location):
-                            # Add to counters
-                            item_sum_size += size   # Bytes
-                            item_minus += 1 
+			elif user_de == 'kde':
+				compare_list = list_include_kde
 
-                            # Send backup current status to the notification DB
-                            notification_message(
-                                backup_status(
-                                    item_minus, 
-                                    item_sum_size, 
-                                    number_of_item_to_backup()))
-                            
-                            # self.process.start(['cp', '-rvf', location, destination_location])
+				# Destination
+				dst = MAIN_INI_FILE.kde_config_main_folder() + '/' + folder
 
-                            # Backup directories using shutil.copytree()
-                            sub.run(
-                                ['cp', '-rvf', location, destination_location],
-                                stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+			if folder in compare_list:
+				src = CONFIG_LOCATION + folder
+				# dst = MAIN_INI_FILE.main_backup_folder() + '/.config/' + folder
+				
+				# Create current directory in backup device
+				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
 
-                        # If only new file/folder was backup, save the backup
-                        # Oldest backup date is None
-                        if MAIN_INI_FILE.oldest_backup_date() is None:
-                            # Oldest backup today
-                            MAIN_INI_FILE.set_database_value(
-                                'INFO', 'oldest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+				if not os.path.exists(dst_moded):
+					os.makedirs(dst_moded, exist_ok=True)
 
-                            # Latest backup today
-                            MAIN_INI_FILE.set_database_value(
-                                'INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
-                        
-                        else:
-                            # Latest backup today
-                            MAIN_INI_FILE.set_database_value(
-                                'INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
-             
-                    except IndexError:
-                        pass
-                
-                    except Exception as e:
-                        if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-                            MAIN_INI_FILE.report_error(e)
+				print(f'Backing up: {CONFIG_LOCATION}{folder}')
+				
+				notification_message(f'Backing up: .config/{folder}')
+				
+				sub.run(
+					['cp', '-rvf', src, dst],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+				
+	def backup_hidden_kde_share(self):
+		try:
+			# .kde/share/
+			for folder in os.listdir(KDE_SHARE_LOCATION):
+				# Handle spaces
+				folder = handle_spaces(folder)
+			
+				src = KDE_SHARE_LOCATION + folder
+				# dst = MAIN_INI_FILE.main_backup_folder() + '/.kde/share/' + folder
+				
+				# Destination
+				dst = MAIN_INI_FILE.kde_share_config_main_folder() + '/' + folder
 
-                            # Set backup now to False
-                            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-                            
-                            # Unfinished to Yes 
-                            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
-                    
+				# Create current directory in backup device
+				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				
+				if not os.path.exists(dst_moded):
+					os.makedirs(dst_moded, exist_ok=True)
 
-    async def backup_hidden_home(self):
-        # Start backing up hidden files/folder by getting users DE name
-        await start_backup_hidden_home(get_user_de())
- 
-    async def end_backup(self):
-        print('Ending backup')
+				print(f'Backing up: {KDE_SHARE_LOCATION}{folder}')
+				
+				notification_message(f'Backing up: .kde/share/{folder}')
+				
+				sub.run(
+					['cp', '-rvf', src, dst],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+					
+		except FileNotFoundError as e:
+			print(e)
+			pass
 
-        notification_message('')
+	def end_backup(self):
+		print("Backup is done!")
+		print("Sleeping for 60 seconds")
+		
+		# Finnish notification
+		notification_message('Finalizing backup...')
 
-        # Write to restore ini file 
-        CONFIG = configparser.ConfigParser()
-        CONFIG.read(MAIN_INI_FILE.restore_settings_location())
-        with open(MAIN_INI_FILE.restore_settings_location(), 'w') as configfile:
-            if not CONFIG.has_section('INFO'):
-                CONFIG.add_section('INFO')
+		# Wait x, so if it finish fast, won't repeat the backup
+		time.sleep(60)
 
-            # KDE
-            if get_user_de() == 'kde':
-                CONFIG.set('INFO', 'icon', get_kde_users_icon_name())
-                CONFIG.set('INFO', 'cursor', get_kde_users_cursor_name())
-                CONFIG.set('INFO', 'font', f'{get_kde_users_font_name()}, {get_kde_users_font_size()}')
-                CONFIG.set('INFO', 'gtktheme', get_gtk_users_theme_name())
-                CONFIG.set('INFO', 'theme', f'None')
-                CONFIG.set('INFO', 'os', get_user_de())
-            
-            # GNOME
-            else:
-                CONFIG.set('INFO', 'icon', get_gtk_users_icon_name())
-                CONFIG.set('INFO', 'cursor', get_gtk_users_cursor_name())
-                CONFIG.set('INFO', 'font', get_gtk_user_font_name())
-                CONFIG.set('INFO', 'gtktheme', get_gtk_users_theme_name())
-                CONFIG.set('INFO', 'theme', 'None')
-                CONFIG.set('INFO', 'colortheme', 'None')
-                CONFIG.set('INFO', 'os', get_user_de())
+		# Update DB
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'backing_up_now', 'False')
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'unfinished_backup', 'No')
 
-            CONFIG.write(configfile)
+		
+if __name__ == "__main__":
+	MAIN = BACKUP()
+	MAIN_INI_FILE = UPDATEINIFILE()
+			
+	######################################################################
+	# Update db
+	######################################################################
+	MAIN_INI_FILE.set_database_value(
+		'STATUS', 'backing_up_now', 'True')
 
-        print("Backup is done!")
-        print("Sleeping for 60 seconds")
-        
-        # Finnish notification
-        notification_message('Finalizing backup...')
+	# Set oldest backup date
+	if MAIN_INI_FILE.oldest_backup_date() is None:
+		# Oldest backup today
+		MAIN_INI_FILE.set_database_value(
+			'INFO',
+			'oldest_backup_date',
+			MAIN_INI_FILE.current_full_date_plus_time_str())
 
-        # Wait x, so if it finish fast, won't repeat the backup
-        time.sleep(60)
+	# Set latest backup date
+	MAIN_INI_FILE.set_database_value(
+		'INFO',
+		'latest_backup_date',
+		MAIN_INI_FILE.current_full_date_plus_time_str())
 
-        # Update DB
-        MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-        MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'No')
+	try:
+		# backup hidden home
+		# MAIN.backup_hidden_home(get_user_de())
 
-    async def main(self):
-        try:
-            # Save last backup date
-            MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', MAIN_INI_FILE.current_full_date_plus_time_str())
+		# First backup
+		if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):  # Target location is empty
+			MAIN.backup_home(True)
+		else:
+			MAIN.backup_home(False)
+		
+		# End backup process
+		MAIN.end_backup()
 
-        except:
-            pass
- 
-        try:
-            await self.backup_home()
+	except Exception as e:
+		print(e)
+		# if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
+		MAIN_INI_FILE.report_error(e)
 
-            # await self.backup_hidden_home()
-            await self.end_backup()
+		# Set backup now to False
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'backing_up_now', 'False')
+		
+		# Unfinished to Yes 
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'unfinished_backup', 'Yes')
 
-        except Exception as e:
-            # if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-            MAIN_INI_FILE.report_error(e)
+	# Wait few seconds
+	time.sleep(60)
 
-            # Set backup now to False
-            MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
-            
-            # Unfinished to Yes 
-            MAIN_INI_FILE.set_database_value('STATUS', 'unfinished_backup', 'Yes')
+	# Re-open backup checker
+	sub.Popen(
+		['python3', SRC_BACKUP_CHECKER_PY], 
+		stdout=sub.PIPE, 
+		stderr=sub.PIPE)
 
 
-        # Wait few seconds
-        time.sleep(60)
-
-        # Re-open backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
-    
-
-if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
-    MAIN = BACKUP()
-    asyncio.run(MAIN.main())

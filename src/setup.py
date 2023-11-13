@@ -59,7 +59,7 @@ GITHUB_HOME = "https://github.com/GeovaneJefferson/timemachine/issues"
 # Names
 APP_NAME = "Time Machine"
 APP_NAME_CLOSE = "timemachine"
-APP_VERSION = "v1.1.6.096 dev"
+APP_VERSION = "v1.1.6.097 dev"
 BASE_FOLDER_NAME = "TMB"
 BACKUP_FOLDER_NAME = "backups"
 APPLICATIONS_FOLDER_NAME = "applications"
@@ -174,6 +174,10 @@ HOME_USER = str(Path.home())
 USERNAME = getpass.getuser()
 GET_HOME_FOLDERS = os.listdir(HOME_USER)
 GET_CURRENT_LOCATION = pathlib.Path().resolve()
+
+LOCAL_SHARE_LOCATION = f'{HOME_USER}/.local/share/'
+CONFIG_LOCATION = f'{HOME_USER}/.config/'
+KDE_SHARE_LOCATION = f'{HOME_USER}/.kde/share/'
 
 DST_APPLICATIONS_LOCATION = f"{HOME_USER}/.local/share/applications"
 SRC_AUTOSTART_FOLDER_LOCATION = f"{HOME_USER}/.config/autostart"

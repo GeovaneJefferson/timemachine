@@ -1,5 +1,5 @@
 from setup import *
-from ui.ui_new_2mainwindow import Ui_MainWindow
+from ui.ui_mainwindow import Ui_MainWindow
 from ui.ui_dialog import Ui_Dialog
 from ui.ui_options import Ui_Options
 
@@ -177,12 +177,17 @@ class MainWindow(QMainWindow):
                     # self.ui.backing_up_label.setText(
                     #     f"{MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up')}")
                     
-                    # TODO
                     # Disable select disk
                     self.ui.select_disk_button.setEnabled(False)
 
-                    # Disable automatically backup
-                    # self.ui.automatically_backup_checkbox.setEnabled(False)
+                    # UPDATE
+                    # Update progress bar value
+                    pb_bar_value = MAIN_INI_FILE.get_database_value(
+                                        'STATUS', 'progress_bar')
+                    
+                    if pb_bar_value is not None:
+                        self.ui.progressbar_main_window.setValue(
+                            int(pb_bar_value))
 
                 else:
                     # Show
