@@ -577,27 +577,27 @@ if __name__ == '__main__':
     MAIN_INI_FILE.set_database_value(
         'STATUS', 'backing_up_now', 'True') 
 
-    need_to_backup_analyse()
+    # need_to_backup_analyse()
 
-    # # Need to backup
-    # if need_to_backup_analyse():
-    #     # Prepare backup
-    #     if MAIN_PREPARE.prepare_the_backup():
-    #         print('Calling backup now...')
+    # Need to backup
+    if need_to_backup_analyse():
+        # Prepare backup
+        if MAIN_PREPARE.prepare_the_backup():
+            print('Calling backup now...')
 
-    #         # Backup now
-    #         sub.Popen(
-    #             ['python3', SRC_BACKUP_NOW_PY], 
-    #                 stdout=sub.PIPE, 
-    #                 stderr=sub.PIPE)
+            # Backup now
+            sub.Popen(
+                ['python3', SRC_BACKUP_NOW_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)
 
-    # else:
-    #     # Backing up to False
-    #     MAIN_INI_FILE.set_database_value(
-    #         'STATUS', 'backing_up_now', 'False')   
+    else:
+        # Backing up to False
+        MAIN_INI_FILE.set_database_value(
+            'STATUS', 'backing_up_now', 'False')   
 
-    #     # Re.open backup checker
-    #     sub.Popen(
-    #         ['python3', SRC_BACKUP_CHECKER_PY], 
-    #         stdout=sub.PIPE, 
-    #         stderr=sub.PIPE)
+        # Re.open backup checker
+        sub.Popen(
+            ['python3', SRC_BACKUP_CHECKER_PY], 
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
