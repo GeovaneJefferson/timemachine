@@ -166,7 +166,7 @@ class BACKUP:
 			with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
 				lines = f.readlines()
 				
-				for i in range(0, len(lines), 5):
+				for i in range(0, len(lines), 6):
 					try:
 						filename = lines[i + 0].split(':')[-1].strip()
 						size_string = lines[i + 1].split(':')[-1].strip()
