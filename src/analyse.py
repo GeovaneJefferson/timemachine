@@ -233,9 +233,9 @@ def is_new_item(main_custom_full_location):
         return False
 
 def search_in_main_dir(
-    item_name, 
-    item_path,
-    main_custom_full_location):
+        item_name, 
+        item_path,
+        main_custom_full_location):
 
     # Loop through the files to find updates
     for root, _, files in os.walk(item_path):
@@ -244,22 +244,25 @@ def search_in_main_dir(
             for item_name in files:
                 file_full_location = os.path.join(root, item_name)
 
+
                 short_dst_loc = os.path.dirname(file_full_location)
                 short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
                 short_dst_loc = short_dst_loc.split('/')[3:]
                 short_dst_loc = ('/').join(short_dst_loc) + '/'
                 
+                # print(file_full_location)
+                # print(short_dst_loc)
+
                 # Compare sizes
                 if get_item_diff(
                     file_full_location,
-                    main_custom_full_location + '/' + item_name):
+                    main_custom_full_location + '/' + short_dst_loc + item_name):
                     
                     # Item has been updated
                     add_to_backup_dict(
                         item_name, 
                         item_path, 
                         'UPDATED')
-
 
                 # Exclude invalid location, like: '/car.fbx'
                 if short_dst_loc != '/':
@@ -275,9 +278,10 @@ def search_in_main_dir(
                             'NEW')
 
 def search_in_all_date_time_file(
-    item_name, 
-    item_path, 
-    main_custom_full_location):
+        item_name, 
+        item_path, 
+        main_custom_full_location):
+    
     # Loop through each date folder
     for i in range(len(all_dates_list)):
         # Get date path
@@ -358,6 +362,11 @@ def get_item_diff(
 
     # Compare item from home -> item from .main bakckup
     if (get_item_size(item_path) != get_item_size(dst)): 
+        # print()
+        # print(item_path)
+        # print(dst)
+        # print(get_item_size(item_path))
+        # print(get_item_size(dst))
         return True
     
     else:
@@ -541,14 +550,15 @@ def need_to_backup_analyse():
         
         loop_through_home()
         
-        write_to_file()
-
         # If number of item > 0
         if number_of_item_to_backup() == 0:
             # notification_message(' ')
 
             print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
             return False
+
+    # Write to file
+    write_to_file()
 
     # Needs to backup
     print(GREEN + 'ANALYSE: Need to backup.' + RESET)
