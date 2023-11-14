@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -202,7 +202,7 @@ class Ui_MainWindow(object):
         self.update_available_button = QPushButton(self.bottom_settings)
         self.update_available_button.setObjectName(u"update_available_button")
         font4 = QFont()
-        font4.setPointSize(9)
+        font4.setPointSize(11)
         self.update_available_button.setFont(font4)
 
         self.horizontalLayout_4.addWidget(self.update_available_button)

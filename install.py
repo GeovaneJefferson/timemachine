@@ -11,7 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.097 dev"
+APP_VERSION = "v1.1.6.096 dev"
 
 CREATE_CMD_FOLDER = "mkdir"
 
@@ -37,15 +37,17 @@ SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_1
 USERS_DISTRO_NAME = os.popen("t").read()  # "ubuntu" in USERDISTRONAME:
 
 def install_dependencies():
-    command = 'pip flatpak qt6-wayland'
-
     # sudo apt install libxcb-*
     # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
     try:
+        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
+        sub.run(["pip", "install", "-r", command])
 
         # Deb
         if 'debian' in USERS_DISTRO_NAME:
+            command = 'pip flatpak gnome-software-plugin-flatpak' 
+
             try:            
                 sub.run(
                     ['sudo', 'apt', 'install', '-y', command],
@@ -57,10 +59,12 @@ def install_dependencies():
 
         # Arch
         elif 'arch' in USERS_DISTRO_NAME:
+            command = "qt6-wayland flatpak"
+            
             # Check if the package is already installed
             try:
                 sub.run(
-                    ['pacman', '-Qq', command],
+                    ["pacman", "-Qq", command],
                     check=True)
                 
             except sub.CalledProcessError:
@@ -86,13 +90,6 @@ def install_dependencies():
     except Exception as e:
         print(e)
         exit()
-    
-    # Install pip requirements
-    sub.run(
-        ['pip',
-        'install',
-        '-r',
-        f'{GET_CURRENT_LOCATION}/requirements.txt'])
 
 def copy_files():
     try:
@@ -106,9 +103,7 @@ def create_application_files():
     # Create .local/share/applications
     if not os.path.exists(DST_APPLICATIONS_LOCATION):
         command = DST_APPLICATIONS_LOCATION
-        
-        sub.run(
-            ["mkdir", command])
+        sub.run(["mkdir", command])
 
     # Send to DST_FILE_EXE_DESKTOP
     with open(SRC_TIMEMACHINE_DESKTOP, "w") as writer:
@@ -144,9 +139,7 @@ def create_backup_checker_desktop():
     # Create autostart folder if necessary
     if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
         command = SRC_AUTOSTARTFOLDER_LOCATION
-        
-        sub.run(
-            ["mkdir", command])
+        sub.run(["mkdir", command])
 
     # Edit file startup with system
     with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:
