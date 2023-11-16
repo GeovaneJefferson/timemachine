@@ -189,11 +189,18 @@ def check_this_item(
     
     # Work with date/time backup folder
     if all_dates_list:
-        # Search in date/time folder(s)
-        search_in_all_date_time_file(
-            item_name, 
-            item_path,
-            main_custom_full_location)
+        # Check if custom dst exists
+        if os.path.exists(dst_full_location):
+            # Dir has been updated at size
+            if get_item_diff(
+                item_path,
+                dst_full_location):
+
+                # Search in date/time folder(s)
+                search_in_all_date_time_file(
+                    item_name, 
+                    item_path,
+                    main_custom_full_location)
 
     else:
         # Is a dir
@@ -284,6 +291,9 @@ def search_in_all_date_time_file(
         item_path, 
         main_custom_full_location):
     
+    # Reverse all dates list, so the latest appears first
+    all_dates_list.reverse()
+
     # Loop through each date folder
     for i in range(len(all_dates_list)):
         # Get date path
@@ -295,7 +305,7 @@ def search_in_all_date_time_file(
         for time_path in reversed(os.listdir(date_path)):  # Start from the latest time_path folder
             # Get data path + time path, join it
             time_path = os.path.join(date_path + '/' + time_path)
-    
+
             # Loop through the files in the current time folder
             for root, _, files in os.walk(time_path):
                 # Has files inside
@@ -303,46 +313,51 @@ def search_in_all_date_time_file(
                     for file in files:
                         dst_date_time_path = os.path.join(root, file)
 
-                        # relative_path = os.path.relpath(
-                        #     dst_date_time_path, time_path)
+                        relative_path = os.path.relpath(
+                            dst_date_time_path, time_path)
+                
+                        y = os.path.join(HOME_USER, dst_date_time_path).split('/')[:-1]
+                        check_path = '/'.join(y)
 
-                        # Match found in date/time folder
-                        if item_name == file:
-                            # print('DATE/TIME')
-                            # print('Compare   :', file, '->', item_name )
-                            # print('Item path :', item_path)
-                            # print('D/T path  :', dst_date_time_path)
-                            # print('Compare to:', time_path)
-                            # print('Rel. path :', relative_path)
-                            # print()
+                        # Is a dir
+                        if os.path.isdir(check_path):
+                            # Search in dir
+                            search_in_dir(
+                                check_path, 
+                                dst_date_time_path, 
+                                item_name,
+                                item_path)
 
-                            # Add to found list
-                            if (item_name not in 
-                                list_of_found_in_date_time):
-
-                                list_of_found_in_date_time.append(
-                                    item_name)
-                            
-                                # Compare itens sizes
-                                if get_item_diff(
-                                    item_path,
-                                    dst_date_time_path):
-                                    
-                                    # Item has been updated
-                                    add_to_backup_dict(
-                                        item_name, 
-                                        item_path, 
-                                        'UPDATED')
-                      
                         else:
-                            # Search in manin backup folder
-                            if (item_path not in 
-                                list_of_not_found_in_date_time and 
-                                item_name not in 
-                                list_of_found_in_date_time):
+                            # Match found in date/time folder
+                            if item_name == file:
+                                # Add to found list
+                                if (item_name not in 
+                                    list_of_found_in_date_time):
 
-                                list_of_not_found_in_date_time.append(
-                                    item_path)
+                                    list_of_found_in_date_time.append(
+                                        item_name)
+                                
+                                    # Compare itens sizes
+                                    if get_item_diff(
+                                        item_path,
+                                        dst_date_time_path):
+                                        
+                                        # Item has been updated
+                                        add_to_backup_dict(
+                                            item_name, 
+                                            item_path, 
+                                            'UPDATED')
+                        
+                            else:
+                                # Search in man in backup folder
+                                if (item_path not in 
+                                    list_of_not_found_in_date_time and 
+                                    item_name not in 
+                                    list_of_found_in_date_time):
+
+                                    list_of_not_found_in_date_time.append(
+                                        item_path)
     
     # Search not found files in main folder
     if list_of_not_found_in_date_time:
@@ -358,10 +373,7 @@ def add_to_home_dict(item_name, item_path):
         "location": item_path
         }
 
-def get_item_diff(
-        item_path,
-        dst):
-
+def get_item_diff(item_path, dst):
     # Compare item from home -> item from .main bakckup
     if (get_item_size(item_path) != get_item_size(dst)): 
         # print()
@@ -429,6 +441,43 @@ def write_to_file():
             f.write(f"Destination: {destination}\n")
             f.write(f"Status: {status}\n")
             f.write("\n")
+
+def search_in_dir(
+        dir_path, 
+        dst_date_time_path, 
+        dir_name,
+        item_path):
+    
+    # search in dir
+    for root, _, files in os.walk(item_path):
+        # Has files inside
+        if files:   
+            for file in files:
+                # Find match
+                dst_date_time_file_name = str(dst_date_time_path).split('/')[-1]
+                if dst_date_time_file_name == file:
+                    print('DIRNAME:', dir_name)
+                    print('MATCH WITH:', file)
+                    print('MATCH WITH:', os.path.join(root, file))
+                    print()
+                    
+                    # Add to found list
+                    if (dst_date_time_file_name not in 
+                        list_of_found_in_date_time):
+
+                        list_of_found_in_date_time.append(
+                            dst_date_time_file_name)
+                    
+                        # Compare itens sizes
+                        if get_item_diff(
+                            item_path,
+                            dst_date_time_path):
+                            
+                            # Item has been updated
+                            add_to_backup_dict(
+                                dst_date_time_file_name, 
+                                item_path, 
+                                'UPDATED')
 
 def get_source_dir():
     source_folders = [] 
@@ -575,31 +624,31 @@ if __name__ == '__main__':
 
     notification_message('Analysing backup...')
 
-    # Set backing up now to True
-    MAIN_INI_FILE.set_database_value(
-        'STATUS', 'backing_up_now', 'True') 
+    # # Set backing up now to True
+    # MAIN_INI_FILE.set_database_value(
+    #     'STATUS', 'backing_up_now', 'True') 
 
-    # need_to_backup_analyse()
+    need_to_backup_analyse()
 
-    # Need to backup
-    if need_to_backup_analyse():
-        # Prepare backup
-        if MAIN_PREPARE.prepare_the_backup():
-            print('Calling backup now...')
+    # # Need to backup
+    # if need_to_backup_analyse():
+    #     # Prepare backup
+    #     if MAIN_PREPARE.prepare_the_backup():
+    #         print('Calling backup now...')
 
-            # Backup now
-            sub.Popen(
-                ['python3', SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+    #         # Backup now
+    #         sub.Popen(
+    #             ['python3', SRC_BACKUP_NOW_PY], 
+    #                 stdout=sub.PIPE, 
+    #                 stderr=sub.PIPE)
 
-    else:
-        # Backing up to False
-        MAIN_INI_FILE.set_database_value(
-            'STATUS', 'backing_up_now', 'False')   
+    # else:
+    #     # Backing up to False
+    #     MAIN_INI_FILE.set_database_value(
+    #         'STATUS', 'backing_up_now', 'False')   
 
-        # Re.open backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+    #     # Re.open backup checker
+    #     sub.Popen(
+    #         ['python3', SRC_BACKUP_CHECKER_PY], 
+    #         stdout=sub.PIPE, 
+    #         stderr=sub.PIPE)
