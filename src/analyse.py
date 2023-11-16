@@ -257,9 +257,6 @@ def search_in_main_dir(
                 short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
                 short_dst_loc = short_dst_loc.split('/')[3:]
                 short_dst_loc = ('/').join(short_dst_loc) + '/'
-                
-                # print(file_full_location)
-                # print(short_dst_loc)
 
                 # Compare sizes
                 if get_item_diff(
@@ -267,7 +264,7 @@ def search_in_main_dir(
                     main_custom_full_location + '/' + short_dst_loc + item_name):
                     
                     # Item has been updated
-                    x = item_path + '/' + short_dst_loc
+                    x = os.path.join(item_path, short_dst_loc)
                     add_to_backup_dict(
                         item_name, 
                         x, 
@@ -467,7 +464,28 @@ def search_in_dir(
 
                         list_of_found_in_date_time.append(
                             dst_date_time_file_name)
-                    
+                        
+                        # 
+                        file_full_location = os.path.join(root, file)
+
+                        short_dst_loc = os.path.dirname(file_full_location)
+                        short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
+                        short_dst_loc = short_dst_loc.split('/')[3:]
+                        short_dst_loc = ('/').join(short_dst_loc) + '/'
+
+                        # Compare sizes
+                        if get_item_diff(
+                            file_full_location,
+                            dst_date_time_file_name + '/' + short_dst_loc + file):
+                            
+                            # Item has been updated
+                            x = os.path.join(item_path, short_dst_loc)
+                            add_to_backup_dict(
+                                file, 
+                                x, 
+                                'UPDATED')
+                        # 
+
                         # Compare itens sizes
                         if get_item_diff(
                             item_path,
