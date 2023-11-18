@@ -264,10 +264,9 @@ def search_in_main_dir(
                     main_custom_full_location + '/' + short_dst_loc + item_name):
                     
                     # Item has been updated
-                    x = os.path.join(item_path, short_dst_loc)
                     add_to_backup_dict(
                         item_name, 
-                        x, 
+                        os.path.join(item_path, short_dst_loc), 
                         'UPDATED')
 
                 # Exclude invalid location, like: '/car.fbx'
@@ -283,6 +282,120 @@ def search_in_main_dir(
                             os.path.dirname(file_full_location), 
                             'NEW')
 
+# def test(search_in_dates):
+#     # Search in dates backups
+#     if search_in_dates:
+#         # Reverse all dates list, so the latest appears first
+#         all_dates_list.reverse()
+        
+#         # Loop through each date folder
+#         for i in range(len(all_dates_list)):
+#             # Get date path
+#             date_path = (MAIN_INI_FILE.backup_dates_location() 
+#                 + '/' 
+#                 + all_dates_list[i])
+
+#             # Loop through each time folder in the current date folder
+#             for time_path in reversed(os.listdir(date_path)):  # Start from the latest time_path folder
+#                 # Get data path + time path, join it
+#                 time_path = os.path.join(date_path + '/' + time_path)
+
+#                 # Loop through the files in the current time folder
+#                 for root, _, files in os.walk(time_path):
+#                     # Has files inside
+#                     if files:
+#                         for file in files:
+#                             dst_date_time_path = os.path.join(root, file)
+
+#                             relative_path = os.path.relpath(
+#                                 dst_date_time_path, time_path)
+                    
+#                             y = os.path.join(HOME_USER, dst_date_time_path).split('/')[:-1]
+#                             check_path = '/'.join(y)
+
+#                             # Is a dir
+#                             if os.path.isdir(check_path):
+#                                 # Search in dir
+#                                 search_in_dir(
+#                                     check_path, 
+#                                     dst_date_time_path, 
+#                                     item_name,
+#                                     item_path)
+
+#                             else:
+#                                 # Match found in date/time folder
+#                                 if item_name == file:
+#                                     # Add to found list
+#                                     if (item_name not in 
+#                                         list_of_found_in_date_time):
+
+#                                         list_of_found_in_date_time.append(
+#                                             item_name)
+                                    
+#                                         # Compare itens sizes
+#                                         if get_item_diff(
+#                                             item_path,
+#                                             dst_date_time_path):
+                                            
+#                                             # Item has been updated
+#                                             add_to_backup_dict(
+#                                                 item_name, 
+#                                                 item_path, 
+#                                                 'UPDATED')
+                            
+#                                 else:
+#                                     # Search in man in backup folder
+#                                     if (item_path not in 
+#                                         list_of_not_found_in_date_time and 
+#                                         item_name not in 
+#                                         list_of_found_in_date_time):
+
+#                                         list_of_not_found_in_date_time.append(
+#                                             item_path)
+
+#         # Search not found files in main folder
+#         if list_of_not_found_in_date_time:
+#         search_in_main_dir(
+#             item_name, 
+#             item_path,
+#             main_custom_full_location)
+    
+#     # Search in .main backup folder
+#     # Loop through the files to find updates
+#     for root, _, files in os.walk(item_path):
+#         if files:
+#             for item_name in files:
+#                 file_full_location = os.path.join(root, item_name)
+
+#                 short_dst_loc = os.path.dirname(file_full_location)
+#                 short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
+#                 short_dst_loc = short_dst_loc.split('/')[3:]
+#                 short_dst_loc = ('/').join(short_dst_loc) + '/'
+
+#                 # Compare sizes
+#                 if get_item_diff(
+#                     file_full_location,
+#                     main_custom_full_location + '/' + short_dst_loc + item_name):
+                    
+#                     # Item has been updated
+#                     add_to_backup_dict(
+#                         item_name, 
+#                         os.path.join(item_path, short_dst_loc), 
+#                         'UPDATED')
+
+#                 # Exclude invalid location, like: '/car.fbx'
+#                 if short_dst_loc != '/':
+#                     # Backup destination full location
+#                     dst_backup_full_location = os.path.join(
+#                         main_custom_full_location, short_dst_loc, item_name)
+                    
+#                     # Is a new item
+#                     if is_new_item(dst_backup_full_location):
+#                         add_to_backup_dict(
+#                             item_name, 
+#                             os.path.dirname(file_full_location), 
+#                             'NEW')
+    
 def search_in_all_date_time_file(
         item_name, 
         item_path, 
@@ -356,13 +469,72 @@ def search_in_all_date_time_file(
                                     list_of_not_found_in_date_time.append(
                                         item_path)
     
-    # Search not found files in main folder
-    if list_of_not_found_in_date_time:
-        search_in_main_dir(
-            item_name, 
-            item_path,
-            main_custom_full_location)
+    # # Search not found files in main folder
+    # if list_of_not_found_in_date_time:
+    #     search_in_main_dir(
+    #         item_name, 
+    #         item_path,
+    #         main_custom_full_location)
+
+def search_in_dir(
+        dir_path, 
+        dst_date_time_path, 
+        dir_name,
+        item_path):
     
+    # search in dir
+    for root, _, files in os.walk(item_path):
+        # Has files inside
+        if files:   
+            for file in files:
+                # Find match
+                dst_date_time_file_name = str(dst_date_time_path).split('/')[-1]
+                if dst_date_time_file_name == file:
+                    print('Dir:', dir_name)
+                    print('filename:', file)
+                    print('Root, Filename:', os.path.join(root, file))
+                    print()
+                    
+                    # Add to found list
+                    if (file not in 
+                        list_of_found_in_date_time):
+
+                        list_of_found_in_date_time.append(
+                            file)
+                        
+                        file_full_home_location = os.path.join(root, file)
+
+                        extracted_last_dir = os.path.dirname(file_full_home_location)
+                        extracted_last_dir = str(extracted_last_dir).replace(HOME_USER, '')
+                        extracted_last_dir = extracted_last_dir.split('/')[3:]
+                        extracted_last_dir = ('/').join(extracted_last_dir) + '/'
+
+                        # # Compare sizes
+                        # if get_item_diff(
+                        #     file_full_home_location,
+                        #     dst_date_time_file_name + '/' + extracted_last_dir + file):
+                        
+                        # DATES
+
+                        # HOME
+                        # Compare itens sizes
+                        if get_item_diff(
+                            # item_path,
+                            file_full_home_location,
+                            dst_date_time_path):
+                            
+                            # Get file dir location
+                            extracted_file_dir = str(file_full_home_location).split('/')[:-1]
+                            extracted_file_dir = '/'.join(extracted_file_dir)
+
+                            # Item has been updated
+                            add_to_backup_dict(
+                                file, 
+                                # Send only the files dir
+                                extracted_file_dir,
+                                # os.path.join(item_path, extracted_last_dir), 
+                                'UPDATED')
+
 def add_to_home_dict(item_name, item_path):
     # Store item information in the dictionary, to check they size
     backup_home_dict[item_name] = {
@@ -370,14 +542,14 @@ def add_to_home_dict(item_name, item_path):
         "location": item_path
         }
 
-def get_item_diff(item_path, dst):
+def get_item_diff(home_item_size, dst_item_size):
     # Compare item from home -> item from .main bakckup
-    if (get_item_size(item_path) != get_item_size(dst)): 
+    if (get_item_size(home_item_size) != get_item_size(dst_item_size)): 
         # print()
-        # print(item_path)
-        # print(dst)
-        # print(get_item_size(item_path))
-        # print(get_item_size(dst))
+        # print(home_item_size)
+        # print(dst_item_size)
+        # print(get_item_size(home_item_size))
+        # print(get_item_size(dst_item_size))
         return True
     
     else:
@@ -438,64 +610,6 @@ def write_to_file():
             f.write(f"Destination: {destination}\n")
             f.write(f"Status: {status}\n")
             f.write("\n")
-
-def search_in_dir(
-        dir_path, 
-        dst_date_time_path, 
-        dir_name,
-        item_path):
-    
-    # search in dir
-    for root, _, files in os.walk(item_path):
-        # Has files inside
-        if files:   
-            for file in files:
-                # Find match
-                dst_date_time_file_name = str(dst_date_time_path).split('/')[-1]
-                if dst_date_time_file_name == file:
-                    print('DIRNAME:', dir_name)
-                    print('MATCH WITH:', file)
-                    print('MATCH WITH:', os.path.join(root, file))
-                    print()
-                    
-                    # Add to found list
-                    if (dst_date_time_file_name not in 
-                        list_of_found_in_date_time):
-
-                        list_of_found_in_date_time.append(
-                            dst_date_time_file_name)
-                        
-                        # 
-                        file_full_location = os.path.join(root, file)
-
-                        short_dst_loc = os.path.dirname(file_full_location)
-                        short_dst_loc = str(short_dst_loc).replace(HOME_USER, '')
-                        short_dst_loc = short_dst_loc.split('/')[3:]
-                        short_dst_loc = ('/').join(short_dst_loc) + '/'
-
-                        # Compare sizes
-                        if get_item_diff(
-                            file_full_location,
-                            dst_date_time_file_name + '/' + short_dst_loc + file):
-                            
-                            # Item has been updated
-                            x = os.path.join(item_path, short_dst_loc)
-                            add_to_backup_dict(
-                                file, 
-                                x, 
-                                'UPDATED')
-                        # 
-
-                        # Compare itens sizes
-                        if get_item_diff(
-                            item_path,
-                            dst_date_time_path):
-                            
-                            # Item has been updated
-                            add_to_backup_dict(
-                                dst_date_time_file_name, 
-                                item_path, 
-                                'UPDATED')
 
 def get_source_dir():
     source_folders = [] 
@@ -646,27 +760,27 @@ if __name__ == '__main__':
     # MAIN_INI_FILE.set_database_value(
     #     'STATUS', 'backing_up_now', 'True') 
 
-    # need_to_backup_analyse()
+    need_to_backup_analyse()
 
-    # Need to backup
-    if need_to_backup_analyse():
-        # Prepare backup
-        if MAIN_PREPARE.prepare_the_backup():
-            print('Calling backup now...')
+    # # Need to backup
+    # if need_to_backup_analyse():
+    #     # Prepare backup
+    #     if MAIN_PREPARE.prepare_the_backup():
+    #         print('Calling backup now...')
 
-            # Backup now
-            sub.Popen(
-                ['python3', SRC_BACKUP_NOW_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+    #         # Backup now
+    #         sub.Popen(
+    #             ['python3', SRC_BACKUP_NOW_PY], 
+    #                 stdout=sub.PIPE, 
+    #                 stderr=sub.PIPE)
 
-    else:
-        # Backing up to False
-        MAIN_INI_FILE.set_database_value(
-            'STATUS', 'backing_up_now', 'False')   
+    # else:
+    #     # Backing up to False
+    #     MAIN_INI_FILE.set_database_value(
+    #         'STATUS', 'backing_up_now', 'False')   
 
-        # Re.open backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+    #     # Re.open backup checker
+    #     sub.Popen(
+    #         ['python3', SRC_BACKUP_CHECKER_PY], 
+    #         stdout=sub.PIPE, 
+    #         stderr=sub.PIPE)
