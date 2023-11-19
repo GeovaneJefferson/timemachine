@@ -402,7 +402,7 @@ def search_in_all_date_time_file(
         main_custom_full_location):
     
     # Reverse all dates list, so the latest appears first
-    all_dates_list.reverse()
+    # all_dates_list.reverse()
 
     # Loop through each date folder
     for i in range(len(all_dates_list)):
@@ -772,7 +772,7 @@ if __name__ == '__main__':
             sub.Popen(
                 ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+                    stderr=sub.PIPE)  
 
     else:
         # Backing up to False
