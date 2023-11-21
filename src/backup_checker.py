@@ -4,11 +4,6 @@ from check_connection import is_connected
 from backup_flatpak import backup_flatpak
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
-# import error_catcher
-
-# # Handle signal
-# signal.signal(signal.SIGINT, error_catcher.signal_exit)
-# signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
 # Found packages list
 list_of_found_deb_pakages = []
@@ -26,7 +21,8 @@ def check_for_new_packages():
     for package in os.listdir(DOWNLOADS_FOLDER_LOCATION):
         if package.endswith(".deb"):
             # Check if the found .deb is has not alredy been back up
-            if package.split("_")[0] in (f"{MAIN_INI_FILE.deb_main_folder()}/{(package).split('_')[0]}"):
+            if package.split("_")[0] in (
+                f"{MAIN_INI_FILE.deb_main_folder()}/{(package).split('_')[0]}"):
                 # Add to list, so it wont back up every time the same file
                 if package not in list_of_found_deb_pakages:
                     list_of_found_deb_pakages.append(package)
@@ -52,7 +48,8 @@ def check_for_new_packages():
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
             # Check if the found .rpm is has not alredy been back up
-            if package.split("_")[0] in (f"{MAIN_INI_FILE.rpm_main_folder()}/{(package).split('_')[0]}"):
+            if package.split("_")[0] in (
+                f"{MAIN_INI_FILE.rpm_main_folder()}/{(package).split('_')[0]}"):
                 # Add to list, so it wont back up every time the same file
                 if package not in list_of_found_rpm_packages:
                     list_of_found_rpm_packages.append(package)
@@ -158,4 +155,6 @@ if __name__ == '__main__':
             time.sleep(5)
 
         except Exception as e:
-            pass
+            # Save error log
+            MAIN_INI_FILE.report_error(e)
+            exit()

@@ -3,10 +3,8 @@ from stylesheet import *
 from check_connection import *
 from get_backup_time import *
 from get_backup_date import *
-from get_latest_backup_date import latest_backup_date_label
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
-from next_backup_label import next_backup_label
 from backup_status import progress_bar_status
 
 
@@ -88,9 +86,14 @@ class APP:
         timer.timeout.connect(self.should_be_running)
         timer.start(DELAY_TO_UPDATE) 
 
-        # CHeck if system tray should be running
-        self.should_be_running()
-
+        try:
+            # Check if system tray should be running
+            self.should_be_running()
+        except Exception as e:
+            # Save error log
+            MAIN_INI_FILE.report_error(e)
+            exit()
+        
         self.app.exec()
     
     def should_be_running(self):
@@ -228,7 +231,7 @@ class APP:
             self.exit()
 
     def exit(self):
-        MAIN_INI_FILE.set_database_value("SYSTEMTRAY", "system_tray", 'False')
+        MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
         
         self.tray.hide()
         exit()
