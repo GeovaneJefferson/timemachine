@@ -9,7 +9,7 @@ class UPDATEINIFILE:
         
         # TODO
         # Max 1M size
-        if get_item_size(LOG_LOCATION) == 1000000:
+        if get_item_size(LOG_LOCATION) >= 1000000:
             if os.path.exists(LOG_LOCATION):
                 os.remove(LOG_LOCATION)
 
