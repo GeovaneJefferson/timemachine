@@ -380,17 +380,26 @@ class PREPAREBACKUP:
                 # Read the include file and process each item's information
                 with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
                     lines = f.readlines()
-                    
-                    for i in range(0, len(lines), 5):
-                        # filename = lines[i + 0].split(':')[-1].strip()
-                        # size_string = lines[i + 1].split(':')[-1].strip()
-                        # size = int(size_string.split()[0])
-                        # location = lines[i + 2].split(':')[-1].strip()
-                        status = lines[i + 4].split(':')[-1].strip()
 
-                        if status == 'UPDATED':
-                            create_date_and_time_folder()
-                            break          
+                    # Read .include to backup txt file
+                    for status in lines:
+                        # Only get the status information
+                        if status.startswith('Status'):
+                            # Filter the information
+                            status = status.strip().split(':')[-1].strip()
+
+                    # Get more information
+                    # for i in range(0, len(lines), 4):
+                    #     # filename = lines[i + 0].split(':')[-1].strip()
+                    #     # size_string = lines[i + 1].split(':')[-1].strip()
+                    #     # size = int(size_string.split()[0])
+                    #     # location = lines[i + 2].split(':')[-1].strip()
+                    #     status = lines[i + 4].split(':')[-1].strip()
+                            if status == 'UPDATED':
+                                # Create a new date/time folder for a updated file
+                                print('Creating a date/time folder.')
+                                create_date_and_time_folder()
+                                break      
 
                 # May continue to backup
                 print('Prepare backup: True')
