@@ -181,7 +181,7 @@ class BACKUP:
 						if status == 'NEW':  # Is a new file/folder
 							# Copy to .main backup
 							destination_location = (
-								f'{MAIN_INI_FILE.main_backup_folder()}/{destination}')
+								f'{MAIN_INI_FILE.main_backup_folder()}{destination}')
 
 							# Remove invalid keys
 							destination_location = destination_location.replace('../','')
@@ -192,7 +192,7 @@ class BACKUP:
 						elif status == 'UPDATED':
 							# Sent to a new date/time backup folder
 							destination_location = (
-								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
+								f'{MAIN_INI_FILE.time_folder_format()}{destination}')
 							
 							# Static time folder 
 							# So it won't update if backup passes more than one minute
@@ -202,26 +202,27 @@ class BACKUP:
 							# Add static time to it
 							destination_location = (destination_location + 
 								'/' + STATIC_TIME_FOLDER + destination)
-							
-						# Create dst folder with relative name is necessary
-						os.makedirs(
-							os.path.dirname(
-							os.path.join(destination_location, filename)), exist_ok=True)
 						
 						try:
 							# Back up 
-							shutil.copy(os.path.join(location, filename), destination_location)
+							# is a dir
+							if os.path.isdir(location):
+								# Dir has files inside
+								if any(os.scandir(location)):
+									# Create proper for it
+									os.makedirs(
+									os.path.dirname(
+									os.path.join(destination_location, filename)), exist_ok=True)
+								
+									shutil.copy(os.path.join(location, filename), destination_location)
+							else:
+								shutil.copy(location, destination_location)
+							
 							print(f"Backed up: {os.path.join(location, filename)}")
 
 						except Exception as e:
 							print(f"Error while backing up {os.path.join(location, filename)}: {e}")
-			
-						# print(filename)
-						# print(location)
-						# print(destination)
-						# print(destination_location)
-						# print(os.path.join(destination_location, filename))
-						
+					
 					except Exception as e:
 						print(e)
 						exit()
