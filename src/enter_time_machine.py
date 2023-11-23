@@ -1,6 +1,6 @@
 from setup import *
 from stylesheet import *
-from detect_theme_color import detect_theme_color
+# from detect_theme_color import detect_theme_color
 
 # TODO
 class ENTERTIMEMACHINE(QWidget):
@@ -36,7 +36,7 @@ class ENTERTIMEMACHINE(QWidget):
         # Read ini
         ################################################################################
         config = configparser.ConfigParser()
-        config.read(SRC_USER_CONFIG)
+        config.read(SRC_USER_CONFIG_DB)
 
         self.iniExternalLocation=config['EXTERNAL']['hd']
         self.iniFolder=config.options('FOLDER')
@@ -45,10 +45,10 @@ class ENTERTIMEMACHINE(QWidget):
 
     def begin_settings(self):
         # Detect dark theme
-        if detect_theme_color(app):
-            self.buttonStylesheetDetector=buttonStylesheetDark
-        else:
-            self.buttonStylesheetDetector=buttonStylesheet
+        # if detect_theme_color(app):
+        #     self.buttonStylesheetDetector=buttonStylesheetDark
+        # else:
+        #     self.buttonStylesheetDetector=buttonStylesheet
 
         self.widgets()
 

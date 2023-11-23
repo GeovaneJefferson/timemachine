@@ -205,6 +205,8 @@ class BACKUP:
 						
 						try:
 							# Back up 
+							print(f"Backing up: {location}")
+
 							# is a dir
 							if os.path.isdir(location):
 								# Dir has files inside
@@ -212,16 +214,20 @@ class BACKUP:
 									# Create proper for it
 									os.makedirs(
 									os.path.dirname(
-									os.path.join(destination_location, filename)), exist_ok=True)
+									# os.path.join(destination_location, filename)), exist_ok=True)
+									destination_location), exist_ok=True)
 								
-									shutil.copy(os.path.join(location, filename), destination_location)
+									# shutil.copy(os.path.join(location, filename), destination_location)
+									shutil.copytree(
+										location, 
+										destination_location, dirs_exist_ok=True)
 							else:
-								shutil.copy(location, destination_location)
-							
-							print(f"Backed up: {os.path.join(location, filename)}")
+								shutil.copy(
+									location, 
+									destination_location)
 
 						except Exception as e:
-							print(f"Error while backing up {os.path.join(location, filename)}: {e}")
+							print(f"Error while backing up {location}: {e}")
 					
 					except Exception as e:
 						print(e)

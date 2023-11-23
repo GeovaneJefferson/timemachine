@@ -2,7 +2,7 @@
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py
 
-from ui.ui_untitled import Ui_MainWindow
+from ui.ui_enter_time_machine import Ui_enter_time_machine
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime
@@ -78,7 +78,7 @@ def btn_cancel_clicked():
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_enter_time_machine()
         self.ui.setupUi(self)
 
         self.folder_already_opened = False
