@@ -155,6 +155,8 @@ if __name__ == '__main__':
             time.sleep(5)
 
         except Exception as e:
+            print(e)
+            pass
             # Save error log
-            MAIN_INI_FILE.report_error(e)
-            exit()
+            # MAIN_INI_FILE.report_error(e)
+            # exit()
