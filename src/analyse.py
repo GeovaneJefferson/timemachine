@@ -96,6 +96,10 @@ all_dates_list = []
 # List of all times
 all_times_list = []
 
+# Define a function to convert the date string to a datetime object
+def convert_to_datetime(date_str):
+    return datetime.strptime(date_str, '%y-%m-%d')
+
 def get_all_dates():
     # Add all dates to the list
     for date in os.listdir(MAIN_INI_FILE.backup_dates_location()):
@@ -185,8 +189,11 @@ def check_this_item(
     # Is a new item
     if is_new_item(main_custom_full_location):
         # Add to backup to main
-        add_to_backup_dict(item_name, item_path, 'NEW')
-    
+        add_to_backup_dict(
+            item_name, 
+            item_path, 
+            'NEW')
+            
     # Work with date/time backup folder
     if all_dates_list:
         # Check if custom dst exists
@@ -290,12 +297,17 @@ def search_in_all_date_time_file(
     # Reverse all dates list, so the latest appears first
     # all_dates_list.reverse()
 
+    # Sort the dates in descending order using the converted datetime objects
+    sorted_date = sorted(all_dates_list,
+                key=convert_to_datetime,
+                reverse=True)
+
     # Loop through each date folder
-    for i in range(len(all_dates_list)):
+    for i in range(len(sorted_date)):
         # Get date path
         date_path = (MAIN_INI_FILE.backup_dates_location() 
             + '/' 
-            + all_dates_list[i])
+            + sorted_date[i])
 
         # Loop through each time folder in the current date folder
         for time_path in reversed(os.listdir(date_path)):  # Start from the latest time_path folder
@@ -376,10 +388,10 @@ def search_in_dir(
                 # Find match
                 dst_date_time_file_name = str(dst_date_time_path).split('/')[-1]
                 if dst_date_time_file_name == file:
-                    print('Dir:', dir_name)
-                    print('filename:', file)
-                    print('Root, Filename:', os.path.join(root, file))
-                    print()
+                    # print('Dir:', dir_name)
+                    # print('filename:', file)
+                    # print('Root, Filename:', os.path.join(root, file))
+                    # print()
                     
                     # Add to found list
                     if (file not in 
@@ -445,7 +457,8 @@ def add_to_backup_dict(item_name, item_path, status):
     destination = item_path.replace(HOME_USER, '')
 
     # Analysing right now
-    notification_message(f'Analysing: {item_name}' )
+    notification_message(
+        f'Analysing: {item_name}' )
 
     print('Added:')
     print(f"        -Filename : {item_name}")
