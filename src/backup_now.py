@@ -146,7 +146,7 @@ def make_first_backup():
 
 class BACKUP:
 	# Backup USER HOME 
-	def backup_home(self, first_backup):
+	def backup_home(self):
 		# Target location is empty
 		if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
 			# Save time informations
@@ -210,17 +210,18 @@ class BACKUP:
 							# is a dir
 							if os.path.isdir(location):
 								# Dir has files inside
-								if any(os.scandir(location)):
-									# Create proper for it
-									os.makedirs(
-									os.path.dirname(
-									# os.path.join(destination_location, filename)), exist_ok=True)
-									destination_location), exist_ok=True)
+								# if any(os.scandir(location)):
+								# Create proper for it
+								os.makedirs(
+								os.path.dirname(
+								# os.path.join(destination_location, filename)), exist_ok=True)
+								destination_location), exist_ok=True)
+							
+								# shutil.copy(os.path.join(location, filename), destination_location)
+								shutil.copytree(
+									location, 
+									destination_location, dirs_exist_ok=True)
 								
-									# shutil.copy(os.path.join(location, filename), destination_location)
-									shutil.copytree(
-										location, 
-										destination_location, dirs_exist_ok=True)
 							else:
 								shutil.copy(
 									location, 
@@ -401,11 +402,12 @@ if __name__ == "__main__":
 		# backup hidden home
 		# MAIN.backup_hidden_home(get_user_de())
 
-		# First backup
-		if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):  # Target location is empty
-			MAIN.backup_home(True)
-		else:
-			MAIN.backup_home(False)
+		# # First backup
+		# if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):  # Target location is empty
+		# 	MAIN.backup_home(True)
+		
+		# else:
+		# 	MAIN.backup_home(False)
 		
 		# End backup process
 		MAIN.end_backup()
