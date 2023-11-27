@@ -2,6 +2,7 @@ from setup import *
 from read_ini_file import UPDATEINIFILE
 from check_connection import is_connected
 from backup_flatpak import backup_flatpak
+from backup_pip_packages import backup_pip_packages
 from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
 
@@ -94,6 +95,9 @@ def time_to_backup(current_time):
 
     # Backup flatpak
     backup_flatpak()
+    
+    # Backup pip packages
+    backup_pip_packages()
     
     # Backup wallpaper
     backup_wallpaper()

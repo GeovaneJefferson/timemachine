@@ -119,9 +119,19 @@ def create_base_folders():
                 ["mkdir", command], 
                 stdout=sub.PIPE, 
                 stderr=sub.PIPE)
-
+        
         ################################################################################
-        # Create flatpak text
+        # Create pip text file
+        ################################################################################
+        if not os.path.exists(str(MAIN_INI_FILE.pip_packages_txt_location())):
+            command = f"{str(MAIN_INI_FILE.pip_packages_txt_location())}"
+            sub.run(
+                ["touch", command], 
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
+            
+        ################################################################################
+        # Create flatpak text file
         ################################################################################
         if not os.path.exists(str(MAIN_INI_FILE.flatpak_txt_location())):
             command = f"{str(MAIN_INI_FILE.flatpak_txt_location())}"
