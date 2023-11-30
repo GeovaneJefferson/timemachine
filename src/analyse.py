@@ -455,35 +455,33 @@ def get_item_diff(home_item_size, dst_item_size):
 
 def add_to_backup_dict(item_name, item_path, status):
     destination = item_path.replace(HOME_USER, '')
-
+    
     # Analysing right now
     notification_message(
         f'Analysing: {item_name}' )
 
-    print('Added:')
-    print(f"        -Filename : {item_name}")
-    print(f"        -Location : {item_path}")
-    print(f"        -Destinat.: {destination}")
-    print(f"        -Status   : {status}")
-    print()
-
-    # if os.path.isdir(item_path):
-    #     # Add item to dict
-    #     items_to_backup_dict[item_name] = {
-    #         "size": get_item_size(item_path),
-    #         "location": item_path + '/' + item_name,
-    #         "status": status
-    #         }
-    
     if os.path.isdir(item_path):
-        # Add item to dict
-        items_to_backup_dict[item_name] = {
-            "size": get_item_size(item_path),
-            "location": item_path,
-            "destination": destination,
-            "status": status
-            }
-    
+        # Ignore if dir is empty
+        if any(os.scandir(item_path)):
+            # Add item to dict
+            items_to_backup_dict[item_name] = {
+                "size": get_item_size(item_path),
+                "location": item_path,
+                "destination": destination,
+                "status": status
+                }
+            
+            print('Added:')
+            print(f"        -Filename : {item_name}")
+            print(f"        -Location : {item_path}")
+            print(f"        -Destinat.: {destination}")
+            print(f"        -Status   : {status}")
+            print()
+
+        else:
+            # Dir is empty
+            print(item_path, "is empty. So it won't be back up.")
+
     else:
         # Add item to dict
         items_to_backup_dict[item_name] = {
@@ -493,6 +491,15 @@ def add_to_backup_dict(item_name, item_path, status):
             "status": status
             }
         
+        print('Added:')
+        print(f"        -Filename : {item_name}")
+        print(f"        -Location : {item_path}")
+        print(f"        -Destinat.: {destination}")
+        print(f"        -Status   : {status}")
+        print()
+    
+
+    # Write to file
     write_to_file()
 
 def write_to_file():
