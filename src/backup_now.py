@@ -3,6 +3,7 @@ from read_ini_file import UPDATEINIFILE
 from get_folders_to_be_backup import get_folders
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
+from get_users_de import get_user_de
 
 # Handle signal
 import error_catcher
@@ -399,16 +400,12 @@ if __name__ == "__main__":
 		MAIN_INI_FILE.current_full_date_plus_time_str())
 
 	try:
+		# Backup Home
+		MAIN.backup_home()
+
 		# backup hidden home
 		# MAIN.backup_hidden_home(get_user_de())
 
-		# # First backup
-		# if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):  # Target location is empty
-		# 	MAIN.backup_home(True)
-		
-		# else:
-		# 	MAIN.backup_home(False)
-		
 		# End backup process
 		MAIN.end_backup()
 
