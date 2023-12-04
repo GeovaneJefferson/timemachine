@@ -8,6 +8,7 @@ from handle_spaces import handle_spaces
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
+
 async def restore_backup_home():
     print("Restoring Home folders...")
 
@@ -60,5 +61,5 @@ async def restore_backup_home():
                     text=True)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     pass

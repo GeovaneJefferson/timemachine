@@ -15,6 +15,11 @@ from notification_massage import notification_message_current_backing_up
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
+# Define a function to convert the date string to a datetime object
+def convert_to_datetime(date_str):
+    return datetime.strptime(date_str, '%y-%m-%d')
+
+
 class RESTORE:
     def __init__(self):
         # Update DB
@@ -99,7 +104,56 @@ class RESTORE:
                 #     ['kstart5', 'plasmashell'],
                 #     stdout=sub.PIPE,
                 #     stderr=sub.PIPE)
+        
+        # Restore updates file to HOME
+        asyncio.run(self.restore_backup_home_updates())
             
+    # For updated HOME files
+    async def restore_backup_home_updates(self):
+        date_list = []
+        added_list = []
+        dst_loc = MAIN_INI_FILE.backup_dates_location()
+
+        # Add all dates to the list
+        for date in os.listdir(dst_loc):
+            # Eclude hidden files/folders
+            if not date.startswith('.'):
+                date_list.append(date)
+
+        # Sort the dates in descending order using the converted datetime objects
+        sorted_date = sorted(date_list,
+                    key=convert_to_datetime,
+                    reverse=True)
+
+        # Loop through each date folder
+        for i in range(len(sorted_date)):
+            # Get date path
+            date_path = f'{dst_loc}/{sorted_date[i]}'
+        
+            # Get latest file update and add to the 'Added list' 
+            for root, _, files in os.walk(date_path):
+                if files:
+                    for i in range(len(files)):
+                        if files[i] not in added_list:
+                            destination_location = root.replace(date_path, '')
+                            destination_location =  os.path.join(
+                                    HOME_USER, '/'.join(
+                                    destination_location.split(
+                                    '/')[2:])) 
+                            
+                            source = os.path.join(root, files[i])
+                            # print('Restoring:', files[i])
+                            # print('Source:', source)
+                            # print('Destination:', os.path.join(destination_location, files[i]))
+
+                            # Restore lastest file update
+                            shutil.copy(
+                                source,
+                                destination_location)
+
+                            # Add to 'Added list'
+                            added_list.append(files[i])
+
         self.end_restoring()
 
     def end_restoring(self):
