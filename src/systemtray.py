@@ -43,6 +43,11 @@ class APP:
         self.last_backup_information2 = QAction()
         self.last_backup_information2.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.last_backup_information2.setEnabled(False)
+        
+        # Report button
+        self.report_button = QAction("See Report")
+        # self.report_button.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
+        self.report_button.triggered.connect(self.open_report)
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
@@ -71,6 +76,7 @@ class APP:
         # self.menu.addAction(self.dummyLine)
         self.menu.addAction(self.last_backup_information)
         self.menu.addAction(self.last_backup_information2)
+        self.menu.addAction(self.report_button)
         self.menu.addSeparator()
 
         self.menu.addAction(self.backup_now_button)
@@ -204,6 +210,12 @@ class APP:
     def backup_now(self):
         sub.Popen(
             ['python3', SRC_ANALYSE_PY],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
+        
+    def open_report(self):
+        sub.Popen(
+            ['xdg-open', MAIN_INI_FILE.include_to_backup()],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
