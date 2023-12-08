@@ -224,6 +224,11 @@ class BACKUP:
 									destination_location, dirs_exist_ok=True)
 								
 							else:
+								os.makedirs(
+								os.path.dirname(
+								# os.path.join(destination_location, filename)), exist_ok=True)
+								destination_location), exist_ok=True)
+							
 								shutil.copy(
 									location, 
 									destination_location)
