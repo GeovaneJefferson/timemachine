@@ -480,7 +480,7 @@ class MainWindow(QMainWindow):
             # Show add backup devices button
             MAIN.ui.select_disk_button.show()
             # Enable at
-            MAIN.ui.select_disk_button.isEnabled()
+            MAIN.ui.select_disk_button.setEnabled(True)
 
             # Reset
             self.ui.next_backup_label.setText('Next Backup: None')
