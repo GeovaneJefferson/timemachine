@@ -32,19 +32,19 @@ def latest_backup_date_label():
         from get_backup_time import get_latest_backup_time
         if get_latest_backup_time is not None:
             latest_backup = str(
-                get_latest_backup_time()[0]).replace("-",":")
+                get_latest_backup_time()).replace("-",":")
         
             # Return 'Today', 'yesterday' or Nothing ''
             if not date_timeframe() == '':
                 return date_timeframe() + latest_backup
             
             else:
-                return MAIN_INI_FILE.latest_backup_date_to_main()
+                return MAIN_INI_FILE.latest_backup_date()
             
     else:
         # check date timeframe
         # Return latest backup to main folder
-        return date_timeframe() + MAIN_INI_FILE.latest_backup_date_to_main()
+        return date_timeframe() + MAIN_INI_FILE.latest_backup_date()
 
 def latest_backup_date():
     # Has date folder inside
@@ -66,7 +66,7 @@ def latest_backup_date():
         '''
         
         # Return latest backup to main folder
-        return MAIN_INI_FILE.latest_backup_date_to_main()
+        return MAIN_INI_FILE.latest_backup_date()
 
 def date_timeframe():
     todays_full_date = (
@@ -77,7 +77,7 @@ def date_timeframe():
     # Date/time
     if has_date_folder():
         # Last backup date match with todays date
-        if todays_full_date in MAIN_INI_FILE.latest_backup_date_to_main():
+        if todays_full_date in MAIN_INI_FILE.latest_backup_date():
             return 'Today, '
         
         # Yesterday
@@ -90,9 +90,9 @@ def date_timeframe():
             
     # Main
     else:
-        if MAIN_INI_FILE.latest_backup_date_to_main() != 'None':
+        if MAIN_INI_FILE.latest_backup_date() != 'None':
             # Latest backup to main match with todays date
-            if todays_full_date in MAIN_INI_FILE.latest_backup_date_to_main():
+            if todays_full_date in MAIN_INI_FILE.latest_backup_date():
                 return 'Today, '
             
             # Check todays date, if last backup was Yesterday, return Yesterday

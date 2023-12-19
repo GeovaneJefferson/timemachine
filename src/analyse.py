@@ -367,12 +367,12 @@ def search_in_all_date_time_file(
                                     list_of_not_found_in_date_time.append(
                                         item_path)
     
-    # # Search not found files in main folder
-    # if list_of_not_found_in_date_time:
-    #     search_in_main_dir(
-    #         item_name, 
-    #         item_path,
-    #         main_custom_full_location)
+    # Search not found files in main folder
+    if list_of_not_found_in_date_time:
+        search_in_main_dir(
+            item_name, 
+            item_path,
+            main_custom_full_location)
 
 def search_in_dir(
         dir_path, 
@@ -388,10 +388,10 @@ def search_in_dir(
                 # Find match
                 dst_date_time_file_name = str(dst_date_time_path).split('/')[-1]
                 if dst_date_time_file_name == file:
-                    # print('Dir:', dir_name)
-                    # print('filename:', file)
-                    # print('Root, Filename:', os.path.join(root, file))
-                    # print()
+                    print('Dir:', dir_name)
+                    print('filename:', file)
+                    print('Root, Filename:', os.path.join(root, file))
+                    print()
                     
                     # Add to found list
                     if (file not in 

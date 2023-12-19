@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 from get_folders_to_be_backup import get_folders
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
-from get_users_de import get_user_de
+from get_latest_backup_date import latest_backup_date
 
 # Handle signal
 import error_catcher
@@ -191,54 +191,60 @@ class BACKUP:
 						# LATEST DATE/TIME
 						##########################################################
 						elif status == 'UPDATED':
-							# Sent to a new date/time backup folder
-							destination_location = (
-								f'{MAIN_INI_FILE.time_folder_format()}{destination}')
-							
-							# Static time folder 
-							# So it won't update if backup passes more than one minute
-							destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
-							destination_location = '/'.join(destination_location)
-
-							# Add static time to it
-							destination_location = (destination_location + 
-								'/' + STATIC_TIME_FOLDER + destination)
-						
-						try:
-							# Back up 
-							print(f"Backing up: {location}")
-
-							# is a dir
-							if os.path.isdir(location):
-								# Dir has files inside
-								# if any(os.scandir(location)):
-								# Create proper for it
-								os.makedirs(
-								os.path.dirname(
-								# os.path.join(destination_location, filename)), exist_ok=True)
-								destination_location), exist_ok=True)
-							
-								# shutil.copy(os.path.join(location, filename), destination_location)
-								shutil.copytree(
-									location, 
-									destination_location, dirs_exist_ok=True)
+							# No unfinished backtup
+							if not MAIN_INI_FILE.get_database_value(
+				           		'STATUS', 'unfinished_backup'):
+                
+								# Sent to a new date/time backup folder
+								destination_location = (
+									f'{MAIN_INI_FILE.time_folder_format()}{destination}')
 								
-							else:
-								os.makedirs(
-								os.path.dirname(
-								# os.path.join(destination_location, filename)), exist_ok=True)
-								destination_location), exist_ok=True)
-							
-								shutil.copy(
-									location, 
-									destination_location)
+								# Static time folder 
+								# So it won't update if backup passes more than one minute
+								destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
+								destination_location = '/'.join(destination_location)
 
-						except Exception as e:
-							print(f"Error while backing up {location}: {e}")
-					
+								# Add static time to it
+								destination_location = (destination_location + 
+									'/' + STATIC_TIME_FOLDER + destination)
+							else:
+								# TODO
+								# Get latest date and time frame inside
+								from get_backup_time import get_latest_backup_time
+								destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
+								destination_location = '/'.join(destination_location)
+								destination_location = destination_location + '/' + get_latest_backup_time() + '/' + destination
+
+						# Back up 
+						print(f"Backing up: {location}")
+
+						# is a dir
+						if os.path.isdir(location):
+							# Dir has files inside
+							# if any(os.scandir(location)):
+							# Create proper for it
+							os.makedirs(
+							os.path.dirname(
+							# os.path.join(destination_location, filename)), exist_ok=True)
+							destination_location), exist_ok=True)
+						
+							# shutil.copy(os.path.join(location, filename), destination_location)
+							shutil.copytree(
+								location, 
+								destination_location, dirs_exist_ok=True)
+							
+						else:
+							os.makedirs(
+							os.path.dirname(
+							# os.path.join(destination_location, filename)), exist_ok=True)
+							destination_location), exist_ok=True)
+						
+							shutil.copy(
+								location, 
+								destination_location)
+
 					except Exception as e:
-						print(e)
-						exit()
+						print(f"Error while backing up {location}: {e}")
 
 	# HIDDEN FILES/FOLDERS
 	def backup_hidden_home(self, user_de):
@@ -372,6 +378,16 @@ class BACKUP:
 
 		# Wait x, so if it finish fast, won't repeat the backup
 		time.sleep(60)
+
+		# Open backup checker
+		if MAIN_INI_FILE.get_database_value(
+			'STATUS', 'unfinished_backup'):
+			
+			# Start backup checker
+			sub.Popen(
+				['python3', SRC_BACKUP_CHECKER_PY],
+				stdout=sub.PIPE,
+				stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value(

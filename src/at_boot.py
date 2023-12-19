@@ -17,15 +17,24 @@ def system_tray():
             stdout=sub.PIPE,
             stderr=sub.PIPE)
 
-    if MAIN_INI_FILE.hd_name() != "None":
+    if MAIN_INI_FILE.hd_name() is not None:
         if MAIN_INI_FILE.get_database_value(
             'STATUS', 'automatically_backup'):
             
-            # Start backup checker
-            sub.Popen(
-                ['python3', SRC_BACKUP_CHECKER_PY],
-                stdout=sub.PIPE,
-                stderr=sub.PIPE)
+            # Unfinished backup
+            if MAIN_INI_FILE.get_database_value(
+                'STATUS', 'unfinished_backup'):
+                
+                # Start backup checker
+                sub.Popen(
+                    ['python3', SRC_BACKUP_NOW_PY],
+                    stdout=sub.PIPE,)
+            else:
+                # Start backup checker
+                sub.Popen(
+                    ['python3', SRC_BACKUP_CHECKER_PY],
+                    stdout=sub.PIPE,
+                    stderr=sub.PIPE)
 
 
 if __name__=='__main__':
@@ -33,7 +42,3 @@ if __name__=='__main__':
     time.sleep(0)
      
     system_tray()
-    
-    # Exit
-    exit()
-
