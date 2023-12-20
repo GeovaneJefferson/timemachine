@@ -430,8 +430,8 @@ if __name__ == "__main__":
 		# End backup process
 		MAIN.end_backup()
 
-	except socket.error as e:
-		if e.errno != errno.EPIPE:
+	except IOError as e: 
+		if e.errno != errno.EPIPE: 
 			# Not a broken pipe
 			MAIN_INI_FILE.report_error(e)
 
@@ -442,7 +442,9 @@ if __name__ == "__main__":
 			# Unfinished to Yes 
 			MAIN_INI_FILE.set_database_value(
 				'STATUS', 'unfinished_backup', 'Yes')
-
+		else:
+			pass
+		
 	# Wait few seconds
 	time.sleep(60)
 
