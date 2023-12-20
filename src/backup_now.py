@@ -432,16 +432,16 @@ if __name__ == "__main__":
 
 	except Exception as e:
 		print(e)
-		# if 'BrokenPipeError: [Errno 32] Broken pipe' not in e:
-		MAIN_INI_FILE.report_error(e)
+		if 'BrokenPipeError:' not in str(e):
+			MAIN_INI_FILE.report_error(e)
 
-		# Set backup now to False
-		MAIN_INI_FILE.set_database_value(
-			'STATUS', 'backing_up_now', 'False')
-		
-		# Unfinished to Yes 
-		MAIN_INI_FILE.set_database_value(
-			'STATUS', 'unfinished_backup', 'Yes')
+			# Set backup now to False
+			MAIN_INI_FILE.set_database_value(
+				'STATUS', 'backing_up_now', 'False')
+			
+			# Unfinished to Yes 
+			MAIN_INI_FILE.set_database_value(
+				'STATUS', 'unfinished_backup', 'Yes')
 
 	# Wait few seconds
 	time.sleep(60)
