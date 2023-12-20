@@ -430,9 +430,9 @@ if __name__ == "__main__":
 		# End backup process
 		MAIN.end_backup()
 
-	except Exception as e:
-		print(e)
-		if 'BrokenPipeError:' not in str(e):
+	except socket.error as e:
+		if e.errno != errno.EPIPE:
+			# Not a broken pipe
 			MAIN_INI_FILE.report_error(e)
 
 			# Set backup now to False

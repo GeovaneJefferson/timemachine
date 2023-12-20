@@ -14,7 +14,8 @@ import datetime
 import sqlite3
 import logging
 import traceback
-
+import socket
+import errno
 
 from stylesheet import *
 from pathlib import Path
