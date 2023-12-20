@@ -71,6 +71,18 @@ list_include_kde = [
 	'khotkeysrc'
 	]
 
+def error_handler(e):
+	# Not a broken pipe
+	MAIN_INI_FILE.report_error(e)
+
+	# Set backup now to False
+	MAIN_INI_FILE.set_database_value(
+		'STATUS', 'backing_up_now', 'False')
+	
+	# Unfinished to Yes 
+	MAIN_INI_FILE.set_database_value(
+		'STATUS', 'unfinished_backup', 'Yes')
+	
 # HOME
 def count_files():
 	file_count = 0
@@ -112,33 +124,33 @@ def make_first_backup():
 				relative_path = os.path.relpath(source_path, source_folder)
 				target_path = os.path.join(target_folder, i, relative_path)
 				
-				# Create dst folder with relative name is necessary
-				os.makedirs(os.path.dirname(target_path), exist_ok=True)
-
 				try:
+					# Create dst folder with relative name is necessary
+					os.makedirs(os.path.dirname(target_path), exist_ok=True)
+
 					# Back up 
 					shutil.copy(source_path, target_path)
 					print(f"Backed up: {source_path}")
+					
+					# Add 1 to copied file value
+					copied_files += 1
 
-				except Exception as e:
-					print(f"Error while backing up {source_path}: {e}")
-				
-				# Add 1 to copied file value
-				copied_files += 1
+					# Caculate the progress bar
+					progress = int(copied_files / total_files * 100)
+					print(progress)
+					print('Copied file:', copied_files, '/', total_files)
+					
+					# Save current progress value to DB
+					MAIN_INI_FILE.set_database_value(
+						'STATUS', 'progress_bar', str(progress))
 
-				# Caculate the progress bar
-				progress = int(copied_files / total_files * 100)
-				print(progress)
-				print('Copied file:', copied_files, '/', total_files)
-				
-				# Save current progress value to DB
-				MAIN_INI_FILE.set_database_value(
-					'STATUS', 'progress_bar', str(progress))
-
-				# Save current backing up
-				MAIN_INI_FILE.set_database_value(
-	            	'INFO', 'current_backing_up', source_path)
-
+					# Save current backing up
+					MAIN_INI_FILE.set_database_value(
+						'INFO', 'current_backing_up', source_path)
+				except IOError as e: 
+					if e.errno != errno.EPIPE: 
+						# Not a broken pipe
+						error_handler(e)
 
 	# Set progress bar value to None
 	MAIN_INI_FILE.set_database_value(
@@ -420,31 +432,14 @@ if __name__ == "__main__":
 		'latest_backup_date',
 		MAIN_INI_FILE.current_full_date_plus_time_str())
 
-	try:
-		# Backup Home
-		MAIN.backup_home()
+	# Backup Home
+	MAIN.backup_home()
 
-		# backup hidden home
-		# MAIN.backup_hidden_home(get_user_de())
+	# backup hidden home
+	# MAIN.backup_hidden_home(get_user_de())
 
-		# End backup process
-		MAIN.end_backup()
-
-	except IOError as e: 
-		if e.errno != errno.EPIPE: 
-			# Not a broken pipe
-			MAIN_INI_FILE.report_error(e)
-
-			# Set backup now to False
-			MAIN_INI_FILE.set_database_value(
-				'STATUS', 'backing_up_now', 'False')
-			
-			# Unfinished to Yes 
-			MAIN_INI_FILE.set_database_value(
-				'STATUS', 'unfinished_backup', 'Yes')
-		else:
-			MAIN_INI_FILE.report_error(e)
-			pass
+	# End backup process
+	MAIN.end_backup()
 
 	# Wait few seconds
 	time.sleep(60)
