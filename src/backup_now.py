@@ -443,8 +443,9 @@ if __name__ == "__main__":
 			MAIN_INI_FILE.set_database_value(
 				'STATUS', 'unfinished_backup', 'Yes')
 		else:
+			MAIN_INI_FILE.report_error(e)
 			pass
-		
+
 	# Wait few seconds
 	time.sleep(60)
 
