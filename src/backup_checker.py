@@ -73,18 +73,6 @@ def check_for_new_packages():
                         stdout=sub.PIPE, 
                         stderr=sub.PIPE)
 
-def check_backup():
-    # Get the current time
-    current_time = str(MAIN_INI_FILE.current_time()) 
-
-    print('Current time:', current_time)
-    print()
-
-    # Time to backup
-    if current_time in MILITARY_TIME_OPTION:
-        # Time to backup
-        time_to_backup(current_time)
-    
 def time_to_backup(current_time):
     # Start backup analyses
     print("Calling analyses...")
@@ -144,7 +132,18 @@ if __name__ == '__main__':
                     print('Backup connection: ON')
 
                     # Check for a new backup
-                    check_backup()
+                    # Get the current time
+                    current_time = str(MAIN_INI_FILE.current_time()) 
+
+                    print('Current time:', current_time)
+                    print('Backup time:', MILITARY_TIME_OPTION)
+                    print()
+
+                    # Time to backup
+                    if current_time in MILITARY_TIME_OPTION:
+                        # Time to backup
+                        time_to_backup(current_time)
+                    
 
                     # Check for new packages to backup
                     check_for_new_packages()
