@@ -36,5 +36,5 @@ def create_file(location):
         print('File already exists.')
 
 
-create_directory('Home/geoven/text.txt')
-        
+if __name__ == '__main__':
+    pass

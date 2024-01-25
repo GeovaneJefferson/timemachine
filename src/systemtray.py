@@ -211,7 +211,7 @@ class APP:
         sub.Popen(
             ['python3', SRC_ANALYSE_PY],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
         
     def open_report(self):
         sub.Popen(
