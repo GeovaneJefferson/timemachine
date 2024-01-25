@@ -6,7 +6,11 @@ from get_backup_date import *
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from read_ini_file import UPDATEINIFILE
 from backup_status import progress_bar_status
+import error_catcher
 
+# Handle signal
+signal.signal(signal.SIGINT, error_catcher.signal_exit)
+signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
 DELAY_TO_UPDATE = 2000
 
@@ -46,12 +50,10 @@ class APP:
         
         # Report button
         self.report_button = QAction("See Report")
-        # self.report_button.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.report_button.triggered.connect(self.open_report)
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
-        # self.backup_now_button.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.backup_now_button.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
@@ -103,6 +105,7 @@ class APP:
         self.app.exec()
     
     def should_be_running(self):
+        print('System tray is running....')
         # Check if ini file is locked or not 
         if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.exit()
@@ -208,6 +211,8 @@ class APP:
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
         
     def backup_now(self):
+        print('Calling back up now...')
+
         sub.Popen(
             ['python3', SRC_ANALYSE_PY],
             stdout=sub.PIPE,
@@ -228,7 +233,6 @@ class APP:
 
                 elif color == "White":
                     self.color=color
-                    # self.tray.setIcon(QIcon(self.get_system_color()))
                     self.tray.setIcon(QIcon(SRC_BACKUP_ICON))
 
                 elif color == "Red":
