@@ -1,6 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from notification_massage import notification_message
+from create_directory import create_directory, create_file
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -13,32 +14,11 @@ def backup_pip_packages():
     ################################################################################
     pip_packages_txt_location = MAIN_INI_FILE.pip_packages_txt_location()
     
-    # Extract the directory path from the file path
-    directory = os.path.dirname(pip_packages_txt_location)
-
     # Check if the directory exists, and create it if necessary
-    if not os.path.exists(directory):
-        print(f"Directory '{directory}' does not exist. Creating...")
-        try:
-            os.makedirs(directory)
-            print(f"Directory '{directory}' created successfully.")
-        except Exception as e:
-            print(f"Error creating directory: {e}")
+    create_directory(pip_packages_txt_location)
+    # Check if the file exists, and create it if necessary
+    create_file(pip_packages_txt_location)
 
-    # Check if the file already exists
-    if not os.path.exists(pip_packages_txt_location):
-        print('File does not exist. Creating...')
-        
-        # Create the file
-        try:
-            with open(pip_packages_txt_location, 'w'):
-                pass  # This creates an empty file
-            print('File created successfully.')
-        except Exception as e:
-            print(f"Error creating file: {e}")
-    else:
-        print('File already exists.')
-        
     ################################################################################
     # Get pip packages list
     ################################################################################
@@ -67,8 +47,7 @@ def backup_pip_packages():
 
                 count += 1 
 
-    except Exception as e:
-        print(e)
+    except:
         pass
 
 

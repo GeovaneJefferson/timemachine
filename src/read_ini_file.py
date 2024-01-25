@@ -1,4 +1,5 @@
 from setup import *
+from create_directory import create_directory, create_file
 
 
 NOW = datetime.now()
@@ -13,11 +14,16 @@ class UPDATEINIFILE:
             if os.path.exists(LOG_LOCATION):
                 os.remove(LOG_LOCATION)
 
-                # Re create it
-                sub.run(
-                    ['touch', LOG_LOCATION],
-                    stdout=sub.PIPE,
-                    stderr=sub.PIPE)
+                # Check if the directory exists, and create it if necessary
+                create_directory(LOG_LOCATION)
+                # Check if the file exists, and create it if necessary
+                create_file(LOG_LOCATION)
+
+                # # Re create it
+                # sub.run(
+                #     ['touch', LOG_LOCATION],
+                #     stdout=sub.PIPE,
+                #     stderr=sub.PIPE)
                 
         # Capture the current timestamp
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")

@@ -1,5 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
+from create_directory import create_directory, create_file
+
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
@@ -13,15 +15,13 @@ def signal_exit(*args):
     
     else:
         print("No messages provided.")
+    
+    # Check if the directory exists, and create it if necessary
+    create_directory(LOG_LOCATION)
+    # Check if the file exists, and create it if necessary
+    create_file(LOG_LOCATION)
 
-    # Check if location exist
-    if not os.path.exists(LOG_LOCATION):
-        # Create file
-        sub.run(
-            ['touch', LOG_LOCATION],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
-        
+    # Write bug in to it
     with open(LOG_LOCATION, 'w') as writer:
         writer.write(str(messages))
         

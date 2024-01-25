@@ -15,6 +15,7 @@ from restore_kde_local_share import restore_kde_local_share
 from get_users_de import get_user_de
 from notification_massage import notification_message_current_backing_up
 from save_info import save_info
+from create_directory import create_directory, create_file
 
 
 reboot_after_restore = False
@@ -461,7 +462,12 @@ class WelcomeScreen(QWidget):
 			
 		else:
 			dst = MAIN_INI_FILE.exclude_applications_location()
-			sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
+			# Check if the directory exists, and create it if necessary
+			create_directory(dst)
+			# Check if the file exists, and create it if necessary
+			create_file(dst)
+
+			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
@@ -476,7 +482,12 @@ class WelcomeScreen(QWidget):
 			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
 		else:
 			dst = MAIN_INI_FILE.exclude_flatpaks_location()
-			sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
+			# Check if the directory exists, and create it if necessary
+			create_directory(dst)
+			# Check if the file exists, and create it if necessary
+			create_file(dst)
+
+			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:

@@ -74,8 +74,6 @@ def check_for_new_packages():
                         stderr=sub.PIPE)
 
 def time_to_backup(current_time):
-    # Start backup analyses
-    print("Calling analyses...")
     
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
@@ -89,12 +87,12 @@ def time_to_backup(current_time):
     
     # Backup wallpaper
     backup_wallpaper()
-
+    
+    print("Calling analyses...")
     sub.Popen(
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
-        stderr=sub.PIPE)
-    
+        stderr=sub.PIPE).wait()
     exit()
 
 if __name__ == '__main__':
@@ -154,12 +152,9 @@ if __name__ == '__main__':
             else:
                 print('Backup checker: PAUSED')
             
-            print()
             time.sleep(5)
 
         except Exception as e:
-            print(e)
-            pass
             # Save error log
-            # MAIN_INI_FILE.report_error(e)
-            # exit()
+            MAIN_INI_FILE.report_error(e)
+            pass

@@ -399,7 +399,7 @@ class BACKUP:
 			sub.Popen(
 				['python3', SRC_BACKUP_CHECKER_PY],
 				stdout=sub.PIPE,
-				stderr=sub.PIPE)
+				stderr=sub.PIPE).wait()
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value(
@@ -448,6 +448,6 @@ if __name__ == "__main__":
 	sub.Popen(
 		['python3', SRC_BACKUP_CHECKER_PY], 
 		stdout=sub.PIPE, 
-		stderr=sub.PIPE)
+		stderr=sub.PIPE).wait()
 
 

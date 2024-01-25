@@ -651,7 +651,6 @@ def need_to_backup_analyse():
 
     # Needs to backup
     print(GREEN + 'ANALYSE: Need to backup.' + RESET)
-    print()
     print('Calling backup now...')
     return True 
     
