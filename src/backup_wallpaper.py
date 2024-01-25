@@ -87,7 +87,7 @@ def backup_wallpaper():
             sub.run(
                 ["rm", "-rf", command], 
                 stdout=sub.PIPE, 
-                stderr=sub.PIPE)
+                stderr=sub.PIPE).wait()
 
     # Backup wallpaper
     if get_wallpaper_full_location() is not None:
@@ -99,7 +99,7 @@ def backup_wallpaper():
         sub.run(
             ['cp', '-rvf', src, dst],
             stdout=sub.PIPE,
-            stderr=sub.PIPE)
+            stderr=sub.PIPE).wait()
 
     # Write to file
     update_db()

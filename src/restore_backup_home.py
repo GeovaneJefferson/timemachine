@@ -36,7 +36,7 @@ async def restore_backup_home():
                 sub.run(
                     ["mkdir", dst],
                     stdout=sub.PIPE,
-                    stderr=sub.PIPE)
+                    stderr=sub.PIPE).wait()
                 
             # Restore Home folders
             # Restore the latest backup

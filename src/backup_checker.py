@@ -36,7 +36,7 @@ def check_for_new_packages():
                             sub.run(
                                 ["rm", "-rf", dst], 
                                 stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+                                stderr=sub.PIPE).wait()
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
@@ -44,7 +44,7 @@ def check_for_new_packages():
                     sub.run(
                         ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+                        stderr=sub.PIPE).wait()
 
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -63,7 +63,7 @@ def check_for_new_packages():
                             sub.run(
                                 ["rm", "-rf", src, dst], 
                                 stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+                                stderr=sub.PIPE).wait()
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
@@ -71,7 +71,7 @@ def check_for_new_packages():
                     sub.run(
                         ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+                        stderr=sub.PIPE).wait()
 
 def time_to_backup(current_time):
     
@@ -109,7 +109,7 @@ if __name__ == '__main__':
                 sub.Popen(
                     ['python3', SRC_BACKUP_NOW_PY], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+                        stderr=sub.PIPE).wait()
 
                 # Exit
                 exit()

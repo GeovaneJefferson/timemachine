@@ -628,7 +628,7 @@ def need_to_backup_analyse():
         sub.run(
             ['mkdir', MAIN_INI_FILE.main_backup_folder()], 
             stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+            stderr=sub.PIPE).wait()
     
     # First backup to main backup folder
     if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
@@ -677,7 +677,7 @@ if __name__ == '__main__':
             sub.Popen(
                 ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
-                    stderr=sub.PIPE)  
+                    stderr=sub.PIPE).wait()  
 
     else:
         # Backing up to False
@@ -688,4 +688,4 @@ if __name__ == '__main__':
         sub.Popen(
             ['python3', SRC_BACKUP_CHECKER_PY], 
             stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+            stderr=sub.PIPE).wait()

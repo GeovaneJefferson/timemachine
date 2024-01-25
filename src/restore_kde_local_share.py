@@ -9,7 +9,7 @@ async def restore_kde_local_share():
     try:
         src = MAIN_INI_FILE.kde_local_share_main_folder() + "/"
         dst = HOME_USER + "/.local/share/"
-        sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE).wait()
 
         notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_local_share_main_folder()}...')
     

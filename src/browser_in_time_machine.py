@@ -474,7 +474,7 @@ class PreviewWindow(QDialog):
     def open_file_button_clicked(self):
         file_directory = "/".join(self.file_directory.split("/")[:-1])
         # Open file directory
-        sub.Popen(["xdg-open", file_directory], stdout=sub.PIPE, stderr=sub.PIPE)
+        sub.Popen(["xdg-open", file_directory], stdout=sub.PIPE, stderr=sub.PIPE).wait()
         
         # Close external preview window
         self.remove_items()

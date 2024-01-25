@@ -98,12 +98,12 @@ class RESTORE:
                 # sub.run(
                 #     ['kquitapp5', 'plasmashell'],
                 #     stdout=sub.PIPE,
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
             
                 # sub.run(
                 #     ['kstart5', 'plasmashell'],
                 #     stdout=sub.PIPE,
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
         
         # Restore updates file to HOME
         asyncio.run(self.restore_backup_home_updates())

@@ -72,7 +72,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Create backup folder
@@ -86,7 +86,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ###############################################################################
         # Create MAIN backup folder
@@ -101,7 +101,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
         
         ###############################################################################
         # Create include txt file
@@ -126,7 +126,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Create flatpak folder
@@ -140,7 +140,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
         
         ################################################################################
         # Create pip text file
@@ -155,7 +155,7 @@ def create_base_folders():
             # sub.run(
             #     ["touch", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
             
         ################################################################################
         # Create flatpak text file
@@ -170,7 +170,7 @@ def create_base_folders():
             # sub.run(
             #     ["touch", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Create Flatpak DATA folder
@@ -185,7 +185,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         # Create inside external "Local" Folder
         if not os.path.exists(str(MAIN_INI_FILE.flatpak_local_folder())):
@@ -197,7 +197,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Create wallpaper folder
@@ -211,7 +211,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Package manager
@@ -227,7 +227,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         # Create Deb folder (Folder to manual place deb apps)
         if not os.path.exists(str(MAIN_INI_FILE.deb_main_folder())):
@@ -239,7 +239,7 @@ def create_base_folders():
             # sub.run(
             #     ["mkdir", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # GNOME
@@ -255,7 +255,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
             
             # Create configuration folder
             if not os.path.exists(MAIN_INI_FILE.gnome_configurations_folder_main_folder()):
@@ -267,7 +267,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             ################################################################################
             # Create gnome LOCAL SHARE
@@ -281,7 +281,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             ################################################################################
             # Create gnome CONFIG
@@ -295,7 +295,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # KDE
@@ -311,7 +311,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             # Create configuration folder
             if not os.path.exists(MAIN_INI_FILE.kde_configurations_folder_main_folder()):
@@ -323,7 +323,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             ################################################################################
             # Create KDE LOCAL SHARE
@@ -337,7 +337,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             ################################################################################
             # Create KDE CONFIG
@@ -351,7 +351,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
             ################################################################################
             # Create KDE SHARE CONFIG
@@ -365,7 +365,7 @@ def create_base_folders():
                 # sub.run(
                 #     ["mkdir", command], 
                 #     stdout=sub.PIPE, 
-                #     stderr=sub.PIPE)
+                #     stderr=sub.PIPE).wait()
 
         ################################################################################
         # Create restore_settings.ini
@@ -382,7 +382,7 @@ def create_base_folders():
             # sub.run(
             #     ["touch", command], 
             #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
+            #     stderr=sub.PIPE).wait()
 
     except FileNotFoundError as e:
         error_catcher.signal_exit.error_trying_to_backup(e)
@@ -398,7 +398,7 @@ def create_date_and_time_folder():
         # sub.run(
         #     ["mkdir", command], 
         #     stdout=sub.PIPE, 
-        #     stderr=sub.PIPE)
+        #     stderr=sub.PIPE).wait()
 
     # Create folder inside the current date with current time
     if not os.path.exists(MAIN_INI_FILE.time_folder_format()):
@@ -410,7 +410,7 @@ def create_date_and_time_folder():
         # sub.run(
         #     ["mkdir", command], 
         #     stdout=sub.PIPE, 
-        #     stderr=sub.PIPE)
+        #     stderr=sub.PIPE).wait()
     
 def delete_old_backups():
     try:
@@ -434,7 +434,7 @@ def delete_old_backups():
             sub.run(
                 ["rm", "-rf", command],
                 stdout=sub.PIPE,
-                stderr=sub.PIPE)
+                stderr=sub.PIPE).wait()
 
             # Deleting .trash inside backup device to get more free space
             print(f"Deleting .Trash-1000...")
@@ -444,7 +444,7 @@ def delete_old_backups():
             sub.run(
                 ["rm", "-rf", command], 
                 stdout=sub.PIPE, 
-                stderr=sub.PIPE)
+                stderr=sub.PIPE).wait()
 
         # Manual delete
         else:

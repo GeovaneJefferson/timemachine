@@ -43,7 +43,7 @@ def backup_flatpak():
     #             sub.run(
     #                 ['cp', '-rvf', command], 
     #                 stdout=sub.PIPE, 
-    #                 stderr=sub.PIPE)
+    #                 stderr=sub.PIPE).wait()
 
                 
     #         # .local/share/flatpak
@@ -61,7 +61,7 @@ def backup_flatpak():
     #             sub.run(
     #                 ['cp', '-rvf', command],
     #                 stdout=sub.PIPE,
-    #                 stderr=sub.PIPE)
+    #                 stderr=sub.PIPE).wait()
         
     #     except:
     #         pass
