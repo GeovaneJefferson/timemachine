@@ -229,6 +229,8 @@ class BACKUP:
 
 						# Back up 
 						print(f"Backing up: {location}")
+						print(f"To: {destination_location}")
+						print()
 
 						# is a dir
 						if os.path.isdir(location):
