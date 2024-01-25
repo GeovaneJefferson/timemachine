@@ -211,24 +211,11 @@ class APP:
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
         
     def backup_now(self):
-        try:
-            print('Calling back up now...')
+         sub.Popen(
+            ['python3', SRC_ANALYSE_PY],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE).wait()
 
-            process = sub.Popen(
-                ['python3', SRC_ANALYSE_PY],
-                stdout=sub.PIPE,
-                stderr=sub.PIPE)
-            
-            output, error = process.communicate()
-            return_code = process.wait()
-            
-            # If needed, you can print the output and error
-            print("Output:", output.decode())
-            print("Error:", error.decode())
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            
     def open_report(self):
         sub.Popen(
             ['xdg-open', MAIN_INI_FILE.include_to_backup()],
