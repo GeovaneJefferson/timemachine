@@ -32,7 +32,7 @@ async def restore_backup_flatpaks_applications():
                 sub.run(
                     ["flatpak", "install", "--system",
                     "--noninteractive", "--assumeyes", "--or-update",
-                    flatpak], stdout=sub.PIPE, stderr=sub.PIPE).wait()
+                    flatpak], stdout=sub.PIPE, stderr=sub.PIPE)
                 
             except Exception as e:
                 print(e)

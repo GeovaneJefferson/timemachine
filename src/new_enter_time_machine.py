@@ -681,7 +681,7 @@ class MainWindow(QMainWindow):
             sub.run(
                 ["xdg-open", dst],
                 stdout=sub.PIPE,
-                stderr=sub.PIPE).wait()
+                stderr=sub.PIPE)
             
             exit()
 
@@ -757,7 +757,7 @@ class MainWindow(QMainWindow):
         sub.run(
             ['cp', '-rvf', src, dst],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
             
     ################################################################################
     # RETURN VALUES

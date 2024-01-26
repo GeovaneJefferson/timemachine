@@ -27,7 +27,7 @@ async def restore_backup_wallpaper():
             # Restore
             src = MAIN_INI_FILE.wallpaper_main_folder() + "/" + wallpaper
             dst = HOME_USER + "/Pictures"
-            sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE).wait()
+            sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
 
         # Handle spaces
         # wallpaper = handle_spaces(wallpaper)
@@ -55,7 +55,7 @@ def apply_wallpaper(wallpaper):
                 'picture-uri',
                 f'{HOME_USER}/Pictures/{wallpaper}'], 
                 stdout=sub.PIPE, 
-                stderr=sub.PIPE).wait()
+                stderr=sub.PIPE)
         
         else:
             sub.run(
@@ -65,7 +65,7 @@ def apply_wallpaper(wallpaper):
                 'picture-uri-dark',
                 f'{HOME_USER}/Pictures/{wallpaper}'], 
                 stdout=sub.PIPE, 
-                stderr=sub.PIPE).wait()
+                stderr=sub.PIPE)
 
         # Set wallpaper to Zoom
         sub.run(
@@ -75,7 +75,7 @@ def apply_wallpaper(wallpaper):
             "picture-options",
             "zoom"],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
         
         ################################################################
 

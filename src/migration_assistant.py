@@ -3,22 +3,23 @@ from setup import *
 from device_location import device_location
 from package_manager import package_manager
 from read_ini_file import UPDATEINIFILE
-from restore_backup_wallpaper import restore_backup_wallpaper
-from restore_backup_home import restore_backup_home
-from restore_backup_flatpaks_applications import restore_backup_flatpaks_applications
-from restore_backup_package_applications import restore_backup_package_applications
-from restore_backup_flatpaks_data import restore_backup_flatpaks_data
-# from restart_kde_session import restart_kde_session
-from restore_kde_share_config import restore_kde_share_config
-from restore_kde_config import restore_kde_config
-from restore_kde_local_share import restore_kde_local_share
-from get_users_de import get_user_de
-from notification_massage import notification_message_current_backing_up
+# from restore_backup_wallpaper import restore_backup_wallpaper
+# from restore_backup_home import restore_backup_home
+# from restore_backup_flatpaks_applications import restore_backup_flatpaks_applications
+# from restore_backup_package_applications import restore_backup_package_applications
+# from restore_backup_flatpaks_data import restore_backup_flatpaks_data
+# # from restart_kde_session import restart_kde_session
+# from restore_kde_share_config import restore_kde_share_config
+# from restore_kde_config import restore_kde_config
+# from restore_kde_local_share import restore_kde_local_share
+# from get_users_de import get_user_de
+# from notification_massage import notification_message_current_backing_up
 from save_info import save_info
 from create_directory import create_directory, create_file
 
 
 reboot_after_restore = False
+
 
 class WelcomeScreen(QWidget):
 	def __init__(self):
@@ -518,8 +519,8 @@ class WelcomeScreen(QWidget):
 		self.ui.progress_bar_restoring.hide()
 
 		# Get users backup wallpaper
-		for wallpaper in os.listdir(f'{MAIN_INI_FILE.wallpaper_main_folder()}'):
-			set_wallpaper = f'{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}'
+		# for wallpaper in os.listdir(f'{MAIN_INI_FILE.wallpaper_main_folder()}'):
+		# 	set_wallpaper = f'{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}'
 
 		# # Load the system icon 'drive-removable-media'
 		# audio_headset_icon = QIcon.fromTheme('drive-removable-media')
@@ -562,11 +563,11 @@ class WelcomeScreen(QWidget):
 		# from_image.move(10, 10)
 
 		# Current pcs name
-		self.ui.from_image_label.setText(f"{USERNAME.capitalize()}")
+		self.ui.from_image_label.setText(MAIN_INI_FILE.hd_name())
 		self.ui.from_image_label.adjustSize()
 
 		# Backup devices name
-		self.ui.to_image_label.setText(MAIN_INI_FILE.hd_name())
+		self.ui.to_image_label.setText(USERNAME.capitalize())
 		self.ui.to_image_label.adjustSize()
 
 	def on_restore_button_clicked_page4(self):
@@ -654,7 +655,7 @@ class WelcomeScreen(QWidget):
 				sub.run(
 					["sudo", "reboot"],
 					stdout=sub.PIPE,
-					stderr=sub.PIPE).wait()
+					stderr=sub.PIPE)
 			
 			else:
 				print("All done.")

@@ -36,7 +36,7 @@ def check_for_new_packages():
                             sub.run(
                                 ["rm", "-rf", dst], 
                                 stdout=sub.PIPE, 
-                                stderr=sub.PIPE).wait()
+                                stderr=sub.PIPE)
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
@@ -44,7 +44,7 @@ def check_for_new_packages():
                     sub.run(
                         ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -63,7 +63,7 @@ def check_for_new_packages():
                             sub.run(
                                 ["rm", "-rf", src, dst], 
                                 stdout=sub.PIPE, 
-                                stderr=sub.PIPE).wait()
+                                stderr=sub.PIPE)
 
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
@@ -71,7 +71,7 @@ def check_for_new_packages():
                     sub.run(
                         ['cp', '-rvf', src, dst], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
 def time_to_backup(current_time):
     
@@ -156,5 +156,5 @@ if __name__ == '__main__':
 
         except Exception as e:
             # Save error log
-            MAIN_INI_FILE.report_error(e)
+            # MAIN_INI_FILE.report_error(e)
             pass

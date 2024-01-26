@@ -309,7 +309,7 @@ class BACKUP:
 				sub.run(
 					['cp', '-rvf', src, dst],
 					stdout=sub.PIPE,
-					stderr=sub.PIPE).wait()
+					stderr=sub.PIPE)
 
 	def backup_hidden_config(self, user_de):
 		# Config
@@ -348,7 +348,7 @@ class BACKUP:
 				sub.run(
 					['cp', '-rvf', src, dst],
 					stdout=sub.PIPE,
-					stderr=sub.PIPE).wait()
+					stderr=sub.PIPE)
 				
 	def backup_hidden_kde_share(self):
 		try:
@@ -377,7 +377,7 @@ class BACKUP:
 				sub.run(
 					['cp', '-rvf', src, dst],
 					stdout=sub.PIPE,
-					stderr=sub.PIPE).wait()
+					stderr=sub.PIPE)
 					
 		except FileNotFoundError as e:
 			print(e)

@@ -628,7 +628,7 @@ def need_to_backup_analyse():
         sub.run(
             ['mkdir', MAIN_INI_FILE.main_backup_folder()], 
             stdout=sub.PIPE, 
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
     
     # First backup to main backup folder
     if os.path.exists(MAIN_INI_FILE.main_backup_folder()):

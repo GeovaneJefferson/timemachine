@@ -32,7 +32,7 @@ async def restore_backup_package_applications():
                     sub.run(
                         ["sudo", "dpkg", "-i", command],
                         stdout=sub.PIPE,
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
                     # Update notification
                     notification_message_current_backing_up(
@@ -42,7 +42,7 @@ async def restore_backup_package_applications():
             sub.run(
                 ["sudo", "apt", "install", "-f"],
                 stdout=sub.PIPE,
-                stderr=sub.PIPE).wait()
+                stderr=sub.PIPE)
 
         elif package_manager == RPM_FOLDER_NAME:
             ################################################################################
@@ -59,7 +59,7 @@ async def restore_backup_package_applications():
                     sub.run(
                         ["sudo", "rpm", "-ivh", "--replacepkgs", command],
                         stdout=sub.PIPE,
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
                     # Update notification
                     notification_message_current_backing_up(
