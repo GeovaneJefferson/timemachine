@@ -4,6 +4,7 @@ from get_backup_date import get_backup_date
 from get_backup_time import get_latest_backup_time
 from notification_massage import notification_message_current_backing_up
 from handle_spaces import handle_spaces
+from create_directory import create_directory
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -36,7 +37,7 @@ async def restore_backup_home():
                 sub.run(
                     ["mkdir", dst],
                     stdout=sub.PIPE,
-                    stderr=sub.PIPE).wait()
+                    stderr=sub.PIPE)
                 
             # Restore Home folders
             # Restore the latest backup

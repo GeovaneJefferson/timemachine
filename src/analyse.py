@@ -688,4 +688,4 @@ if __name__ == '__main__':
         sub.Popen(
             ['python3', SRC_BACKUP_CHECKER_PY], 
             stdout=sub.PIPE, 
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)

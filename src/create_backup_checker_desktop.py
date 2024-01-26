@@ -1,4 +1,5 @@
 from setup import *
+from create_directory import create_directory
 
 
 # Remember to change INSTALL too!!!
@@ -6,10 +7,8 @@ def create_backup_checker_desktop():
     # Create autostart folder if necessary
     if not os.path.exists(SRC_AUTOSTART_FOLDER_LOCATION):
         command = SRC_AUTOSTART_FOLDER_LOCATION
-        sub.run(
-            ["mkdir", command],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
+
+        create_directory(command)
 
     # Edit file startup with system
     with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:

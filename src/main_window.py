@@ -965,7 +965,7 @@ class OptionsWindow(QDialog):
             sub.Popen(
                 ['python3', SRC_BACKUP_CHECKER_PY],
                 stdout=sub.PIPE, 
-                stderr=sub.PIPE).wait()
+                stderr=sub.PIPE)
             
             print("Auto backup was successfully activated!")
 
