@@ -468,7 +468,7 @@ class WelcomeScreen(QWidget):
 			# Check if the file exists, and create it if necessary
 			create_file(dst)
 
-			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE).wait()
+			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
@@ -488,7 +488,7 @@ class WelcomeScreen(QWidget):
 			# Check if the file exists, and create it if necessary
 			create_file(dst)
 
-			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE).wait()
+			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
             
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
@@ -586,7 +586,7 @@ class WelcomeScreen(QWidget):
 		sub.Popen(
 			['python3', SRC_RESTORE_CMD_PY],
 			stdout=sub.PIPE,
-			stderr=sub.PIPE).wait()
+			stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')

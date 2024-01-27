@@ -712,7 +712,7 @@ class MainWindow(QMainWindow):
         sub.Popen(
             ['xdg-open', dst],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
 
         # Update DB
         MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
@@ -840,7 +840,7 @@ class PreviewWindow(QDialog):
             ["xdg-open",
             file_directory],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
         
         # Close external preview window
         self.remove_items()

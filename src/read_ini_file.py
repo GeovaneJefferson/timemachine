@@ -23,7 +23,7 @@ class UPDATEINIFILE:
                 # sub.run(
                 #     ['touch', LOG_LOCATION],
                 #     stdout=sub.PIPE,
-                #     stderr=sub.PIPE).wait()
+                #     stderr=sub.PIPE)
                 
         # Capture the current timestamp
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")

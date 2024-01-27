@@ -677,7 +677,7 @@ if __name__ == '__main__':
             sub.Popen(
                 ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
-                    stderr=sub.PIPE).wait()  
+                    stderr=sub.PIPE)  
 
     else:
         # Backing up to False

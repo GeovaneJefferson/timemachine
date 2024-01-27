@@ -89,10 +89,12 @@ def time_to_backup(current_time):
     backup_wallpaper()
     
     print("Calling analyses...")
+
     sub.Popen(
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
-        stderr=sub.PIPE).wait()
+        stderr=sub.PIPE)
+    
     exit()
 
 if __name__ == '__main__':
@@ -109,7 +111,7 @@ if __name__ == '__main__':
                 sub.Popen(
                     ['python3', SRC_BACKUP_NOW_PY], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
                 # Exit
                 exit()

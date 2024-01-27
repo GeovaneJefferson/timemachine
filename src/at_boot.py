@@ -15,7 +15,7 @@ def system_tray():
         sub.Popen(
             ['python3', SRC_SYSTEM_TRAY_PY],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
 
     if MAIN_INI_FILE.hd_name() is not None:
         if MAIN_INI_FILE.get_database_value(

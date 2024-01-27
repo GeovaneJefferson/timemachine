@@ -64,7 +64,7 @@ class APP:
         self.browse_time_machine_backups.triggered.connect(
             lambda: sub.Popen(
                 ['python3', SRC_ENTER_TIME_MACHINE_PY], 
-                    stdout=sub.PIPE, stderr=sub.PIPE).wait())
+                    stdout=sub.PIPE, stderr=sub.PIPE))
         
         # Open Time Machine button
         self.open_Time_machine = QAction(f"Open {APP_NAME}")
@@ -72,7 +72,7 @@ class APP:
         self.open_Time_machine.triggered.connect(
             lambda: sub.Popen(
                 ['python3', SRC_MAIN_WINDOW_PY], 
-                    stdout=sub.PIPE, stderr=sub.PIPE).wait())
+                    stdout=sub.PIPE, stderr=sub.PIPE))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
@@ -214,13 +214,13 @@ class APP:
          sub.Popen(
             ['python3', SRC_ANALYSE_PY],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
 
     def open_report(self):
         sub.Popen(
             ['xdg-open', MAIN_INI_FILE.include_to_backup()],
             stdout=sub.PIPE,
-            stderr=sub.PIPE).wait()
+            stderr=sub.PIPE)
 
     def change_color(self, color):
         try:

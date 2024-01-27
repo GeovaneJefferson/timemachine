@@ -307,7 +307,7 @@ class MainWindow(QMainWindow):
     #         sub.Popen(
     #             ['python3', SRC_BACKUP_CHECKER_PY],
     #             stdout=sub.PIPE, 
-    #             stderr=sub.PIPE).wait()
+    #             stderr=sub.PIPE)
             
     #         print("Auto backup was successfully activated!")
 
@@ -688,7 +688,7 @@ class SelectDisk(QDialog):
                 sub.Popen(
                     ['python3', SRC_BACKUP_NOW_PY], 
                         stdout=sub.PIPE, 
-                        stderr=sub.PIPE).wait()
+                        stderr=sub.PIPE)
 
     def on_device_clicked(self, device):
         # Enable use disk button
