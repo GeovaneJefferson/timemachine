@@ -102,5 +102,7 @@ To uninstall the application, use the following steps:
 ### To-Do List
 - [x] Backup files/folders, flatpaks, wallpaper
 - [x] System tray
+- [ ] Redo UI
+- [ ] Redo code (Cleaning)
 - [ ] Enter in Time Machine (To restore files/folder)
 - [ ] Migration Assistant (To restore and reinstall all files/folders, .debs, .rpm, wallpaper)
