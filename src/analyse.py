@@ -663,24 +663,28 @@ notification_message('Analysing backup...')
 
 # need_to_backup_analyse()
 
-# Need to backup
-if need_to_backup_analyse():
-    # Prepare backup
-    if MAIN_PREPARE.prepare_the_backup():
-        print('Calling backup now...')
+try:
+    # Need to backup
+    if need_to_backup_analyse():
+        # Prepare backup
+        if MAIN_PREPARE.prepare_the_backup():
+            print('Calling backup now...')
 
-        # Backup now
+            # Backup now
+            sub.Popen(
+                ['python3', SRC_BACKUP_NOW_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)  
+    else:
+        # Backing up to False
+        MAIN_INI_FILE.set_database_value(
+            'STATUS', 'backing_up_now', 'False')   
+
+        # Re.open backup checker
         sub.Popen(
-            ['python3', SRC_BACKUP_NOW_PY], 
-                stdout=sub.PIPE, 
-                stderr=sub.PIPE)  
-else:
-    # Backing up to False
-    MAIN_INI_FILE.set_database_value(
-        'STATUS', 'backing_up_now', 'False')   
-
-    # Re.open backup checker
-    sub.Popen(
-        ['python3', SRC_BACKUP_CHECKER_PY], 
-        stdout=sub.PIPE, 
-        stderr=sub.PIPE)
+            ['python3', SRC_BACKUP_CHECKER_PY], 
+            stdout=sub.PIPE, 
+            stderr=sub.PIPE)
+except Exception as e:
+    # Save error log
+    MAIN_INI_FILE.report_error(e)

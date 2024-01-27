@@ -219,19 +219,10 @@ class APP:
         self.backup_now_button.setEnabled(False)
 
         try:
-            x = sub.Popen(
+            sub.Popen(
                 ['python3', SRC_ANALYSE_PY],
                     stdout=sub.PIPE,
                     stderr=sub.PIPE)
-            
-            output, error = x.communicate()
-
-             # Check the return code
-            if x.returncode == 0:
-                print(f"Backup process completed successfully. Output: {output}")
-            else:
-                print(f"Error in backup process. Output: {output}, Error: {error}")
-       
         except Exception as e:
             # Save error log
             MAIN_INI_FILE.report_error(e)
