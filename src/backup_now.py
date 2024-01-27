@@ -172,8 +172,6 @@ class BACKUP:
 			make_first_backup()
 
 		else:
-			# Static time value, fx. 10-00
-			STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
 
 			# Read the include file and process each item's information
 			with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
@@ -219,7 +217,6 @@ class BACKUP:
 								# Add static time to it
 								destination_location = (destination_location + 
 									'/' + STATIC_TIME_FOLDER + destination)
-							else:
 								# TODO
 								# Get latest date and time frame inside
 								from get_backup_time import get_latest_backup_time
@@ -414,6 +411,10 @@ class BACKUP:
 MAIN = BACKUP()
 MAIN_INI_FILE = UPDATEINIFILE()
 
+# Static time value, fx. 10-00
+STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
+
+
 try:
 	######################################################################
 	# Update db
@@ -455,5 +456,4 @@ try:
 except Exception as e:
     # Save error log
     MAIN_INI_FILE.report_error(e)
-
 
