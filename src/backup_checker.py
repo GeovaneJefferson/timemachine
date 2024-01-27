@@ -97,66 +97,66 @@ def time_to_backup(current_time):
     
     exit()
 
-if __name__ == '__main__':
-    # Has connection to the backup device
-    if is_connected(MAIN_INI_FILE.hd_hd()):
-        # Create the main backup folder
-        if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
-            if MAIN_PREPARE.prepare_the_backup():
-                # Set backup now to True
-                MAIN_INI_FILE.set_database_value(
-                    'STATUS', 'backing_up_now', 'True') 
+# if __name__ == '__main__':
+# Has connection to the backup device
+if is_connected(MAIN_INI_FILE.hd_hd()):
+    # Create the main backup folder
+    if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+        if MAIN_PREPARE.prepare_the_backup():
+            # Set backup now to True
+            MAIN_INI_FILE.set_database_value(
+                'STATUS', 'backing_up_now', 'True') 
 
-                # Backup now
-                sub.Popen(
-                    ['python3', SRC_BACKUP_NOW_PY], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+            # Backup now
+            sub.Popen(
+                ['python3', SRC_BACKUP_NOW_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)
 
-                # Exit
-                exit()
+            # Exit
+            exit()
 
-    while True:
-        try:
-            # Not current backing up
-            if not MAIN_INI_FILE.current_backing_up():
-                print('Backup checker   : ON')
+while True:
+    try:
+        # Not current backing up
+        if not MAIN_INI_FILE.current_backing_up():
+            print('Backup checker   : ON')
 
-                # Turn on/off backup checker
-                if not MAIN_INI_FILE.automatically_backup():
-                    print("Automatically backup is OFF.")
-                    break
-                
-                # Has connection to the backup device
-                if is_connected(MAIN_INI_FILE.hd_hd()):
-                    print('Backup connection: ON')
+            # Turn on/off backup checker
+            if not MAIN_INI_FILE.automatically_backup():
+                print("Automatically backup is OFF.")
+                break
+            
+            # Has connection to the backup device
+            if is_connected(MAIN_INI_FILE.hd_hd()):
+                print('Backup connection: ON')
 
-                    # Check for a new backup
-                    # Get the current time
-                    current_time = str(MAIN_INI_FILE.current_time()) 
+                # Check for a new backup
+                # Get the current time
+                current_time = str(MAIN_INI_FILE.current_time()) 
 
-                    print('Current time:', current_time)
-                    print('Backup time:', MILITARY_TIME_OPTION)
-                    print()
+                print('Current time:', current_time)
+                print('Backup time:', MILITARY_TIME_OPTION)
+                print()
 
+                # Time to backup
+                if current_time in MILITARY_TIME_OPTION:
                     # Time to backup
-                    if current_time in MILITARY_TIME_OPTION:
-                        # Time to backup
-                        time_to_backup(current_time)
-                    
+                    time_to_backup(current_time)
+                
 
-                    # Check for new packages to backup
-                    check_for_new_packages()
-
-                else:
-                    print('Backup connection: OFF')
+                # Check for new packages to backup
+                check_for_new_packages()
 
             else:
-                print('Backup checker: PAUSED')
-            
-            time.sleep(5)
+                print('Backup connection: OFF')
 
-        except Exception as e:
-            # Save error log
-            # MAIN_INI_FILE.report_error(e)
-            pass
+        else:
+            print('Backup checker: PAUSED')
+        
+        time.sleep(5)
+
+    except Exception as e:
+        # Save error log
+        # MAIN_INI_FILE.report_error(e)
+        pass
