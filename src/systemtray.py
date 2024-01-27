@@ -211,7 +211,7 @@ class APP:
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
         
     def backup_now(self):
-         sub.Popen(
+        sub.Popen(
             ['python3', SRC_ANALYSE_PY],
             stdout=sub.PIPE,
             stderr=sub.PIPE)
