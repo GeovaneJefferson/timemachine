@@ -661,10 +661,6 @@ print('Analysing backup...')
 
 notification_message('Analysing backup...')
 
-# # Set backing up now to True
-# MAIN_INI_FILE.set_database_value(
-#     'STATUS', 'backing_up_now', 'True') 
-
 # need_to_backup_analyse()
 
 # Need to backup

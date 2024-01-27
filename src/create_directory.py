@@ -35,6 +35,3 @@ def create_file(location):
     else:
         print('File already exists.')
 
-
-if __name__ == '__main__':
-    pass
