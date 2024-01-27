@@ -449,7 +449,7 @@ time.sleep(60)
 # Re-open backup checker
 sub.Popen(
 	['python3', SRC_BACKUP_CHECKER_PY], 
-	stdout=sub.PIPE, 
-	stderr=sub.PIPE)
+		stdout=sub.PIPE, 
+		stderr=sub.PIPE)
 
 

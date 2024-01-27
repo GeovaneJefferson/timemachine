@@ -15,6 +15,13 @@ signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 DELAY_TO_UPDATE = 2000
 
 
+def backup_now():
+    sub.Popen(
+        ['python3', SRC_ANALYSE_PY],
+            stdout=sub.PIPE,
+            stderr=sub.PIPE)
+    
+
 class APP:
     def __init__(self):
         self.color = str()
@@ -54,7 +61,7 @@ class APP:
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
-        self.backup_now_button.triggered.connect(self.backup_now)
+        self.backup_now_button.triggered.connect(backup_now)
 
         # Browse Time Machine Backups button
         self.browse_time_machine_backups = QAction(
@@ -106,6 +113,7 @@ class APP:
     
     def should_be_running(self):
         print('System tray is running....')
+        
         # Check if ini file is locked or not 
         if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.exit()
@@ -209,12 +217,6 @@ class APP:
                 
             # Show latest backup label
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
-        
-    def backup_now(self):
-        sub.Popen(
-            ['python3', SRC_ANALYSE_PY],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
 
     def open_report(self):
         sub.Popen(

@@ -678,7 +678,6 @@ if need_to_backup_analyse():
             ['python3', SRC_BACKUP_NOW_PY], 
                 stdout=sub.PIPE, 
                 stderr=sub.PIPE)  
-
 else:
     # Backing up to False
     MAIN_INI_FILE.set_database_value(
