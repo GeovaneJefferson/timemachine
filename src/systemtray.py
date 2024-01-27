@@ -15,13 +15,6 @@ signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 DELAY_TO_UPDATE = 2000
 
 
-def backup_now():
-    sub.Popen(
-        ['python3', SRC_ANALYSE_PY],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
-    
-
 class APP:
     def __init__(self):
         self.color = str()
@@ -61,7 +54,7 @@ class APP:
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
-        self.backup_now_button.triggered.connect(backup_now)
+        self.backup_now_button.triggered.connect(self.backup_now)
 
         # Browse Time Machine Backups button
         self.browse_time_machine_backups = QAction(
@@ -212,11 +205,36 @@ class APP:
                 #     self.last_backup_information2.setText(next_backup_label())
                 
         else:
+            # Enable backup now action
+            self.backup_now_button.setEnabled(True)
+            
             self.last_backup_information.setText(
                     f'Latest Backup to "{MAIN_INI_FILE.hd_name()}:"')
                 
             # Show latest backup label
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
+    
+    def backup_now(self):
+        # Disable backup now action
+        self.backup_now_button.setEnabled(False)
+
+        try:
+            x = sub.Popen(
+                ['python3', SRC_ANALYSE_PY],
+                    stdout=sub.PIPE,
+                    stderr=sub.PIPE)
+            
+            output, error = x.communicate()
+
+             # Check the return code
+            if x.returncode == 0:
+                print(f"Backup process completed successfully. Output: {output}")
+            else:
+                print(f"Error in backup process. Output: {output}, Error: {error}")
+       
+        except Exception as e:
+            # Save error log
+            MAIN_INI_FILE.report_error(e)
 
     def open_report(self):
         sub.Popen(
@@ -266,6 +284,6 @@ class APP:
             return SRC_SYSTEM_BAR_WHITE_ICON
         
 
-if __name__ == '__main__':
-    MAIN_INI_FILE = UPDATEINIFILE()
-    main = APP()
+# if __name__ == '__main__':
+MAIN_INI_FILE = UPDATEINIFILE()
+main = APP()
