@@ -410,46 +410,46 @@ class BACKUP:
 			'STATUS', 'unfinished_backup', 'No')
 
 		
-if __name__ == "__main__":
-	MAIN = BACKUP()
-	MAIN_INI_FILE = UPDATEINIFILE()
-			
-	######################################################################
-	# Update db
-	######################################################################
-	MAIN_INI_FILE.set_database_value(
-		'STATUS', 'backing_up_now', 'True')
+# if __name__ == "__main__":
+MAIN = BACKUP()
+MAIN_INI_FILE = UPDATEINIFILE()
+		
+######################################################################
+# Update db
+######################################################################
+MAIN_INI_FILE.set_database_value(
+	'STATUS', 'backing_up_now', 'True')
 
-	# Set oldest backup date
-	if MAIN_INI_FILE.oldest_backup_date() is None:
-		# Oldest backup today
-		MAIN_INI_FILE.set_database_value(
-			'INFO',
-			'oldest_backup_date',
-			MAIN_INI_FILE.current_full_date_plus_time_str())
-
-	# Set latest backup date
+# Set oldest backup date
+if MAIN_INI_FILE.oldest_backup_date() is None:
+	# Oldest backup today
 	MAIN_INI_FILE.set_database_value(
 		'INFO',
-		'latest_backup_date',
+		'oldest_backup_date',
 		MAIN_INI_FILE.current_full_date_plus_time_str())
 
-	# Backup Home
-	MAIN.backup_home()
+# Set latest backup date
+MAIN_INI_FILE.set_database_value(
+	'INFO',
+	'latest_backup_date',
+	MAIN_INI_FILE.current_full_date_plus_time_str())
 
-	# backup hidden home
-	# MAIN.backup_hidden_home(get_user_de())
+# Backup Home
+MAIN.backup_home()
 
-	# End backup process
-	MAIN.end_backup()
+# backup hidden home
+# MAIN.backup_hidden_home(get_user_de())
 
-	# Wait few seconds
-	time.sleep(60)
+# End backup process
+MAIN.end_backup()
 
-	# Re-open backup checker
-	sub.Popen(
-		['python3', SRC_BACKUP_CHECKER_PY], 
-		stdout=sub.PIPE, 
-		stderr=sub.PIPE)
+# Wait few seconds
+time.sleep(60)
+
+# Re-open backup checker
+sub.Popen(
+	['python3', SRC_BACKUP_CHECKER_PY], 
+	stdout=sub.PIPE, 
+	stderr=sub.PIPE)
 
 
