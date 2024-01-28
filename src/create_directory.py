@@ -15,7 +15,7 @@ def create_directory(location):
     if not os.path.exists(directory):
         print(f"Directory '{directory}' does not exist. Creating...")
         try:
-            os.makedirs(directory)
+            os.makedirs(directory, exist_ok=True)
             print(f"Directory '{directory}' created successfully.")
         except Exception as e:
             print(f"Error creating directory: {e}")

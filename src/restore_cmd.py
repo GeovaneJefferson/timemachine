@@ -15,6 +15,9 @@ from notification_massage import notification_message_current_backing_up
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
+is_a_test = False
+
+
 # Define a function to convert the date string to a datetime object
 def convert_to_datetime(date_str):
     return datetime.strptime(date_str, '%y-%m-%d')
@@ -44,14 +47,15 @@ class RESTORE:
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             self.item_to_restore += 1
 
-        # Only one item inside restore list
-        if self.item_to_restore == 1:
-            # Show 99%
-            self.progress_increment = 99 / self.item_to_restore
+        if not is_a_test:
+            # Only one item inside restore list
+            if self.item_to_restore == 1:
+                # Show 99%
+                self.progress_increment = 99 / self.item_to_restore
 
-        else:
-            self.progress_increment = 100 / self.item_to_restore
-        
+            else:
+                self.progress_increment = 100 / self.item_to_restore
+
         # Start restoring
         asyncio.run(self.start_restoring())
         
@@ -115,9 +119,11 @@ class RESTORE:
         
         # Restore updates file to HOME
         asyncio.run(self.restore_backup_home_updates())
+        # self.restore_backup_home_updates()
             
     # For updated HOME files
-    async def restore_backup_home_updates(self):
+    # async def restore_backup_home_updates(self):
+    def restore_backup_home_updates(self):
         date_list = []
         added_list = []
         dst_loc = MAIN_INI_FILE.backup_dates_location()
@@ -156,6 +162,12 @@ class RESTORE:
 
                             # Restore lastest file update
                             print(f'Restoring {source} to: {destination_location}')
+                            
+                            # Log
+                            # with open('', 'a') as file:
+                            #     file.write(f'Restoring {source} to: {destination_location}\n')
+                            #     file.write('\n')
+
                             # shutil.copy(
                             #     source,
                             #     destination_location)
@@ -182,12 +194,13 @@ class RESTORE:
         exit()
 
     def update_progressbar_db(self):
-        new_value = self.progress_increment + \
-            int(MAIN_INI_FILE.get_database_value(
-                'RESTORE', 'restore_progress_bar').split('.')[0])
-        
-        MAIN_INI_FILE.set_database_value(
-            'RESTORE', 'restore_progress_bar', f'{str(new_value)}')
+        if not is_a_test:
+            new_value = self.progress_increment + \
+                int(MAIN_INI_FILE.get_database_value(
+                    'RESTORE', 'restore_progress_bar').split('.')[0])
+            
+            MAIN_INI_FILE.set_database_value(
+                'RESTORE', 'restore_progress_bar', f'{str(new_value)}')
 
 
 if __name__ == '__main__':

@@ -4,9 +4,12 @@ from get_folders_to_be_backup import get_folders
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
 from get_latest_backup_date import latest_backup_date
+from get_users_de import get_user_de
+from create_directory import create_directory
 
 # Handle signal
 import error_catcher
+
 signal.signal(signal.SIGINT, error_catcher.signal_exit)
 signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
@@ -170,9 +173,7 @@ class BACKUP:
 
 			# Make first backup 
 			make_first_backup()
-
 		else:
-
 			# Read the include file and process each item's information
 			with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
 				lines = f.readlines()
@@ -292,22 +293,34 @@ class BACKUP:
 				src = LOCAL_SHARE_LOCATION + folder
 				# dst = MAIN_INI_FILE.main_backup_folder() + '/.local/share/' + folder
 				
-				# Create current directory in backup device
-				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				# # Create current directory in backup device
+				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				
+				dst_moded = dst = os.path.dirname(dst)
 
-				if not os.path.exists(dst_moded):
-					os.makedirs(dst_moded, exist_ok=True)
+				# if not os.path.exists(dst_moded):
+				# 	os.makedirs(dst_moded, exist_ok=True)
+				
+				create_directory(dst_moded)
 
 				print(f'Backing up: {LOCAL_SHARE_LOCATION}{folder}')
 
 				notification_message(f'Backing up: .local/share/{folder}')
 				
-				sub.run(
-					['cp', '-rvf', src, dst],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-
+				# sub.run(
+				# 	['cp', '-rvf', src, dst],
+				# 	stdout=sub.PIPE,
+				# 	stderr=sub.PIPE)
+				
+				# Copy the entire directory tree from source to destination, overriding if it exists
+				shutil.copytree(src, dst, dirs_exist_ok=True)
+	
+				# # Copy files using shutil.copytree for directories or shutil.copy2 for files
+				# shutil.copytree(src, dst)  # For directories
+				# # or
+				# shutil.copy2(src, dst)  # For files
+	
 	def backup_hidden_config(self, user_de):
 		# Config
 		for folder in os.listdir(CONFIG_LOCATION):
@@ -331,22 +344,32 @@ class BACKUP:
 				src = CONFIG_LOCATION + folder
 				# dst = MAIN_INI_FILE.main_backup_folder() + '/.config/' + folder
 				
+				# DELETE
 				# Create current directory in backup device
-				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
 
-				if not os.path.exists(dst_moded):
-					os.makedirs(dst_moded, exist_ok=True)
+				# Create current directory in backup device
+				dst_moded = dst = os.path.dirname(dst)
 
+				# DELETE
+				# if not os.path.exists(dst_moded):
+				# 	os.makedirs(dst_moded, exist_ok=True)
+				
+				create_directory(dst_moded)
+				
 				print(f'Backing up: {CONFIG_LOCATION}{folder}')
 				
 				notification_message(f'Backing up: .config/{folder}')
 				
-				sub.run(
-					['cp', '-rvf', src, dst],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-				
+				# sub.run(
+				# 	['cp', '-rvf', src, dst],
+				# 	stdout=sub.PIPE,
+				# 	stderr=sub.PIPE)
+
+				# Copy the entire directory tree from source to destination, overriding if it exists
+				shutil.copytree(src, dst, dirs_exist_ok=True)
+	
 	def backup_hidden_kde_share(self):
 		try:
 			# .kde/share/
@@ -360,22 +383,29 @@ class BACKUP:
 				# Destination
 				dst = MAIN_INI_FILE.kde_share_config_main_folder() + '/' + folder
 
-				# Create current directory in backup device
-				dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				# # Create current directory in backup device
+				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
+				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
 				
-				if not os.path.exists(dst_moded):
-					os.makedirs(dst_moded, exist_ok=True)
+				dst_moded = dst = os.path.dirname(dst)
+				
+				# if not os.path.exists(dst_moded):
+				# 	os.makedirs(dst_moded, exist_ok=True)
+				
+				create_directory(dst_moded)
 
 				print(f'Backing up: {KDE_SHARE_LOCATION}{folder}')
 				
 				notification_message(f'Backing up: .kde/share/{folder}')
 				
-				sub.run(
-					['cp', '-rvf', src, dst],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-					
+				# sub.run(
+				# 	['cp', '-rvf', src, dst],
+				# 	stdout=sub.PIPE,
+				# 	stderr=sub.PIPE)
+		
+				# Copy the entire directory tree from source to destination, overriding if it exists
+				shutil.copytree(src, dst, dirs_exist_ok=True)
+				
 		except FileNotFoundError as e:
 			print(e)
 			pass
@@ -440,7 +470,7 @@ try:
 	MAIN.backup_home()
 
 	# backup hidden home
-	# MAIN.backup_hidden_home(get_user_de())
+	MAIN.backup_hidden_home(get_user_de())
 
 	# End backup process
 	MAIN.end_backup()
@@ -456,4 +486,3 @@ try:
 except Exception as e:
     # Save error log
     MAIN_INI_FILE.report_error(e)
-
