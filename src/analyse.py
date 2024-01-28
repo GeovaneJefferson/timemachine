@@ -6,7 +6,10 @@ from get_users_de import get_user_de
 from prepare_backup import PREPAREBACKUP
 from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
-
+from create_directory import create_directory
+from backup_flatpak import backup_flatpak
+from backup_pip_packages import backup_pip_packages
+from backup_wallpaper import backup_wallpaper
 
 MAIN_INI_FILE = UPDATEINIFILE()
 MAIN_PREPARE = PREPAREBACKUP()
@@ -623,20 +626,10 @@ def get_select_backup_home():
         pass
 
 def need_to_backup_analyse():
-    # Create main backup folder
-    if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
-        sub.run(
-            ['mkdir', MAIN_INI_FILE.main_backup_folder()], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
-    
-    # First backup to main backup folder
-    if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
-        # Get all backup dates
+    # Seach for new backups to be made
+    if os.path.exists(MAIN_INI_FILE.main_backup_folder()):        
         get_all_dates()
-
         get_select_backup_home() 
-        
         loop_through_home()
         
         # If number of item > 0
@@ -645,6 +638,9 @@ def need_to_backup_analyse():
 
             print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
             return False
+    else:
+        # Make first backup
+        create_directory(MAIN_INI_FILE.main_backup_folder())
 
     # Write to file
     write_to_file()
@@ -664,6 +660,15 @@ notification_message('Analysing backup...')
 # need_to_backup_analyse()
 
 try:
+    # # Backup flatpak
+    backup_flatpak()
+    
+    # Backup pip packages
+    backup_pip_packages()
+    
+    # Backup wallpaper
+    backup_wallpaper()
+    
     # Need to backup
     if need_to_backup_analyse():
         # Prepare backup

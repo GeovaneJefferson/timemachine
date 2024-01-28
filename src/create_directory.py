@@ -23,15 +23,14 @@ def create_directory(location):
 def create_file(location):
     # Check if the file already exists
     if not os.path.exists(location):
-        print('File does not exist. Creating...')
+        print(f'File "{location}" does not exist. Creating...')
         
         # Create the file
         try:
             with open(location, 'w'):
                 pass  # This creates an empty file
-            print('File created successfully.')
+            print(f'File "{location}" created successfully.')
         except Exception as e:
             print(f"Error creating file: {e}")
     else:
         print('File already exists.')
-

@@ -406,7 +406,7 @@ class MainWindow(QMainWindow):
             |
             QMessageBox.No)
 
-        if reset_confirmation == QMessageBox.Yes:
+        if reset_confirmation == QMessageBox.Yes:            
             # MAIN.latest_backup_label.setText("Latest Backup: None")
             # MAIN.oldest_backup_label.setText("Oldest Backup: None")
             
@@ -490,6 +490,7 @@ class MainWindow(QMainWindow):
 
         else:
             QMessageBox.Close
+
 
 class SelectDisk(QDialog):
     def __init__(self, parent=True):
@@ -667,28 +668,28 @@ class SelectDisk(QDialog):
         self.make_first_backup()
 
     def make_first_backup(self):
+        print('Making first backup...')
+
         # Base folder do no exists (TMB)
         if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
             # MAIN_PREPARING_DIALOG.show_preparing_dialog()
             
             # Create essential folders
-            create_base_folders()
+            # create_base_folders()
         
-            # Check backup device sizes for the backup
-            if MAIN_PREPARE.prepare_the_backup():
-                # Close preparing dialog
-                # MAIN_PREPARING_DIALOG.close()
+            # # Check backup device sizes for the backup
+            # if MAIN_PREPARE.prepare_the_backup():
+            #     # Close preparing dialog
+            #     # MAIN_PREPARING_DIALOG.close()
 
-                # Backing up to True
-                MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
+            #     # Backing up to True
+            #     MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
                 
-                print('Calling backup now...')
-
-                # Backup now
-                sub.Popen(
-                    ['python3', SRC_BACKUP_NOW_PY], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+            # Make first backup, if necessary
+            sub.Popen(
+                ['python3', SRC_ANALYSE_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)
 
     def on_device_clicked(self, device):
         # Enable use disk button
@@ -778,9 +779,9 @@ class OptionsWindow(QDialog):
         self.options_ui.allow_browser_in_time_machine.clicked.connect(
             self.on_allow_browser_in_time_machine_clicked)
     
-        # # Reset
-        # self.options_ui.reset_button.clicked.connect(
-        #     self.on_button_fix_clicked)
+        # Reset
+        self.options_ui.reset_button.clicked.connect(
+            self.on_button_fix_clicked)
 
     def get_folders(self):
         # start tab index from 0
@@ -879,6 +880,8 @@ class OptionsWindow(QDialog):
             QMessageBox.No)
 
         if reset_confirmation == QMessageBox.Yes:
+            print(f'Resetting all {APP_NAME} settings...')
+
             # MAIN.latest_backup_label.setText("Latest Backup: None")
             # MAIN.oldest_backup_label.setText("Oldest Backup: None")
             

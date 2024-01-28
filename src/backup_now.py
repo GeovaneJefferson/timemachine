@@ -7,6 +7,7 @@ from get_latest_backup_date import latest_backup_date
 from get_users_de import get_user_de
 from create_directory import create_directory
 
+
 # Handle signal
 import error_catcher
 
@@ -465,7 +466,7 @@ try:
 		'INFO',
 		'latest_backup_date',
 		MAIN_INI_FILE.current_full_date_plus_time_str())
-
+    
 	# Backup Home
 	MAIN.backup_home()
 

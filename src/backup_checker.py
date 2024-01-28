@@ -79,14 +79,14 @@ def time_to_backup(current_time):
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 
 
-    # Backup flatpak
-    backup_flatpak()
+    # # Backup flatpak
+    # backup_flatpak()
     
-    # Backup pip packages
-    backup_pip_packages()
+    # # Backup pip packages
+    # backup_pip_packages()
     
-    # Backup wallpaper
-    backup_wallpaper()
+    # # Backup wallpaper
+    # backup_wallpaper()
     
     print("Calling analyses...")
 

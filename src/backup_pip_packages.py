@@ -49,7 +49,3 @@ def backup_pip_packages():
 
     except:
         pass
-
-
-if __name__ == '__main__':
-    backup_pip_packages()

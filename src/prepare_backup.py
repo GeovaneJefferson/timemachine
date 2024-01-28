@@ -30,14 +30,16 @@ safe_added_space = 2147483648  # 2 GB
 
 
 def is_first_backup():
-    # First backup made by Time Machine
-    # Nothing inside MAIN backup folder
-    if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
-        return True
-    
-    else:
-        return False
-    
+    try:
+        # First backup made by Time Machine
+        # Nothing inside MAIN backup folder
+        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+            return True
+        else:
+            return False
+    except FileNotFoundError:
+            return True
+
 def has_enough_space(needeed_space):
     # if backup size if higher than free space inside backup device
     if needeed_space > get_external_device_free_size():
@@ -49,7 +51,6 @@ def has_enough_space(needeed_space):
 
         # Delete old backups
         delete_old_backups()
-
     else:
         # Enough space to continue
         print("Enough space to continue.")
