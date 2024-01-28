@@ -94,6 +94,27 @@ class Ui_Options(object):
         self.gridLayout_3.addWidget(self.scroll_area_folders, 1, 0, 1, 1)
 
         self.tabWidget.addTab(self.back_up_tab, "")
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.gridLayout = QGridLayout(self.tab)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label_8 = QLabel(self.tab)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setFont(font)
+
+        self.gridLayout.addWidget(self.label_8, 0, 0, 1, 1)
+
+        self.allow_browser_in_time_machine = QCheckBox(self.tab)
+        self.allow_browser_in_time_machine.setObjectName(u"allow_browser_in_time_machine")
+        self.allow_browser_in_time_machine.setEnabled(True)
+
+        self.gridLayout.addWidget(self.allow_browser_in_time_machine, 1, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
+
+        self.tabWidget.addTab(self.tab, "")
         self.others_tab = QWidget()
         self.others_tab.setObjectName(u"others_tab")
         self.verticalLayout_4 = QVBoxLayout(self.others_tab)
@@ -163,7 +184,7 @@ class Ui_Options(object):
 
         self.retranslateUi(Options)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(Options)
@@ -178,6 +199,9 @@ class Ui_Options(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Options", u"Settings", None))
         self.label_4.setText(QCoreApplication.translate("Options", u"Select Folders To Be Back Up:", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.back_up_tab), QCoreApplication.translate("Options", u"Back Up", None))
+        self.label_8.setText(QCoreApplication.translate("Options", u"Experimental Features:", None))
+        self.allow_browser_in_time_machine.setText(QCoreApplication.translate("Options", u"Browser In Time Machine (System Tray Option)", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Options", u"Experimental", None))
         self.label_5.setText(QCoreApplication.translate("Options", u"Flatpak Settings:", None))
         self.allow_flatpak_data_checkBox.setText(QCoreApplication.translate("Options", u"Back up flatpaks Data", None))
         self.label_6.setText(QCoreApplication.translate("Options", u"Reset:", None))

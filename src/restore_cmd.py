@@ -59,26 +59,31 @@ class RESTORE:
         # First change the wallpaper
         if MAIN_INI_FILE.get_database_value('RESTORE', 'system_settings'):
             self.update_progressbar_db()
+            print('Restoring wallpaper...')
             await restore_backup_wallpaper()
         
         # Restore home folder
         if MAIN_INI_FILE.get_database_value('RESTORE', 'files_and_folders'):
             self.update_progressbar_db()
+            print('Restoring HOME...')
             await restore_backup_home()
 
         # Restore applications packages
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_packages'):
             self.update_progressbar_db()
+            print('Restoring Applications Packages...')
             await restore_backup_package_applications()
        
         # Restore flatpaks
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_names'):
             self.update_progressbar_db()
+            print('Restoring Flatpak Applications...')
             await restore_backup_flatpaks_applications()
         
         # Restore flatpaks data
         if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
             self.update_progressbar_db()
+            print('Restoring Flatpak Data...')
             await restore_backup_flatpaks_data()
         
         # # Restore system settings
@@ -86,12 +91,15 @@ class RESTORE:
             # Only for kde
             if get_user_de() == 'kde':
                 self.update_progressbar_db()
+                print('Restoring KDE .local/share...')
                 await restore_kde_local_share()
 
                 self.update_progressbar_db()
+                print('Restoring KDE .config...')
                 await restore_kde_config()
 
                 self.update_progressbar_db()
+                print('Restoring KDE .share/config...')
                 await restore_kde_share_config()
                 
                 # # Restart KDE session
@@ -147,9 +155,10 @@ class RESTORE:
                             # print('Destination:', os.path.join(destination_location, files[i]))
 
                             # Restore lastest file update
-                            shutil.copy(
-                                source,
-                                destination_location)
+                            print(f'Restoring {source} to: {destination_location}')
+                            # shutil.copy(
+                            #     source,
+                            #     destination_location)
 
                             # Add to 'Added list'
                             added_list.append(files[i])

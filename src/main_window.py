@@ -737,18 +737,24 @@ class OptionsWindow(QDialog):
         self.options_ui.version_label.setText(APP_VERSION)
 
 
+        # Automatically backup
         if MAIN_INI_FILE.automatically_backup():
             self.options_ui.automatically_backup_checkbox.setChecked(True)
-        
         else:
             self.options_ui.automatically_backup_checkbox.setChecked(False)
 
+        # System tray
         if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.options_ui.show_in_system_tray_checkbox.setChecked(True)
-        
         else:
             self.options_ui.show_in_system_tray_checkbox.setChecked(False)
-    
+        
+        # Experimental features
+        if MAIN_INI_FILE.get_database_value('INFO', 'allow_browser_in_time_machine'):
+            self.options_ui.allow_browser_in_time_machine.setChecked(True)
+        else:
+            self.options_ui.allow_browser_in_time_machine.setChecked(False)
+
         ######################################################################
         # Connection
         ######################################################################
@@ -768,6 +774,10 @@ class OptionsWindow(QDialog):
         self.options_ui.show_in_system_tray_checkbox.clicked.connect(
             self.on_system_tray_checkbox_clicked)
         
+        # Experimental features
+        self.options_ui.allow_browser_in_time_machine.clicked.connect(
+            self.on_allow_browser_in_time_machine_clicked)
+    
         # # Reset
         # self.options_ui.reset_button.clicked.connect(
         #     self.on_button_fix_clicked)
@@ -993,6 +1003,17 @@ class OptionsWindow(QDialog):
                 'SYSTEMTRAY', 'system_tray', 'False')
 
             print("System tray was successfully disabled!")
+    
+    def on_allow_browser_in_time_machine_clicked(self):
+        if self.options_ui.allow_browser_in_time_machine.isChecked():
+            MAIN_INI_FILE.set_database_value(
+                'INFO', 'allow_browser_in_time_machine', 'True')
+            print("Showing Browser In Time Machine")
+
+        else:
+            MAIN_INI_FILE.set_database_value(
+                'INFO', 'allow_browser_in_time_machine', 'False')
+            print("Hiding Browser In Time Machine")
     
                   
 class PreparingDialog(QDialog):

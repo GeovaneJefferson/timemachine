@@ -82,7 +82,7 @@ class APP:
         self.menu.addSeparator()
 
         self.menu.addAction(self.backup_now_button)
-        # self.menu.addAction(self.browse_time_machine_backups)
+        self.menu.addAction(self.browse_time_machine_backups)
         self.menu.addSeparator()
         
         self.menu.addAction(self.open_Time_machine)
@@ -135,6 +135,14 @@ class APP:
             
             # Browser Time Machine button to False 
             self.browse_time_machine_backups.setEnabled(False)
+
+        # Experimental features
+        if MAIN_INI_FILE.get_database_value('INFO', 'allow_browser_in_time_machine'):
+            # Show this feature
+            self.browse_time_machine_backups.setVisible(True)
+        else:
+            # Hide this feature
+            self.browse_time_machine_backups.setVisible(False)
 
     def status_on(self):
         # Is not restoring
@@ -228,10 +236,11 @@ class APP:
             MAIN_INI_FILE.report_error(e)
 
     def open_report(self):
-        sub.Popen(
-            ['xdg-open', MAIN_INI_FILE.include_to_backup()],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
+        report_file_txt = MAIN_INI_FILE.include_to_backup()
+
+        with sub.Popen(['xdg-open', report_file_txt], stdout=sub.PIPE, stderr=sub.PIPE) as process:
+            # You can add further handling of process output if needed
+            stdout, stderr = process.communicate()
 
     def change_color(self, color):
         try:
@@ -275,6 +284,5 @@ class APP:
             return SRC_SYSTEM_BAR_WHITE_ICON
         
 
-# if __name__ == '__main__':
 MAIN_INI_FILE = UPDATEINIFILE()
 main = APP()

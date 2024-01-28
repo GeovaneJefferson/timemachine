@@ -91,7 +91,6 @@ class WelcomeScreen(QWidget):
 
 		# Connection
 		self.ui.button_restore_page4.clicked.connect(self.on_restore_button_clicked_page4)
-		self.ui.checkbox_automatically_reboot_page4.clicked.connect(self.on_automatically_reboot_clicked)
 
 		#######################################################################
 		# Page 5
@@ -585,8 +584,8 @@ class WelcomeScreen(QWidget):
 		# Call restore class
 		sub.Popen(
 			['python3', SRC_RESTORE_CMD_PY],
-			stdout=sub.PIPE,
-			stderr=sub.PIPE)
+				stdout=sub.PIPE,
+				stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
@@ -598,14 +597,6 @@ class WelcomeScreen(QWidget):
 	def on_back_button_clicked_page4(self):
 		# Animation
 		self.stacked_widget_transition(self.ui.page_3, 'left')
-
-	def on_automatically_reboot_clicked(self):
-		# Automatically backup
-		if self.ui.checkbox_automatically_reboot_page4.isChecked():
-			reboot_after_restore = True
-		
-		else:
-			reboot_after_restore = False
 
 	def stacked_widget_transition(self, page, direction):
 		width = self.ui.stackedWidget.width()
@@ -648,14 +639,14 @@ class WelcomeScreen(QWidget):
 			self.ui.stackedWidget.setCurrentWidget(self.ui.page_5)
 
 			# Automatically reboot
-			if reboot_after_restore:
+			if self.ui.checkbox_automatically_reboot_page4.isChecked():
 				# Reboot system
 				print("Rebooting now...")
 
 				sub.run(
 					["sudo", "reboot"],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
+						stdout=sub.PIPE,
+						stderr=sub.PIPE)
 			
 			else:
 				print("All done.")
