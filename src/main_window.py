@@ -984,7 +984,8 @@ class OptionsWindow(QDialog):
 
         else:
             # Remove autostart.desktop
-            sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
+            # sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
+            os.remove(DST_AUTOSTART_LOCATION)
 
             MAIN_INI_FILE.set_database_value(
                 'STATUS', 'automatically_backup', 'False')
