@@ -128,7 +128,6 @@ def time_to_backup(current_time):
 # Has connection to the backup device
 if is_connected(MAIN_INI_FILE.hd_hd()):
     # Create the main backup folder
-    # if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
     if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
         if MAIN_PREPARE.prepare_the_backup():
             # Set backup now to True
@@ -148,12 +147,13 @@ while True:
     try:
         # Not current backing up
         if not MAIN_INI_FILE.current_backing_up():
-            print('Backup checker   : ON')
 
             # Turn on/off backup checker
             if not MAIN_INI_FILE.automatically_backup():
                 print("Automatically backup is OFF.")
                 break
+            
+            print('Backup checker   : ON')
             
             # Has connection to the backup device
             if is_connected(MAIN_INI_FILE.hd_hd()):
