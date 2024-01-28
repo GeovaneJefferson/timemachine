@@ -164,8 +164,12 @@ def make_first_backup():
 class BACKUP:
 	# Backup USER HOME 
 	def backup_home(self):
+		print('Backing up HOME...')
+
 		# Target location is empty
-		if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+		if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
+			print('Making first backup...')
+
 			# Save time informations
 			MAIN_INI_FILE.set_database_value(
 				'INFO',
@@ -174,6 +178,7 @@ class BACKUP:
 
 			# Make first backup 
 			make_first_backup()
+			
 		else:
 			# Read the include file and process each item's information
 			with open(MAIN_INI_FILE.include_to_backup(), 'r') as f:
