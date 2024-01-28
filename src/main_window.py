@@ -665,7 +665,7 @@ class SelectDisk(QDialog):
         MAIN.ui.select_disk_button.hide()
 
         # Make the first backup
-        self.make_first_backup()
+        # self.make_first_backup()
 
     def make_first_backup(self):
         print('Making first backup...')
