@@ -11,7 +11,8 @@ def progress_bar_status():
         if progress_value is not None:
             return f'{progress_value:.1f}% done.'
         else:
-            return 'None'
+            return None
     except Exception as e:
-        # Save error log
-        MAIN_INI_FILE.report_error(e)
+        return None
+        # # Save error log
+        # MAIN_INI_FILE.report_error(e)

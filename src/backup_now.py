@@ -75,18 +75,7 @@ list_include_kde = [
 	'khotkeysrc'
 	]
 
-def error_handler(e):
-	# Not a broken pipe
-	MAIN_INI_FILE.report_error(e)
 
-	# Set backup now to False
-	MAIN_INI_FILE.set_database_value(
-		'STATUS', 'backing_up_now', 'False')
-	
-	# Unfinished to Yes 
-	MAIN_INI_FILE.set_database_value(
-		'STATUS', 'unfinished_backup', 'Yes')
-	
 # HOME
 def count_files():
 	file_count = 0
@@ -153,8 +142,16 @@ def make_first_backup():
 						'INFO', 'current_backing_up', source_path)
 				except IOError as e: 
 					if e.errno != errno.EPIPE: 
-						# Not a broken pipe
-						error_handler(e)
+						MAIN_INI_FILE.report_error(e)
+
+						# Set backup now to False
+						MAIN_INI_FILE.set_database_value(
+							'STATUS', 'backing_up_now', 'False')
+						
+						# Unfinished to Yes 
+						MAIN_INI_FILE.set_database_value(
+							'STATUS', 'unfinished_backup', 'Yes')
+					
 
 	# Set progress bar value to None
 	MAIN_INI_FILE.set_database_value(
