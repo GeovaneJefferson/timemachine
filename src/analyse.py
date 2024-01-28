@@ -4,6 +4,7 @@ from handle_spaces import handle_spaces
 from get_sizes import number_of_item_to_backup, get_item_size
 from get_users_de import get_user_de
 from prepare_backup import PREPAREBACKUP
+from prepare_backup import create_base_folders
 from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
 from create_directory import create_directory
@@ -98,6 +99,7 @@ all_dates_list = []
 
 # List of all times
 all_times_list = []
+
 
 # Define a function to convert the date string to a datetime object
 def convert_to_datetime(date_str):
@@ -626,7 +628,7 @@ def get_select_backup_home():
         pass
 
 def need_to_backup_analyse():
-    # Seach for new backups to be made
+    # Not the first backup with Time Machine
     if os.path.exists(MAIN_INI_FILE.main_backup_folder()):        
         get_all_dates()
         get_select_backup_home() 
@@ -638,20 +640,22 @@ def need_to_backup_analyse():
 
             print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
             return False
+        else:
+            # Write to file
+            write_to_file()
+
+            # Needs to backup
+            print(GREEN + 'ANALYSE: Need to backup.' + RESET)
+            print('Calling backup now...')
+            return True 
+    
     else:
         # Make first backup
-        create_directory(MAIN_INI_FILE.main_backup_folder())
+        print(GREEN + 'ANALYSE: Making first backup.' + RESET)
+        print('Calling backup now...')
+        return True
 
-    # Write to file
-    write_to_file()
 
-    # Needs to backup
-    print(GREEN + 'ANALYSE: Need to backup.' + RESET)
-    print('Calling backup now...')
-    return True 
-    
-
-# if __name__ == '__main__':
 # Update notification
 print('Analysing backup...')
 
@@ -660,13 +664,16 @@ notification_message('Analysing backup...')
 # need_to_backup_analyse()
 
 try:
-    # # Backup flatpak
+    # Backup flatpak
+    print("Backing up: flatpak applications")
     backup_flatpak()
     
     # Backup pip packages
+    print("Backing up: pip packages")
     backup_pip_packages()
     
     # Backup wallpaper
+    print("Backing up: Wallpaper")
     backup_wallpaper()
     
     # Need to backup
@@ -681,6 +688,8 @@ try:
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)  
     else:
+        print('No need to back up.')
+
         # Backing up to False
         MAIN_INI_FILE.set_database_value(
             'STATUS', 'backing_up_now', 'False')   

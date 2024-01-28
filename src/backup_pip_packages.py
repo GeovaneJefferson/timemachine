@@ -7,8 +7,6 @@ from create_directory import create_directory, create_file
 MAIN_INI_FILE = UPDATEINIFILE()
 
 def backup_pip_packages():
-    # Check for pip packages file
-    
     ################################################################################
     # Create pip text file
     ################################################################################
@@ -47,5 +45,6 @@ def backup_pip_packages():
 
                 count += 1 
 
-    except:
-        pass
+    except Exception as e:
+        # Save error log
+        MAIN_INI_FILE.report_error(e)

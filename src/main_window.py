@@ -21,8 +21,6 @@ from update import backup_db_file
 from save_info import save_info
 from next_backup_label import next_backup_label
 from create_backup_checker_desktop import create_backup_checker_desktop
-from notification_massage import notification_message
-from prepare_backup import create_base_folders
 from prepare_backup import PREPAREBACKUP
 
 

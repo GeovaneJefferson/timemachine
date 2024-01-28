@@ -33,12 +33,12 @@ def is_first_backup():
     try:
         # First backup made by Time Machine
         # Nothing inside MAIN backup folder
-        if not any(os.scandir(MAIN_INI_FILE.main_backup_folder())):
+        if os.path.exists(MAIN_INI_FILE.main_backup_folder()):        
             return True
         else:
             return False
     except FileNotFoundError:
-            return True
+        return True
 
 def has_enough_space(needeed_space):
     # if backup size if higher than free space inside backup device
@@ -70,11 +70,6 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
 
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-
         ################################################################################
         # Create backup folder
         ################################################################################
@@ -83,11 +78,6 @@ def create_base_folders():
 
             # Check if the directory exists, and create it if necessary
             create_directory(command)
-
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
 
         ###############################################################################
         # Create MAIN backup folder
@@ -99,11 +89,6 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
 
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-        
         ###############################################################################
         # Create include txt file
         ################################################################################
@@ -124,11 +109,6 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
             
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-
         ################################################################################
         # Create flatpak folder
         ################################################################################
@@ -138,11 +118,6 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
             
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-        
         ################################################################################
         # Create pip text file
         ################################################################################
@@ -152,11 +127,6 @@ def create_base_folders():
             create_directory(command)
             # Check if the file exists, and create it if necessary
             create_file(command)
-            
-            # sub.run(
-            #     ["touch", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
             
         ################################################################################
         # Create flatpak text file
@@ -168,11 +138,6 @@ def create_base_folders():
             # Check if the file exists, and create it if necessary
             create_file(command)
 
-            # sub.run(
-            #     ["touch", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-
         ################################################################################
         # Create Flatpak DATA folder
         ################################################################################
@@ -183,22 +148,12 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
 
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-
         # Create inside external "Local" Folder
         if not os.path.exists(str(MAIN_INI_FILE.flatpak_local_folder())):
             command = f"{str(MAIN_INI_FILE.flatpak_local_folder())}"
 
             # Check if the directory exists, and create it if necessary
             create_directory(command)
-
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
 
         ################################################################################
         # Create wallpaper folder
@@ -208,11 +163,6 @@ def create_base_folders():
 
             # Check if the directory exists, and create it if necessary
             create_directory(command)
-
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
 
         ################################################################################
         # Package manager
@@ -225,22 +175,12 @@ def create_base_folders():
             # Check if the directory exists, and create it if necessary
             create_directory(command)
 
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
-
         # Create Deb folder (Folder to manual place deb apps)
         if not os.path.exists(str(MAIN_INI_FILE.deb_main_folder())):
             command = f"{str(MAIN_INI_FILE.deb_main_folder())}"
 
             # Check if the directory exists, and create it if necessary
             create_directory(command)
-
-            # sub.run(
-            #     ["mkdir", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
 
         ################################################################################
         # GNOME
@@ -379,11 +319,6 @@ def create_base_folders():
             create_directory(command)
             # Check if the file exists, and create it if necessary
             create_file(command)
-
-            # sub.run(
-            #     ["touch", command], 
-            #     stdout=sub.PIPE, 
-            #     stderr=sub.PIPE)
 
     except FileNotFoundError as e:
         error_catcher.signal_exit.error_trying_to_backup(e)
@@ -540,6 +475,7 @@ class PREPAREBACKUP:
                 print('Prepare backup: False')
                 return False
 
-if __name__ == '__main__':
-    MAIN_PREPARE = PREPAREBACKUP()
-    MAIN_PREPARE.prepare_the_backup()
+
+# if __name__ == '__main__':
+MAIN_PREPARE = PREPAREBACKUP()
+MAIN_PREPARE.prepare_the_backup()

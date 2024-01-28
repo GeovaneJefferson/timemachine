@@ -71,8 +71,6 @@ def get_wallpaper_full_location():
                     return line
 
 def backup_wallpaper():
-    print("Backing up: Wallpaper")
-
     # GNOME/KDE
     notification_message("Backing up: Wallpaper")
 
