@@ -855,7 +855,7 @@ if __name__ == "__main__":
     screen_height = size.height()  # Get the screen height
 
     MAIN = MainWindow()
-    MAIN.setWindowTitle("Enter In Time Machine")
+    MAIN.setWindowTitle("Browser In Time Machine")
 
     # Get all backup folders
     get_all_backup_folders()

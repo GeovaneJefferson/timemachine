@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
-        self.frame.setFrameShape(QFrame.WinPanel)
+        self.frame.setFrameShape(QFrame.NoFrame)
         self.frame.setFrameShadow(QFrame.Sunken)
         self.horizontalLayout_2 = QHBoxLayout(self.frame)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -79,11 +79,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame)
 
+        self.line = QFrame(self.centralwidget)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout.addWidget(self.line)
+
         self.backup_device_informations = QFrame(self.centralwidget)
         self.backup_device_informations.setObjectName(u"backup_device_informations")
         self.backup_device_informations.setMinimumSize(QSize(600, 120))
         self.backup_device_informations.setMaximumSize(QSize(600, 120))
-        self.backup_device_informations.setFrameShape(QFrame.StyledPanel)
+        self.backup_device_informations.setFrameShape(QFrame.NoFrame)
         self.backup_device_informations.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_6 = QHBoxLayout(self.backup_device_informations)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
