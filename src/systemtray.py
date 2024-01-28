@@ -49,7 +49,7 @@ class APP:
         self.last_backup_information2.setEnabled(False)
         
         # Report button
-        self.report_button = QAction("See Report")
+        self.report_button = QAction("See Latest Backup Report")
         self.report_button.triggered.connect(self.open_report)
 
         # Backup now button
