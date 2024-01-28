@@ -79,15 +79,6 @@ def time_to_backup(current_time):
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 
 
-    # # Backup flatpak
-    # backup_flatpak()
-    
-    # # Backup pip packages
-    # backup_pip_packages()
-    
-    # # Backup wallpaper
-    # backup_wallpaper()
-    
     print("Calling analyses...")
 
     try:
@@ -103,7 +94,6 @@ def time_to_backup(current_time):
             print(f"Backup process completed successfully. Output: {output}")
         else:
             print(f"Error in backup process. Output: {output}, Error: {error}")
-    
     except Exception as e:
         # Save error log
         MAIN_INI_FILE.report_error(e)

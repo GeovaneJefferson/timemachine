@@ -663,31 +663,34 @@ class SelectDisk(QDialog):
         MAIN.ui.select_disk_button.hide()
 
         # Make the first backup
-        # self.make_first_backup()
+        self.make_first_backup()
 
     def make_first_backup(self):
-        print('Making first backup...')
-
         # Base folder do no exists (TMB)
         if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
-            # MAIN_PREPARING_DIALOG.show_preparing_dialog()
-            
-            # Create essential folders
-            # create_base_folders()
-        
-            # # Check backup device sizes for the backup
-            # if MAIN_PREPARE.prepare_the_backup():
-            #     # Close preparing dialog
-            #     # MAIN_PREPARING_DIALOG.close()
+            # Show preparing dialog
+            MAIN_PREPARING_DIALOG.show_preparing_dialog()
+            # Prepare backup disk
+            MAIN_PREPARE.prepare_the_backup()
+            # Close preparing dialog
+            MAIN_PREPARING_DIALOG.close()
 
-            #     # Backing up to True
-            #     MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'True') 
-                
-            # Make first backup, if necessary
-            sub.Popen(
-                ['python3', SRC_ANALYSE_PY], 
-                    stdout=sub.PIPE, 
-                    stderr=sub.PIPE)
+            creation_confirmation = QMessageBox.question(
+                self,
+                'Create First Backup',
+                'Do you want to create your first backup now?',
+                QMessageBox.Yes
+                |
+                QMessageBox.No)
+
+            if creation_confirmation == QMessageBox.Yes:
+                # Go create the first backup
+                sub.Popen(
+                    ['python3', SRC_ANALYSE_PY], 
+                        stdout=sub.PIPE, 
+                        stderr=sub.PIPE)
+            else:
+                QMessageBox.Close
 
     def on_device_clicked(self, device):
         # Enable use disk button

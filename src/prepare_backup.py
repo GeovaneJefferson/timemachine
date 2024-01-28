@@ -476,6 +476,6 @@ class PREPAREBACKUP:
                 return False
 
 
-# if __name__ == '__main__':
-MAIN_PREPARE = PREPAREBACKUP()
-MAIN_PREPARE.prepare_the_backup()
+if __name__ == '__main__':
+    MAIN_PREPARE = PREPAREBACKUP()
+    MAIN_PREPARE.prepare_the_backup()
