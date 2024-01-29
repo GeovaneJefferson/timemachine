@@ -7,7 +7,7 @@ from prepare_backup import PREPAREBACKUP
 from prepare_backup import create_base_folders
 from notification_massage import notification_message
 from read_ini_file import UPDATEINIFILE
-from create_directory import create_directory
+# from create_directory import create_directory
 from backup_flatpak import backup_flatpak
 from backup_pip_packages import backup_pip_packages
 from backup_wallpaper import backup_wallpaper

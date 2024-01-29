@@ -3,7 +3,7 @@ from read_ini_file import UPDATEINIFILE
 from get_folders_to_be_backup import get_folders
 from notification_massage import notification_message
 from handle_spaces import handle_spaces
-from get_latest_backup_date import latest_backup_date
+# from get_latest_backup_date import latest_backup_date
 from get_users_de import get_user_de
 from create_directory import create_directory
 
@@ -200,66 +200,58 @@ class BACKUP:
 
 							# Remove invalid keys
 							destination_location = destination_location.replace('../','')
-						
+
 						##########################################################
 						# LATEST DATE/TIME
 						##########################################################
 						elif status == 'UPDATED':
-							# No unfinished backtup
-							if not MAIN_INI_FILE.get_database_value(
-				           		'STATUS', 'unfinished_backup'):
-                
-								# Sent to a new date/time backup folder
-								destination_location = (
-									f'{MAIN_INI_FILE.time_folder_format()}{destination}')
-								
-								# Static time folder 
-								# So it won't update if backup passes more than one minute
-								destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
-								destination_location = '/'.join(destination_location)
+							# edit destination location, so file can be send to a date/time folder
+							destination_location = (
+								f'{MAIN_INI_FILE.time_folder_format()}{destination}')
 
-								# Add static time to it
-								destination_location = (destination_location + 
-									'/' + STATIC_TIME_FOLDER + destination)
-								# TODO
-								# Get latest date and time frame inside
-								from get_backup_time import get_latest_backup_time
-								destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
-								destination_location = '/'.join(destination_location)
-								destination_location = destination_location + '/' + get_latest_backup_time() + '/' + destination
+							# 'Stop' that send dir time, so it won't create a new dir as time passes
+							# destination_location# = os.path.dirname(MAIN_INI_FILE.time_folder_format())
+
+
+
+							# # No unfinished backtup
+							# if not MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
+							#
+							# 
+							#
+							# 	# Add static time to it
+							# 	destination_location = (destination_location + 
+							# 		'/' + STATIC_TIME_FOLDER + destination)
+							# 	# TODO
+							# 	# Get latest date and time frame inside
+							# 	from get_backup_time import get_latest_backup_time
+							# 	destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
+							# 	destination_location = '/'.join(destination_location)
+							# 	destination_location = destination_location + '/' + get_latest_backup_time() + '/' + destination
+						
+						# Create necessary dir
+						create_directory(destination_location)
 
 						# Back up 
 						print(f"Backing up: {location}")
 						print(f"To: {destination_location}")
+						print(f"Type: {status}")
 						print()
 
 						# is a dir
 						if os.path.isdir(location):
-							# Dir has files inside
-							# if any(os.scandir(location)):
-							# Create proper for it
-							os.makedirs(
-							os.path.dirname(
-							# os.path.join(destination_location, filename)), exist_ok=True)
-							destination_location), exist_ok=True)
-						
-							# shutil.copy(os.path.join(location, filename), destination_location)
+							# backup dir
 							shutil.copytree(
 								location, 
 								destination_location, dirs_exist_ok=True)
-							
 						else:
-							os.makedirs(
-							os.path.dirname(
-							# os.path.join(destination_location, filename)), exist_ok=True)
-							destination_location), exist_ok=True)
-						
+							# Backup file
 							shutil.copy(
 								location, 
 								destination_location)
-
 					except Exception as e:
 						print(f"Error while backing up {location}: {e}")
+						MAIN_INI_FILE.report_error(e)
 
 	# HIDDEN FILES/FOLDERS
 	def backup_hidden_home(self, user_de):
@@ -443,6 +435,7 @@ class BACKUP:
 # if __name__ == "__main__":
 MAIN = BACKUP()
 MAIN_INI_FILE = UPDATEINIFILE()
+
 
 # Static time value, fx. 10-00
 STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
