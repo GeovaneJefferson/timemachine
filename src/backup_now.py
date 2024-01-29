@@ -77,11 +77,10 @@ list_include_kde = [
 
 
 # HOME
-def count_files():
+def total_files_to_backup():
 	file_count = 0
 	subdirectories = get_folders()
 
-	print('Counting total files...')
 	for i in subdirectories:
 		source_folder = os.path.join(HOME_USER, i)
 
@@ -100,11 +99,8 @@ def make_first_backup():
 	target_folder = MAIN_INI_FILE.main_backup_folder() + '/'
 	# target_folder = '/media/macbook/Backup_Drive/TMB/test'
 
-	# Number of total files to back up
-	total_files = count_files()
-	
-	# Copied file value
-	copied_files = 0
+	# Total files to be backup
+	count_total_file = total_files_to_backup()
 
 	# Loop through selected HOME folders to back up
 	for i in subdirectories:
@@ -119,23 +115,26 @@ def make_first_backup():
 				
 				try:
 					# Create dst folder with relative name is necessary
-					os.makedirs(os.path.dirname(target_path), exist_ok=True)
+					create_directory(os.path.dirname(target_path))
+					
+					# DELETE
+					# os.makedirs(os.path.dirname(target_path), exist_ok=True)
 
 					# Back up 
 					shutil.copy(source_path, target_path)
 					print(f"Backed up: {source_path}")
 					
-					# Add 1 to copied file value
-					copied_files += 1
+					# PROGRESS BAR
+					progress_bar(count_total_file)
 
-					# Caculate the progress bar
-					progress = int(copied_files / total_files * 100)
-					print(progress)
-					print('Copied file:', copied_files, '/', total_files)
+					# # Caculate the progress bar
+					# progress = int(copied_files / total_files * 100)
+					# print('Copied file:', copied_files, '/', total_files)
 					
-					# Save current progress value to DB
-					MAIN_INI_FILE.set_database_value(
-						'STATUS', 'progress_bar', str(progress))
+					# # Save current progress value to DB
+					# MAIN_INI_FILE.set_database_value(
+					# 	'STATUS', 'progress_bar', str(progress))
+					# # PROGRESS BAR
 
 					# Save current backing up
 					MAIN_INI_FILE.set_database_value(
@@ -157,11 +156,26 @@ def make_first_backup():
 	MAIN_INI_FILE.set_database_value(
 			'STATUS', 'progress_bar', 'None')
 
+def progress_bar(total_files):
+	try:
+		copied_files = int()
+		copied_files += 1
+		progress = int(copied_files / total_files * 100)
+		
+		# Save current progress value to DB
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'progress_bar', str(progress))
+	except Exception as e:
+		MAIN_INI_FILE.report_error(e)
+
 
 class BACKUP:
 	# Backup USER HOME 
 	def backup_home(self):
 		print('Backing up HOME...')
+
+		# Total files to be backup
+		count_total_file = total_files_to_backup()
 
 		# Target location is empty
 		if not os.path.exists(MAIN_INI_FILE.main_backup_folder()):
@@ -229,6 +243,9 @@ class BACKUP:
 							# 	destination_location = '/'.join(destination_location)
 							# 	destination_location = destination_location + '/' + get_latest_backup_time() + '/' + destination
 						
+						# PROGRESS BAR
+						progress_bar(count_total_file)
+
 						# Create necessary dir
 						create_directory(destination_location)
 
@@ -294,6 +311,7 @@ class BACKUP:
 				
 				dst_moded = dst = os.path.dirname(dst)
 
+				# DELETE
 				# if not os.path.exists(dst_moded):
 				# 	os.makedirs(dst_moded, exist_ok=True)
 				
@@ -384,6 +402,7 @@ class BACKUP:
 				
 				dst_moded = dst = os.path.dirname(dst)
 				
+				# DELETE
 				# if not os.path.exists(dst_moded):
 				# 	os.makedirs(dst_moded, exist_ok=True)
 				

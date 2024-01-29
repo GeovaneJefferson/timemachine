@@ -426,9 +426,12 @@ def search_in_dir(
                             file_full_home_location,
                             dst_date_time_path):
                             
+                            # # Get file dir location
+                            # extracted_file_dir = str(file_full_home_location).split('/')[:-1]
+                            # extracted_file_dir = '/'.join(extracted_file_dir)
+
                             # Get file dir location
-                            extracted_file_dir = str(file_full_home_location).split('/')[:-1]
-                            extracted_file_dir = '/'.join(extracted_file_dir)
+                            extracted_file_dir = os.path.dirname(file_full_home_location)
 
                             # Item has been updated
                             add_to_backup_dict(
