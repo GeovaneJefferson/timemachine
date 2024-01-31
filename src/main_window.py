@@ -362,6 +362,14 @@ class MainWindow(QMainWindow):
 
             # Hide
             self.ui.select_disk_button.hide()
+            
+            # Hide informations UI
+            self.ui.external_name_label.show()
+            self.ui.external_size_label.show()
+            self.ui.progressbar_main_window.show()
+            self.ui.backups_label.show()
+            self.ui.next_backup_label.show()
+            self.ui.remove_backup_device.show()
 
         except FileNotFoundError:
             # TMB was not yet created in backup device
@@ -382,6 +390,14 @@ class MainWindow(QMainWindow):
 
             # Show
             self.ui.select_disk_button.show()
+            
+            # Hide informations UI
+            self.ui.external_name_label.hide()
+            self.ui.external_size_label.hide()
+            self.ui.progressbar_main_window.hide()
+            self.ui.backups_label.hide()
+            self.ui.next_backup_label.hide()
+            self.ui.remove_backup_device.hide()
 
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
