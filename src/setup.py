@@ -16,6 +16,7 @@ import logging
 import traceback
 import socket
 import errno
+import setproctitle
 
 from stylesheet import *
 from pathlib import Path

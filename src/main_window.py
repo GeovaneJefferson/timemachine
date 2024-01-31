@@ -36,7 +36,10 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-    
+
+        # Set the process name
+        setproctitle.setproctitle("Time Machine")
+
         # Hide update button
         self.ui.update_available_button.hide()
 

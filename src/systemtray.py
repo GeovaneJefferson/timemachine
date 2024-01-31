@@ -314,3 +314,6 @@ class APP:
 
 MAIN_INI_FILE = UPDATEINIFILE()
 main = APP()
+
+# Set the process name
+setproctitle.setproctitle("Time Machine - System Tray")

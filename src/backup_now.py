@@ -459,6 +459,8 @@ MAIN_INI_FILE = UPDATEINIFILE()
 # Static time value, fx. 10-00
 STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
 
+# Set the process name
+setproctitle.setproctitle("Time Machine - Backup Now")
 
 try:
 	######################################################################

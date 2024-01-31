@@ -116,6 +116,10 @@ def time_to_backup(current_time):
 
 # if __name__ == '__main__':
 # Has connection to the backup device
+
+# Set the process name
+setproctitle.setproctitle("Time Machine - Backup Checker")
+
 if is_connected(MAIN_INI_FILE.hd_hd()):
     # Create the main backup folder
     if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
