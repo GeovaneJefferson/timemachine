@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -39,13 +39,13 @@ class Ui_Dialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 374, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 374, 212))
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.label = QLabel(self.scrollAreaWidgetContents)
         self.label.setObjectName(u"label")
         font = QFont()
-        font.setPointSize(9)
+        font.setPointSize(11)
         font.setBold(True)
         self.label.setFont(font)
         self.label.setStyleSheet(u"color: rgb(128, 128, 128);")
@@ -100,6 +100,9 @@ class Ui_Dialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cancel_button_dialog.sizePolicy().hasHeightForWidth())
         self.cancel_button_dialog.setSizePolicy(sizePolicy)
+        font1 = QFont()
+        font1.setKerning(True)
+        self.cancel_button_dialog.setFont(font1)
 
         self.horizontalLayout.addWidget(self.cancel_button_dialog, 0, Qt.AlignRight)
 

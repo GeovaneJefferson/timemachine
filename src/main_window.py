@@ -369,7 +369,7 @@ class MainWindow(QMainWindow):
 
     def not_registered_action_to_take(self):
             # Resize backup device frame
-            self.ui.backup_device_informations.setFixedHeight(0)
+            # self.ui.backup_device_informations.setFixedHeight(0)
 
             # Set external size label to No information
             self.ui.external_size_label.setText('None')
@@ -473,7 +473,15 @@ class MainWindow(QMainWindow):
             # sub.Popen(['python3', SRC_MAIN_WINDOW_PY])
 
             # Resize backup device frame
-            self.ui.backup_device_informations.setFixedHeight(0)
+            # self.ui.backup_device_informations.setFixedHeight(0)
+            
+            # Hide informations UI
+            self.ui.external_name_label.hide()
+            self.ui.external_size_label.hide()
+            self.ui.progressbar_main_window.hide()
+            self.ui.backups_label.hide()
+            self.ui.next_backup_label.hide()
+            self.ui.remove_backup_device.hide()
 
             # Show add backup devices button
             MAIN.ui.select_disk_button.show()
@@ -657,7 +665,15 @@ class SelectDisk(QDialog):
         self.on_cancel_dialog_button_clicked()
 
         # Resize backup device frame
-        MAIN.ui.backup_device_informations.setFixedHeight(118)
+        # MAIN.ui.backup_device_informations.setFixedHeight(118)
+        
+        # Show informations UI
+        MAIN.ui.external_name_label.show()
+        MAIN.ui.external_size_label.show()
+        MAIN.ui.progressbar_main_window.show()
+        MAIN.ui.backups_label.show()
+        MAIN.ui.next_backup_label.show()
+        MAIN.ui.remove_backup_device.show()
 
         # Hide add backup devices button
         MAIN.ui.select_disk_button.hide()
