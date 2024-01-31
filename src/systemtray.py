@@ -312,8 +312,9 @@ class APP:
             return SRC_SYSTEM_BAR_WHITE_ICON
         
 
+# Set the process name
+setproctitle.setproctitle("Time Machine - System Tray")
+
 MAIN_INI_FILE = UPDATEINIFILE()
 main = APP()
 
-# Set the process name
-setproctitle.setproctitle("Time Machine - System Tray")
