@@ -890,8 +890,8 @@ class OptionsWindow(QDialog):
     def on_button_fix_clicked(self):
         reset_confirmation = QMessageBox.question(
             self,
-            'Remove Device as Backup Storage',
-            'Are you sure you want to remove this device as backup storage?',
+            'Remove Device as Backup Disk',
+            'Are you sure you want to remove this device as backup disk?',
             QMessageBox.Yes
             |
             QMessageBox.No)
