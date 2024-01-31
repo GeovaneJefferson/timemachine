@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(9, 9, 9, 0)
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setHorizontalSpacing(9)
+        self.gridLayout.setHorizontalSpacing(18)
         self.gridLayout.setVerticalSpacing(3)
         self.gridLayout.setContentsMargins(9, -1, 9, 9)
         self.backups_label = QLabel(self.centralwidget)
@@ -44,61 +44,35 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.backups_label, 6, 1, 1, 1)
 
-        self.app_logo_image = QLabel(self.centralwidget)
-        self.app_logo_image.setObjectName(u"app_logo_image")
-
-        self.gridLayout.addWidget(self.app_logo_image, 0, 0, 1, 1, Qt.AlignLeft|Qt.AlignTop)
-
-        self.App_Title_Name = QLabel(self.centralwidget)
-        self.App_Title_Name.setObjectName(u"App_Title_Name")
-        font1 = QFont()
-        font1.setPointSize(13)
-        font1.setBold(False)
-        self.App_Title_Name.setFont(font1)
-
-        self.gridLayout.addWidget(self.App_Title_Name, 0, 1, 1, 1, Qt.AlignLeft|Qt.AlignTop)
-
-        self.progressbar_main_window = QProgressBar(self.centralwidget)
-        self.progressbar_main_window.setObjectName(u"progressbar_main_window")
-        self.progressbar_main_window.setMaximumSize(QSize(16777215, 16))
-        font2 = QFont()
-        font2.setPointSize(10)
-        self.progressbar_main_window.setFont(font2)
-        self.progressbar_main_window.setMaximum(100)
-        self.progressbar_main_window.setValue(0)
-        self.progressbar_main_window.setTextVisible(True)
-
-        self.gridLayout.addWidget(self.progressbar_main_window, 5, 1, 1, 1)
-
-        self.label_2 = QLabel(self.centralwidget)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 2, 1, 1, 1)
-
         self.external_name_label = QLabel(self.centralwidget)
         self.external_name_label.setObjectName(u"external_name_label")
-        font3 = QFont()
-        font3.setPointSize(11)
-        font3.setBold(True)
-        font3.setUnderline(False)
-        font3.setStrikeOut(False)
-        font3.setKerning(True)
-        self.external_name_label.setFont(font3)
+        font1 = QFont()
+        font1.setPointSize(11)
+        font1.setBold(True)
+        font1.setUnderline(False)
+        font1.setStrikeOut(False)
+        font1.setKerning(True)
+        self.external_name_label.setFont(font1)
         self.external_name_label.setStyleSheet(u"color: gray;")
 
         self.gridLayout.addWidget(self.external_name_label, 3, 1, 1, 1)
 
         self.App_Description = QLabel(self.centralwidget)
         self.App_Description.setObjectName(u"App_Description")
-        font4 = QFont()
-        font4.setPointSize(9)
-        font4.setBold(False)
-        self.App_Description.setFont(font4)
+        font2 = QFont()
+        font2.setPointSize(9)
+        font2.setBold(False)
+        self.App_Description.setFont(font2)
         self.App_Description.setStyleSheet(u"color: gray;")
         self.App_Description.setScaledContents(True)
         self.App_Description.setWordWrap(True)
 
         self.gridLayout.addWidget(self.App_Description, 1, 1, 1, 1, Qt.AlignLeft|Qt.AlignTop)
+
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 2, 1, 1, 1)
 
         self.next_backup_label = QLabel(self.centralwidget)
         self.next_backup_label.setObjectName(u"next_backup_label")
@@ -107,16 +81,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.next_backup_label, 7, 1, 1, 1)
 
-        self.external_size_label = QLabel(self.centralwidget)
-        self.external_size_label.setObjectName(u"external_size_label")
-        self.external_size_label.setFont(font)
-        self.external_size_label.setStyleSheet(u"color: gray;")
-
-        self.gridLayout.addWidget(self.external_size_label, 4, 1, 1, 1)
-
         self.remove_backup_device = QPushButton(self.centralwidget)
         self.remove_backup_device.setObjectName(u"remove_backup_device")
-        self.remove_backup_device.setFont(font2)
+        font3 = QFont()
+        font3.setPointSize(10)
+        self.remove_backup_device.setFont(font3)
         icon = QIcon()
         iconThemeName = u"list-remove"
         if QIcon.hasThemeIcon(iconThemeName):
@@ -128,6 +97,37 @@ class Ui_MainWindow(object):
         self.remove_backup_device.setIconSize(QSize(16, 16))
 
         self.gridLayout.addWidget(self.remove_backup_device, 8, 1, 1, 1, Qt.AlignLeft)
+
+        self.progressbar_main_window = QProgressBar(self.centralwidget)
+        self.progressbar_main_window.setObjectName(u"progressbar_main_window")
+        self.progressbar_main_window.setMaximumSize(QSize(16777215, 16))
+        self.progressbar_main_window.setFont(font3)
+        self.progressbar_main_window.setMaximum(100)
+        self.progressbar_main_window.setValue(0)
+        self.progressbar_main_window.setTextVisible(True)
+
+        self.gridLayout.addWidget(self.progressbar_main_window, 5, 1, 1, 1)
+
+        self.App_Title_Name = QLabel(self.centralwidget)
+        self.App_Title_Name.setObjectName(u"App_Title_Name")
+        font4 = QFont()
+        font4.setPointSize(10)
+        font4.setBold(False)
+        self.App_Title_Name.setFont(font4)
+
+        self.gridLayout.addWidget(self.App_Title_Name, 0, 1, 1, 1, Qt.AlignLeft|Qt.AlignTop)
+
+        self.app_logo_image = QLabel(self.centralwidget)
+        self.app_logo_image.setObjectName(u"app_logo_image")
+
+        self.gridLayout.addWidget(self.app_logo_image, 0, 0, 1, 1, Qt.AlignLeft|Qt.AlignTop)
+
+        self.external_size_label = QLabel(self.centralwidget)
+        self.external_size_label.setObjectName(u"external_size_label")
+        self.external_size_label.setFont(font)
+        self.external_size_label.setStyleSheet(u"color: gray;")
+
+        self.gridLayout.addWidget(self.external_size_label, 4, 1, 1, 1)
 
 
         self.verticalLayout.addLayout(self.gridLayout)
@@ -146,26 +146,26 @@ class Ui_MainWindow(object):
 
         self.update_available_button = QPushButton(self.centralwidget)
         self.update_available_button.setObjectName(u"update_available_button")
-        self.update_available_button.setFont(font2)
+        self.update_available_button.setFont(font3)
 
         self.horizontalLayout.addWidget(self.update_available_button)
 
         self.select_disk_button = QPushButton(self.centralwidget)
         self.select_disk_button.setObjectName(u"select_disk_button")
-        self.select_disk_button.setFont(font2)
+        self.select_disk_button.setFont(font3)
 
         self.horizontalLayout.addWidget(self.select_disk_button)
 
         self.options_button = QPushButton(self.centralwidget)
         self.options_button.setObjectName(u"options_button")
-        self.options_button.setFont(font2)
+        self.options_button.setFont(font3)
 
         self.horizontalLayout.addWidget(self.options_button)
 
         self.help_button = QPushButton(self.centralwidget)
         self.help_button.setObjectName(u"help_button")
         self.help_button.setMaximumSize(QSize(26, 16777215))
-        self.help_button.setFont(font2)
+        self.help_button.setFont(font3)
 
         self.horizontalLayout.addWidget(self.help_button)
 
@@ -185,26 +185,26 @@ class Ui_MainWindow(object):
         self.backups_label.setToolTip(QCoreApplication.translate("MainWindow", u"Oldest - Latest backup", None))
 #endif // QT_CONFIG(tooltip)
         self.backups_label.setText(QCoreApplication.translate("MainWindow", u"Backups:", None))
-        self.app_logo_image.setText(QCoreApplication.translate("MainWindow", u"IMAGE", None))
-        self.App_Title_Name.setText(QCoreApplication.translate("MainWindow", u"Time Machine", None))
-        self.label_2.setText("")
 #if QT_CONFIG(tooltip)
         self.external_name_label.setToolTip(QCoreApplication.translate("MainWindow", u"Devices name", None))
 #endif // QT_CONFIG(tooltip)
         self.external_name_label.setText(QCoreApplication.translate("MainWindow", u"None", None))
         self.App_Description.setText(QCoreApplication.translate("MainWindow", u"Time Machine ensure the safety of your essential files by learning how to set up automatic backups for your PC. Safeguard your personal data, cherished music, precious photos, and vital documents effortlessly. Having a reliable backup system in place grants you the power to recover mistakenly deleted files or access data that might otherwise be out of reach.", None))
+        self.label_2.setText("")
 #if QT_CONFIG(tooltip)
         self.next_backup_label.setToolTip(QCoreApplication.translate("MainWindow", u"Next backup", None))
 #endif // QT_CONFIG(tooltip)
         self.next_backup_label.setText(QCoreApplication.translate("MainWindow", u"Next Backup:", None))
 #if QT_CONFIG(tooltip)
-        self.external_size_label.setToolTip(QCoreApplication.translate("MainWindow", u"Device space available", None))
-#endif // QT_CONFIG(tooltip)
-        self.external_size_label.setText(QCoreApplication.translate("MainWindow", u"Space Available:", None))
-#if QT_CONFIG(tooltip)
         self.remove_backup_device.setToolTip(QCoreApplication.translate("MainWindow", u"Remove a backup disk: Click the Remove button.", None))
 #endif // QT_CONFIG(tooltip)
         self.remove_backup_device.setText("")
+        self.App_Title_Name.setText(QCoreApplication.translate("MainWindow", u"Time Machine", None))
+        self.app_logo_image.setText(QCoreApplication.translate("MainWindow", u"IMAGE", None))
+#if QT_CONFIG(tooltip)
+        self.external_size_label.setToolTip(QCoreApplication.translate("MainWindow", u"Device space available", None))
+#endif // QT_CONFIG(tooltip)
+        self.external_size_label.setText(QCoreApplication.translate("MainWindow", u"Space Available:", None))
         self.update_available_button.setText(QCoreApplication.translate("MainWindow", u"Update Available", None))
 #if QT_CONFIG(tooltip)
         self.select_disk_button.setToolTip(QCoreApplication.translate("MainWindow", u"If you haven\u2019t set up Time Machine, click Add Backup Disk to set up a backup disk.", None))

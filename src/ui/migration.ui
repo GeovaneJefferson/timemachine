@@ -690,8 +690,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>275</width>
-                   <height>243</height>
+                   <width>362</width>
+                   <height>262</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -773,8 +773,7 @@
                      <string>Flatpaks</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="application-x-executable">
-                      <normaloff>.</normaloff>.</iconset>
+                     <iconset theme="applications-utilities"/>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -1048,7 +1047,7 @@
             <widget class="QWidget" name="from_image" native="true">
              <property name="minimumSize">
               <size>
-               <width>120</width>
+               <width>180</width>
                <height>140</height>
               </size>
              </property>
@@ -1155,7 +1154,7 @@
             <widget class="QWidget" name="to_image" native="true">
              <property name="minimumSize">
               <size>
-               <width>120</width>
+               <width>180</width>
                <height>140</height>
               </size>
              </property>

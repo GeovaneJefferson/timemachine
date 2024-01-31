@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -307,7 +307,13 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_applications_page3.setObjectName(u"checkbox_applications_page3")
-        icon = QIcon(QIcon.fromTheme(u"application-x-executable"))
+        icon = QIcon()
+        iconThemeName = u"application-x-executable"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon = QIcon.fromTheme(iconThemeName)
+        else:
+            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
         self.checkbox_applications_page3.setIcon(icon)
         self.checkbox_applications_page3.setIconSize(QSize(32, 32))
 
@@ -337,7 +343,8 @@ class Ui_WelcomeScreen(object):
 
         self.checkbox_flatpaks_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_flatpaks_page3.setObjectName(u"checkbox_flatpaks_page3")
-        self.checkbox_flatpaks_page3.setIcon(icon)
+        icon1 = QIcon(QIcon.fromTheme(u"applications-utilities"))
+        self.checkbox_flatpaks_page3.setIcon(icon1)
         self.checkbox_flatpaks_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_flatpaks_page3)
@@ -361,35 +368,35 @@ class Ui_WelcomeScreen(object):
         self.checkBox_3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkBox_3.setObjectName(u"checkBox_3")
         self.checkBox_3.setEnabled(False)
-        icon1 = QIcon()
+        icon2 = QIcon()
         iconThemeName = u"system-file-manager"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon1 = QIcon.fromTheme(iconThemeName)
+            icon2 = QIcon.fromTheme(iconThemeName)
         else:
-            icon1.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon2.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.checkBox_3.setIcon(icon1)
+        self.checkBox_3.setIcon(icon2)
         self.checkBox_3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkBox_3)
 
         self.checkbox_files_folders_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_files_folders_page3.setObjectName(u"checkbox_files_folders_page3")
-        self.checkbox_files_folders_page3.setIcon(icon1)
+        self.checkbox_files_folders_page3.setIcon(icon2)
         self.checkbox_files_folders_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_files_folders_page3)
 
         self.checkbox_system_settings_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_system_settings_page3.setObjectName(u"checkbox_system_settings_page3")
-        icon2 = QIcon()
+        icon3 = QIcon()
         iconThemeName = u"applications-system"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon2 = QIcon.fromTheme(iconThemeName)
+            icon3 = QIcon.fromTheme(iconThemeName)
         else:
-            icon2.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.checkbox_system_settings_page3.setIcon(icon2)
+        self.checkbox_system_settings_page3.setIcon(icon3)
         self.checkbox_system_settings_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_system_settings_page3)
@@ -476,7 +483,7 @@ class Ui_WelcomeScreen(object):
 
         self.from_image = QWidget(self.page_4)
         self.from_image.setObjectName(u"from_image")
-        self.from_image.setMinimumSize(QSize(120, 140))
+        self.from_image.setMinimumSize(QSize(180, 140))
         self.from_image.setMaximumSize(QSize(120, 140))
         self.verticalLayout_21 = QVBoxLayout(self.from_image)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
@@ -488,8 +495,16 @@ class Ui_WelcomeScreen(object):
 
         self.pushButton = QPushButton(self.from_image)
         self.pushButton.setObjectName(u"pushButton")
-        icon3 = QIcon(QIcon.fromTheme(u"drive-removable-media"))
-        self.pushButton.setIcon(icon3)
+        self.pushButton.setEnabled(True)
+        self.pushButton.setAutoFillBackground(False)
+        icon4 = QIcon()
+        iconThemeName = u"drive-removable-media"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon4 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.pushButton.setIcon(icon4)
         self.pushButton.setIconSize(QSize(64, 64))
         self.pushButton.setFlat(True)
 
@@ -516,8 +531,14 @@ class Ui_WelcomeScreen(object):
 
         self.pushButton_3 = QPushButton(self.page_4)
         self.pushButton_3.setObjectName(u"pushButton_3")
-        icon4 = QIcon(QIcon.fromTheme(u"go-next"))
-        self.pushButton_3.setIcon(icon4)
+        icon5 = QIcon()
+        iconThemeName = u"go-next"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon5 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon5.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.pushButton_3.setIcon(icon5)
         self.pushButton_3.setIconSize(QSize(48, 48))
         self.pushButton_3.setFlat(True)
 
@@ -525,7 +546,7 @@ class Ui_WelcomeScreen(object):
 
         self.to_image = QWidget(self.page_4)
         self.to_image.setObjectName(u"to_image")
-        self.to_image.setMinimumSize(QSize(120, 140))
+        self.to_image.setMinimumSize(QSize(180, 140))
         self.to_image.setMaximumSize(QSize(120, 140))
         self.verticalLayout_22 = QVBoxLayout(self.to_image)
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
@@ -537,8 +558,14 @@ class Ui_WelcomeScreen(object):
 
         self.pushButton_2 = QPushButton(self.to_image)
         self.pushButton_2.setObjectName(u"pushButton_2")
-        icon5 = QIcon(QIcon.fromTheme(u"computer"))
-        self.pushButton_2.setIcon(icon5)
+        icon6 = QIcon()
+        iconThemeName = u"computer"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon6 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon6.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
+        self.pushButton_2.setIcon(icon6)
         self.pushButton_2.setIconSize(QSize(64, 64))
         self.pushButton_2.setFlat(True)
 
@@ -627,6 +654,8 @@ class Ui_WelcomeScreen(object):
 
         self.button_restore_page4 = QPushButton(self.page_4)
         self.button_restore_page4.setObjectName(u"button_restore_page4")
+        self.button_restore_page4.setFocusPolicy(Qt.StrongFocus)
+        self.button_restore_page4.setAutoDefault(False)
 
         self.horizontalLayout_7.addWidget(self.button_restore_page4, 0, Qt.AlignRight)
 
@@ -639,6 +668,9 @@ class Ui_WelcomeScreen(object):
 
 
         self.retranslateUi(WelcomeScreen)
+
+        self.button_restore_page4.setDefault(False)
+
 
         QMetaObject.connectSlotsByName(WelcomeScreen)
     # setupUi

@@ -45,7 +45,7 @@
        <number>9</number>
       </property>
       <property name="horizontalSpacing">
-       <number>9</number>
+       <number>18</number>
       </property>
       <property name="verticalSpacing">
        <number>3</number>
@@ -65,57 +65,6 @@
         </property>
         <property name="text">
          <string>Backups:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
-       <widget class="QLabel" name="app_logo_image">
-        <property name="text">
-         <string>IMAGE</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" alignment="Qt::AlignLeft|Qt::AlignTop">
-       <widget class="QLabel" name="App_Title_Name">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Time Machine</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QProgressBar" name="progressbar_main_window">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="textVisible">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -163,6 +112,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
       <item row="7" column="1">
        <widget class="QLabel" name="next_backup_label">
         <property name="font">
@@ -178,24 +134,6 @@
         </property>
         <property name="text">
          <string>Next Backup:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLabel" name="external_size_label">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Device space available</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: gray;</string>
-        </property>
-        <property name="text">
-         <string>Space Available:</string>
         </property>
        </widget>
       </item>
@@ -221,6 +159,68 @@
           <width>16</width>
           <height>16</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QProgressBar" name="progressbar_main_window">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" alignment="Qt::AlignLeft|Qt::AlignTop">
+       <widget class="QLabel" name="App_Title_Name">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Time Machine</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
+       <widget class="QLabel" name="app_logo_image">
+        <property name="text">
+         <string>IMAGE</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="external_size_label">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Device space available</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: gray;</string>
+        </property>
+        <property name="text">
+         <string>Space Available:</string>
         </property>
        </widget>
       </item>
