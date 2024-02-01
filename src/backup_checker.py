@@ -81,22 +81,22 @@ def time_to_backup(current_time):
 
     print("Calling analyses...")
 
-    try:
-        x = sub.Popen(
-            ['python3', SRC_ANALYSE_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
-        
-        output, error = x.communicate()
+    # try:
+    x = sub.Popen(
+        ['python3', SRC_ANALYSE_PY], 
+        stdout=sub.PIPE, 
+        stderr=sub.PIPE)
+    
+    output, error = x.communicate()
 
-            # Check the return code
-        if x.returncode == 0:
-            print(f"Backup process completed successfully. Output: {output}")
-        else:
-            print(f"Error in backup process. Output: {output}, Error: {error}")
-    except Exception as e:
-        # Save error log
-        MAIN_INI_FILE.report_error(e)
+        # Check the return code
+    if x.returncode == 0:
+        print(f"Backup process completed successfully. Output: {output}")
+    else:
+        print(f"Error in backup process. Output: {output}, Error: {error}")
+    # except Exception as e:
+    #     # Save error log
+    #     MAIN_INI_FILE.report_error(e)
 
     exit()
 
