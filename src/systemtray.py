@@ -194,6 +194,9 @@ class APP:
             self.backup_now_button.setEnabled(False) 
 
     def status_off(self):
+        # Hide this feature
+        self.error_button.setVisible(False)
+
         # Change color to Red
         self.change_color("Red")
         

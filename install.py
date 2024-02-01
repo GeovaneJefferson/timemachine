@@ -11,7 +11,8 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.096 dev"
+APP_VERSION = "v1.1.6.100 dev"
+
 
 CREATE_CMD_FOLDER = "mkdir"
 
@@ -42,31 +43,38 @@ def install_dependencies():
     # Depedencies
     try:
         command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-        sub.run(["pip", "install", "-r", command])
+        sub.run(
+            ["pip", "install", "-r", command], 
+                check=True)
 
         # Deb
         if 'debian' in USERS_DISTRO_NAME:
-            command = 'pip flatpak gnome-software-plugin-flatpak' 
+            command = 'python3-pip flatpak' 
+            sub.run(
+                ['sudo', 'apt', 'install', '-y', command],
+                check=True)
 
-            try:            
-                sub.run(
-                    ['sudo', 'apt', 'install', '-y', command],
-                    check=True)
+        elif 'fedora' in USERS_DISTRO_NAME:
+            command = 'python3-pip flatpak' 
+            sub.run(
+                ['sudo', 'dnf', 'install', '-y', command],
+                check=True)
 
-            except sub.CalledProcessError as e:
-                print(e)
-                pass
+        elif 'opensuse' in USERS_DISTRO_NAME:
+            command = 'python3-pip flatpak' 
+            sub.run(
+                ['sudo', 'zypper', 'install', '-y', command],
+                check=True)
 
         # Arch
         elif 'arch' in USERS_DISTRO_NAME:
-            command = "qt6-wayland flatpak"
+            command = "python-pip qt6-wayland flatpak"
             
             # Check if the package is already installed
             try:
                 sub.run(
                     ["pacman", "-Qq", command],
                     check=True)
-                
             except sub.CalledProcessError:
                 # If not installed, install the package
                 sub.run(
@@ -74,20 +82,14 @@ def install_dependencies():
                     check=True)
 
         # Install flathub
-        try:            
-            sub.run(
-                ['flatpak',
-                 'remote-add',
-                 '--if-not-exists',
-                 'flathub',
-                 'https://dl.flathub.org/repo/flathub.flatpakrepo'],
-                check=True)
-
-        except sub.CalledProcessError as e:
-            print(e)
-            pass
-        
-    except Exception as e:
+        sub.run(
+            ['flatpak',
+             'remote-add',
+             '--if-not-exists',
+             'flathub',
+             'https://dl.flathub.org/repo/flathub.flatpakrepo'],
+            check=True)
+    except sub.CalledProcessError as e:
         print(e)
         exit()
 
@@ -95,7 +97,6 @@ def copy_files():
     try:
         # Copy current folder to the destination folder
         shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL)
-        
     except FileExistsError:
         pass
 
@@ -103,7 +104,8 @@ def create_application_files():
     # Create .local/share/applications
     if not os.path.exists(DST_APPLICATIONS_LOCATION):
         command = DST_APPLICATIONS_LOCATION
-        sub.run(["mkdir", command])
+        os.makedirs(command, exist_ok=True)
+        # sub.run(["mkdir", command])
 
     # Send to DST_FILE_EXE_DESKTOP
     with open(SRC_TIMEMACHINE_DESKTOP, "w") as writer:
@@ -139,7 +141,8 @@ def create_backup_checker_desktop():
     # Create autostart folder if necessary
     if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
         command = SRC_AUTOSTARTFOLDER_LOCATION
-        sub.run(["mkdir", command])
+        # sub.run(["mkdir", command])
+        os.makedirs(command, exist_ok=True)
 
     # Edit file startup with system
     with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:
@@ -175,6 +178,7 @@ if __name__ == '__main__':
 
     except Exception as e:
         print(e)
+        exit()
     
     print()
     print("Program was successfully installed!")

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'options.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -197,7 +197,7 @@ class Ui_Options(object):
         self.label_11.setText(QCoreApplication.translate("Options", u"System Tray:", None))
         self.show_in_system_tray_checkbox.setText(QCoreApplication.translate("Options", u"Show Time Machine in System Tray", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Options", u"Settings", None))
-        self.label_4.setText(QCoreApplication.translate("Options", u"Select Folders To Be Back Up:", None))
+        self.label_4.setText(QCoreApplication.translate("Options", u"Choose folders for backup:", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.back_up_tab), QCoreApplication.translate("Options", u"Back Up", None))
         self.label_8.setText(QCoreApplication.translate("Options", u"Experimental Features:", None))
         self.allow_browser_in_time_machine.setText(QCoreApplication.translate("Options", u"Browser In Time Machine (System Tray Option)", None))

@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -108,7 +108,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Select Folders To Be Back Up:</string>
+          <string>Choose folders for backup:</string>
          </property>
         </widget>
        </item>
