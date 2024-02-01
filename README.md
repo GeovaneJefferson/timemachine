@@ -106,3 +106,6 @@ To uninstall the application, use the following steps:
 - [ ] Redo code (Cleaning)
 - [ ] Enter in Time Machine (To restore files/folder)
 - [ ] Migration Assistant (To restore and reinstall all files/folders, .debs, .rpm, wallpaper)
+
+### Screenshoots
+
