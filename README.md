@@ -108,4 +108,5 @@ To uninstall the application, use the following steps:
 - [ ] Migration Assistant (To restore and reinstall all files/folders, .debs, .rpm, wallpaper)
 
 ### Screenshoots
+![Screenshot](https://raw.githubusercontent.com/GeovaneJefferson/timemachine/dev/src/screenshots/img_4.png)
 
