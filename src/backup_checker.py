@@ -41,11 +41,13 @@ def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    sub.run(
-                        ['cp', '-rvf', src, dst], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
-
+                    # sub.run(
+                    #     ['cp', '-rvf', src, dst], 
+                    #     stdout=sub.PIPE, 
+                    #     stderr=sub.PIPE)
+                    
+                    shutil.copytree(src, dst, symlinks=False)
+        
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
             # Check if the found .rpm is has not alredy been back up
@@ -68,10 +70,12 @@ def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    sub.run(
-                        ['cp', '-rvf', src, dst], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
+                    # sub.run(
+                    #     ['cp', '-rvf', src, dst], 
+                    #     stdout=sub.PIPE, 
+                    #     stderr=sub.PIPE)
+                    
+                    shutil.copytree(src, dst, symlinks=False)
 
 def time_to_backup(current_time):
     
@@ -113,9 +117,6 @@ def time_to_backup(current_time):
         # else:
         #     print(f"Error in backup process. Output: {output}, Error: {error}")
     
-
-# if __name__ == '__main__':
-# Has connection to the backup device
 
 # Set the process name
 setproctitle.setproctitle("Time Machine - Backup Checker")

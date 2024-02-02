@@ -658,6 +658,15 @@ def need_to_backup_analyse():
         print('Calling backup now...')
         return True
 
+def is_process_running(process_title):
+    try:
+        result = sub.run(
+            ['pgrep', '-f', process_title],
+            check=True,
+            stdout=sub.PIPE)
+        return bool(result.stdout.strip())
+    except sub.CalledProcessError:
+        return False
 
 # Update notification
 print('Analysing backup...')
@@ -695,13 +704,17 @@ try:
 
         # Backing up to False
         MAIN_INI_FILE.set_database_value(
-            'STATUS', 'backing_up_now', 'False')   
-
-        # Re.open backup checker
-        sub.Popen(
-            ['python3', SRC_BACKUP_CHECKER_PY], 
-            stdout=sub.PIPE, 
-            stderr=sub.PIPE)
+            'STATUS', 'backing_up_now', 'False')  
+        
+        # Check if backup checker is not already running  
+        process_title = "Time Machine - Backup Checker"
+        if not is_process_running(process_title):
+            print(f"No process with the title '{process_title}' is currently running.")
+            # Re.open backup checker
+            sub.Popen(
+                ['python3', SRC_BACKUP_CHECKER_PY], 
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
 except Exception as e:
     # Save error log
     MAIN_INI_FILE.report_error(e)
