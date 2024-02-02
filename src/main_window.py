@@ -284,59 +284,17 @@ class MainWindow(QMainWindow):
         MAIN_INI_FILE.set_database_value(
             'STATUS', 'automatically_backup', 'False')
 
-        # Uncheck system tray
-        # self.ui.show_in_system_tray_checkbox.setChecked(False)
-        
-        # Uncheck automatically backup
-        # self.ui.automatically_backup_checkbox.setChecked(False)
-
         # Update and make save the DB
         backup_db_file(True)
 
-    # def on_automatically_checkbox_clicked(self):
-    #     if # self.ui.automatically_backup_checkbox.isChecked():
-    #         # Create backup checker .desktop and move it to the destination
-    #         create_backup_checker_desktop()
+        # Delete Logs file
+        if os.path.exists(LOG_LOCATION):
+            try:
+                os.remove(LOG_LOCATION)
+                print(f"File '{LOG_LOCATION}' deleted successfully.")
+            except OSError as e:
+                print(f"Error deleting file: {e}")
 
-    #         # Copy backup_check.desktop
-    #         shutil.copy(DST_BACKUP_CHECK_DESKTOP, DST_AUTOSTART_LOCATION)
-
-    #         MAIN_INI_FILE.set_database_value(
-    #             'STATUS', 'automatically_backup', 'True')
-
-    #         # call backup check
-    #         sub.Popen(
-    #             ['python3', SRC_BACKUP_CHECKER_PY],
-    #             stdout=sub.PIPE, 
-    #             stderr=sub.PIPE)
-            
-    #         print("Auto backup was successfully activated!")
-
-    #     else:
-    #         # Remove autostart.desktop
-    #         sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
-
-    #         MAIN_INI_FILE.set_database_value(
-    #             'STATUS', 'automatically_backup', 'False')
-
-    #         print("Auto backup was successfully deactivated!")
-   
-    # def on_system_tray_checkbox_clicked(self):
-    #     if # self.ui.show_in_system_tray_checkbox.isChecked():
-    #         MAIN_INI_FILE.set_database_value(
-    #             'SYSTEMTRAY', 'system_tray', 'True')
-
-    #         # Call system tray
-    #         sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
-
-    #         print("System tray was successfully enabled!")
-
-    #     else:
-    #         MAIN_INI_FILE.set_database_value(
-    #             'SYSTEMTRAY', 'system_tray', 'False')
-
-    #         print("System tray was successfully disabled!")
-    
     def connected_action_to_take(self):
         self.ui.select_disk_button.setEnabled(True)
         # self.backup_now_button.setEnabled(True)
