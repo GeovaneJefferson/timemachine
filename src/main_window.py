@@ -295,6 +295,8 @@ class MainWindow(QMainWindow):
             except OSError as e:
                 print(f"Error deleting file: {e}")
 
+        # Re-select few option
+
     def connected_action_to_take(self):
         self.ui.select_disk_button.setEnabled(True)
         # self.backup_now_button.setEnabled(True)
