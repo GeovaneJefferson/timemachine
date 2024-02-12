@@ -209,11 +209,7 @@ class BACKUP:
 						##########################################################
 						if status == 'NEW':  # Is a new file/folder
 							# Copy to .main backup
-							destination_location = (
-								f'{MAIN_INI_FILE.main_backup_folder()}{destination}')
-
-							# Remove invalid keys
-							destination_location = destination_location.replace('../','')
+							destination_location = destination
 
 						##########################################################
 						# LATEST DATE/TIME
@@ -221,11 +217,12 @@ class BACKUP:
 						elif status == 'UPDATED':
 							# edit destination location, so file can be send to a date/time folder
 							destination_location = (
-								f'{MAIN_INI_FILE.time_folder_format()}{destination}')
+								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
+
+							destination_location = os.path.join(MAIN_INI_FILE.time_folder_format(), destination)
 
 							# 'Stop' that send dir time, so it won't create a new dir as time passes
 							# destination_location# = os.path.dirname(MAIN_INI_FILE.time_folder_format())
-
 
 
 							# # No unfinished backtup
@@ -268,7 +265,7 @@ class BACKUP:
 								destination_location)
 					except Exception as e:
 						print(f"Error while backing up {location}: {e}")
-						MAIN_INI_FILE.report_error(e)
+						# MAIN_INI_FILE.report_error(e)
 
 	# HIDDEN FILES/FOLDERS
 	def backup_hidden_home(self, user_de):
@@ -451,55 +448,55 @@ class BACKUP:
 			'STATUS', 'unfinished_backup', 'No')
 
 		
-# if __name__ == "__main__":
-MAIN = BACKUP()
-MAIN_INI_FILE = UPDATEINIFILE()
+if __name__ == "__main__":
+	MAIN = BACKUP()
+	MAIN_INI_FILE = UPDATEINIFILE()
 
 
-# Static time value, fx. 10-00
-STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
+	# Static time value, fx. 10-00
+	STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
 
-# Set the process name
-setproctitle.setproctitle("Time Machine - Backup Now")
+	# Set the process name
+	setproctitle.setproctitle("Time Machine - Backup Now")
 
-try:
-	######################################################################
-	# Update db
-	######################################################################
-	MAIN_INI_FILE.set_database_value(
-		'STATUS', 'backing_up_now', 'True')
+	try:
+		######################################################################
+		# Update db
+		######################################################################
+		MAIN_INI_FILE.set_database_value(
+			'STATUS', 'backing_up_now', 'True')
 
-	# Set oldest backup date
-	if MAIN_INI_FILE.oldest_backup_date() is None:
-		# Oldest backup today
+		# Set oldest backup date
+		if MAIN_INI_FILE.oldest_backup_date() is None:
+			# Oldest backup today
+			MAIN_INI_FILE.set_database_value(
+				'INFO',
+				'oldest_backup_date',
+				MAIN_INI_FILE.current_full_date_plus_time_str())
+
+		# Set latest backup date
 		MAIN_INI_FILE.set_database_value(
 			'INFO',
-			'oldest_backup_date',
+			'latest_backup_date',
 			MAIN_INI_FILE.current_full_date_plus_time_str())
+		
+		# Backup Home
+		MAIN.backup_home()
 
-	# Set latest backup date
-	MAIN_INI_FILE.set_database_value(
-		'INFO',
-		'latest_backup_date',
-		MAIN_INI_FILE.current_full_date_plus_time_str())
-    
-	# Backup Home
-	MAIN.backup_home()
+		# backup hidden home
+		MAIN.backup_hidden_home(get_user_de())
 
-	# backup hidden home
-	MAIN.backup_hidden_home(get_user_de())
+		# End backup process
+		MAIN.end_backup()
 
-	# End backup process
-	MAIN.end_backup()
+		# Wait few seconds
+		time.sleep(60)
 
-	# Wait few seconds
-	time.sleep(60)
-
-	# Re-open backup checker
-	sub.Popen(
-		['python3', SRC_BACKUP_CHECKER_PY], 
-			stdout=sub.PIPE, 
-			stderr=sub.PIPE)
-except Exception as e:
-    # Save error log
-    MAIN_INI_FILE.report_error(e)
+		# Re-open backup checker
+		sub.Popen(
+			['python3', SRC_BACKUP_CHECKER_PY], 
+				stdout=sub.PIPE, 
+				stderr=sub.PIPE)
+	except Exception as e:
+		# Save error log
+		MAIN_INI_FILE.report_error(e)
