@@ -414,26 +414,52 @@ class ANALYSES:
 					home_item_path_location = os.path.join(location, local_file_only_name)
 					x = home_item_path_location.split('/')[-1]
 					y = os.path.join(location, compare_to.split('/')[-1])
+					destination = str(local_item_path_location).replace(HOME_USER, '') 
+					
+					if os.path.isdir(home_item_path_location):
+						local_combine_home_with_backup_location = os.path.join(
+							MAIN_INI_FILE.main_backup_folder(), file)
+					else:
+						local_combine_home_with_backup_location = os.path.join(
+							MAIN_INI_FILE.main_backup_folder(), str(home_item_path_location).replace(HOME_USER, ''))
+
+					# Main Backup Folder
+					main_backup_folder_location = (
+						MAIN_INI_FILE.main_backup_folder() 
+						+ 
+						local_combine_home_with_backup_location)
 					
 					print(file)
 					print(x)
 					print(y)
-					# print(home_item_path_location)
+					print(home_item_path_location)
 					print(compare_to)
+					print(local_item_path_location)
+					print(destination)
+					print(main_backup_folder_location)
 					# exit()
-				
+
+					# NEW
+					if not os.path.exists(compare_to):
+						# Has itens inside
+						if any(os.scandir(home_item_path_location)):
+							# Backtup this NEW item
+							self.add_to_backup_dict(
+								home_item_path_location, 
+								main_backup_folder_location, 
+								'NEW')
+							
+					# UPDATED
 					if file == x:
 						if self.compare_sizes(
 							y, 
 							compare_to):
-							print(y, 'has changed!')
-							exit()					
-					# 	print(home_item_path_location, 'has changed!')
+							# Backtup this UPDATED item
+							self.add_to_backup_dict(
+								home_item_path_location, 
+								destination, 
+								'UPDATE')
 
-					# 	# Compare itens sizes
-					# 	if self.compare_sizes(self.combined_home_with_backup_location):
-					# 		self.add_to_backup_dict(self.item_path_location_top_level,'UPDATED')
-							
 
 	def need_to_backup_analyse(self):
 		# Check if it's not the first backup with Time Machine
