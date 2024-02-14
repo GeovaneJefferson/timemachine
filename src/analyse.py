@@ -260,12 +260,12 @@ class ANALYSES:
 			if not os.path.exists(self.combined_home_with_backup_location):
 				if not os.path.isdir(self.item_path_location_top_level):
 					# Has itens inside
-					if any(os.scandir(self.item_path_location_top_level)):
-						# Backtup this NEW item
-						self.add_to_backup_dict(
-							self.item_path_location_top_level, 
-							self.combined_home_with_backup_location, 
-							'NEW')
+					# if any(os.scandir(self.item_path_location_top_level)):
+					# Backtup this NEW item
+					self.add_to_backup_dict(
+						self.item_path_location_top_level, 
+						self.combined_home_with_backup_location, 
+						'NEW')
 				else:
 					# UPDATED 
 					self.search_in_all_date_time_file()
@@ -294,7 +294,6 @@ class ANALYSES:
 							if self.compare_sizes(
 								local_item_path_location,
 								local_combined_home_with_backup_location):
-								
 								# if not os.path.isdir(local_combined_home_with_backup_location):
 								# Destination will be only the dirname, without the Home username.
 								# Final destination will be set in backup_now script
@@ -353,7 +352,7 @@ class ANALYSES:
 									MAIN_INI_FILE.main_backup_folder(), str(home_item_path_location).replace(HOME_USER, ''))
 
 							# Main Backup Folder
-							main_backup_folder_lcoation = (
+							main_backup_folder_location = (
 								MAIN_INI_FILE.main_backup_folder() 
 								+ 
 								local_combine_home_with_backup_location)
@@ -361,53 +360,80 @@ class ANALYSES:
 							# print(local_file_only_name)
 							# print('HOME', home_item_path_location)
 							# print('DATETIME:', local_item_date_time_location)
-							# print('MAIN', main_backup_folder_lcoation)
+							# print('MAIN', main_backup_folder_location)
+							# print()
 							# print('UPDATE')
 							# print('HOME', home_item_path_location)
 							# print('DATE/TIME', local_item_without_username_location)
+							# print('/'.join((str(home_item_path_location).split('/')[:-1])))
 							# exit()
+		
+							# if os.path.isdir(local_item_date_time_location):
+							# 	print(local_item_date_time_location)
 
 							# NEW
 							# This item was already backup, check for updates
-							if not os.path.exists(main_backup_folder_lcoation):
+							if not os.path.exists(main_backup_folder_location):
 								# Has itens inside
 								if any(os.scandir(home_item_path_location)):
 									# Backtup this NEW item
 									self.add_to_backup_dict(
 										home_item_path_location, 
-										main_backup_folder_lcoation, 
+										main_backup_folder_location, 
 										'NEW')
-
-							# Updated
-							# Match found in date/time folder
-							if file == local_file_only_name:
-								if self.compare_sizes(
-									home_item_path_location,
-									local_item_date_time_location):
-
-									# Date/Time Folder
-									self.add_to_backup_dict(
-										home_item_path_location , 
-										local_item_without_username_location, 
-										'UPDATED')
-
-	# def search_in_dir(self, location):
-	# 	# search in dir
-	# 	for root, _, files in os.walk(location):
-	# 		# Has files inside
-	# 		if files:   
-	# 			for file in files:
-	# 				# Is a match
-	# 				local_item_path_location = os.path.join(root, file)
-	# 				local_file_only_name = str(local_item_path_location).split('/')[-1:][0]
-
-	# 				if file == local_file_only_name:
-	# 					# Compare itens sizes
-	# 					if self.compare_sizes(self.combined_home_with_backup_location):
-	# 						self.add_to_backup_dict(self.item_path_location_top_level,'UPDATED')
 							
-	# 						# Return with the new dir to search
-	# 						# self.search_in_dir(self.item_path_location_top_level)
+							if os.path.isdir(home_item_path_location):
+								self.search_in_dir(home_item_path_location, local_item_date_time_location)
+							else:
+								self.search_in_dir(
+									'/'.join(
+										(str(home_item_path_location).split('/')[:-1])), local_item_date_time_location)
+
+							# # Updated
+							# # Match found in date/time folder
+							# if file == local_file_only_name:
+							# 	if self.compare_sizes(
+							# 		home_item_path_location,
+							# 		local_item_date_time_location):
+
+							# 		# Date/Time Folder
+							# 		self.add_to_backup_dict(
+							# 			home_item_path_location , 
+							# 			local_item_without_username_location, 
+							# 			'UPDATED')
+
+	def search_in_dir(self, location, compare_to):
+		# search in dir
+		for root, _, files in os.walk(location):
+			# Has files inside
+			if files:   
+				for file in files:
+					# Is a match
+					local_item_path_location = os.path.join(root, file)
+					local_file_only_name = str(local_item_path_location).split('/')[-1:][0]
+					home_item_path_location = os.path.join(location, local_file_only_name)
+					x = home_item_path_location.split('/')[-1]
+					y = os.path.join(location, compare_to.split('/')[-1])
+					
+					print(file)
+					print(x)
+					print(y)
+					# print(home_item_path_location)
+					print(compare_to)
+					# exit()
+				
+					if file == x:
+						if self.compare_sizes(
+							y, 
+							compare_to):
+							print(y, 'has changed!')
+							exit()					
+					# 	print(home_item_path_location, 'has changed!')
+
+					# 	# Compare itens sizes
+					# 	if self.compare_sizes(self.combined_home_with_backup_location):
+					# 		self.add_to_backup_dict(self.item_path_location_top_level,'UPDATED')
+							
 
 	def need_to_backup_analyse(self):
 		# Check if it's not the first backup with Time Machine
@@ -460,48 +486,48 @@ MAIN = ANALYSES()
 print('Analysing backup...')
 notification_message('Analysing backup...')
 
-MAIN.need_to_backup_analyse()
+# MAIN.need_to_backup_analyse()
 
-# try:
-#     # Backup flatpak
-#     print("Backing up: flatpak applications")
-#     backup_flatpak()
+try:
+    # Backup flatpak
+    print("Backing up: flatpak applications")
+    backup_flatpak()
 	
-#     # Backup pip packages
-#     print("Backing up: pip packages")
-#     backup_pip_packages()
+    # Backup pip packages
+    print("Backing up: pip packages")
+    backup_pip_packages()
 	
-#     # Backup wallpaper
-#     print("Backing up: Wallpaper")
-#     backup_wallpaper()
+    # Backup wallpaper
+    print("Backing up: Wallpaper")
+    backup_wallpaper()
 	
-#     # Need to backup
-#     if need_to_backup_analyse():
-#         # Prepare backup
-#         if MAIN_PREPARE.prepare_the_backup():
-#             print('Calling backup now...')
+    # Need to backup
+    if MAIN.need_to_backup_analyse():
+        # Prepare backup
+        if MAIN_PREPARE.prepare_the_backup():
+            print('Calling backup now...')
 
-#             # Backup now
-#             sub.Popen(
-#                 ['python3', SRC_BACKUP_NOW_PY], 
-#                     stdout=sub.PIPE, 
-#                     stderr=sub.PIPE)  
-#     else:
-#         print('No need to back up.')
+            # Backup now
+            sub.Popen(
+                ['python3', SRC_BACKUP_NOW_PY], 
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE)  
+    else:
+        print('No need to back up.')
 
-#         # Backing up to False
-#         MAIN_INI_FILE.set_database_value(
-#             'STATUS', 'backing_up_now', 'False')  
+        # Backing up to False
+        MAIN_INI_FILE.set_database_value(
+            'STATUS', 'backing_up_now', 'False')  
 		
-#         # Check if backup checker is not already running  
-#         process_title = "Time Machine - Backup Checker"
-#         if not is_process_running(process_title):
-#             print(f"No process with the title '{process_title}' is currently running.")
-#             # Re.open backup checker
-#             sub.Popen(
-#                 ['python3', SRC_BACKUP_CHECKER_PY], 
-#                 stdout=sub.PIPE, 
-#                 stderr=sub.PIPE)
-# except Exception as e:
-#     # Save error log
-#     MAIN_INI_FILE.report_error(e)
+        # Check if backup checker is not already running  
+        process_title = "Time Machine - Backup Checker"
+        if not MAIN.is_process_running(process_title):
+            print(f"No process with the title '{process_title}' is currently running.")
+            # Re.open backup checker
+            sub.Popen(
+                ['python3', SRC_BACKUP_CHECKER_PY], 
+                stdout=sub.PIPE, 
+                stderr=sub.PIPE)
+except Exception as e:
+    # Save error log
+    MAIN_INI_FILE.report_error(e)
