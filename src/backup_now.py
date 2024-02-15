@@ -219,27 +219,9 @@ class BACKUP:
 							destination_location = (
 								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
 
-							destination_location = os.path.join(MAIN_INI_FILE.time_folder_format(), destination)
+							# destination_location = os.path.join(MAIN_INI_FILE.time_folder_format(), destination)
+							destination_location = MAIN_INI_FILE.time_folder_format() + destination
 
-							# 'Stop' that send dir time, so it won't create a new dir as time passes
-							# destination_location# = os.path.dirname(MAIN_INI_FILE.time_folder_format())
-
-
-							# # No unfinished backtup
-							# if not MAIN_INI_FILE.get_database_value('STATUS', 'unfinished_backup'):
-							#
-							# 
-							#
-							# 	# Add static time to it
-							# 	destination_location = (destination_location + 
-							# 		'/' + STATIC_TIME_FOLDER + destination)
-							# 	# TODO
-							# 	# Get latest date and time frame inside
-							# 	from get_backup_time import get_latest_backup_time
-							# 	destination_location = MAIN_INI_FILE.time_folder_format().split('/')[:-1]
-							# 	destination_location = '/'.join(destination_location)
-							# 	destination_location = destination_location + '/' + get_latest_backup_time() + '/' + destination
-						
 						# PROGRESS BAR
 						progress_bar(count_total_file)
 

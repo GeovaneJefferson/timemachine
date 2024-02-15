@@ -429,14 +429,14 @@ class ANALYSES:
 						+ 
 						local_combine_home_with_backup_location)
 					
-					print(file)
-					print(x)
-					print(y)
-					print(home_item_path_location)
-					print(compare_to)
-					print(local_item_path_location)
-					print(destination)
-					print(main_backup_folder_location)
+					# print(file)
+					# print(x)
+					# print(y)
+					# print(home_item_path_location)
+					# print(compare_to)
+					# print(local_item_path_location)
+					# print(destination)
+					# print(main_backup_folder_location)
 					# exit()
 
 					# NEW
@@ -458,7 +458,7 @@ class ANALYSES:
 							self.add_to_backup_dict(
 								home_item_path_location, 
 								destination, 
-								'UPDATE')
+								'UPDATED')
 
 
 	def need_to_backup_analyse(self):
