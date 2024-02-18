@@ -220,7 +220,7 @@ class BACKUP:
 								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
 
 							# destination_location = os.path.join(MAIN_INI_FILE.time_folder_format(), destination)
-							destination_location = MAIN_INI_FILE.time_folder_format() + destination
+							destination_location = MAIN_INI_FILE.time_folder_format() + '/' + destination
 
 						# PROGRESS BAR
 						progress_bar(count_total_file)
