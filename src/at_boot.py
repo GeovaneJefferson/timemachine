@@ -37,8 +37,7 @@ def system_tray():
                     stderr=sub.PIPE)
 
 
-if __name__=='__main__':
-    # Delay startup for x seconds
-    time.sleep(0)
-     
-    system_tray()
+# Delay startup for x seconds
+time.sleep(0)
+    
+system_tray()
