@@ -1,12 +1,11 @@
 from setup import *
+from prepare_backup import PREPAREBACKUP
+from read_ini_file import UPDATEINIFILE
 from get_folders_to_be_backup import get_folders
 from handle_spaces import handle_spaces
 from get_sizes import number_of_item_to_backup, get_item_size
 from get_users_de import get_user_de
-from prepare_backup import PREPAREBACKUP
-from prepare_backup import create_base_folders
 from notification_massage import notification_message
-from read_ini_file import UPDATEINIFILE
 from backup_flatpak import backup_flatpak
 from backup_pip_packages import backup_pip_packages
 from backup_wallpaper import backup_wallpaper
@@ -46,6 +45,7 @@ def get_all_backups_date_time():
 		if not date.startswith('.'):
 			# Add all dates to the list
 			has_date_time_to_compare.append(date)
+
 
 class ANALYSES:
 	def add_to_home_dict(self, item_name, item_path_location):
@@ -431,4 +431,4 @@ try:
                 stderr=sub.PIPE)
 except Exception as e:
     # Save error log
-    MAIN_INI_FILE.report_error(e)
+    MAIN_INI_FILE.report_error(e, 'ANALYSE')

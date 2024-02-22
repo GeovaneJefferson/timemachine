@@ -1,10 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from check_connection import is_connected
-from backup_flatpak import backup_flatpak
-from backup_pip_packages import backup_pip_packages
-from backup_wallpaper import backup_wallpaper
 from prepare_backup import PREPAREBACKUP
+from check_connection import is_connected
 
 # Found packages list
 list_of_found_deb_pakages = []
@@ -13,6 +10,7 @@ list_of_found_rpm_packages = []
 MAIN_INI_FILE = UPDATEINIFILE()
 MAIN_PREPARE = PREPAREBACKUP()
 DOWNLOADS_FOLDER_LOCATION = f"{HOME_USER}/Downloads"
+
 
 # Check for new .deb, .rpm etc. inside Downloads folder and back up
 def check_for_new_packages():
@@ -41,11 +39,6 @@ def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    # sub.run(
-                    #     ['cp', '-rvf', src, dst], 
-                    #     stdout=sub.PIPE, 
-                    #     stderr=sub.PIPE)
-                    
                     shutil.copytree(src, dst, symlinks=False)
         
         # Search for .rpm packages inside Downloads folder
@@ -70,11 +63,6 @@ def check_for_new_packages():
                     # backup the found package
                     src = DOWNLOADS_FOLDER_LOCATION + "/" + package
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    # sub.run(
-                    #     ['cp', '-rvf', src, dst], 
-                    #     stdout=sub.PIPE, 
-                    #     stderr=sub.PIPE)
-                    
                     shutil.copytree(src, dst, symlinks=False)
 
 def time_to_backup(current_time):
@@ -85,7 +73,6 @@ def time_to_backup(current_time):
 
     print("Calling analyses...")
 
-    # try:
     x = sub.Popen(
         ['python3', SRC_ANALYSE_PY], 
         stdout=sub.PIPE, 
@@ -98,25 +85,8 @@ def time_to_backup(current_time):
         print(f"Backup process completed successfully. Output: {output}")
     else:
         print(f"Error in backup process. Output: {output}, Error: {error}")
-    # except Exception as e:
-    #     # Save error log
-    #     MAIN_INI_FILE.report_error(e)
 
     exit()
-
-        # x = sub.Popen(
-        #     ['python3', SRC_ANALYSE_PY],
-        #         stdout=sub.PIPE,
-        #         stderr=sub.PIPE)
-        
-        # output, error = x.communicate()
-
-        #     # Check the return code
-        # if x.returncode == 0:
-        #     print(f"Backup process completed successfully. Output: {output}")
-        # else:
-        #     print(f"Error in backup process. Output: {output}, Error: {error}")
-    
 
 # Set the process name
 setproctitle.setproctitle("Time Machine - Backup Checker")
@@ -135,7 +105,6 @@ if is_connected(MAIN_INI_FILE.hd_hd()):
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
 
-            # Exit
             exit()
 
 while True:
@@ -166,19 +135,15 @@ while True:
                 if current_time in MILITARY_TIME_OPTION:
                     # Time to backup
                     time_to_backup(current_time)
-                
 
                 # Check for new packages to backup
                 check_for_new_packages()
-
             else:
                 print('Backup connection: OFF')
-
         else:
             print('Backup checker: PAUSED')
         
         time.sleep(5)
-
     except Exception as e:
         # Save error log
         # MAIN_INI_FILE.report_error(e)
