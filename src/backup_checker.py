@@ -66,7 +66,6 @@ def check_for_new_packages():
                     shutil.copytree(src, dst, symlinks=False)
 
 def time_to_backup(current_time):
-    
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
         'INFO', 'latest_backup_time_check', current_time) 
@@ -146,5 +145,4 @@ while True:
         time.sleep(5)
     except Exception as e:
         # Save error log
-        # MAIN_INI_FILE.report_error(e)
-        pass
+        MAIN_INI_FILE.report_error(e)
