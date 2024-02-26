@@ -143,6 +143,10 @@ while True:
             print('Backup checker: PAUSED')
         
         time.sleep(5)
+    
+    except BrokenPipeError:
+        # Ignore Broken pipe error
+        pass
     except Exception as e:
         # Save error log
         MAIN_INI_FILE.report_error(e)
