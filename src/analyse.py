@@ -387,7 +387,7 @@ MAIN = ANALYSES()
 print('Analysing backup...')
 notification_message('Analysing backup...')
 
-# MAIN.need_to_backup_analyse()
+MAIN.need_to_backup_analyse()
 
 try:
     # Backup flatpak
@@ -429,6 +429,9 @@ try:
                 ['python3', SRC_BACKUP_CHECKER_PY], 
                 stdout=sub.PIPE, 
                 stderr=sub.PIPE)
+except BrokenPipeError:
+	# Ignore Broken pipe error
+	pass
 except Exception as e:
     # Save error log
     MAIN_INI_FILE.report_error(e, 'ANALYSE')
