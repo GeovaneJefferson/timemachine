@@ -18,9 +18,6 @@ from save_info import save_info
 from create_directory import create_directory, create_file
 
 
-reboot_after_restore = False
-
-
 class WelcomeScreen(QWidget):
 	def __init__(self):
 		super(WelcomeScreen, self).__init__()
@@ -28,7 +25,7 @@ class WelcomeScreen(QWidget):
 		self.ui.setupUi(self)
 
 		# Countdown
-		self.countdown = 10
+		# self.countdown = 10
 
 		# Page 1
 		self.ui.button_continue.clicked.connect(self.on_continue_button_clicked_page1)
@@ -40,7 +37,7 @@ class WelcomeScreen(QWidget):
 		#######################################################################
 		# Page 2
 		#######################################################################
-		self.selected_item_texts = []
+		# self.selected_item_texts = []
 
 		# Connections
 		self.ui.button_back_page2.clicked.connect(self.on_back_button_page2_clicked)
@@ -571,9 +568,9 @@ class WelcomeScreen(QWidget):
 
 	def on_restore_button_clicked_page4(self):
 		# Disable restore, back button and automatically checkbox
-		self.ui.button_restore_page4.setEnabled(False)
-		self.ui.button_back_page4.setEnabled(False)
-		self.ui.checkbox_automatically_reboot_page4.setEnabled(False)
+		self.ui.button_restore_page4.setVisible(False)
+		self.ui.button_back_page4.setVisible(False)
+		self.ui.checkbox_automatically_reboot_page4.setVisible(False)
 
 		# Load page5
 		self.load_restore_page5()
@@ -626,11 +623,12 @@ class WelcomeScreen(QWidget):
 		self.ui.label_restoring_status.setAlignment(
 			Qt.AlignHCenter | Qt.AlignVCenter)
 
-		pb_value = MAIN_INI_FILE.get_database_value(
-			'RESTORE', 'restore_progress_bar').split('.')[0]
+		pb_value = str(MAIN_INI_FILE.get_database_value(
+			'RESTORE', 'restore_progress_bar')).split('.')[0]
 		
 		MAIN.ui.progress_bar_restoring.setValue(int(pb_value))
 
+		# After is all done
 		if not MAIN_INI_FILE.get_database_value('STATUS', 'is_restoring'):
 			# Stop previous timer
 			timer.stop()
@@ -650,11 +648,6 @@ class WelcomeScreen(QWidget):
 			
 			else:
 				print("All done.")
-
-	def update_progressbar(self):
-		pb_value = int(MAIN_INI_FILE.get_database_value('RESTORE', 'restore_progress_bar'))
-		
-		MAIN.ui.progress_bar_restoring.setValue(pb_value)
 
 	########################################################
 	# PAGE 5

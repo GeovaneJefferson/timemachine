@@ -52,7 +52,6 @@ class RESTORE:
             if self.item_to_restore == 1:
                 # Show 99%
                 self.progress_increment = 99 / self.item_to_restore
-
             else:
                 self.progress_increment = 100 / self.item_to_restore
 
