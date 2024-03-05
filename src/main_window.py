@@ -292,7 +292,7 @@ class MainWindow(QMainWindow):
             try:
                 os.remove(LOG_LOCATION)
                 print(f"File '{LOG_LOCATION}' deleted successfully.")
-            except OSError as e:
+            except Exception as e:
                 print(f"Error deleting file: {e}")
 
         # Re-select few option
