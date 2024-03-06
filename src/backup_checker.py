@@ -150,4 +150,4 @@ while True:
     except Exception as e:
         pass
         # Save error log
-        # MAIN_INI_FILE.report_error(e)
+        MAIN_INI_FILE.report_error(e)

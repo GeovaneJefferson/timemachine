@@ -47,4 +47,5 @@ def backup_pip_packages():
 
     except Exception as e:
         # Save error log
-        MAIN_INI_FILE.report_error(e)
+        pass
+        # MAIN_INI_FILE.report_error(e)
