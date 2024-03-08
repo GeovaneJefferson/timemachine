@@ -24,7 +24,6 @@ IMAGE_TYPES = [
     "bmp", "ps", "tif"
 ]
 
-
 def size_format(size_bytes):
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
         if size_bytes < 1024.0:
@@ -33,15 +32,27 @@ def size_format(size_bytes):
         size_bytes /= 1024.0
 
 def get_full_location(item, column):
-    item_txt = item.text(column)
-    full_location = item_txt
+    # item_txt = item.text(column)
+    # full_location = item_txt
 
-    parent_item = item.parent()
-    while parent_item:
-        parent_txt = parent_item.text(column)
-        full_location = f"{parent_txt}/{full_location}"
-        parent_item = parent_item.parent()
+    # parent_item = item.parent()
+    # while parent_item:
+    #     parent_txt = parent_item.text(column)
+    #     full_location = f"{parent_txt}/{full_location}"
+    #     parent_item = parent_item.parent()
 
+    # return full_location
+    
+    # TODO 
+    # Get select item full location, only gets name
+    # TODO 
+    
+    full_location = item.text(column)
+    parent = item.parent()
+    while parent is not None:
+        print("Parent:", parent.text(column))  # Debugging
+        full_location = parent.text(column) + '/' + full_location
+        parent = parent.parent()
     return full_location
 
 def resize_image(pixmap, max_size):
@@ -114,7 +125,12 @@ class MainWindow(QMainWindow):
         self.ui.btn_restore.clicked.connect(self.start_restore)
 
         # Settings from QTree
-        self.ui.tree_widget.setHeaderLabels(["Name", "Date Modified", "Size", "Type"])
+        self.ui.tree_widget.setHeaderLabels(
+            [
+            "Name",
+             "Date Modified", 
+             "Size", 
+             "Type"])
         self.ui.tree_widget.setColumnWidth(0, 250)
         self.ui.tree_widget.setColumnWidth(1, 150)
         # self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
@@ -127,12 +143,10 @@ class MainWindow(QMainWindow):
     def add_backup_folders(self):
         # Get backup folders names
         for folder in get_all_backup_folders():
-            print(folder)
             try:
                 # Can the folder be found inside Users Home?
-                folder = folder.capitalize()
+                folder = str(folder).capitalize()
                 os.listdir(f"{HOME_USER}/{folder}")
-
             except FileNotFoundError:
                 # Lower folder first letter
                 folder = folder.lower()  # Lower folder first letter
@@ -159,7 +173,8 @@ class MainWindow(QMainWindow):
 
             # Automatically check the first folder in the list
             if not self.ALREADY_CHECKED_FIRST_FOLDER:
-                self.btn_backup_home_folders.setChecked(True)
+                # Auto click the current folder button
+                self.btn_backup_home_folders.click()
                 # Set as current selected folder
                 self.CURRENT_FOLDER = folder
                 # Set already checked to True
@@ -359,7 +374,7 @@ class MainWindow(QMainWindow):
                     # By uncomment this, will add all subfolders and so on, but freezes ui
                     # self.qtree_add_sub_items(sub_folder_item, item_path)
                     
-                elif os.path.isfile(item_path) and not item_name.startswith('.'):
+                elif os.path.isfile(item_path) and not str(item_name).startswith('.'):
                     item_size = os.path.getsize(item_path)
                     date_modified = os.path.getmtime(item_path)
                     extension = os.path.splitext(item_name)[1]
@@ -530,7 +545,6 @@ class MainWindow(QMainWindow):
             if item_name not in self.files_to_restore:
                 # Add if not already in the list
                 self.files_to_restore.append(item_name)
-            
             else:
                 # Remove from the list
                 self.files_to_restore.remove(item_name)
@@ -539,7 +553,6 @@ class MainWindow(QMainWindow):
             item_name = item.text(column)
             try:
                 self.files_to_restore.remove(item_name)
-            
             except ValueError:
                 pass
             
@@ -721,6 +734,7 @@ class MainWindow(QMainWindow):
         exit()
 
     def time_machine_this_item(self, item_name):
+        # Check this item in date/time folders, if available
         pass
 
     def keyPressEvent(self, event):
