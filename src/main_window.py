@@ -268,10 +268,8 @@ class MainWindow(QMainWindow):
             if "Your branch is behind" in git_update_command:
                 # Show update button
                 self.ui.update_available_button.show()
-            
             else:
                 print("No new updates available...")
-
         except:
             pass
 

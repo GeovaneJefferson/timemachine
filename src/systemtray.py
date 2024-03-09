@@ -99,14 +99,6 @@ class APP:
         timer.timeout.connect(self.should_be_running)
         timer.start(DELAY_TO_UPDATE) 
 
-        try:
-            # Check if system tray should be running
-            self.should_be_running()
-        except Exception as e:
-            # Save error log
-            MAIN_INI_FILE.report_error(e)
-            exit()
-        
         self.app.exec()
     
     def should_be_running(self):
