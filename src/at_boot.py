@@ -28,7 +28,8 @@ def system_tray():
                 # Start backup checker
                 sub.Popen(
                     ['python3', SRC_BACKUP_NOW_PY],
-                    stdout=sub.PIPE,)
+                    stdout=sub.PIPE,
+                    stderr=sub.PIPE)
             else:
                 # Start backup checker
                 sub.Popen(
