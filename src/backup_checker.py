@@ -148,6 +148,6 @@ while True:
         # Ignore Broken pipe error
         pass
     except Exception as e:
-        pass
-        # Save error log
-        MAIN_INI_FILE.report_error(e + 'TEST')
+        if '<frame at' in e:
+            # Save error log
+            MAIN_INI_FILE.report_error(e)
