@@ -68,7 +68,8 @@ class APP:
         self.browse_time_machine_backups.triggered.connect(
             lambda: sub.Popen(
                 ['python3', SRC_ENTER_TIME_MACHINE_PY], 
-                    stdout=sub.PIPE, stderr=sub.PIPE))
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE))
         
         # Open Time Machine button
         self.open_Time_machine = QAction(f"Open {APP_NAME}")
@@ -76,7 +77,8 @@ class APP:
         self.open_Time_machine.triggered.connect(
             lambda: sub.Popen(
                 ['python3', SRC_MAIN_WINDOW_PY], 
-                    stdout=sub.PIPE, stderr=sub.PIPE))
+                    stdout=sub.PIPE, 
+                    stderr=sub.PIPE))
 
         # Add all to menu
         # self.menu.addAction(self.dummyLine)
@@ -125,10 +127,8 @@ class APP:
         else:
             self.last_backup_information.setText('First, select a backup device.')
             self.last_backup_information2.setText(' ')
-            
             # Backup now button to False
             self.backup_now_button.setEnabled(False)
-            
             # Browser Time Machine button to False 
             self.browse_time_machine_backups.setEnabled(False)
 
@@ -152,7 +152,6 @@ class APP:
             # Is not restoring
             if MAIN_INI_FILE.current_restoring():
                 self.change_color("Yellow")
-                
                 # Disable
                 self.backup_now_button.setEnabled(False)
                 self.browse_time_machine_backups.setEnabled(False)
@@ -162,13 +161,9 @@ class APP:
 
                 self.backup_now_button.setEnabled(True)
                 self.browse_time_machine_backups.setEnabled(True)
-
-                # # Frequency modes
-                # self.informations_label()
             else:
                 # Backing up right now
                 self.change_color("Green")
-
                 # Notification information
                 self.last_backup_information.setText(MAIN_INI_FILE.get_database_value(
                     'INFO', 'current_backing_up'))
@@ -188,10 +183,8 @@ class APP:
     def status_off(self):
         # Hide this feature
         self.error_button.setVisible(False)
-
         # Change color to Red
         self.change_color("Red")
-        
         self.backup_now_button.setEnabled(False)
         self.browse_time_machine_backups.setEnabled(False)
         
@@ -205,11 +198,9 @@ class APP:
                 # Next backup
                 self.last_backup_information.setText(
                     (f'Next Backup to "{MAIN_INI_FILE.hd_name()}":'))
-                
             else:
                 self.last_backup_information.setText(
                         f'Latest Backup to: "{MAIN_INI_FILE.hd_name()}"')
-                
                 # Show latest backup label
                 self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
         
@@ -271,19 +262,15 @@ class APP:
                 if color == "Green":
                     self.color=color
                     self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_RUN_ICON))
-
                 elif color == "White":
                     self.color=color
                     self.tray.setIcon(QIcon(SRC_BACKUP_ICON))
-
                 elif color == "Red":
                     self.color=color
                     self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_ERROR_ICON))
-
                 elif color == "Yellow":
                     self.color=color
                     self.tray.setIcon(QIcon(SRC_SYSTEM_BAR_RESTORE_ICON))
-
         except Exception:
             self.exit()
 

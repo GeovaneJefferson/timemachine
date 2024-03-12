@@ -274,7 +274,7 @@ class MainWindow(QMainWindow):
             pass
 
     def on_update_button_clicked(self):
-        # Delete Logs file
+        # Delete old log files
         if os.path.exists(LOG_LOCATION):
             try:
                 os.remove(LOG_LOCATION)
@@ -282,13 +282,13 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print(f"Error deleting file: {e}")
 
-        # Set system tray to False
-        MAIN_INI_FILE.set_database_value(
-            'SYSTEMTRAY', 'system_tray', 'False')
+        # # Set system tray to False
+        # MAIN_INI_FILE.set_database_value(
+        #     'SYSTEMTRAY', 'system_tray', 'False')
 
-        # Set automatically backupt to False
-        MAIN_INI_FILE.set_database_value(
-            'STATUS', 'automatically_backup', 'False')
+        # # Set automatically backupt to False
+        # MAIN_INI_FILE.set_database_value(
+        #     'STATUS', 'automatically_backup', 'False')
 
         # Update and make save the DB
         backup_db_file(True)
