@@ -2,6 +2,7 @@ import subprocess as sub
 import pathlib
 from pathlib import Path
 import sqlite3
+import shutil
 
 
 # Remember to change setup too!
@@ -31,17 +32,24 @@ try:
     conn.close()
 
     command = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/"
-    sub.run(["rm", "-rf", command])
+    # Remove dir
+    # sub.run(["rm", "-rf", command])
+    shutil.rmtree(command)
 
     command = DST_FILE_EXE_DESKTOP
     sub.run(["rm", "-rf", command])
+    # Remove dir
+    shutil.rmtree(command)
 
     command = DST_MIGRATION_ASSISTANT_DESKTOP
-    sub.run(["rm", "-rf", command])
+    # sub.run(["rm", "-rf", command])
+    # Remove dir
+    shutil.rmtree(command)
 
     command = DST_BACKUP_CHECK_DESKTOP
-    sub.run(["rm", "-rf", command])
-
+    # sub.run(["rm", "-rf", command])
+    # Remove dir
+    shutil.rmtree(command)
 except Exception as error:
     print(error)
     exit()
