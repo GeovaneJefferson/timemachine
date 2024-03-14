@@ -277,7 +277,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Update Available</string>
+         <string> Update Available </string>
         </property>
        </widget>
       </item>
@@ -292,7 +292,7 @@
          <string>If you haven’t set up Time Machine, click Add Backup Disk to set up a backup disk.</string>
         </property>
         <property name="text">
-         <string>Add Backup Disk...</string>
+         <string> Add Backup Disk... </string>
         </property>
        </widget>
       </item>
