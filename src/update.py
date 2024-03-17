@@ -10,7 +10,7 @@ def backup_db_file(update_now):
             
     if update_now:
         # sub.run(["rm", "-rf", SRC_PYCACHE])
-        os.remove(SRC_PYCACHE)
+        shutil.rmtree(SRC_PYCACHE)
 
         update_git(update_now)
 

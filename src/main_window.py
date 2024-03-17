@@ -10,7 +10,6 @@ from check_connection import is_connected
 from device_location import device_location
 from get_home_folders import get_home_folders
 from handle_spaces import handle_spaces
-from read_ini_file import UPDATEINIFILE
 
 from get_sizes import (
     get_all_max_backup_device_space,
