@@ -30,16 +30,13 @@ def check_for_new_packages():
                     for old_package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
                         if old_package.startswith(f"{package.split('_')[0]}"):
                             # Delete old package
-                            dst = MAIN_INI_FILE.deb_main_folder() + "/" + old_package
-                            sub.run(
-                                ["rm", "-rf", dst], 
-                                stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+                            dst = os.path.join(MAIN_INI_FILE.deb_main_folder(), old_package)
+                            os.remove(dst)
 
                     # backup the found package
-                    src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                    src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    shutil.copytree(src, dst, symlinks=False)
+                    shutil.copy2(src, dst, symlinks=False)
         
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -54,16 +51,13 @@ def check_for_new_packages():
                     for deleteOutput in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
                         if deleteOutput.startswith(f"{package.split('_')[0]}"):
                             # Delete old package
-                            dst = MAIN_INI_FILE.rpm_main_folder() + "/" + old_package
-                            sub.run(
-                                ["rm", "-rf", src, dst], 
-                                stdout=sub.PIPE, 
-                                stderr=sub.PIPE)
+                            dst = os.path.join(MAIN_INI_FILE.deb_main_folder(), old_package)
+                            os.remove(dst)
 
                     # backup the found package
-                    src = DOWNLOADS_FOLDER_LOCATION + "/" + package
+                    src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    shutil.copytree(src, dst, symlinks=False)
+                    shutil.copy2(src, dst, symlinks=False)
 
 def time_to_backup(current_time):
     # Save current time of check

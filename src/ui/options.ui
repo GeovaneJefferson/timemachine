@@ -123,7 +123,7 @@
             <x>0</x>
             <y>0</y>
             <width>375</width>
-            <height>175</height>
+            <height>183</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -279,13 +279,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QPushButton" name="cancel_button_options">
-       <property name="text">
-        <string>Close</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

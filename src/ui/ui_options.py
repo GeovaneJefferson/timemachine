@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'options.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -81,7 +81,7 @@ class Ui_Options(object):
         self.scroll_area_folders.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 375, 175))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 375, 183))
         self.gridLayout_4 = QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.grid_folders_layout = QGridLayout()
@@ -173,11 +173,6 @@ class Ui_Options(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
-        self.cancel_button_options = QPushButton(Options)
-        self.cancel_button_options.setObjectName(u"cancel_button_options")
-
-        self.horizontalLayout_2.addWidget(self.cancel_button_options, 0, Qt.AlignRight)
-
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
@@ -209,6 +204,5 @@ class Ui_Options(object):
         self.reset_button.setText(QCoreApplication.translate("Options", u"Reset", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.others_tab), QCoreApplication.translate("Options", u"Others", None))
         self.version_label.setText(QCoreApplication.translate("Options", u"Version", None))
-        self.cancel_button_options.setText(QCoreApplication.translate("Options", u"Close", None))
     # retranslateUi
 

@@ -1,7 +1,6 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from get_users_de import get_user_de
-from notification_massage import notification_message_current_backing_up
 # from handle_spaces import handle_spaces
 
 
@@ -10,10 +9,8 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 has_wallpaper_to_restore = []
 
-async def restore_backup_wallpaper():
+def restore_backup_wallpaper():
     print("Applying users wallpaper...")
-
-    notification_message_current_backing_up("Applying: Wallpaper...")
 
     # Check for at least a wallpaper
     for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
@@ -25,9 +22,11 @@ async def restore_backup_wallpaper():
         for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
 
             # Restore
-            src = MAIN_INI_FILE.wallpaper_main_folder() + "/" + wallpaper
-            dst = HOME_USER + "/Pictures"
-            sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            src = os.path.join(MAIN_INI_FILE.wallpaper_main_folder(), wallpaper)
+            dst = os.path.join(HOME_USER, "Pictures")
+            # sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
+            # Copy files/folders
+            shutil.copytree(src, dst)
 
         # Handle spaces
         # wallpaper = handle_spaces(wallpaper)

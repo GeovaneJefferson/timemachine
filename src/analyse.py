@@ -351,9 +351,6 @@ class ANALYSES:
 			
 			# If the number of items to backup is 0
 			if number_of_item_to_backup() == 0:
-				# Display a notification
-				# notification_message(' ')
-				
 				# Indicate that no backup is needed
 				print(YELLOW + 'ANALYSE: No need to backup.' + RESET)
 				return False
@@ -364,7 +361,6 @@ class ANALYSES:
 				# Indicate that backup is needed
 				print(GREEN + 'ANALYSE: Need to backup.' + RESET)
 				return True 
-		
 		else:
 			# Make the first backup
 			print(GREEN + 'ANALYSE: Making first backup.' + RESET)

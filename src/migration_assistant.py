@@ -3,19 +3,24 @@ from setup import *
 from device_location import device_location
 from package_manager import package_manager
 from read_ini_file import UPDATEINIFILE
-# from restore_backup_wallpaper import restore_backup_wallpaper
-# from restore_backup_home import restore_backup_home
-# from restore_backup_flatpaks_applications import restore_backup_flatpaks_applications
-# from restore_backup_package_applications import restore_backup_package_applications
-# from restore_backup_flatpaks_data import restore_backup_flatpaks_data
-# # from restart_kde_session import restart_kde_session
-# from restore_kde_share_config import restore_kde_share_config
-# from restore_kde_config import restore_kde_config
-# from restore_kde_local_share import restore_kde_local_share
-# from get_users_de import get_user_de
-# from notification_massage import notification_message_current_backing_up
 from save_info import save_info
 from create_directory import create_directory, create_file
+
+from get_users_de import get_user_de
+from restore_backup_wallpaper import restore_backup_wallpaper
+from restore_backup_flatpaks_data import restore_backup_flatpaks_data
+# from restart_kde_session import restart_kde_session
+from restore_kde_share_config import restore_kde_share_config
+from restore_kde_config import restore_kde_config
+from restore_kde_local_share import restore_kde_local_share
+from handle_spaces import handle_spaces
+from create_backup_checker_desktop import create_directory
+
+
+
+# Define a function to convert the date string to a datetime object
+def convert_to_datetime(date_str):
+	return datetime.strptime(date_str, '%y-%m-%d')
 
 
 class WelcomeScreen(QWidget):
@@ -48,7 +53,6 @@ class WelcomeScreen(QWidget):
 		#######################################################################
 		self.item_to_restore = []
 		self.applications_to_be_exclude = []
-		self.flatpaks_to_be_exclude = []
 
 		# Disable applications sub checkboxes
 		self.ui.applications_sub_widget_page3.hide()
@@ -110,7 +114,7 @@ class WelcomeScreen(QWidget):
 				"background-color: transparent;"
 				"background-position: center;"
 			"}")
-        
+		
 		# Page 2
 		# Disable continue button
 		self.ui.button_continue_page2.setEnabled(False)
@@ -128,10 +132,8 @@ class WelcomeScreen(QWidget):
 		# Search external inside media
 		if device_location():
 			return MEDIA
-
 		elif not device_location():
 			return RUN
-
 		else:
 			return None
 
@@ -235,28 +237,29 @@ class WelcomeScreen(QWidget):
 					self.number_of_item_applications += 1
 
 		# Expand it, 1 item = 20 height
-		self.ui.applications_sub_widget_page3.setMinimumHeight(self.number_of_item_applications*30)
+		self.ui.applications_sub_widget_page3.setMinimumHeight(self.number_of_item_applications*20)
 
 	def load_flatpaks_sub_checkbox_page3(self):
-		self.has_flatpak_to_restore = []
+		self.list_of_flatpaks_to_restore = []
 
 		# Read installed flatpaks names
 		with open(f'{MAIN_INI_FILE.flatpak_txt_location()}', 'r') as flatpaks:
 			for flatpak in flatpaks.read().split():
-				self.has_flatpak_to_restore.append(flatpak)
+				if flatpak not in self.list_of_flatpaks_to_restore:
+					self.list_of_flatpaks_to_restore.append(flatpak)
 
 		# Has flatpaks to restore
-		if self.has_flatpak_to_restore:
-			for flatpak in self.has_flatpak_to_restore:
+		if self.list_of_flatpaks_to_restore:
+			for flatpak in self.list_of_flatpaks_to_restore:
 				sub_flatpaks_checkboxes = QCheckBox()
-				sub_flatpaks_checkboxes.setText(self.has_flatpak_to_restore[self.number_of_item_flatpaks])
+				sub_flatpaks_checkboxes.setText(flatpak)
 				sub_flatpaks_checkboxes.setChecked(True)
 				sub_flatpaks_checkboxes.clicked.connect(
 					lambda *args, flatpak=flatpak: self.exclude_flatpaks(flatpak))
 				self.ui.flatpaks_sub_checkbox_layout_page3.addWidget(sub_flatpaks_checkboxes)
 
+				# Add 1
 				self.number_of_item_flatpaks += 1
-
 		else:
 			# Disable Application checkbox
 			self.ui.checkbox_flatpaks_page3.setEnabled(False)
@@ -279,15 +282,13 @@ class WelcomeScreen(QWidget):
 		home_to_restore.clear()
 
 	def load_system_settings_page3(self):
-		system_settings_list = []
+		wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder()  
 
-		for output in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-			system_settings_list.append(output)
+		# Get a list of files in the specified folder
+		system_settings_list = os.listdir(wallpaper_folder)
 
-		if system_settings_list:
-			self.ui.checkbox_system_settings_page3.setEnabled(True)
-		else:
-			self.ui.checkbox_system_settings_page3.setEnabled(False)
+		# Enable/disable the checkbox based on the presence of files
+		self.ui.checkbox_system_settings_page3.setEnabled(bool(system_settings_list))
 
 	def on_applications_checkbox_clicked_page3(self):
 		# Expand it if selected
@@ -296,9 +297,6 @@ class WelcomeScreen(QWidget):
 			self.item_to_restore.append('Applications')
 			# Show applications sub checkboxes
 			self.ui.applications_sub_widget_page3.show()
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'True')
-		
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Applications')
@@ -306,8 +304,6 @@ class WelcomeScreen(QWidget):
 			self.ui.applications_sub_widget_page3.hide()
 			# Clear applications exclude list
 			self.applications_to_be_exclude.clear()
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
 
 		self.check_checkboxes()
 
@@ -318,15 +314,11 @@ class WelcomeScreen(QWidget):
 			self.item_to_restore.append('Flatpaks')
 			# Show applications sub checkboxes
 			self.ui.flatpaks_sub_widget_page3.show()
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'True')
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Flatpaks')
 			# Hide applications sub checkboxes
 			self.ui.flatpaks_sub_widget_page3.hide()
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
 		
 		self.check_checkboxes()
 
@@ -335,24 +327,17 @@ class WelcomeScreen(QWidget):
 		if self.ui.checkbox_files_folders_page3.isChecked():
 			# Add to list to restore
 			self.item_to_restore.append('Files/Folders')
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'True')
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Files/Folders')
-			# Update DB
-			MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
 
 		self.check_checkboxes()
 
 	def on_system_settings_checkbox_clicked_page3(self):
 		if self.ui.checkbox_system_settings_page3.isChecked():
-			MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'True')
 			# Add "system_settings" to list
 			self.item_to_restore.append("System_Settings")
 		else:
-			MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-
 			if "System_Settings" in self.item_to_restore:
 				self.item_to_restore.remove("System_Settings")
 
@@ -388,26 +373,16 @@ class WelcomeScreen(QWidget):
 			self.ui.checkbox_applications_page3.setChecked(True)
 
 	def exclude_flatpaks(self, exclude):
-		print("Exclude flatpak:", exclude)
-
 		# Add to the exclude list
-		if exclude not in self.flatpaks_to_be_exclude:
-			self.flatpaks_to_be_exclude.append(exclude)
+		if exclude not in self.list_of_flatpaks_to_restore:
+			print("Adding flatpak:", exclude)
+			self.list_of_flatpaks_to_restore.append(exclude)
 		else:
-			self.flatpaks_to_be_exclude.remove(exclude)
-
-		# # if user deselect all app, application check to False
-		# if len(self.flatpaks_to_be_exclude) == len(self.count_of_deb_list) or len(self.flatpaks_to_be_exclude) == len(self.count_of_rpm_list):
-		#     self.ui.checkbox_flatpaks_page3.setChecked(False)
-		#     self.has_itens_inside_to_continue_list.clear()
-		#     self.ui.button_continue_page3.setEnabled(False)
-		# else:
-		#     self.ui.checkbox_flatpaks_page3.setChecked(True)
-		#     # Enable continue button
-		#     self.ui.button_continue_page3.setEnabled(True)
+			print("Removing flatpak:", exclude)
+			self.list_of_flatpaks_to_restore.remove(exclude)
 
 		# If all sub checboxes was deselected
-		if len(self.flatpaks_to_be_exclude) == self.number_of_item_flatpaks:
+		if not self.list_of_flatpaks_to_restore:
 			# Uncheck applications checkbox
 			self.ui.checkbox_flatpaks_page3.setChecked(False)
 		else:
@@ -431,9 +406,6 @@ class WelcomeScreen(QWidget):
 		#################################
 		# FLATPAK
 		#################################
-		# Clean flaptak list
-		self.has_flatpak_to_restore.clear()
-
 		# Reset count of flatpaks
 		self.number_of_item_flatpaks = 0
 
@@ -456,40 +428,17 @@ class WelcomeScreen(QWidget):
 		# Create a application exlude file
 		if os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
 			os.remove(MAIN_INI_FILE.exclude_applications_location())
-			
 		else:
 			dst = MAIN_INI_FILE.exclude_applications_location()
 			# Check if the directory exists, and create it if necessary
 			create_directory(dst)
 			# Check if the file exists, and create it if necessary
 			create_file(dst)
-
-			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
-            
+			
 		# Write exclude flatpaks to file
 		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
 			for exclude_applications in self.applications_to_be_exclude:
 				exclude.write(exclude_applications + "\n")
-
-		#################################
-		# FLATPAK
-		#################################
-		# Create a flatpak exlude file
-		if os.path.exists(MAIN_INI_FILE.exclude_flatpaks_location()):
-			os.remove(MAIN_INI_FILE.exclude_flatpaks_location())
-		else:
-			dst = MAIN_INI_FILE.exclude_flatpaks_location()
-			# Check if the directory exists, and create it if necessary
-			create_directory(dst)
-			# Check if the file exists, and create it if necessary
-			create_file(dst)
-
-			# sub.run(["touch", dst], stdout=sub.PIPE, stderr=sub.PIPE)
-            
-		# Write exclude flatpaks to file
-		with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'w') as exclude:
-			for exclude_flatpak in self.flatpaks_to_be_exclude:
-				exclude.write(exclude_flatpak + "\n")
 
 		# Load page4
 		self.load_restore_page4()
@@ -502,7 +451,6 @@ class WelcomeScreen(QWidget):
 		if not self.item_to_restore:
 			# Disable
 			self.ui.button_continue_page3.setEnabled(False)
-		
 		else:
 			# Enable
 			self.ui.button_continue_page3.setEnabled(True)
@@ -565,36 +513,7 @@ class WelcomeScreen(QWidget):
 		# Backup devices name
 		self.ui.to_image_label.setText(USERNAME.capitalize())
 		self.ui.to_image_label.adjustSize()
-
-	def on_restore_button_clicked_page4(self):
-		# Disable restore, back button and automatically checkbox
-		self.ui.button_restore_page4.setVisible(False)
-		self.ui.button_back_page4.setVisible(False)
-		self.ui.checkbox_automatically_reboot_page4.setVisible(False)
-
-		# Load page5
-		self.load_restore_page5()
-
-		# Show progressbar
-		self.ui.progress_bar_restoring.show()
-
-		# Call restore class
-		sub.Popen(
-			['python3', SRC_RESTORE_CMD_PY],
-				stdout=sub.PIPE,
-				stderr=sub.PIPE)
-
-		# Update DB
-		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
-
-		# Start QTimer to read notification
-		timer.timeout.connect(self.update_status_feedback)
-		timer.start(1000)
-
-	def on_back_button_clicked_page4(self):
-		# Animation
-		self.stacked_widget_transition(self.ui.page_3, 'left')
-
+	
 	def stacked_widget_transition(self, page, direction):
 		width = self.ui.stackedWidget.width()
 
@@ -615,44 +534,16 @@ class WelcomeScreen(QWidget):
 
 		self.ui.stackedWidget.setCurrentWidget(page)
 
-	def update_status_feedback(self):
-		self.ui.label_restoring_status.setText(
-			MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
+	def on_back_button_clicked_page4(self):
+		# Animation
+		self.stacked_widget_transition(self.ui.page_3, 'left')
+
+	def on_restore_button_clicked_page4(self):
+		# Disable restore, back button and automatically checkbox
+		self.ui.button_restore_page4.setVisible(False)
+		self.ui.button_back_page4.setVisible(False)
+		self.ui.checkbox_automatically_reboot_page4.setVisible(False)
 		
-		self.ui.label_restoring_status.adjustSize()
-		self.ui.label_restoring_status.setAlignment(
-			Qt.AlignHCenter | Qt.AlignVCenter)
-
-		pb_value = str(MAIN_INI_FILE.get_database_value(
-			'RESTORE', 'restore_progress_bar')).split('.')[0]
-		
-		MAIN.ui.progress_bar_restoring.setValue(int(pb_value))
-
-		# After is all done
-		if not MAIN_INI_FILE.get_database_value('STATUS', 'is_restoring'):
-			# Stop previous timer
-			timer.stop()
-
-			# Change to page5
-			self.ui.stackedWidget.setCurrentWidget(self.ui.page_5)
-
-			# Automatically reboot
-			if self.ui.checkbox_automatically_reboot_page4.isChecked():
-				# Reboot system
-				print("Rebooting now...")
-
-				sub.run(
-					["sudo", "reboot"],
-						stdout=sub.PIPE,
-						stderr=sub.PIPE)
-			
-			else:
-				print("All done.")
-
-	########################################################
-	# PAGE 5
-	########################################################
-	def load_restore_page5(self):
 		# Add done image
 		done_image = QLabel(self.ui.image_page5)
 		done_image.setFixedSize(64, 64)
@@ -663,7 +554,482 @@ class WelcomeScreen(QWidget):
 				"background-repeat: no-repeat;"
 				"background-color: transparent;"
 			"}")
+		
+		# Update DB
+		# MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
 
+		# self.update_pb()
+		# Show progressbar
+		self.ui.progress_bar_restoring.show()
+
+		# Update DB
+		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
+
+		# Call restore class asynchronously
+		RESTORE_PROCESS = RESTORE()
+		# asyncio.run(self.start_restoring_and_update_db())
+		# asyncio.run(RESTORE_PROCESS.start())
+		RESTORE_PROCESS.start_restoring()
+	
+	def update_status_feedback(self):
+		self.ui.label_restoring_status.setText(
+			MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
+		
+		self.ui.label_restoring_status.adjustSize()
+		self.ui.label_restoring_status.setAlignment(
+			Qt.AlignHCenter | Qt.AlignVCenter)
+
+	########################################################
+	# PAGE 5
+	########################################################
+	def update_pb(self):
+		# Start QTimer to read notification
+		timer.timeout.connect(self.update_status_feedback)
+		timer.start(1000)
+
+
+class RESTORE:
+	def __init__(self):
+		# Length of item to restore
+		self.item_to_restore = 0 
+		
+		#  Get length of the restore list
+		if MAIN.ui.checkbox_applications_page3.isChecked():
+			# Number of flatpaks items
+			applicationsCount = int(MAIN.number_of_item_applications - len(MAIN.applications_to_be_exclude))
+			self.item_to_restore += applicationsCount
+		
+		if MAIN.ui.checkbox_flatpaks_page3.isChecked():
+			# Number of flatpaks items
+			flatpaksCount = int(len(MAIN.list_of_flatpaks_to_restore))
+			self.item_to_restore += flatpaksCount
+		
+		# if MAIN.ui.checkbox_flatpaks_page3.isChecked():
+		# 	self.item_to_restore += 1
+		
+		if MAIN.ui.checkbox_files_folders_page3.isChecked():
+			self.item_to_restore += 1
+		
+		if MAIN.ui.checkbox_system_settings_page3.isChecked():
+			self.item_to_restore += 1
+
+		# Only one item inside restore list
+		if self.item_to_restore == 1:
+			# Show 99%
+			self.progress_increment = round(99 / self.item_to_restore)
+		else:
+			self.progress_increment = round(100 / self.item_to_restore)
+
+	def update_progressbar_db(self):
+		try:
+			pb_value = round(self.progress_increment / (self.item_to_restore) * 100)
+			# Fix at 100%
+			if pb_value == 100:
+				pb_value = 99
+			MAIN.ui.progress_bar_restoring.setValue(pb_value)
+		except ZeroDivisionError:
+			pass
+
+	def start_restoring(self):
+		# First change the wallpaper
+		if MAIN.ui.checkbox_system_settings_page3.isChecked():
+			# self.update_progressbar_db()
+			print('Restoring wallpaper...')
+			self.restore_backup_wallpaper()
+		
+		# Restore home folder
+		if MAIN.ui.checkbox_files_folders_page3.isChecked():
+			# self.update_progressbar_db()
+			print('Restoring HOME...')
+			self.restore_backup_home()
+			# Restore updates file to HOME
+			self.restore_backup_home_updates()
+		
+		# Restore applications packages
+		if MAIN.ui.checkbox_applications_page3.isChecked():
+			# self.update_progressbar_db()
+			print('Restoring Applications Packages...')
+			self.restore_backup_package_applications()
+	   
+		# Restore flatpaks
+		if MAIN.ui.checkbox_flatpaks_page3.isChecked():
+			# self.update_progressbar_db()
+			print('Restoring Flatpak Applications...')
+			self.restore_backup_flatpaks_applications()
+		
+		# # Restore flatpaks data
+		# if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
+		# 	# self.update_progressbar_db()
+		# 	print('Restoring Flatpak Data...')
+		# 	restore_backup_flatpaks_data()
+		
+		# # Restore system settings
+		if MAIN.ui.checkbox_system_settings_page3.isChecked():
+			# Only for kde
+			if get_user_de() == 'kde':
+				# self.update_progressbar_db()
+				print('Restoring KDE .local/share...')
+				restore_kde_local_share()
+
+				# self.update_progressbar_db()
+				print('Restoring KDE .config...')
+				restore_kde_config()
+
+				# self.update_progressbar_db()
+				print('Restoring KDE .share/config...')
+				restore_kde_share_config()
+				
+				# # Restart KDE session
+				# sub.run(
+				#     ['kquitapp5', 'plasmashell'],
+				#     stdout=sub.PIPE,
+				#     stderr=sub.PIPE)
+			
+				# sub.run(
+				#     ['kstart5', 'plasmashell'],
+				#     stdout=sub.PIPE,
+				#     stderr=sub.PIPE)
+		
+		self.end_restoring()
+
+
+	#----------RESTORE TOPICS----------#
+	## Home
+	def restore_backup_home(self):
+		location = MAIN_INI_FILE.main_backup_folder()
+
+		for folder in os.listdir(location):
+			# EXclude hidden files/folder
+			if not folder.startswith('.'):
+				folder = handle_spaces(folder)
+			
+				# If folder folder do not exist, create it
+				if not os.path.exists(f"{HOME_USER}/{folder}"):
+					dst = os.path.join(HOME_USER, folder)
+					# Create directory if necessary
+					create_directory(dst)
+					
+				# Source from main backup folder
+				src = os.path.join(location, folder) + '/'
+				dst = os.path.join(HOME_USER, folder) + '/'
+
+				# Copy everything from src to dst folder
+				for i in os.listdir(src):
+					x = src + i
+					
+					print('Restoring Home Folder:', x)
+
+					# Show current installing flatpak to the user
+					MAIN.ui.label_restoring_status.setText(f'Copying: {x}...')
+					MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+					
+					# Copy files
+					shutil.copy2(x, dst)
+
+					# Substract 1
+					self.item_to_restore -= 1
+					self.update_progressbar_db()
+
+	## Home Updates
+	def restore_backup_home_updates(self):
+		date_list = []
+		added_list = []
+		dst_loc = MAIN_INI_FILE.backup_dates_location()
+
+		# Add all dates to the list
+		for date in os.listdir(dst_loc):
+			# Eclude hidden files/folders
+			if not date.startswith('.'):
+				date_list.append(date)
+
+		# Sort the dates in descending order using the converted datetime objects
+		sorted_date = sorted(date_list,
+					key=convert_to_datetime,
+					reverse=True)
+
+		# Loop through each date folder
+		for i in range(len(sorted_date)):
+			# Get date path
+			date_path = f'{dst_loc}/{sorted_date[i]}'
+		
+			# Get latest file update and add to the 'Added list' 
+			for root, _, files in os.walk(date_path):
+				if files:
+					for i in range(len(files)):
+						if files[i] not in added_list:
+							destination_location = root.replace(date_path, '')
+							destination_location =  os.path.join(
+									HOME_USER, '/'.join(
+									destination_location.split(
+									'/')[2:])) 
+							
+							source = os.path.join(root, files[i])
+							# print('Restoring:', files[i])
+							# print('Source:', source)
+							# print('Destination:', os.path.join(destination_location, files[i]))
+
+							# Restore lastest file update
+							print(f'Restoring {source} to: {destination_location}')
+							
+							# Show current installing to the user
+							MAIN.ui.label_restoring_status.setText(
+								f'Copying to: {destination_location}...')
+							MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+						
+							# shutil.copy(
+							#     source,
+							#     destination_location)
+							shutil.copy2(source, destination_location)
+
+							# Add to 'Added list'
+							added_list.append(files[i])
+
+	## Application packages
+	def restore_backup_package_applications(self):
+		print("Installing applications packages...")
+		
+		try:             
+			with open(MAIN_INI_FILE.exclude_applications_location(), 'r') as read_exclude:
+				read_exclude = read_exclude.read().split("\n")
+		except:
+			pass
+
+		try:    
+			package_manager = MAIN_INI_FILE.get_database_value('INFO', 'packagermanager') 
+
+			if package_manager == DEB_FOLDER_NAME:
+				################################################################################
+				# Restore DEBS
+				################################################################################
+				for package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
+					# Install only if package if not in the exclude app list
+					if package not in read_exclude:
+						# Install it
+						command = os.path.join(MAIN_INI_FILE.deb_main_folder(), package)
+					
+						print(f"Installing {command}")
+						
+						# Show current installing to the user
+						MAIN.ui.label_restoring_status.setText(f'Installing: {command}...')
+						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+						
+						sub.run(
+							["sudo", "dpkg", "-i", command],
+							stdout=sub.PIPE,
+							stderr=sub.PIPE)
+
+				# Fix packages installation
+				sub.run(
+					["sudo", "apt", "install", "-f"],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+				
+				# Substract 1
+				self.item_to_restore -= 1
+				self.update_progressbar_db()
+
+			elif package_manager == RPM_FOLDER_NAME:
+				################################################################################
+				# Restore RPMS
+				################################################################################
+				for package in os.listdir(MAIN_INI_FILE.rpm_main_folder()):
+					print(f"Installing {MAIN_INI_FILE.rpm_main_folder()}/{package}")
+
+					# Install only if package if not in the exclude app list
+					if package not in read_exclude:
+						# Install it
+						command = os.path.join(MAIN_INI_FILE.rpm_main_folder(), package)
+					
+						print(f"Installing {command}")
+						
+						# Show current installing to the user
+						MAIN.ui.label_restoring_status.setText(f'Installing: {command}...')
+						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+						
+						sub.run(
+							["sudo", "rpm", "-ivh", "--replacepkgs", command],
+							stdout=sub.PIPE,
+							stderr=sub.PIPE)
+						
+						# Substract 1
+						self.item_to_restore -= 1
+						self.update_progressbar_db()
+		except Exception as e:
+			print(e)
+			pass
+
+	## Flatpaks
+	def restore_backup_flatpaks_applications(self):
+		for cnt in range(len(MAIN.list_of_flatpaks_to_restore)):
+			flatpak = str(MAIN.list_of_flatpaks_to_restore[cnt]).strip()
+
+			# Install only if flatpak if not in the exclude app list
+			try:
+				print(f'Installing flatpak: {flatpak}...')
+
+				# Show current installing flatpak to the user
+				MAIN.ui.label_restoring_status.setText(f'Installing flatpak: {flatpak}...')
+				MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+				
+				# Install them
+				sub.run(
+					["flatpak", "install", "--system",
+					"--noninteractive", "--assumeyes", "--or-update",
+					flatpak], 
+					stdout=sub.PIPE, 
+					stderr=sub.PIPE)
+				
+				# Substract 1
+				self.item_to_restore -= 1
+				self.update_progressbar_db()
+			except Exception as e:
+				print(e)
+				pass
+
+	## Wallpaper
+	def restore_backup_wallpaper(self):
+		# Check for at least a wallpaper
+		wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder()  # Assuming this is a valid path
+
+		# Get a list of wallpapers in the specified folder
+		wallpapers_to_restore = os.listdir(wallpaper_folder)
+
+		if wallpapers_to_restore:
+			# Copy backed up wallpaper to .local/share/wallpapers/
+			for wallpaper in os.listdir(wallpaper_folder):
+
+				# Restore
+				src = os.path.join(MAIN_INI_FILE.wallpaper_main_folder(), wallpaper)
+				dst = os.path.join(HOME_USER, "Pictures")
+				
+				print('Copying this wallpaper:', wallpaper)
+				
+				# Show it to the UI
+				MAIN.ui.label_restoring_status.setText(f'Applying: {wallpaper}...')
+				MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+						
+				# Copy files
+				shutil.copy2(src, dst)
+
+			# Handle spaces
+			# wallpaper = handle_spaces(wallpaper)
+
+			# Apply wallpaper
+			self.apply_wallpaper(wallpaper)
+
+	## Apply Wallpaper
+	def apply_wallpaper(self, wallpaper):
+		print("Applying", wallpaper)
+
+		# Activate wallpaper option
+		if  get_user_de() == "gnome":
+			# Detect color scheme
+			get_color_scheme = os.popen(DETECT_THEME_MODE)
+			get_color_scheme = get_color_scheme.read().strip().replace("'", "")
+
+			# Light or Dark wallpaper
+			if get_color_scheme == "prefer-light" or get_color_scheme == "default":
+				sub.run(
+					['gsettings',
+					'set',
+					'org.gnome.desktop.background',
+					'picture-uri',
+					f'{HOME_USER}/Pictures/{wallpaper}'], 
+					stdout=sub.PIPE, 
+					stderr=sub.PIPE)
+			
+			else:
+				sub.run(
+					['gsettings',
+					'set',
+					'org.gnome.desktop.background',
+					'picture-uri-dark',
+					f'{HOME_USER}/Pictures/{wallpaper}'], 
+					stdout=sub.PIPE, 
+					stderr=sub.PIPE)
+
+			# Set wallpaper to Zoom
+			sub.run(
+				["gsettings",
+				"set",
+				"org.gnome.desktop.background",
+				"picture-options",
+				"zoom"],
+				stdout=sub.PIPE,
+				stderr=sub.PIPE)
+			
+			################################################################
+
+		elif get_user_de() == "kde":
+			# Apply KDE wallpaper
+			os.system("""
+				dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+				var Desktops=desktops();
+				for (i=0;i<Desktops.length;i++)
+				{
+					d=Desktops[i];
+					d.wallpaperPlugin="org.kde.image";
+					d.currentConfigGroup=Array("Wallpaper",
+												"org.kde.image",
+												"General");
+					d.writeConfig("Image", "file://%s/.local/share/wallpapers/%s");
+				}'""" % (HOME_USER, wallpaper))
+			
+			# TODO
+			# Testing
+			try:
+				# Apply KDE screenlock wallpaper, will be the same as desktop wallpaper
+				wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
+				sub.run([
+					'kwriteconfig5',
+					'--file', 'kscreenlockerrc',
+					'--group', 'Greeter',
+					'--group', 'Wallpaper',
+					'--group', 'org.kde.image',
+					'--group', 'General',
+					'--key', 'Image',
+					wallpaper_full_location
+				], check=True)
+			except Exception as error:
+				print(error)
+				pass
+		
+		else:
+			return None
+	#----------RESTORE TOPICS----------#
+
+	# End
+	def end_restoring(self):
+		print("Restoring is done!")
+		# Stop the QTimer after the asynchronous operation is complete
+		timer.stop()
+
+		# Update DB
+		MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+		MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+		MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
+		MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+		MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+		MAIN_INI_FILE.set_database_value('RESTORE', 'restore_progress_bar', '0')
+		
+		# Change to page5
+		MAIN.ui.stackedWidget.setCurrentWidget(MAIN.ui.page_5)
+
+		# Automatically reboot
+		if MAIN.ui.checkbox_automatically_reboot_page4.isChecked():
+			# Reboot system
+			print("Rebooting now...")
+			
+			# Wait few seconds
+			time.sleep(10)
+
+			# Reboot
+			sub.run(
+				["sudo", "reboot"],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+		
 
 if __name__ == '__main__':
 	APP = QApplication(sys.argv)

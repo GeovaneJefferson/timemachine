@@ -7,12 +7,11 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 async def restore_kde_config():
     try:
-        src = MAIN_INI_FILE.kde_config_main_folder() + "/"
-        dst = HOME_USER + "/.config/"
-        sub.run(['cp', '-rvf', src, dst], stdout=sub.PIPE, stderr=sub.PIPE)
-        
-        notification_message_current_backing_up(f'Restoring: {MAIN_INI_FILE.kde_config_main_folder()}...')
-    except:         
+        src = MAIN_INI_FILE.kde_config_main_folder() + '/'
+        dst = HOME_USER + '/.config/'
+        shutil.copy2(src, dst)
+    except Exception as error:
+        print(error)
         pass
 
 

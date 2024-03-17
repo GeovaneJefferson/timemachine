@@ -6,7 +6,6 @@ def create_directory(location):
     if '.' in str(location).split('/')[-1]:
         # Extract the directory path from the file path
         directory = os.path.dirname(location)
-
     else:
         # Extract the directory path from the file path
         directory = location

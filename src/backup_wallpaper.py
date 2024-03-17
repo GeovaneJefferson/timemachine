@@ -1,7 +1,7 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
-from notification_massage import notification_message
 from handle_spaces import handle_spaces
+from get_users_de import get_user_de
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -9,7 +9,7 @@ MAIN_INI_FILE = UPDATEINIFILE()
 def get_wallpaper_full_location():
     # Detect color scheme
     get_color_scheme = os.popen(
-        DETECT_THEME_MODE).read().strip().replace("'", "")
+        DETECT_THEME_MODE).read().replace("'", "").strip()
 
     ##################################
     # Compatibility
@@ -18,14 +18,13 @@ def get_wallpaper_full_location():
     # Gnome
     ###################################
     # If users os name is found in DB
-    if MAIN_INI_FILE.get_database_value('INFO', 'os') == "gnome":
+    if 'gnome' or 'unity' in os.popen(GET_USER_DE.lower()):
         # Light theme
         if get_color_scheme == "prefer-light":
             # Get current wallpaper
             wallpaper = os.popen(
-                GET_GNOME_WALLPAPER).read().strip().replace(
-                    "file://", "").replace("'", "")
-            
+                GET_GNOME_WALLPAPER).read().replace(
+                    "file://", "").replace("'", "").strip()
         else:
             # Get current wallpaper (Dark)
             wallpaper = os.popen(
@@ -48,8 +47,7 @@ def get_wallpaper_full_location():
     ##################################
     # Kde
     ###################################
-    elif MAIN_INI_FILE.get_database_value('INFO', 'os') == "kde":
-        
+    elif 'kde' in os.popen(GET_USER_DE.lower()):
         # Search wallaper inside plasma-org.kde.plasma.desktop-appletsrc
         with open(f"{HOME_USER}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
             # Strips the newline character
@@ -71,33 +69,28 @@ def get_wallpaper_full_location():
                     return line
 
 def backup_wallpaper():
-    # GNOME/KDE
-    notification_message("Backing up: Wallpaper")
+    wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder() 
 
-    # Check for at least a wallpaper
-    if os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-        for wallpaper in os.listdir(f"{MAIN_INI_FILE.wallpaper_main_folder()}/"):
-            # Delete all wallpapers
-            command = f"{MAIN_INI_FILE.wallpaper_main_folder()}/{wallpaper}"
+    # Get a list of wallpapers in the specified folder
+    wallpapers = os.listdir(wallpaper_folder)
 
-            print('Deleting', command)
+    # Check if there are any wallpapers to delete
+    if wallpapers:
+        # Iterate over each wallpaper and delete it
+        for wallpaper in wallpapers:
+            wallpaper_path = os.path.join(wallpaper_folder, wallpaper)
+            print('Deleting', wallpaper_path)
 
-            sub.run(
-                ["rm", "-rf", command], 
-                stdout=sub.PIPE, 
-                stderr=sub.PIPE)
+            # Execute the command to delete the wallpaper
+            os.remove(wallpaper_path)
 
     # Backup wallpaper
     if get_wallpaper_full_location() is not None:
         src = get_wallpaper_full_location()
-        dst = MAIN_INI_FILE.wallpaper_main_folder() + "/"
+        dst = MAIN_INI_FILE.wallpaper_main_folder()
         
         print('Copying', src)
-
-        sub.run(
-            ['cp', '-rvf', src, dst],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
+        shutil.copy2(src, dst)
 
     # Write to file
     update_db()
@@ -117,7 +110,5 @@ def update_db():
             CONFIG.write(configfile)
 
 
-
 if __name__ == '__main__':
-    backup_wallpaper()
     pass

@@ -1,5 +1,7 @@
 from setup import *
-from ui.ui_mainwindow import Ui_MainWindow
+from ui.ui_mainwindow_test import Ui_MainWindow
+from read_ini_file import UPDATEINIFILE
+
 from ui.ui_dialog import Ui_Dialog
 from ui.ui_options import Ui_Options
 
@@ -11,7 +13,6 @@ from handle_spaces import handle_spaces
 from read_ini_file import UPDATEINIFILE
 
 from get_sizes import (
-    get_external_device_max_size,
     get_all_max_backup_device_space,
     get_external_device_used_size,
     get_all_used_backup_device_space)
@@ -26,7 +27,6 @@ from prepare_backup import PREPAREBACKUP
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
-
 choose_device = []
 capture_devices  = []
 
@@ -39,9 +39,22 @@ class MainWindow(QMainWindow):
 
         # Set the process name
         setproctitle.setproctitle("Time Machine")
+        
+        # Set application name
+        self.setWindowTitle(APP_NAME)
+
+        # Set application logo image
+        logo_image = QPixmap(SRC_BACKUP_ICON)
+        resized_logo_image = logo_image.scaledToWidth(32, Qt.SmoothTransformation)
+        self.ui.app_logo_image.setPixmap(resized_logo_image)
 
         # Hide update button
         self.ui.update_available_button.hide()
+
+        # Colors
+        self.ui.external_size_label.setStyleSheet('color: gray')
+        self.ui.last_backup_label.setStyleSheet('color: gray')
+        self.ui.next_backup_label.setStyleSheet('color: gray')
 
         ######################################################################
         # Connection
@@ -116,7 +129,7 @@ class MainWindow(QMainWindow):
         #         create_base_folders()
 
         timer.timeout.connect(self.running)
-        timer.start(2000)
+        timer.start(1000)
         self.running()
 
     def running(self):
@@ -144,31 +157,23 @@ class MainWindow(QMainWindow):
                 # Get backup devices size informations
                 ################################################
                 try:
-                    # Color 
-                    self.ui.external_size_label.setStyleSheet(
-                        '''
-                        color: gray;
-                        ''')
                     self.ui.external_size_label.setText(
-                        f'{get_external_device_used_size()} of available')
-
+                        f'Available Space: {get_external_device_used_size()}')
                 except:
-                    self.ui.external_size_label.setText('None')
+                    self.ui.external_size_label.setText('Available Space:')
 
                 ################################################
                 # Check if is current busy doing something
                 ################################################
                 # If is backing up right now
                 if MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
-                    # Hide
-                    self.ui.next_backup_label.hide()
-                    
                     # Show 
                     self.ui.progressbar_main_window.show()
 
+                    # TODO
                     # Notification information
-                    self.ui.backups_label.setText(
-                        MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
+                    # self.ui.backups_label.setText(
+                    #     MAIN_INI_FILE.get_database_value('INFO', 'current_backing_up'))
             
                     # TODO
                     # Show backing up labe
@@ -210,21 +215,13 @@ class MainWindow(QMainWindow):
                     if (59 - int(MAIN_INI_FILE.current_minute())) <= TIME_LEFT_WINDOW:
                         self.ui.next_backup_label.setText(
                             f'Next Backup: {calculate_time_left_to_backup()}')
-                    
                     else:
                         # Next backup label
-                        self.ui.next_backup_label.setText('Next Backup: ' + next_backup_label())
-                
+                        self.ui.next_backup_label.setText(f'Next Backup: {next_backup_label()}')
                 else:
                     self.ui.next_backup_label.setText(
                         'Next Backup: Automatic backups off')
                     
-                # Color 
-                self.ui.next_backup_label.setStyleSheet(
-                    '''
-                    color: gray;
-                    ''')
-                
             ################################################
             # Has no connection to it
             ################################################
@@ -312,28 +309,18 @@ class MainWindow(QMainWindow):
             # Show devices name
             self.ui.external_name_label.setText(f"{MAIN_INI_FILE.hd_name()}")
             
+            # TODO
             # Show oldest backup label
-            self.ui.backups_label.setText(f'Backups: {MAIN_INI_FILE.oldest_backup_date()} - {MAIN_INI_FILE.latest_backup_date()}')
-
-            # Color
-            self.ui.backups_label.setStyleSheet('color: gray')
-
-            # Show latest backup label
-            # self.ui.latest_backup_label.setText(f"Latest Backup: {MAIN_INI_FILE.latest_backup_date()}")
+            self.ui.last_backup_label.setText(f'Last Backup: {MAIN_INI_FILE.latest_backup_date()}')
+            self.ui.next_backup_label.setText(f'Next Backup: None')
 
             # Hide
             self.ui.select_disk_button.hide()
             
-            # Hide informations UI
-            self.ui.external_name_label.show()
-            self.ui.external_size_label.show()
+            # Show informations UI
             self.ui.progressbar_main_window.show()
-            self.ui.backups_label.show()
-            self.ui.next_backup_label.show()
             self.ui.remove_backup_device.show()
-
         except FileNotFoundError:
-            # TMB was not yet created in backup device
             pass
 
     def not_registered_action_to_take(self):
@@ -341,7 +328,7 @@ class MainWindow(QMainWindow):
             # self.ui.backup_device_informations.setFixedHeight(0)
 
             # Set external size label to No information
-            self.ui.external_size_label.setText('None')
+            self.ui.external_size_label.setText('Available Space:')
 
             # Set external name label to None
             self.ui.external_name_label.setText("None")
@@ -353,11 +340,7 @@ class MainWindow(QMainWindow):
             self.ui.select_disk_button.show()
             
             # Hide informations UI
-            self.ui.external_name_label.hide()
-            self.ui.external_size_label.hide()
             self.ui.progressbar_main_window.hide()
-            self.ui.backups_label.hide()
-            self.ui.next_backup_label.hide()
             self.ui.remove_backup_device.hide()
 
     def on_options_button_clicked(self):
@@ -376,14 +359,14 @@ class MainWindow(QMainWindow):
         reset_confirmation = QMessageBox.question(
             self,
             'Remove Device as Backup Storage',
-            'Are you sure you want to remove this device as backup storage?',
+            'Are you sure you want to remove this device as backup disk?',
             QMessageBox.Yes
             |
             QMessageBox.No)
 
         if reset_confirmation == QMessageBox.Yes:            
-            # MAIN.latest_backup_label.setText("Latest Backup: None")
-            # MAIN.oldest_backup_label.setText("Oldest Backup: None")
+            MAIN.ui.last_backup_label.setText("Last Backup:")
+            MAIN.ui.next_backup_label.setText("Next Backup:")
             
             # Reset settings
             # Backup section
@@ -393,7 +376,7 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+            # MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
 
             # INFO
             MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', 'None')
@@ -406,7 +389,7 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('EXTERNAL', 'name', 'None')
             
             # SYSTEMTRAY 
-            MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
+            # MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
             
             MAIN_INI_FILE.set_database_value('INFO', 'language', 'None')
             MAIN_INI_FILE.set_database_value('INFO', 'os', 'None')
@@ -437,27 +420,17 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
             MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
 
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
 
             print("All settings was reset!")
 
-            # Re-open Main Windows
-            # sub.Popen(['python3', SRC_MAIN_WINDOW_PY])
-
-            # Resize backup device frame
-            # self.ui.backup_device_informations.setFixedHeight(0)
-            
             # Hide informations UI
-            self.ui.external_name_label.hide()
-            self.ui.external_size_label.hide()
             self.ui.progressbar_main_window.hide()
-            self.ui.backups_label.hide()
-            self.ui.next_backup_label.hide()
             self.ui.remove_backup_device.hide()
 
             # Show add backup devices button
@@ -466,11 +439,7 @@ class MainWindow(QMainWindow):
             MAIN.ui.select_disk_button.setEnabled(True)
 
             # Reset
-            self.ui.next_backup_label.setText('Next Backup: None')
-
-            # Quit
-            # exit()
-
+            self.ui.next_backup_label.setText('Next Backup:')
         else:
             QMessageBox.Close
 
@@ -481,6 +450,9 @@ class SelectDisk(QDialog):
         self.dialog_ui = Ui_Dialog()
         self.dialog_ui.setupUi(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+
+        # Colors
+        self.dialog_ui.use_disk_button_dialog.setStyleSheet('color: gray')
 
     def show_disk_dialog(self):
         ######################################################################
@@ -513,7 +485,7 @@ class SelectDisk(QDialog):
                         print("     Device:", backup_device)
 
                         # Add to capture list
-                        capture_devices .append(backup_device)
+                        capture_devices.append(backup_device)
 
                         # Avaliables external  devices
                         self.available_devices = QPushButton()
@@ -528,17 +500,17 @@ class SelectDisk(QDialog):
                         #     self.available_devices.setAutoExclusive(True)
        
                         # Load the system icon 'audio-headset'
-                        audio_headset_icon = QIcon.fromTheme(
+                        drive_media_icon = QIcon.fromTheme(
                             'drive-removable-media')
 
                         # Convert the QIcon to a QPixmap
-                        audio_headset_pixmap = audio_headset_icon.pixmap(36, 36)
+                        audio_headset_pixmap = drive_media_icon.pixmap(36, 36)
 
                         from_image = QLabel(self.available_devices)
                         from_image.setPixmap(audio_headset_pixmap)
                         from_image.setScaledContents(True)
                         from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-                        from_image.move(10, 10)
+                        from_image.move(10, 8)
 
                         # Free Space Label
                         free_space_label = QLabel(self.available_devices)
@@ -555,17 +527,7 @@ class SelectDisk(QDialog):
                         ################################################################################
                         # Add widgets and Layouts
                         ################################################################################
-                        # Auto checked the choosed backup device
-                        if text == MAIN_INI_FILE.hd_name():
-                            self.available_devices.setChecked(True)
-
-                            # Add the saved device to to this layput
-                            self.dialog_ui.backup_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
-
-                        else:
-                            # Vertical layout
-                            self.dialog_ui.available_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
-
+                        self.dialog_ui.available_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
             except FileNotFoundError:
                 pass
 
@@ -617,14 +579,11 @@ class SelectDisk(QDialog):
                         # Auto checked the choosed backup device
                         if text == MAIN_INI_FILE.hd_name():
                             self.available_devices.setChecked(True)
-
                             # Add the saved device to to this layput
                             self.dialog_ui.backup_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
-
                         else:
                             # Vertical layout
                             self.dialog_ui.available_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
-
             except FileNotFoundError:
                 pass
 
@@ -645,11 +604,11 @@ class SelectDisk(QDialog):
         # MAIN.ui.backup_device_informations.setFixedHeight(118)
         
         # Show informations UI
-        MAIN.ui.external_name_label.show()
-        MAIN.ui.external_size_label.show()
+        # MAIN.ui.external_name_label.show()
+        # MAIN.ui.external_size_label.show()
         MAIN.ui.progressbar_main_window.show()
-        MAIN.ui.backups_label.show()
-        MAIN.ui.next_backup_label.show()
+        # MAIN.ui.backups_label.show()
+        # MAIN.ui.next_backup_label.show()
         MAIN.ui.remove_backup_device.show()
 
         # Hide add backup devices button
@@ -661,12 +620,8 @@ class SelectDisk(QDialog):
     def make_first_backup(self):
         # Base folder do no exists (TMB)
         if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
-            # Show preparing dialog
-            MAIN_PREPARING_DIALOG.show_preparing_dialog()
             # Prepare backup disk
             MAIN_PREPARE.prepare_the_backup()
-            # Close preparing dialog
-            MAIN_PREPARING_DIALOG.close()
 
             creation_confirmation = QMessageBox.question(
                 self,
@@ -690,7 +645,7 @@ class SelectDisk(QDialog):
         self.dialog_ui.use_disk_button_dialog.setEnabled(True)
         self.dialog_ui.use_disk_button_dialog.setStyleSheet(
             """
-                background-color: #246dec;
+                background-color: #2196f3;
                 color: white;
             """)
         
@@ -716,10 +671,10 @@ class OptionsWindow(QDialog):
         super().__init__()
         self.options_ui = Ui_Options()
         self.options_ui.setupUi(self)
-        self.setWindowFlags(
-            Qt.FramelessWindowHint | 
-            Qt.WindowStaysOnTopHint | 
-            Qt.Tool)
+        # self.setWindowFlags(
+        #     Qt.FramelessWindowHint | 
+        #     Qt.WindowStaysOnTopHint | 
+        #     Qt.Tool)
                 
         # Already added
         self.home_folder_added = False
@@ -753,10 +708,6 @@ class OptionsWindow(QDialog):
         ######################################################################
         # Connection
         ######################################################################
-        # Cancel options button dialog
-        self.options_ui.cancel_button_options.clicked.connect(
-            self.on_cancel_options_button_clicked)
-        
         # Flatpaks
         self.options_ui.allow_flatpak_data_checkBox.clicked.connect(
             self.on_allow__flatpak_data_clicked)
@@ -867,17 +818,15 @@ class OptionsWindow(QDialog):
     def on_button_fix_clicked(self):
         reset_confirmation = QMessageBox.question(
             self,
-            'Remove Device as Backup Disk',
+            'Remove Device as backup disk',
             'Are you sure you want to remove this device as backup disk?',
             QMessageBox.Yes
             |
             QMessageBox.No)
-
+        
         if reset_confirmation == QMessageBox.Yes:
-            print(f'Resetting all {APP_NAME} settings...')
-
-            # MAIN.latest_backup_label.setText("Latest Backup: None")
-            # MAIN.oldest_backup_label.setText("Oldest Backup: None")
+            MAIN.ui.last_backup_label.setText("Last Backup:")
+            MAIN.ui.next_backup_label.setText("Next Backup:")
             
             # Reset settings
             # Backup section
@@ -887,7 +836,7 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('STATUS', 'first_startup', 'False')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_names', 'True')
             MAIN_INI_FILE.set_database_value('STATUS', 'allow_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
+            # MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
 
             # INFO
             MAIN_INI_FILE.set_database_value('INFO', 'latest_backup_date', 'None')
@@ -931,12 +880,12 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
             MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
 
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-            MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
+            # MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
 
             print("All settings was reset!")
 
@@ -945,17 +894,8 @@ class OptionsWindow(QDialog):
 
             # Quit
             exit()
-
         else:
             QMessageBox.Close
-
-    def on_cancel_options_button_clicked(self):
-        # Close dialog window 
-        self.close()
-
-    # def on_save_options_button_clicked(self):
-    #     # Close dialog window 
-    #     self.close()
 
     def on_automatically_checkbox_clicked(self):
         if self.options_ui.automatically_backup_checkbox.isChecked():
@@ -975,10 +915,8 @@ class OptionsWindow(QDialog):
                 stderr=sub.PIPE)
             
             print("Auto backup was successfully activated!")
-
         else:
             # Remove autostart.desktop
-            # sub.run(f"rm -f {DST_AUTOSTART_LOCATION}",shell=True)
             os.remove(DST_AUTOSTART_LOCATION)
 
             MAIN_INI_FILE.set_database_value(
@@ -1012,36 +950,13 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value(
                 'INFO', 'allow_browser_in_time_machine', 'False')
             print("Hiding Browser In Time Machine")
-    
-                  
-class PreparingDialog(QDialog):
-    def __init__(self, parent=True):
-        super().__init__()
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
-        self.setModal(True)
-
-    def show_preparing_dialog(self):
-        # Progress bar
-        self.pb_bar = QProgressBar(self, minimum=0, maximum=0)
-        self.pb_bar.setValue(0)
-
-        layout = QVBoxLayout()
-        self.label = QLabel(f'Preparing "{MAIN_INI_FILE.hd_name()}..."')
-        
-        layout.addWidget(self.label)
-        layout.addWidget(self.pb_bar)
-
-        self.setLayout(layout)
-
-        self.show()
-
+                 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     # Main window
     MAIN = MainWindow()
-    MAIN_PREPARING_DIALOG = PreparingDialog()
     MAIN_PREPARE = PREPAREBACKUP()
 
     # Window icon
@@ -1049,13 +964,8 @@ if __name__ == "__main__":
 
     # Options window
     options_window_class = OptionsWindow()
+    options_window_class.setWindowTitle('Settings')
 
-    # Window size
-    MAIN.setFixedSize(618, 312)
-
-    # Window title
-    MAIN.setWindowTitle('Time Machine')
-    
     MAIN.show()
 
     sys.exit(app.exec())

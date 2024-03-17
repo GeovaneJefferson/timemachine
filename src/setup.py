@@ -54,6 +54,9 @@ timer = QtCore.QTimer()
 ################################################################################
 ## Variables
 ################################################################################
+# Language
+LOCALE_NAME = os.getenv("LANG")
+
 # Github
 GITHUB_HOME = "https://github.com/GeovaneJefferson/timemachine/issues"
 
@@ -99,7 +102,7 @@ GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
 SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
             "unity", "pop", "kde","zorin:gnome", 
             "pop:gnome", "budgie:gnome"]
-GET_USER_DE = "echo $XDG_CURRENT_DESKTOP"
+GET_USER_DE = "XDG_CURRENT_DESKTOP"
 GET_USER_PACKAGE_MANAGER = "cat /etc/os-release"
 
 ################################################################################

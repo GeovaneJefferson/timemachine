@@ -122,7 +122,7 @@ def make_first_backup():
 
 					# Back up 
 					shutil.copy(source_path, target_path)
-					print(f"Backed up: {source_path}")
+					print(f"{source_path}				[OK]")
 					
 					# PROGRESS BAR
 					progress_bar(count_total_file)
@@ -229,10 +229,9 @@ class BACKUP:
 						create_directory(destination_location)
 
 						# Back up 
-						print(f"Backing up: {location}")
-						print(f"To: {destination_location}")
-						print(f"Type: {status}")
-						print()
+						print(f"{location}				[OK]")
+						# print(f"To: {destination_location}")
+						# print(f"Type: {status}")
 
 						# is a dir
 						if os.path.isdir(location):
@@ -246,7 +245,8 @@ class BACKUP:
 								location, 
 								destination_location)
 					except Exception as e:
-						print(f"Error while backing up {location}: {e}")
+						print(f"{location}				[FAIL]")
+						print('ERROR:', e)
 						# MAIN_INI_FILE.report_error(e)
 
 	# HIDDEN FILES/FOLDERS

@@ -69,41 +69,15 @@
           <x>0</x>
           <y>0</y>
           <width>374</width>
-          <height>212</height>
+          <height>218</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QLabel" name="label">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(128, 128, 128);</string>
-           </property>
-           <property name="text">
-            <string>Backup Disk</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="backup_disk_dialog_layout"/>
-         </item>
-         <item>
           <widget class="QLabel" name="label_2">
            <property name="font">
             <font>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
              <bold>true</bold>
             </font>
            </property>
@@ -169,6 +143,10 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #2196f3;
+color: white;</string>
          </property>
          <property name="text">
           <string>Use Disk</string>

@@ -142,7 +142,6 @@ def number_of_item_to_backup():
         print(f'Num. of itens to backup: {num_of_item}')
 
         return num_of_item
-
     except:
         return 0
 

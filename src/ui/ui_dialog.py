@@ -39,33 +39,14 @@ class Ui_Dialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 374, 212))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 374, 218))
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.label = QLabel(self.scrollAreaWidgetContents)
-        self.label.setObjectName(u"label")
-        font = QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        self.label.setFont(font)
-        self.label.setStyleSheet(u"color: rgb(128, 128, 128);")
-
-        self.verticalLayout_4.addWidget(self.label)
-
-        self.line = QFrame(self.scrollAreaWidgetContents)
-        self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
-
-        self.verticalLayout_4.addWidget(self.line)
-
-        self.backup_disk_dialog_layout = QVBoxLayout()
-        self.backup_disk_dialog_layout.setObjectName(u"backup_disk_dialog_layout")
-
-        self.verticalLayout_4.addLayout(self.backup_disk_dialog_layout)
-
         self.label_2 = QLabel(self.scrollAreaWidgetContents)
         self.label_2.setObjectName(u"label_2")
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(True)
         self.label_2.setFont(font)
         self.label_2.setStyleSheet(u"color: rgb(128, 128, 128);")
 
@@ -110,6 +91,8 @@ class Ui_Dialog(object):
         self.use_disk_button_dialog.setObjectName(u"use_disk_button_dialog")
         sizePolicy.setHeightForWidth(self.use_disk_button_dialog.sizePolicy().hasHeightForWidth())
         self.use_disk_button_dialog.setSizePolicy(sizePolicy)
+        self.use_disk_button_dialog.setStyleSheet(u"background-color: #2196f3;\n"
+"color: white;")
 
         self.horizontalLayout.addWidget(self.use_disk_button_dialog, 0, Qt.AlignRight)
 
@@ -127,7 +110,6 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
-        self.label.setText(QCoreApplication.translate("Dialog", u"Backup Disk", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Available Disk", None))
         self.cancel_button_dialog.setText(QCoreApplication.translate("Dialog", u"Cancel", None))
         self.use_disk_button_dialog.setText(QCoreApplication.translate("Dialog", u"Use Disk", None))

@@ -7,11 +7,7 @@ MAIN_INI_FILE = UPDATEINIFILE()
 
 async def restore_backup_flatpaks_applications():
     print("Installing flatpaks apps...")
-    
-    # Read flatpaks and add to exclude
-    with open(f"{MAIN_INI_FILE.exclude_flatpaks_location()}", 'r') as read_exclude:
-        read_exclude = read_exclude.read().split("\n")
-  
+
     with open(f"{MAIN_INI_FILE.flatpak_txt_location()}", "r") as read_flatpak_file:
         read_flatpak_file = read_flatpak_file.readlines()
         
