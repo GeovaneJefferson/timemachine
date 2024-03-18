@@ -289,7 +289,14 @@ class MainWindow(QMainWindow):
         # Update and make save the DB
         backup_db_file(True)
 
-        # Re-select few option
+        # Re-start few features
+        if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
+            # Re-open system tray
+            sub.Popen(['python3', SRC_SYSTEM_TRAY_PY])
+        
+        if MAIN_INI_FILE.get_database_value('STATUS', 'automatically_backup'):
+            # Re-open backup checker
+            sub.Popen(['python3', SRC_BACKUP_CHECKER_PY])
 
     def connected_action_to_take(self):
         self.ui.select_disk_button.setEnabled(True)
