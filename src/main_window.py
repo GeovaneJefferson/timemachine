@@ -300,16 +300,7 @@ class MainWindow(QMainWindow):
 
     def connected_action_to_take(self):
         self.ui.select_disk_button.setEnabled(True)
-        # self.backup_now_button.setEnabled(True)
-        # self.ui.automatically_backup_checkbox.setEnabled(True)
-        # self.ui.show_in_system_tray_checkbox.setEnabled(True)
 
-    # def not_connected_action_to_take(self):
-    #     self.ui.select_disk_button.setEnabled(False)
-    #     # self.backup_now_button.setEnabled(False)
-    #     # self.ui.automatically_backup_checkbox.setEnabled(False)
-    #     # self.ui.show_in_system_tray_checkbox.setEnabled(False)
-    
     def registered_action_to_take(self):
         try:
             # Show devices name
