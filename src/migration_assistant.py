@@ -7,7 +7,6 @@ from save_info import save_info
 from create_directory import create_directory, create_file
 
 from get_users_de import get_user_de
-from restore_backup_wallpaper import restore_backup_wallpaper
 from restore_backup_flatpaks_data import restore_backup_flatpaks_data
 # from restart_kde_session import restart_kde_session
 from restore_kde_share_config import restore_kde_share_config
@@ -167,18 +166,17 @@ class WelcomeScreen(QWidget):
 		for index in selected_indexes:
 			self.selected_device = self.model.data(index)
 			print(self.selected_device)
-			print(MAIN_INI_FILE.backup_folder_name())
 
 			folder_check = os.path.join(self.devices_from(), USERNAME)
 			folder_check = os.path.join(folder_check, self.selected_device)
 			folder_check = os.path.join(folder_check, BASE_FOLDER_NAME)
-			print(folder_check)
 
 			# Allow only if the selected folder has TMB inside
 			# Enable continue button
 			if selected.indexes():
 				# Check if is 'TMB' inside selected drive
 				if os.path.exists(folder_check):
+					print(f'{BASE_FOLDER_NAME} found in:', folder_check)
 					self.ui.button_continue_page2.setEnabled(True)
 				else:
 					# Disable continue button
@@ -565,9 +563,6 @@ class WelcomeScreen(QWidget):
 		# Show progressbar
 		self.ui.progress_bar_restoring.show()
 
-		# Update DB
-		MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
-
 		# Call restore class asynchronously
 		RESTORE_PROCESS = RESTORE()
 		# asyncio.run(self.start_restoring_and_update_db())
@@ -575,8 +570,8 @@ class WelcomeScreen(QWidget):
 		RESTORE_PROCESS.start_restoring()
 	
 	def update_status_feedback(self):
-		self.ui.label_restoring_status.setText(
-			MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
+		# self.ui.label_restoring_status.setText(
+		# 	MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
 		
 		self.ui.label_restoring_status.adjustSize()
 		self.ui.label_restoring_status.setAlignment(
@@ -925,10 +920,14 @@ class RESTORE:
 		print("Applying", wallpaper)
 
 		# Activate wallpaper option
-		if  get_user_de() == "gnome":
+		if get_user_de() == "gnome" or get_user_de() == 'unity':
 			# Detect color scheme
 			get_color_scheme = os.popen(DETECT_THEME_MODE)
 			get_color_scheme = get_color_scheme.read().strip().replace("'", "")
+			
+			# print(get_color_scheme)
+			# print(wallpaper)
+			# print(f'{HOME_USER}/Pictures/{wallpaper}')
 
 			# Light or Dark wallpaper
 			if get_color_scheme == "prefer-light" or get_color_scheme == "default":
@@ -940,7 +939,6 @@ class RESTORE:
 					f'{HOME_USER}/Pictures/{wallpaper}'], 
 					stdout=sub.PIPE, 
 					stderr=sub.PIPE)
-			
 			else:
 				sub.run(
 					['gsettings',
@@ -962,7 +960,6 @@ class RESTORE:
 				stderr=sub.PIPE)
 			
 			################################################################
-
 		elif get_user_de() == "kde":
 			# Apply KDE wallpaper
 			os.system("""
