@@ -198,8 +198,7 @@
          <item alignment="Qt::AlignRight|Qt::AlignVCenter">
           <widget class="QPushButton" name="button_continue">
            <property name="styleSheet">
-            <string notr="true">background-color: #2196f3;
-color: white;</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Continue</string>
@@ -358,8 +357,7 @@ color: white;</string>
          <item alignment="Qt::AlignRight|Qt::AlignVCenter">
           <widget class="QPushButton" name="button_close_page5">
            <property name="styleSheet">
-            <string notr="true">background-color: #2196f3;
-color: white;</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Close</string>
@@ -562,8 +560,7 @@ color: white;</string>
          <item alignment="Qt::AlignRight">
           <widget class="QPushButton" name="button_continue_page2">
            <property name="styleSheet">
-            <string notr="true">background-color: #2196f3;
-color: white;</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Continue</string>
@@ -959,8 +956,7 @@ color: white;</string>
          <item>
           <widget class="QPushButton" name="button_continue_page3">
            <property name="styleSheet">
-            <string notr="true">background-color: #2196f3;
-color: white;</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Continue</string>
@@ -1407,8 +1403,7 @@ color: white;</string>
             <enum>Qt::StrongFocus</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: #2196f3;
-color: white;</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Restore</string>

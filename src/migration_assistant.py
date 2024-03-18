@@ -128,7 +128,7 @@ class WelcomeScreen(QWidget):
 	########################################################
 	# PAGE 2
 	########################################################
-	def get_devices_location_page2(self):
+	def devices_from(self):
 		# Search external inside media
 		if device_location():
 			return MEDIA
@@ -140,7 +140,7 @@ class WelcomeScreen(QWidget):
 	def show_availables_devices_page2(self):
 		self.model = QFileSystemModel()
 		self.ui.devices_area_page2.setModel(self.model)
-		
+
 		try:
 			self.ui.devices_area_page2.setWordWrap(True)
 			self.ui.devices_area_page2.setIconSize(QSize(64, 64))
@@ -154,31 +154,34 @@ class WelcomeScreen(QWidget):
 			self.ui.devices_area_page2.viewport().installEventFilter(self)
 
 			# Search inside MEDIA or RUN
-			self.model.setRootPath(f'{self.get_devices_location_page2()}/{USERNAME}/')
+			self.model.setRootPath(f'{self.devices_from()}/{USERNAME}/')
 			self.ui.devices_area_page2.setModel(self.model)
-			self.ui.devices_area_page2.setRootIndex(self.model.index(f'{self.get_devices_location_page2()}/{USERNAME}/'))
-
+			self.ui.devices_area_page2.setRootIndex(self.model.index(f'{self.devices_from()}/{USERNAME}/'))
 		except FileNotFoundError:
 			pass
 
 	def on_device_selected_page2(self, selected, deselected):
-		
 		# This slot will be called when the selection changes
 		selected_indexes = selected.indexes()
 
 		for index in selected_indexes:
 			self.selected_device = self.model.data(index)
 			print(self.selected_device)
+			print(MAIN_INI_FILE.backup_folder_name())
 
+			folder_check = os.path.join(self.devices_from(), USERNAME)
+			folder_check = os.path.join(folder_check, self.selected_device)
+			folder_check = os.path.join(folder_check, BASE_FOLDER_NAME)
+			print(folder_check)
+
+			# Allow only if the selected folder has TMB inside
 			# Enable continue button
 			if selected.indexes():
-				# # Check if is 'TMB' inside selected drive
-				if os.path.exists(
-					f'{self.get_devices_location_page2()}/{USERNAME}/{self.selected_device}/{BASE_FOLDER_NAME}'):
+				# Check if is 'TMB' inside selected drive
+				if os.path.exists(folder_check):
 					self.ui.button_continue_page2.setEnabled(True)
-
-				# Disable continue button
 				else:
+					# Disable continue button
 					self.ui.button_continue_page2.setEnabled(False)
 
 			# Disable continue button

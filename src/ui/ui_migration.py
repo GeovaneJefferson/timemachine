@@ -96,8 +96,7 @@ class Ui_WelcomeScreen(object):
         self.horizontalLayout_2.setContentsMargins(9, 9, 9, 9)
         self.button_continue = QPushButton(self.page_1)
         self.button_continue.setObjectName(u"button_continue")
-        self.button_continue.setStyleSheet(u"background-color: #2196f3;\n"
-"color: white;")
+        self.button_continue.setStyleSheet(u"")
 
         self.horizontalLayout_2.addWidget(self.button_continue, 0, Qt.AlignRight|Qt.AlignVCenter)
 
@@ -167,8 +166,7 @@ class Ui_WelcomeScreen(object):
         self.horizontalLayout_10.setContentsMargins(9, 9, 9, 9)
         self.button_close_page5 = QPushButton(self.page_5)
         self.button_close_page5.setObjectName(u"button_close_page5")
-        self.button_close_page5.setStyleSheet(u"background-color: #2196f3;\n"
-"color: white;")
+        self.button_close_page5.setStyleSheet(u"")
 
         self.horizontalLayout_10.addWidget(self.button_close_page5, 0, Qt.AlignRight|Qt.AlignVCenter)
 
@@ -254,8 +252,7 @@ class Ui_WelcomeScreen(object):
 
         self.button_continue_page2 = QPushButton(self.page_2)
         self.button_continue_page2.setObjectName(u"button_continue_page2")
-        self.button_continue_page2.setStyleSheet(u"background-color: #2196f3;\n"
-"color: white;")
+        self.button_continue_page2.setStyleSheet(u"")
 
         self.horizontalLayout_3.addWidget(self.button_continue_page2, 0, Qt.AlignRight)
 
@@ -452,8 +449,7 @@ class Ui_WelcomeScreen(object):
 
         self.button_continue_page3 = QPushButton(self.page_3)
         self.button_continue_page3.setObjectName(u"button_continue_page3")
-        self.button_continue_page3.setStyleSheet(u"background-color: #2196f3;\n"
-"color: white;")
+        self.button_continue_page3.setStyleSheet(u"")
 
         self.horizontalLayout_5.addWidget(self.button_continue_page3)
 
@@ -669,8 +665,7 @@ class Ui_WelcomeScreen(object):
         self.button_restore_page4 = QPushButton(self.page_4)
         self.button_restore_page4.setObjectName(u"button_restore_page4")
         self.button_restore_page4.setFocusPolicy(Qt.StrongFocus)
-        self.button_restore_page4.setStyleSheet(u"background-color: #2196f3;\n"
-"color: white;")
+        self.button_restore_page4.setStyleSheet(u"")
         self.button_restore_page4.setAutoDefault(False)
 
         self.horizontalLayout_7.addWidget(self.button_restore_page4, 0, Qt.AlignRight)
