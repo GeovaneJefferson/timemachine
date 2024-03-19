@@ -31,61 +31,50 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 
-
 USERS_DISTRO_NAME = os.popen("t").read()  # "ubuntu" in USERDISTRONAME:
+
 
 def install_dependencies():
     # sudo apt install libxcb-*
     # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
     try:
-        # Deb
+
         if 'debian' in USERS_DISTRO_NAME:
-            command = 'python3-pip flatpak' 
+            commands = ['python3-pip', 'flatpak']
             sub.run(
-                ['sudo', 'apt', 'install', '-y', command],
-                check=True)
+                ['sudo', 'apt', 'install', '-y'] + commands, check=True)
 
         elif 'fedora' in USERS_DISTRO_NAME:
-            command = 'python3-pip flatpak' 
+            commands = ['python3-pip', 'flatpak']
             sub.run(
-                ['sudo', 'dnf', 'install', '-y', command],
-                check=True)
+                ['sudo', 'dnf', 'install', '-y'] + commands, check=True)
 
         elif 'opensuse' in USERS_DISTRO_NAME:
-            command = 'python3-pip flatpak' 
+            commands = ['python3-pip', 'flatpak']
             sub.run(
-                ['sudo', 'zypper', 'install', '-y', command],
-                check=True)
+                ['sudo', 'zypper', 'install', '-y'] + commands, check=True)
 
-        # Arch
         elif 'arch' in USERS_DISTRO_NAME:
-            command = "python-pip qt6-wayland flatpak"
-            
-            # Check if the package is already installed
-            try:
-                sub.run(
-                    ["pacman", "-Qq", command],
-                    check=True)
-            except sub.CalledProcessError:
-                # If not installed, install the package
-                sub.run(
-                    ['sudo', 'pacman', '-S', command],
-                    check=True)
-        
-        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-        sub.run(
-            ["pip", "install", "-r", command], 
-                check=True)
+            commands = ["python-pip", "qt6-wayland", "flatpak"]
+            for command in commands:
+                try:
+                    sub.run(
+                        ["pacman", "-Qq", command], check=True)
+                except sub.CalledProcessError:
+                    sub.run(
+                        ['sudo', 'pacman', '-S', command], check=True)
 
-        # Install flathub
+        command = '/path/to/requirements.txt'  # Replace with the actual path
         sub.run(
-            ['flatpak',
-             'remote-add',
-             '--if-not-exists',
-             'flathub',
-             'https://dl.flathub.org/repo/flathub.flatpakrepo'],
-            check=True)
+            ["pip", "install", "-r", command], check=True)
+
+        # Install Flathub remote
+        sub.run(
+            ['flatpak', 'remote-add',
+            '--if-not-exists',
+            'flathub',
+            'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
     except sub.CalledProcessError as e:
         print(e)
         exit()
