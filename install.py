@@ -65,9 +65,10 @@ def install_dependencies():
                     sub.run(
                         ['sudo', 'pacman', '-S', command], check=True)
 
-        command = '/path/to/requirements.txt'  # Replace with the actual path
+        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
         sub.run(
-            ["pip", "install", "-r", command], check=True)
+            ["pip", "install", "-r", command], 
+                check=True)
 
         # Install Flathub remote
         sub.run(
