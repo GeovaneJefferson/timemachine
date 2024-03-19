@@ -2,11 +2,10 @@
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py
 
-from ui.ui_enter_time_machine import Ui_enter_time_machine
+from ui.ui_enter_time_machine import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from datetime import datetime
-from get_latest_backup_date import latest_backup_date_label
 from handle_spaces import handle_spaces
 
 MAIN_INI_FILE = UPDATEINIFILE()
@@ -23,6 +22,11 @@ IMAGE_TYPES = [
     "eps", "pdf", "ai", "raw", "tiff",
     "bmp", "ps", "tif"
 ]
+def search_file(directory, file_name):
+    for root, dirs, files in os.walk(directory):
+        if file_name in files:
+            return os.path.join(root, file_name)
+    return None
 
 def size_format(size_bytes):
     for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
@@ -31,27 +35,11 @@ def size_format(size_bytes):
 
         size_bytes /= 1024.0
 
-def get_full_location(item, column):
-    # item_txt = item.text(column)
-    # full_location = item_txt
-
-    # parent_item = item.parent()
-    # while parent_item:
-    #     parent_txt = parent_item.text(column)
-    #     full_location = f"{parent_txt}/{full_location}"
-    #     parent_item = parent_item.parent()
-
-    # return full_location
-    
-    # TODO 
-    # Get select item full location, only gets name
-    # TODO 
-    
-    full_location = item.text(column)
-    parent = item.parent()
+def get_full_location(index, column):
+    full_location = index.text(column)
+    parent = index.parent()
     while parent is not None:
-        print("Parent:", parent.text(column))  # Debugging
-        full_location = parent.text(column) + '/' + full_location
+        full_location = os.path.join(parent.text(column), full_location)
         parent = parent.parent()
     return full_location
 
@@ -59,7 +47,6 @@ def resize_image(pixmap, max_size):
     if pixmap.width() > max_size or pixmap.height() > max_size:
         pixmap = pixmap.scaled(
             max_size, max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
     return pixmap
 
 def get_all_backup_folders():
@@ -89,7 +76,7 @@ def btn_cancel_clicked():
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = Ui_enter_time_machine()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.folder_already_opened = False
@@ -116,27 +103,27 @@ class MainWindow(QMainWindow):
 
         # Connections
         # Up button
-        self.ui.btn_up.clicked.connect(self.btn_up_clicked)
+        # self.ui.btn_up.clicked.connect(self.btn_up_clicked)
         # Down button
-        self.ui.btn_down.clicked.connect(self.btn_down_clicked)
+        # self.ui.btn_down.clicked.connect(self.btn_down_clicked)
         # Cancel button
         self.ui.btn_cancel.clicked.connect(btn_cancel_clicked)
         # Restore button
         self.ui.btn_restore.clicked.connect(self.start_restore)
 
-        # Settings from QTree
+        # QTreeView
         self.ui.tree_widget.setHeaderLabels(
             [
             "Name",
-             "Date Modified", 
-             "Size", 
-             "Type"])
+            "Date Modified", 
+            "Size", 
+            "Type"])
         self.ui.tree_widget.setColumnWidth(0, 250)
-        self.ui.tree_widget.setColumnWidth(1, 150)
-        # self.ui.tree_widget.clicked.connect(self.selected_item_for_preview)
-        # self.ui.tree_widget.itemSelectionChanged.connect(self.selected_item_for_preview)
         self.ui.tree_widget.itemChanged.connect(self.qtree_checkbox_clicked)
 
+        # QTreeView Update
+        self.ui.tree_widget_updates.setFixedHeight(0)
+        
         # Settings for the preview window
         self.preview_window = None
 
@@ -355,31 +342,23 @@ class MainWindow(QMainWindow):
                 folder_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                 folder_item.setCheckState(0, Qt.Unchecked)
                 
-                self.qtree_add_sub_items(folder_item, folder_path)
+                self.qtree_add_sub_items(parent_item=folder_item, folder_path=folder_path)
 
     def qtree_add_sub_items(self, parent_item, folder_path):
         try:
             for item_name in os.listdir(folder_path):
                 item_path = os.path.join(folder_path, item_name)
                 if os.path.isdir(item_path):
-                    # sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
-                    
-                    # Checkbox
-                    folder = QTreeWidgetItem(parent_item, [item_name, formatted_date, formatted_size, extension])
-                    folder.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
-                    folder.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    folder.setCheckState(0, Qt.Unchecked)
+                    sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
 
-                    # TODO
-                    # By uncomment this, will add all subfolders and so on, but freezes ui
-                    # self.qtree_add_sub_items(sub_folder_item, item_path)
-                    
+                    # May cause UI freezing
+                    self.qtree_add_sub_items(sub_folder_item, item_path)
                 elif os.path.isfile(item_path) and not str(item_name).startswith('.'):
                     item_size = os.path.getsize(item_path)
                     date_modified = os.path.getmtime(item_path)
                     extension = os.path.splitext(item_name)[1]
 
-                    formatted_date = datetime.fromtimestamp(date_modified).strftime('%Y-%m-%d %H:%M:%S')
+                    formatted_date = datetime.fromtimestamp(date_modified).strftime('%d-%m%-Y %H:%M:%S')
                     formatted_size = size_format(item_size) if item_size is not None else ''
 
                     # Checkbox
@@ -415,24 +394,24 @@ class MainWindow(QMainWindow):
             ################################################################################
             # DOWN ARROW
             ################################################################################
-            # If the first time from the list is checked
-            if self.INDEX_TIME == 0:  # 0 = The latest time folder available
-                # Disable down arrow, unable to go back from 0
-                self.ui.btn_down.setEnabled(False)
-            else:
-                # Enable down arrow, able to go back from current index
-                self.ui.btn_down.setEnabled(True)
+            # # If the first time from the list is checked
+            # if self.INDEX_TIME == 0:  # 0 = The latest time folder available
+            #     # Disable down arrow, unable to go back from 0
+            #     self.ui.btn_down.setEnabled(False)
+            # else:
+            #     # Enable down arrow, able to go back from current index
+            #     self.ui.btn_down.setEnabled(True)
 
-            ################################################################################
-            # UP ARROW
-            ################################################################################
-            # If is there more options to choose from the time list
-            if self.INDEX_TIME + 1 == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
-                # Disable up arrow, unable to go forward, there are no more options to choose
-                self.ui.btn_up.setEnabled(False)
-            else:
-                # Enable up arrow, able to go forward, there are more options to choose
-                self.ui.btn_up.setEnabled(True)
+        #     ################################################################################
+        #     # UP ARROW
+        #     ################################################################################
+        #     # If is there more options to choose from the time list
+        #     if self.INDEX_TIME + 1 == len(self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE):
+        #         # Disable up arrow, unable to go forward, there are no more options to choose
+        #         self.ui.btn_up.setEnabled(False)
+        #     else:
+        #         # Enable up arrow, able to go forward, there are more options to choose
+        #         self.ui.btn_up.setEnabled(True)
         except:
             pass
 
@@ -530,17 +509,14 @@ class MainWindow(QMainWindow):
         self.show_thread = threading.Thread(target=self.show_results)
         self.show_thread.start()
 
-    def qtree_checkbox_clicked(self, item, column):
-        if item.checkState(column) == Qt.Checked:
-            # item_txt = item.text(column)
-            item_name = get_full_location(item, column)
-            # Handle spaces
-            # item_name = handle_spaces(item_name)
+    def qtree_checkbox_clicked(self, index, column):
+        if index.checkState(column) == Qt.Checked:
+            item_name = get_full_location(index, column)
 
             print("Item name:", item_name)
 
             # Check this item for 'Time Machine'
-            self.time_machine_this_item(item_name)
+            self.time_machine_this_item(item_name=item_name)
             
             if item_name not in self.files_to_restore:
                 # Add if not already in the list
@@ -549,31 +525,58 @@ class MainWindow(QMainWindow):
                 # Remove from the list
                 self.files_to_restore.remove(item_name)
 
-        elif item.checkState(column) == Qt.Unchecked:
-            item_name = item.text(column)
+        elif index.checkState(column) == Qt.Unchecked:
+            item_name = index.text(column)
+            index_pos = self.ui.tree_widget.currentIndex()
+            index_pos = index_pos.row()
+
+            # TODO
+            # Bug: After selecting a deselecting itens, wrong item 
+            # # is removed from the restore list
             try:
-                self.files_to_restore.remove(item_name)
-            except ValueError:
+                # Only remove if list is not empty
+                if self.files_to_restore:
+                    self.files_to_restore.pop(index_pos)
+               
+                # QTreeView
+                # QTreeView has at least 1 item
+                model = self.ui.tree_widget_updates.model()
+                if model is not None and model.rowCount() > 0:
+                    self.ui.tree_widget_updates.clearSelection()
+                    self.ui.tree_widget_updates.setModel(None)
+                    self.ui.tree_widget_updates.setFixedHeight(0)
+            except Exception as error:
                 pass
-            
+
         if self.files_to_restore:
             self.show_small_preview(self.files_to_restore[-1])
-
         else:
             self.ui.small_preview_label.clear()
-        
+
+        print(self.files_to_restore)
         self.add_to_restore()
+
+    def qtree_update_checkbox_clicked(self, selected, deselected):
+        if selected:
+            indexes = selected.indexes()
+            if indexes:
+                item_name = self.model_for_updates.fileName(indexes[0])
+                print("Selected item:", item_name)
+
+                # Remove last item from self.files_to_retore
+                self.files_to_restore.pop()
+            
+                # Get the full item location
+                full_location = self.model_for_updates.filePath(indexes[0])
+                # Add selected item from QtreeView Updates
+                self.files_to_restore.append(full_location)
+
+        print(self.files_to_restore)
 
     def show_small_preview(self, item_txt):
         # If a file
         if "." in item_txt:
             self.selected_item_extension = str(item_txt).split('.')[-1]
-            # self.selected_item_full_location = f"{MAIN_INI_FILE.hd_hd()}/" \
-            #                                    f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/" \
-            #                                    f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
-            #                                    f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}" \
-            #                                    f"/{self.CURRENT_FOLDER}/{item_txt}"
-            
             self.selected_item_full_location = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}/{item_txt}'
 
 
@@ -635,8 +638,8 @@ class MainWindow(QMainWindow):
             )
 
             # Disable other buttons if items have been selected
-            self.ui.btn_up.setEnabled(False)
-            self.ui.btn_down.setEnabled(False)
+            # self.ui.btn_up.setEnabled(False)
+            # self.ui.btn_down.setEnabled(False)
 
             # Disable all home folders
             for i in range(self.ui.folders_layout.count()):
@@ -699,43 +702,106 @@ class MainWindow(QMainWindow):
             exit()
 
     def start_restore(self):
-        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
-        
-        # file_path = f"{MAIN_INI_FILE.hd_hd()}/"\
-        #     f"{BASE_FOLDER_NAME}/{BACKUP_FOLDER_NAME}/"\
-        #     f"{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/"\
-        #     f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}"\
-        #     f"/{self.CURRENT_FOLDER}"
-        
         file_path = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}'
+        dst = os.path.join(HOME_USER, self.CURRENT_FOLDER)
 
         ################################################################################
         # Restore files without spaces
         ################################################################################
-        for counter in range(len(self.files_to_restore)):
-            print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
+        print()
+        for i in range(len(self.files_to_restore)):
+            try:
+                # Is a updated file
+                os.listdir(self.files_to_restore[i])
+
+                # Restore it
+                print('Restoring:', i)
+                print('To:', os.path.dirname(dst))
+                shutil.copy2(i, dst)
+            except FileNotFoundError as error:
+                # Restore it
+                x = os.path.join(file_path, self.files_to_restore[i]).replace(file_path, '')
+                x = dst + x
+                file_dirname = os.path.dirname(x)
+
+                print('Restoring:', os.path.join(file_path, self.files_to_restore[i]))
+                print('To:', file_dirname)
+                
+                if os.path.isdir(os.path.join(file_path, self.files_to_restore[i])):
+                    shutil.copytree(os.path.join(file_path, self.files_to_restore[i]), x)
+                else:
+                    try:
+                        shutil.copyfile(os.path.join(file_path, self.files_to_restore[i]), file_dirname)
+                    except NotADirectoryError:
+                        sub.run(
+                            ['cp', '-d', os.path.join(file_path, self.files_to_restore[i]), file_dirname])
+
+        # for counter in range(len(self.files_to_restore)):
+        #     print(f"Restoring {handle_spaces(self.files_to_restore[counter])}")
             
-            src = file_path + "/" + handle_spaces(self.files_to_restore[counter])
-            dst = HOME_USER + "/" + self.CURRENT_FOLDER + "/"
+        #     src = os.path.join(file_path, handle_spaces(self.files_to_restore[counter]))
+        #     dst = os.path.join(HOME_USER, self.CURRENT_FOLDER )
             
-            asyncio.run(self.restore_items(src, dst))
+        #     asyncio.run(self.restore_items(src, dst))
             
         # Open file manager
-        dst = HOME_USER + '/' + self.CURRENT_FOLDER
-        sub.Popen(
-            ['xdg-open', dst],
-            stdout=sub.PIPE,
-            stderr=sub.PIPE)
-
-        # Update DB
-        MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'False')
-
-        # Exit
+        # dst = os.path.join(HOME_USER, self.CURRENT_FOLDER)
+        # sub.Popen(
+        #     ['xdg-open', dst],
+        #     stdout=sub.PIPE,
+        #     stderr=sub.PIPE)
+        print()
         exit()
 
-    def time_machine_this_item(self, item_name):
+    def time_machine_this_item(self, item_name : str):
+        # Get file name
+        item_name = item_name.split('/')[-1]
+
         # Check this item in date/time folders, if available
-        pass
+        # Return a list of dates
+        list_of_dates = os.listdir(MAIN_INI_FILE.backup_dates_location()) 
+
+        if list_of_dates:
+            # Hide hidden files/folder
+            for date in list_of_dates:
+                if not date.startswith('.'):
+                    full_location = os.path.join(MAIN_INI_FILE.backup_dates_location(), date)
+                    # print(full_location)
+
+        # Add time folder to search inside
+        for time in os.listdir(full_location):
+            full_location = os.path.join(full_location, time)
+
+        if full_location:
+            if os.path.isdir(full_location):
+                file_path = search_file(full_location, item_name)
+                if file_path:
+                    print("File found:", file_path)
+                    
+                    directory_path = str(os.path.dirname(file_path))
+                    self.model_for_updates = QFileSystemModel()
+                    self.model_for_updates.setRootPath(directory_path)
+
+                    self.ui.tree_widget_updates.setModel(self.model_for_updates)
+                    index = self.model_for_updates.index(directory_path)
+                    self.ui.tree_widget_updates.setRootIndex(index)
+                    self.ui.tree_widget_updates.selectionModel().selectionChanged.connect(self.qtree_update_checkbox_clicked)
+                    self.ui.tree_widget_updates.setColumnWidth(0, 250)
+                    
+                    # Resize QTreeView
+                    self.ui.tree_widget_updates.setFixedHeight(250)
+
+                    # Len of item available to restore in update
+                    # if len(str(file_path).split()) == 1:
+                else:
+                    print("File not found in the directory.")
+
+                    # Resize QTreeView
+                    self.ui.tree_widget_updates.setFixedHeight(0)
+                    # Clearing the QTreeView
+                    self.ui.tree_widget_updates.setModel(None)
+            else:
+                print("Directory does not exist or is not accessible.")
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
@@ -870,6 +936,7 @@ if __name__ == "__main__":
 
     MAIN = MainWindow()
     MAIN.setWindowTitle("Browser In Time Machine")
+    MAIN.setWindowIcon(QPixmap(SRC_MIGRATION_ASSISTANT_ICON_212PX))
 
     # Get all backup folders
     get_all_backup_folders()

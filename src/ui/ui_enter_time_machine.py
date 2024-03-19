@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'enter_time_machine.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.0
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -18,10 +18,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QGridLayout,
     QHBoxLayout, QHeaderView, QLabel, QMainWindow,
     QPushButton, QSizePolicy, QSpacerItem, QStatusBar,
-    QTextBrowser, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+    QTextBrowser, QTreeView, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout, QWidget)
 
-class Ui_enter_time_machine(object):
+class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -43,21 +43,6 @@ class Ui_enter_time_machine(object):
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer_3)
 
-        self.btn_up = QPushButton(self.centralwidget)
-        self.btn_up.setObjectName(u"btn_up")
-
-        self.horizontalLayout_5.addWidget(self.btn_up, 0, Qt.AlignHCenter)
-
-        self.label_gray_time = QLabel(self.centralwidget)
-        self.label_gray_time.setObjectName(u"label_gray_time")
-
-        self.horizontalLayout_5.addWidget(self.label_gray_time)
-
-        self.btn_down = QPushButton(self.centralwidget)
-        self.btn_down.setObjectName(u"btn_down")
-
-        self.horizontalLayout_5.addWidget(self.btn_down, 0, Qt.AlignHCenter)
-
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer_4)
@@ -66,6 +51,7 @@ class Ui_enter_time_machine(object):
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
         self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.widget_3 = QWidget(self.centralwidget)
         self.widget_3.setObjectName(u"widget_3")
@@ -75,8 +61,11 @@ class Ui_enter_time_machine(object):
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.label = QLabel(self.widget_3)
         self.label.setObjectName(u"label")
+        font = QFont()
+        font.setBold(True)
+        self.label.setFont(font)
 
-        self.verticalLayout_6.addWidget(self.label)
+        self.verticalLayout_6.addWidget(self.label, 0, Qt.AlignLeft|Qt.AlignVCenter)
 
         self.folders_layout = QVBoxLayout()
         self.folders_layout.setObjectName(u"folders_layout")
@@ -99,9 +88,11 @@ class Ui_enter_time_machine(object):
         self.tree_widget.setMinimumSize(QSize(600, 400))
         self.tree_widget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
         self.tree_widget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tree_widget.setSelectionBehavior(QAbstractItemView.SelectItems)
+        self.tree_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tree_widget.setIconSize(QSize(16, 16))
         self.tree_widget.setAnimated(True)
+        self.tree_widget.setWordWrap(True)
+        self.tree_widget.header().setMinimumSectionSize(150)
 
         self.verticalLayout_7.addWidget(self.tree_widget)
 
@@ -167,6 +158,23 @@ class Ui_enter_time_machine(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setFont(font)
+
+        self.verticalLayout.addWidget(self.label_2, 0, Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.tree_widget_updates = QTreeView(self.centralwidget)
+        self.tree_widget_updates.setObjectName(u"tree_widget_updates")
+        self.tree_widget_updates.setMinimumSize(QSize(0, 0))
+        self.tree_widget_updates.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.tree_widget_updates.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tree_widget_updates.setIconSize(QSize(16, 16))
+        self.tree_widget_updates.setAnimated(True)
+        self.tree_widget_updates.setWordWrap(True)
+
+        self.verticalLayout.addWidget(self.tree_widget_updates)
+
         self.verticalLayout.setStretch(2, 1)
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -183,12 +191,10 @@ class Ui_enter_time_machine(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.btn_up.setText(QCoreApplication.translate("MainWindow", u"<", None))
-        self.label_gray_time.setText(QCoreApplication.translate("MainWindow", u"Time", None))
-        self.btn_down.setText(QCoreApplication.translate("MainWindow", u">", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Folders", None))
         self.small_preview_label.setText("")
         self.btn_cancel.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.btn_restore.setText(QCoreApplication.translate("MainWindow", u"Restore", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Updates", None))
     # retranslateUi
 
