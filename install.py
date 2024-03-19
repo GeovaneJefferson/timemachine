@@ -11,10 +11,7 @@ GET_CURRENT_LOCATION = pathlib.Path().resolve()
 
 APP_NAME_CLOSE = "timemachine"
 APP_NAME = "Time Machine"
-APP_VERSION = "v1.1.6.101 dev"
-
-
-CREATE_CMD_FOLDER = "mkdir"
+APP_VERSION = "v1.1.6.102 dev"
 
 DST_FOLDER_INSTALL = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}"
 DST_APPLICATIONS_LOCATION = f"{HOME_USER}/.local/share/applications"
@@ -42,11 +39,6 @@ def install_dependencies():
     # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
     try:
-        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-        sub.run(
-            ["pip", "install", "-r", command], 
-                check=True)
-
         # Deb
         if 'debian' in USERS_DISTRO_NAME:
             command = 'python3-pip flatpak' 
@@ -80,6 +72,11 @@ def install_dependencies():
                 sub.run(
                     ['sudo', 'pacman', '-S', command],
                     check=True)
+        
+        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
+        sub.run(
+            ["pip", "install", "-r", command], 
+                check=True)
 
         # Install flathub
         sub.run(
@@ -140,9 +137,7 @@ def create_application_files():
 def create_backup_checker_desktop():
     # Create autostart folder if necessary
     if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
-        command = SRC_AUTOSTARTFOLDER_LOCATION
-        # sub.run(["mkdir", command])
-        os.makedirs(command, exist_ok=True)
+        os.makedirs(SRC_AUTOSTARTFOLDER_LOCATION, exist_ok=True)
 
     # Edit file startup with system
     with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:

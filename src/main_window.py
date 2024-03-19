@@ -1,5 +1,5 @@
 from setup import *
-from ui.ui_mainwindow_test import Ui_MainWindow
+from ui.ui_mainwindow import Ui_MainWindow
 from read_ini_file import UPDATEINIFILE
 
 from ui.ui_dialog import Ui_Dialog

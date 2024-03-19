@@ -790,7 +790,7 @@ class MainWindow(QMainWindow):
                     
                     # Resize QTreeView
                     self.ui.tree_widget_updates.setFixedHeight(250)
-
+                    
                     # Len of item available to restore in update
                     # if len(str(file_path).split()) == 1:
                 else:
