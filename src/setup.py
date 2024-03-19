@@ -100,7 +100,7 @@ GET_FLATPAKS_APPLICATIONS_NAME = "flatpak list --app --columns=application"
 
 # DE
 SUPPORT_OS = ["gnome", "ubuntu", "ubuntu:gnome",
-            "unity", "pop", "kde","zorin:gnome", 
+            "unity", "pop", "kde","zorin:gnome",
             "pop:gnome", "budgie:gnome"]
 GET_USER_DE = "XDG_CURRENT_DESKTOP"
 GET_USER_PACKAGE_MANAGER = "cat /etc/os-release"
@@ -247,7 +247,7 @@ SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # Log
-LOG_LOCATION = f'{HOME_USER}/log_time_machine.txt' 
+LOG_LOCATION = f'{HOME_USER}/log_time_machine.txt'
 
 # File extensions
 TXT_TYPES = [

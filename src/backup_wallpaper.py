@@ -10,6 +10,11 @@ def get_wallpaper_full_location():
     # Detect color scheme
     get_color_scheme = os.popen(
         DETECT_THEME_MODE).read().replace("'", "").strip()
+    ## Set XDG_CURRENT_DESKTOP environment variable
+    #os.environ['XDG_CURRENT_DESKTOP']
+
+    ## Execute the command and print the output
+    #output = os.popen('echo $XDG_CURRENT_DESKTOP').read().strip().lower()
 
     ##################################
     # Compatibility
@@ -18,7 +23,8 @@ def get_wallpaper_full_location():
     # Gnome
     ###################################
     # If users os name is found in DB
-    if 'gnome' or 'unity' in os.popen(GET_USER_DE.lower()):
+    if 'gnome' in get_user_de() or 'unity' in get_user_de():
+        exit()
         # Light theme
         if get_color_scheme == "prefer-light":
             # Get current wallpaper
@@ -40,14 +46,14 @@ def get_wallpaper_full_location():
 
         # Handle spaces
         wallpaper = handle_spaces(wallpaper)
-        
+
         # Return wallpapers full location
         return wallpaper
-    
+
     ##################################
     # Kde
     ###################################
-    elif 'kde' in os.popen(GET_USER_DE.lower()):
+    elif 'kde' in get_user_de():
         # Search wallaper inside plasma-org.kde.plasma.desktop-appletsrc
         with open(f"{HOME_USER}/.config/plasma-org.kde.plasma.desktop-appletsrc", "r") as file:
             # Strips the newline character
@@ -64,12 +70,11 @@ def get_wallpaper_full_location():
 
                     # Handle spaces
                     # line = handle_spaces(line)
-
                     # Return lines full location
                     return line
 
 def backup_wallpaper():
-    wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder() 
+    wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder()
 
     # Get a list of wallpapers in the specified folder
     wallpapers = os.listdir(wallpaper_folder)
@@ -88,8 +93,8 @@ def backup_wallpaper():
     if get_wallpaper_full_location() is not None:
         src = get_wallpaper_full_location()
         dst = MAIN_INI_FILE.wallpaper_main_folder()
-        
-        print('Copying', src)
+
+        print('Copying', src, dst)
         shutil.copy2(src, dst)
 
     # Write to file
@@ -105,10 +110,11 @@ def update_db():
         if get_wallpaper_full_location() is not None:
             CONFIG.set(
                 'INFO', 'wallpaper', f'{get_wallpaper_full_location().split("/")[-1]}')
-            
+
             # Write to file
             CONFIG.write(configfile)
 
 
 if __name__ == '__main__':
+    backup_wallpaper()
     pass

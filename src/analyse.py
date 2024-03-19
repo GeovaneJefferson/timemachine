@@ -17,7 +17,7 @@ MAIN_PREPARE = PREPAREBACKUP()
 
 backup_home_dict = {}
 items_to_backup_dict = {}
-				
+
 # Color
 RED = '\033[91m'
 GREEN = '\033[92m'
@@ -55,9 +55,9 @@ class ANALYSES:
 			"size": get_item_size(item_path_location),
 			"location": item_path_location
 			}
-		
+
 	def add_to_backup_dict(self, location, destination, status):
-		item_name = str(location).split('/')[-1] 
+		item_name = str(location).split('/')[-1]
 
 		# Analysing right now
 		notification_message(
@@ -87,7 +87,7 @@ class ANALYSES:
 
 	def compare_sizes(self, location, destination):
 		# Compare item from Home <-> from backup
-		if get_item_size(location) != get_item_size(destination): 
+		if get_item_size(location) != get_item_size(destination):
 			# Exclude item with 0 bytes size
 			if get_item_size(location) != 0:
 				return True
@@ -116,7 +116,7 @@ class ANALYSES:
 					f.write(f"Destination: {destination}\n")
 					f.write(f"Status: {status}\n")
 					f.write("\n")
-					
+
 
 
 	def get_select_backup_home(self):
@@ -127,30 +127,30 @@ class ANALYSES:
 			# Loop through items in the source directory
 			for counter_limit in range(len(self.get_source_dir())):
 				counter_limit = counter_limit
-			
+
 			# Run loop through list
 			for _ in range(counter_limit):
 				for item_name in os.listdir(self.get_source_dir()[counter]):
-					
+
 					item_path_location = os.path.join(
                         self.get_source_dir()[counter], item_name)
 
-					self.add_to_home_dict(item_name, item_path_location)	
+					self.add_to_home_dict(item_name, item_path_location)
 
 				counter += 1
 		except FileNotFoundError as e:
 			print(e)
 			pass
-	
+
 	def get_source_dir(self):
-		source_folders = [] 
-		
+		source_folders = []
+
 		# HOME folders selected by user
 		for item in get_folders():
 			# Handle spaces
 			item = handle_spaces(item)
 			source_folders.append(f'{HOME_USER}/{item}')
-		
+
 		# For GNOME or KDE
 		user_de = get_user_de()
 		if user_de in SUPPORTED_DE:
@@ -161,11 +161,11 @@ class ANALYSES:
 					if (user_de == 'gnome' and item in list_gnome_include) or \
 					   (user_de == 'kde' and item in list_include_kde):
 						source_folders.append(os.path.join(base_dir, item))
-		
+
 		return source_folders
-	
+
 	def analyse_home(self):
-		try:                  
+		try:
 			# Source from .main backup folder
 			for item_name, info in backup_home_dict.items():
 				self.item_name = item_name
@@ -175,7 +175,7 @@ class ANALYSES:
 
 				# Home item path
 				self.item_path_location_top_level = info['location']
-			
+
 				# if os.path.isdir(self.item_path_location_top_level):
 				# 	self.item_path_location_top_level = os.path.join(self.item_path_location_top_level, self.item_name)
 
@@ -207,7 +207,7 @@ class ANALYSES:
 		except FileNotFoundError as e:
 			print(e)
 			pass
-		
+
 		# print('LIST OF UPDATED FILES.')
 		# print('\n'.join(files_to_datetime_check))
 		# print()
@@ -229,28 +229,28 @@ class ANALYSES:
 					# print(local_item_path_location)
 					# print(i)
 					# print(local_combined_home_with_backup_location)
-					
-					check_home_folder_size = '/'.join(str(local_item_path_location).split('/')[:-1]) 
-					check_backup_folder_size = '/'.join(str(local_combined_home_with_backup_location).split('/')[:-1]) 
-					
+
+					check_home_folder_size = '/'.join(str(local_item_path_location).split('/')[:-1])
+					check_backup_folder_size = '/'.join(str(local_combined_home_with_backup_location).split('/')[:-1])
+
 					# print(check_home_folder_size)
 					# print(check_backup_folder_size)
 					# exit()
 
 					'''
 					Loop through user's home, if item do not exist in .main backup
-					folder, is a new item. 
+					folder, is a new item.
 					'''
 					# New Item
 					if not os.path.exists(local_combined_home_with_backup_location):
 						self.add_to_backup_dict(
-							local_item_path_location , 
-							local_combined_home_with_backup_location, 
+							local_item_path_location ,
+							local_combined_home_with_backup_location,
 							'NEW')
 					else:
 						# Check folder for size diff
 						if self.compare_sizes(
-							check_home_folder_size, 
+							check_home_folder_size,
 							check_backup_folder_size):
 
 							# Check files for size diff (.main backup)
@@ -264,13 +264,13 @@ class ANALYSES:
 									str(os.path.dirname(
 										local_item_path_location)).replace(
 											f'{HOME_USER}/', ' ').strip())
-								
+
 								# Has not date/time to compare to
 								if not has_date_time_to_compare:
 									# Date/Time Folder
 									self.add_to_backup_dict(
-										local_item_path_location, 
-										os.path.join(destinarion, file), 
+										local_item_path_location,
+										os.path.join(destinarion, file),
 										'UPDATED')
 								else:
 									# Check files for size diff (date/time)
@@ -301,12 +301,12 @@ class ANALYSES:
 						for file in files:
 							# Is a match
 							datetime_location = os.path.join(root, file)
-							
+
 							# /Documents/Godot_Demos/Street/props/cinder_blocks/cinder_blocks.blend
 							datetime_removed = str(datetime_location).replace(date_time_path_location, '')
 							# Add to HOME user
 							modeed_home_item = HOME_USER + datetime_removed
-							
+
 							# print(datetime_location)
 							# print(datetime_removed)
 							# print(modeed_home_item)
@@ -315,41 +315,41 @@ class ANALYSES:
 
 							if file not in already_checked:
 								if self.compare_sizes(
-									modeed_home_item, 
-									datetime_location):		
+									modeed_home_item,
+									datetime_location):
 
 									destinarion = (
 										str(os.path.dirname(
 											modeed_home_item)).replace(
 												f'{HOME_USER}/', ' ').strip())
-									
+
 									already_checked.append(file)
-									
+
 									# Date/Time Folder
 									if not os.path.isdir(modeed_home_item):
 										self.add_to_backup_dict(
-											modeed_home_item, 
-											os.path.join(destinarion, file), 
+											modeed_home_item,
+											os.path.join(destinarion, file),
 											'UPDATED')
 									else:
 										self.add_to_backup_dict(
-											modeed_home_item, 
-											destinarion, 
+											modeed_home_item,
+											destinarion,
 											'UPDATED')
 
 	def need_to_backup_analyse(self):
 		# Check if it's not the first backup with Time Machine
-		if os.path.exists(MAIN_INI_FILE.main_backup_folder()):     
+		if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
 			# Part of the analyses
 			get_all_backups_date_time()
-			self.get_select_backup_home() 
-			
+			self.get_select_backup_home()
+
 			# Loop thourgh Home
 			self.analyse_home()
-			
+
 			# Write dict to file .txt
 			self.write_to_file()
-			
+
 			# If the number of items to backup is 0
 			if number_of_item_to_backup() == 0:
 				# Indicate that no backup is needed
@@ -361,7 +361,7 @@ class ANALYSES:
 
 				# Indicate that backup is needed
 				print(GREEN + 'ANALYSE: Need to backup.' + RESET)
-				return True 
+				return True
 		else:
 			# Make the first backup
 			print(GREEN + 'ANALYSE: Making first backup.' + RESET)
@@ -390,15 +390,19 @@ if __name__ == "__main__":
 		# Backup flatpak
 		print("Backing up: flatpak applications")
 		backup_flatpak()
-		
+
 		# Backup pip packages
 		print("Backing up: pip packages")
 		backup_pip_packages()
-		
-		# Backup wallpaper
-		print("Backing up: Wallpaper")
-		backup_wallpaper()
-		
+
+		# TODO
+		try:
+			# Backup wallpaper
+			print("Backing up: Wallpaper")
+			backup_wallpaper()
+		except:
+			pass
+
 		# Need to backup
 		if MAIN.need_to_backup_analyse():
 			# Prepare backup
@@ -407,28 +411,29 @@ if __name__ == "__main__":
 
 				# Backup now
 				sub.Popen(
-					['python3', SRC_BACKUP_NOW_PY], 
-						stdout=sub.PIPE, 
-						stderr=sub.PIPE)  
+					['python3', SRC_BACKUP_NOW_PY],
+						stdout=sub.PIPE,
+						stderr=sub.PIPE)
 		else:
 			print('No need to back up.')
 
 			# Backing up to False
 			MAIN_INI_FILE.set_database_value(
-				'STATUS', 'backing_up_now', 'False')  
-			
-			# Check if backup checker is not already running  
+				'STATUS', 'backing_up_now', 'False')
+
+			# Check if backup checker is not already running
 			process_title = "Time Machine - Backup Checker"
 			if not MAIN.is_process_running(process_title):
 				print(f"No process with the title '{process_title}' is currently running.")
 				# Re.open backup checker
 				sub.Popen(
-					['python3', SRC_BACKUP_CHECKER_PY], 
-					stdout=sub.PIPE, 
+					['python3', SRC_BACKUP_CHECKER_PY],
+					stdout=sub.PIPE,
 					stderr=sub.PIPE)
 	except BrokenPipeError:
 		# Ignore Broken pipe error
 		pass
-	except Exception as e:
+	except Exception as error:
+		print(error)
 		# Save error log
-		MAIN_INI_FILE.report_error(e, 'ANALYSE')
+		MAIN_INI_FILE.report_error(error)
