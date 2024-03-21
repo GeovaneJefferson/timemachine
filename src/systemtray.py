@@ -219,16 +219,16 @@ class APP:
                 
             # Show latest backup label
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
-
-    def run_external_app(self):
-        try:
-            sub.Popen(['python3', SRC_ENTER_TIME_MACHINE_PY], stdout=sub.PIPE, stderr=sub.PIPE)
-        except Exception as e:
-            print(f"Error launching subprocess: {e}")
-
+    
     def _open_browse_time_machine_backups(self):
-        # Create a new thread to run the external app
-        threading.Thread(target=self.run_external_app).start()
+        try:
+            sub.run(
+                ['python3', SRC_ENTER_TIME_MACHINE_PY],
+                stdout=sub.PIPE,
+                stderr=sub.PIPE)
+        except Exception as e:
+            # Handle or log the exception
+            print(f"Error launching subprocess: {e}")
 
     def backup_now(self):
         # Disable backup now action
