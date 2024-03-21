@@ -66,10 +66,7 @@ class APP:
         self.browse_time_machine_backups.setFont(
             QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browse_time_machine_backups.triggered.connect(
-            sub.Popen(
-                ['python3', SRC_ENTER_TIME_MACHINE_PY],
-                stdout=sub.PIPE,
-                stderr=sub.PIPE))
+            self._open_browse_time_machine_backups)
         
         # Open Time Machine button
         self.open_Time_machine = QAction(f"Open {APP_NAME}")
@@ -223,6 +220,16 @@ class APP:
             # Show latest backup label
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
     
+    def _open_browse_time_machine_backups(self):
+        try:
+            sub.Popen(
+                ['python3', SRC_ENTER_TIME_MACHINE_PY],
+                stdout=sub.PIPE,
+                stderr=sub.PIPE)
+        except Exception as e:
+            # Handle or log the exception
+            print(f"Error launching subprocess: {e}")
+
     def backup_now(self):
         # Disable backup now action
         self.backup_now_button.setEnabled(False)
