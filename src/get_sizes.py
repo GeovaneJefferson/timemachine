@@ -110,16 +110,11 @@ def needeed_size_to_backup_home():
     # Read each line from the input file
     with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
         lines = f.readlines()
-        for i in range(0, len(lines), 4):
+        for i in range(1, len(lines), 5):
             try:
-                size_line = lines[i + 1]
-                size = int(size_line.split()[1])  # Extract the size (convert to int)
+                size = int(lines[i].split()[1])  # Extract the size (convert to int)
                 total_size += size
-            
-            except ValueError:
-                total_size += 0
-
-            except IndexError:
+            except (ValueError, IndexError):
                 pass
 
     # Conver to GB
@@ -135,15 +130,40 @@ def number_of_item_to_backup():
     # Grab "lines" value
     needeed_size_to_backup_home()
 
+    #try:
+        ## Num. of item to be backed up
+        #num_of_item = round(len(lines) / 5)
+
+        #print(f'Total items to be backup: {num_of_item}')
+        #return num_of_item
+    #except:
+        #return 0
+
     try:
-        # Num. of item to be backed up
-        num_of_item = round(len(lines) / 5)
+        count_filename = 0
+        count_new_file = 0
+        count_updated_file = 0
+        with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
+            for line in f:
+                # Assuming each entry starts with "Filename:"
+                if line.startswith("Filename:"):
+                    count_filename += 1
 
-        print(f'Num. of itens to backup: {num_of_item}')
+                # New file count
+                if line.startswith("Status: NEW"):
+                    count_new_file += 1
 
-        return num_of_item
+                # Updated file count
+                if line.startswith("Status: UPDATED"):
+                    count_updated_file += 1
+
+        print(f'Total items to be backup: {count_filename}')
+        print(f'NEW Items: {count_new_file}')
+        print(f'UPDATED Items: {count_updated_file}')
+        return count_filename
     except:
         return 0
+
 
 # def number_of_item_to_backup():
 #     file_count = 0

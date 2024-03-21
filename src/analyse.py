@@ -30,10 +30,8 @@ SUPPORTED_DE = ['gnome', 'kde', 'unity']
 
 # List of all dates
 has_date_time_to_compare = []
-rest_list = []
-no_need_to_update_list = []
-already_checked = []
-files_to_datetime_check = []
+date_time_folders_to_check = []
+
 
 # Define a function to convert the date string to a datetime object
 def convert_to_datetime(date_str):
@@ -49,6 +47,12 @@ def get_all_backups_date_time():
 
 
 class ANALYSES:
+	def __init__(self):
+		self.new_files = int()
+		self.updates_files = int()
+		self.found_items = []
+
+		pass
 	def add_to_home_dict(self, item_name, item_path_location):
 		# Store item information in the dictionary, to check they size
 		backup_home_dict[item_name] = {
@@ -58,10 +62,6 @@ class ANALYSES:
 
 	def add_to_backup_dict(self, location, destination, status):
 		item_name = str(location).split('/')[-1]
-
-		# Analysing right now
-		notification_message(
-			f'Analysing: {self.item_name}' )
 
 		if os.path.isdir(destination):
 			# If directory is empty, return
@@ -117,8 +117,6 @@ class ANALYSES:
 					f.write(f"Status: {status}\n")
 					f.write("\n")
 
-
-
 	def get_select_backup_home(self):
 		counter = 0
 		counter_limit = 0
@@ -139,7 +137,7 @@ class ANALYSES:
 
 				counter += 1
 		except FileNotFoundError as e:
-			print(e)
+			print(e, 140)
 			pass
 
 	def get_source_dir(self):
@@ -159,190 +157,214 @@ class ANALYSES:
 					# Handle spaces
 					item = handle_spaces(item)
 					if (user_de == 'gnome' and item in list_gnome_include) or \
+					   (user_de == 'unity' and item in list_gnome_include) or \
 					   (user_de == 'kde' and item in list_include_kde):
 						source_folders.append(os.path.join(base_dir, item))
 
 		return source_folders
 
 	def analyse_home(self):
+		self.to_check_list = []
 		try:
-			# Source from .main backup folder
-			for item_name, info in backup_home_dict.items():
-				self.item_name = item_name
+			folders_to_check = get_folders()
 
-				# Handle spaces
-				self.item_name = handle_spaces(item_name)
+			# Loop thourgh folder
+			# Search inside current dir
+			for i in range(len(folders_to_check)):
+				# /home/user/Pictures
+				home_folder = os.path.join(HOME_USER, folders_to_check[i])
+				for root, _, files in os.walk(home_folder):
+					if files:
+						for file in files:
+							# /home/user/Pictures/image.jpg
+							file_location = os.path.join(root, file)
+							
+							# /media/user/BACKUP/TMB/backups/.main_backup/Pictures
+							combine_home_with_backup_dirname = (
+								MAIN_INI_FILE.main_backup_folder() + str(file_location).replace(HOME_USER, ''))
+							
+							# print('File Location:',file_location)
+							# print('HOME + BACKUP:', combine_home_with_backup_dirname)
+							# print()
 
-				# Home item path
-				self.item_path_location_top_level = info['location']
+							# New file
+							if not os.path.exists(combine_home_with_backup_dirname):
+								self.add_to_backup_dict(
+									location=file_location ,
+									destination=combine_home_with_backup_dirname,
+									status='NEW')
+								
+								print('[NEW]:', combine_home_with_backup_dirname)
+							else:
+								# Compare file size difference
+								if self.compare_sizes(
+									location=file_location,
+									destination=combine_home_with_backup_dirname):
 
-				# if os.path.isdir(self.item_path_location_top_level):
-				# 	self.item_path_location_top_level = os.path.join(self.item_path_location_top_level, self.item_name)
+									# Has no other date to compare to
+									if not has_date_time_to_compare: 
+										self.add_to_backup_dict(
+											location=file_location,
+											destination=combine_home_with_backup_dirname,
+											status='UPDATED')
+										
+										print('[UPDATED]:', file_location)
+									else:
+										# Searching in Date/Time
+										# self.to_check_list.append(file_location)
+										self.check_with_dates(
+											location=file_location, 
+											destination=combine_home_with_backup_dirname)
 
-				# Remove home username
-				self.item_without_username_location = (
-					str(self.item_path_location_top_level).replace(f'{HOME_USER}/', ' ').strip())
-				# self.item_without_username_location = os.path.dirname(self.item_path_location_top_level).replace(f'{HOME_USER}/', ' ').strip()
-
-				# Only item dirname. Fx. Desktop
-				self.item_dirname = os.path.dirname(self.item_path_location_top_level)
-
-				# Destination/Source full location
-				self.combined_home_with_backup_location = (
-					os.path.join(MAIN_INI_FILE.main_backup_folder(), self.item_without_username_location)
-					)
-
-				# Item main dir
-				self.item_home_dirname = os.path.join(HOME_USER, self.item_dirname)
-
-				# Extracted item dirname
-				self.extracted_item_dirname = os.path.dirname(self.item_path_location_top_level)
-				self.extracted_item_dirname = str(self.extracted_item_dirname).replace(HOME_USER, '')
-				self.extracted_item_dirname = self.extracted_item_dirname.split('/')[3:]
-				self.extracted_item_dirname = ('/').join(self.extracted_item_dirname) + '/'
-
-				# Main Backup Folder
-				self.search_in_main_dir()
+			# Main Backup Folder
+			# self.search_in_main_dir()
 
 		except FileNotFoundError as e:
 			print(e)
 			pass
+		
+	def check_with_dates(self, location, destination):
+		print('------[DATE/TIME]------')
 
-		# print('LIST OF UPDATED FILES.')
-		# print('\n'.join(files_to_datetime_check))
-		# print()
-		self.search_in_all_date_time_file()
+		only_dirname = str(os.path.dirname(destination))
+		filter_update_dirname = only_dirname.replace(MAIN_INI_FILE.main_backup_folder(), '')
 
-	def search_in_main_dir(self):
-		# Loop through the files to find updates
-		for root, _, files in os.walk(self.item_path_location_top_level):
-			if files:
-				for file in files:
-					# Is a match
-					local_item_path_location = os.path.join(root, file)
-					# local_file_only_name = str(local_item_path_location).split('/')[-1:][0]
-
-					i = str(local_item_path_location).replace(MAIN_INI_FILE.main_backup_folder(), '')
-					i = i.replace(HOME_USER, '')
-					local_combined_home_with_backup_location = MAIN_INI_FILE.main_backup_folder() + i
-
-					# print(local_item_path_location)
-					# print(i)
-					# print(local_combined_home_with_backup_location)
-
-					check_home_folder_size = '/'.join(str(local_item_path_location).split('/')[:-1])
-					check_backup_folder_size = '/'.join(str(local_combined_home_with_backup_location).split('/')[:-1])
-
-					# print(check_home_folder_size)
-					# print(check_backup_folder_size)
-					# exit()
-
-					'''
-					Loop through user's home, if item do not exist in .main backup
-					folder, is a new item.
-					'''
-					# New Item
-					if not os.path.exists(local_combined_home_with_backup_location):
-						self.add_to_backup_dict(
-							local_item_path_location ,
-							local_combined_home_with_backup_location,
-							'NEW')
-					else:
-						# Check folder for size diff
-						if self.compare_sizes(
-							check_home_folder_size,
-							check_backup_folder_size):
-
-							# Check files for size diff (.main backup)
-							if self.compare_sizes(
-								local_item_path_location,
-								local_combined_home_with_backup_location):
-								# if not os.path.isdir(local_combined_home_with_backup_location):
-								# Destination will be only the dirname, without the Home username.
-								# Final destination will be set in backup_now script
-								destinarion = (
-									str(os.path.dirname(
-										local_item_path_location)).replace(
-											f'{HOME_USER}/', ' ').strip())
-
-								# Has not date/time to compare to
-								if not has_date_time_to_compare:
-									# Date/Time Folder
-									self.add_to_backup_dict(
-										local_item_path_location,
-										os.path.join(destinarion, file),
-										'UPDATED')
-								else:
-									# Check files for size diff (date/time)
-									files_to_datetime_check.append(local_item_path_location)
-
-	def search_in_all_date_time_file(self):
+		# print(location)
+		# print(destination)
+		# print(filter_update_dirname)
+		# exit()
+		
 		# Sort the dates in descending order using the converted datetime objects
 		sorted_date = sorted(has_date_time_to_compare,
 					key=convert_to_datetime,
 					reverse=True)
 
+		# DATE
 		# Loop through each date folder
 		for i in range(len(sorted_date)):
 			# Get date path
-			date_path_location = os.path.join(
+			update_folder_location = os.path.join(
 				MAIN_INI_FILE.backup_dates_location(), sorted_date[i])
+				
+			# Append 
+			date_time_folders_to_check.append(update_folder_location)
 
-			# Loop through each time folder in the current date folder
-			# Start from the latest time_path folder
-			for time_path_location in reversed(os.listdir(date_path_location)):
-				# Get data path + time path, join it
-				date_time_path_location = os.path.join(date_path_location, time_path_location)
+			# combine_home_with_update = str(location).replace(HOME_USER, '')
+			# combine_home_with_update = os.path.join(update_folder_location + combine_home_with_update)
 
-				# Loop through the files in the current time folder
-				for root, _, files in os.walk(date_time_path_location):
-					# Has files inside
+			# print(update_folder_location)
+		# print(date_time_folders_to_check)
+		# exit()
+
+		# TIME
+		# Loop through each date folder
+		#for i in os.listdir(date_time_folders_to_check):
+			#print(date_time_folders_to_check)
+
+		# # Get date path
+		# update_folder_location = os.path.join(
+		# 	MAIN_INI_FILE.backup_dates_location(), sorted_date[i])
+
+		# Len of dates
+		for i in range(len(date_time_folders_to_check)):
+			# Available times
+			for time_folder in os.listdir(date_time_folders_to_check[i]):
+				folder_path = os.path.join(date_time_folders_to_check[i], time_folder)
+
+				#print(time_folder)
+				print(folder_path)
+				#print(os.listdir(folder_path))
+
+				# Search inside time folder
+				for root, _, files in os.walk(folder_path):
 					if files:
 						for file in files:
-							# Is a match
-							datetime_location = os.path.join(root, file)
+							file_location = os.path.join(root, file)
+							combine_home_backup_date = (
+								location.replace(HOME_USER, ''))
 
-							# /Documents/Godot_Demos/Street/props/cinder_blocks/cinder_blocks.blend
-							datetime_removed = str(datetime_location).replace(date_time_path_location, '')
-							# Add to HOME user
-							modeed_home_item = HOME_USER + datetime_removed
+							combine_home_backup_date = (
+								os.path.join(folder_path + combine_home_backup_date))
 
-							# print(datetime_location)
-							# print(datetime_removed)
-							# print(modeed_home_item)
-							# print(file)
-							# exit()
-
-							if file not in already_checked:
+							# Check if combine location exists
+							if os.path.exists(combine_home_backup_date):
+								# Compare sizes
 								if self.compare_sizes(
-									modeed_home_item,
-									datetime_location):
+									location=file_location,
+									destination=combine_home_backup_date):
+									print('[UPDATED/DATE/TIME]:', file_location)
 
-									destinarion = (
-										str(os.path.dirname(
-											modeed_home_item)).replace(
-												f'{HOME_USER}/', ' ').strip())
+									# Add to be backup
+									combine_home_backup_date = (
+										location.replace(HOME_USER, ''))
 
-									already_checked.append(file)
+									self.add_to_backup_dict(
+										location=file_location,
+										destination=combine_home_backup_date,
+										status='UPDATED')
 
-									# Date/Time Folder
-									if not os.path.isdir(modeed_home_item):
-										self.add_to_backup_dict(
-											modeed_home_item,
-											os.path.join(destinarion, file),
-											'UPDATED')
-									else:
-										self.add_to_backup_dict(
-											modeed_home_item,
-											destinarion,
-											'UPDATED')
+		# # Loop through each date folder
+		# for i in range(len(sorted_date)):
+		# 	# Get date path
+		# 	update_folder_location = os.path.join(
+		# 		MAIN_INI_FILE.backup_dates_location(), sorted_date[i])
+				
+		# 	# Loop through each date folder, to find time folders
+		# 	cnt = 0
+		# 	for i in os.listdir(update_folder_location):
+		# 		print(i)
+		# 		test = os.path.join(
+		# 			MAIN_INI_FILE.backup_dates_location(), sorted_date[cnt])
+		# 		cnt += 1
+		# 		print(os.path.join(test, i))
+				
+		# 	# print(update_folder_location)
+		# 	# print(combine_home_with_update)
+			
+		# 	exit()
+			
+		# 	# If item (location) has already be found in a date folder,
+		# 	# do no check if older date folders
+		# 	# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
+		# 	if location not in self.found_items:
+		# 		# Check if combine location exists
+		# 		# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
+		# 		if os.path.exists(combine_home_with_update):
+		# 			# print(combine_home_with_update, '[FOUND]')
+					
+		# 			# Compare sizes
+		# 			# /home/user/Pictures/image.jpg
+		# 			# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
+		# 			if self.compare_sizes(
+		# 				location=location, 
+		# 				destination=combine_home_with_update):
+
+		# 				# Add to the found list
+		# 				self.found_items.append(location)
+
+		# 				# # Backup to the found date folder
+		# 				# self.add_to_backup_dict(
+		# 				# 	location=location,
+		# 				# 	destination=filter_update_dirname, # Send only the location dirname
+		# 				# 	status='UPDATED')
+		# 				# print(combine_home_with_update, f'[UPDATE]["{sorted_date[i]}"]')
+		# 				self.updates_files += 1
+		# 		else:
+		# 			# # Backup to a new date/time folder
+		# 			# self.add_to_backup_dict(
+		# 			# 		location=location,
+		# 			# 		destination=filter_update_dirname, # Send only the location dirname
+		# 			# 		status='UPDATED')
+		# 			print(combine_home_with_update, '[NOT FOUND][]')
+		# 			self.updates_files += 1
+		# print()
 
 	def need_to_backup_analyse(self):
 		# Check if it's not the first backup with Time Machine
 		if os.path.exists(MAIN_INI_FILE.main_backup_folder()):
 			# Part of the analyses
 			get_all_backups_date_time()
-			self.get_select_backup_home()
+			# self.get_select_backup_home()
 
 			# Loop thourgh Home
 			self.analyse_home()
@@ -382,9 +404,9 @@ if __name__ == "__main__":
 	MAIN = ANALYSES()
 
 	print('Analysing backup...')
-	notification_message('Analysing backup...')
+	#notification_message('Analysing backup...')
 
-	MAIN.need_to_backup_analyse()
+	# MAIN.need_to_backup_analyse()
 
 	try:
 		# Backup flatpak
