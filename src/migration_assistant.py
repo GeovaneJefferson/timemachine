@@ -14,7 +14,7 @@ from restore_kde_config import restore_kde_config
 from restore_kde_local_share import restore_kde_local_share
 from handle_spaces import handle_spaces
 from create_backup_checker_desktop import create_directory
-
+from analyse import ANALYSES
 
 
 # Define a function to convert the date string to a datetime object
@@ -30,6 +30,8 @@ class WelcomeScreen(QWidget):
 
 		# Countdown
 		# self.countdown = 10
+
+		self.is_restore_done = False
 
 		# Page 1
 		self.ui.button_continue.clicked.connect(self.on_continue_button_clicked_page1)
@@ -543,7 +545,7 @@ class WelcomeScreen(QWidget):
 		# Disable restore, back button and automatically checkbox
 		self.ui.button_restore_page4.setVisible(False)
 		self.ui.button_back_page4.setVisible(False)
-		self.ui.checkbox_automatically_reboot_page4.setVisible(False)
+		self.ui.checkbox_automatically_reboot_page4.setEnabled(False)
 
 		# Add done image
 		done_image = QLabel(self.ui.image_page5)
@@ -559,20 +561,27 @@ class WelcomeScreen(QWidget):
 		# Update DB
 		# MAIN_INI_FILE.set_database_value('STATUS', 'is_restoring', 'True')
 
-		# self.update_pb()
+		#self.update_pb()
 		# Show progressbar
 		self.ui.progress_bar_restoring.show()
 
 		# Call restore class asynchronously
 		RESTORE_PROCESS = RESTORE()
-		# asyncio.run(self.start_restoring_and_update_db())
-		# asyncio.run(RESTORE_PROCESS.start())
-		RESTORE_PROCESS.start_restoring()
+		#RESTORE_PROCESS.start_restoring()
+
+		try:
+			thread2 = threading.Thread(target=RESTORE_PROCESS.start_restoring)
+			thread2.start()
+		except Exception as e:
+			print(e)
+		#asyncio.run(RESTORE_PROCESS.start_restoring())
 
 	def update_status_feedback(self):
-		# self.ui.label_restoring_status.setText(
-		# 	MAIN_INI_FILE.get_database_value('INFO', 'saved_notification'))
-
+		if self.is_restore_done:
+			try:
+				timer.stop()
+			except:
+				pass
 		self.ui.label_restoring_status.adjustSize()
 		self.ui.label_restoring_status.setAlignment(
 			Qt.AlignHCenter | Qt.AlignVCenter)
@@ -606,7 +615,9 @@ class RESTORE:
 		# 	self.item_to_restore += 1
 
 		if MAIN.ui.checkbox_files_folders_page3.isChecked():
-			self.item_to_restore += 1
+			x = ANALYSES()
+			homeCount = int(len(x.get_source_dir()))
+			self.item_to_restore += homeCount
 
 		if MAIN.ui.checkbox_system_settings_page3.isChecked():
 			self.item_to_restore += 1
@@ -628,7 +639,9 @@ class RESTORE:
 		except ZeroDivisionError:
 			pass
 
+	#async def start_restoring(self):
 	def start_restoring(self):
+		print(self.item_to_restore)
 		# First change the wallpaper
 		if MAIN.ui.checkbox_system_settings_page3.isChecked():
 			# self.update_progressbar_db()
@@ -694,6 +707,7 @@ class RESTORE:
 	#----------RESTORE TOPICS----------#
 	## Home
 	def restore_backup_home(self):
+		cnt = 0
 		location = MAIN_INI_FILE.main_backup_folder()
 
 		for folder in os.listdir(location):
@@ -711,15 +725,15 @@ class RESTORE:
 				src = os.path.join(location, folder) + '/'
 				dst = os.path.join(HOME_USER, folder) + '/'
 
+				# Show current installing flatpak to the user
+				MAIN.ui.label_restoring_status.setText(f'Copying: {dst}...')
+				MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+
 				# Copy everything from src to dst folder
 				for i in os.listdir(src):
 					x = src + i
 
 					print('Restoring Home Folder:', x)
-
-					# Show current installing flatpak to the user
-					MAIN.ui.label_restoring_status.setText(f'Copying: {x}...')
-					MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
 
 					# Create if necessary
 					if not os.path.exists(dst):
@@ -744,12 +758,9 @@ class RESTORE:
 		added_list = []
 		dst_loc = MAIN_INI_FILE.backup_dates_location()
 
-		print()
-		print('UPDATES')
-
 		# Add all dates to the list
 		for date in os.listdir(dst_loc):
-			# Eclude hidden files/folders
+			# Exclude hidden files/folders
 			if not date.startswith('.'):
 				date_list.append(date)
 
@@ -780,12 +791,7 @@ class RESTORE:
 							# print('Destination:', os.path.join(destination_location, files[i]))
 
 							# Restore lastest file update
-							print(f'Restoring {source} to: {destination_location}')
-
-							# Show current installing to the user
-							MAIN.ui.label_restoring_status.setText(
-								f'Copying to: {destination_location}...')
-							MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+							#print(f'Restoring {source} to: {destination_location}')
 
 							# Create if necessary
 							if not os.path.exists(destination_location):
@@ -1019,8 +1025,8 @@ class RESTORE:
 	# End
 	def end_restoring(self):
 		print("Restoring is done!")
-		# Stop the QTimer after the asynchronous operation is complete
-		timer.stop()
+
+		MAIN.is_restore_done = True
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
@@ -1047,6 +1053,7 @@ class RESTORE:
 				["sudo", "reboot"],
 					stdout=sub.PIPE,
 					stderr=sub.PIPE)
+
 
 
 if __name__ == '__main__':
