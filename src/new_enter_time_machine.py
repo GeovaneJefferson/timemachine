@@ -1,7 +1,3 @@
-# Important:
-# You need to run the following command to generate the ui_form.py file
-#     pyside6-uic form.ui -o ui_form.py
-
 from ui.ui_enter_time_machine import Ui_MainWindow
 from setup import *
 from read_ini_file import UPDATEINIFILE
@@ -102,10 +98,6 @@ class MainWindow(QMainWindow):
         self.CURRENT_FOLDER = ""
 
         # Connections
-        # Up button
-        # self.ui.btn_up.clicked.connect(self.btn_up_clicked)
-        # Down button
-        # self.ui.btn_down.clicked.connect(self.btn_down_clicked)
         # Cancel button
         self.ui.btn_cancel.clicked.connect(btn_cancel_clicked)
         # Restore button
@@ -294,11 +286,6 @@ class MainWindow(QMainWindow):
         # Clean previous results
         self.delete_all_results()
 
-        # inside_current_folder = f"{MAIN_INI_FILE.hd_hd()}/{BASE_FOLDER_NAME}/" \
-        #                         f"{BACKUP_FOLDER_NAME}/{self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]}/" \
-        #                         f"{self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]}/" \
-        #                         f"{self.CURRENT_FOLDER}"
-
         inside_current_folder = f'{MAIN_INI_FILE.main_backup_folder()}/{self.CURRENT_FOLDER}'
 
         # Add options to QTree
@@ -459,26 +446,6 @@ class MainWindow(QMainWindow):
     ################################################################################
     # CONNECTIONS
     ################################################################################
-    def btn_up_clicked(self):
-        self.COUNTER_FOR_TIME += 1
-
-        # Update ui informations
-        self.update_labels()
-
-        # Show results asynchronously
-        self.show_thread = threading.Thread(target=self.show_results)
-        self.show_thread.start()
-
-    def btn_down_clicked(self):
-        self.COUNTER_FOR_TIME -= 1
-        
-        # Update ui informations
-        self.update_labels()
-        
-        # Show results asynchronously
-        self.show_thread = threading.Thread(target=self.show_results)
-        self.show_thread.start()
-
     def change_date(self, date):
         # Clean QTree area
         self.delete_all_results()
@@ -571,7 +538,7 @@ class MainWindow(QMainWindow):
                 # Add selected item from QtreeView Updates
                 self.files_to_restore.append(full_location)
 
-        print(self.files_to_restore)
+        # print(self.files_to_restore)
 
     def show_small_preview(self, item_txt):
         # If a file
