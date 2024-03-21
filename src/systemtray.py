@@ -234,14 +234,29 @@ class APP:
         # Disable backup now action
         self.backup_now_button.setEnabled(False)
 
+        # try:
+        #     sub.Popen(
+        #         ['python3', SRC_ANALYSE_PY],
+        #             stdout=sub.PIPE,
+        #             stderr=sub.PIPE)
+        # except Exception as e:
+        #     # Save error log
+        #     MAIN_INI_FILE.report_error(e)
         try:
-            sub.Popen(
+            process = sub.Popen(
                 ['python3', SRC_ANALYSE_PY],
-                    stdout=sub.PIPE,
-                    stderr=sub.PIPE)
+                stdout=sub.PIPE,
+                stderr=sub.PIPE)
+            
+            output, error = process.communicate()
+            print(output)
+            print(error.decode('utf-8'))
+            if process.returncode != 0:
+                MAIN_INI_FILE.report_error(error.decode('utf-8'))
         except Exception as e:
-            # Save error log
+            print(e)
             MAIN_INI_FILE.report_error(e)
+            raise
 
     def open_report(self):
         report_file_txt = MAIN_INI_FILE.include_to_backup()
