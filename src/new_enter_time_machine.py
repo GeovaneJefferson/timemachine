@@ -267,15 +267,11 @@ class MainWindow(QMainWindow):
 
                 # Auto selected the last time option
                 self.btn_backup_time_folders.setChecked(True)
-
         except IndexError:
             # Reset counter for time
             self.COUNTER_FOR_TIME = 0
             # Add 1 for time counter
             self.COUNTER_FOR_TIME += 1
-
-        # Update ui informations 
-        self.update_labels()
 
         # Show results
         #  asynchronously
@@ -315,7 +311,6 @@ class MainWindow(QMainWindow):
                 qt_item.setCheckState(0, Qt.Unchecked)
 
             self.qtree_add_results(inside_current_folder)
-
         except FileNotFoundError:
             pass
 
@@ -332,45 +327,31 @@ class MainWindow(QMainWindow):
                 self.qtree_add_sub_items(parent_item=folder_item, folder_path=folder_path)
 
     def qtree_add_sub_items(self, parent_item, folder_path):
-        try:
-            for item_name in os.listdir(folder_path):
-                item_path = os.path.join(folder_path, item_name)
-                if os.path.isdir(item_path):
-                    sub_folder_item = QTreeWidgetItem(parent_item, [item_name, '', '', 'Folder'])
+        stack = [(parent_item, folder_path)]
 
-                    # May cause UI freezing
-                    self.qtree_add_sub_items(sub_folder_item, item_path)
-                elif os.path.isfile(item_path) and not str(item_name).startswith('.'):
-                    item_size = os.path.getsize(item_path)
-                    date_modified = os.path.getmtime(item_path)
-                    extension = os.path.splitext(item_name)[1]
+        while stack:
+            current_parent_item, current_folder_path = stack.pop()
+            try:
+                for item_name in os.listdir(current_folder_path):
+                    item_path = os.path.join(current_folder_path, item_name)
+                    if os.path.isdir(item_path):
+                        sub_folder_item = QTreeWidgetItem(current_parent_item, [item_name, '', '', 'Folder'])
+                        stack.append((sub_folder_item, item_path))
+                    elif os.path.isfile(item_path) and not str(item_name).startswith('.'):
+                        item_size = os.path.getsize(item_path)
+                        date_modified = os.path.getmtime(item_path)
+                        extension = os.path.splitext(item_name)[1]
 
-                    formatted_date = datetime.fromtimestamp(date_modified).strftime('%d-%m%-Y %H:%M:%S')
-                    formatted_size = size_format(item_size) if item_size is not None else ''
+                        formatted_date = datetime.fromtimestamp(date_modified).strftime('%d-%m%-Y %H:%M:%S')
+                        formatted_size = size_format(item_size) if item_size is not None else ''
 
-                    # Checkbox
-                    item = QTreeWidgetItem(parent_item, [item_name, formatted_date, formatted_size, extension])
-                    item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
-                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setCheckState(0, Qt.Unchecked)
-
-        except UnboundLocalError:
-            # If folder is empty, change date, until find something
-            # print("Nothing inside", self.CURRENT_FOLDER, "for", self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE])
-            # self.COUNTER_FOR_DATE += 1
-            
-            for index in range(self.ui.dates_layout.count()):
-                button = self.ui.dates_layout.itemAt(index).widget()
-                if isinstance(button, QPushButton):
-                    # If index match counter for date int
-                    if index == self.COUNTER_FOR_DATE:
-                        # Check the latest date button found
-                        button.setChecked(True)
-                        break
-        # TODO
-        # Needs to reset or update the time gray label, is not
-        # self.COUNTER_FOR_TIME = 0
-        self.update_labels()
+                        # Checkbox
+                        item = QTreeWidgetItem(current_parent_item, [item_name, formatted_date, formatted_size, extension])
+                        item.setData(1, Qt.UserRole, date_modified)  # Store the timestamp as user data
+                        item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                        item.setCheckState(0, Qt.Unchecked)
+            except FileNotFoundError:
+                pass
 
     def up_down_settings(self):
         try:
@@ -402,45 +383,6 @@ class MainWindow(QMainWindow):
         except:
             pass
 
-    def update_labels(self):
-        # Get current date
-        date_now = MAIN_INI_FILE.current_date() + "-" \
-                 + MAIN_INI_FILE.current_month() + "-" \
-                 + MAIN_INI_FILE.current_year()
-        
-        # TODO
-        # Re-code this
-        # replaced_the_time = str(latest_backup_date_label().split(
-        #     ",")[0] +  ", " + 
-        #     self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]).replace("-",":")
-
-
-        # date_checker1 = str(self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE]).split('-')[0] 
-        # date_checker2 = str(self.LIST_OF_ALL_BACKUP_DATES[1]).split('-')[0] 
-
-        # # If today, show "Today"
-        # if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] != str(date_now):
-        #     # Update gray time label
-        #     self.ui.label_gray_time.setText(
-        #         f'({self.LIST_OF_BACKUP_TIME_FOR_CURRENT_DATE[self.COUNTER_FOR_TIME]})'.replace("-", ":"))
-
-        # if self.LIST_OF_ALL_BACKUP_DATES[self.COUNTER_FOR_DATE] == date_now:
-        #     # 
-        #     if self.COUNTER_FOR_TIME == 0:
-        #         # Today or Yesterday
-        #         self.ui.label_gray_time.setText(latest_backup_date_label())
-        #     # Edit date, keep text before ",", and update the label time 
-        #     else:
-        #         self.ui.label_gray_time.setText(replaced_the_time)
-
-        # elif int(date_checker1) - int(date_checker2) == 1:
-        #     if self.COUNTER_FOR_TIME == 0:
-        #         # Today or Yesterday
-        #         self.ui.label_gray_time.setText(latest_backup_date_label())
-        #     else:
-        #         self.ui.label_gray_time.setText(replaced_the_time)
-
-        # Enable/Disable up, down button
         self.up_down_settings()
 
     ################################################################################
@@ -520,7 +462,7 @@ class MainWindow(QMainWindow):
         else:
             self.ui.small_preview_label.clear()
 
-        print(self.files_to_restore)
+        # print(self.files_to_restore)
         self.add_to_restore()
 
     def qtree_update_checkbox_clicked(self, selected, deselected):
@@ -918,8 +860,6 @@ if __name__ == "__main__":
 
     # Add  backup times folders for the current date folder
     # MAIN.add_backup_times()
-
-    MAIN.update_labels()
 
     # MAIN.showFullScreen()
     MAIN.show()
