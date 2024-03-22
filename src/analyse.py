@@ -382,58 +382,58 @@ if __name__ == "__main__":
 	MAIN = ANALYSES()
 
 	print('Analysing backup...')
-	#notification_message('Analysing backup...')
+	notification_message('Analysing backup...')
 
-	MAIN.need_to_backup_analyse()
+	# MAIN.need_to_backup_analyse()
 
-	#try:
-		## Backup flatpak
-		#print("Backing up: flatpak applications")
-		#backup_flatpak()
+	try:
+		# Backup flatpak
+		print("Backing up: flatpak applications")
+		backup_flatpak()
 
-		## Backup pip packages
-		#print("Backing up: pip packages")
-		#backup_pip_packages()
+		# Backup pip packages
+		print("Backing up: pip packages")
+		backup_pip_packages()
 
-		## TODO
-		#try:
-			## Backup wallpaper
-			#print("Backing up: Wallpaper")
-			#backup_wallpaper()
-		#except:
-			#pass
+		# TODO
+		try:
+			# Backup wallpaper
+			print("Backing up: Wallpaper")
+			backup_wallpaper()
+		except:
+			pass
 
-		## Need to backup
-		#if MAIN.need_to_backup_analyse():
-			## Prepare backup
-			#if MAIN_PREPARE.prepare_the_backup():
-				#print('Calling backup now...')
+		# Need to backup
+		if MAIN.need_to_backup_analyse():
+			# Prepare backup
+			if MAIN_PREPARE.prepare_the_backup():
+				print('Calling backup now...')
 
-				## Backup now
-				#sub.Popen(
-					#['python3', SRC_BACKUP_NOW_PY],
-						#stdout=sub.PIPE,
-						#stderr=sub.PIPE)
-		#else:
-			#print('No need to back up.')
+				# Backup now
+				sub.Popen(
+					['python3', SRC_BACKUP_NOW_PY],
+						stdout=sub.PIPE,
+						stderr=sub.PIPE)
+		else:
+			print('No need to back up.')
 
-			## Backing up to False
-			#MAIN_INI_FILE.set_database_value(
-				#'STATUS', 'backing_up_now', 'False')
+			# Backing up to False
+			MAIN_INI_FILE.set_database_value(
+				'STATUS', 'backing_up_now', 'False')
 
-			## Check if backup checker is not already running
-			#process_title = "Time Machine - Backup Checker"
-			#if not MAIN.is_process_running(process_title):
-				#print(f"No process with the title '{process_title}' is currently running.")
-				## Re.open backup checker
-				#sub.Popen(
-					#['python3', SRC_BACKUP_CHECKER_PY],
-					#stdout=sub.PIPE,
-					#stderr=sub.PIPE)
-	#except BrokenPipeError:
-		## Ignore Broken pipe error
-		#pass
-	#except Exception as error:
-		#print(error)
-		## Save error log
-		#MAIN_INI_FILE.report_error(error)
+			# Check if backup checker is not already running
+			process_title = "Time Machine - Backup Checker"
+			if not MAIN.is_process_running(process_title):
+				print(f"No process with the title '{process_title}' is currently running.")
+				# Re.open backup checker
+				sub.Popen(
+					['python3', SRC_BACKUP_CHECKER_PY],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+	except BrokenPipeError:
+		# Ignore Broken pipe error
+		pass
+	except Exception as error:
+		print(error)
+		# Save error log
+		MAIN_INI_FILE.report_error(error)
