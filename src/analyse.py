@@ -183,10 +183,10 @@ class ANALYSES:
 							combine_home_with_backup_dirname = (
 								MAIN_INI_FILE.main_backup_folder() + str(file_location).replace(HOME_USER, ''))
 							
-							# print('File Location:',file_location)
-							# print('HOME + BACKUP:', combine_home_with_backup_dirname)
-							# print()
-
+							#print('File Location:',file_location)
+							#print('HOME + BACKUP:', combine_home_with_backup_dirname)
+							#print()
+							#exit()
 							# New file
 							if not os.path.exists(combine_home_with_backup_dirname):
 								self.add_to_backup_dict(
@@ -194,7 +194,7 @@ class ANALYSES:
 									destination=combine_home_with_backup_dirname,
 									status='NEW')
 								
-								print('[NEW]:', combine_home_with_backup_dirname)
+								#print('[NEW]:', combine_home_with_backup_dirname)
 							else:
 								# Compare file size difference
 								if self.compare_sizes(
@@ -225,14 +225,16 @@ class ANALYSES:
 		
 	def check_with_dates(self, location, destination):
 		print('------[DATE/TIME]------')
+		already_backup_list = []
 
-		only_dirname = str(os.path.dirname(destination))
-		filter_update_dirname = only_dirname.replace(MAIN_INI_FILE.main_backup_folder(), '')
+		# /Documents/Godot_Demos/Street/props/trash/trash.blend
+		only_dirname = str(destination).replace(MAIN_INI_FILE.main_backup_folder(), '')
+		home_file_name= str(location).split('/')[-1]
 
-		# print(location)
-		# print(destination)
-		# print(filter_update_dirname)
-		# exit()
+		#print(location)
+		#print(destination)
+		#print(only_dirname)
+		#exit()
 		
 		# Sort the dates in descending order using the converted datetime objects
 		sorted_date = sorted(has_date_time_to_compare,
@@ -249,22 +251,6 @@ class ANALYSES:
 			# Append 
 			date_time_folders_to_check.append(update_folder_location)
 
-			# combine_home_with_update = str(location).replace(HOME_USER, '')
-			# combine_home_with_update = os.path.join(update_folder_location + combine_home_with_update)
-
-			# print(update_folder_location)
-		# print(date_time_folders_to_check)
-		# exit()
-
-		# TIME
-		# Loop through each date folder
-		#for i in os.listdir(date_time_folders_to_check):
-			#print(date_time_folders_to_check)
-
-		# # Get date path
-		# update_folder_location = os.path.join(
-		# 	MAIN_INI_FILE.backup_dates_location(), sorted_date[i])
-
 		# Len of dates
 		for i in range(len(date_time_folders_to_check)):
 			# Available times
@@ -272,92 +258,84 @@ class ANALYSES:
 				folder_path = os.path.join(date_time_folders_to_check[i], time_folder)
 
 				#print(time_folder)
-				print(folder_path)
-				#print(os.listdir(folder_path))
+				#print(folder_path)
+				#exit()
 
 				# Search inside time folder
 				for root, _, files in os.walk(folder_path):
 					if files:
 						for file in files:
 							file_location = os.path.join(root, file)
-							combine_home_backup_date = (
-								location.replace(HOME_USER, ''))
+							test = str(file_location).replace(folder_path, '')
 
-							combine_home_backup_date = (
-								os.path.join(folder_path + combine_home_backup_date))
+							print()
+							print('------[HOME]------')
+							print(home_file_name)
+							#print(folder_path)
+							print('Only Dirname:', only_dirname)
+							# print('DATE/TIME:', test)
+							print('Search updates for this file:', location)
 
-							# Check if combine location exists
-							if os.path.exists(combine_home_backup_date):
-								# Compare sizes
-								if self.compare_sizes(
-									location=file_location,
-									destination=combine_home_backup_date):
-									print('[UPDATED/DATE/TIME]:', file_location)
+							# Find source dirname match
+							#HOME: /Documents/Godot_Demos/Street/props/trash/trash.blend
+							#DATE/TIME: /Documents/Godot_Demos/Street/props/trash/trash.blend
+							if only_dirname not in already_backup_list:
+								y = os.path.join(folder_path + only_dirname)
 
-									# Add to be backup
-									combine_home_backup_date = (
-										location.replace(HOME_USER, ''))
+								splitt = folder_path.split('/')[-2:]
+								splitt = '/'.join(splitt)
 
-									self.add_to_backup_dict(
-										location=file_location,
-										destination=combine_home_backup_date,
-										status='UPDATED')
+								print()
+								print(f'[{splitt}]')
+								print('Name:', file)
+								print('Where:', file_location)
 
-		# # Loop through each date folder
-		# for i in range(len(sorted_date)):
-		# 	# Get date path
-		# 	update_folder_location = os.path.join(
-		# 		MAIN_INI_FILE.backup_dates_location(), sorted_date[i])
-				
-		# 	# Loop through each date folder, to find time folders
-		# 	cnt = 0
-		# 	for i in os.listdir(update_folder_location):
-		# 		print(i)
-		# 		test = os.path.join(
-		# 			MAIN_INI_FILE.backup_dates_location(), sorted_date[cnt])
-		# 		cnt += 1
-		# 		print(os.path.join(test, i))
-				
-		# 	# print(update_folder_location)
-		# 	# print(combine_home_with_update)
-			
-		# 	exit()
-			
-		# 	# If item (location) has already be found in a date folder,
-		# 	# do no check if older date folders
-		# 	# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
-		# 	if location not in self.found_items:
-		# 		# Check if combine location exists
-		# 		# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
-		# 		if os.path.exists(combine_home_with_update):
-		# 			# print(combine_home_with_update, '[FOUND]')
-					
-		# 			# Compare sizes
-		# 			# /home/user/Pictures/image.jpg
-		# 			# /media/user/BACKUP/TMB/backups/20-03-24/Pictures/image.jpg
-		# 			if self.compare_sizes(
-		# 				location=location, 
-		# 				destination=combine_home_with_update):
+								## Check if combine location exists
+								if home_file_name == file:
+								#if os.path.exists(y):
+									print()
+									print('[MATCH]')
+									print('Home Name:', home_file_name)
+									print('Backup Name:', file)
+									print('[MATCH]')
+									print()
+									#exit()
 
-		# 				# Add to the found list
-		# 				self.found_items.append(location)
+									# Compare sizes with Home
+									if self.compare_sizes(
+										location=location,
+										destination=file_location):
+										print()
+										print('[UPDATED]')
+										print('Home Location:', location)
+										print('Backup Location:', file_location)
+										print('[UPDATED]')
+										print()
 
-		# 				# # Backup to the found date folder
-		# 				# self.add_to_backup_dict(
-		# 				# 	location=location,
-		# 				# 	destination=filter_update_dirname, # Send only the location dirname
-		# 				# 	status='UPDATED')
-		# 				# print(combine_home_with_update, f'[UPDATE]["{sorted_date[i]}"]')
-		# 				self.updates_files += 1
-		# 		else:
-		# 			# # Backup to a new date/time folder
-		# 			# self.add_to_backup_dict(
-		# 			# 		location=location,
-		# 			# 		destination=filter_update_dirname, # Send only the location dirname
-		# 			# 		status='UPDATED')
-		# 			print(combine_home_with_update, '[NOT FOUND][]')
-		# 			self.updates_files += 1
-		# print()
+										self.add_to_backup_dict(
+											location=location,
+											destination=only_dirname,
+											status='UPDATED')
+
+										#exit()
+									else:
+										print()
+										print('[NOT UPDATED]')
+										print('Home Location:', location)
+										print('Backup Location:', file_location)
+										print('[NOT UPDATED]')
+										print()
+										#exit()
+
+									# Sizes did not changed
+									already_backup_list.append(only_dirname)
+
+		#if only_dirname not in already_backup_list:
+			#self.add_to_backup_dict(
+				#location=location,
+				#destination=only_dirname,
+				#status='UPDATED')
+
 
 	def need_to_backup_analyse(self):
 		# Check if it's not the first backup with Time Machine
@@ -406,56 +384,56 @@ if __name__ == "__main__":
 	print('Analysing backup...')
 	#notification_message('Analysing backup...')
 
-	# MAIN.need_to_backup_analyse()
+	MAIN.need_to_backup_analyse()
 
-	try:
-		# Backup flatpak
-		print("Backing up: flatpak applications")
-		backup_flatpak()
+	#try:
+		## Backup flatpak
+		#print("Backing up: flatpak applications")
+		#backup_flatpak()
 
-		# Backup pip packages
-		print("Backing up: pip packages")
-		backup_pip_packages()
+		## Backup pip packages
+		#print("Backing up: pip packages")
+		#backup_pip_packages()
 
-		# TODO
-		try:
-			# Backup wallpaper
-			print("Backing up: Wallpaper")
-			backup_wallpaper()
-		except:
-			pass
+		## TODO
+		#try:
+			## Backup wallpaper
+			#print("Backing up: Wallpaper")
+			#backup_wallpaper()
+		#except:
+			#pass
 
-		# Need to backup
-		if MAIN.need_to_backup_analyse():
-			# Prepare backup
-			if MAIN_PREPARE.prepare_the_backup():
-				print('Calling backup now...')
+		## Need to backup
+		#if MAIN.need_to_backup_analyse():
+			## Prepare backup
+			#if MAIN_PREPARE.prepare_the_backup():
+				#print('Calling backup now...')
 
-				# Backup now
-				sub.Popen(
-					['python3', SRC_BACKUP_NOW_PY],
-						stdout=sub.PIPE,
-						stderr=sub.PIPE)
-		else:
-			print('No need to back up.')
+				## Backup now
+				#sub.Popen(
+					#['python3', SRC_BACKUP_NOW_PY],
+						#stdout=sub.PIPE,
+						#stderr=sub.PIPE)
+		#else:
+			#print('No need to back up.')
 
-			# Backing up to False
-			MAIN_INI_FILE.set_database_value(
-				'STATUS', 'backing_up_now', 'False')
+			## Backing up to False
+			#MAIN_INI_FILE.set_database_value(
+				#'STATUS', 'backing_up_now', 'False')
 
-			# Check if backup checker is not already running
-			process_title = "Time Machine - Backup Checker"
-			if not MAIN.is_process_running(process_title):
-				print(f"No process with the title '{process_title}' is currently running.")
-				# Re.open backup checker
-				sub.Popen(
-					['python3', SRC_BACKUP_CHECKER_PY],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-	except BrokenPipeError:
-		# Ignore Broken pipe error
-		pass
-	except Exception as error:
-		print(error)
-		# Save error log
-		MAIN_INI_FILE.report_error(error)
+			## Check if backup checker is not already running
+			#process_title = "Time Machine - Backup Checker"
+			#if not MAIN.is_process_running(process_title):
+				#print(f"No process with the title '{process_title}' is currently running.")
+				## Re.open backup checker
+				#sub.Popen(
+					#['python3', SRC_BACKUP_CHECKER_PY],
+					#stdout=sub.PIPE,
+					#stderr=sub.PIPE)
+	#except BrokenPipeError:
+		## Ignore Broken pipe error
+		#pass
+	#except Exception as error:
+		#print(error)
+		## Save error log
+		#MAIN_INI_FILE.report_error(error)

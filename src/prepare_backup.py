@@ -185,7 +185,7 @@ def create_base_folders():
         ################################################################################
         # GNOME
         ################################################################################
-        if get_user_de() == 'gnome':
+        if get_user_de() == 'gnome' or get_user_de == 'unity':
             # Create gnome folder
             if not os.path.exists(MAIN_INI_FILE.gnome_main_folder()):
                 command = MAIN_INI_FILE.gnome_main_folder()

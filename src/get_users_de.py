@@ -1,6 +1,6 @@
 from setup import *
 
-USER_DE = os.environ.get(GET_USER_DE).lower()
+USER_DE = os.environ.get(GET_USER_DE).lower().strip()
 
 def get_user_de():
     if ':' in USER_DE:

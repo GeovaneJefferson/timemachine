@@ -208,14 +208,12 @@ def get_item_size(item_path):
     # Add the new item to date, and time folders
     if os.path.isdir(item_path):
         item_size = get_directory_size(item_path)
-
     elif os.path.isfile(item_path):
         item_size = os.path.getsize(item_path)
   
     try:
         # In bytes
         return item_size
-    
     except UnboundLocalError:
         return 0
 

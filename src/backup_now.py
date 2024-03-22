@@ -15,13 +15,13 @@ signal.signal(signal.SIGINT, error_catcher.signal_exit)
 signal.signal(signal.SIGTERM, error_catcher.signal_exit)
 
 
-list_gnome_include = [
+LIST_GNOME_INCLUDE = [
 	'gnome-shell',
 	'dconf'
 	]
 
 # Backup .local/share/ selected folder for KDE
-list_include_kde = [
+LIST_KDE_INCLUDE = [
 	'kwin',
 	'plasma_notes',
 	'plasma',
@@ -263,145 +263,99 @@ class BACKUP:
 	def backup_hidden_local_share(self, user_de):
 		# Local share
 		for folder in os.listdir(LOCAL_SHARE_LOCATION):
-			# Handle spaces
-			folder = handle_spaces(folder)
+			try:
+				# Handle spaces
+				folder = handle_spaces(folder)
+				
+				# Gnome or KDE
+				if user_de == 'gnome' or user_de == 'unity':
+					compare_list = LIST_GNOME_INCLUDE
+					# Destination
+					dst = os.path.join(MAIN_INI_FILE.gnome_local_share_main_folder(), folder)
+				elif user_de == 'kde':
+					compare_list = LIST_KDE_INCLUDE
+					# Destination
+					dst = os.path.join(MAIN_INI_FILE.kde_local_share_main_folder(), folder)
+				
+				# Find match in list
+				if folder in compare_list:
+					src = os.path.join(LOCAL_SHARE_LOCATION + folder)
+
+					create_directory(dst)
+					notification_message(f'Backing up: .local/share/{folder}')
+					
+					print('-----[HIDDEN LOCAL SHARE]-----')
+					print('From:', src)
+					print('To:', dst)
+					print()
 			
-			# Gnome or KDE
-			if user_de == 'gnome':
-				compare_list = list_gnome_include
-				
-				# Destination
-				dst = MAIN_INI_FILE.gnome_local_share_main_folder() + '/' + folder
-
-			elif user_de == 'kde':
-				compare_list = list_include_kde
-
-				# Destination
-				dst = MAIN_INI_FILE.kde_local_share_main_folder() + '/' + folder
-
-			# Find match in list
-			if folder in compare_list:
-				src = LOCAL_SHARE_LOCATION + folder
-				# dst = MAIN_INI_FILE.main_backup_folder() + '/.local/share/' + folder
-				
-				# # Create current directory in backup device
-				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-				
-				dst_moded = dst = os.path.dirname(dst)
-
-				# DELETE
-				# if not os.path.exists(dst_moded):
-				# 	os.makedirs(dst_moded, exist_ok=True)
-				
-				create_directory(dst_moded)
-
-				print(f'Backing up: {LOCAL_SHARE_LOCATION}{folder}')
-
-				notification_message(f'Backing up: .local/share/{folder}')
-				
-				# sub.run(
-				# 	['cp', '-rvf', src, dst],
-				# 	stdout=sub.PIPE,
-				# 	stderr=sub.PIPE)
-				
-				# Copy the entire directory tree from source to destination, overriding if it exists
-				shutil.copytree(src, dst, dirs_exist_ok=True)
-	
-				# # Copy files using shutil.copytree for directories or shutil.copy2 for files
-				# shutil.copytree(src, dst)  # For directories
-				# # or
-				# shutil.copy2(src, dst)  # For files
-	
+					# Copy the entire directory tree from source to destination, overriding if it exists
+					shutil.copytree(src, dst, dirs_exist_ok=True)
+			except Exception as e:
+					print(e)
+					pass
+		
 	def backup_hidden_config(self, user_de):
 		# Config
 		for folder in os.listdir(CONFIG_LOCATION):
-			# Handle spaces
-			folder = handle_spaces(folder)
-
-			# Adapt for users DE
-			if user_de == 'gnome':
-				compare_list = list_gnome_include
-		   
-				# Destination
-				dst = MAIN_INI_FILE.gnome_config_main_folder() + '/' + folder
-
-			elif user_de == 'kde':
-				compare_list = list_include_kde
-
-				# Destination
-				dst = MAIN_INI_FILE.kde_config_main_folder() + '/' + folder
-
-			if folder in compare_list:
-				src = CONFIG_LOCATION + folder
-				# dst = MAIN_INI_FILE.main_backup_folder() + '/.config/' + folder
-				
-				# DELETE
-				# Create current directory in backup device
-				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
-
-				# Create current directory in backup device
-				dst_moded = dst = os.path.dirname(dst)
-
-				# DELETE
-				# if not os.path.exists(dst_moded):
-				# 	os.makedirs(dst_moded, exist_ok=True)
-				
-				create_directory(dst_moded)
-				
-				print(f'Backing up: {CONFIG_LOCATION}{folder}')
-				
-				notification_message(f'Backing up: .config/{folder}')
-				
-				# sub.run(
-				# 	['cp', '-rvf', src, dst],
-				# 	stdout=sub.PIPE,
-				# 	stderr=sub.PIPE)
-
-				# Copy the entire directory tree from source to destination, overriding if it exists
-				shutil.copytree(src, dst, dirs_exist_ok=True)
-	
-	def backup_hidden_kde_share(self):
-		try:
-			# .kde/share/
-			for folder in os.listdir(KDE_SHARE_LOCATION):
+			try:	
 				# Handle spaces
 				folder = handle_spaces(folder)
-			
-				src = KDE_SHARE_LOCATION + folder
-				# dst = MAIN_INI_FILE.main_backup_folder() + '/.kde/share/' + folder
-				
-				# Destination
-				dst = MAIN_INI_FILE.kde_share_config_main_folder() + '/' + folder
 
-				# # Create current directory in backup device
-				# dst_moded = dst.split('/')[:-1]  # Remove the last component (file name)
-				# dst_moded = '/'.join(dst_moded)    # Join components with forward slashes
+				# Adapt for users DE
+				if user_de == 'gnome' or user_de == 'unity':
+					compare_list = LIST_GNOME_INCLUDE
+					# Destination
+					dst = os.path.join(MAIN_INI_FILE.gnome_config_main_folder(), folder)
+				elif user_de == 'kde':
+					compare_list = LIST_KDE_INCLUDE
+					# Destination
+					dst = os.path.join(MAIN_INI_FILE.kde_config_main_folder(), folder)
+
+				if folder in compare_list:
+					src = os.path.join(CONFIG_LOCATION + folder)
+
+					create_directory(dst)
+
+					print(f'Backing up: {CONFIG_LOCATION}{folder}')
+					notification_message(f'Backing up: .config/{folder}')
+					
+					print('-----[HIDDEN CONFIG]-----')
+					print('From:', src)
+					print('To:', dst)
+					print()
+		
+					# Copy the entire directory tree from source to destination, overriding if it exists
+					shutil.copytree(src, dst, dirs_exist_ok=True)
+			except Exception as e:
+				print(e)
+				pass
+
+	def backup_hidden_kde_share(self):
+		# .kde/share/
+		for folder in os.listdir(KDE_SHARE_LOCATION):
+			try:
+				# Handle spaces
+				folder = handle_spaces(folder)
+				src = os.path.join(KDE_SHARE_LOCATION + folder)
+				dst = os.path.join(MAIN_INI_FILE.kde_share_config_main_folder(), folder)
 				
-				dst_moded = dst = os.path.dirname(dst)
 				
-				# DELETE
-				# if not os.path.exists(dst_moded):
-				# 	os.makedirs(dst_moded, exist_ok=True)
-				
-				create_directory(dst_moded)
+				create_directory(dst)
 
 				print(f'Backing up: {KDE_SHARE_LOCATION}{folder}')
-				
 				notification_message(f'Backing up: .kde/share/{folder}')
 				
-				# sub.run(
-				# 	['cp', '-rvf', src, dst],
-				# 	stdout=sub.PIPE,
-				# 	stderr=sub.PIPE)
-		
+				print('-----[HIDDEN .KDE/SHARE]-----')
+				print('From:', src)
+				print('To:', dst)
+				print()
+				
 				# Copy the entire directory tree from source to destination, overriding if it exists
 				shutil.copytree(src, dst, dirs_exist_ok=True)
-				
-		except FileNotFoundError as e:
-			print(e)
-			pass
+			except Exception as e:
+				print(e)
+				pass
 
 	def end_backup(self):
 		print("Backup is done!")
