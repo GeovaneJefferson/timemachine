@@ -100,7 +100,7 @@ class MainWindow(QMainWindow):
         # Hide or disable 
         ######################################################################
         # Hide 
-        self.ui.progressbar_main_window.hide()
+        # self.ui.progressbar_main_window.hide()
 
         # self.ui.backing_up_label.hide()
         # self.ui.select_disk_button.hide()
@@ -167,7 +167,7 @@ class MainWindow(QMainWindow):
                 # If is backing up right now
                 if MAIN_INI_FILE.get_database_value('STATUS', 'backing_up_now'):
                     # Show 
-                    self.ui.progressbar_main_window.show()
+                    # self.ui.progressbar_main_window.show()
 
                     # TODO
                     # Notification information
@@ -187,19 +187,19 @@ class MainWindow(QMainWindow):
 
                     # UPDATE
                     # Update progress bar value
-                    pb_bar_value = MAIN_INI_FILE.get_database_value(
-                                        'STATUS', 'progress_bar')
+                    # pb_bar_value = MAIN_INI_FILE.get_database_value(
+                    #                     'STATUS', 'progress_bar')
                     
-                    if pb_bar_value is not None:
-                        self.ui.progressbar_main_window.setValue(
-                            int(pb_bar_value))
+                    # if pb_bar_value is not None:
+                    #     # self.ui.progressbar_main_window.setValue(
+                    #         int(pb_bar_value))
 
                 else:
                     # Show
                     self.ui.next_backup_label.show()
                     
                     # Hide
-                    self.ui.progressbar_main_window.hide()
+                    # self.ui.progressbar_main_window.hide()
 
                     # self.ui.backing_up_label.hide()
 
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow):
             self.ui.select_disk_button.hide()
             
             # Show informations UI
-            self.ui.progressbar_main_window.show()
+            # self.ui.progressbar_main_window.show()
             self.ui.remove_backup_device.show()
         except FileNotFoundError:
             pass
@@ -337,7 +337,7 @@ class MainWindow(QMainWindow):
             self.ui.select_disk_button.show()
             
             # Hide informations UI
-            self.ui.progressbar_main_window.hide()
+            # self.ui.progressbar_main_window.hide()
             self.ui.remove_backup_device.hide()
 
     def on_options_button_clicked(self):
@@ -427,7 +427,7 @@ class MainWindow(QMainWindow):
             print("All settings was reset!")
 
             # Hide informations UI
-            self.ui.progressbar_main_window.hide()
+            # self.ui.progressbar_main_window.hide()
             self.ui.remove_backup_device.hide()
 
             # Show add backup devices button
@@ -603,7 +603,7 @@ class SelectDisk(QDialog):
         # Show informations UI
         # MAIN.ui.external_name_label.show()
         # MAIN.ui.external_size_label.show()
-        MAIN.ui.progressbar_main_window.show()
+        # MAIN.ui.progressbar_main_window.show()
         # MAIN.ui.backups_label.show()
         # MAIN.ui.next_backup_label.show()
         MAIN.ui.remove_backup_device.show()
