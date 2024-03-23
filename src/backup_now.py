@@ -88,7 +88,6 @@ def total_files_to_backup():
 		for root, dirs, files in os.walk(source_folder):
 			# Add to count
 			file_count += len(files)
-
 	return file_count
 
 def make_first_backup():
@@ -97,7 +96,6 @@ def make_first_backup():
 	
 	# Target location
 	target_folder = MAIN_INI_FILE.main_backup_folder() + '/'
-	# target_folder = '/media/macbook/Backup_Drive/TMB/test'
 
 	# Total files to be backup
 	count_total_file = total_files_to_backup()

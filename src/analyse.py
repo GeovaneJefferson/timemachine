@@ -9,7 +9,7 @@ from notification_massage import notification_message
 from backup_flatpak import backup_flatpak
 from backup_pip_packages import backup_pip_packages
 from backup_wallpaper import backup_wallpaper
-from backup_now import list_include_kde, list_gnome_include
+from backup_now import LIST_KDE_INCLUDE, LIST_GNOME_INCLUDE
 import json
 
 MAIN_INI_FILE = UPDATEINIFILE()

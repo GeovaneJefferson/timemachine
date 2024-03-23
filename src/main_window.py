@@ -817,10 +817,9 @@ class OptionsWindow(QDialog):
             self,
             'Remove Device as backup disk',
             'Are you sure you want to remove this device as backup disk?',
-            QMessageBox.Yes
-            |
-            QMessageBox.No)
-        
+            QMessageBox.No | QMessageBox.Yes,
+            QMessageBox.No)  # Sets the default button to No, displayed on the left
+
         if reset_confirmation == QMessageBox.Yes:
             MAIN.ui.last_backup_label.setText("Last Backup:")
             MAIN.ui.next_backup_label.setText("Next Backup:")

@@ -33,30 +33,30 @@ class BackupApp(QMainWindow):
     def start_backup(self):
         # Get a list of subdirectories to back up
         subdirectories = get_folders()
-        target_folder = "/media/macbook/Backup_Drive/TMB/test"
+        copied_files = 0
+        #target_folder = "/media/macbook/Backup_Drive/TMB/test"
 
         for i in subdirectories:
             source_folder = os.path.join(HOME_USER, i)
-
             total_files = count_files(source_folder)
-            copied_files = 0
 
-            for root, dirs, files in os.walk(source_folder):
-                for file in files:
-                    source_path = os.path.join(root, file)
-                    relative_path = os.path.relpath(source_path, source_folder)
-                    target_path = os.path.join(target_folder, i, relative_path)
-                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
 
-                    try:
-                        shutil.copy(source_path, target_path)
-                        print(f"Backed up: {source_path}")
-                    except Exception as e:
-                        print(f"Error while backing up {source_path}: {e}")
+            #for root, dirs, files in os.walk(source_folder):
+                #for file in files:
+                    #source_path = os.path.join(root, file)
+                    #relative_path = os.path.relpath(source_path, source_folder)
+                    #target_path = os.path.join(target_folder, i, relative_path)
+                    #os.makedirs(os.path.dirname(target_path), exist_ok=True)
 
-                    copied_files += 1
-                    progress = int(copied_files / total_files * 100)
-                    self.progress_bar.setValue(progress)
+                    #try:
+                        #shutil.copy(source_path, target_path)
+                        #print(f"Backed up: {source_path}")
+                    #except Exception as e:
+                        #print(f"Error while backing up {source_path}: {e}")
+
+            copied_files += 1
+            progress = int(copied_files / total_files * 100)
+            self.progress_bar.setValue(progress)
 
 def count_files(folder_path):
     file_count = 0
