@@ -205,10 +205,16 @@ class ANALYSES:
 									if not has_date_time_to_compare: 
 										self.add_to_backup_dict(
 											location=file_location,
-											destination=combine_home_with_backup_dirname,
+											destination=str(file_location).replace(HOME_USER, ''),
 											status='UPDATED')
 										
-										print('[UPDATED]:', file_location)
+										print()
+										print('[UPDATED]')
+										print('Home Location:', file_location)
+										print('Backup Location:', str(file_location).replace(HOME_USER, ''))
+										print('[UPDATED]')
+										print()
+										# exit()
 									else:
 										# Searching in Date/Time
 										# self.to_check_list.append(file_location)
@@ -256,7 +262,6 @@ class ANALYSES:
 			# Available times
 			for time_folder in os.listdir(date_time_folders_to_check[i]):
 				folder_path = os.path.join(date_time_folders_to_check[i], time_folder)
-
 				#print(time_folder)
 				#print(folder_path)
 				#exit()
