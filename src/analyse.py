@@ -156,9 +156,9 @@ class ANALYSES:
 				for item in os.listdir(base_dir):
 					# Handle spaces
 					item = handle_spaces(item)
-					if (user_de == 'gnome' and item in list_gnome_include) or \
-					   (user_de == 'unity' and item in list_gnome_include) or \
-					   (user_de == 'kde' and item in list_include_kde):
+					if (user_de == 'gnome' and item in LIST_GNOME_INCLUDE) or \
+					   (user_de == 'unity' and item in LIST_GNOME_INCLUDE) or \
+					   (user_de == 'kde' and item in LIST_KDE_INCLUDE):
 						source_folders.append(os.path.join(base_dir, item))
 
 		return source_folders
