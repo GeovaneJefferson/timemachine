@@ -1,7 +1,6 @@
 ## Attention!
 * This project (Time Machine) is not affiliated with Apple. 
 * This is a backup application created using PySide6 for Linux.
-* Make sure that your clock method is "24-hour clock", not "12-hour clock" AM/PM.
 * Time Machine WILL NOT ERASE OR FORMAT YOUR EXTERNAL DEVICE!
 
 <p align="center">
@@ -41,11 +40,7 @@ for "Back Up Now" from the Time Machine menu bar.
 For instance, if a backup is on the brink of commencement, a notification will appear in the menu bar, indicating which
 files or folders are currently being backed up. 
 When no backup is in progress, the menu bar will display the timestamp of the most recent backup along with other
-relevant details.
-
-## Tailoring Backup Frequency and Duration
-
-- Time Machine affords you the flexibility to schedule backups on an hourly, daily, or weekly basis. As your backup disk
+relevant details. As your backup disk
 reaches its storage limit, the earliest backups will be automatically purged to create space for new ones.
 
 ## Backup Frequency and Retention
