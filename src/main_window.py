@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
 
         # Hide update button
         self.ui.update_available_button.hide()
+        self.ui.progressbar_main_window.hide()
 
         # Colors
         self.ui.external_size_label.setStyleSheet('color: gray')
