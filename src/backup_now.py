@@ -119,7 +119,7 @@ def make_first_backup():
 					# os.makedirs(os.path.dirname(target_path), exist_ok=True)
 
 					# Back up 
-					shutil.copy(source_path, target_path)
+					shutil.copy2(source_path, target_path)
 					print(f"{source_path}				[OK]")
 					
 					# PROGRESS BAR
@@ -140,15 +140,6 @@ def make_first_backup():
 				except IOError as e: 
 					if e.errno != errno.EPIPE: 
 						MAIN_INI_FILE.report_error(e)
-
-						# Set backup now to False
-						MAIN_INI_FILE.set_database_value(
-							'STATUS', 'backing_up_now', 'False')
-						
-						# Unfinished to Yes 
-						MAIN_INI_FILE.set_database_value(
-							'STATUS', 'unfinished_backup', 'Yes')
-					
 
 	# Set progress bar value to None
 	MAIN_INI_FILE.set_database_value(
@@ -208,7 +199,6 @@ class BACKUP:
 						if status == 'NEW':  # Is a new file/folder
 							# Copy to .main backup
 							destination_location = destination
-
 						##########################################################
 						# LATEST DATE/TIME
 						##########################################################
@@ -216,7 +206,6 @@ class BACKUP:
 							# edit destination location, so file can be send to a date/time folder
 							destination_location = (
 								f'{MAIN_INI_FILE.time_folder_format()}/{destination}')
-
 							# destination_location = os.path.join(MAIN_INI_FILE.time_folder_format(), destination)
 							destination_location = MAIN_INI_FILE.time_folder_format() + '/' + destination
 
@@ -227,7 +216,7 @@ class BACKUP:
 						create_directory(destination_location)
 
 						# Back up 
-						print(f"{location}				[OK]")
+						print(f"[OK] {location}")
 						# print(f"To: {destination_location}")
 						# print(f"Type: {status}")
 
@@ -239,13 +228,13 @@ class BACKUP:
 								destination_location, dirs_exist_ok=True)
 						else:
 							# Backup file
-							shutil.copy(
+							shutil.copy2(
 								location, 
 								destination_location)
 					except Exception as e:
-						print(f"{location}				[FAIL]")
+						MAIN_INI_FILE.report_error(e)
+						print(f"[FAIL] {location}")
 						print('ERROR:', e)
-						# MAIN_INI_FILE.report_error(e)
 
 	# HIDDEN FILES/FOLDERS
 	def backup_hidden_home(self, user_de):
@@ -385,13 +374,12 @@ if __name__ == "__main__":
 	MAIN = BACKUP()
 	MAIN_INI_FILE = UPDATEINIFILE()
 
-
 	# Static time value, fx. 10-00
 	STATIC_TIME_FOLDER = MAIN_INI_FILE.time_folder_format().split('/')[-1] 
 
 	# Set the process name
 	setproctitle.setproctitle("Time Machine - Backup Now")
-
+	
 	try:
 		######################################################################
 		# Update db

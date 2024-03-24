@@ -24,7 +24,6 @@ def get_wallpaper_full_location():
     ###################################
     # If users os name is found in DB
     if 'gnome' in get_user_de() or 'unity' in get_user_de():
-        exit()
         # Light theme
         if get_color_scheme == "prefer-light":
             # Get current wallpaper
@@ -116,5 +115,4 @@ def update_db():
 
 
 if __name__ == '__main__':
-    backup_wallpaper()
     pass
