@@ -39,6 +39,9 @@ def system_tray():
 
 
 # Delay startup for x seconds
-time.sleep(0)
-    
-system_tray()
+try:
+    time.sleep(0)
+    system_tray()
+except Exception as error:
+    # Save error log
+    MAIN_INI_FILE.report_error(error)
