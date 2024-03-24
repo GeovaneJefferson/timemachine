@@ -338,7 +338,6 @@ class BACKUP:
 				src = os.path.join(KDE_SHARE_LOCATION + folder)
 				dst = os.path.join(MAIN_INI_FILE.kde_share_config_main_folder(), folder)
 				
-				
 				create_directory(dst)
 
 				print(f'Backing up: {KDE_SHARE_LOCATION}{folder}')

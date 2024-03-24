@@ -1,29 +1,30 @@
 from setup import *
 from read_ini_file import UPDATEINIFILE
 from notification_massage import notification_message
-# from get_flatpaks_folders_size import flatpak_var_list, flatpak_local_list
 
 
 MAIN_INI_FILE = UPDATEINIFILE()
 
 def backup_flatpak():
-    counter = 0
-    flatpak_list = []
+    flatpak_list= []
 
     try:
-        # Write all installed flatpak apps by the name
+        # Open flatpak file
         with open(MAIN_INI_FILE.flatpak_txt_location(), 'w') as configfile:
             for flatpak in os.popen(GET_FLATPAKS_APPLICATIONS_NAME):
-                flatpak_list.append(flatpak)
+                flatpak = str(flatpak).strip()
 
-                configfile.write(flatpak_list[counter])
+                # Filter list to remove dupli
+                if flatpak not in flatpak_list:
+                    flatpak_list.append(flatpak)
                 
-                notification_message(f'Backing up: {flatpak_list[counter]}')
-                
-                counter += 1
-    
+                    # Write to file
+                    configfile.write(flatpak + '\n')
+                        
+                    notification_message(f'Backing up: {flatpak}')
     except Exception:
         pass
+    
 
     # # Backup flatpak data
     # if MAIN_INI_FILE.get_database_value('STATUS', 'allow_flatpak_data'):
