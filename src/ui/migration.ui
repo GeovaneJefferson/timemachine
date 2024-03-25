@@ -123,11 +123,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QLabel" name="description">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Restore your applications, Documents, Pictures, Music, Videos, and more to this PC with Migration Assistant.</string>
            </property>
@@ -277,11 +272,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QLabel" name="description_5">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Your data has been migrated, and is ready to use.</string>
            </property>
@@ -426,11 +416,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignTop">
           <widget class="QLabel" name="description_2">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Select a disk with a Time Machine's backup to retore it's information to this PC.</string>
            </property>
@@ -484,11 +469,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignTop">
           <widget class="QLabel" name="label">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Make sure that your disk with a Time Machine's backup is already connected to this PC.</string>
            </property>
@@ -629,11 +609,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignTop">
           <widget class="QLabel" name="description_3">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Choose which information you'd like to restore to this PC.</string>
            </property>
@@ -658,6 +633,9 @@
              <width>400</width>
              <height>300</height>
             </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
@@ -686,7 +664,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                 <enum>QFrame::Box</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Sunken</enum>
@@ -699,8 +677,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>362</width>
-                   <height>262</height>
+                   <width>360</width>
+                   <height>260</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1025,11 +1003,6 @@
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignTop">
           <widget class="QLabel" name="description_4">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Backup from Time Machine will been transferred to this PC.</string>
            </property>
@@ -1098,8 +1071,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset theme="drive-removable-media">
-                    <normaloff>.</normaloff>.</iconset>
+                   <iconset theme="drive-harddisk"/>
                   </property>
                   <property name="iconSize">
                    <size>

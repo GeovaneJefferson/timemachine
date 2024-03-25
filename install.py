@@ -39,16 +39,14 @@ def install_dependencies(user_distro_name):
     try:
 
         if distribution_info:
-            if 'debian' in user_distro_name:
+            if (
+                'debian' in user_distro_name or 
+                'ubuntu' in user_distro_name or
+                'mint' in user_distro_name):
                 commands = ['python3-pip', 'flatpak']
                 sub.run(
                     ['sudo', 'apt', 'install', '-y'] + commands, check=True)
             
-            elif 'ubuntu' in user_distro_name:
-                commands = ['python3-pip', 'flatpak']
-                sub.run(
-                    ['sudo', 'apt', 'install', '-y'] + commands, check=True)
-
             elif 'fedora' in user_distro_name:
                 commands = ['python3-pip', 'flatpak']
                 sub.run(
@@ -69,10 +67,13 @@ def install_dependencies(user_distro_name):
                         sub.run(
                             ['sudo', 'pacman', '-S', command], check=True)
 
-            command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-            sub.run(
-                ["pip", "install", "-r", command], 
-                    check=True)
+            try:
+                command = f"{GET_CURRENT_LOCATION}/requirements.txt"
+                sub.run(
+                    ["pip", "install", "-r", command], 
+                        check=True)
+            except:
+                pass
 
             # Install Flathub remote
             sub.run(
@@ -126,28 +127,32 @@ def create_application_files():
             f"Comment=Restore files/folders etc. from a {APP_NAME}'s backup\n "
             f"Icon={SRC_MIGRATION_ASSISTANT_ICON_212PX}\n "
             f"Exec=python3 {SRC_CALL_MIGRATION_ASSISTANT_PY}\n "
+            # f"Exec=python3 {SRC_MIGRATION_ASSISTANT_PY}\n "
             f"Path={HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/\n "
             f"Categories=System\n "
             f"StartupWMClass={(SRC_MIGRATION_ASSISTANT_PY).split('/')[-1]}\n "
             f"Terminal=true")
 
 def create_backup_checker_desktop():
-    # Create autostart folder if necessary
-    if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
-        os.makedirs(SRC_AUTOSTARTFOLDER_LOCATION, exist_ok=True)
+    try:
+        # Create autostart folder if necessary
+        if not os.path.exists(SRC_AUTOSTARTFOLDER_LOCATION):
+            os.makedirs(SRC_AUTOSTARTFOLDER_LOCATION, exist_ok=True)
 
-    # Edit file startup with system
-    with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:
-        writer.write(
-            f"[Desktop Entry]\n "
-            f"Type=Application\n "
-            f"Exec=/bin/python3 {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/at_boot.py\n "
-            f"Hidden=false\n "
-            f"NoDisplay=false\n "
-            f"Name={APP_NAME}\n "
-            f"Comment={APP_NAME}'s manager before boot.\n "
-            f"Icon={SRC_RESTORE_ICON}")
-            
+        # Edit file startup with system
+        with open(DST_BACKUP_CHECK_DESKTOP, "w") as writer:
+            writer.write(
+                f"[Desktop Entry]\n "
+                f"Type=Application\n "
+                f"Exec=/bin/python3 {HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/at_boot.py\n "
+                f"Hidden=false\n "
+                f"NoDisplay=false\n "
+                f"Name={APP_NAME}\n "
+                f"Comment={APP_NAME}'s manager before boot.\n "
+                f"Icon={SRC_RESTORE_ICON}")
+    except:
+        pass
+
 def detect_linux_distribution():
     distribution_info = {}
     if os.path.isfile('/etc/os-release'):

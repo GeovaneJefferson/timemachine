@@ -137,6 +137,8 @@ def make_first_backup():
 					# Save current backing up
 					MAIN_INI_FILE.set_database_value(
 						'INFO', 'current_backing_up', source_path)
+				except FileNotFoundError:
+					pass
 				except IOError as e: 
 					if e.errno != errno.EPIPE: 
 						MAIN_INI_FILE.report_error(e)

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'migration.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -65,15 +65,12 @@ class Ui_WelcomeScreen(object):
 
         self.description = QLabel(self.page_1)
         self.description.setObjectName(u"description")
-        font1 = QFont()
-        font1.setPointSize(11)
-        self.description.setFont(font1)
         self.description.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.description.setWordWrap(False)
 
         self.verticalLayout.addWidget(self.description, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer_3)
 
@@ -132,7 +129,6 @@ class Ui_WelcomeScreen(object):
 
         self.description_5 = QLabel(self.page_5)
         self.description_5.setObjectName(u"description_5")
-        self.description_5.setFont(font1)
         self.description_5.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.description_5.setWordWrap(False)
 
@@ -141,9 +137,9 @@ class Ui_WelcomeScreen(object):
         self.reboot_label = QLabel(self.page_5)
         self.reboot_label.setObjectName(u"reboot_label")
         self.reboot_label.setMinimumSize(QSize(0, 0))
-        font2 = QFont()
-        font2.setPointSize(10)
-        self.reboot_label.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.reboot_label.setFont(font1)
 
         self.verticalLayout_16.addWidget(self.reboot_label, 0, Qt.AlignHCenter)
 
@@ -196,7 +192,6 @@ class Ui_WelcomeScreen(object):
 
         self.description_2 = QLabel(self.page_2)
         self.description_2.setObjectName(u"description_2")
-        self.description_2.setFont(font1)
         self.description_2.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.description_2.setWordWrap(False)
 
@@ -218,7 +213,6 @@ class Ui_WelcomeScreen(object):
 
         self.label = QLabel(self.page_2)
         self.label.setObjectName(u"label")
-        self.label.setFont(font1)
 
         self.verticalLayout_4.addWidget(self.label, 0, Qt.AlignHCenter|Qt.AlignTop)
 
@@ -241,7 +235,7 @@ class Ui_WelcomeScreen(object):
         self.horizontalLayout_3.setSpacing(9)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(9, 9, 9, 9)
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
@@ -281,7 +275,6 @@ class Ui_WelcomeScreen(object):
 
         self.description_3 = QLabel(self.page_3)
         self.description_3.setObjectName(u"description_3")
-        self.description_3.setFont(font1)
         self.description_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.description_3.setWordWrap(False)
 
@@ -291,6 +284,7 @@ class Ui_WelcomeScreen(object):
         self.widget_4.setObjectName(u"widget_4")
         self.widget_4.setMinimumSize(QSize(400, 300))
         self.widget_4.setMaximumSize(QSize(400, 300))
+        self.widget_4.setAutoFillBackground(False)
         self.verticalLayout_9 = QVBoxLayout(self.widget_4)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.verticalLayout_8 = QVBoxLayout()
@@ -300,12 +294,12 @@ class Ui_WelcomeScreen(object):
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setMinimumSize(QSize(0, 0))
         self.scrollArea.setAutoFillBackground(True)
-        self.scrollArea.setFrameShape(QFrame.StyledPanel)
+        self.scrollArea.setFrameShape(QFrame.Box)
         self.scrollArea.setFrameShadow(QFrame.Sunken)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 362, 262))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 360, 260))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
@@ -325,7 +319,7 @@ class Ui_WelcomeScreen(object):
         self.applications_sub_widget_page3 = QWidget(self.scrollAreaWidgetContents)
         self.applications_sub_widget_page3.setObjectName(u"applications_sub_widget_page3")
         self.applications_sub_widget_page3.setEnabled(True)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.applications_sub_widget_page3.sizePolicy().hasHeightForWidth())
@@ -438,7 +432,7 @@ class Ui_WelcomeScreen(object):
         self.horizontalLayout_5.setSpacing(9)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(9, 9, 9, 9)
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer_2)
 
@@ -479,7 +473,6 @@ class Ui_WelcomeScreen(object):
 
         self.description_4 = QLabel(self.page_4)
         self.description_4.setObjectName(u"description_4")
-        self.description_4.setFont(font1)
         self.description_4.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.description_4.setWordWrap(False)
 
@@ -487,7 +480,7 @@ class Ui_WelcomeScreen(object):
 
         self.images_layout_page4 = QHBoxLayout()
         self.images_layout_page4.setObjectName(u"images_layout_page4")
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.images_layout_page4.addItem(self.horizontalSpacer_4)
 
@@ -499,7 +492,7 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.from_image_layout = QVBoxLayout()
         self.from_image_layout.setObjectName(u"from_image_layout")
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.from_image_layout.addItem(self.verticalSpacer_2)
 
@@ -507,29 +500,23 @@ class Ui_WelcomeScreen(object):
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setEnabled(True)
         self.pushButton.setAutoFillBackground(False)
-        icon4 = QIcon()
-        iconThemeName = u"drive-removable-media"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon4 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-
+        icon4 = QIcon(QIcon.fromTheme(u"drive-harddisk"))
         self.pushButton.setIcon(icon4)
         self.pushButton.setIconSize(QSize(64, 64))
         self.pushButton.setFlat(True)
 
         self.from_image_layout.addWidget(self.pushButton, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.from_image_layout.addItem(self.verticalSpacer_4)
 
         self.from_image_label = QLabel(self.from_image)
         self.from_image_label.setObjectName(u"from_image_label")
-        font3 = QFont()
-        font3.setPointSize(11)
-        font3.setBold(True)
-        self.from_image_label.setFont(font3)
+        font2 = QFont()
+        font2.setPointSize(11)
+        font2.setBold(True)
+        self.from_image_label.setFont(font2)
 
         self.from_image_layout.addWidget(self.from_image_label, 0, Qt.AlignHCenter|Qt.AlignBottom)
 
@@ -562,7 +549,7 @@ class Ui_WelcomeScreen(object):
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.to_image_layout = QVBoxLayout()
         self.to_image_layout.setObjectName(u"to_image_layout")
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.to_image_layout.addItem(self.verticalSpacer_5)
 
@@ -581,13 +568,13 @@ class Ui_WelcomeScreen(object):
 
         self.to_image_layout.addWidget(self.pushButton_2, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.to_image_layout.addItem(self.verticalSpacer_6)
 
         self.to_image_label = QLabel(self.to_image)
         self.to_image_label.setObjectName(u"to_image_label")
-        self.to_image_label.setFont(font3)
+        self.to_image_label.setFont(font2)
 
         self.to_image_layout.addWidget(self.to_image_label, 0, Qt.AlignHCenter|Qt.AlignBottom)
 
@@ -597,7 +584,7 @@ class Ui_WelcomeScreen(object):
 
         self.images_layout_page4.addWidget(self.to_image, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.images_layout_page4.addItem(self.horizontalSpacer_5)
 
@@ -606,7 +593,7 @@ class Ui_WelcomeScreen(object):
 
         self.label_restoring_status = QLabel(self.page_4)
         self.label_restoring_status.setObjectName(u"label_restoring_status")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.label_restoring_status.sizePolicy().hasHeightForWidth())
@@ -624,13 +611,13 @@ class Ui_WelcomeScreen(object):
 
         self.restore.addWidget(self.progress_bar_restoring, 0, Qt.AlignHCenter|Qt.AlignVCenter)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.restore.addItem(self.verticalSpacer)
 
         self.checkbox_automatically_reboot_page4 = QCheckBox(self.page_4)
         self.checkbox_automatically_reboot_page4.setObjectName(u"checkbox_automatically_reboot_page4")
-        self.checkbox_automatically_reboot_page4.setFont(font2)
+        self.checkbox_automatically_reboot_page4.setFont(font1)
         self.checkbox_automatically_reboot_page4.setLayoutDirection(Qt.LeftToRight)
 
         self.restore.addWidget(self.checkbox_automatically_reboot_page4, 0, Qt.AlignHCenter|Qt.AlignVCenter)
@@ -653,7 +640,7 @@ class Ui_WelcomeScreen(object):
         self.horizontalLayout_7.setSpacing(9)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.horizontalLayout_7.setContentsMargins(9, 9, 9, 9)
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_7.addItem(self.horizontalSpacer_3)
 

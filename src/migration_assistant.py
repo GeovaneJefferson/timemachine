@@ -298,8 +298,23 @@ class WelcomeScreen(QWidget):
 		if self.ui.checkbox_applications_page3.isChecked():
 			# Add to list to restore
 			self.item_to_restore.append('Applications')
-			# Show applications sub checkboxes
-			self.ui.applications_sub_widget_page3.show()
+			
+			reply = QMessageBox.question(
+				self,
+				'Root Privileges Required',
+				'To install packages, your root password will be required. Continue?',
+				QMessageBox.Yes | QMessageBox.No,
+    			QMessageBox.No)
+			
+			if reply == QMessageBox.Yes:
+				print("Authentication successful.")
+				self.ui.checkbox_applications_page3.setChecked(True)
+
+				# Show applications sub checkboxes
+				self.ui.applications_sub_widget_page3.show()
+			else:
+				print("Authentication failed.")
+				self.ui.checkbox_applications_page3.setChecked(False)
 		else:
 			# Remove to list to restore
 			self.item_to_restore.remove('Applications')
@@ -523,7 +538,6 @@ class WelcomeScreen(QWidget):
 		if direction == 'right':
 			page.setGeometry(
 				QRect(width, 0, width, self.ui.stackedWidget.height()))
-
 		else:
 			page.setGeometry(
 				QRect(-width, 0, -width, self.ui.stackedWidget.height()))
@@ -834,18 +848,21 @@ class RESTORE:
 						# Show current installing to the user
 						MAIN.ui.label_restoring_status.setText(f'Installing package: {command}...')
 						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
-
+						
+						# Use pkexec for installing packages
 						sub.run(
-							["sudo", "dpkg", "-i", command],
+							['pkexec', 'sudo', 'dpkg', '-i', command],
 							stdout=sub.PIPE,
-							stderr=sub.PIPE)
+							stderr=sub.PIPE,
+							text=True)
 
-				# Fix packages installation
+				# Fix packages installation using pkexec
 				sub.run(
-					["sudo", "apt", "install", "-f"],
+					['apt', '--fix-broken', 'install'],
 					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-
+					stderr=sub.PIPE,
+					text=True)
+				
 				# Substract 1
 				self.item_to_restore -= 1
 				self.update_progressbar_db()
