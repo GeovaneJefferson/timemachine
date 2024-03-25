@@ -133,7 +133,7 @@ def create_application_files():
             f"Path={HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/\n "
             f"Categories=System\n "
             f"StartupWMClass={(SRC_MIGRATION_ASSISTANT_PY).split('/')[-1]}\n "
-            f"Terminal=true")
+            f"Terminal=false")
 
 def create_backup_checker_desktop():
     try:

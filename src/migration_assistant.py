@@ -99,7 +99,7 @@ class WelcomeScreen(QWidget):
 		#######################################################################
 		self.ui.button_back_page4.clicked.connect(self.on_back_button_clicked_page4)
 		# Connections
-		self.ui.button_close_page5.clicked.connect(lambda: exit())
+		self.ui.button_close_page5.clicked.connect(lambda: sys.exit())
 
 		self.widgets()
 
@@ -826,7 +826,14 @@ class RESTORE:
 	## Application packages
 	def restore_backup_package_applications(self):
 		print("Installing applications packages...")
-
+		
+		# Use pkexec for installing packages
+		sub.run(
+			['pkexec', 'sudo'],
+			stdout=sub.PIPE,
+			stderr=sub.PIPE,
+			text=True)
+		
 		try:
 			with open(MAIN_INI_FILE.exclude_applications_location(), 'r') as read_exclude:
 				read_exclude = read_exclude.read().split("\n")
@@ -849,12 +856,16 @@ class RESTORE:
 						MAIN.ui.label_restoring_status.setText(f'Installing package: {command}...')
 						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
 						
-						# Use pkexec for installing packages
 						sub.run(
-							['pkexec', 'sudo', 'dpkg', '-i', command],
+							['dpkg', '-i', command],
 							stdout=sub.PIPE,
 							stderr=sub.PIPE,
 							text=True)
+
+						# sub.run(
+						# 	["sudo", "dpkg", "-i", command],
+						# 	stdout=sub.PIPE,
+						# 	stderr=sub.PIPE)
 
 				# Fix packages installation using pkexec
 				sub.run(
