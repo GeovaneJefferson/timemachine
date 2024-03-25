@@ -24,7 +24,7 @@ def get_external_device_used_size():
                 .replace('Avail', '')\
                 .replace('\n', '')\
                 .replace(' ', '')
-
+    
     return str(used_space)
 
 def get_external_device_free_size():
@@ -61,18 +61,17 @@ def get_external_device_string_size(device):
     return used_space + "/" + external_max_size
 
 def get_all_used_backup_device_space(device):
-    # If inside /Media
+    # MEDIA
     if device_location():
         used_space = os.popen(
-            f"df --output=avail -h {MEDIA}/{USERNAME}/{device}").read().\
+            f"df --output=avail -h {MAIN_INI_FILE.hd_hd()}").read().\
             strip().replace(
             "1K-blocks", "").replace(
             "Avail", "").replace(
             "\n", "").replace(
             " ", "")
-
-    # If inside /Run
     else:
+        # RUN
         used_space = os.popen(f"df --output=avail -h {RUN}/{USERNAME}/{device}").read().\
             strip().replace(
             "1K-blocks", "").replace(
@@ -81,6 +80,36 @@ def get_all_used_backup_device_space(device):
             " ", "")
 
     return str(used_space)
+
+def get_used_backup_space():
+    x = get_all_max_backup_device_space(MAIN_INI_FILE.hd_name())
+    y = get_external_device_used_size()
+    value = []
+
+    # Filter max space
+    filter1 = []
+    for i in x:
+        if i.isdigit():
+            filter1.append(i)
+        else:
+            # Add str to value
+            value.append(i)
+
+    # Filter total devices space
+    total_device_space = int(''.join(filter1))
+    
+    # Filter used space
+    filter2 = []
+    for i in y:
+        if i.isdigit():
+            filter2.append(i)
+
+    # Filter used device space
+    used_device_space = int(''.join(filter2))
+    
+    value = ''.join(value)
+    result = total_device_space - used_device_space
+    return str(result) + value
 
 def get_all_max_backup_device_space(device):
     # If inside /Media
@@ -130,15 +159,6 @@ def number_of_item_to_backup():
     # Grab "lines" value
     needeed_size_to_backup_home()
 
-    #try:
-        ## Num. of item to be backed up
-        #num_of_item = round(len(lines) / 5)
-
-        #print(f'Total items to be backup: {num_of_item}')
-        #return num_of_item
-    #except:
-        #return 0
-
     try:
         count_filename = 0
         count_new_file = 0
@@ -163,33 +183,6 @@ def number_of_item_to_backup():
         return count_filename
     except:
         return 0
-
-
-# def number_of_item_to_backup():
-#     file_count = 0
-    
-#     # Read each line from the input file
-#     with open(MAIN_INI_FILE.include_to_backup(), "r") as f:
-#         lines = f.readlines()
-
-#         # Location
-#         file_loc = lines[2].split('/')[1:]
-#         file_loc = '/'.join(file_loc) 
-#         file_loc = '/' + file_loc.strip()
-#         print(file_loc)
-
-#         # Is a directory
-#         # if '.' not in file_loc.split('/')[-1]:
-#         if os.path.isdir(file_loc):
-#             # Read from dict text file
-#             for root, dirs, files in os.walk(file_loc):
-#                 print('FIle:', files)
-#                 file_count += len(files)
-
-#         # Is a file
-#         file_count += 1
-
-#     return file_count
 
 def get_directory_size(directory):
     total_size = 0
@@ -219,4 +212,5 @@ def get_item_size(item_path):
 
 
 if __name__ == '__main__':
+    print(get_used_backup_space())
     pass

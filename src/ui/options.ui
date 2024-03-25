@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>300</height>
+    <width>500</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>400</width>
-    <height>300</height>
+    <width>500</width>
+    <height>360</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>417</width>
-    <height>300</height>
+    <width>500</width>
+    <height>360</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -97,7 +97,7 @@
      </widget>
      <widget class="QWidget" name="back_up_tab">
       <attribute name="title">
-       <string>Back Up</string>
+       <string>Backup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
@@ -108,7 +108,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Choose folders for backup:</string>
+          <string>Backup folders:</string>
          </property>
         </widget>
        </item>
@@ -122,8 +122,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>375</width>
-            <height>183</height>
+            <width>458</width>
+            <height>223</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -260,6 +260,21 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="leftMargin">
+      <number>9</number>
+     </property>
+     <property name="topMargin">
+      <number>9</number>
+     </property>
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
+     <property name="bottomMargin">
+      <number>9</number>
+     </property>
      <item>
       <widget class="QLabel" name="version_label">
        <property name="text">

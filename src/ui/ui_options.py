@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'options.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -24,9 +24,9 @@ class Ui_Options(object):
     def setupUi(self, Options):
         if not Options.objectName():
             Options.setObjectName(u"Options")
-        Options.resize(417, 300)
-        Options.setMinimumSize(QSize(400, 300))
-        Options.setMaximumSize(QSize(417, 300))
+        Options.resize(500, 360)
+        Options.setMinimumSize(QSize(500, 360))
+        Options.setMaximumSize(QSize(500, 360))
         self.verticalLayout = QVBoxLayout(Options)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.tabWidget = QTabWidget(Options)
@@ -61,7 +61,7 @@ class Ui_Options(object):
 
         self.verticalLayout_6.addWidget(self.show_in_system_tray_checkbox)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer)
 
@@ -72,7 +72,9 @@ class Ui_Options(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.label_4 = QLabel(self.back_up_tab)
         self.label_4.setObjectName(u"label_4")
-        self.label_4.setFont(font)
+        font1 = QFont()
+        font1.setBold(False)
+        self.label_4.setFont(font1)
 
         self.gridLayout_3.addWidget(self.label_4, 0, 0, 1, 1)
 
@@ -81,7 +83,7 @@ class Ui_Options(object):
         self.scroll_area_folders.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 375, 183))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 458, 223))
         self.gridLayout_4 = QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.grid_folders_layout = QGridLayout()
@@ -110,7 +112,7 @@ class Ui_Options(object):
 
         self.gridLayout.addWidget(self.allow_browser_in_time_machine, 1, 0, 1, 1)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout.addItem(self.verticalSpacer_2, 2, 0, 1, 1)
 
@@ -151,7 +153,7 @@ class Ui_Options(object):
 
         self.verticalLayout_3.addWidget(self.reset_button, 0, Qt.AlignLeft)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer_3)
 
@@ -163,13 +165,15 @@ class Ui_Options(object):
         self.verticalLayout.addWidget(self.tabWidget)
 
         self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setSpacing(9)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(9, 9, 9, 9)
         self.version_label = QLabel(Options)
         self.version_label.setObjectName(u"version_label")
 
         self.horizontalLayout_2.addWidget(self.version_label)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
@@ -179,7 +183,7 @@ class Ui_Options(object):
 
         self.retranslateUi(Options)
 
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(Options)
@@ -192,8 +196,8 @@ class Ui_Options(object):
         self.label_11.setText(QCoreApplication.translate("Options", u"System Tray:", None))
         self.show_in_system_tray_checkbox.setText(QCoreApplication.translate("Options", u"Show Time Machine in System Tray", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Options", u"Settings", None))
-        self.label_4.setText(QCoreApplication.translate("Options", u"Choose folders for backup:", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.back_up_tab), QCoreApplication.translate("Options", u"Back Up", None))
+        self.label_4.setText(QCoreApplication.translate("Options", u"Backup folders:", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.back_up_tab), QCoreApplication.translate("Options", u"Backup", None))
         self.label_8.setText(QCoreApplication.translate("Options", u"Experimental Features:", None))
         self.allow_browser_in_time_machine.setText(QCoreApplication.translate("Options", u"Browser In Time Machine (System Tray Option)", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Options", u"Experimental", None))

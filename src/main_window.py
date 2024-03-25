@@ -14,7 +14,8 @@ from handle_spaces import handle_spaces
 from get_sizes import (
     get_all_max_backup_device_space,
     get_external_device_used_size,
-    get_all_used_backup_device_space)
+    get_all_used_backup_device_space,
+    get_used_backup_space)
 
 from calculate_time_left_to_backup import calculate_time_left_to_backup
 from update import backup_db_file
@@ -51,14 +52,13 @@ class MainWindow(QMainWindow):
         self.ui.update_available_button.hide()
         self.ui.progressbar_main_window.hide()
 
-        # Colors
-        self.ui.external_size_label.setStyleSheet('color: gray')
-        self.ui.last_backup_label.setStyleSheet('color: gray')
-        self.ui.next_backup_label.setStyleSheet('color: gray')
-
         ######################################################################
         # Connection
-        ######################################################################
+        #######################################################################
+        # Browser backup device
+        self.ui.browser_backup_device.clicked.connect(
+            lambda: sub.Popen(["xdg-open", MAIN_INI_FILE.create_base_folder()]))
+
         # Automatically backup checkbox
         # self.ui.automatically_backup_checkbox.clicked.connect(
         #     self.on_automatically_checkbox_clicked)
@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         ######################################################################
         # Logo image
         logo_image = QPixmap(SRC_BACKUP_ICON)
-        resized_logo_image = logo_image.scaledToWidth(32, Qt.SmoothTransformation)
+        resized_logo_image = logo_image.scaledToWidth(28, Qt.SmoothTransformation)
         self.ui.app_logo_image.setPixmap(resized_logo_image)
 
         # # Disk image
@@ -157,10 +157,38 @@ class MainWindow(QMainWindow):
                 # Get backup devices size informations
                 ################################################
                 try:
+                    ##########################
+                    total = get_external_device_used_size()
+                    minimum = get_used_backup_space()
+
+                    # Filter total space
+                    filter1 = []
+                    for i in total:
+                        if i.isdigit():
+                            filter1.append(i)
+
+                    # Filter total devices space
+                    x = int(''.join(filter1))
+
+                    ##########################
+                    # Filter total space
+                    filter2 = []
+                    for i in minimum:
+                        if i.isdigit():
+                            filter2.append(i)
+
+                    # Filter total devices space
+                    y = int(''.join(filter2))
+
                     self.ui.external_size_label.setText(
-                        f'Available Space: {get_external_device_used_size()}')
+                        # f'{get_all_used_backup_device_space(device=)} of {get_external_device_used_size()} used')
+                        f' {minimum} of {total} used')
+                    
+                    # Update process bar space
+                    self.ui.processbar_space.setMaximum(x)
+                    self.ui.processbar_space.setValue(y)
                 except:
-                    self.ui.external_size_label.setText('Available Space:')
+                    self.ui.external_size_label.setText('')
 
                 ################################################
                 # Check if is current busy doing something
@@ -309,8 +337,16 @@ class MainWindow(QMainWindow):
             
             # TODO
             # Show oldest backup label
-            self.ui.last_backup_label.setText(f'Last Backup: {MAIN_INI_FILE.latest_backup_date()}')
+            if MAIN_INI_FILE.latest_backup_date() != 'None':
+                self.ui.last_backup_label.setText(f'Last Backup: {MAIN_INI_FILE.latest_backup_date()}')
+            else:
+                self.ui.last_backup_label.setText(f'Last Backup: Only New Backup Dates Will Appear Here')
+                 
             self.ui.next_backup_label.setText(f'Next Backup: None')
+
+            # Show
+            self.ui.frame_1.show()
+            self.ui.frame_2.show()
 
             # Hide
             self.ui.select_disk_button.hide()
@@ -322,25 +358,14 @@ class MainWindow(QMainWindow):
             pass
 
     def not_registered_action_to_take(self):
-            # Resize backup device frame
-            # self.ui.backup_device_informations.setFixedHeight(0)
-
-            # Set external size label to No information
-            self.ui.external_size_label.setText('Available Space:')
-
-            # Set external name label to None
-            self.ui.external_name_label.setText("None")
-
-            # Disable automatically backup checkbox
-            # self.ui.automatically_backup_checkbox.setEnabled(False)
+            # Hide
+            self.ui.frame_1.hide()
+            self.ui.frame_2.hide()
+            self.ui.remove_backup_device.hide()
 
             # Show
             self.ui.select_disk_button.show()
             
-            # Hide informations UI
-            # self.ui.progressbar_main_window.hide()
-            self.ui.remove_backup_device.hide()
-
     def on_options_button_clicked(self):
         # options_window_class = OptionsWindow()
 
@@ -436,8 +461,9 @@ class MainWindow(QMainWindow):
             # Enable at
             MAIN.ui.select_disk_button.setEnabled(True)
 
-            # Reset
-            self.ui.next_backup_label.setText('Next Backup:')
+            # Hide
+            self.ui.frame_1.hide()
+            self.ui.frame_2.hide()
         else:
             QMessageBox.Close
 
@@ -447,7 +473,10 @@ class SelectDisk(QDialog):
         super().__init__()
         self.dialog_ui = Ui_Dialog()
         self.dialog_ui.setupUi(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setWindowFlags(
+            Qt.FramelessWindowHint | 
+            Qt.WindowStaysOnTopHint | 
+            Qt.Tool)
 
         # Colors
         self.dialog_ui.use_disk_button_dialog.setStyleSheet('color: gray')
@@ -502,21 +531,21 @@ class SelectDisk(QDialog):
                             'drive-removable-media')
 
                         # Convert the QIcon to a QPixmap
-                        audio_headset_pixmap = drive_media_icon.pixmap(36, 36)
+                        audio_headset_pixmap = drive_media_icon.pixmap(32, 31)
 
                         from_image = QLabel(self.available_devices)
                         from_image.setPixmap(audio_headset_pixmap)
                         from_image.setScaledContents(True)
                         from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-                        from_image.move(10, 8)
+                        from_image.move(10, (self.available_devices.height()) / 4)
 
                         # Free Space Label
                         free_space_label = QLabel(self.available_devices)
                         free_space_label.setText(
-                            f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
+                            f'<b>Storage Space: {get_all_max_backup_device_space(backup_device)}</b>')
                         free_space_label.setFont(QFont(MAIN_FONT, 8))
                         free_space_label.move(
-                            (self.available_devices.width() - 354), 32)
+                            (self.available_devices.width() - 294), 22)
                         
                         text = self.available_devices.text()
                         self.available_devices.toggled.connect(
@@ -627,6 +656,7 @@ class SelectDisk(QDialog):
                 'Do you want to create your first backup now?',
                 QMessageBox.Yes
                 |
+                QMessageBox.No,
                 QMessageBox.No)
 
             if creation_confirmation == QMessageBox.Yes:
@@ -877,12 +907,9 @@ class OptionsWindow(QDialog):
             MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
             MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
 
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
+            # Hide
+            MAIN.ui.frame_1.hide()
+            MAIN.ui.frame_2.hide()
 
             print("All settings was reset!")
 
