@@ -33,13 +33,13 @@ def check_for_new_packages():
                             dst = os.path.join(MAIN_INI_FILE.deb_main_folder(), old_package)
                             os.remove(dst)
 
-                    # print(src)
-                    # print(dst)
                     # backup the found package
                     src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.deb_main_folder()
-                    shutil.copy2(src, dst, symlinks=False)
+                    shutil.copy2(src, dst)
 
+                    # print(src)
+                    # print(dst)
                     print('Backing up new package:', src)
         
         # Search for .rpm packages inside Downloads folder
@@ -61,13 +61,12 @@ def check_for_new_packages():
                     # backup the found package
                     src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.rpm_main_folder()
-                    shutil.copy2(src, dst, symlinks=False)
+                    shutil.copy2(src, dst)
                     
+                    print(src)
+                    print(dst)
                     print('Backing up new package:', src)
 
-    # print(list_of_found_deb_pakages)
-    # print(list_of_found_rpm_packages)
-                    
 def time_to_backup(current_time):
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
@@ -106,8 +105,8 @@ if is_connected(MAIN_INI_FILE.hd_hd()):
                 ['python3', SRC_BACKUP_NOW_PY], 
                     stdout=sub.PIPE, 
                     stderr=sub.PIPE)
-
             exit()
+
 
 while True:
     try:
@@ -146,7 +145,6 @@ while True:
             print('Backup checker: PAUSED')
         
         time.sleep(5)
-    
     except BrokenPipeError:
         # Ignore Broken pipe error
         pass
