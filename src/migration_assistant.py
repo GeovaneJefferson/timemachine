@@ -856,12 +856,21 @@ class RESTORE:
 						MAIN.ui.label_restoring_status.setText(f'Installing package: {command}...')
 						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
 						
-						sub.run(
-							['dpkg', '-i', command],
-							stdout=sub.PIPE,
-							stderr=sub.PIPE,
-							text=True)
+						# Run the installation command with yes to automatically press Enter
+						process = sub.run(
+							['yes', '|', 'dpkg', '-i', command],
+								stdout=sub.PIPE,
+								stderr=sub.PIPE,
+								text=True)
 
+						# Check the output and error if needed
+						if process.returncode == 0:
+							print(f"Package {package} installed successfully.")
+							# Handle success
+						else:
+							print(f"Error installing package {package}: {process.stderr}")
+							# Handle error
+						
 						# sub.run(
 						# 	["sudo", "dpkg", "-i", command],
 						# 	stdout=sub.PIPE,
@@ -896,11 +905,21 @@ class RESTORE:
 						MAIN.ui.label_restoring_status.setText(f'Installing package: {command}...')
 						MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
 
-						sub.run(
-							["sudo", "rpm", "-ivh", "--replacepkgs", command],
-							stdout=sub.PIPE,
-							stderr=sub.PIPE)
+						# Run the installation command with yes to automatically press Enter
+						process = sub.run(
+							['yes', '|', 'rpm', '-ivh', '--replacepkgs', command],
+								stdout=sub.PIPE,
+								stderr=sub.PIPE,
+								text=True)
 
+						# Check the output and error if needed
+						if process.returncode == 0:
+							print(f"Package {package} installed successfully.")
+							# Handle success
+						else:
+							print(f"Error installing package {package}: {process.stderr}")
+							# Handle error
+						
 						# Substract 1
 						self.item_to_restore -= 1
 						self.update_progressbar_db()
