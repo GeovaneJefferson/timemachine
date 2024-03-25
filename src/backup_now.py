@@ -232,7 +232,7 @@ class BACKUP:
 								location, 
 								destination_location)
 					except Exception as e:
-						MAIN_INI_FILE.report_error(e)
+						# MAIN_INI_FILE.report_error(e)
 						print(f"[FAIL] {location}")
 						print('ERROR:', e)
 

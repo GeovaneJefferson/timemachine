@@ -33,10 +33,14 @@ def check_for_new_packages():
                             dst = os.path.join(MAIN_INI_FILE.deb_main_folder(), old_package)
                             os.remove(dst)
 
+                    # print(src)
+                    # print(dst)
                     # backup the found package
                     src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.deb_main_folder()
                     shutil.copy2(src, dst, symlinks=False)
+
+                    print('Backing up new package:', src)
         
         # Search for .rpm packages inside Downloads folder
         if package.endswith(".rpm"):
@@ -58,7 +62,12 @@ def check_for_new_packages():
                     src = os.path.join(DOWNLOADS_FOLDER_LOCATION, package)
                     dst = MAIN_INI_FILE.rpm_main_folder()
                     shutil.copy2(src, dst, symlinks=False)
+                    
+                    print('Backing up new package:', src)
 
+    # print(list_of_found_deb_pakages)
+    # print(list_of_found_rpm_packages)
+                    
 def time_to_backup(current_time):
     # Save current time of check
     MAIN_INI_FILE.set_database_value(
@@ -142,6 +151,6 @@ while True:
         # Ignore Broken pipe error
         pass
     except Exception as e:
-        if '<frame at' in e:
+        if '<frame at' in str(e):
             # Save error log
             MAIN_INI_FILE.report_error(e)
