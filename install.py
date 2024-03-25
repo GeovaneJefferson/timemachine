@@ -43,6 +43,11 @@ def install_dependencies(user_distro_name):
                 commands = ['python3-pip', 'flatpak']
                 sub.run(
                     ['sudo', 'apt', 'install', '-y'] + commands, check=True)
+            
+            elif 'ubuntu' in user_distro_name:
+                commands = ['python3-pip', 'flatpak']
+                sub.run(
+                    ['sudo', 'apt', 'install', '-y'] + commands, check=True)
 
             elif 'fedora' in user_distro_name:
                 commands = ['python3-pip', 'flatpak']
@@ -75,6 +80,9 @@ def install_dependencies(user_distro_name):
                 '--if-not-exists',
                 'flathub',
                 'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
+        else:
+            print('Error')
+            exit()
     except sub.CalledProcessError as e:
         print(e)
         exit()
@@ -162,11 +170,11 @@ if __name__ == '__main__':
     else:
         print("Unable to detect Linux distribution.")
         exit()
-
+    
     try:
         # Install dependencies
         print("Installing dependencies...")
-        install_dependencies(user_distro_name=USERS_DISTRO_NAME)
+        install_dependencies(user_distro_name=str(USERS_DISTRO_NAME).lower())
         
         # Begin installation
         print()
