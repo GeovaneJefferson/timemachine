@@ -31,51 +31,50 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
 
-USERS_DISTRO_NAME = os.popen("t").read()  # "ubuntu" in USERDISTRONAME:
 
-
-def install_dependencies():
+def install_dependencies(user_distro_name):
     # sudo apt install libxcb-*
     # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
     try:
 
-        if 'debian' in USERS_DISTRO_NAME:
-            commands = ['python3-pip', 'flatpak']
+        if distribution_info:
+            if 'debian' in user_distro_name:
+                commands = ['python3-pip', 'flatpak']
+                sub.run(
+                    ['sudo', 'apt', 'install', '-y'] + commands, check=True)
+
+            elif 'fedora' in user_distro_name:
+                commands = ['python3-pip', 'flatpak']
+                sub.run(
+                    ['sudo', 'dnf', 'install', '-y'] + commands, check=True)
+
+            elif 'opensuse' in user_distro_name:
+                commands = ['python3-pip', 'flatpak']
+                sub.run(
+                    ['sudo', 'zypper', 'install', '-y'] + commands, check=True)
+
+            elif 'arch' in user_distro_name:
+                commands = ["python-pip", "qt6-wayland", "flatpak"]
+                for command in commands:
+                    try:
+                        sub.run(
+                            ["pacman", "-Qq", command], check=True)
+                    except sub.CalledProcessError:
+                        sub.run(
+                            ['sudo', 'pacman', '-S', command], check=True)
+
+            command = f"{GET_CURRENT_LOCATION}/requirements.txt"
             sub.run(
-                ['sudo', 'apt', 'install', '-y'] + commands, check=True)
+                ["pip", "install", "-r", command], 
+                    check=True)
 
-        elif 'fedora' in USERS_DISTRO_NAME:
-            commands = ['python3-pip', 'flatpak']
+            # Install Flathub remote
             sub.run(
-                ['sudo', 'dnf', 'install', '-y'] + commands, check=True)
-
-        elif 'opensuse' in USERS_DISTRO_NAME:
-            commands = ['python3-pip', 'flatpak']
-            sub.run(
-                ['sudo', 'zypper', 'install', '-y'] + commands, check=True)
-
-        elif 'arch' in USERS_DISTRO_NAME:
-            commands = ["python-pip", "qt6-wayland", "flatpak"]
-            for command in commands:
-                try:
-                    sub.run(
-                        ["pacman", "-Qq", command], check=True)
-                except sub.CalledProcessError:
-                    sub.run(
-                        ['sudo', 'pacman', '-S', command], check=True)
-
-        command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-        sub.run(
-            ["pip", "install", "-r", command], 
-                check=True)
-
-        # Install Flathub remote
-        sub.run(
-            ['flatpak', 'remote-add',
-            '--if-not-exists',
-            'flathub',
-            'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
+                ['flatpak', 'remote-add',
+                '--if-not-exists',
+                'flathub',
+                'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
     except sub.CalledProcessError as e:
         print(e)
         exit()
@@ -83,7 +82,7 @@ def install_dependencies():
 def copy_files():
     try:
         # Copy current folder to the destination folder
-        shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL)
+        shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL, dirs_exist_ok=True)
     except FileExistsError:
         pass
 
@@ -141,12 +140,33 @@ def create_backup_checker_desktop():
             f"Comment={APP_NAME}'s manager before boot.\n "
             f"Icon={SRC_RESTORE_ICON}")
             
-            
+def detect_linux_distribution():
+    distribution_info = {}
+    if os.path.isfile('/etc/os-release'):
+        with open('/etc/os-release', 'r') as f:
+            for line in f:
+                key, value = line.strip().split('=', 1)
+                # Remove quotes from value
+                value = value.strip('"')
+                distribution_info[key] = value
+    return distribution_info
+
+
 if __name__ == '__main__':
+    distribution_info = detect_linux_distribution()
+    if distribution_info:
+        USERS_DISTRO_NAME = distribution_info.get('NAME')
+        print("Detected Linux distribution:", USERS_DISTRO_NAME)
+        print("Version:", distribution_info.get('VERSION'))
+        print()
+    else:
+        print("Unable to detect Linux distribution.")
+        exit()
+
     try:
         # Install dependencies
         print("Installing dependencies...")
-        install_dependencies()
+        install_dependencies(user_distro_name=USERS_DISTRO_NAME)
         
         # Begin installation
         print()
