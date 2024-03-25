@@ -36,64 +36,66 @@ def install_dependencies(user_distro_name):
     # sudo apt install libxcb-*
     # sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
     # Depedencies
-    try:
-
-        if distribution_info:
-            if (
-                'debian' in user_distro_name or 
-                'ubuntu' in user_distro_name or
-                'mint' in user_distro_name):
-                commands = ['python3-pip', 'flatpak']
-                sub.run(
-                    ['sudo', 'apt', 'install', '-y'] + commands, check=True)
-            
-            elif 'fedora' in user_distro_name:
-                commands = ['python3-pip', 'flatpak']
-                sub.run(
-                    ['sudo', 'dnf', 'install', '-y'] + commands, check=True)
-
-            elif 'opensuse' in user_distro_name:
-                commands = ['python3-pip', 'flatpak']
-                sub.run(
-                    ['sudo', 'zypper', 'install', '-y'] + commands, check=True)
-
-            elif 'arch' in user_distro_name:
-                commands = ["python-pip", "qt6-wayland", "flatpak"]
-                for command in commands:
-                    try:
-                        sub.run(
-                            ["pacman", "-Qq", command], check=True)
-                    except sub.CalledProcessError:
-                        sub.run(
-                            ['sudo', 'pacman', '-S', command], check=True)
-
-            try:
-                command = f"{GET_CURRENT_LOCATION}/requirements.txt"
-                sub.run(
-                    ["pip", "install", "-r", command], 
-                        check=True)
-            except:
-                pass
-
-            # Install Flathub remote
+    if distribution_info:
+        if (
+            'debian' in user_distro_name or 
+            'ubuntu' in user_distro_name or
+            'mint' in user_distro_name):
+            commands = ['python3-pip', 'flatpak']
             sub.run(
-                ['flatpak', 'remote-add',
-                '--if-not-exists',
-                'flathub',
-                'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
-        else:
-            print('Error')
-            exit()
-    except sub.CalledProcessError as e:
-        print(e)
+                ['sudo', 'apt', 'install', '-y'] + commands, check=True)
+        
+        elif 'fedora' in user_distro_name:
+            commands = ['python3-pip', 'flatpak']
+            sub.run(
+                ['sudo', 'dnf', 'install', '-y'] + commands, check=True)
+
+        elif 'opensuse' in user_distro_name:
+            commands = ['python3-pip', 'flatpak']
+            sub.run(
+                ['sudo', 'zypper', 'install', '-y'] + commands, check=True)
+
+        elif 'arch' in user_distro_name:
+            commands = ["python-pip", "qt6-wayland", "flatpak"]
+            for command in commands:
+                try:
+                    sub.run(
+                        ["pacman", "-Qq", command], check=True)
+                except sub.CalledProcessError:
+                    sub.run(
+                        ['sudo', 'pacman', '-S', command], check=True)
+
+        try:
+            command = f"{GET_CURRENT_LOCATION}/requirements.txt"
+            sub.run(
+                ["pip", "install", "-r", command], 
+                    check=True)
+        except:
+            pass
+
+        # Install Flathub remote
+        sub.run(
+            ['flatpak', 'remote-add',
+            '--if-not-exists',
+            'flathub',
+            'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
+    else:
+        print('Error')
         exit()
 
 def copy_files():
     try:
         # Copy current folder to the destination folder
-        shutil.copytree(GET_CURRENT_LOCATION, DST_FOLDER_INSTALL, dirs_exist_ok=True)
-    except FileExistsError:
-        pass
+        print('-----[COPYING]-----')
+        print('From:', GET_CURRENT_LOCATION)
+        print('To:', DST_FOLDER_INSTALL)
+        print()
+        shutil.copytree(
+            GET_CURRENT_LOCATION, 
+            DST_FOLDER_INSTALL, dirs_exist_ok=True)
+    except FileExistsError as error:
+        print(error)
+        exit()
 
 def create_application_files():
     # Create .local/share/applications
