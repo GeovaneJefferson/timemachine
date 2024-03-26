@@ -379,7 +379,7 @@ class MainWindow(QMainWindow):
         reset_confirmation = QMessageBox.question(
             self,
             'Remove Device as Backup Storage',
-            'Are you sure you want to remove this device as backup disk?',
+            'Are you sure you want to remove this device as backup storage?',
             QMessageBox.Yes
             |
             QMessageBox.No,
@@ -844,10 +844,10 @@ class OptionsWindow(QDialog):
     def on_button_fix_clicked(self):
         reset_confirmation = QMessageBox.question(
             self,
-            'Remove Device as backup disk',
-            'Are you sure you want to remove this device as backup disk?',
+            'Reset All Settings',
+            'Are you sure you want to reset all settings?',
             QMessageBox.No | QMessageBox.Yes,
-            QMessageBox.No)  # Sets the default button to No, displayed on the left
+            QMessageBox.No) 
 
         if reset_confirmation == QMessageBox.Yes:
             MAIN.ui.last_backup_label.setText("Last Backup:")
