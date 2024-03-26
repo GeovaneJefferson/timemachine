@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -275,7 +275,7 @@
      <property name="bottomMargin">
       <number>9</number>
      </property>
-     <item>
+     <item alignment="Qt::AlignLeft|Qt::AlignBottom">
       <widget class="QLabel" name="version_label">
        <property name="text">
         <string>Version</string>

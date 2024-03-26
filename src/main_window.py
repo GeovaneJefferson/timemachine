@@ -57,19 +57,12 @@ class MainWindow(QMainWindow):
         #######################################################################
         # Browser backup device
         self.ui.browser_backup_device.clicked.connect(
-            lambda: sub.Popen(["xdg-open", MAIN_INI_FILE.create_base_folder()]))
+            lambda: sub.Popen(
+                ["xdg-open", MAIN_INI_FILE.create_base_folder()]))
 
-        # Automatically backup checkbox
-        # self.ui.automatically_backup_checkbox.clicked.connect(
-        #     self.on_automatically_checkbox_clicked)
-        
         # Use select disk button
         self.ui.select_disk_button.clicked.connect(
             self.on_selected_disk_button_clicked)
-        
-        # System tray button
-        # self.ui.show_in_system_tray_checkbox.clicked.connect(
-        #     self.on_system_tray_checkbox_clicked)
         
         # Options button
         self.ui.options_button.clicked.connect(self.on_options_button_clicked)
@@ -92,19 +85,6 @@ class MainWindow(QMainWindow):
         logo_image = QPixmap(SRC_BACKUP_ICON)
         resized_logo_image = logo_image.scaledToWidth(28, Qt.SmoothTransformation)
         self.ui.app_logo_image.setPixmap(resized_logo_image)
-
-        # # Disk image
-        # disk_image = QPixmap(SRC_RESTORE_ICON)
-        # self.ui.app_disk_image.setPixmap(disk_image)
-        
-        ######################################################################
-        # Hide or disable 
-        ######################################################################
-        # Hide 
-        # self.ui.progressbar_main_window.hide()
-
-        # self.ui.backing_up_label.hide()
-        # self.ui.select_disk_button.hide()
 
         self.center_main_window()
 
@@ -137,14 +117,6 @@ class MainWindow(QMainWindow):
             
             # Check connection to it
             if is_connected(MAIN_INI_FILE.hd_hd()):
-                ################################################
-                # Connection
-                ################################################
-                # Set external status label to Connected
-                # self.external_status_label.setText("Status: Connected")
-                # Set external status label to color Green
-                # self.external_status_label.setStyleSheet('color: green')
-
                 ################################################
                 # Clean notification massage
                 ################################################
@@ -223,17 +195,9 @@ class MainWindow(QMainWindow):
                 else:
                     # Show
                     self.ui.next_backup_label.show()
-                    
-                    # Hide
-                    # self.ui.progressbar_main_window.hide()
-
-                    # self.ui.backing_up_label.hide()
 
                     # Enable select disk
                     self.ui.select_disk_button.setEnabled(True)
-
-                    # Enable automatically backup
-                    # self.ui.automatically_backup_checkbox.setEnabled(True)
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
@@ -265,19 +229,6 @@ class MainWindow(QMainWindow):
     ################################################################################
     # STATIC
     ################################################################################
-    # def startup_read_db(self):
-    #     # if MAIN_INI_FILE.automatically_backup():
-    #     #     # self.ui.automatically_backup_checkbox.setChecked(True)
-        
-    #     # else:
-    #     #     # self.ui.automatically_backup_checkbox.setChecked(False)
-
-    #     if MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
-    #         # self.ui.show_in_system_tray_checkbox.setChecked(True)
-        
-    #     else:
-    #         # self.ui.show_in_system_tray_checkbox.setChecked(False)
-    
     def check_for_updates(self):
         print('Checking for updates...')
         
@@ -507,8 +458,10 @@ class SelectDisk(QDialog):
                 for backup_device in os.listdir(f'{MEDIA}/{USERNAME}'):
                     # No spaces and special characters allowed
                     if backup_device not in capture_devices  and "'" not in backup_device and " " not in backup_device:
-                        print("     Device:", backup_device)
-
+                        self.devices_location = f'{MEDIA}/{USERNAME}/{backup_device}'
+                        print("     Devices :", backup_device)
+                        print(f"     Location:", self.devices_location)
+                        
                         # Add to capture list
                         capture_devices.append(backup_device)
 
@@ -563,12 +516,14 @@ class SelectDisk(QDialog):
                 for backup_device in os.listdir(f'{RUN}/{USERNAME}'):
                     # No spaces and special characters allowed
                     if backup_device not in capture_devices  and "'" not in backup_device and " " not in backup_device:
-                        print("     Devices:", backup_device)
+                        self.devices_location = f'{RUN}/{USERNAME}/{backup_device}'
+                        print("     Devices :", backup_device)
+                        print(f"     Location:", self.devices_location)
 
                         capture_devices .append(backup_device)
 
                         # Avaliables external  devices
-                        self.available_devices=QPushButton()
+                        self.available_devices = QPushButton()
                         self.available_devices.setFont(QFont(MAIN_FONT,FONT_SIZE_11PX))
                         self.available_devices.setText(backup_device)
                         self.available_devices.setCheckable(True)
@@ -619,52 +574,93 @@ class SelectDisk(QDialog):
         self.exec()
 
     def on_use_disk_dialog_button_clicked(self):
-        # Update INI file
-        save_info(choose_device[-1])
+        # Check devices permission
+        if self.may_use_this_device():
+            # Update INI file
+            save_info(choose_device[-1])
 
-        # Close dialog window
-        self.on_cancel_dialog_button_clicked()
+            # Close dialog window
+            self.on_cancel_dialog_button_clicked()
 
-        # Resize backup device frame
-        # MAIN.ui.backup_device_informations.setFixedHeight(118)
+            # Show
+            MAIN.ui.remove_backup_device.show()
+
+            # Hide
+            MAIN.ui.select_disk_button.hide()
+
+            # Make the first backup
+            self.make_first_backup()
+
+    def may_use_this_device(self):
+        try:
+            # Try to write to storage
+            test_file_path = os.path.join(self.devices_location, "write_test.txt")
+            with open(test_file_path, "w") as test_file:
+                test_file.write("Testing write permission")
+            
+            # If the write operation succeeded, delete the test file
+            os.remove(test_file_path)
+
+            return True
         
-        # Show informations UI
-        # MAIN.ui.external_name_label.show()
-        # MAIN.ui.external_size_label.show()
-        # MAIN.ui.progressbar_main_window.show()
-        # MAIN.ui.backups_label.show()
-        # MAIN.ui.next_backup_label.show()
-        MAIN.ui.remove_backup_device.show()
+        except PermissionError as errno13:
+            print(f"Permission denied error: {errno13}")
+            # MAIN_INI_FILE.report_error(errno13)
 
-        # Hide add backup devices button
-        MAIN.ui.select_disk_button.hide()
+            # Grant Write Permissions
+            write_permission = QMessageBox.question(
+                self,
+                'Permission Denied',
+                'To use this device, write permission is required. '
+                f'\nDo you want to grant write permission for this device" {MAIN_INI_FILE.hd_name()}"?',
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No)
 
-        # Make the first backup
-        self.make_first_backup()
-
+            if write_permission == QMessageBox.Yes:
+                # Execute the command
+                # Command to grant write permissions to others
+                command = [
+                    "pkexec", 
+                    "sudo", 
+                    "chmod", 
+                    "o+w", 
+                    MAIN_INI_FILE.hd_name()]
+                
+                # Use pkexec for installing packages
+                result = sub.run(
+                    command, capture_output=True, text=True)
+                
+                return True
+            else:
+                QMessageBox.Close
+                return False
+                    
     def make_first_backup(self):
         # Base folder do no exists (TMB)
         if not os.path.exists(MAIN_INI_FILE.create_base_folder()):
-            # Prepare backup disk
-            MAIN_PREPARE.prepare_the_backup()
+            try:
+                # Prepare backup disk
+                MAIN_PREPARE.prepare_the_backup()
 
-            creation_confirmation = QMessageBox.question(
-                self,
-                'Create First Backup',
-                'Do you want to create your first backup now?',
-                QMessageBox.Yes
-                |
-                QMessageBox.No,
-                QMessageBox.No)
+                creation_confirmation = QMessageBox.question(
+                    self,
+                    'Create First Backup',
+                    'Do you want to create your first backup now?',
+                    QMessageBox.Yes
+                    |
+                    QMessageBox.No,
+                    QMessageBox.No)
 
-            if creation_confirmation == QMessageBox.Yes:
-                # Go create the first backup
-                sub.Popen(
-                    ['python3', SRC_ANALYSE_PY], 
-                        stdout=sub.PIPE, 
-                        stderr=sub.PIPE)
-            else:
-                QMessageBox.Close
+                if creation_confirmation == QMessageBox.Yes:
+                    # Go create the first backup
+                    sub.Popen(
+                        ['python3', SRC_ANALYSE_PY], 
+                            stdout=sub.PIPE, 
+                            stderr=sub.PIPE)
+                else:
+                    QMessageBox.Close
+            except Exception as error:
+                MAIN_INI_FILE.report_error(error)
 
     def on_device_clicked(self, device):
         # Enable use disk button
@@ -679,10 +675,6 @@ class SelectDisk(QDialog):
         if device not in choose_device:
             # Add to choosed device list
             choose_device.insert(0, device)
-
-        # else:
-        #     # Remove from the list
-        #     choose_device.remove(device)
 
     def on_cancel_dialog_button_clicked(self):
         # Clean lists
@@ -701,7 +693,7 @@ class OptionsWindow(QDialog):
         #     Qt.FramelessWindowHint | 
         #     Qt.WindowStaysOnTopHint | 
         #     Qt.Tool)
-                
+
         # Already added
         self.home_folder_added = False
         

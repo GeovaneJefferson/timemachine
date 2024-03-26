@@ -72,9 +72,7 @@ class Ui_Options(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.label_4 = QLabel(self.back_up_tab)
         self.label_4.setObjectName(u"label_4")
-        font1 = QFont()
-        font1.setBold(False)
-        self.label_4.setFont(font1)
+        self.label_4.setFont(font)
 
         self.gridLayout_3.addWidget(self.label_4, 0, 0, 1, 1)
 
@@ -171,7 +169,7 @@ class Ui_Options(object):
         self.version_label = QLabel(Options)
         self.version_label.setObjectName(u"version_label")
 
-        self.horizontalLayout_2.addWidget(self.version_label)
+        self.horizontalLayout_2.addWidget(self.version_label, 0, Qt.AlignLeft|Qt.AlignBottom)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -180,10 +178,11 @@ class Ui_Options(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
+        self.verticalLayout.setStretch(0, 1)
 
         self.retranslateUi(Options)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(Options)

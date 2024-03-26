@@ -49,11 +49,6 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(0)
-        self.app_logo_image = QLabel(self.frame_1)
-        self.app_logo_image.setObjectName(u"app_logo_image")
-
-        self.gridLayout.addWidget(self.app_logo_image, 0, 0, 1, 1)
-
         self.external_name_label = QLabel(self.frame_1)
         self.external_name_label.setObjectName(u"external_name_label")
         font1 = QFont()
@@ -81,6 +76,11 @@ class Ui_MainWindow(object):
         self.remove_backup_device.setObjectName(u"remove_backup_device")
 
         self.gridLayout.addWidget(self.remove_backup_device, 3, 2, 1, 1)
+
+        self.app_logo_image = QLabel(self.frame_1)
+        self.app_logo_image.setObjectName(u"app_logo_image")
+
+        self.gridLayout.addWidget(self.app_logo_image, 0, 0, 3, 1)
 
         self.gridLayout.setColumnStretch(1, 1)
 
@@ -186,16 +186,28 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Backup Device", None))
-        self.app_logo_image.setText(QCoreApplication.translate("MainWindow", u"IMAGE", None))
 #if QT_CONFIG(tooltip)
-        self.external_name_label.setToolTip(QCoreApplication.translate("MainWindow", u"Devices name", None))
+        self.external_name_label.setToolTip(QCoreApplication.translate("MainWindow", u"Backup's devices name", None))
 #endif // QT_CONFIG(tooltip)
         self.external_name_label.setText(QCoreApplication.translate("MainWindow", u"None", None))
+#if QT_CONFIG(tooltip)
+        self.last_backup_label.setToolTip(QCoreApplication.translate("MainWindow", u"Last Backup Date", None))
+#endif // QT_CONFIG(tooltip)
         self.last_backup_label.setText(QCoreApplication.translate("MainWindow", u"Last Backup:", None))
+#if QT_CONFIG(tooltip)
+        self.next_backup_label.setToolTip(QCoreApplication.translate("MainWindow", u"Next Backup Date", None))
+#endif // QT_CONFIG(tooltip)
         self.next_backup_label.setText(QCoreApplication.translate("MainWindow", u"Next Backup:", None))
         self.remove_backup_device.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
+        self.app_logo_image.setText(QCoreApplication.translate("MainWindow", u"IMAGE", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Storage Space", None))
+#if QT_CONFIG(tooltip)
+        self.external_size_label.setToolTip(QCoreApplication.translate("MainWindow", u"Available Space", None))
+#endif // QT_CONFIG(tooltip)
         self.external_size_label.setText(QCoreApplication.translate("MainWindow", u"Available Space: ", None))
+#if QT_CONFIG(tooltip)
+        self.browser_backup_device.setToolTip(QCoreApplication.translate("MainWindow", u"Browser Backup Storage", None))
+#endif // QT_CONFIG(tooltip)
         self.browser_backup_device.setText(QCoreApplication.translate("MainWindow", u"Browser", None))
         self.update_available_button.setText(QCoreApplication.translate("MainWindow", u" Update Available ", None))
         self.select_disk_button.setText(QCoreApplication.translate("MainWindow", u" Add Backup Device ", None))

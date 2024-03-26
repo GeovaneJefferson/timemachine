@@ -5,6 +5,7 @@ from get_folders_to_be_backup import get_folders
 from handle_spaces import handle_spaces
 from get_sizes import number_of_item_to_backup, get_item_size
 from get_users_de import get_user_de
+from check_connection import is_connected
 from notification_massage import notification_message
 from backup_flatpak import backup_flatpak
 from backup_pip_packages import backup_pip_packages
@@ -386,59 +387,64 @@ class ANALYSES:
 if __name__ == "__main__":
 	MAIN = ANALYSES()
 
-	print('Analysing backup...')
-	notification_message('Analysing backup...')
-
 	# MAIN.need_to_backup_analyse()
 
-	try:
-		# Backup flatpak
-		print("Backing up: flatpak applications")
-		backup_flatpak()
-
-		# Backup pip packages
-		print("Backing up: pip packages")
-		backup_pip_packages()
-
-		# TODO
+	# Has connection
+	if is_connected(MAIN_INI_FILE.hd_hd()):
 		try:
-			# Backup wallpaper
-			print("Backing up: Wallpaper")
-			backup_wallpaper()
-		except:
-			pass
+			# Backup flatpak
+			print("Backing up: flatpak applications")
+			backup_flatpak()
 
-		# Need to backup
-		if MAIN.need_to_backup_analyse():
-			# Prepare backup
-			if MAIN_PREPARE.prepare_the_backup():
-				print('Calling backup now...')
+			# Backup pip packages
+			print("Backing up: pip packages")
+			backup_pip_packages()
 
-				# Backup now
-				sub.Popen(
-					['python3', SRC_BACKUP_NOW_PY],
+			# TODO
+			try:
+				# Backup wallpaper
+				print("Backing up: Wallpaper")
+				backup_wallpaper()
+			except:
+				pass
+
+			# Need to backup
+			if MAIN.need_to_backup_analyse():
+				print('Analysing backup...')
+
+				notification_message('Analysing backup...')
+
+				# Prepare backup
+				if MAIN_PREPARE.prepare_the_backup():
+					print('Calling backup now...')
+
+					# Backup now
+					sub.Popen(
+						['python3', SRC_BACKUP_NOW_PY],
+							stdout=sub.PIPE,
+							stderr=sub.PIPE)
+			else:
+				print('No need to back up.')
+
+				# Backing up to False
+				MAIN_INI_FILE.set_database_value(
+					'STATUS', 'backing_up_now', 'False')
+
+				# Check if backup checker is not already running
+				process_title = "Time Machine - Backup Checker"
+				if not MAIN.is_process_running(process_title):
+					print(f"No process with the title '{process_title}' is currently running.")
+					# Re.open backup checker
+					sub.Popen(
+						['python3', SRC_BACKUP_CHECKER_PY],
 						stdout=sub.PIPE,
 						stderr=sub.PIPE)
-		else:
-			print('No need to back up.')
-
-			# Backing up to False
-			MAIN_INI_FILE.set_database_value(
-				'STATUS', 'backing_up_now', 'False')
-
-			# Check if backup checker is not already running
-			process_title = "Time Machine - Backup Checker"
-			if not MAIN.is_process_running(process_title):
-				print(f"No process with the title '{process_title}' is currently running.")
-				# Re.open backup checker
-				sub.Popen(
-					['python3', SRC_BACKUP_CHECKER_PY],
-					stdout=sub.PIPE,
-					stderr=sub.PIPE)
-	except BrokenPipeError:
-		# Ignore Broken pipe error
-		pass
-	except Exception as error:
-		print(error)
-		# Save error log
-		MAIN_INI_FILE.report_error(error)
+		except BrokenPipeError:
+			# Ignore Broken pipe error
+			pass
+		except Exception as error:
+			print(error)
+			# Save error log
+			MAIN_INI_FILE.report_error(error)
+	else:
+		print('No connection to backup storage.')

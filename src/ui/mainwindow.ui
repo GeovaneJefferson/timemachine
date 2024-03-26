@@ -68,13 +68,6 @@
          <property name="verticalSpacing">
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="app_logo_image">
-           <property name="text">
-            <string>IMAGE</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="QLabel" name="external_name_label">
            <property name="font">
@@ -87,7 +80,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>Devices name</string>
+            <string>Backup's devices name</string>
            </property>
            <property name="styleSheet">
             <string notr="true"/>
@@ -99,6 +92,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QLabel" name="last_backup_label">
+           <property name="toolTip">
+            <string>Last Backup Date</string>
+           </property>
            <property name="text">
             <string>Last Backup:</string>
            </property>
@@ -106,6 +102,9 @@
          </item>
          <item row="3" column="1">
           <widget class="QLabel" name="next_backup_label">
+           <property name="toolTip">
+            <string>Next Backup Date</string>
+           </property>
            <property name="text">
             <string>Next Backup:</string>
            </property>
@@ -115,6 +114,13 @@
           <widget class="QPushButton" name="remove_backup_device">
            <property name="text">
             <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" rowspan="3">
+          <widget class="QLabel" name="app_logo_image">
+           <property name="text">
+            <string>IMAGE</string>
            </property>
           </widget>
          </item>
@@ -173,6 +179,9 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="external_size_label">
+         <property name="toolTip">
+          <string>Available Space</string>
+         </property>
          <property name="text">
           <string>Available Space: </string>
          </property>
@@ -190,6 +199,9 @@
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="browser_backup_device">
+         <property name="toolTip">
+          <string>Browser Backup Storage</string>
+         </property>
          <property name="text">
           <string>Browser</string>
          </property>

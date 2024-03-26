@@ -30,6 +30,7 @@ DST_MIGRATION_ASSISTANT_DESKTOP = f"{HOME_USER}/.local/share/applications/migrat
 
 SRC_RESTORE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/restore_64px.svg"
 SRC_BACKUP_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/backup_128px.png"
+SRC_ANALYSE_PY = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/analyse.py"
 
 
 def install_dependencies(user_distro_name):
@@ -112,12 +113,18 @@ def create_application_files():
             f"Type=Application\n "
             f"Name={APP_NAME}\n "
             f"Comment=Backup your files with {APP_NAME}\n "
+            f"GenericName=Backup Tool\n "
             f"Icon={SRC_BACKUP_ICON}\n "
             f"Exec=python3 {SRC_MAIN_WINDOW_PY}\n "
             f"Path={HOME_USER}/.local/share/{APP_NAME_CLOSE}/\n "
             f"Categories=System\n "
             f"StartupWMClass={SRC_MAIN_WINDOW_PY.split('/')[-1]}\n "
-            f"Terminal=false")
+            f"Actions=backup-now;\n "
+            f"Terminal=false\n\n"
+
+            f"[Desktop Action backup-now]\n "
+            f"Name=Backup Now\n "
+            f"Exec=python3 {SRC_ANALYSE_PY} %F\n ")
 
     # Migration_assistant .desktop
     with open(DST_MIGRATION_ASSISTANT_DESKTOP, "w") as writer:
