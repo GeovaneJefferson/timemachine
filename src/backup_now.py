@@ -421,6 +421,5 @@ if __name__ == "__main__":
 				stdout=sub.PIPE, 
 				stderr=sub.PIPE)
 	except Exception as e:
-		pass
 		# Save error log
-		# MAIN_INI_FILE.report_error(e)
+		MAIN_INI_FILE.report_error(e)

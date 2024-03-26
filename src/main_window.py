@@ -116,9 +116,6 @@ class MainWindow(QMainWindow):
         fg.moveCenter(centerPoint)
         self.move(fg.topLeft())
 
-        # Startup checking
-        # self.startup_read_db()
-
         # Check for update
         self.check_for_updates()
 
