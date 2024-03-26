@@ -382,6 +382,7 @@ class MainWindow(QMainWindow):
             'Are you sure you want to remove this device as backup disk?',
             QMessageBox.Yes
             |
+            QMessageBox.No,
             QMessageBox.No)
 
         if reset_confirmation == QMessageBox.Yes:            
