@@ -664,7 +664,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="frameShape">
-                 <enum>QFrame::Box</enum>
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Sunken</enum>
@@ -677,8 +677,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>360</width>
-                   <height>260</height>
+                   <width>362</width>
+                   <height>262</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1071,7 +1071,8 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset theme="drive-harddisk"/>
+                   <iconset theme="drive-harddisk">
+                    <normaloff>.</normaloff>.</iconset>
                   </property>
                   <property name="iconSize">
                    <size>

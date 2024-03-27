@@ -294,12 +294,12 @@ class Ui_WelcomeScreen(object):
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setMinimumSize(QSize(0, 0))
         self.scrollArea.setAutoFillBackground(True)
-        self.scrollArea.setFrameShape(QFrame.Box)
+        self.scrollArea.setFrameShape(QFrame.StyledPanel)
         self.scrollArea.setFrameShadow(QFrame.Sunken)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 360, 260))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 362, 262))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
@@ -500,7 +500,13 @@ class Ui_WelcomeScreen(object):
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setEnabled(True)
         self.pushButton.setAutoFillBackground(False)
-        icon4 = QIcon(QIcon.fromTheme(u"drive-harddisk"))
+        icon4 = QIcon()
+        iconThemeName = u"drive-harddisk"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon4 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
         self.pushButton.setIcon(icon4)
         self.pushButton.setIconSize(QSize(64, 64))
         self.pushButton.setFlat(True)

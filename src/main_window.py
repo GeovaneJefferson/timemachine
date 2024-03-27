@@ -392,13 +392,6 @@ class MainWindow(QMainWindow):
             MAIN_INI_FILE.set_database_value('FOLDER', 'videos', 'True')
             MAIN_INI_FILE.set_database_value('FOLDER', 'desktop', 'True')
 
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_packages', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_names', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'applications_flatpak_data', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'files_and_folders', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'system_settings', 'False')
-            # MAIN_INI_FILE.set_database_value('RESTORE', 'is_restore_running', 'False')
-
             print("All settings was reset!")
 
             # Hide informations UI

@@ -223,6 +223,7 @@ class WelcomeScreen(QWidget):
 		# Disable Application checkbox
 		self.ui.checkbox_applications_page3.setEnabled(False)
 
+		# Add all applications sub checkboxes
 		if package_location is not None:
 			# Has packages inside
 			if any(os.scandir(package_location)):
@@ -296,9 +297,7 @@ class WelcomeScreen(QWidget):
 	def on_applications_checkbox_clicked_page3(self):
 		# Expand it if selected
 		if self.ui.checkbox_applications_page3.isChecked():
-			# Add to list to restore
-			self.item_to_restore.append('Applications')
-			
+
 			reply = QMessageBox.question(
 				self,
 				'Root Privileges Required',
@@ -308,6 +307,10 @@ class WelcomeScreen(QWidget):
 			
 			if reply == QMessageBox.Yes:
 				print("Authentication successful.")
+				
+				# Add to list to restore
+				self.item_to_restore.append('Applications')
+			
 				self.ui.checkbox_applications_page3.setChecked(True)
 
 				# Show applications sub checkboxes
@@ -369,18 +372,6 @@ class WelcomeScreen(QWidget):
 			self.applications_to_be_exclude.append(exclude)
 		else:
 			self.applications_to_be_exclude.remove(exclude)
-
-		# # if user deselect all app, application check to False
-		# if len(self.applications_to_be_exclude) == len(self.count_of_deb_list) or len(self.applications_to_be_exclude) == len(self.count_of_rpm_list):
-		#     self.ui.checkbox_applications_page3.setChecked(False)
-		#     # Clean hasItensInsideToContinueList
-		#     self.has_itens_inside_to_continue_list.clear()
-		#     # Disable continue button
-		#     self.continue_button.setEnabled(False)
-		# else:
-		#     self.ui.checkbox_applications_page3.setChecked(True)
-		#     # Enable continue button
-		#     self.continue_button.setEnabled(True)
 
 		# If all sub checboxes was deselected
 		if len(self.applications_to_be_exclude) == self.number_of_item_applications:
@@ -655,10 +646,8 @@ class RESTORE:
 
 	#async def start_restoring(self):
 	def start_restoring(self):
-		print(self.item_to_restore)
-		# First change the wallpaper
+		# Restore user's wallpaper
 		if MAIN.ui.checkbox_system_settings_page3.isChecked():
-			# self.update_progressbar_db()
 			print('Restoring wallpaper...')
 			self.restore_backup_wallpaper()
 
@@ -1050,7 +1039,9 @@ class RESTORE:
 			# Testing
 			try:
 				# Apply KDE screenlock wallpaper, will be the same as desktop wallpaper
-				wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
+				# wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
+				wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + wallpaper
+
 				sub.run([
 					'kwriteconfig5',
 					'--file', 'kscreenlockerrc',
@@ -1064,11 +1055,10 @@ class RESTORE:
 			except Exception as error:
 				print(error)
 				pass
-
 		else:
 			return None
+		
 	#----------RESTORE TOPICS----------#
-
 	# End
 	def end_restoring(self):
 		print("Restoring is done!")
