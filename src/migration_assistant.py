@@ -52,19 +52,28 @@ class WelcomeScreen(QWidget):
 		#######################################################################
 		# Page 3
 		#######################################################################
+		# All items
 		self.item_to_restore = []
-		self.applications_to_be_exclude = []
+		
+		# Item
+		self.applications_to_be_restore = []
+		self.flatpaks_to_restore = []
+		self.pip_to_restore = []
 
 		# Disable applications sub checkboxes
 		self.ui.applications_sub_widget_page3.hide()
 		# Disable applications sub checkboxes
 		self.ui.flatpaks_sub_widget_page3.hide()
+		# Disable pip sub checkboxes
+		self.ui.pip_sub_widget_page3.hide()
+
 		# Disable continue button
 		self.ui.button_continue_page3.setEnabled(False)
 
 		# Number of sub checkboxes
 		self.number_of_item_applications = 0
 		self.number_of_item_flatpaks = 0
+		self.number_of_item_pip = 0
 
 		# Connections
 		self.ui.button_back_page3.clicked.connect(self.on_back_button_page3_clicked)
@@ -79,6 +88,9 @@ class WelcomeScreen(QWidget):
 		# Files and Folders
 		self.ui.checkbox_files_folders_page3.clicked.connect(
 			self.on_files_and_folders_checkbox_clicked_page3)
+		# Pip
+		self.ui.checkbox_pip_page3.clicked.connect(
+			self.on_pip_checkbox_clicked_page3)
 		# System settings
 		self.ui.checkbox_system_settings_page3.clicked.connect(
 			self.on_system_settings_checkbox_clicked_page3)
@@ -202,6 +214,8 @@ class WelcomeScreen(QWidget):
 		self.load_flatpaks_sub_checkbox_page3()
 		# Load home
 		self.load_files_and_folders_page3()
+		# Load pip packages and sub checkboxes
+		self.load_pip_packages_page3()
 		# Load system settings
 		self.load_system_settings_page3()
 
@@ -244,17 +258,15 @@ class WelcomeScreen(QWidget):
 		self.ui.applications_sub_widget_page3.setMinimumHeight(self.number_of_item_applications*20)
 
 	def load_flatpaks_sub_checkbox_page3(self):
-		self.list_of_flatpaks_to_restore = []
-
 		# Read installed flatpaks names
 		with open(f'{MAIN_INI_FILE.flatpak_txt_location()}', 'r') as flatpaks:
 			for flatpak in flatpaks.read().split():
-				if flatpak not in self.list_of_flatpaks_to_restore:
-					self.list_of_flatpaks_to_restore.append(flatpak)
+				if flatpak not in self.flatpaks_to_restore:
+					self.flatpaks_to_restore.append(flatpak)
 
 		# Has flatpaks to restore
-		if self.list_of_flatpaks_to_restore:
-			for flatpak in self.list_of_flatpaks_to_restore:
+		if self.flatpaks_to_restore:
+			for flatpak in self.flatpaks_to_restore:
 				sub_flatpaks_checkboxes = QCheckBox()
 				sub_flatpaks_checkboxes.setText(flatpak)
 				sub_flatpaks_checkboxes.setChecked(True)
@@ -273,6 +285,7 @@ class WelcomeScreen(QWidget):
 
 	def load_files_and_folders_page3(self):
 		home_to_restore = []
+
 		# Check inside backup folder
 		for home in os.listdir(f"{MAIN_INI_FILE.backup_folder_name()}/"):
 			home_to_restore.append(home)
@@ -284,6 +297,32 @@ class WelcomeScreen(QWidget):
 
 		# Clean list
 		home_to_restore.clear()
+
+	def load_pip_packages_page3(self):
+		# Read pip txt file
+		with open(f'{MAIN_INI_FILE.pip_packages_txt_location()}', 'r') as flatpaks:
+			for pip in flatpaks.read().split():
+				if pip not in self.pip_to_restore:
+					self.pip_to_restore.append(pip)
+
+		# Has pip packages to restore
+		if self.pip_to_restore:
+			for pip in self.pip_to_restore:
+				sub_pip_checkboxes = QCheckBox()
+				sub_pip_checkboxes.setText(pip)
+				sub_pip_checkboxes.setChecked(True)
+				sub_pip_checkboxes.clicked.connect(
+					lambda *args, pip=pip: self.exclude_pip(pip))
+				self.ui.pip_sub_checkbox_layout_page3.addWidget(sub_pip_checkboxes)
+
+				# Add 1
+				self.number_of_item_pip += 1
+		else:
+			# Disable Application checkbox
+			self.ui.checkbox_pip_page3.setEnabled(False)
+
+		# Expand it, 1 item = 20 height
+		self.ui.pip_sub_widget_page3.setMinimumHeight(self.number_of_item_pip*20)
 
 	def load_system_settings_page3(self):
 		wallpaper_folder = MAIN_INI_FILE.wallpaper_main_folder()
@@ -297,7 +336,6 @@ class WelcomeScreen(QWidget):
 	def on_applications_checkbox_clicked_page3(self):
 		# Expand it if selected
 		if self.ui.checkbox_applications_page3.isChecked():
-
 			reply = QMessageBox.question(
 				self,
 				'Root Privileges Required',
@@ -306,17 +344,28 @@ class WelcomeScreen(QWidget):
     			QMessageBox.No)
 			
 			if reply == QMessageBox.Yes:
-				print("Authentication successful.")
+				# Use pkexec for installing packages
+				process = sub.run(
+					['pkexec', 'true'],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE,
+					text=True)
+						
+				# User entered password
+				if process.returncode == 0:
+					print("Authentication successful.")
+					
+					# Add to list to restore
+					self.item_to_restore.append('Applications')
 				
-				# Add to list to restore
-				self.item_to_restore.append('Applications')
-			
-				self.ui.checkbox_applications_page3.setChecked(True)
+					self.ui.checkbox_applications_page3.setChecked(True)
 
-				# Show applications sub checkboxes
-				self.ui.applications_sub_widget_page3.show()
+					# Show applications sub checkboxes
+					self.ui.applications_sub_widget_page3.show()
+				else:
+					print("Authentication failed.")
+					self.ui.checkbox_applications_page3.setChecked(False)
 			else:
-				print("Authentication failed.")
 				self.ui.checkbox_applications_page3.setChecked(False)
 		else:
 			# Remove to list to restore
@@ -324,7 +373,7 @@ class WelcomeScreen(QWidget):
 			# Hide applications sub checkboxes
 			self.ui.applications_sub_widget_page3.hide()
 			# Clear applications exclude list
-			self.applications_to_be_exclude.clear()
+			self.applications_to_be_restore.clear()
 
 		self.check_checkboxes()
 
@@ -354,6 +403,21 @@ class WelcomeScreen(QWidget):
 
 		self.check_checkboxes()
 
+	def on_pip_checkbox_clicked_page3(self):
+		if self.ui.checkbox_pip_page3.isChecked():
+			# Add "system_settings" to list
+			self.item_to_restore.append("Pip_Packages")
+			# Show pip sub checkboxes
+			self.ui.pip_sub_widget_page3.show()
+		else:
+			self.item_to_restore.remove("Pip_Packages")
+			
+			# Hide pip sub checkboxes
+			# if "Pip_Packages" in self.item_to_restore:
+			self.ui.pip_sub_widget_page3.hide()
+			
+		self.check_checkboxes()
+
 	def on_system_settings_checkbox_clicked_page3(self):
 		if self.ui.checkbox_system_settings_page3.isChecked():
 			# Add "system_settings" to list
@@ -364,34 +428,53 @@ class WelcomeScreen(QWidget):
 
 		self.check_checkboxes()
 
+	# EXCLUDE
 	def exclude_applications(self, exclude):
 		print("Exclude application:", exclude)
 
 		# Add to the exclude list
-		if exclude not in self.applications_to_be_exclude:
-			self.applications_to_be_exclude.append(exclude)
+		if exclude not in self.applications_to_be_restore:
+			self.applications_to_be_restore.append(exclude)
 		else:
-			self.applications_to_be_exclude.remove(exclude)
+			self.applications_to_be_restore.remove(exclude)
 
 		# If all sub checboxes was deselected
-		if len(self.applications_to_be_exclude) == self.number_of_item_applications:
+		if len(self.applications_to_be_restore) == self.number_of_item_applications:
 			# Uncheck applications checkbox
 			self.ui.checkbox_applications_page3.setChecked(False)
 		else:
 			# Check applications checkbox
 			self.ui.checkbox_applications_page3.setChecked(True)
+	
+	def exclude_pip(self, exclude):
+		# Add to the exclude list
+		if exclude not in self.pip_to_restore:
+			print("Adding pip:", exclude)
+			self.pip_to_restore.append(exclude)
+		else:
+			print("Removing pip:", exclude)
+			self.pip_to_restore.remove(exclude)
+			self.number_of_item_pip -= 1
+
+		# If all sub checboxes was deselected
+		if not self.pip_to_restore:
+			# Uncheck pip checkbox
+			self.ui.checkbox_pip_page3.setChecked(False)
+		else:
+			# Check pip checkbox
+			self.ui.checkbox_pip_page3.setChecked(True)
 
 	def exclude_flatpaks(self, exclude):
 		# Add to the exclude list
-		if exclude not in self.list_of_flatpaks_to_restore:
+		if exclude not in self.flatpaks_to_restore:
 			print("Adding flatpak:", exclude)
-			self.list_of_flatpaks_to_restore.append(exclude)
+			self.flatpaks_to_restore.append(exclude)
 		else:
 			print("Removing flatpak:", exclude)
-			self.list_of_flatpaks_to_restore.remove(exclude)
+			self.flatpaks_to_restore.remove(exclude)
 
 		# If all sub checboxes was deselected
-		if not self.list_of_flatpaks_to_restore:
+		if not self.flatpaks_to_restore:
 			# Uncheck applications checkbox
 			self.ui.checkbox_flatpaks_page3.setChecked(False)
 		else:
@@ -428,27 +511,7 @@ class WelcomeScreen(QWidget):
 		# Animation
 		self.stacked_widget_transition(self.ui.page_2, 'left')
 
-	def on_continue_button_clicked_page3(self):
-		print(self.item_to_restore)
-
-		#################################
-		# APPLICATIONS
-		#################################
-		# Create a application exlude file
-		if os.path.exists(MAIN_INI_FILE.exclude_applications_location()):
-			os.remove(MAIN_INI_FILE.exclude_applications_location())
-		else:
-			dst = MAIN_INI_FILE.exclude_applications_location()
-			# Check if the directory exists, and create it if necessary
-			create_directory(dst)
-			# Check if the file exists, and create it if necessary
-			create_file(dst)
-
-		# Write exclude flatpaks to file
-		with open(f"{MAIN_INI_FILE.exclude_applications_location()}", 'w') as exclude:
-			for exclude_applications in self.applications_to_be_exclude:
-				exclude.write(exclude_applications + "\n")
-
+	def on_continue_button_clicked_page3(self):	
 		# Load page4
 		self.load_restore_page4()
 
@@ -468,6 +531,8 @@ class WelcomeScreen(QWidget):
 	# PAGE 4
 	########################################################
 	def load_restore_page4(self):
+		print(self.item_to_restore)
+
 		# Hide progressbar
 		self.ui.progress_bar_restoring.hide()
 
@@ -604,26 +669,40 @@ class RESTORE:
 	def __init__(self):
 		# Length of item to restore
 		self.item_to_restore = 0
+		analyses = ANALYSES()
+
 
 		#  Get length of the restore list
 		if MAIN.ui.checkbox_applications_page3.isChecked():
 			# Number of flatpaks items
-			applicationsCount = int(MAIN.number_of_item_applications - len(MAIN.applications_to_be_exclude))
+			applicationsCount = int(MAIN.number_of_item_applications - len(MAIN.applications_to_be_restore))
 			self.item_to_restore += applicationsCount
 
 		if MAIN.ui.checkbox_flatpaks_page3.isChecked():
 			# Number of flatpaks items
-			flatpaksCount = int(len(MAIN.list_of_flatpaks_to_restore))
+			flatpaksCount = int(len(MAIN.flatpaks_to_restore))
 			self.item_to_restore += flatpaksCount
 
 		# if MAIN.ui.checkbox_flatpaks_page3.isChecked():
 		# 	self.item_to_restore += 1
 
+		# Files and Folders
 		if MAIN.ui.checkbox_files_folders_page3.isChecked():
-			x = ANALYSES()
-			homeCount = int(len(x.get_source_dir()))
+			homeCount = int(len(analyses.get_source_dir()))
 			self.item_to_restore += homeCount
 
+		# Pip
+		if MAIN.ui.checkbox_pip_page3.isChecked():
+			pip_count = int(MAIN.number_of_item_pip - len(MAIN.pip_to_restore))
+			if pip_count == 0:
+				pip_count = len(MAIN.pip_to_restore)
+				
+			print(int(MAIN.number_of_item_pip))
+			print(len(MAIN.pip_to_restore))
+			print(pip_count)
+			self.item_to_restore += pip_count
+
+		# System Settings
 		if MAIN.ui.checkbox_system_settings_page3.isChecked():
 			self.item_to_restore += 1
 
@@ -661,15 +740,18 @@ class RESTORE:
 
 		# Restore applications packages
 		if MAIN.ui.checkbox_applications_page3.isChecked():
-			# self.update_progressbar_db()
 			print('Restoring Applications Packages...')
 			self.restore_backup_package_applications()
 
 		# Restore flatpaks
 		if MAIN.ui.checkbox_flatpaks_page3.isChecked():
-			# self.update_progressbar_db()
 			print('Restoring Flatpak Applications...')
 			self.restore_backup_flatpaks_applications()
+		
+		# Restore pip
+		if MAIN.ui.checkbox_pip_page3.isChecked():
+			print('Restoring Pip Packages...')
+			self.restore_backup_pip_packages()
 
 		# # Restore flatpaks data
 		# if MAIN_INI_FILE.get_database_value('RESTORE', 'applications_flatpak_data'):
@@ -710,7 +792,6 @@ class RESTORE:
 	#----------RESTORE TOPICS----------#
 	## Home
 	def restore_backup_home(self):
-		cnt = 0
 		location = MAIN_INI_FILE.main_backup_folder()
 
 		for folder in os.listdir(location):
@@ -815,19 +896,6 @@ class RESTORE:
 	## Application packages
 	def restore_backup_package_applications(self):
 		print("Installing applications packages...")
-		
-		# Use pkexec for installing packages
-		sub.run(
-			['pkexec', 'sudo'],
-			stdout=sub.PIPE,
-			stderr=sub.PIPE,
-			text=True)
-		
-		try:
-			with open(MAIN_INI_FILE.exclude_applications_location(), 'r') as read_exclude:
-				read_exclude = read_exclude.read().split("\n")
-		except:
-			pass
 
 		try:
 			if package_manager() == DEB_FOLDER_NAME:
@@ -835,7 +903,7 @@ class RESTORE:
 				################################################################################
 				for package in os.listdir(MAIN_INI_FILE.deb_main_folder()):
 					# Install only if package if not in the exclude app list
-					if package not in read_exclude:
+					if package not in MAIN.applications_to_be_restore:
 						# Install it
 						command = os.path.join(MAIN_INI_FILE.deb_main_folder(), package)
 
@@ -847,7 +915,7 @@ class RESTORE:
 						
 						# Run the installation command with yes to automatically press Enter
 						process = sub.run(
-							['yes', '|', 'dpkg', '-i', command],
+							['dpkg', '-i', command],
 								stdout=sub.PIPE,
 								stderr=sub.PIPE,
 								text=True)
@@ -859,11 +927,6 @@ class RESTORE:
 						else:
 							print(f"Error installing package {package}: {process.stderr}")
 							# Handle error
-						
-						# sub.run(
-						# 	["sudo", "dpkg", "-i", command],
-						# 	stdout=sub.PIPE,
-						# 	stderr=sub.PIPE)
 
 				# Fix packages installation using pkexec
 				sub.run(
@@ -884,7 +947,7 @@ class RESTORE:
 					print(f"Installing {MAIN_INI_FILE.rpm_main_folder()}/{package}")
 
 					# Install only if package if not in the exclude app list
-					if package not in read_exclude:
+					if package not in MAIN.applications_to_be_restore:
 						# Install it
 						command = os.path.join(MAIN_INI_FILE.rpm_main_folder(), package)
 
@@ -915,11 +978,11 @@ class RESTORE:
 		except Exception as e:
 			print(e)
 			pass
-
+	
 	## Flatpaks
 	def restore_backup_flatpaks_applications(self):
-		for cnt in range(len(MAIN.list_of_flatpaks_to_restore)):
-			flatpak = str(MAIN.list_of_flatpaks_to_restore[cnt]).strip()
+		for cnt in range(len(MAIN.flatpaks_to_restore)):
+			flatpak = str(MAIN.flatpaks_to_restore[cnt]).strip()
 
 			# Install only if flatpak if not in the exclude app list
 			try:
@@ -944,6 +1007,32 @@ class RESTORE:
 				print(e)
 				pass
 
+	## Pip
+	def restore_backup_pip_packages(self):
+		# Iterate over the list and install each package
+		for cnt in range(len(MAIN.pip_to_restore)):
+			pip = str(MAIN.pip_to_restore[cnt]).strip()
+
+			# Install only if pip if not in the exclude app list
+			try:
+				print(f'Installing pip: {pip}...')
+
+				# Show current installing pip to the user
+				MAIN.ui.label_restoring_status.setText(f'Installing pip: {pip}...')
+				MAIN.ui.label_restoring_status.setAlignment(Qt.AlignCenter)
+
+				# Install the pip package
+				sub.run(
+					["pip", "install", "-y", pip],
+					stdout=sub.PIPE,
+					stderr=sub.PIPE)
+
+				# Substract 1
+				self.item_to_restore -= 1
+				self.update_progressbar_db()
+			except Exception as e:
+				print(e)
+				pass
 	## Wallpaper
 	def restore_backup_wallpaper(self):
 		# Check for at least a wallpaper
@@ -1035,26 +1124,28 @@ class RESTORE:
 					d.writeConfig("Image", "file://%s/.local/share/wallpapers/%s");
 				}'""" % (HOME_USER, wallpaper))
 
-			# TODO
-			# Testing
-			try:
-				# Apply KDE screenlock wallpaper, will be the same as desktop wallpaper
-				# wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
-				wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + wallpaper
+			# # TODO
+			# # Testing
+			# try:
+			# 	print("Applying", wallpaper, 'to login screen.')
 
-				sub.run([
-					'kwriteconfig5',
-					'--file', 'kscreenlockerrc',
-					'--group', 'Greeter',
-					'--group', 'Wallpaper',
-					'--group', 'org.kde.image',
-					'--group', 'General',
-					'--key', 'Image',
-					wallpaper_full_location
-				], check=True)
-			except Exception as error:
-				print(error)
-				pass
+			# 	# Apply KDE screenlock wallpaper, will be the same as desktop wallpaper
+			# 	# wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + '"' + wallpaper + '"'
+			# 	wallpaper_full_location = 'file://' + HOME_USER + '/.local/share/wallpapers/' + wallpaper
+
+			# 	sub.run([
+			# 		'kwriteconfig5',
+			# 		'--file', 'kscreenlockerrc',
+			# 		'--group', 'Greeter',
+			# 		'--group', 'Wallpaper',
+			# 		'--group', 'org.kde.image',
+			# 		'--group', 'General',
+			# 		'--key', 'Image',
+			# 		wallpaper_full_location
+			# 	], check=True)
+			# except Exception as error:
+			# 	print(error)
+			# 	pass
 		else:
 			return None
 		

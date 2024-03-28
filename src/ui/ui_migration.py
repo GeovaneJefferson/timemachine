@@ -299,18 +299,12 @@ class Ui_WelcomeScreen(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 362, 262))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -50, 348, 312))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_applications_page3.setObjectName(u"checkbox_applications_page3")
-        icon = QIcon()
-        iconThemeName = u"application-x-executable"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon = QIcon.fromTheme(iconThemeName)
-        else:
-            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-
+        icon = QIcon(QIcon.fromTheme(u"package-x-generic"))
         self.checkbox_applications_page3.setIcon(icon)
         self.checkbox_applications_page3.setIconSize(QSize(32, 32))
 
@@ -390,16 +384,36 @@ class Ui_WelcomeScreen(object):
 
         self.verticalLayout_10.addWidget(self.checkbox_files_folders_page3)
 
+        self.checkbox_pip_page3 = QCheckBox(self.scrollAreaWidgetContents)
+        self.checkbox_pip_page3.setObjectName(u"checkbox_pip_page3")
+        icon3 = QIcon(QIcon.fromTheme(u"application-x-executable"))
+        self.checkbox_pip_page3.setIcon(icon3)
+        self.checkbox_pip_page3.setIconSize(QSize(32, 32))
+
+        self.verticalLayout_10.addWidget(self.checkbox_pip_page3)
+
+        self.pip_sub_widget_page3 = QWidget(self.scrollAreaWidgetContents)
+        self.pip_sub_widget_page3.setObjectName(u"pip_sub_widget_page3")
+        self.verticalLayout_13 = QVBoxLayout(self.pip_sub_widget_page3)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.pip_sub_checkbox_layout_page3 = QVBoxLayout()
+        self.pip_sub_checkbox_layout_page3.setObjectName(u"pip_sub_checkbox_layout_page3")
+
+        self.verticalLayout_13.addLayout(self.pip_sub_checkbox_layout_page3)
+
+
+        self.verticalLayout_10.addWidget(self.pip_sub_widget_page3)
+
         self.checkbox_system_settings_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_system_settings_page3.setObjectName(u"checkbox_system_settings_page3")
-        icon3 = QIcon()
+        icon4 = QIcon()
         iconThemeName = u"applications-system"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon3 = QIcon.fromTheme(iconThemeName)
+            icon4 = QIcon.fromTheme(iconThemeName)
         else:
-            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.checkbox_system_settings_page3.setIcon(icon3)
+        self.checkbox_system_settings_page3.setIcon(icon4)
         self.checkbox_system_settings_page3.setIconSize(QSize(32, 32))
 
         self.verticalLayout_10.addWidget(self.checkbox_system_settings_page3)
@@ -500,14 +514,14 @@ class Ui_WelcomeScreen(object):
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setEnabled(True)
         self.pushButton.setAutoFillBackground(False)
-        icon4 = QIcon()
+        icon5 = QIcon()
         iconThemeName = u"drive-harddisk"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon4 = QIcon.fromTheme(iconThemeName)
+            icon5 = QIcon.fromTheme(iconThemeName)
         else:
-            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon5.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.pushButton.setIcon(icon4)
+        self.pushButton.setIcon(icon5)
         self.pushButton.setIconSize(QSize(64, 64))
         self.pushButton.setFlat(True)
 
@@ -534,14 +548,14 @@ class Ui_WelcomeScreen(object):
 
         self.pushButton_3 = QPushButton(self.page_4)
         self.pushButton_3.setObjectName(u"pushButton_3")
-        icon5 = QIcon()
+        icon6 = QIcon()
         iconThemeName = u"go-next"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon5 = QIcon.fromTheme(iconThemeName)
+            icon6 = QIcon.fromTheme(iconThemeName)
         else:
-            icon5.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon6.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.pushButton_3.setIcon(icon5)
+        self.pushButton_3.setIcon(icon6)
         self.pushButton_3.setIconSize(QSize(48, 48))
         self.pushButton_3.setFlat(True)
 
@@ -561,14 +575,14 @@ class Ui_WelcomeScreen(object):
 
         self.pushButton_2 = QPushButton(self.to_image)
         self.pushButton_2.setObjectName(u"pushButton_2")
-        icon6 = QIcon()
+        icon7 = QIcon()
         iconThemeName = u"computer"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon6 = QIcon.fromTheme(iconThemeName)
+            icon7 = QIcon.fromTheme(iconThemeName)
         else:
-            icon6.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon7.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.pushButton_2.setIcon(icon6)
+        self.pushButton_2.setIcon(icon7)
         self.pushButton_2.setIconSize(QSize(64, 64))
         self.pushButton_2.setFlat(True)
 
@@ -710,6 +724,7 @@ class Ui_WelcomeScreen(object):
         self.checkbox_files_folders_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Restore backed up HOME folders.</p><p>- Restore some hidden files and folder.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.checkbox_files_folders_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Files and Folders", None))
+        self.checkbox_pip_page3.setText(QCoreApplication.translate("WelcomeScreen", u"Pip Packages", None))
 #if QT_CONFIG(tooltip)
         self.checkbox_system_settings_page3.setToolTip(QCoreApplication.translate("WelcomeScreen", u"<html><head/><body><p>- Apply backed up wallpaper.</p><p>- Restore some system settings.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

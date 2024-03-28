@@ -339,9 +339,6 @@ class UPDATEINIFILE:
     ####################################################################
     # Flatpak
     ####################################################################
-    def pip_packages_txt_location(self):
-        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/pip/pip_packages.txt"
-    
     def flatpak_txt_location(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}/{FLATPAK_TXT}"
     
@@ -353,12 +350,21 @@ class UPDATEINIFILE:
     
     def create_flatpak_folder(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{FLATPAK_FOLDER_NAME}"
+    
+    ####################################################################
+    # Pip
+    ####################################################################
+    def pip_packages_txt_location(self):
+        return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/pip/pip_packages.txt"
 
     ####################################################################
     # Exclude
     ####################################################################
     def exclude_applications_location(self):
         return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_APPLICATIONS}"
+
+    def exclude_pip_location(self):
+        return f"{self.get_database_value('EXTERNAL', 'hd')}/{BASE_FOLDER_NAME}/{APPLICATIONS_FOLDER_NAME}/{SRC_EXCLUDE_PIP}"
 
     def restore_settings_location(self):
         return f"{str(self.get_database_value('EXTERNAL', 'hd'))}/{BASE_FOLDER_NAME}/{RESTORE_SETTINGS_INI}"

@@ -244,6 +244,7 @@ SRC_DONE_ICON = f"{HOME_USER}/.local/share/{APP_NAME_CLOSE}/src/icons/check.png"
 ################################################################################
 # .Exclude-applications
 SRC_EXCLUDE_APPLICATIONS = ".exclude-applications.txt"
+SRC_EXCLUDE_PIP = ".exclude-pip.txt"
 SRC_EXCLUDE_FLATPAKS = ".exclude-flatpaks.txt"
 
 # Log
