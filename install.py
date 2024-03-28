@@ -81,8 +81,9 @@ def install_dependencies(user_distro_name):
             'flathub',
             'https://dl.flathub.org/repo/flathub.flatpakrepo'], check=True)
     else:
-        print('Error')
-        exit()
+        print('Could not install the dependencies!')
+        print('Manual install all the dependencies, you can see them in requirements.txt')
+        print('Copying files...')
 
 def copy_files():
     try:
@@ -178,6 +179,7 @@ if __name__ == '__main__':
     distribution_info = detect_linux_distribution()
     if distribution_info:
         USERS_DISTRO_NAME = distribution_info.get('NAME')
+        print()
         print("Detected Linux distribution:", USERS_DISTRO_NAME)
         print("Version:", distribution_info.get('VERSION'))
         print()
@@ -189,22 +191,27 @@ if __name__ == '__main__':
         # Install dependencies
         print("Installing dependencies...")
         install_dependencies(user_distro_name=str(USERS_DISTRO_NAME).lower())
-        
+    except Exception as e:
+        print('Error while trying to install the dependencies.')
+        exit()
+    try:
         # Begin installation
         print()
         print(f"Copyng files to {HOME_USER}/.local/share/{APP_NAME_CLOSE}/...")
         copy_files()
-
+    except Exception as e:
+        print('Error while trying to copy the files.')
+        exit()
+    try:
         # Create exe files
         print(f"Creating {APP_NAME_CLOSE}.desktop...")
         create_application_files()
-        
+
         # Create backup checker.dekstop
         print(f"Creating backup_checker.desktop...")
         create_backup_checker_desktop()
-
     except Exception as e:
-        print(e)
+        print('Error while trying to creating .desktop files.')
         exit()
     
     print()

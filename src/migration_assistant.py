@@ -637,13 +637,14 @@ class WelcomeScreen(QWidget):
 
 		# Call restore class asynchronously
 		RESTORE_PROCESS = RESTORE()
-		#RESTORE_PROCESS.start_restoring()
+		# RESTORE_PROCESS.start_restoring()
 
 		try:
 			thread2 = threading.Thread(target=RESTORE_PROCESS.start_restoring)
 			thread2.start()
 		except Exception as e:
 			print(e)
+			exit()
 		#asyncio.run(RESTORE_PROCESS.start_restoring())
 
 	def update_status_feedback(self):
@@ -670,7 +671,15 @@ class RESTORE:
 		# Length of item to restore
 		self.item_to_restore = 0
 		analyses = ANALYSES()
+		
+		# Create QProcess instance
+		self.process = QProcess()
+		self.process.readyReadStandardOutput.connect(self.write_output)
+		self.process.readyReadStandardError.connect(self.write_output)
+		self.process.finished.connect(self.write_finished)
 
+		# Hide
+		MAIN.ui.qprocess_text_edit.hide()
 
 		#  Get length of the restore list
 		if MAIN.ui.checkbox_applications_page3.isChecked():
@@ -695,11 +704,7 @@ class RESTORE:
 		if MAIN.ui.checkbox_pip_page3.isChecked():
 			pip_count = int(MAIN.number_of_item_pip - len(MAIN.pip_to_restore))
 			if pip_count == 0:
-				pip_count = len(MAIN.pip_to_restore)
-				
-			print(int(MAIN.number_of_item_pip))
-			print(len(MAIN.pip_to_restore))
-			print(pip_count)
+				pip_count = len(MAIN.pip_to_restore)		
 			self.item_to_restore += pip_count
 
 		# System Settings
@@ -712,6 +717,19 @@ class RESTORE:
 			self.progress_increment = round(99 / self.item_to_restore)
 		else:
 			self.progress_increment = round(100 / self.item_to_restore)
+    
+	def write_output(self):
+		# Read and display standard output and error
+		output = self.process.readAllStandardOutput().data().decode()
+		MAIN.ui.qprocess_text_edit.append(output)
+
+		error = self.process.readAllStandardError().data().decode()
+		if error:
+			MAIN.ui.qprocess_text_edit.append("Error: " + error)
+
+	def write_finished(self):
+		# Display a message when the process finishes
+		MAIN.ui.qprocess_text_edit.append("Process finished.")
 
 	def update_progressbar_db(self):
 		try:
@@ -919,6 +937,20 @@ class RESTORE:
 								stdout=sub.PIPE,
 								stderr=sub.PIPE,
 								text=True)
+						
+						# Clear output text
+						# MAIN.ui.qprocess_text_edit.clear()
+
+						# # Define the command to fix broken packages using apt
+						# dpkg_command = ['dpkg', '-i']
+
+						# # Set program and arguments for QProcess to execute dpkg
+						# self.process.setProgram("dpkg")
+						# self.process.setArguments(dpkg_command)
+
+						# # Start the dpkg process
+						# self.process.start()
+						# self.process.waitForFinished()
 
 						# Check the output and error if needed
 						if process.returncode == 0:

@@ -676,7 +676,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-50</y>
+                   <y>0</y>
                    <width>348</width>
                    <height>312</height>
                   </rect>
@@ -691,7 +691,8 @@
                      <string>Applications</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="package-x-generic"/>
+                     <iconset theme="package-x-generic">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -844,7 +845,8 @@
                      <string>Pip Packages</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="application-x-executable"/>
+                     <iconset theme="application-x-executable">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                     <property name="iconSize">
                      <size>
@@ -990,7 +992,7 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QVBoxLayout" name="restore" stretch="0,0,1,0,0,0,0">
+        <layout class="QVBoxLayout" name="restore" stretch="0,0,1,0,0,0,0,0">
          <property name="spacing">
           <number>6</number>
          </property>
@@ -1280,6 +1282,9 @@
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="qprocess_text_edit"/>
          </item>
          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
           <widget class="QProgressBar" name="progress_bar_restoring">

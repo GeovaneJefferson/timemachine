@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QFrame,
     QHBoxLayout, QLabel, QListView, QProgressBar,
     QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
-    QStackedWidget, QVBoxLayout, QWidget)
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_WelcomeScreen(object):
     def setupUi(self, WelcomeScreen):
@@ -299,12 +299,18 @@ class Ui_WelcomeScreen(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -50, 348, 312))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 348, 312))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.checkbox_applications_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_applications_page3.setObjectName(u"checkbox_applications_page3")
-        icon = QIcon(QIcon.fromTheme(u"package-x-generic"))
+        icon = QIcon()
+        iconThemeName = u"package-x-generic"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon = QIcon.fromTheme(iconThemeName)
+        else:
+            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
         self.checkbox_applications_page3.setIcon(icon)
         self.checkbox_applications_page3.setIconSize(QSize(32, 32))
 
@@ -386,7 +392,13 @@ class Ui_WelcomeScreen(object):
 
         self.checkbox_pip_page3 = QCheckBox(self.scrollAreaWidgetContents)
         self.checkbox_pip_page3.setObjectName(u"checkbox_pip_page3")
-        icon3 = QIcon(QIcon.fromTheme(u"application-x-executable"))
+        icon3 = QIcon()
+        iconThemeName = u"application-x-executable"
+        if QIcon.hasThemeIcon(iconThemeName):
+            icon3 = QIcon.fromTheme(iconThemeName)
+        else:
+            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+
         self.checkbox_pip_page3.setIcon(icon3)
         self.checkbox_pip_page3.setIconSize(QSize(32, 32))
 
@@ -622,6 +634,11 @@ class Ui_WelcomeScreen(object):
         self.label_restoring_status.setMaximumSize(QSize(16777215, 30))
 
         self.restore.addWidget(self.label_restoring_status, 0, Qt.AlignHCenter)
+
+        self.qprocess_text_edit = QTextEdit(self.page_4)
+        self.qprocess_text_edit.setObjectName(u"qprocess_text_edit")
+
+        self.restore.addWidget(self.qprocess_text_edit)
 
         self.progress_bar_restoring = QProgressBar(self.page_4)
         self.progress_bar_restoring.setObjectName(u"progress_bar_restoring")
