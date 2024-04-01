@@ -82,7 +82,7 @@ def get_all_used_backup_device_space(device):
     return str(used_space)
 
 def get_used_backup_space():
-    x = get_all_max_backup_device_space(MAIN_INI_FILE.hd_name())
+    x = get_all_max_backup_device_space()
     y = get_external_device_used_size()
     value = []
 
@@ -111,22 +111,12 @@ def get_used_backup_space():
     result = total_device_space - used_device_space
     return str(result) + value
 
-def get_all_max_backup_device_space(device):
-    # If inside /Media
-    if device_location():
-        external_max_size=os.popen(f"df --output=size -h {MEDIA}/{USERNAME}/{device}").read().strip().replace(
-            "1K-blocks", "").replace(
-            "Size", "").replace(
-            "\n", "").replace(
-            " ", "")
-    
-    # If inside /Run
-    else:
-        external_max_size=os.popen(f"df --output=size -h {RUN}/{USERNAME}/{device}").read().strip().replace(
-            "1K-blocks", "").replace(
-            "Size", "").replace(
-            "\n", "").replace(
-            " ", "")
+def get_all_max_backup_device_space():
+    external_max_size=os.popen(f"df --output=size -h {MAIN_INI_FILE.hd_hd()}").read().strip().replace(
+        "1K-blocks", "").replace(
+        "Size", "").replace(
+        "\n", "").replace(
+        " ", "")
     
     return str(external_max_size)
 
@@ -212,5 +202,5 @@ def get_item_size(item_path):
 
 
 if __name__ == '__main__':
-    print(get_used_backup_space())
+    print(get_all_max_backup_device_space())
     pass

@@ -29,6 +29,8 @@ class APP:
         self.widget()
 
     def widget(self):
+        setproctitle.setproctitle(f'{APP_NAME} - System Tray')
+
         # Tray
         self.tray = QSystemTrayIcon()
         # self.tray.setIcon(QIcon(self.get_system_color()))
@@ -43,11 +45,11 @@ class APP:
         self.last_backup_information = QAction()
         self.last_backup_information.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.last_backup_information.setEnabled(False)
-        
+
         self.last_backup_information2 = QAction()
         self.last_backup_information2.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.last_backup_information2.setEnabled(False)
-        
+
         # Report button
         self.report_button = QAction("See Latest Backup Report")
         self.report_button.triggered.connect(self.open_report)
@@ -67,14 +69,14 @@ class APP:
             QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.browse_time_machine_backups.triggered.connect(
             self._open_browse_time_machine_backups)
-        
+
         # Open Time Machine button
         self.open_Time_machine = QAction(f"Open {APP_NAME}")
         self.open_Time_machine.setFont(QFont(MAIN_FONT,BUTTON_FONT_SIZE))
         self.open_Time_machine.triggered.connect(
             lambda: sub.Popen(
-                ['python3', SRC_MAIN_WINDOW_PY], 
-                    stdout=sub.PIPE, 
+                ['python3', SRC_MAIN_WINDOW_PY],
+                    stdout=sub.PIPE,
                     stderr=sub.PIPE))
 
         # Add all to menu
@@ -88,27 +90,27 @@ class APP:
         self.menu.addAction(self.backup_now_button)
         self.menu.addAction(self.browse_time_machine_backups)
         self.menu.addSeparator()
-        
+
         self.menu.addAction(self.open_Time_machine)
         self.menu.addSeparator()
-        
+
         # Adding options to the System Tray
         self.tray.setContextMenu(self.menu)
-        
+
         timer.timeout.connect(self.should_be_running)
-        timer.start(DELAY_TO_UPDATE) 
+        timer.start(DELAY_TO_UPDATE)
 
         self.app.exec()
-    
+
     def should_be_running(self):
         print('System tray is running....')
-        
-        # Check if ini file is locked or not 
+
+        # Check if ini file is locked or not
         if not MAIN_INI_FILE.get_database_value('SYSTEMTRAY', 'system_tray'):
             self.exit()
 
         self.has_connection()
-        
+
     def has_connection(self):
         # User has registered a device name
         if MAIN_INI_FILE.hd_hd() is not None:
@@ -119,14 +121,14 @@ class APP:
             else:
                 if MAIN_INI_FILE.automatically_backup():
                     self.status_off()
-            
+
         # No backup device registered
         else:
             self.last_backup_information.setText('First, select a backup device.')
             self.last_backup_information2.setText(' ')
             # Backup now button to False
             self.backup_now_button.setEnabled(False)
-            # Browser Time Machine button to False 
+            # Browser Time Machine button to False
             self.browse_time_machine_backups.setEnabled(False)
 
         # Experimental features
@@ -140,7 +142,7 @@ class APP:
     def status_on(self):
         # Frequency modes
         self.informations_label()
-        
+
         # Has no logs errors
         if not os.path.exists(LOG_LOCATION):
             # Hide this feature
@@ -165,7 +167,7 @@ class APP:
                 self.last_backup_information.setText(MAIN_INI_FILE.get_database_value(
                     'INFO', 'current_backing_up'))
                 self.last_backup_information2.setText(progress_bar_status())
-            
+
                 # Disable
                 self.backup_now_button.setEnabled(False)
                 self.browse_time_machine_backups.setEnabled(False)
@@ -175,7 +177,7 @@ class APP:
             # Change system tray color
             self.change_color('Red')
             # Disable backup now
-            self.backup_now_button.setEnabled(False) 
+            self.backup_now_button.setEnabled(False)
 
     def status_off(self):
         # Hide this feature
@@ -184,7 +186,7 @@ class APP:
         self.change_color("Red")
         self.backup_now_button.setEnabled(False)
         self.browse_time_machine_backups.setEnabled(False)
-        
+
     def informations_label(self):
         # Automatically backup is ON
         if MAIN_INI_FILE.automatically_backup():
@@ -200,7 +202,7 @@ class APP:
                         f'Latest Backup to: "{MAIN_INI_FILE.hd_name()}"')
                 # Show latest backup label
                 self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
-        
+
                 # # Show latest backup date
                 # if latest_backup_date() is not None:
                 #     self.last_backup_information.setText(
@@ -209,17 +211,17 @@ class APP:
                 # else:
                 #     # Next backup label
                 #     self.last_backup_information2.setText(next_backup_label())
-                
+
         else:
             # Enable backup now action
             self.backup_now_button.setEnabled(True)
-            
+
             self.last_backup_information.setText(
                     f'Latest Backup to "{MAIN_INI_FILE.hd_name()}:"')
-                
+
             # Show latest backup label
             self.last_backup_information2.setText(MAIN_INI_FILE.latest_backup_date())
-    
+
     def _open_browse_time_machine_backups(self):
         try:
             sub.run(
@@ -247,7 +249,7 @@ class APP:
                 ['python3', SRC_ANALYSE_PY],
                 stdout=sub.PIPE,
                 stderr=sub.PIPE)
-            
+
             output, error = process.communicate()
             print(output)
             print(error.decode('utf-8'))
@@ -267,7 +269,7 @@ class APP:
             stderr=sub.PIPE) as process:
             # You can add further handling of process output if needed
             stdout, stderr = process.communicate()
-    
+
     def open_logs(self):
         logs_file_txt = LOG_LOCATION
 
@@ -298,10 +300,10 @@ class APP:
 
     def exit(self):
         MAIN_INI_FILE.set_database_value('SYSTEMTRAY', 'system_tray', 'False')
-        
+
         self.tray.hide()
         exit()
-    
+
     def tray_icon_clicked(self,reason):
         if reason == QSystemTrayIcon.Trigger:
             self.tray.contextMenu().exec(QCursor.pos())
@@ -311,13 +313,10 @@ class APP:
         # Detect dark theme
         if self.app.palette().windowText().color().getRgb()[0] < 55:
             return SRC_SYSTEM_BAR_ICON
-        
+
         else:
             return SRC_SYSTEM_BAR_WHITE_ICON
-        
 
-# Set the process name
-setproctitle.setproctitle("Time Machine - System Tray")
 
 MAIN_INI_FILE = UPDATEINIFILE()
 main = APP()

@@ -43,6 +43,8 @@ class MainWindow(QMainWindow):
         # Set application name
         self.setWindowTitle(APP_NAME)
 
+        print(MAIN_INI_FILE.hd_hd())
+
         # Set application logo image
         logo_image = QPixmap(SRC_BACKUP_ICON)
         resized_logo_image = logo_image.scaledToWidth(32, Qt.SmoothTransformation)
@@ -151,7 +153,7 @@ class MainWindow(QMainWindow):
 
                     self.ui.external_size_label.setText(
                         # f'{get_all_used_backup_device_space(device=)} of {get_external_device_used_size()} used')
-                        f' {minimum} of {total} used')
+                        f' {minimum} of {get_all_max_backup_device_space()} used')
                     
                     # Update process bar space
                     self.ui.processbar_space.setMaximum(x)
@@ -182,6 +184,8 @@ class MainWindow(QMainWindow):
                     
                     # Disable select disk
                     self.ui.select_disk_button.setEnabled(False)
+                    # Disable remove this disk
+                    self.ui.remove_backup_device.setEnabled(False)
 
                     # UPDATE
                     # Update progress bar value
@@ -198,6 +202,9 @@ class MainWindow(QMainWindow):
 
                     # Enable select disk
                     self.ui.select_disk_button.setEnabled(True)
+
+                    # Enable remove this disk
+                    self.ui.remove_backup_device.setEnabled(True)
 
                 # Automatically backup
                 if MAIN_INI_FILE.automatically_backup():
@@ -285,8 +292,8 @@ class MainWindow(QMainWindow):
             
             # TODO
             # Show oldest backup label
-            if MAIN_INI_FILE.latest_backup_date() != 'None':
-                self.ui.last_backup_label.setText(f'Last Backup: {MAIN_INI_FILE.latest_backup_date()}')
+            if MAIN_INI_FILE.latest_backup_date() is not None:
+                self.ui.last_backup_label.setText(f'Last Backup: {MAIN_INI_FILE.latest_backup_date_time_str()}')
             else:
                 self.ui.last_backup_label.setText(f'Last Backup: Only New Backup Dates Will Appear Here')
                  
@@ -483,13 +490,13 @@ class SelectDisk(QDialog):
                         from_image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
                         from_image.move(10, (self.available_devices.height()) / 4)
 
-                        # Free Space Label
-                        free_space_label = QLabel(self.available_devices)
-                        free_space_label.setText(
-                            f'<b>Storage Space: {get_all_max_backup_device_space(backup_device)}</b>')
-                        free_space_label.setFont(QFont(MAIN_FONT, 8))
-                        free_space_label.move(
-                            (self.available_devices.width() - 294), 22)
+                        # # Free Space Label
+                        # free_space_label = QLabel(self.available_devices)
+                        # free_space_label.setText(
+                        #     f'<b>Storage Space: {get_all_max_backup_device_space()}</b>')
+                        # free_space_label.setFont(QFont(MAIN_FONT, 8))
+                        # free_space_label.move(
+                        #     (self.available_devices.width() - 294), 22)
                         
                         text = self.available_devices.text()
                         self.available_devices.toggled.connect(
@@ -535,28 +542,28 @@ class SelectDisk(QDialog):
                         icon.move(7, 7)
                         icon.setPixmap(image)
 
-                        # Free Space Label
-                        free_space_label = QLabel(self.available_devices)
-                        free_space_label.setText(
-                            f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space(backup_device)}')
-                        free_space_label.setFont(QFont(MAIN_FONT, 8))
-                        free_space_label.setAlignment(Qt.AlignRight)
-                        free_space_label.move((self.available_devices.width() - 354), 32)
+                        # # Free Space Label
+                        # free_space_label = QLabel(self.available_devices)
+                        # free_space_label.setText(
+                        #     f'{get_all_used_backup_device_space(backup_device)} / {get_all_max_backup_device_space()}')
+                        # free_space_label.setFont(QFont(MAIN_FONT, 8))
+                        # free_space_label.setAlignment(Qt.AlignRight)
+                        # free_space_label.move((self.available_devices.width() - 354), 32)
                         
                         text = self.available_devices.text()
                         self.available_devices.toggled.connect(lambda *args, text=text: self.on_device_clicked(text))
 
-                        ################################################################################
-                        # Add widgets and Layouts
-                        ################################################################################
-                        # Auto checked the choosed backup device
-                        if text == MAIN_INI_FILE.hd_name():
-                            self.available_devices.setChecked(True)
-                            # Add the saved device to to this layput
-                            self.dialog_ui.backup_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
-                        else:
-                            # Vertical layout
-                            self.dialog_ui.available_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
+                        # ################################################################################
+                        # # Add widgets and Layouts
+                        # ################################################################################
+                        # # Auto checked the choosed backup device
+                        # if text == MAIN_INI_FILE.hd_name():
+                        #     self.available_devices.setChecked(True)
+                        #     # Add the saved device to to this layput
+                        #     self.dialog_ui.backup_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
+                        # else:
+                        #     # Vertical layout
+                        #     self.dialog_ui.available_disk_dialog_layout.addWidget(self.available_devices, Qt.AlignLeft | Qt.AlignTop)
             except FileNotFoundError:
                 pass
 

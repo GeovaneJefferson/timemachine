@@ -176,11 +176,40 @@ class UPDATEINIFILE:
         return str(self.get_database_value(
                 'INFO', 'oldest_backup_date'))
     
+    # def latest_backup_date(self):
+    #     # Get current date to 'oldest_backup_date'
+    #     return str(self.get_database_value(
+    #             'INFO', 'latest_backup_date'))
+    
     def latest_backup_date(self):
-        # Get current date to 'oldest_backup_date'
-        return str(self.get_database_value(
-                'INFO', 'latest_backup_date'))
+        dates = []
+        for i in os.listdir(self.backup_folder_name()):
+            # Exclude hidden files
+            if '.' not in i:
+                dates.append(i)
+        dates.sort()
+        return dates[0]
+    
+    def latest_backup_date_time_str(self):
+        dates = []
+        # times = []
 
+        for i in os.listdir(self.backup_folder_name()):
+            # Exclude hidden files
+            if '.' not in i:
+                dates.append(i)
+        dates.sort()
+    
+        # # Search in dates[0]
+        # for i in os.listdir(os.path.join(self.backup_dates_location(), dates[0])):
+        #     times.append(i)
+        #     print(i)
+            
+        if dates[0]:
+            return dates[0] # + ', ' + times[0]
+        else:
+            return None
+        
     def backup_year(self):
         return NOW.strftime("%y")
 
@@ -375,6 +404,7 @@ class UPDATEINIFILE:
 
 
 if __name__ == '__main__':
-    # MAIN_INI_FILE = UPDATEINIFILE()
+    MAIN_INI_FILE = UPDATEINIFILE()
     # MAIN_INI_FILE.set_database_value('STATUS', 'backing_up_now', 'False')
+    print(MAIN_INI_FILE.latest_backup_date_time_str())
     pass

@@ -268,7 +268,7 @@ class BACKUP:
 				
 				# Find match in list
 				if folder in compare_list:
-					src = os.path.join(LOCAL_SHARE_LOCATION + folder)
+					src = os.path.join(LOCAL_SHARE_LOCATION, folder)
 
 					create_directory(dst)
 					notification_message(f'Backing up: .local/share/{folder}')
@@ -302,7 +302,7 @@ class BACKUP:
 					dst = os.path.join(MAIN_INI_FILE.kde_config_main_folder(), folder)
 
 				if folder in compare_list:
-					src = os.path.join(CONFIG_LOCATION + folder)
+					src = os.path.join(CONFIG_LOCATION, folder)
 
 					create_directory(dst)
 
@@ -313,9 +313,11 @@ class BACKUP:
 					print('From:', src)
 					print('To:', dst)
 					print()
-		
-					# Copy the entire directory tree from source to destination, overriding if it exists
-					shutil.copytree(src, dst, dirs_exist_ok=True)
+					
+					try:
+						shutil.copytree(src, dst, dirs_exist_ok=True)
+					except NotADirectoryError:
+						shutil.copy2(src, dst)
 			except Exception as e:
 				print(e)
 				pass
@@ -326,7 +328,7 @@ class BACKUP:
 			try:
 				# Handle spaces
 				folder = handle_spaces(folder)
-				src = os.path.join(KDE_SHARE_LOCATION + folder)
+				src = os.path.join(KDE_SHARE_LOCATION, folder)
 				dst = os.path.join(MAIN_INI_FILE.kde_share_config_main_folder(), folder)
 				
 				create_directory(dst)
@@ -352,18 +354,15 @@ class BACKUP:
 		# Finnish notification
 		notification_message('Finalizing backup...')
 
-		# Wait x, so if it finish fast, won't repeat the backup
-		time.sleep(60)
-
-		# Open backup checker
-		if MAIN_INI_FILE.get_database_value(
-			'STATUS', 'unfinished_backup'):
+		## Open backup checker
+		#if MAIN_INI_FILE.get_database_value(
+			#'STATUS', 'unfinished_backup'):
 			
-			# Start backup checker
-			sub.Popen(
-				['python3', SRC_BACKUP_CHECKER_PY],
-				stdout=sub.PIPE,
-				stderr=sub.PIPE)
+			## Start backup checker
+			#sub.Popen(
+				#['python3', SRC_BACKUP_CHECKER_PY],
+				#stdout=sub.PIPE,
+				#stderr=sub.PIPE)
 
 		# Update DB
 		MAIN_INI_FILE.set_database_value(
