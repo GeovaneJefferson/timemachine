@@ -55,6 +55,13 @@ reaches its storage limit, the earliest backups will be automatically purged to 
 
 Time Machine's backup strategy combines convenience and efficiency to safeguard your data without disrupting your workflow.
 
+### Backups
+- [x] Files/Folders
+- [x] Flatpak
+- [ ] Flatpak Data
+- [x] PIP packages 
+- [x] .Deb or .RPM (from Downloads folder)
+
 ## Monitoring Backup Status
 
 - **Color Indicators:** Keep an eye on your system tray's color changes to stay informed about your backup status:
@@ -93,14 +100,6 @@ To uninstall the application, use the following steps:
 #### Command:
 
     cd .local/share/timemachine/; python3 uninstall.py
-
-### To-Do List
-- [x] Backup files/folders, flatpaks, wallpaper
-- [x] System tray
-- [ ] Redo UI
-- [ ] Redo code (Cleaning)
-- [ ] Enter in Time Machine (To restore files/folder)
-- [ ] Migration Assistant (To restore and reinstall all files/folders, .debs, .rpm, wallpaper)
 
 ### Screenshoots
 ![Screenshot](https://raw.githubusercontent.com/GeovaneJefferson/timemachine/dev/src/screenshots/img_4.png)
