@@ -95,9 +95,10 @@ def copy_files():
         shutil.copytree(
             GET_CURRENT_LOCATION, 
             DST_FOLDER_INSTALL, dirs_exist_ok=True)
-    except FileExistsError as error:
+    except Exception as error:
         print(error)
-        exit()
+        # Remove 
+        os.remove(DST_FOLDER_INSTALL)
 
 def create_application_files():
     # Create .local/share/applications

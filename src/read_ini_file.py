@@ -188,8 +188,12 @@ class UPDATEINIFILE:
             if '.' not in i:
                 dates.append(i)
         dates.sort()
-        return dates[0]
-    
+
+        try:
+            return dates[0]
+        except IndexError:
+            return None
+            
     def latest_backup_date_time_str(self):
         dates = []
         # times = []
@@ -205,9 +209,9 @@ class UPDATEINIFILE:
         #     times.append(i)
         #     print(i)
             
-        if dates[0]:
+        try:
             return dates[0] # + ', ' + times[0]
-        else:
+        except IndexError:
             return None
         
     def backup_year(self):
