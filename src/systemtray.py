@@ -54,9 +54,9 @@ class APP:
         self.report_button = QAction("See Latest Backup Report")
         self.report_button.triggered.connect(self.open_report)
 
-        # Error button
-        self.error_button = QAction("🔴 See Logs")
-        self.error_button.triggered.connect(self.open_logs)
+        # # Error button
+        # self.error_button = QAction("🔴 See Logs")
+        # self.error_button.triggered.connect(self.open_logs)
 
         # Backup now button
         self.backup_now_button = QAction("Back Up Now")
@@ -84,7 +84,7 @@ class APP:
         self.menu.addAction(self.last_backup_information)
         self.menu.addAction(self.last_backup_information2)
         self.menu.addAction(self.report_button)
-        self.menu.addAction(self.error_button)
+        # self.menu.addAction(self.error_button)
         self.menu.addSeparator()
 
         self.menu.addAction(self.backup_now_button)
@@ -146,7 +146,7 @@ class APP:
         # Has no logs errors
         if not os.path.exists(LOG_LOCATION):
             # Hide this feature
-            self.error_button.setVisible(False)
+            # self.error_button.setVisible(False)
 
             # Is not restoring
             if MAIN_INI_FILE.current_restoring():
@@ -173,7 +173,7 @@ class APP:
                 self.browse_time_machine_backups.setEnabled(False)
         else:
             # Show logs option in system tray
-            self.error_button.setVisible(True)
+            # self.error_button.setVisible(True)
             # Change system tray color
             self.change_color('Red')
             # Disable backup now
@@ -181,7 +181,8 @@ class APP:
 
     def status_off(self):
         # Hide this feature
-        self.error_button.setVisible(False)
+        # self.error_button.setVisible(False)
+        
         # Change color to Red
         self.change_color("Red")
         self.backup_now_button.setEnabled(False)
