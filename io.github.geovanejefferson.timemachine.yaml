@@ -35,14 +35,14 @@ modules:
   - name: timemachine
     buildsystem: simple
     sources:
-      # - type: git
-      #   url: https://github.com/GeovaneJefferson/timemachine.git
+      - type: git
+        url: https://github.com/GeovaneJefferson/timemachine.git
       #   branch: main  # Specify the main branch
         # commit: 79c3da693a84c9f3a69065d632166e39538e3411
       # - type: file
       #   path: io.github.geovanejefferson.timemachine.appdata.xml
-      - type: dir
-        path: .
+      # - type: dir
+      #   path: .
       - type: file
         path: share/applications/io.github.geovanejefferson.timemachine.desktop
       - type: file
