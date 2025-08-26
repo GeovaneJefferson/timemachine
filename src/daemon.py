@@ -796,11 +796,15 @@ class Daemon:
                     self.had_writability_issue = False
                     await self.scan_and_backup()
                 else:
-                    # Log critical only if this is a new or persistent issue
                     logging.critical(f"[CRITICAL]: Backup location {server.create_base_folder()} is not writable. Automatic backups will be disabled by the UI if running.")
                     self.had_writability_issue = True # Set flag to avoid repeated critical logs for the same issue in one session
             else:
-                logging.info("[CRITICAL]: Backup device is not connected. Skipping backup cycle.")
+                """
+                    Has no conenction to backup device right now.
+                    Actions:
+                    - Every WAIT_TIME, check if has conenction (loop).
+                """
+                # logging.info("[INFO]: Backup device is not connected. Skipping backup cycle.")
                 self.had_writability_issue = False
 
             logging.debug(f"Waiting for {WAIT_TIME} minutes before next cycle.")
