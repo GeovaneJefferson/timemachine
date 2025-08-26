@@ -1,0 +1,75 @@
+/* General Title Styles */
+GtkLabel.title-3 { font-weight: bold; }
+GtkLabel.title-4 { font-weight: bold; }
+GtkLabel.caption { opacity: 0.7; }
+
+/* Overview Storage Section */
+.overview-card {
+    background-color: alpha(currentColor, 0.06); /* Darker, slightly transparent background */
+    border-radius: 12px;
+    padding: 16px;
+    /* box-shadow is now set dynamically for border/glow */
+    transition: box-shadow 0.2s ease-in-out; /* Smooth transition for hover */
+}
+.overview-card .icon-bg { /* This class is still useful for base padding/radius */
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    /* background-color and box-shadow (glow) are set dynamically */
+    transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.overview-card .progress-bar-custom trough {
+    background-color: alpha(currentColor, 0.15); /* Slightly more visible trough */
+    border-radius: 4px;
+    min-height: 8px;
+}
+/* The 'progress' part of .progress-bar-custom is styled dynamically per card */
+
+/* Style for the ScrolledWindow containing the main file list */
+.center-panel > GtkScrolledWindow { /* Targets the ScrolledWindow directly under center-panel for the list */
+    background-color: alpha(currentColor, 0.05); /* Match .overview-card background */
+    border-radius: 12px; /* Match .overview-card border-radius */
+    padding: 16px; /* Match .overview-card padding */
+    border: none; /* Ensure no default scrolled window borders */
+}
+
+.center-panel > GtkScrolledWindow GtkListBox {
+    background-color: transparent; /* Make ListBox transparent */
+    border: none; /* Ensure ListBox has no border that could clip ScrolledWindow's corners */
+    padding: 0px; /* Ensure ListBox has no internal padding */
+}
+
+/* File list rows in center panel - styled to match overview cards */
+.center-panel GtkListBoxRow.file-list-row-card {
+    /* background-color: alpha(currentColor, 0.05); */ /* Removed: Rows are items within the ScrolledWindow card */
+    /* border-radius: 12px; */ /* Removed: Rows are items within the ScrolledWindow card */
+    padding: 16px; /* Match .overview-card padding for a more spacious look */
+    margin-bottom: 8px; /* Space between cards */
+    margin-left: 0px;   /* Rows sit flush in the padded ScrolledWindow/ListBox */
+    margin-right: 0px;  /* Rows sit flush in the padded ScrolledWindow/ListBox */
+    margin-top: 0px;    /* Consistent top margin */
+    min-height: unset; /* Override default min-height if any */
+}
+.center-panel GtkListBoxRow.file-list-row-card:last-child {
+    margin-bottom: 0; /* Last row flush with ScrolledWindow padding */
+}
+.center-panel GtkListBoxRow.file-list-row-card:selected {
+    background-color: @view_selected_background_color; /* Adwaita's selection color */
+}
+
+/* Storage Progress Bar Colors in Sidebar */
+.storage-good progress { background-color: @success_color; /* Adwaita green */ }
+.storage-warning progress { background-color: @warning_color; /* Adwaita yellow */ }
+.storage-critical progress { background-color: @error_color; /* Adwaita red */ }
+
+/* Background colors for the device_info_box itself */
+.storage-good-bg { background-color: alpha(@success_color, 0.1); /* Light green background */ }
+.storage-warning-bg { background-color: alpha(@warning_color, 0.1); /* Light yellow background */ }
+.storage-critical-bg { background-color: alpha(@error_color, 0.1); /* Light red background */ }
+
+/* Icon background for detail rows in right sidebar */
+.detail-row-icon-bg {
+    border-radius: 6px; /* Slightly smaller radius for smaller icon */
+    padding: 6px;       /* Smaller padding for row icons */
+    /* background-color will be set dynamically via a separate class */
+}

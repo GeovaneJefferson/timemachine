@@ -1,56 +1,59 @@
-#! /usr/bin/python3
-from setup import *
+from server import *
+
+# Initialize the server instance
+server = SERVER()
+
+def at_boot():
+    """
+    Handles the startup process for the backup daemon. Checks if the daemon is already running,
+    retrieves configuration values, and starts the daemon if necessary.
+    """
+    try:
+        # Retrieve the driver location from the database
+        try:
+            driver_name: str = server.get_database_value(section='DRIVER', option='Driver_Location')
+            logging.info(f"Driver location retrieved: {driver_name}")
+        except Exception as e:
+            logging.error(f"Error retrieving driver location: {e}")
+            return
+
+        # Check if automatic backup is enabled
+        try:
+            automatically_backup = server.get_database_value(section='BACKUP', option='automatically_backup')
+            if str(automatically_backup).lower() not in ['true', '1', 'yes']:
+                logging.info("Automatic backup is disabled.")
+                return
+        except Exception as e:
+            logging.error(f"Error retrieving automatic backup setting: {e}")
+            return
+
+        # Check if the daemon is already running
+        if not server.is_daemon_running():
+            # Retrieve the daemon script path
+            daemon_script_path = server.DAEMON_PY_LOCATION
+            if not os.path.exists(daemon_script_path):
+                logging.error(f"Daemon script not found at: {daemon_script_path}")
+                return
+
+            # Start the daemon process
+            try:
+                process = sub.Popen(
+                    ['python3', daemon_script_path],
+                    stdout=sub.PIPE,
+                    stderr=sub.PIPE,
+                    start_new_session=True # Ensure daemon runs independently
+                )
+                logging.info(f"Daemon process started with PID: {process.pid}. Daemon will manage its own PID file.")
+            except Exception as e:
+                logging.error(f"Error starting daemon: {e}")
+                return
+        else:
+            logging.info("Daemon is already running, not starting again.")
+    except Exception as e:
+        logging.error(f"Unexpected error in at_boot: {e}")
 
 
-class BOOT:
-    def __init__(self):
-        # Delay startup for x seconds
-        time.sleep(30)  # Seconds
-        
-        self.read_ini_file()
-
-    def read_ini_file(self):
-        # Read ini file
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        # INI file
-        self.iniHDName = config['EXTERNAL']['name']
-        self.iniSystemTray = config['SYSTEMTRAY']['system_tray']
-        self.iniAutomaticallyBackup = config['BACKUP']['auto_backup']
-
-        self.system_tray()
-
-    def system_tray(self):
-        # Read ini file
-        config = configparser.ConfigParser()
-        config.read(src_user_config)
-
-        # Set startup to True
-        with open(src_user_config, 'w') as configfile:
-            config.set('BACKUP', 'first_startup', 'true')
-            config.write(configfile)
-
-        if self.iniSystemTray == "true":
-            ####################################################################
-            # Call system tray
-            ####################################################################
-            sub.Popen(f"python3 {src_system_tray}", shell=True)
-
-        # If external devices has already been saved inside INI file
-        if self.iniHDName != "None":
-            # If auto backup is activated
-            if self.iniAutomaticallyBackup == "true":
-                self.call_backup_checker()
-
-    def call_backup_checker(self):
-        ########################################################################
-        # Call backup checker
-        ########################################################################
-        sub.Popen(f"python3 {src_backup_check_py}", shell=True)
-        # Start auto package backup
-        sub.Popen(f"python3 {src_package_backup_py}", shell=True)
-        exit()
-
-
-main = BOOT()
+if __name__ == "__main__":
+    # Delay startup for 1 second (optional, explain purpose)
+    time.sleep(1)
+    at_boot()

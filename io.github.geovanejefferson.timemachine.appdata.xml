@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.geovanejefferson.timemachine</id>
+  <name>Time Machine</name>
+  <summary>A file backup and versioning tool</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>
+      Time Machine is a backup tool designed specifically for Linux users. It continuously monitors your files for any new updates and immediately backs them up while maintaining previous versions for easy recovery. This ensures that your important files are always up to date and securely stored.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.geovanejefferson.timemachine.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/geovanejefferson/timemachine/main/data/screenshoot.png</image>
+    <caption>Interface showing the app.</caption>
+    </screenshot>
+  </screenshots>
+  <icon type="stock">io.github.geovanejefferson.timemachine</icon>
+  <url type="homepage">https://geovanejefferson.github.io/timemachine/</url>
+  <url type="donation">https://www.patreon.com/GeovaneJefferson</url>
+    <developer>
+      <name>Geovane Jefferson</name>
+    </developer>
+  <categories>
+    <category>Utility</category>
+    <category>Settings</category>
+</categories>
+<releases>
+  <release version="0.1" date="2025-07-07"/>
+</releases>
+<content_rating type="oars-1.1" />
+</component>

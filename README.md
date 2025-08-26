@@ -1,84 +1,116 @@
-## Attention!
-* This project (Time Machine) is not affiliated with Apple. 
-* This is a backup application created using PySide6 for Linux.
-* Make sure that your clock method is "24-hour clock", not "12-hour clock" AM/PM.
-* Time Machine WILL NOT ERASE OR FORMAT YOUR EXTERNAL DEVICE!
+# Time Machine 🛡️
 
-<p align="center">
-  <img width="150" height="150" src="src/icons/backup_150px.png">
- <h1 align="left">Back up your PC with Time Machine</h1>
-</p>
-Use Time Machine to automatically back up your personal data, music, photos and 
-documents. Having a backup allows you to recover files that you later delete or can't access.
+**Your personal, vigilant backup assistant for Linux desktops.**
 
-## Connect a storage device to use for backups
-Connect an external storage device to your PC, such as a USB, HD or SSD.
+Time Machine is a Python-based backup solution designed to safeguard your important files, settings, and applications on Linux desktops. It operates through a powerful daemon and a user-friendly GTK4-based GUI, offering a comprehensive and reliable data protection experience.
 
-* Ideally, your backup disk should have at least twice the storage capacity of every disk or volume you're backing up. 
-If your backup disk doesn't have enough storage space to contain a complete backup, Time Machine will let you know.
+---
 
-## Make a backup
-**Back up automatically.** After you select your storage device in Time Machine, Time Machine automatically begins making
-periodic backups.
+⚠️ **Under Development:** Please note that Time Machine is currently under active development. While it offers many features, it may still contain bugs or undergo significant changes. Use with caution, especially for critical data!
 
-**Back up manually.** To start a backup manually, without waiting for the next automatic backup, choose Back Up Now from
-the Time Machine menu ![](src/screenshots/git-systemtrayicon.png)![systemtrayicon.svg](src%2Ficons%2Fgit-systemtrayicon.png) in 
-the menu bar.
+---
 
-**Check backup status.** Use the Time Machine menu ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) 
-in the menu bar to check the status of a backup. For example, when a backup is not underway, the menu shows the date and 
-time of the latest backup.
+## ✨ Screenshots
 
-![](src/screenshots/img_3.png)
+![Time Machine Screenshot](data/screenshoot.png)
 
-Backup is completed.
+---
 
-## Browse Time Machine Backups
-First, open Time Machine and allow to "show in the system tray".
-Then, click on Time Machine in system tray and select "Browse Time Backups"
-(Remember, will only work if Time Machine has made at least one backup already.)
+## Core Features
 
+### Daemon Features
 
-## Backup frequency and duration
-Time Machine is able to make hourly backups for the past 24 hours, daily backups for the past month, or weekly backups. 
+The daemon, the core of Time Machine, silently works in the background to manage your backups:
 
-The oldest backups are deleted when your backup disk is full.
+*   **Automatic Backups:** Runs at regular intervals to check for new or changed files.
+*   **Intelligent File Scanning:** Uses metadata caching for quick folder checks and SHA-256 hashing for precise file change detection.
+*   **Incremental Backups:** Creates a full initial backup, then saves only changes in timestamped increments, saving space.
+*   **Robust File Copying:** Employs atomic file operations, preserves metadata, and adjusts copy concurrency based on system load.
+*   **Interruption Handling:** Resumes interrupted backup processes intelligently.
+*   **Disk Space Management:** Checks backup drive space before starting.
+*   **Automatic Package Backup:** Backs up downloaded `.deb` and `.rpm` packages.
+*   **Backup Drive Monitoring:** Ensures the backup drive is connected and writable.
+*   **System Signal Handling:** Gracefully handles system signals (terminate, interrupt, pause, resume).
+*   **Detailed Logging:** Logs all significant actions and errors.
+*   **UI Communication:** Sends real-time status and progress to the GUI via a socket.
+*   **Single Instance Guarantee:** Prevents multiple daemon instances from running.
+*   **Configurable Exclusions:** Allows excluding specific folders, hidden files/folders, or by file extensions.
 
-### Packages
-* Now, Time Machine will be able to automatically back up packages: ".deb" and/or ".rpm. 
-    (Packages must be inside Downloads folder.)
+### GUI Features
 
-  * Automatically back up must be enabled.
+The GTK4-based graphical user interface (GUI) provides an intuitive way to interact with Time Machine:
 
-## Migration Assistant
-Something similar to Apple's "Migration Assistant", a easy way to restore your 
-files/folders, themes, apps etc. after a fresh installation.
+*   **Device Selection:** Easily select your external drive for backups.
+*   **Real-time Monitoring:** Displays daemon status, current scanning folder, and file transfer progress.
+*   **Configuration Options:** Manage automatic backups, excluded folders/files, and other settings.
+*   **File Browsing and Search:** Navigate and search within your backups.
+*   **File Restoration:** Restore individual files or entire directories.
+*   **Visual Overviews:** View backup summary statistics (file categories, frequent files).
+*   **Suggested Files:** Recommends files for backup based on usage patterns.
+*   **Starred Files:** Mark important backed-up files for quick access.
+*   **System Restore:** Restore applications (.deb/.rpm), files/folders, and Flatpaks.
+*   **Logging Access:** View daemon logs directly from the GUI.
+*   **Diff Viewing:** Compare different backed-up versions of text files against the current version in your home directory.
 
-## System Tray 
-You will notice that your system tray will from time to time change its color from White to Blue or Red.
-* ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png) = Normal color, 
-automatically backup is ON and your backup device is connected and mounted.
+---
 
+## 🛠️ Tech Stack
 
-* ![git-systemtrayiconrun.png](src%2Ficons%2Fgit-systemtrayiconrun.png) = Time Machine is current backing up your files, after is done,
-it will change to ![](src/screenshots/git-systemtrayicon.png)![git-systemtrayicon.png](src%2Ficons%2Fgit-systemtrayicon.png).
+*   **Python 3**
+*   **GTK4 & Libadwaita:** Native Linux desktop UI.
+*   **Asyncio & `concurrent.futures.ThreadPoolExecutor`:** Efficient, non-blocking operations and parallel file copying for the daemon.
+*   **Standard Libraries:** `os`, `shutil`, `hashlib`, `json`, `logging`, `signal`, `tempfile`, `socket`, `configparser`, `datetime`, `subprocess`, `psutil`, etc.
+*   **Third-party:** `setproctitle` for daemon process naming.
 
+---
 
-* ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) = If automatically backup is ON but your backup device
-is disconnected or not mounted, you will see ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png).
-  - ![git-systemtrayiconerror.png](src%2Ficons%2Fgit-systemtrayiconerror.png) can also mean that Time Machine had some problem to back up. Open Time Machine main window and 
-  read the report about it.
+## 🚀 Getting Started
 
-## Installation:
-You will be asked for your password.
-* Copy and paste this command bellow to the terminal.
+### Prerequisites
 
-Command:
+*   Python 3.8+
+*   GTK4 & Libadwaita (e.g., `gir1.2-gtk-4.0`, `libadwaita-1-0` on Debian/Ubuntu based systems)
+*   Python GObject bindings (`python3-gi`, `python3-gi-cairo`)
+*   `psutil` (install with `pip install psutil`)
+*   `setproctitle` (install with `pip install setproctitle`)
 
-    git clone -b main https://github.com/geovanejefferson/timemachine; cd timemachine/; python3 install.py
+### Install from Source (for Development)
 
+This is the recommended method for development and local testing.
 
-## Uninstall:
-Command:
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/geovanejefferson/timemachine.git
+    cd timemachine
+    ```
 
-    cd .local/share/timemachine/; python3 uninstall.py
+2.  **Install with flatpak builder:**
+    ```bash
+    flatpak-builder --user --install --force-clean build-dir io.github.geovanejefferson.timemachine.yaml
+    ```
+
+### Update from Source (for Development)
+
+This is the recommended method for development and local testing.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/geovanejefferson/timemachine.git
+    cd timemachine
+    ```
+    
+2.  **Update with flatpak builder:**
+    ```bash
+    flatpak-builder --user --install --force-clean build-dir io.github.geovanejefferson.timemachine.yaml
+    ```
+
+### To Remove
+1.  **Remove with flatpak:**
+    ```bash
+    flatpak remove io.github.geovanejefferson.timemachine -y
+    ```
+
+2.  **Delete the directory:**
+    ```bash
+    rm -rf /home/$USER/.var/app/io.github.geovanejefferson.timemachine
+    ```

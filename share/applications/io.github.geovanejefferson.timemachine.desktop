@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Time Machine
+Comment=Backup and Data Management Tool
+Exec=/app/bin/timemachine.sh
+Icon=io.github.geovanejefferson.timemachine
+Type=Application
+Terminal=false
+Categories=Utility;System;
+StartupNotify=true
+Encoding=UTF-8
