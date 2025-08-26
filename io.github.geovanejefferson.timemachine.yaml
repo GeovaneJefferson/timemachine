@@ -37,7 +37,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/GeovaneJefferson/timemachine.git
-      #   branch: main  # Specify the main branch
+        branch: main  # Specify the main branch
         # commit: 79c3da693a84c9f3a69065d632166e39538e3411
       # - type: file
       #   path: io.github.geovanejefferson.timemachine.appdata.xml
