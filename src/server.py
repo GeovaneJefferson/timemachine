@@ -114,9 +114,9 @@ class SERVER:
 		self.USER_HOME: str = os.path.expanduser("~")  # Get user's home directory
 		self.LOG_FILE_PATH = os.path.expanduser(f"~/.{self.APP_NAME_CLOSE_LOWER}.log")
 		
-		# self.SOCKET_PATH = "/tmp/guardian-ui.sock"
-		# self.SOCKET_PATH: str = f"~/.var/app/{self.ID}/cache/tmp/guardian-ui.sock"
-		self.SOCKET_PATH = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "guardian-ui.sock")
+		# self.SOCKET_PATH = "/tmp/timemachine-ui.sock"
+		# self.SOCKET_PATH: str = f"~/.var/app/{self.ID}/cache/tmp/timemachine-ui.sock"
+		self.SOCKET_PATH = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "timemachine-ui.sock")
 		# Concurrency settings for copying files
 		# Default, can be adjusted based on system resources and current load
 		self.DEFAULT_COPY_CONCURRENCY = 2
@@ -132,9 +132,9 @@ class SERVER:
 		################################################################################
 		# FLATPAK
 		################################################################################
-		# self.GET_FLATPAKS_APPLICATIONS_NAME: str = 'flatpak list --app --columns=application'
-		self.GET_FLATPAKS_APPLICATIONS_NAME = 'flatpak-spawn --host flatpak list --app --columns=application'
-		self.FLATPAK_SH_DST: str = f'~/.var/app/{self.ID}/config/list_flatpaks.sh'
+		self.GET_FLATPAKS_APPLICATIONS_NAME_NON_CONTAINER: str = 'flatpak list --app --columns=application'
+		self.GET_FLATPAKS_APPLICATIONS_NAME_CONTAINER = 'flatpak-spawn --host flatpak list --app --columns=application'
+		# self.FLATPAK_SH_DST: str = f'~/.var/app/{self.ID}/config/list_flatpaks.sh'
 
 		################################################################################
 		# LOCATIONS
@@ -215,31 +215,6 @@ class SERVER:
 		# Save the config to the file
 		with open(self.CONF_LOCATION, 'w') as config_file:
 			self.CONF.write(config_file)
-
-		# ######################################################################
-		# # Create the directory if it doesn't exist
-		# flatpak_list_dir = os.path.dirname(self.FLATPAK_SH_DST)
-		# os.makedirs(flatpak_list_dir, exist_ok=True)
-
-		# # Create the shell script content
-		# script_content = """#!/bin/bash\nflatpak list --app --columns=application
-		# """
-
-		# # Write the content to the file
-		# with open(os.path.expanduser(self.FLATPAK_SH_DST), 'w') as script_file:
-		# 	script_file.write(script_content)
-
-		# # Make the script executable
-		# try:
-		# 	os.chmod(self.FLATPAK_SH_DST, stat.S_IREAD)
-		# 	os.chmod(self.FLATPAK_SH_DST, stat.S_IROTH)
-		# 	os.chmod(self.FLATPAK_SH_DST, stat.S_IWRITE)
-
-		# 	print(f"Script created and made executable at: {self.FLATPAK_SH_DST}")
-		# except PermissionError as e:
-		# 	print(f"Permission error while changing file permissions: {e}")
-
-		# print(f"Script created at: {os.path.expanduser(self.FLATPAK_SH_DST)}")
 
 	def is_daemon_running(self):
 		"""Check if the daemon is already running by checking the PID in the Flatpak sandbox."""
@@ -656,59 +631,78 @@ class SERVER:
 		next_day_name = next_day.strftime("%A").upper()
 		return next_day_name
 
-	# def get_next_day_timemframe(self):
-	# 	# Get next day array timeframe
-	# 	next_day_name_timeframe: str = self.get_database_value(
-	# 		section=self.get_next_day_name(),  # Next day string
-	# 		option='new_array')
-	# 	return next_day_name_timeframe
-
-	def get_database_value(self, section: str, option: str) -> str:
+	def get_database_value(self, section: str, option: str):
 		try:
-			# Check if config file exists and is loaded
 			if not os.path.exists(self.CONF_LOCATION):
-				logging.warning(f"Config file '{self.CONF_LOCATION}' does not exist. Cannot get value for {section}/{option}.")
-				# Reset self.CONF to an empty state if the file is gone,
-				# so subsequent checks for sections/options don't use stale data.
-				self.CONF = configparser.ConfigParser()
 				return None
 
-			# Re-read the configuration file to get the latest values
-			# This ensures that changes made by other processes (like the UI) are picked up.
-			# Use a temporary parser to avoid issues if the file is malformed during read.
-			temp_conf = configparser.ConfigParser()
-			read_ok = temp_conf.read(self.CONF_LOCATION)
+			with open(self.CONF_LOCATION, 'r') as f:
+				fcntl.flock(f, fcntl.LOCK_SH) # Shared lock for reading
+				
+				config = configparser.ConfigParser()
+				config.read_file(f)
+				
+				# Lock is released when 'with' block exits
 
-			if read_ok:
-				self.CONF = temp_conf # Update the instance's config object if read was successful
-			else:
-				# Log a warning but continue with the potentially stale self.CONF
-				# This might be preferable to returning None if the file is temporarily unreadable
-				# but was previously read successfully.
-				logging.warning(f"[CRITICAL]: Failed to re-read config file '{self.CONF_LOCATION}' in get_database_value. Using potentially stale data.")
+			if not config.has_section(section) or not config.has_option(section, option):
+				return None
+			
+			value = config.get(section, option)
+			return self.convert_result_to_python_type(value)
 
-			if not self.CONF.has_section(section):
-				logging.debug(f"Section '{section}' not found in configuration.")
-				return None  # Or return a default value if needed
-
-			if not self.CONF.has_option(section, option):
-				logging.debug(f"Option '{option}' not found in section '{section}'.")
-				return None  # Or return a default value if needed
-
-			# Retrieve and convert the value
-			value = self.CONF.get(section, option)
-			return self.convert_result_to_python_type(value=value)
-
-		except BrokenPipeError:  
-			# Handle broken pipe without crashing
-			logging.warning(f"Broken Pipe Error in {self.APP_NAME}'s database: {e}")
-			return None
-		except FileNotFoundError as e:
-			logging.warning(f"[CRITICAL]: {self.APP_NAME}'s database not found: {e}")
+		except configparser.Error as e:
+			logging.warning(f"[CRITICAL]: Could not parse config file '{self.CONF_LOCATION}': {e}. It may be corrupt.")
 			return None
 		except Exception as e:
-			logging.warning(f"[CRITICAL]: {self.APP_NAME}'s database Exception: {e}")
+			logging.warning(f"[CRITICAL]: Error reading database value for {section}/{option}: {e}", exc_info=True)
 			return None
+		
+	# def get_database_value(self, section: str, option: str) -> str:
+	# 	try:
+	# 		# Check if config file exists and is loaded
+	# 		if not os.path.exists(self.CONF_LOCATION):
+	# 			logging.warning(f"Config file '{self.CONF_LOCATION}' does not exist. Cannot get value for {section}/{option}.")
+	# 			# Reset self.CONF to an empty state if the file is gone,
+	# 			# so subsequent checks for sections/options don't use stale data.
+	# 			self.CONF = configparser.ConfigParser()
+	# 			return None
+
+	# 		# Re-read the configuration file to get the latest values
+	# 		# This ensures that changes made by other processes (like the UI) are picked up.
+	# 		# Use a temporary parser to avoid issues if the file is malformed during read.
+	# 		temp_conf = configparser.ConfigParser()
+	# 		read_ok = temp_conf.read(self.CONF_LOCATION)
+
+	# 		if read_ok:
+	# 			self.CONF = temp_conf # Update the instance's config object if read was successful
+	# 		else:
+	# 			# Log a warning but continue with the potentially stale self.CONF
+	# 			# This might be preferable to returning None if the file is temporarily unreadable
+	# 			# but was previously read successfully.
+	# 			logging.warning(f"[CRITICAL]: Failed to re-read config file '{self.CONF_LOCATION}' in get_database_value. Using potentially stale data.")
+
+	# 		if not self.CONF.has_section(section):
+	# 			logging.debug(f"Section '{section}' not found in configuration.")
+	# 			return None  # Or return a default value if needed
+
+	# 		if not self.CONF.has_option(section, option):
+	# 			logging.debug(f"Option '{option}' not found in section '{section}'.")
+	# 			return None  # Or return a default value if needed
+
+	# 		# Retrieve and convert the value
+	# 		value = self.CONF.get(section, option)
+	# 		return self.convert_result_to_python_type(value=value)
+
+	# 	except BrokenPipeError:  
+	# 		# Handle broken pipe without crashing
+	# 		logging.warning(f"Broken Pipe Error in {self.APP_NAME}'s database: {e}")
+	# 		return None
+	# 	except FileNotFoundError as e:
+	# 		logging.warning(f"[CRITICAL]: {self.APP_NAME}'s database not found: {e}")
+	# 		return None
+	# 	except Exception as e:
+	# 		logging.warning(f"[CRITICAL]: {self.APP_NAME}'s database Exception: {e}")
+	# 		return None
 		
 	def safe_write_config(config, file_path):
 		with open(file_path, 'w') as config_file:
@@ -717,64 +711,47 @@ class SERVER:
 			config.write(config_file)
 			# Unlock the file
 			fcntl.flock(config_file, fcntl.LOCK_UN)
-
+	
 	def set_database_value(self, section: str, option: str, value: str):
 		try:
-			if os.path.exists(self.CONF_LOCATION):
+			os.makedirs(os.path.dirname(self.CONF_LOCATION), exist_ok=True)
+			# Open with 'a+' creates the file if it doesn't exist and allows reading/writing
+			with open(self.CONF_LOCATION, 'a+') as f:
+				fcntl.flock(f, fcntl.LOCK_EX) # Exclusive lock
+
+				# Read the current content of the file
+				f.seek(0)
+				self.CONF.read_file(f)
+
 				if not self.CONF.has_section(section):
 					self.CONF.add_section(section)
+				
+				self.CONF.set(section, option, str(value))
+				
+				# Overwrite the file with the updated config
+				f.seek(0)
+				f.truncate()
+				self.CONF.write(f)
 
-				# Only update if the value has changed
-				if self.CONF.get(section, option, fallback=None) != value:
-					self.CONF.set(section, option, value)
-					with open(self.CONF_LOCATION, 'w') as configfile:
-						self.CONF.write(configfile)
-			else:
-				raise FileNotFoundError(f"Config file '{self.CONF_LOCATION}' not found")
+				# The lock is automatically released when the 'with' block exits
 		except Exception as e:
-			logging.error(f"Error in set_database_value: {e}")
+			logging.error(f"Failed to set database value for {section}/{option}: {e}", exc_info=True)
 			
 	# def set_database_value(self, section: str, option: str, value: str):
 	# 	try:
-	# 		# Ensure config file exists
 	# 		if os.path.exists(self.CONF_LOCATION):
-	# 			# Check if the section exists, if not, add it
 	# 			if not self.CONF.has_section(section):
 	# 				self.CONF.add_section(section)
 
-	# 			# Set the option value
-	# 			self.CONF.set(section, option, value)
-
-	# 			# Save the changes to the file
-	# 			with open(self.CONF_LOCATION, 'w') as configfile:
-	# 				self.CONF.write(configfile)
+	# 			# Only update if the value has changed
+	# 			if self.CONF.get(section, option, fallback=None) != value:
+	# 				self.CONF.set(section, option, value)
+	# 				with open(self.CONF_LOCATION, 'w') as configfile:
+	# 					self.CONF.write(configfile)
 	# 		else:
 	# 			raise FileNotFoundError(f"Config file '{self.CONF_LOCATION}' not found")
-
-	# 	except BrokenPipeError:
-	# 		# Handle broken pipe without crashing
-	# 		print("Broken pipe occurred, but the app continues running.")
-	# 	except FileNotFoundError as e:
-	# 		print(f"No connection to config file: {e}")
-	# 		exit()
 	# 	except Exception as e:
-	# 		current_function_name = inspect.currentframe().f_code.co_name
-	# 		print(f"Error in function {current_function_name}: {e}")
-	# 		exit()
-
-	# def write_backup_status(self, status:str):
-	# 	# Get stored driver_location and driver_name
-	# 	self.set_database_value(
-	# 		section='BACKUP',
-	# 		option='status',
-	# 		value=status)
-        
-	# def read_backup_status(self) -> str:
-	# 	# Get stored driver_location and driver_name
-	# 	backup_status = self.get_database_value(
-	# 		section='BACKUP',
-	# 		option='status')
-	# 	return backup_status
+	# 		logging.error(f"Error in set_database_value: {e}")
 
 	def write_backup_status(self, status: str):
 		"""

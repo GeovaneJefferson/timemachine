@@ -671,10 +671,13 @@ class Daemon:
                 logging.critical(f"Failed to generate backup summary (unexpected error): {e}", exc_info=True)
             logging.info("Backup session complete.")
 
-            # After main backup and summary, backup downloaded packages
+            # Check for new packages in User's Download's folder
             if not (self.should_exit or self.suspend_flag):
                 if server.DRIVER_LOCATION and self.is_backup_location_writable():
                     await self._backup_downloaded_packages()
+
+            # Backup flapak's application list
+
         
         try:
             if os.path.exists(self.interruped_main_file):
@@ -723,6 +726,64 @@ class Daemon:
                 if not self.had_writability_issue:
                     logging.critical(f"[CRITICAL]: Backup location {server.create_base_folder()} is not writable. Automatic backups will be disabled by the UI if running.")
                     self.had_writability_issue = True
+    
+    ####################################################################
+    # Flatpak
+    ####################################################################
+    async def backup_flatpaks(self):
+        """
+        Backs up the Flatpak application list and user data asynchronously.
+        """
+        print("Backing up Flatpak app list...")
+
+        # A list of commands to try in order of preference
+        commands_to_try = [
+            server.GET_FLATPAKS_APPLICATIONS_NAME_CONTAINER.split(),
+            server.GET_FLATPAKS_APPLICATIONS_NAME_NON_CONTAINER.split()
+        ]
+        
+        output = None
+
+        for command in commands_to_try:
+            try:
+                # Use asyncio's non-blocking subprocess tools
+                process = await asyncio.create_subprocess_exec(
+                    *command,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+
+                # Await the command's completion and get its output
+                stdout, stderr = await process.communicate()
+
+                # Check if the command was successful
+                if process.returncode == 0:
+                    print(f"Successfully executed: {' '.join(command)}")
+                    output = stdout.decode('utf-8').strip()
+                    # break  # Exit the loop on first success
+                else:
+                    # Log the error from the failed command
+                    error_msg = stderr.decode('utf-8').strip()
+                    print(f"Command failed: {' '.join(command)}\nError: {error_msg}")
+
+            except FileNotFoundError:
+                print(f"Command not found: '{command[0]}'. Trying next command...")
+            except Exception as e:
+                print(f"An unexpected error occurred with command {' '.join(command)}: {e}")
+
+        # After the loop, check if any command succeeded
+        if output is not None:
+            # ... now you can continue with your logic to save 'output' to a file ...
+            logging.info("Successfully retrieved Flatpak list.")
+
+            # For example:
+            backup_path = server.flatpak_txt_location()
+            os.makedirs(os.path.dirname(backup_path), exist_ok=True)
+            with open(backup_path, "w", encoding="utf-8") as f:
+                f.write(output + "\n")
+        else:
+            logging.info("[ERROR]: All attempts to list Flatpak applications failed.")
+            # Handle the failure appropriately
 
     ############################################################################
     # DAEMON MAIN RUN LOOP
@@ -795,6 +856,7 @@ class Daemon:
                     # Reset a flag indicating writability issue if it was set
                     self.had_writability_issue = False
                     await self.scan_and_backup()
+                    await self.backup_flatpaks()  # Backup flatpaks installed
                 else:
                     logging.critical(f"[CRITICAL]: Backup location {server.create_base_folder()} is not writable. Automatic backups will be disabled by the UI if running.")
                     self.had_writability_issue = True # Set flag to avoid repeated critical logs for the same issue in one session

@@ -234,7 +234,7 @@ class BackupWindow(Adw.ApplicationWindow):
         restore_action = Gio.SimpleAction.new("systemrestore", None)
         restore_action.connect("activate", self.on_restore_system_button_clicked)
         self.add_action(restore_action)
-        restore_action.set_enabled(False)
+        # restore_action.set_enabled(False)
         # restore_action.set_enabled(has_driver_connection())
 
         # Logs Action
@@ -2460,7 +2460,7 @@ class BackupWindow(Adw.ApplicationWindow):
         win.set_titlebar(header) # Set header for the Gtk.Window
 
         # Open button
-        open_button = Gtk.Button(label="Open")
+        open_button = Gtk.Button(label="Open File")
         open_button.set_tooltip_text("Open this version of the file.")
         open_button.set_sensitive(False)
         header.pack_start(open_button)

@@ -40,7 +40,7 @@ modules:
         branch: main  # Specify the main branch
         # commit: 79c3da693a84c9f3a69065d632166e39538e3411
       # - type: file
-      #   path: io.github.geovanejefferson.timemachine.appdata.xml
+        # path: io.github.geovanejefferson.timemachine.appdata.xml
       # - type: dir
       #   path: .
       - type: file
