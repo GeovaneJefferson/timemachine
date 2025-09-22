@@ -1,10 +1,11 @@
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from has_driver_connection import has_driver_connection
 import re # Added for package name parsing
 from server import *
 
 WAIT_TIME = 5  # Minutes between backup checks
-
+HIGH_CPU_THRESHOLD = 75.0  # Max CPU
 
 def send_to_ui(message: str):
     try:
@@ -22,6 +23,7 @@ def send_to_ui(message: str):
     except Exception as e:
         # Log other unexpected errors during UI communication
         logging.warning(f"send_to_ui: Error communicating with UI via {server.SOCKET_PATH}: {e}")
+
 
 class Daemon:
     ############################################################################
@@ -56,21 +58,20 @@ class Daemon:
             cpu_cores = os.cpu_count()
             cpu_load = psutil.cpu_percent(interval=0.1)
 
-            HIGH_CPU_THRESHOLD = 75.0
             LOW_CONCURRENCY_ON_HIGH_LOAD = max(1, (cpu_cores // 4) if cpu_cores else 1)
 
             if cpu_load > HIGH_CPU_THRESHOLD:
                 new_concurrency = LOW_CONCURRENCY_ON_HIGH_LOAD
-                # logging.info(
-                #     f"High CPU load ({cpu_load}%) detected. "
-                #     f"Setting COPY_CONCURRENCY to a conservative {new_concurrency}."
-                # )
+                logging.info(
+                    f"High CPU load ({cpu_load}%) detected. "
+                    f"Setting COPY_CONCURRENCY to a conservative {new_concurrency}."
+                )
             else:
                 new_concurrency = max(1, min(cpu_cores if cpu_cores else server.DEFAULT_COPY_CONCURRENCY, 8))
-                # logging.info(
-                #     f"CPU load ({cpu_load}%) is moderate. "
-                #     f"Setting COPY_CONCURRENCY to {new_concurrency} based on {cpu_cores or 'default'} CPU cores."
-                # )
+                logging.info(
+                    f"CPU load ({cpu_load}%) is moderate. "
+                    f"Setting COPY_CONCURRENCY to {new_concurrency} based on {cpu_cores or 'default'} CPU cores."
+                )
         except Exception as e:
             logging.warning(
                 f"Could not determine CPU cores/load, defaulting COPY_CONCURRENCY to {server.DEFAULT_COPY_CONCURRENCY}. Error: {e}"
@@ -100,6 +101,8 @@ class Daemon:
             logging.error(f"Error sending '{message_type}' to UI via _send_ui_message_threadsafe: {e}")
 
     def signal_handler(self, signum, frame):
+        logging.info("")
+
         if signum == signal.SIGTSTP:
             logging.info(f"Received SIGTSTP (suspend), pausing daemon...")
             self.suspend_flag = True
@@ -237,6 +240,7 @@ class Daemon:
                         # logging.warning(f"Error comparing '{src}' with incremental backup '{backup_file_path}': {e}. Trying older versions or main.")
                         continue
 
+        # Compare with the "main" backup (if no incremental version was found to match)
         main_path = os.path.join(self.main_backup_dir, rel_path)
         if os.path.exists(main_path):
             try:
@@ -444,67 +448,124 @@ class Daemon:
             if cached_val != current_val:
                 return True
         return False
-    
-    def _get_package_info(self, filename: str) -> tuple[str | None, str | None, str | None]:
-        """
-        Extracts the base name, version/architecture string, and extension from a package filename.
-        Returns (base_name, version_arch_part, extension) or (None, None, None) if not a package.
-        - base_name: The name of the package without version/arch info.
-        - version_arch_part: The part of the filename typically containing version and architecture.
-                             Includes the leading separator (_ or -). Is empty if no version detected.
-        - extension: .deb or .rpm
-        """
-        name_root, ext = os.path.splitext(filename)
-        if ext not in [".deb", ".rpm"]:
-            return None, None, None
 
-        # Heuristic: find the first hyphen or underscore followed by a digit.
-        # Example: 'code_1.2.3-amd64' -> base='code', version_arch='_1.2.3-amd64'
-        # Example: 'mypkg-1.0' -> base='mypkg', version_arch='-1.0'
-        match = re.search(r"(_|-)(?=\d)", name_root)
-        if match:
-            split_index = match.start()
-            base_name = name_root[:split_index]
-            version_arch_part = name_root[split_index:] 
-            return base_name, version_arch_part, ext
-        else:
-            # If no version-like pattern is found, consider the whole name (without ext) as base_name.
-            return name_root, "", ext
-        
     ############################################################################
     # DOWNLOADED PACKAGES BACKUP
     ############################################################################
+    # async def _backup_downloaded_packages(self):
+    #     """Scans ~/Downloads for .deb/.rpm packages and backs them up if new."""
+    #     logging.info("")
+    #     logging.info("Starting scan of Downloads for new packages...")
+    #     downloads_path = os.path.join(self.user_home, "Downloads")
+        
+    #     if not os.path.isdir(downloads_path):
+    #         logging.warning(f"Downloads folder not found at {downloads_path}. Skipping package backup.")
+    #         return
+
+    #     if not server.DRIVER_LOCATION:
+    #         logging.warning("Backup device not connected. Skipping package backup.")
+    #         return
+        
+    #     if not self.is_backup_location_writable():
+    #         logging.warning("[CRITICAL]: Backup device is not writable. Skipping package backup.")
+    #         return 
+
+    #     package_backup_tasks = []
+    #     for item_name in os.listdir(downloads_path):
+    #         item_path = os.path.join(downloads_path, item_name)
+    #         if os.path.isfile(item_path):
+    #             dest_folder = None
+    #             if item_name.endswith(".deb"):
+    #                 dest_folder = server.deb_main_folder()
+    #             elif item_name.endswith(".rpm"):
+    #                 dest_folder = server.rpm_main_folder()
+
+    #             if dest_folder:
+    #                 # Check if package with the same name already exists in backup
+    #                 backed_up_package_path = os.path.join(dest_folder, item_name)
+    #                 if not os.path.exists(backed_up_package_path):
+    #                     logging.info(f"New package found in Downloads: {item_name}. Queuing for backup.")
+    #                     package_backup_tasks.append(self._backup_package_file(item_path, dest_folder))
+        
+    #     if package_backup_tasks:
+    #         await asyncio.gather(*package_backup_tasks)
+    #         logging.info(f"Finished backing up {len(package_backup_tasks)} new package(s) from Downloads.")
+    #     else:
+    #         logging.info("No new packages found in Downloads to backup.")
+        
+    #     logging.info("")
+    
+    # def _get_package_info(self, filename: str) -> tuple[str | None, str | None, str | None]:
+    #     """
+    #     Extracts package information (name, version, extension) from a filename.
+    #     Returns a tuple of (base_name, version, extension).
+    #     """
+    #     name_root, ext = os.path.splitext(filename)
+    #     if ext not in [".deb", ".rpm"]:
+    #         return None, None, None
+
+    #     # This regex is more robust. It looks for a sequence of digits and dots,
+    #     # optionally followed by a hyphen and a mix of letters and numbers.
+    #     # It finds the last such sequence in the name before the extension.
+    #     match = re.search(r'([\d.]+)(?:[_-][a-zA-Z\d-]+)*$', name_root)
+        
+    #     if match:
+    #         version = match.group(1)
+    #         base_name = name_root[:match.start()]
+    #         # Clean up any trailing hyphens or underscores from the base name
+    #         base_name = base_name.rstrip('_-')
+    #         return base_name, version, ext
+    #     else:
+    #         return name_root, "0", ext # Return a default version for comparison
+   
+    # def find_latest_package(self, filenames: list[str]) -> str | None:
+    #     """
+    #     Given a list of filenames, returns the name of the latest package.
+    #     """
+    #     latest_package = None
+    #     latest_version = Version("0") # Initialize with a very low version
+
+    #     for filename in filenames:
+    #         base_name, version_str, ext = self._get_package_info(filename)
+            
+    #         if not all([base_name, version_str, ext]):
+    #             continue
+            
+    #         try:
+    #             current_version = Version(version_str)
+    #             if current_version > latest_version:
+    #                 latest_version = current_version
+    #                 latest_package = filename
+    #         except InvalidVersion:
+    #             # If the version string is invalid, just skip it.
+    #             # You could add logging here to track malformed filenames.
+    #             continue
+        
+    #     return latest_package
+
     async def _backup_downloaded_packages(self):
         """Scans ~/Downloads for .deb/.rpm packages and backs them up if new."""
         logging.info("Starting scan of Downloads for new packages...")
+
         downloads_path = os.path.join(self.user_home, "Downloads")
+        
         if not os.path.isdir(downloads_path):
             logging.warning(f"Downloads folder not found at {downloads_path}. Skipping package backup.")
             return
-
-        if not server.DRIVER_LOCATION:
-            logging.warning("Backup device not connected. Skipping package backup.")
-            return
         
-        if not self.is_backup_location_writable():
-            logging.warning("[CRITICAL]: Backup device is not writable. Skipping package backup.")
-            return 
+        if not self._can_write_to_backup_location():
+            return
 
         package_backup_tasks = []
         for item_name in os.listdir(downloads_path):
             item_path = os.path.join(downloads_path, item_name)
             if os.path.isfile(item_path):
-                dest_folder = None
-                if item_name.endswith(".deb"):
-                    dest_folder = server.deb_main_folder()
-                elif item_name.endswith(".rpm"):
-                    dest_folder = server.rpm_main_folder()
-
+                dest_folder = self._get_package_destination(item_path)
                 if dest_folder:
                     # Check if package with the same name already exists in backup
-                    backed_up_package_path = os.path.join(dest_folder, item_name)
-                    if not os.path.exists(backed_up_package_path):
-                        logging.info(f"New package found in Downloads: {item_name}. Queuing for backup.")
+                    backed_up_package_path = Path(dest_folder) / item_path
+                    if not backed_up_package_path.exists():
+                        logging.info(f"New package found in Downloads: {item_path}. Queuing for backup.")
                         package_backup_tasks.append(self._backup_package_file(item_path, dest_folder))
         
         if package_backup_tasks:
@@ -512,183 +573,209 @@ class Daemon:
             logging.info(f"Finished backing up {len(package_backup_tasks)} new package(s) from Downloads.")
         else:
             logging.info("No new packages found in Downloads to backup.")
-            
+        
+        logging.info("")
+
+    def _get_package_destination(self, filename: str) -> str | None:
+        """Returns the destination folder for a package file based on its extension."""
+        if filename.endswith(".deb"):
+            return server.deb_main_folder()
+        if filename.endswith(".rpm"):
+            return server.rpm_main_folder()
+        return None
+    
+    def _can_write_to_backup_location(self) -> bool:
+        """Checks for both device connection and writability, logs messages."""
+        if not has_driver_connection():
+            logging.info("Backup device not connected. Skipping package backup.")
+            return False
+        
+        if not self.is_backup_location_writable():
+            self.had_writability_issue = True
+            logging.warning("[CRITICAL]: Backup device is not writable. Skipping package backup.")
+            return False
+        
+        self.had_writability_issue = False
+        return True
+
     ############################################################################
     # MAIN BACKUP PROCESS
     ############################################################################
     async def scan_and_backup(self):
+        """
+        Main backup loop. Scans the user's home directory for new/updated files and backs them up.
+        """
         if self.should_exit or self.suspend_flag:
             logging.info("scan_and_backup: Exiting or suspending at method start.")
             return
 
-        # Update concurrency settings at the beginning of each scan
-        self._update_copy_concurrency()
+        session_backup_dir = self._prepare_backup_session()
+        if not session_backup_dir:
+            return
 
         tasks = []
+        try:
+            for entry in os.scandir(self.user_home):
+                if self.should_exit or self.suspend_flag:
+                    logging.info("scan_and_backup: Exiting or suspending during user home scan.")
+                    break
+                
+                await self._scan_and_process_entry(entry, session_backup_dir, tasks)
+
+            if tasks:
+                await asyncio.gather(*tasks)
+                logging.info("All backup tasks completed.")
+        except Exception as e:
+            logging.critical(f"An unexpected error occurred during the backup process: {e}", exc_info=True)
+        finally:
+            if not self.should_exit and not self.suspend_flag:
+                await self._finalize_backup_session(session_backup_dir)
+            else:
+                logging.info("Backup session interrupted. Skipping finalization.")
+
+    def _prepare_backup_session(self) -> str | None:
+        """Handles pre-backup setup tasks."""
+        self._update_copy_concurrency()
+        
         now = datetime.now()
         date_str = now.strftime('%d-%m-%Y')
         time_str = now.strftime('%H-%M')
         session_backup_dir = os.path.join(self.update_backup_dir, date_str, time_str)
-
-        # Reload ignored folders and hidden items preference at the start of each scan
+        
+        # Reload configuration settings
         self.ignored_folders = set(os.path.abspath(p) for p in server.load_ignored_folders_from_config())
-        exclude_hidden_master_switch = server.get_database_value(section='EXCLUDE', option='exclude_hidden_itens')
-        if exclude_hidden_master_switch is None: # Default to True if not set
-            exclude_hidden_master_switch = True
 
+        # Write the interrupted file to indicate a backup is in progress
         try:
             with open(self.interruped_main_file, 'w') as f:
                 f.write("interrupted")
         except OSError as e:
-            logging.critical(f"Could not write to interrupted_main_file {self.interruped_main_file}: {e}. "
-                          "Backup may not resume correctly if interrupted again. "
-                          "This may indicate a read-only filesystem.")
-            # Depending on severity, might return or raise to stop the backup cycle
+            logging.critical(
+                f"Could not write to interrupted_main_file {self.interruped_main_file}: {e}. "
+                "This may indicate a read-only filesystem or permissions issue."
+            )
+            return None
+        
+        return session_backup_dir
 
-        if self.should_exit or self.suspend_flag: # Check after writing interrupted file
-            logging.info("scan_and_backup: Exiting or suspending after writing interrupted_main_file.")
-            return
-        for entry in os.scandir(self.user_home):
-            if (exclude_hidden_master_switch and entry.name.startswith('.')) or \
-               entry.name in self.excluded_dirs:
-                continue
-
-            src_path = entry.path
-            top_level_rel_path = os.path.relpath(src_path, self.user_home)
-
-            # Skip ignored folders
-            if any(os.path.commonpath([src_path, ign]) == ign for ign in self.ignored_folders):
-                continue
+    async def _scan_and_process_entry(self, entry: os.DirEntry, session_backup_dir: str, tasks: list):
+        """Processes a single file or directory entry from the user's home."""
+        exclude_hidden = server.get_database_value(
+            section='EXCLUDE', 
+            option='exclude_hidden_itens')
             
-            if self.should_exit or self.suspend_flag:
-                logging.info(f"scan_and_backup: Exiting or suspending before processing entry: {entry.name}")
-                return
+        if (exclude_hidden and entry.name.startswith('.')) or \
+           entry.name in self.excluded_dirs:
+            return
 
+        src_path = entry.path
+        if any(os.path.commonpath([src_path, ign]) == ign for ign in self.ignored_folders):
+            return
+
+        try:
             if entry.is_dir():
-                cached_meta = self.load_folder_metadata(top_level_rel_path)
-                new_meta = {}
-
-                for root, dirs, files_in_dir in os.walk(src_path): # Renamed 'files' to 'files_in_dir'
-                    if self.should_exit or self.suspend_flag:
-                        logging.info(f"scan_and_backup: Exiting or suspending during os.walk of {src_path}.")
-                        return
-
-                    # Filter directories based on hidden status and excluded_dirs
-                    dirs[:] = [d for d in dirs if not ((exclude_hidden_master_switch and d.startswith('.')) or \
-                                                       d in self.excluded_dirs)]
-                    send_to_ui(json.dumps({
-                        "type": "scanning",
-                        "folder": os.path.relpath(root, self.user_home).replace("\\", "/")
-                    }))
-                    subfolder_key = os.path.relpath(root, src_path).replace("\\", "/")
-        
-                    current_meta = self._compute_folder_metadata(
-                        root,
-                        excluded_dirs=self.excluded_dirs,
-                        excluded_exts=self.excluded_exts
-                    )
-                    new_meta[subfolder_key] = current_meta
-
-                    if self.should_exit or self.suspend_flag: # Check after computing metadata
-                        logging.info(f"scan_and_backup: Exiting or suspending after metadata computation for {root}.")
-                        return
-
-                    if not self.folder_needs_check(subfolder_key, current_meta, cached_meta):
-                        continue
-
-                    for f_in_dir_loop in files_in_dir: # Renamed 'f' to avoid conflict
-                        if (exclude_hidden_master_switch and f_in_dir_loop.startswith('.')) or \
-                           any(f_in_dir_loop.endswith(ext) for ext in self.excluded_exts):
-                            continue
-                        
-                        if self.should_exit or self.suspend_flag: # Check inside file loop
-                            logging.info(f"scan_and_backup: Exiting or suspending during file processing in {root}.")
-                            return
-
-                        fsrc_loop = os.path.join(root, f_in_dir_loop)
-                        frel_loop = os.path.relpath(fsrc_loop, self.user_home)
-                        main_path_loop = os.path.join(self.main_backup_dir, frel_loop)
-
-                        if not os.path.exists(main_path_loop):
-                            tasks.append(self.copy_file(fsrc_loop, main_path_loop, frel_loop))
-                        elif self.file_was_updated(fsrc_loop, frel_loop):
-                            session_backup_path_loop = os.path.join(session_backup_dir, frel_loop)
-                            tasks.append(self.copy_file(fsrc_loop, session_backup_path_loop, frel_loop))
-
-                self.save_folder_metadata(top_level_rel_path, new_meta)
-            
+                await self._process_folder_entry(src_path, session_backup_dir, tasks)
             elif entry.is_file():
-                if self.should_exit or self.suspend_flag: # Check before processing top-level file
-                    logging.info(f"scan_and_backup: Exiting or suspending before processing top-level file {entry.name}.")
-                    return
+                await self._process_file_entry(src_path, session_backup_dir, tasks)
+        except Exception as e:
+            logging.warning(f"Error processing entry {src_path}: {e}")
 
-                # This is a top-level file in user_home
-                fsrc = src_path 
-                frel = top_level_rel_path # Relative path of the top-level file
+    async def _process_folder_entry(self, folder_path: str, session_backup_dir: str, tasks: list):
+        """Scans a directory recursively and queues files for backup."""
+        top_level_rel_path = os.path.relpath(folder_path, self.user_home)
+        cached_meta = self.load_folder_metadata(top_level_rel_path)
+        new_meta = {}
 
-                # Apply hidden/excluded extension checks for top-level files
-                if (exclude_hidden_master_switch and entry.name.startswith('.')) or \
-                   any(entry.name.endswith(ext) for ext in self.excluded_exts):
+        exclude_hidden = server.get_database_value(
+            section='EXCLUDE', 
+            option='exclude_hidden_itens')
+
+        for root, dirs, files_in_dir in os.walk(folder_path):
+            if self.should_exit or self.suspend_flag:
+                logging.info(f"Exiting or suspending during os.walk of {folder_path}.")
+                break
+            
+            # Filter directories in-place
+            dirs[:] = [d for d in dirs if not ((exclude_hidden and d.startswith('.')) or d in self.excluded_dirs)]
+            send_to_ui(json.dumps({
+                "type": "scanning",
+                "folder": os.path.relpath(root, self.user_home).replace("\\", "/")
+            }))
+            
+            subfolder_key = os.path.relpath(root, folder_path).replace("\\", "/")
+            current_meta = self._compute_folder_metadata(
+                root, excluded_dirs=self.excluded_dirs, excluded_exts=self.excluded_exts
+            )
+            new_meta[subfolder_key] = current_meta
+
+            if not self.folder_needs_check(subfolder_key, current_meta, cached_meta):
+                continue
+
+            for f_name in files_in_dir:
+                fsrc = os.path.join(root, f_name)
+                frel = os.path.relpath(fsrc, self.user_home)
+
+                if (exclude_hidden and f_name.startswith('.')) or \
+                   any(f_name.endswith(ext) for ext in self.excluded_exts):
                     continue
-                
-                main_path = os.path.join(self.main_backup_dir, frel)
 
-                if not os.path.exists(main_path):
-                    tasks.append(self.copy_file(fsrc, main_path, frel))
+                if self.should_exit or self.suspend_flag:
+                    break
+
+                if not os.path.exists(os.path.join(self.main_backup_dir, frel)):
+                    tasks.append(self.copy_file(fsrc, os.path.join(self.main_backup_dir, frel), frel))
                 elif self.file_was_updated(fsrc, frel):
-                    session_backup_path = os.path.join(session_backup_dir, frel)
-                    tasks.append(self.copy_file(fsrc, session_backup_path, frel))
+                    tasks.append(self.copy_file(fsrc, os.path.join(session_backup_dir, frel), frel))
 
-        if self.should_exit or self.suspend_flag: # Check before gathering tasks
-            logging.info("scan_and_backup: Exiting or suspending before awaiting tasks.")
+        self.save_folder_metadata(top_level_rel_path, new_meta)
+
+    async def _process_file_entry(self, file_path: str, session_backup_dir: str, tasks: list):
+        """Queues a single file for backup."""
+        frel = os.path.relpath(file_path, self.user_home)
+        main_path = os.path.join(self.main_backup_dir, frel)
+
+        exclude_hidden = server.get_database_value(
+            section='EXCLUDE', 
+            option='exclude_hidden_itens')
+
+        if (exclude_hidden and os.path.basename(file_path).startswith('.')) or \
+           any(os.path.basename(file_path).endswith(ext) for ext in self.excluded_exts):
             return
 
-        if tasks:
-            await asyncio.gather(*tasks)
-            # After tasks are gathered, check flags again before proceeding
-            if self.should_exit or self.suspend_flag:
-                logging.info("scan_and_backup: Exiting or suspending after awaiting tasks, before summary.")
-                return
-            
-            server.update_recent_backup_information()
-            
-            # After backup tasks are complete, generate the summary
-            try:
-                summary_script_path = os.path.join(os.path.dirname(__file__), 'generate_backup_summary.py')
-                process = sub.run(
-                    ['python3', summary_script_path],
-                    check=True,
-                    capture_output=True, # Capture stdout and stderr
-                    text=True # Decode stdout/stderr as text
-                )
-                # If successful, process.stdout will have the script's print statements/logs
-                logging.info(f"generate_backup_summary.py stdout:\n{process.stdout}")
-                send_to_ui(json.dumps({"type": "summary_updated"}))
+        if not os.path.exists(main_path):
+            tasks.append(self.copy_file(file_path, main_path, frel))
+        elif self.file_was_updated(file_path, frel):
+            tasks.append(self.copy_file(file_path, os.path.join(session_backup_dir, frel), frel))
 
-            except sub.CalledProcessError as e: # This will be raised if check=True and script returns non-zero
-                logging.warning(f"Failed to generate backup summary. Script: {summary_script_path}, Return code: {e.returncode}")
-            except Exception as e: # Catch other potential errors like FileNotFoundError for the script itself
-                logging.critical(f"Failed to generate backup summary (unexpected error): {e}", exc_info=True)
-            logging.info("Backup session complete.")
-
-            # Check for new packages in User's Download's folder
-            if not (self.should_exit or self.suspend_flag):
-                if server.DRIVER_LOCATION and self.is_backup_location_writable():
-                    await self._backup_downloaded_packages()
-
-            # Backup flapak's application list
-
+    async def _finalize_backup_session(self, session_backup_dir: str):
+        """Performs post-backup tasks and cleanup."""
+        server.update_recent_backup_information()
         
+        # Run the backup summary script
+        try:
+            summary_script_path = os.path.join(os.path.dirname(__file__), 'generate_backup_summary.py')
+            sub.run(['python3', summary_script_path], check=True, capture_output=True, text=True)
+            send_to_ui(json.dumps({"type": "summary_updated"}))
+            logging.info("Backup summary generated successfully.")
+        except sub.CalledProcessError as e:
+            logging.warning(f"Failed to generate backup summary. Return code: {e.returncode}")
+        except Exception as e:
+            logging.critical(f"Unexpected error while generating backup summary: {e}")
+
+        # Check for new packages and Flatpaks if the device is writable
+        if server.DRIVER_LOCATION and self.is_backup_location_writable():
+            await self._backup_downloaded_packages()
+            await self.backup_flatpaks()
+
+        # Remove the interrupted file and clean up empty folders
         try:
             if os.path.exists(self.interruped_main_file):
                 os.remove(self.interruped_main_file)
         except OSError as e:
-            logging.critical(f"Could not remove interrupted_main_file {self.interruped_main_file}: {e}. "
-                          "This may indicate a read-only filesystem.")
+            logging.critical(f"Could not remove interrupted_main_file: {e}. Check filesystem permissions.")
         
-        # Cleanup empty incremental folders
-        if os.path.exists(session_backup_dir): # Check if session_backup_dir was even created
-            self._cleanup_empty_incremental_folders(session_backup_dir)
+        self._cleanup_empty_incremental_folders(session_backup_dir)
+        logging.info("Backup session complete.")
 
     ############################################################################
     # CLEANUP OF EMPTY INCREMENTAL FOLDERS
@@ -730,171 +817,176 @@ class Daemon:
     ####################################################################
     # Flatpak
     ####################################################################
+    async def _execute_flatpak_command(self, command: list) -> str | None:
+        """
+        Executes a given command asynchronously and returns its stdout on success.
+        Returns None on failure.
+        """
+        try:
+            process = await asyncio.create_subprocess_exec(
+                *command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+
+            if process.returncode == 0:
+                # logging.info(f"Successfully executed: {' '.join(command)}")
+                return stdout.decode('utf-8').strip()
+            else:
+                error_msg = stderr.decode('utf-8').strip()
+                logging.warning(f"Command failed: {' '.join(command)}\nError: {error_msg}")
+                return None
+
+        except FileNotFoundError:
+            # logging.warning(f"Command not found: '{command[0]}'.")
+            return None
+        except Exception as e:
+            logging.error(f"An unexpected error occurred with command {' '.join(command)}: {e}")
+            return None
+
+    async def _save_flatpak_list(self, content: str):
+        """Saves the flatpak list content to the backup file asynchronously."""
+        backup_path = server.flatpak_txt_location()
+        loop = asyncio.get_event_loop()
+        
+        try:
+            # Run blocking I/O in the executor to avoid stalling the event loop
+            await loop.run_in_executor(
+                self.executor,
+                lambda: (
+                    os.makedirs(os.path.dirname(backup_path), exist_ok=True),
+                    (lambda f: f.write(content + "\n"))(open(backup_path, "w", encoding="utf-8"))
+                )
+            )
+            logging.info(f"Successfully backed up Flatpak application list to {backup_path}")
+        except Exception as e:
+            logging.critical(f"Failed to write Flatpak backup file to {backup_path}: {e}")
+
     async def backup_flatpaks(self):
         """
-        Backs up the Flatpak application list and user data asynchronously.
+        Backs up the list of installed Flatpak applications.
         """
-        print("Backing up Flatpak app list...")
+        logging.info("Starting Flatpak application backup...")
 
-        # A list of commands to try in order of preference
+        # 1. Pre-checks: Ensure the backup location is ready
+        if not has_driver_connection() or not self.is_backup_location_writable():
+            logging.warning("Backup device not available or not writable. Skipping Flatpak backup.")
+            return
+
+        # 2. Define commands to try
         commands_to_try = [
             server.GET_FLATPAKS_APPLICATIONS_NAME_CONTAINER.split(),
             server.GET_FLATPAKS_APPLICATIONS_NAME_NON_CONTAINER.split()
         ]
         
+        # 3. Execute commands until one succeeds
         output = None
-
         for command in commands_to_try:
-            try:
-                # Use asyncio's non-blocking subprocess tools
-                process = await asyncio.create_subprocess_exec(
-                    *command,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
+            output = await self._execute_flatpak_command(command)
+            if output is not None:
+                break  # Stop on the first successful command
 
-                # Await the command's completion and get its output
-                stdout, stderr = await process.communicate()
-
-                # Check if the command was successful
-                if process.returncode == 0:
-                    print(f"Successfully executed: {' '.join(command)}")
-                    output = stdout.decode('utf-8').strip()
-                    # break  # Exit the loop on first success
-                else:
-                    # Log the error from the failed command
-                    error_msg = stderr.decode('utf-8').strip()
-                    print(f"Command failed: {' '.join(command)}\nError: {error_msg}")
-
-            except FileNotFoundError:
-                print(f"Command not found: '{command[0]}'. Trying next command...")
-            except Exception as e:
-                print(f"An unexpected error occurred with command {' '.join(command)}: {e}")
-
-        # After the loop, check if any command succeeded
+        # 4. Save the output if successful
         if output is not None:
-            # ... now you can continue with your logic to save 'output' to a file ...
-            logging.info("Successfully retrieved Flatpak list.")
-
-            # For example:
-            backup_path = server.flatpak_txt_location()
-            os.makedirs(os.path.dirname(backup_path), exist_ok=True)
-            with open(backup_path, "w", encoding="utf-8") as f:
-                f.write(output + "\n")
+            await self._save_flatpak_list(output)
         else:
-            logging.info("[ERROR]: All attempts to list Flatpak applications failed.")
-            # Handle the failure appropriately
+            logging.error("All attempts to list Flatpak applications failed.")
 
     ############################################################################
     # DAEMON MAIN RUN LOOP
-    ############################################################################
-    async def run(self):
-        self.loop = asyncio.get_running_loop() # Store the loop for threadsafe calls
-        self.pid = str(os.getpid())
-        pid_file_path = server.DAEMON_PID_LOCATION
-
-        # Check for existing daemon and manage PID file
-        if os.path.exists(pid_file_path):
-            try:
-                with open(pid_file_path, 'r') as pf:
-                    existing_pid = int(pf.read().strip())
-                if existing_pid != int(self.pid): # Check if it's not self (e.g. from a previous crash)
-                    try:
-                        os.kill(existing_pid, 0) # Check if process exists
-                        logging.critical(f"Another daemon instance (PID {existing_pid}) appears to be running. Exiting.")
-                        return # Exit the run method, daemon will stop
-                    except OSError: # Process with existing_pid not running (stale PID file)
-                        logging.warning(f"Stale PID file found for PID {existing_pid}. Removing it.")
-                        os.remove(pid_file_path)
-            except (ValueError, FileNotFoundError, OSError) as e: # Added OSError for os.remove
-                logging.warning(f"Error processing existing PID file {pid_file_path}: {e}. Attempting to remove and continue.")
-                try:
-                    if os.path.exists(pid_file_path): os.remove(pid_file_path)
-                except OSError:
-                    pass # Ignore if removal fails, will try to write next
-
-        # Create new PID file
-        try:
-            os.makedirs(os.path.dirname(pid_file_path), exist_ok=True)
-            with open(pid_file_path, 'w') as pf:
-                pf.write(self.pid)
-            logging.info(f"Daemon (PID: {self.pid}) started. PID file: {pid_file_path}")
-        except Exception as e:
-            logging.critical(f"Failed to create PID file {pid_file_path}: {e}. Daemon cannot start.")
-            return # Exit the run method, daemon will stop
-        # await self.resume_from_interruption()
-        shutdown_event = asyncio.Event()
-
-        # Define signal handlers for use with signal.signal
-        def stop_loop_for_termination(signum, frame): # For SIGTERM, SIGINT
+    ############################################################################,
+    def _setup_signal_handlers(self, shutdown_event: asyncio.Event):
+        """Configures the signal handlers for the daemon."""
+        
+        def stop_loop_for_termination(signum, frame):
+            """Handler for SIGTERM and SIGINT."""
             logging.debug(f"stop_loop_for_termination called for signal {signum}")
             self.signal_handler(signum, frame)
             shutdown_event.set()
 
-        # Setup signal handlers
         signal.signal(signal.SIGTERM, stop_loop_for_termination)
         signal.signal(signal.SIGINT, stop_loop_for_termination)
         signal.signal(signal.SIGTSTP, self.signal_handler)  # Suspend (Ctrl+Z)
         signal.signal(signal.SIGCONT, self.resume_handler)  # Resume
 
-        logging.info("Starting scan and backup...")
+    async def _wait_for_next_cycle(self, shutdown_event: asyncio.Event):
+        """Waits for the configured time in an interruptible manner."""
+        logging.info(f"Waiting for {WAIT_TIME} minutes before next cycle.")
+        total_wait_seconds = WAIT_TIME * 60
+        check_interval = 1.0  # seconds
 
-        while not self.should_exit:
+        try:
+            # This waits for the total duration, but checks the event every second.
+            # If the shutdown_event is set, it will wake up immediately.
+            await asyncio.wait_for(shutdown_event.wait(), timeout=total_wait_seconds)
+        except asyncio.TimeoutError:
+            # This is the expected outcome after waiting the full duration.
+            pass 
+
+    async def _perform_backup_cycle(self):
+        """Checks for the backup device and runs the backup if available."""
+        # BUG:
+        """
+        Device is not connected but looks like has_driver_connection() is returning True
+        because, if self.is_backup_location_writable() is being called, even disconnected.
+        """
+        if not self._can_write_to_backup_location():
+            return
+
+        await self.scan_and_backup()
+
+    async def _run_health_checks(self) -> bool:
+            """
+            Performs periodic checks to ensure the daemon should continue running.
+            Returns False if the daemon should shut down.
+            """
+            # 1. Check for suspension
             if self.suspend_flag:
                 logging.info("Daemon suspended... sleeping.")
                 await asyncio.sleep(5)
-                continue
+                return True # Continue running, but skip this cycle's work
 
-            # Check if the PID file created by this daemon instance was removed externally
-            if not os.path.exists(pid_file_path):
-                logging.warning(f"Daemon PID file {pid_file_path} was removed externally. Shutting down.")
-                self.signal_handler(signal.SIGTERM, None) # This sets self.should_exit = True
-                break
+            # 2. Check if the UI socket file was removed
+            if not os.path.exists(server.SOCKET_PATH):
+                logging.info(f"Socket file {server.SOCKET_PATH} was removed externally. Shutting down.")
+                self.signal_handler(signal.SIGTERM, None)
+                return False # Stop running
 
-            if has_driver_connection():
-                if self.is_backup_location_writable():
-                    # Reset a flag indicating writability issue if it was set
-                    self.had_writability_issue = False
-                    await self.scan_and_backup()
-                    await self.backup_flatpaks()  # Backup flatpaks installed
-                else:
-                    logging.critical(f"[CRITICAL]: Backup location {server.create_base_folder()} is not writable. Automatic backups will be disabled by the UI if running.")
-                    self.had_writability_issue = True # Set flag to avoid repeated critical logs for the same issue in one session
-            else:
-                """
-                    Has no conenction to backup device right now.
-                    Actions:
-                    - Every WAIT_TIME, check if has conenction (loop).
-                """
-                # logging.info("[INFO]: Backup device is not connected. Skipping backup cycle.")
-                self.had_writability_issue = False
-
-            logging.debug(f"Waiting for {WAIT_TIME} minutes before next cycle.")
-            total_wait = WAIT_TIME * 60
-            interval = 1
-            elapsed = 0
-            
-            while elapsed < total_wait and not self.should_exit:
-                try:
-                    await asyncio.wait_for(shutdown_event.wait(), timeout=interval)
-                    break
-                except asyncio.TimeoutError:
-                    elapsed += interval
-            
-            if self.should_exit: # If already exiting due to a signal, break before config check
-                logging.debug("Main loop: should_exit is true, breaking before auto_backup_enabled check.")
-                break
-
-            # Check if auto backup is still enabled
+            # 3. Check if auto-backup is still enabled in the config
             auto_backup_enabled = server.get_database_value('BACKUP', 'automatically_backup')
             if str(auto_backup_enabled).lower() != 'true':
-                logging.info("Automatic backup is disabled in configuration. Daemon will shut down.")
-                self.signal_handler(signal.SIGTERM, None) # Trigger shutdown
-                # self.should_exit will be true now, loop will terminate
+                logging.info("Automatic backup is disabled in configuration. Shutting down.")
+                self.signal_handler(signal.SIGTERM, None)
+                return False # Stop running
+            
+            return True
+    
+    async def run(self):
+        self.loop = asyncio.get_running_loop() # Store the loop for threadsafe calls
+        self.pid = str(os.getpid())
 
-        # Executor shutdown is handled in the main script's finally block
-        # if self.executor:
-        #    self.executor.shutdown(wait=True) 
+        # await self.resume_from_interruption()
+        shutdown_event = asyncio.Event()
+        self._setup_signal_handlers(shutdown_event)
+
+        logging.info("Daemon started. Performing initial checks...")
+        
+        while not self.should_exit:
+            # should_continue = await self._run_health_checks()
+            # if not should_continue:
+            #     break
+
+            # If suspended, the health check will sleep and we can skip the backup cycle
+            if self.suspend_flag:
+                continue
+
+            await self._perform_backup_cycle()
+
+            await self._wait_for_next_cycle(shutdown_event)
+            
+            logging.info("Daemon main loop finished.")
+
 
 ################################################################################
 # MAIN EXECUTION BLOCK
@@ -906,12 +998,8 @@ if __name__ == "__main__":
     # Ensure the directory for the log file exists, attempt to create if not.
     # This is important if DRIVER_LOCATION is initially unavailable.
     log_file_path = server.get_log_file_path()
-    # This path should be determined before the daemon object 'daemon' is created or fails
-    pid_file_path_for_cleanup = server.DAEMON_PID_LOCATION
     daemon_obj = None # Initialize to None
-    current_process_pid = str(os.getpid()) # Get PID early
-    # if os.path.exists(log_file_path): # Optional: remove old log on start
-    #     os.remove(log_file_path)
+
     os.makedirs(os.path.dirname(log_file_path), exist_ok=True) 
     
     formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
@@ -940,30 +1028,6 @@ if __name__ == "__main__":
     finally:
         logging.info("Daemon shutting down (finally block reached).")
 
-        # Daemon removes its own PID file
-        if os.path.exists(pid_file_path_for_cleanup):
-            try:
-                pid_in_file = ""
-                with open(pid_file_path_for_cleanup, 'r') as f:
-                    pid_in_file = f.read().strip()
-
-                expected_pid = daemon_obj.pid if daemon_obj and hasattr(daemon_obj, 'pid') and daemon_obj.pid else current_process_pid
-
-                if pid_in_file == expected_pid:
-                    os.remove(pid_file_path_for_cleanup)
-                    logging.info(f"Daemon (PID {expected_pid}) removed its PID file: {pid_file_path_for_cleanup}")
-                else:
-                    logging.warning(
-                        f"PID file {pid_file_path_for_cleanup} contains PID {pid_in_file}, "
-                        f"but expected PID {expected_pid}. Not removing file."
-                    )
-            except Exception as e_remove:
-                logging.error(f"Error removing PID file {pid_file_path_for_cleanup} on daemon exit: {e_remove}")
-        else:
-            logging.info(f"PID file {pid_file_path_for_cleanup} not found during daemon shutdown.")
-
         # Executor shutdown
         if daemon_obj and hasattr(daemon_obj, 'executor') and daemon_obj.executor:
-            logging.info("Shutting down executor pool...")
             daemon_obj.executor.shutdown(wait=True)
-            logging.info("Executor pool shut down.")

@@ -37,6 +37,7 @@ import math
 import difflib 
 
 from datetime import datetime, timedelta
+from packaging.version import Version, InvalidVersion
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -216,74 +217,84 @@ class SERVER:
 		with open(self.CONF_LOCATION, 'w') as config_file:
 			self.CONF.write(config_file)
 
-	def is_daemon_running(self):
-		"""Check if the daemon is already running by checking the PID in the Flatpak sandbox."""
-		if not os.path.exists(self.DAEMON_PID_LOCATION):
-			logging.info(f"PID file {self.DAEMON_PID_LOCATION} does not exist. Daemon not running or PID file cleaned up.")
-			return False
+	# def is_daemon_running(self):
+	# 	"""Check if the daemon is already running by checking the PID in the Flatpak sandbox."""
+	# 	if not os.path.exists(self.DAEMON_PID_LOCATION):
+	# 		logging.info(f"PID file {self.DAEMON_PID_LOCATION} does not exist. Daemon not running or PID file cleaned up.")
+	# 		return False
 
-		try:
-			with open(self.DAEMON_PID_LOCATION, 'r') as f:
-				pid_str = f.read().strip()
-				if not pid_str:
-					logging.warning(f"PID file {self.DAEMON_PID_LOCATION} is empty. Assuming daemon not running.")
-					return False
-				pid = int(pid_str)
-		except (ValueError, FileNotFoundError) as e:
-			logging.error(f"Error reading PID from {self.DAEMON_PID_LOCATION}: {e}. Assuming daemon not running.")
-			return False
-		except Exception as e: # Catch any other unexpected error during file read
-			logging.error(f"Unexpected error reading PID file {self.DAEMON_PID_LOCATION}: {e}. Assuming daemon not running.")
-			return False
+	# 	try:
+	# 		with open(self.DAEMON_PID_LOCATION, 'r') as f:
+	# 			pid_str = f.read().strip()
+	# 			if not pid_str:
+	# 				logging.warning(f"PID file {self.DAEMON_PID_LOCATION} is empty. Assuming daemon not running.")
+	# 				return False
+	# 			pid = int(pid_str)
+	# 	except (ValueError, FileNotFoundError) as e:
+	# 		logging.error(f"Error reading PID from {self.DAEMON_PID_LOCATION}: {e}. Assuming daemon not running.")
+	# 		return False
+	# 	except Exception as e: # Catch any other unexpected error during file read
+	# 		logging.error(f"Unexpected error reading PID file {self.DAEMON_PID_LOCATION}: {e}. Assuming daemon not running.")
+	# 		return False
 
-		try:
-			# Attempt to create a Process object. This will raise NoSuchProcess if the PID is invalid.
-			p = psutil.Process(pid) # Raises NoSuchProcess, ZombieProcess, AccessDenied
+	# 	try:
+	# 		# Attempt to create a Process object. This will raise NoSuchProcess if the PID is invalid.
+	# 		p = psutil.Process(pid) # Raises NoSuchProcess, ZombieProcess, AccessDenied
 
-			# If we reach here, the process exists. Now verify it's our daemon.
-			cmdline = p.cmdline()
-			if not cmdline:
-				# This case is unlikely if psutil.Process(pid) succeeded without ZombieProcess
-				logging.info(f"Could not retrieve command line for PID {pid}. Cannot definitively verify daemon identity. Assuming running based on PID existence and Process() success.")
-				return True
+	# 		# If we reach here, the process exists. Now verify it's our daemon.
+	# 		cmdline = p.cmdline()
+	# 		if not cmdline:
+	# 			# This case is unlikely if psutil.Process(pid) succeeded without ZombieProcess
+	# 			logging.info(f"Could not retrieve command line for PID {pid}. Cannot definitively verify daemon identity. Assuming running based on PID existence and Process() success.")
+	# 			return True
 
-			daemon_script_name = os.path.basename(self.DAEMON_PY_LOCATION)
-			is_our_daemon = False
-			for arg in cmdline:
-				# # Check if the daemon script path or just the script name is in the command line arguments
-				# if self.DAEMON_PY_LOCATION in arg or daemon_script_name in arg:
-				# 	is_our_daemon = True
-				# 	break
+	# 		daemon_script_name = os.path.basename(self.DAEMON_PY_LOCATION)
+	# 		is_our_daemon = False
+	# 		for arg in cmdline:
+	# 			# # Check if the daemon script path or just the script name is in the command line arguments
+	# 			# if self.DAEMON_PY_LOCATION in arg or daemon_script_name in arg:
+	# 			# 	is_our_daemon = True
+	# 			# 	break
 
-				# Allow proctitle-based renaming like 'Time Machine - daemon'
-				if any("guardian" in arg.lower() or "daemon" in arg.lower() for arg in cmdline):
-					is_our_daemon = True
-					break
+	# 			# Allow proctitle-based renaming like 'Time Machine - daemon'
+	# 			if any("guardian" in arg.lower() or "daemon" in arg.lower() for arg in cmdline):
+	# 				is_our_daemon = True
+	# 				break
 
 			
-			if is_our_daemon:
-				logging.info(f"Daemon is running with PID: {pid} and verified command line.")
-				return True
-			else:
-				logging.warning(f"Process with PID {pid} exists, but its command line {cmdline} does not match expected daemon script '{daemon_script_name}'. PID file may be stale or belong to another process.")
-				# Consider if the PID file should be cleaned up by the daemon's startup logic if this state persists.
-				return False
+	# 		if is_our_daemon:
+	# 			logging.info(f"Daemon is running with PID: {pid} and verified command line.")
+	# 			return True
+	# 		else:
+	# 			logging.warning(f"Process with PID {pid} exists, but its command line {cmdline} does not match expected daemon script '{daemon_script_name}'. PID file may be stale or belong to another process.")
+	# 			# Consider if the PID file should be cleaned up by the daemon's startup logic if this state persists.
+	# 			return False
 
-		except psutil.NoSuchProcess:
-			logging.warning(f"Process with PID {pid} from {self.DAEMON_PID_LOCATION} does not exist (psutil.NoSuchProcess). PID file may be stale.")
-			return False
-		except psutil.ZombieProcess:
-			logging.warning(f"Process with PID {pid} from {self.DAEMON_PID_LOCATION} is a zombie process. PID file is stale.")
-			# The daemon's startup logic should ideally clean up stale PID files.
-			return False
-		except psutil.AccessDenied:
-			logging.error(f"Access denied when trying to inspect process with PID {pid}. Cannot verify daemon identity. Assuming not running for safety.")
-			# Returning False is safer as it might allow a new daemon to start and correct the PID file.
-			return False
-		except Exception as e:
-			logging.error(f"Unexpected error checking process PID {pid} with psutil: {e}. Assuming not running.")
-			return False
+	# 	except psutil.NoSuchProcess:
+	# 		logging.warning(f"Process with PID {pid} from {self.DAEMON_PID_LOCATION} does not exist (psutil.NoSuchProcess). PID file may be stale.")
+	# 		return False
+	# 	except psutil.ZombieProcess:
+	# 		logging.warning(f"Process with PID {pid} from {self.DAEMON_PID_LOCATION} is a zombie process. PID file is stale.")
+	# 		# The daemon's startup logic should ideally clean up stale PID files.
+	# 		return False
+	# 	except psutil.AccessDenied:
+	# 		logging.error(f"Access denied when trying to inspect process with PID {pid}. Cannot verify daemon identity. Assuming not running for safety.")
+	# 		# Returning False is safer as it might allow a new daemon to start and correct the PID file.
+	# 		return False
+	# 	except Exception as e:
+	# 		logging.error(f"Unexpected error checking process PID {pid} with psutil: {e}. Assuming not running.")
+	# 		return False
 	
+	def is_daemon_running(self):
+		"""Check if the daemon is already running by checking if socket file exists."""
+		# Socket file was removed
+		if not os.path.exists(self.SOCKET_PATH):
+			logging.info(f"Socket file {self.SOCKET_PATH} was removed externally. Shutting down.")
+			return False
+		else:
+			logging.info(f"Socket file {self.SOCKET_PATH} exists.")
+			return True
+
 	def is_first_backup(self) -> bool:
 		try:
 			if not os.path.exists(self.main_backup_folder()):

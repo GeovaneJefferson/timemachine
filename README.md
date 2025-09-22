@@ -114,3 +114,8 @@ This is the recommended method for development and local testing.
     ```bash
     rm -rf /home/$USER/.var/app/io.github.geovanejefferson.timemachine
     ```
+    
+## 📋 TODO
+1. Publish flatpak to Flathub.
+2. Add remotely backup ability. (Network Transfer)
+3. Redo UI.

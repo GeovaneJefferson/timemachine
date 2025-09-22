@@ -132,8 +132,8 @@ class BackupWindow(Adw.ApplicationWindow):
         self.set_title(server.APP_NAME)
 
         ##########################################################################
-		# VARIABLES
-		##########################################################################
+        # VARIABLES
+        ##########################################################################
         self.selected_file_path: bool = None
         self.documents_path = os.path.expanduser(server.main_backup_folder())
         self.location_buttons: list = []
@@ -193,12 +193,12 @@ class BackupWindow(Adw.ApplicationWindow):
         self._check_for_critical_log_errors() # Check for critical errors at startup
         # self.update_overview_cards_from_summary() # Load summary data for overview cards
 
-        threading.Thread(target=self.start_server, daemon=True).start()  # Start the socket server in a separate thread
         # Start the summary data loading in a separate thread
         threading.Thread(target=self._populate_summary_data, daemon=True).start()
 
         # Grab searchbar focus on startup
         self.search_entry.grab_focus()
+        self._check_for_critical_log_errors() # Check for critical errors at startup
 
     def _create_header_bar(self):
         # Header Bar
@@ -893,8 +893,13 @@ class BackupWindow(Adw.ApplicationWindow):
         daemon_is_actually_running = server.is_daemon_running()
 
         if self.current_daemon_state == "disconnected":
-            icon_name = "network-offline-symbolic"
-            tooltip = "Backup device not connected."
+            # Check if at least the daemon is running
+            if server.is_daemon_running():
+                icon_name = "network-wired-acquiring-symbolic"
+                tooltip = "Backup device not connected. but daemon is running."
+            else:
+                icon_name = "network-offline-symbolic"
+                tooltip = "Backup device not connected."
         elif self.current_daemon_state == "interrupted":
             if daemon_is_actually_running:
                 icon_name = "dialog-warning-symbolic"
@@ -922,6 +927,7 @@ class BackupWindow(Adw.ApplicationWindow):
 
         self.status_icon.set_from_icon_name(icon_name)
         self.status_icon.set_tooltip_text(tooltip)
+        self.status_icon.set_visible(True)
 
     def on_listbox_selection_changed(self, listbox, row):
         if row:
@@ -943,19 +949,22 @@ class BackupWindow(Adw.ApplicationWindow):
             GLib.idle_add(self._hide_center_spinner)
             # Optionally, populate your listbox or UI with these files
             self.populate_results([{"name": os.path.basename(f), "path": f, "date": os.path.getmtime(f)} for f in latest_files])
-        else:
-            print("No backup files found.")
 
     ##########################################################################
     # Socket reciever
     ##########################################################################
-    def start_server(self):
-        # Make sure the directory for the socket exists
-        os.makedirs(os.path.dirname(server.SOCKET_PATH), exist_ok=True)
-
+    def remove_socket(self):
+        print("Removing socket file")
         # Remove old socket if it exists
         if os.path.exists(server.SOCKET_PATH):
             os.remove(server.SOCKET_PATH)
+
+    def create_connect_socket(self):
+        # Make sure the directory for the socket exists
+        os.makedirs(os.path.dirname(server.SOCKET_PATH), exist_ok=True)
+
+        # Remove socket file
+        # self.remove_socket()
 
         # Create and bind the socket once
         server_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -968,6 +977,68 @@ class BackupWindow(Adw.ApplicationWindow):
             threading.Thread(target=self.handle_client, args=(conn,), daemon=True).start()
 
     def handle_client(self, conn):
+        with conn:
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                try:
+                    # Handle multiple JSON objects in a single recv
+                    # This is a simple implementation; a more robust one would buffer incomplete messages
+                    messages = data.decode("utf-8").strip().split('\n')
+                    for msg_str in messages:
+                        if not msg_str: continue
+                        self.process_daemon_message(msg_str)
+                except Exception as e:
+                    logging.error(f"Socket error processing message: {e}\nData: {data.decode('utf-8', errors='ignore')}")
+
+    def process_daemon_message(self, message_string: str):
+        """Processes a single JSON message string from the daemon."""
+        try:
+            msg = json.loads(message_string)
+            file_id = msg.get("id")
+            filename = msg.get("filename", "unknown")
+            size = msg.get("size", "0 KB")
+            eta = msg.get("eta", "n/a")
+            progress = msg.get("progress", 0.0)
+            
+            current_state_before_message = self.current_daemon_state
+            msg_type = msg.get("type")
+
+            if msg_type == "scanning":
+                folder_being_scanned = msg.get("folder")
+                if folder_being_scanned:
+                    self.current_daemon_state = "scanning"
+                else:
+                    if not self.transfer_rows:
+                        self.current_daemon_state = "interrupted" if os.path.exists(server.get_interrupted_main_file()) else "idle"
+                GLib.idle_add(self.update_scanning_folder_display, folder_being_scanned)
+            elif msg_type == "transfer_progress":
+                self.current_daemon_state = "copying"
+                GLib.idle_add(self.update_or_create_transfer, file_id, filename, size, eta, progress, msg.get("error"))
+                GLib.idle_add(self.update_scanning_folder_display, None)
+            elif msg_type == "summary_updated":
+                GLib.idle_add(self._refresh_left_sidebar_summary_and_usage)
+                GLib.idle_add(self.update_scanning_folder_display, None)
+                if not self.transfer_rows:
+                    self.current_daemon_state = "interrupted" if os.path.exists(server.get_interrupted_main_file()) else "idle"
+            elif msg_type == "daemon_stopping":
+                self.current_daemon_state = "idle" # Visually, it's idle/stopped
+            elif msg_type == "daemon_suspended":
+                self.current_daemon_state = "suspended" # A new state
+            elif msg_type == "daemon_resumed":
+                self.current_daemon_state = "idle" # Or whatever state it should be in
+
+            if current_state_before_message != self.current_daemon_state:
+                GLib.idle_add(self._update_status_icon_display)
+
+            GLib.idle_add(self._update_left_panel_visibility)
+        except json.JSONDecodeError:
+            logging.warning(f"Received non-JSON message from daemon: {message_string}")
+        except Exception as e:
+            logging.error(f"Error in process_daemon_message: {e}")
+
+    def handle_client_old(self, conn):
         with conn:
             while True:
                 data = conn.recv(1024)
@@ -999,6 +1070,7 @@ class BackupWindow(Adw.ApplicationWindow):
                     elif msg_type == "transfer_progress": # Explicitly handle transfer progress
                         self.current_daemon_state = "copying"
                         GLib.idle_add(self.update_or_create_transfer, file_id, filename, size, eta, progress)
+                        GLib.idle_add(self.update_or_create_transfer, file_id, filename, size, eta, progress, msg.get("error"))
                         # When transfers start, scanning of current top-level folder is done or all scans are done.
                         GLib.idle_add(self.update_scanning_folder_display, None) # Hide scanning card
                     elif msg_type == "summary_updated":
@@ -1276,7 +1348,6 @@ class BackupWindow(Adw.ApplicationWindow):
         """
         items_from_summary = []
         summary_file_path = server.get_summary_filename()
-        print(summary_file_path)
         # Define mappings for icons and colors
         category_icons = {
             "Image": "image-x-generic-symbolic",
@@ -1894,6 +1965,197 @@ class BackupWindow(Adw.ApplicationWindow):
             self.thumbnail_cache[file_path] = pixbuf
         return pixbuf
 
+    # def populate_results(self, results):
+    #     """Populate the results listbox with up to 'self.page_size' search results, aligned in columns."""
+    #     # Ensure the content page is visible and spinner is hidden
+    #     GLib.idle_add(self._hide_center_spinner)
+
+    #     if hasattr(self, "loading_label"):
+    #         pass
+            
+    #     # Clear existing results from the listbox
+    #     while True:
+    #         first_child_row = self.listbox.get_first_child() # This returns a Gtk.ListBoxRow
+    #         if not first_child_row: # No fade out for simplicity, instant clear
+    #             break
+    #         self.listbox.remove(first_child_row)
+ 
+    #     limited_results = results[:self.page_size]
+
+    #     for file_info in limited_results:
+    #         grid = Gtk.Grid()
+    #         grid.set_column_spacing(12) # Reduced spacing
+    #         grid.set_row_spacing(0)
+    #         grid.set_hexpand(True)
+    #         grid.set_vexpand(False)
+
+    #         # Thumbnail or Icon
+    #         thumbnail_pixbuf = self._generate_thumbnail_pixbuf(file_info["path"], 32) # 32px thumbnail
+    #         if thumbnail_pixbuf:
+    #             texture = Gdk.Texture.new_for_pixbuf(thumbnail_pixbuf)
+    #             thumbnail_widget = Gtk.Image.new_from_paintable(texture)
+    #         else:
+    #             # Fallback icon
+    #             ext = os.path.splitext(file_info["name"])[1].lower()
+    #             if ext == ".pdf":
+    #                 icon_name = "application-pdf"
+    #             elif ext in server.TEXT_EXTENSIONS: # Use your server.TEXT_EXTENSIONS
+    #                 icon_name = "text-x-generic"
+    #             elif ext in server.IMAGE_EXTENSIONS: # Use your server.IMAGE_EXTENSIONS
+    #                 icon_name = "image-x-generic"
+    #             else:
+    #                 icon_name = "text-x-generic" # Default
+    #             thumbnail_widget = Gtk.Image.new_from_icon_name(icon_name)
+    #         thumbnail_widget.set_pixel_size(32) # Ensure consistent size for icons too
+    #         grid.attach(thumbnail_widget, 0, 0, 1, 1)
+
+    #         # Name and Size Box (Vertical)
+    #         name_and_size_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    #         name_and_size_box.set_hexpand(True) # This box should expand
+
+    #         # Name Label
+    #         shorted_file_path = file_info["path"].replace(server.backup_folder_name(), "").lstrip(os.sep)
+    #         name_label = Gtk.Label(label=shorted_file_path, xalign=0)
+    #         name_label.set_hexpand(True) # Name label expands within its parent (name_and_size_box)
+    #         name_label.set_halign(Gtk.Align.START)
+    #         name_label.set_ellipsize(Pango.EllipsizeMode.END)  # Enable ellipsizing
+    #         name_and_size_box.append(name_label)
+
+    #         # Size Label
+    #         size_label_text = server.get_item_size(file_info["path"], True)
+    #         if size_label_text == "None": # server.get_item_size returns string "None"
+    #             size_label_text = "N/A"
+    #         size_label = Gtk.Label(label=size_label_text, xalign=0)
+    #         size_label.add_css_class("caption") # Style as caption
+    #         name_and_size_box.append(size_label)
+            
+    #         grid.attach(name_and_size_box, 1, 0, 1, 1) # Col 1: Name/Size Box
+            
+    #         # Date Label
+    #         # Determine backup_date string based on path structure or mtime
+    #         backup_date_str = ""
+    #         path_for_date_extraction = file_info["path"].replace(server.backup_folder_name(), "").lstrip(os.sep)
+    #         path_parts = path_for_date_extraction.split(os.sep)
+
+    #         if len(path_parts) > 1 and path_parts[0] != server.MAIN_BACKUP_LOCATION: # Check if it's not main backup and has at least date/time parts
+    #             try:
+    #                 date_str_from_path = path_parts[0] # e.g., "06-06-2025"
+    #                 time_str_from_path = path_parts[1] # e.g., "16-41"
+                    
+    #                 parsed_date_obj = datetime.strptime(date_str_from_path, "%d-%m-%Y")
+    #                 formatted_time_str = time_str_from_path.replace('-', ':') # "16-41" -> "16:41"
+    #                 backup_date_str = f"{parsed_date_obj.strftime('%b %d')} {formatted_time_str}"
+    #             except (ValueError, IndexError) as e:
+    #                 # Fallback if path parts are not as expected
+    #                 backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
+    #         else: # Main backup or unexpected structure, use mtime
+    #             backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
+    #         date_label = Gtk.Label(label=backup_date_str, xalign=0)
+    #         date_label.set_hexpand(False)
+    #         date_label.set_halign(Gtk.Align.START)
+    #         date_label.add_css_class("caption") # Style date as caption
+    #         grid.attach(date_label, 2, 0, 1, 1) # Col 2: Date
+
+    #         # Star button for each row
+    #         star_button_row = Gtk.Button()
+    #         star_button_row.add_css_class("flat")
+    #         setattr(star_button_row, "file_path", file_info["path"])
+
+    #         # Allow starring for any file. The on_star_button_clicked method
+    #         # will use _get_main_backup_equivalent_path to star the canonical version.
+    #         star_button_row.set_sensitive(True)
+    #         path_for_star_check = self._get_main_backup_equivalent_path(file_info["path"])
+
+    #         if path_for_star_check in self.starred_files:
+    #             star_button_row.set_icon_name("starred-symbolic")
+    #             star_button_row.set_tooltip_text("Unstar this item")
+    #         else:
+    #             star_button_row.set_icon_name("non-starred-symbolic")
+    #             star_button_row.set_tooltip_text("Star this item")
+    #         star_button_row.connect("clicked", self.on_star_button_clicked, file_info["path"], star_button_row)
+    #         grid.attach(star_button_row, 3, 0, 1, 1) # Col 3: Star Button
+
+    #         # Open button for each row
+    #         open_file_button_row = Gtk.Button(label="Open File")
+    #         open_file_button_row.set_tooltip_text("Open this backed-up file with the default application.")
+    #         # open_file_button_row.add_css_class("flat") # Optional styling
+    #         setattr(open_file_button_row, "file_path", file_info["path"])
+    #         open_file_button_row.connect("clicked", lambda btn: self.on_open_file_clicked(getattr(btn, "file_path")))
+    #         open_file_button_row.set_hexpand(False)
+    #         grid.attach(open_file_button_row, 4, 0, 1, 1) # Col 4: Open Button
+
+    #         # on_open_location_clicked
+    #         open_location_button_row = Gtk.Button(label="Open Location")
+    #         open_location_button_row.set_tooltip_text("Open the folder containing this backup file.")
+    #         # open_location_button_row.add_css_class("flat") # Use flat style for less emphasis than restore
+    #         setattr(open_location_button_row, "file_path", file_info["path"])
+    #         open_location_button_row.connect("clicked", lambda btn: self.on_open_location_clicked(getattr(btn, "file_path")))
+    #         open_location_button_row.set_hexpand(False)
+    #         grid.attach(open_location_button_row, 5, 0, 1, 1) # Col 5: Open Location Button
+
+    #         # Diff button for each row
+    #         diff_button_row = Gtk.Button(label="Diff")
+    #         diff_button_row.set_tooltip_text("Compare this backup with the current file in your home directory.")
+    #         # diff_button_row.add_css_class("flat") # Optional styling
+    #         setattr(diff_button_row, "file_path", file_info["path"])
+    #         diff_button_row.connect("clicked", self.on_diff_button_clicked_from_row, file_info["path"])
+    #         diff_button_row.set_hexpand(False)
+
+    #         can_diff = False
+    #         original_path_for_diff = self._get_original_path_from_backup(file_info["path"])
+    #         if original_path_for_diff and os.path.exists(original_path_for_diff):
+    #             ext_check = os.path.splitext(file_info["path"])[1].lower()
+    #             if ext_check in server.TEXT_EXTENSIONS:
+    #                 can_diff = True
+    #         diff_button_row.set_sensitive(can_diff)
+    #         grid.attach(diff_button_row, 6, 0, 1, 1) # Col 6: Diff Button
+
+    #         # Find file versions
+    #         find_versions_button_row = Gtk.Button(label="Versions")
+    #         find_versions_button_row.set_tooltip_text(
+    #             "Search for all available versions of the selected file, including the current and previous backups. "
+    #             "Use this to restore or review earlier versions of your file.")
+    #         find_versions_button_row.add_css_class("suggested-action") # Optional: make it less prominent if Diff is suggested
+    #         setattr(find_versions_button_row, "file_path", file_info["path"])
+
+    #         # Create a stack to hold the button and a spinner for loading feedback
+    #         button_stack = Gtk.Stack()
+    #         button_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+    #         button_stack.add_named(find_versions_button_row, "button")
+            
+    #         spinner = Gtk.Spinner()
+    #         button_stack.add_named(spinner, "spinner")
+
+    #         find_versions_button_row.connect("clicked", lambda btn, stack=button_stack: self.find_update(getattr(btn, "file_path"), stack))
+    #         button_stack.set_hexpand(False)
+    #         grid.attach(button_stack, 7, 0, 1, 1) # Col 7: Versions Button Stack
+
+    #         # Restore button for each row
+    #         restore_button_row = Gtk.Button(label="Restore File")
+    #         restore_button_row.set_tooltip_text("Restore this version of the file to its original location.")
+    #         setattr(restore_button_row, "file_path", file_info["path"])
+    #         restore_button_row.connect("clicked", self.on_restore_button_clicked_from_row) # Assuming this method exists
+    #         restore_button_row.set_hexpand(False) # Ensure it doesn't expand
+    #         grid.attach(restore_button_row, 8, 0, 1, 1) # Col 8: Restore Button (Moved from 7)
+            
+    #         # Wrap grid in a revealer for fade-in animation
+    #         row_revealer = Gtk.Revealer()
+    #         row_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
+    #         row_revealer.set_transition_duration(250) # milliseconds
+    #         row_revealer.set_child(grid)
+
+    #         listbox_row = Gtk.ListBoxRow()
+    #         listbox_row.set_margin_top(6) # No top margin, space will be from the header
+    #         listbox_row.set_margin_bottom(3)
+    #         listbox_row.set_margin_start(12)
+    #         listbox_row.set_margin_end(12)
+    #         listbox_row.set_child(row_revealer) # Add revealer to row
+    #         listbox_row.add_css_class("file-list-row-card") # Apply card-like styling
+    #         listbox_row.device_path = file_info["path"]
+    #         self.listbox.append(listbox_row)
+    #         # GLib.idle_add(row_revealer.set_reveal_child, True) # Trigger animation
+    #         row_revealer.set_reveal_child(True)
+
     def populate_results(self, results):
         """Populate the results listbox with up to 'self.page_size' search results, aligned in columns."""
         # Ensure the content page is visible and spinner is hidden
@@ -1961,37 +2223,33 @@ class BackupWindow(Adw.ApplicationWindow):
             grid.attach(name_and_size_box, 1, 0, 1, 1) # Col 1: Name/Size Box
             
             # Date Label
-            # Determine backup_date string based on path structure or mtime
             backup_date_str = ""
             path_for_date_extraction = file_info["path"].replace(server.backup_folder_name(), "").lstrip(os.sep)
             path_parts = path_for_date_extraction.split(os.sep)
 
-            if len(path_parts) > 1 and path_parts[0] != server.MAIN_BACKUP_LOCATION: # Check if it's not main backup and has at least date/time parts
+            if len(path_parts) > 1 and path_parts[0] != server.MAIN_BACKUP_LOCATION:
                 try:
-                    date_str_from_path = path_parts[0] # e.g., "06-06-2025"
-                    time_str_from_path = path_parts[1] # e.g., "16-41"
+                    date_str_from_path = path_parts[0]
+                    time_str_from_path = path_parts[1]
                     
                     parsed_date_obj = datetime.strptime(date_str_from_path, "%d-%m-%Y")
-                    formatted_time_str = time_str_from_path.replace('-', ':') # "16-41" -> "16:41"
+                    formatted_time_str = time_str_from_path.replace('-', ':')
                     backup_date_str = f"{parsed_date_obj.strftime('%b %d')} {formatted_time_str}"
-                except (ValueError, IndexError) as e:
-                    # Fallback if path parts are not as expected
+                except (ValueError, IndexError):
                     backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
-            else: # Main backup or unexpected structure, use mtime
+            else:
                 backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
             date_label = Gtk.Label(label=backup_date_str, xalign=0)
             date_label.set_hexpand(False)
             date_label.set_halign(Gtk.Align.START)
-            date_label.add_css_class("caption") # Style date as caption
-            grid.attach(date_label, 2, 0, 1, 1) # Col 2: Date
+            date_label.add_css_class("caption")
+            grid.attach(date_label, 2, 0, 1, 1)
 
             # Star button for each row
             star_button_row = Gtk.Button()
             star_button_row.add_css_class("flat")
             setattr(star_button_row, "file_path", file_info["path"])
 
-            # Allow starring for any file. The on_star_button_clicked method
-            # will use _get_main_backup_equivalent_path to star the canonical version.
             star_button_row.set_sensitive(True)
             path_for_star_check = self._get_main_backup_equivalent_path(file_info["path"])
 
@@ -2002,89 +2260,78 @@ class BackupWindow(Adw.ApplicationWindow):
                 star_button_row.set_icon_name("non-starred-symbolic")
                 star_button_row.set_tooltip_text("Star this item")
             star_button_row.connect("clicked", self.on_star_button_clicked, file_info["path"], star_button_row)
-            grid.attach(star_button_row, 3, 0, 1, 1) # Col 3: Star Button
-
-            # Open button for each row
-            open_file_button_row = Gtk.Button(label="Open File")
-            open_file_button_row.set_tooltip_text("Open this backed-up file with the default application.")
-            # open_file_button_row.add_css_class("flat") # Optional styling
-            setattr(open_file_button_row, "file_path", file_info["path"])
-            open_file_button_row.connect("clicked", lambda btn: self.on_open_file_clicked(getattr(btn, "file_path")))
-            open_file_button_row.set_hexpand(False)
-            grid.attach(open_file_button_row, 4, 0, 1, 1) # Col 4: Open Button
-
-            # on_open_location_clicked
-            open_location_button_row = Gtk.Button(label="Open Location")
-            open_location_button_row.set_tooltip_text("Open the folder containing this backup file.")
-            # open_location_button_row.add_css_class("flat") # Use flat style for less emphasis than restore
-            setattr(open_location_button_row, "file_path", file_info["path"])
-            open_location_button_row.connect("clicked", lambda btn: self.on_open_location_clicked(getattr(btn, "file_path")))
-            open_location_button_row.set_hexpand(False)
-            grid.attach(open_location_button_row, 5, 0, 1, 1) # Col 5: Open Location Button
-
-            # Diff button for each row
-            diff_button_row = Gtk.Button(label="Diff")
-            diff_button_row.set_tooltip_text("Compare this backup with the current file in your home directory.")
-            # diff_button_row.add_css_class("flat") # Optional styling
-            setattr(diff_button_row, "file_path", file_info["path"])
-            diff_button_row.connect("clicked", self.on_diff_button_clicked_from_row, file_info["path"])
-            diff_button_row.set_hexpand(False)
-
-            can_diff = False
-            original_path_for_diff = self._get_original_path_from_backup(file_info["path"])
-            if original_path_for_diff and os.path.exists(original_path_for_diff):
-                ext_check = os.path.splitext(file_info["path"])[1].lower()
-                if ext_check in server.TEXT_EXTENSIONS:
-                    can_diff = True
-            diff_button_row.set_sensitive(can_diff)
-            grid.attach(diff_button_row, 6, 0, 1, 1) # Col 6: Diff Button
-
-            # Find file versions
-            find_versions_button_row = Gtk.Button(label="Versions")
-            find_versions_button_row.set_tooltip_text(
-                "Search for all available versions of the selected file, including the current and previous backups. "
-                "Use this to restore or review earlier versions of your file.")
-            find_versions_button_row.add_css_class("suggested-action") # Optional: make it less prominent if Diff is suggested
-            setattr(find_versions_button_row, "file_path", file_info["path"])
-
-            # Create a stack to hold the button and a spinner for loading feedback
-            button_stack = Gtk.Stack()
-            button_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-            button_stack.add_named(find_versions_button_row, "button")
+            grid.attach(star_button_row, 3, 0, 1, 1)
             
-            spinner = Gtk.Spinner()
-            button_stack.add_named(spinner, "spinner")
+            # --- Actions MenuButton ---
+            actions_button = Gtk.MenuButton(icon_name="view-more-symbolic", label="Actions")
+            actions_button.set_direction(Gtk.ArrowType.DOWN)
+            actions_button.set_tooltip_text("More actions for this file")
 
-            find_versions_button_row.connect("clicked", lambda btn, stack=button_stack: self.find_update(getattr(btn, "file_path"), stack))
-            button_stack.set_hexpand(False)
-            grid.attach(button_stack, 7, 0, 1, 1) # Col 7: Versions Button Stack
+            menu = Gio.Menu()
+            # Restore
+            menu.append("Restore File", "item.restore")
+            # Open
+            menu.append("Open File", "item.open")
+            # Open Location
+            menu.append("Open Location", "item.open_location")
+            # Diff
+            menu.append("Compare (Diff)", "item.diff")
+            # Versions
+            menu.append("Find All Versions", "item.versions")
 
-            # Restore button for each row
-            restore_button_row = Gtk.Button(label="Restore File")
-            restore_button_row.set_tooltip_text("Restore this version of the file to its original location.")
-            setattr(restore_button_row, "file_path", file_info["path"])
-            restore_button_row.connect("clicked", self.on_restore_button_clicked_from_row) # Assuming this method exists
-            restore_button_row.set_hexpand(False) # Ensure it doesn't expand
-            grid.attach(restore_button_row, 8, 0, 1, 1) # Col 8: Restore Button (Moved from 7)
+            popover = Gtk.PopoverMenu()
+            popover.set_menu_model(menu)
+            actions_button.set_popover(popover)
             
-            # Wrap grid in a revealer for fade-in animation
+            grid.attach(actions_button, 4, 0, 1, 1) # Add the menu button to the grid
+
+            # --- Row setup and actions ---
             row_revealer = Gtk.Revealer()
             row_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
-            row_revealer.set_transition_duration(250) # milliseconds
+            row_revealer.set_transition_duration(250)
             row_revealer.set_child(grid)
 
             listbox_row = Gtk.ListBoxRow()
-            listbox_row.set_margin_top(6) # No top margin, space will be from the header
+            listbox_row.set_margin_top(6)
             listbox_row.set_margin_bottom(3)
             listbox_row.set_margin_start(12)
             listbox_row.set_margin_end(12)
-            listbox_row.set_child(row_revealer) # Add revealer to row
-            listbox_row.add_css_class("file-list-row-card") # Apply card-like styling
+            listbox_row.set_child(row_revealer)
+            listbox_row.add_css_class("file-list-row-card")
             listbox_row.device_path = file_info["path"]
-            self.listbox.append(listbox_row)
-            # GLib.idle_add(row_revealer.set_reveal_child, True) # Trigger animation
-            row_revealer.set_reveal_child(True)
 
+            # Create an action group for this specific row
+            action_group = Gio.SimpleActionGroup()
+            listbox_row.insert_action_group("item", action_group)
+
+            # Helper function to create and add actions
+            def add_row_action(name, callback):
+                action = Gio.SimpleAction.new(name, None)
+                action.connect("activate", callback)
+                action_group.add_action(action)
+                return action
+
+            # Add actions to the row's action group
+            path = file_info["path"]
+            add_row_action("restore", lambda a, p, current_path=path: self.perform_restore_action(current_path))
+            add_row_action("open", lambda a, p, current_path=path: self.on_open_file_clicked(current_path))
+            add_row_action("open_location", lambda a, p, current_path=path: self.on_open_location_clicked(current_path))
+            # The 'find_update' method expects a 'button_stack' which we don't have. Pass None.
+            add_row_action("versions", lambda a, p, current_path=path: self.find_update(current_path, None))
+            
+            # Special handling for Diff action to enable/disable it
+            diff_action = add_row_action("diff", lambda a, p, current_path=path: self.on_diff_button_clicked_from_row(None, current_path))
+            can_diff = False
+            original_path_for_diff = self._get_original_path_from_backup(path)
+            if original_path_for_diff and os.path.exists(original_path_for_diff):
+                ext_check = os.path.splitext(path)[1].lower()
+                if ext_check in server.TEXT_EXTENSIONS:
+                    can_diff = True
+            diff_action.set_enabled(can_diff)
+
+            self.listbox.append(listbox_row)
+            row_revealer.set_reveal_child(True)
+            
     def on_star_button_clicked(self, button_widget, file_path_clicked, star_button_itself):
         # Determine the path to actually store in self.starred_files (always the .main_backup equivalent)
         path_to_star_or_unstar = self._get_main_backup_equivalent_path(file_path_clicked)
@@ -2222,6 +2469,20 @@ class BackupWindow(Adw.ApplicationWindow):
             dialog.add_response("ok", "OK")
             dialog.connect("response", lambda d, r: d.close())
             dialog.present()
+
+    def _on_open_location_callback(self, source_object, res, user_data):
+        folder_path = user_data
+        try:
+            success = Gio.AppInfo.launch_default_for_uri_finish(res)
+            if success:
+                print(f"Successfully launched file manager for: {folder_path}")
+            else:
+                print(f"Failed to launch file manager for: {folder_path}. Falling back.")
+                self._fallback_open_location(folder_path)
+        except GLib.Error as e:
+            print(f"Error launching file manager for {folder_path}: {e}. Falling back.")
+            self._fallback_open_location(folder_path)
+
     # def on_listbox_key_press(self, controller, keyval, keycode, state):
     #     if keyval == Gdk.KEY_space:
     #         row = self.listbox.get_selected_row()
@@ -2401,13 +2662,14 @@ class BackupWindow(Adw.ApplicationWindow):
     ########################################################################################
     # Find updates for a file
     ########################################################################################
-    def find_update(self, file_path, button_stack):
+    def find_update(self, file_path, button_stack=None):
         # Extract the file name to search for all its backup versions
         
-        # Show spinner on the button that was clicked
-        button_stack.set_visible_child_name("spinner")
-        spinner = button_stack.get_child_by_name("spinner")
-        spinner.start()
+        # Show spinner on the button that was clicked, if it exists
+        if button_stack:
+            button_stack.set_visible_child_name("spinner")
+            spinner = button_stack.get_child_by_name("spinner")
+            spinner.start()
 
         def do_search():
             file_name = os.path.basename(file_path)
@@ -2425,14 +2687,14 @@ class BackupWindow(Adw.ApplicationWindow):
             results.sort(key=lambda x: x["date"], reverse=True)
 
             def on_search_done():
-                spinner.stop()
-                button_stack.set_visible_child_name("button")
+                if button_stack:
+                    spinner.stop()
+                    button_stack.set_visible_child_name("button")
                 self.show_update_window(file_name, results)
 
             GLib.idle_add(on_search_done)
 
-        threading.Thread(target=do_search, daemon=True).start()
-    
+        threading.Thread(target=do_search, daemon=True).start()    
     def show_update_window(self, file_name, results):
         """
         Show a window with all previous backups for the selected file.
@@ -2554,7 +2816,8 @@ class BackupWindow(Adw.ApplicationWindow):
             grid.attach(path_label, 1, 0, 1, 1)
 
             # Date Label (Secondary Text - mtime of this version)
-            date_str = datetime.fromtimestamp(result["date"]).strftime("%Y-%m-%d %H:%M:%S")
+            # date_str = datetime.fromtimestamp(result["date"]).strftime("%Y-%m-%d %H:%M:%S")
+            date_str = result["path"]
             date_label = Gtk.Label(label=date_str, xalign=0)
             date_label.add_css_class("caption")
             grid.attach(date_label, 1, 1, 1, 1)
@@ -3282,10 +3545,12 @@ class SettingsWindow(Adw.PreferencesWindow):
         self.set_default_size(600, 600)
 
         self.ignored_folders = []
+        self.ignored_folders = server.load_ignored_folders_from_config()
         self.programmatic_change = False  
         self.switch_cooldown_active = False  # To track the cooldown state
         
         # Get exclude hidden items setting from the server 
+        # Get exclude hidden items setting from the server
         self.exclude_hidden_itens: bool = server.get_database_value(
             section='EXCLUDE',
             option='exclude_hidden_itens')
@@ -3351,12 +3616,13 @@ class SettingsWindow(Adw.PreferencesWindow):
         self.add(folders_to_ignore_page)
 
         ##########################################################################
-		# STARTUP
-		##########################################################################
+        # STARTUP
+        ##########################################################################
         self.auto_backup_checkbox()
         self.auto_select_hidden_itens()  # Exclude hidden files
         self.load_folders_from_config()
         self.display_excluded_folders()  
+        self.display_excluded_folders()
     
     def display_excluded_folders(self):
         """Display loaded excluded folders."""
@@ -3392,12 +3658,12 @@ class SettingsWindow(Adw.PreferencesWindow):
             self.auto_backup_switch.set_active(False)
         
         self.programmatic_change = False  # Reset the flag after programmatic change
-	
+    
     def enable_switch(self, switch):
         """Re-enable the switch after the cooldown period."""
         self.switch_cooldown_active = False
         self.auto_backup_switch.set_sensitive(True)  # Re-enable the switch
-	
+    
     def disable_switch_for_cooldown(self, switch):
         """Disables the switch and re-enables it after the cooldown period."""
         self.switch_cooldown_active = True
@@ -3409,7 +3675,7 @@ class SettingsWindow(Adw.PreferencesWindow):
 
         # Start the cooldown in a new thread to avoid blocking the UI
         threading.Thread(target=enable_switch_after_cooldown, daemon=True).start()
-	
+    
     def on_auto_backup_switch_toggled(self, switch, pspec):
         """Handle the 'Back Up Automatically' switch toggle."""
         if self.programmatic_change or self.switch_cooldown_active:
@@ -3549,7 +3815,10 @@ class SettingsWindow(Adw.PreferencesWindow):
                 # Start a new daemon process
                 daemon_cmd = ['python3', server.DAEMON_PY_LOCATION]
                 logging.info(f"UI: Attempting to start daemon with command: {' '.join(daemon_cmd)}")
-                print(f"UI: Attempting to start daemon with command: {' '.join(daemon_cmd)}")
+                
+                if server.is_daemon_running():
+                    logging.info("UI: Daemon is already running.")
+                    return
 
                 process = sub.Popen(
                     daemon_cmd,
@@ -3558,76 +3827,32 @@ class SettingsWindow(Adw.PreferencesWindow):
                     stdout=sub.PIPE,  # Capture standard output
                     stderr=sub.PIPE   # Capture standard error
                 )
+            except Exception:
+                pass
+                
+        try:
+            daemon_cmd = ['python3', server.DAEMON_PY_LOCATION]
+            logging.info(f"UI: Attempting to start daemon with command: {' '.join(daemon_cmd)}")
+            # Use Popen to start the daemon in the background without waiting for it
+            sub.Popen(daemon_cmd, start_new_session=True, close_fds=True)
+            logging.info("UI: Daemon process launched.")
+        except Exception as e:
+            error_msg = f"UI: Failed to start daemon: {e}"
+            logging.error(error_msg, exc_info=True)
 
-                # Get the output and errors (if any)
-                # You can set a timeout to prevent blocking indefinitely if the daemon hangs
-                stdout, stderr = process.communicate(timeout=10) # Increased timeout slightly
-
-                # Store the new PID in the file
-                with open(server.DAEMON_PID_LOCATION, 'w') as f:
-                    f.write(str(process.pid))
-                logging.info(f"UI: Daemon process launched with PID {process.pid}.")
-                if stdout:
-                    logging.info(f"UI: Daemon stdout:\n{stdout.decode(errors='replace')}")
-                if stderr:
-                    logging.error(f"UI: Daemon stderr:\n{stderr.decode(errors='replace')}")
-            except sub.TimeoutExpired:
-                logging.error(f"UI: Timeout expired while starting daemon or getting its initial output. PID: {process.pid if process else 'N/A'}")
-                if process:
-                    process.kill() # Ensure the process is killed if it timed out
-                    stdout, stderr = process.communicate() # Try to get any final output
-                    if stdout:
-                        logging.info(f"UI: Daemon stdout (after timeout kill):\n{stdout.decode(errors='replace')}")
-                    if stderr:
-                        logging.error(f"UI: Daemon stderr (after timeout kill):\n{stderr.decode(errors='replace')}")
-            except Exception as e:
-                error_msg = f"UI: Failed to start daemon: {e}"
-                print(error_msg)
-                logging.error(error_msg, exc_info=True)
+        # Create a start socket file
+        threading.Thread(target=BackupWindow().create_connect_socket, daemon=True).start()  # Start the socket server in a separate thread
         threading.Thread(target=_do_start_daemon, daemon=True).start()
 
     def stop_daemon(self):
-        """Stop the daemon by reading its PID."""
-        pid_file_path = server.DAEMON_PID_LOCATION
-        if os.path.exists(pid_file_path):
-            pid_str = None
-            pid = None
-            try:
-                with open(pid_file_path, 'r') as f:
-                    pid_str = f.read().strip()
-                if not pid_str:
-                    logging.warning(f"Daemon PID file {pid_file_path} is empty. Removing stale file.")
-                    os.remove(pid_file_path)
-                    return # Nothing to stop
-                pid = int(pid_str)
-            except ValueError:
-                logging.error(f"Invalid PID '{pid_str}' in {pid_file_path}. Removing stale file.")
-                try:
-                    os.remove(pid_file_path)
-                except OSError as e_rem:
-                    logging.error(f"Failed to remove stale/invalid PID file {pid_file_path}: {e_rem}")
-                return # Cannot stop if PID is invalid
-            except OSError as e_read: # Error reading or removing file
-                logging.error(f"Error accessing PID file {pid_file_path}: {e_read}")
-                return # Cannot proceed
-
-            try:
-                os.kill(pid, signal.SIGTERM)  # Send termination signal
-                logging.info(f"Daemon with PID {pid} signaled to stop.")
-                # Daemon is responsible for removing its PID file on clean shutdown.
-            except OSError as e:
-                # Log level changed to warning for ESRCH as it's a common "stale PID" scenario
-                if e.errno == errno.ESRCH: # No such process
-                    logging.warning(f"Daemon process with PID {pid} not found (ESRCH). PID file {pid_file_path} is stale, removing.")
-                    try:
-                        if os.path.exists(pid_file_path): # Check again before removing
-                           os.remove(pid_file_path)
-                    except OSError as e_rem_stale:
-                        logging.error(f"Failed to remove stale PID file {pid_file_path} after ESRCH: {e_rem_stale}")
-                else: # Other OS errors during kill
-                    logging.error(f"[CRITICAL]: Failed to stop daemon PID {pid}. Error: {e}") # Corrected typo
-        else:
-            logging.info("Daemon is not running (no PID file).")
+        """Stop daemon by removing the socket file"""
+        BackupWindow().remove_socket()
+        try:
+            if os.path.exists(server.SOCKET_PATH):
+                os.remove(server.SOCKET_PATH)
+                logging.info(f"UI: Removed socket file {server.SOCKET_PATH} to signal daemon to stop.")
+        except Exception as e:
+            logging.error(f"UI: Error removing socket file to stop daemon: {e}")
 
     def remove_autostart_entry(self):
         autostart_file_path = os.path.expanduser(f"~/.config/autostart/{server.APP_NAME_CLOSE_LOWER}_autostart.desktop")
@@ -3641,6 +3866,7 @@ class SettingsWindow(Adw.PreferencesWindow):
                 option='automatically_backup',
                 value='false'
             )
+    
     def create_folder_row(self, folder_name):
         """Create a row for folders with a trash icon."""
         row = Adw.ActionRow(title=folder_name)
@@ -3703,7 +3929,7 @@ class SettingsWindow(Adw.PreferencesWindow):
             section='EXCLUDE_FOLDER', 
             option='folders', 
             value=','.join(self.ignored_folders))
-		
+        
     def on_exclude_hidden_switch_toggled(self, switch, pspec):
         """Handle the 'Ignore Hidden Files' switch toggle."""
         true_false: str = 'false'
@@ -3792,11 +4018,13 @@ class DiffViewWindow(Adw.Window):
 
         self._generate_and_display_diff(file1_path, file2_path, file1_label, file2_label)
 
+        
     def _generate_and_display_diff(self, file1_path, file2_path, file1_label, file2_label):
         buffer = self.textview.get_buffer()
         try:
             with open(file1_path, 'r', encoding='utf-8', errors='ignore') as f1:
                 file1_lines = [l.rstrip('\r\n') for l in f1.readlines()]
+                file1_lines = f1.readlines()
             with open(file2_path, 'r', encoding='utf-8', errors='ignore') as f2:
                 file2_lines = [l.rstrip('\r\n') for l in f2.readlines()]
         except Exception as e:
@@ -3823,6 +4051,8 @@ class DiffViewWindow(Adw.Window):
 class BackupProgressRow(Gtk.Box):
     def __init__(self, file_id, filename, size, eta):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+    def __init__(self, file_id, filename, size, eta, error_msg=None):
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.file_id = file_id
         self.set_margin_top(6)
         self.set_margin_bottom(6)
@@ -3841,14 +4071,20 @@ class BackupProgressRow(Gtk.Box):
         icon = Gtk.Image.new_from_icon_name("document-send-symbolic") # Or a more specific icon based on file type if available
         # icon.set_pixel_size(24)
         top_row.append(icon)
+        self.icon = Gtk.Image.new_from_icon_name("document-send-symbolic")
+        self.append(self.icon)
 
         # Info column
         info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         info_box.set_hexpand(True)
+        self.append(info_box)
+
         self.filename_label = Gtk.Label(label=filename)
         self.filename_label.set_xalign(0)
         self.filename_label.set_max_width_chars(32)
+        self.filename_label.set_max_width_chars(25)
         self.filename_label.set_ellipsize(Pango.EllipsizeMode.END)
+        info_box.append(self.filename_label)
 
         self.size_eta_label = Gtk.Label(label=f"{size} • {eta}")
         self.size_eta_label.set_xalign(0)
@@ -3866,6 +4102,8 @@ class BackupProgressRow(Gtk.Box):
         # Progress bar
         self.progress = Gtk.ProgressBar()
         self.progress.set_hexpand(True)
+        self.progress.set_hexpand(False)
+        self.progress.set_size_request(80, -1) # Give progress bar a fixed width
         self.progress.set_fraction(0.0)
         self.progress.set_margin_top(4)
         self.append(self.progress)
