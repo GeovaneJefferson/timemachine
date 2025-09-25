@@ -786,6 +786,10 @@ class Daemon:
         Also removes the parent date directory if it becomes empty as a result.
         """
         try:
+            if not os.path.exists(session_backup_dir):
+                logging.info(f"Session backup folder does not exist: {session_backup_dir}. Skipping cleanup.")
+                return
+
             if not os.listdir(session_backup_dir): # Check if HH-MM folder is empty
                 logging.info(f"Removing empty incremental session folder: {session_backup_dir}")
                 os.rmdir(session_backup_dir)
@@ -799,7 +803,7 @@ class Daemon:
                 # logging.info(f"Incremental session folder {session_backup_dir} is not empty.")
         except OSError as e:
             logging.critical(f"Error during cleanup of empty incremental folders for {session_backup_dir}: {e}")
-
+            
     ############################################################################
     # INTERRUPTION HANDLING
     ############################################################################

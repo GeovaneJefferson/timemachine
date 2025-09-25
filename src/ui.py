@@ -1474,6 +1474,7 @@ class BackupWindow(Adw.ApplicationWindow):
             #     except Exception as e:
             #         pass
             # else:
+            
             button_content.set_icon_name("text-x-generic-symbolic") # Fallback icon
             button_content.set_label(basename)
 
@@ -1504,6 +1505,8 @@ class BackupWindow(Adw.ApplicationWindow):
         threading.Thread(target=self.perform_search, args=(query,), daemon=True).start()
 
     def _populate_starred_files(self):
+        button_content = Adw.ButtonContent()
+
         # Clear previous starred items from the flowbox
         child = self.starred_files_flowbox.get_child_at_index(0)
         while child:
@@ -1535,8 +1538,9 @@ class BackupWindow(Adw.ApplicationWindow):
                   # We can use the basename or the full backup path for search context.
                 original_path_for_search = starred_file_path # Or just basename
 
-            button_content = Adw.ButtonContent()
+            # placeholder icon first
             pixbuf = self._generate_thumbnail_pixbuf(starred_file_path, size_px=48)
+            ext = os.path.splitext(starred_file_path)[1].lower()
             if pixbuf:
                 try:
                     button_content.set_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
@@ -1544,6 +1548,16 @@ class BackupWindow(Adw.ApplicationWindow):
                     button_content.set_icon_name("image-x-generic-symbolic") # Fallback icon
             else:
                 button_content.set_icon_name("text-x-generic-symbolic") # Fallback icon
+
+            # if pixbuf:
+            #     button_content.set_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+            # else:
+            #     if ext in server.VIDEO_EXTENSIONS:
+            #         button_content.set_icon_name("video-x-generic-symbolic")
+            #     elif ext in server.IMAGE_EXTENSIONS:
+            #         button_content.set_icon_name("image-x-generic-symbolic")
+            #     else:
+            #         button_content.set_icon_name("text-x-generic-symbolic")
 
             button_content.set_label(basename)
 
@@ -1934,7 +1948,7 @@ class BackupWindow(Adw.ApplicationWindow):
     def _generate_thumbnail_pixbuf(self, file_path, size_px=32):
         """
         Generates a GdkPixbuf.Pixbuf thumbnail for a given file.
-        NOTE: This is a SYNCHRONOUS example. For production, make it asynchronous.
+        Supports images and videos (using ffmpeg for videos).
         """
         if not os.path.exists(file_path):
             return None
@@ -1949,212 +1963,34 @@ class BackupWindow(Adw.ApplicationWindow):
 
         try:
             if ext in server.IMAGE_EXTENSIONS or mime.startswith("image"):
-                # Preserve aspect ratio, fit within size_px * size_px
                 temp_pixbuf = GdkPixbuf.Pixbuf.new_from_file(file_path)
                 img_width = temp_pixbuf.get_width()
                 img_height = temp_pixbuf.get_height()
-                scale_w = size_px / img_width if img_width > 0 else 1
-                scale_h = size_px / img_height if img_height > 0 else 1
-                scale = min(scale_w, scale_h)
+                scale = min(size_px / img_width, size_px / img_height)
                 pixbuf = temp_pixbuf.scale_simple(int(img_width * scale), int(img_height * scale), GdkPixbuf.InterpType.BILINEAR)
+            elif ext in server.VIDEO_EXTENSIONS or mime.startswith("video"):
+                # Generate thumbnail using ffmpeg (first frame)
+                with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_thumb:
+                    thumb_path = tmp_thumb.name
+                try:
+                    # Extract first frame as PNG
+                    sub.run([
+                        "ffmpeg", "-y", "-i", file_path, "-vf", f"thumbnail,scale={size_px}:{size_px}",
+                        "-frames:v", "1", thumb_path
+                    ], stdout=sub.DEVNULL, stderr=sub.DEVNULL)
+                    if os.path.exists(thumb_path):
+                        temp_pixbuf = GdkPixbuf.Pixbuf.new_from_file(thumb_path)
+                        pixbuf = temp_pixbuf
+                finally:
+                    if os.path.exists(thumb_path):
+                        os.remove(thumb_path)
         except Exception as e:
             print(f"Error generating thumbnail for {file_path}: {e}")
-            pixbuf = None # Ensure pixbuf is None on error
+            pixbuf = None
 
         if pixbuf:
             self.thumbnail_cache[file_path] = pixbuf
         return pixbuf
-
-    # def populate_results(self, results):
-    #     """Populate the results listbox with up to 'self.page_size' search results, aligned in columns."""
-    #     # Ensure the content page is visible and spinner is hidden
-    #     GLib.idle_add(self._hide_center_spinner)
-
-    #     if hasattr(self, "loading_label"):
-    #         pass
-            
-    #     # Clear existing results from the listbox
-    #     while True:
-    #         first_child_row = self.listbox.get_first_child() # This returns a Gtk.ListBoxRow
-    #         if not first_child_row: # No fade out for simplicity, instant clear
-    #             break
-    #         self.listbox.remove(first_child_row)
- 
-    #     limited_results = results[:self.page_size]
-
-    #     for file_info in limited_results:
-    #         grid = Gtk.Grid()
-    #         grid.set_column_spacing(12) # Reduced spacing
-    #         grid.set_row_spacing(0)
-    #         grid.set_hexpand(True)
-    #         grid.set_vexpand(False)
-
-    #         # Thumbnail or Icon
-    #         thumbnail_pixbuf = self._generate_thumbnail_pixbuf(file_info["path"], 32) # 32px thumbnail
-    #         if thumbnail_pixbuf:
-    #             texture = Gdk.Texture.new_for_pixbuf(thumbnail_pixbuf)
-    #             thumbnail_widget = Gtk.Image.new_from_paintable(texture)
-    #         else:
-    #             # Fallback icon
-    #             ext = os.path.splitext(file_info["name"])[1].lower()
-    #             if ext == ".pdf":
-    #                 icon_name = "application-pdf"
-    #             elif ext in server.TEXT_EXTENSIONS: # Use your server.TEXT_EXTENSIONS
-    #                 icon_name = "text-x-generic"
-    #             elif ext in server.IMAGE_EXTENSIONS: # Use your server.IMAGE_EXTENSIONS
-    #                 icon_name = "image-x-generic"
-    #             else:
-    #                 icon_name = "text-x-generic" # Default
-    #             thumbnail_widget = Gtk.Image.new_from_icon_name(icon_name)
-    #         thumbnail_widget.set_pixel_size(32) # Ensure consistent size for icons too
-    #         grid.attach(thumbnail_widget, 0, 0, 1, 1)
-
-    #         # Name and Size Box (Vertical)
-    #         name_and_size_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    #         name_and_size_box.set_hexpand(True) # This box should expand
-
-    #         # Name Label
-    #         shorted_file_path = file_info["path"].replace(server.backup_folder_name(), "").lstrip(os.sep)
-    #         name_label = Gtk.Label(label=shorted_file_path, xalign=0)
-    #         name_label.set_hexpand(True) # Name label expands within its parent (name_and_size_box)
-    #         name_label.set_halign(Gtk.Align.START)
-    #         name_label.set_ellipsize(Pango.EllipsizeMode.END)  # Enable ellipsizing
-    #         name_and_size_box.append(name_label)
-
-    #         # Size Label
-    #         size_label_text = server.get_item_size(file_info["path"], True)
-    #         if size_label_text == "None": # server.get_item_size returns string "None"
-    #             size_label_text = "N/A"
-    #         size_label = Gtk.Label(label=size_label_text, xalign=0)
-    #         size_label.add_css_class("caption") # Style as caption
-    #         name_and_size_box.append(size_label)
-            
-    #         grid.attach(name_and_size_box, 1, 0, 1, 1) # Col 1: Name/Size Box
-            
-    #         # Date Label
-    #         # Determine backup_date string based on path structure or mtime
-    #         backup_date_str = ""
-    #         path_for_date_extraction = file_info["path"].replace(server.backup_folder_name(), "").lstrip(os.sep)
-    #         path_parts = path_for_date_extraction.split(os.sep)
-
-    #         if len(path_parts) > 1 and path_parts[0] != server.MAIN_BACKUP_LOCATION: # Check if it's not main backup and has at least date/time parts
-    #             try:
-    #                 date_str_from_path = path_parts[0] # e.g., "06-06-2025"
-    #                 time_str_from_path = path_parts[1] # e.g., "16-41"
-                    
-    #                 parsed_date_obj = datetime.strptime(date_str_from_path, "%d-%m-%Y")
-    #                 formatted_time_str = time_str_from_path.replace('-', ':') # "16-41" -> "16:41"
-    #                 backup_date_str = f"{parsed_date_obj.strftime('%b %d')} {formatted_time_str}"
-    #             except (ValueError, IndexError) as e:
-    #                 # Fallback if path parts are not as expected
-    #                 backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
-    #         else: # Main backup or unexpected structure, use mtime
-    #             backup_date_str = datetime.fromtimestamp(file_info["date"]).strftime("%b %d %H:%M")
-    #         date_label = Gtk.Label(label=backup_date_str, xalign=0)
-    #         date_label.set_hexpand(False)
-    #         date_label.set_halign(Gtk.Align.START)
-    #         date_label.add_css_class("caption") # Style date as caption
-    #         grid.attach(date_label, 2, 0, 1, 1) # Col 2: Date
-
-    #         # Star button for each row
-    #         star_button_row = Gtk.Button()
-    #         star_button_row.add_css_class("flat")
-    #         setattr(star_button_row, "file_path", file_info["path"])
-
-    #         # Allow starring for any file. The on_star_button_clicked method
-    #         # will use _get_main_backup_equivalent_path to star the canonical version.
-    #         star_button_row.set_sensitive(True)
-    #         path_for_star_check = self._get_main_backup_equivalent_path(file_info["path"])
-
-    #         if path_for_star_check in self.starred_files:
-    #             star_button_row.set_icon_name("starred-symbolic")
-    #             star_button_row.set_tooltip_text("Unstar this item")
-    #         else:
-    #             star_button_row.set_icon_name("non-starred-symbolic")
-    #             star_button_row.set_tooltip_text("Star this item")
-    #         star_button_row.connect("clicked", self.on_star_button_clicked, file_info["path"], star_button_row)
-    #         grid.attach(star_button_row, 3, 0, 1, 1) # Col 3: Star Button
-
-    #         # Open button for each row
-    #         open_file_button_row = Gtk.Button(label="Open File")
-    #         open_file_button_row.set_tooltip_text("Open this backed-up file with the default application.")
-    #         # open_file_button_row.add_css_class("flat") # Optional styling
-    #         setattr(open_file_button_row, "file_path", file_info["path"])
-    #         open_file_button_row.connect("clicked", lambda btn: self.on_open_file_clicked(getattr(btn, "file_path")))
-    #         open_file_button_row.set_hexpand(False)
-    #         grid.attach(open_file_button_row, 4, 0, 1, 1) # Col 4: Open Button
-
-    #         # on_open_location_clicked
-    #         open_location_button_row = Gtk.Button(label="Open Location")
-    #         open_location_button_row.set_tooltip_text("Open the folder containing this backup file.")
-    #         # open_location_button_row.add_css_class("flat") # Use flat style for less emphasis than restore
-    #         setattr(open_location_button_row, "file_path", file_info["path"])
-    #         open_location_button_row.connect("clicked", lambda btn: self.on_open_location_clicked(getattr(btn, "file_path")))
-    #         open_location_button_row.set_hexpand(False)
-    #         grid.attach(open_location_button_row, 5, 0, 1, 1) # Col 5: Open Location Button
-
-    #         # Diff button for each row
-    #         diff_button_row = Gtk.Button(label="Diff")
-    #         diff_button_row.set_tooltip_text("Compare this backup with the current file in your home directory.")
-    #         # diff_button_row.add_css_class("flat") # Optional styling
-    #         setattr(diff_button_row, "file_path", file_info["path"])
-    #         diff_button_row.connect("clicked", self.on_diff_button_clicked_from_row, file_info["path"])
-    #         diff_button_row.set_hexpand(False)
-
-    #         can_diff = False
-    #         original_path_for_diff = self._get_original_path_from_backup(file_info["path"])
-    #         if original_path_for_diff and os.path.exists(original_path_for_diff):
-    #             ext_check = os.path.splitext(file_info["path"])[1].lower()
-    #             if ext_check in server.TEXT_EXTENSIONS:
-    #                 can_diff = True
-    #         diff_button_row.set_sensitive(can_diff)
-    #         grid.attach(diff_button_row, 6, 0, 1, 1) # Col 6: Diff Button
-
-    #         # Find file versions
-    #         find_versions_button_row = Gtk.Button(label="Versions")
-    #         find_versions_button_row.set_tooltip_text(
-    #             "Search for all available versions of the selected file, including the current and previous backups. "
-    #             "Use this to restore or review earlier versions of your file.")
-    #         find_versions_button_row.add_css_class("suggested-action") # Optional: make it less prominent if Diff is suggested
-    #         setattr(find_versions_button_row, "file_path", file_info["path"])
-
-    #         # Create a stack to hold the button and a spinner for loading feedback
-    #         button_stack = Gtk.Stack()
-    #         button_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-    #         button_stack.add_named(find_versions_button_row, "button")
-            
-    #         spinner = Gtk.Spinner()
-    #         button_stack.add_named(spinner, "spinner")
-
-    #         find_versions_button_row.connect("clicked", lambda btn, stack=button_stack: self.find_update(getattr(btn, "file_path"), stack))
-    #         button_stack.set_hexpand(False)
-    #         grid.attach(button_stack, 7, 0, 1, 1) # Col 7: Versions Button Stack
-
-    #         # Restore button for each row
-    #         restore_button_row = Gtk.Button(label="Restore File")
-    #         restore_button_row.set_tooltip_text("Restore this version of the file to its original location.")
-    #         setattr(restore_button_row, "file_path", file_info["path"])
-    #         restore_button_row.connect("clicked", self.on_restore_button_clicked_from_row) # Assuming this method exists
-    #         restore_button_row.set_hexpand(False) # Ensure it doesn't expand
-    #         grid.attach(restore_button_row, 8, 0, 1, 1) # Col 8: Restore Button (Moved from 7)
-            
-    #         # Wrap grid in a revealer for fade-in animation
-    #         row_revealer = Gtk.Revealer()
-    #         row_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
-    #         row_revealer.set_transition_duration(250) # milliseconds
-    #         row_revealer.set_child(grid)
-
-    #         listbox_row = Gtk.ListBoxRow()
-    #         listbox_row.set_margin_top(6) # No top margin, space will be from the header
-    #         listbox_row.set_margin_bottom(3)
-    #         listbox_row.set_margin_start(12)
-    #         listbox_row.set_margin_end(12)
-    #         listbox_row.set_child(row_revealer) # Add revealer to row
-    #         listbox_row.add_css_class("file-list-row-card") # Apply card-like styling
-    #         listbox_row.device_path = file_info["path"]
-    #         self.listbox.append(listbox_row)
-    #         # GLib.idle_add(row_revealer.set_reveal_child, True) # Trigger animation
-    #         row_revealer.set_reveal_child(True)
 
     def populate_results(self, results):
         """Populate the results listbox with up to 'self.page_size' search results, aligned in columns."""
@@ -2197,6 +2033,7 @@ class BackupWindow(Adw.ApplicationWindow):
                 else:
                     icon_name = "text-x-generic" # Default
                 thumbnail_widget = Gtk.Image.new_from_icon_name(icon_name)
+                
             thumbnail_widget.set_pixel_size(32) # Ensure consistent size for icons too
             grid.attach(thumbnail_widget, 0, 0, 1, 1)
 

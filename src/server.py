@@ -79,6 +79,7 @@ class SERVER:
 			".pptx", # PowerPoint files (requires libraries like python-pptx to render)
 		]
 		self.IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"}
+		self.VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv"}
 		self.TEXT_EXTENSIONS = {
 			".txt", ".py", ".md", ".csv", ".json", ".xml", ".ini", ".log",
 			  ".gd", ".js", ".html", ".css", ".sh", ".c", ".cpp", ".h", ".hpp",
