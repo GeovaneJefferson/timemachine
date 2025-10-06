@@ -190,7 +190,6 @@ class BackupWindow(Adw.ApplicationWindow):
         self._populate_starred_files() # Add this call for starred items
         self._set_initial_daemon_state_and_update_icon()
         # self.populate_latest_backups() # This will be handled by scan_files_folder_threaded completion
-        self._check_for_critical_log_errors() # Check for critical errors at startup
         # self.update_overview_cards_from_summary() # Load summary data for overview cards
 
         # Start the summary data loading in a separate thread
@@ -799,6 +798,8 @@ class BackupWindow(Adw.ApplicationWindow):
         dialog.add_response("ok", "OK")
         dialog.add_response("problem-fixed", "Problem Fixed")
         dialog.set_response_appearance("problem-fixed", Adw.ResponseAppearance.DESTRUCTIVE) # Or .SUGGESTED
+        dialog.set_default_response("ok")  # <-- Add this line
+        dialog.set_close_response("ok")    # <-- Add this line
 
         def on_dialog_response(d, response_id):
             if response_id == "problem-fixed":
