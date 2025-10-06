@@ -158,15 +158,20 @@ class Daemon:
     # BACKUP LOCATION AND PERMISSIONS
     ############################################################################
     def is_backup_location_writable(self) -> bool:
-        """Checks if the base backup folder is writable."""
+        """Checks if the backup device is writable and mounted."""
         base_path = server.create_base_folder()
-        # Check if the path itself can be formed (e.g. DRIVER_LOCATION is set)
+        mount_point = server.DRIVER_LOCATION  # Should be '/media/geovane/BACKUP'
         try:
             os.makedirs(base_path, exist_ok=True)
         except OSError as e:
             logging.critical(f"Backup base path {base_path} does not exist and cannot be created: {e}")
             return False
-        
+
+        # Check if the actual device mount point is mounted
+        if not os.path.ismount(mount_point):
+            logging.warning(f"[CRITICAL]: Backup device '{mount_point}' is not mounted. Skipping backup.")
+            return False
+
         test_file_path = os.path.join(base_path, ".writetest.tmp")
         try:
             with open(test_file_path, "w") as f:
@@ -174,7 +179,7 @@ class Daemon:
             os.remove(test_file_path)
             return True
         except OSError as e:
-            logging.critical(f"Backup location {base_path} is not writable: {e}")
+            logging.warning(f"[CRITICAL]: Backup device '{mount_point}' is not writable. Skipping package backup.")
             return False
 
     ############################################################################
@@ -594,7 +599,6 @@ class Daemon:
         
         if not self.is_backup_location_writable():
             self.had_writability_issue = True
-            logging.warning("[CRITICAL]: Backup device is not writable. Skipping package backup.")
             return False
         
         self.had_writability_issue = False
