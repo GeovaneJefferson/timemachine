@@ -373,20 +373,22 @@ class Daemon:
                 send_to_ui(json.dumps(final_msg))
             except Exception as e:
                 logging.critical(f"Error copying {src} -> {dst}: {e}")
-                try:
-                    if os.path.exists(tmp_dst):
-                        os.remove(tmp_dst)
-                except Exception:
-                    pass
-                error_msg = {
-                    "type": "transfer_progress", # Or a dedicated "transfer_error" type
-                    "id": file_id,
-                    "filename": filename,
-                    "size": human_readable_size,
-                    "eta": "error",
-                    "progress": prev_progress if prev_progress > 0 else 0.0,
-                    "error": str(e)}
-                send_to_ui(json.dumps(error_msg))
+                # Before replacing, check if temp file exists
+                if os.path.exists(tmp_dst):
+                    os.replace(tmp_dst, dst)
+                    # Preserve metadata (including mtime) from src to dst
+                    await loop.run_in_executor(self.executor, shutil.copystat, src, dst)
+                    logging.info(f"Backed up: {src} -> {dst}")
+                else:
+                    logging.critical(f"Temp file missing before replace: {tmp_dst}. Skipping move for {src}.")
+
+                final_msg = {
+                    "type": "transfer_progress",
+                    "id": file_id, 
+                    "filename": filename, 
+                    "size": human_readable_size, 
+                    "eta": "done", "progress": 1.0}
+                send_to_ui(json.dumps(final_msg))
 
     async def _backup_package_file(self, src_path: str, dest_folder: str):
         """Backs up a package file from Downloads to the specified destination folder."""
