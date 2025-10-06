@@ -12,7 +12,9 @@ Time Machine is a Python-based backup solution designed to safeguard your import
 
 ## ✨ Screenshots
 
-![Time Machine Screenshot](data/screenshoot.png)
+![Time Machine Screenshot](data/screenshoot1.png)
+![Time Machine Screenshot](data/screenshoot2.png)
+![Time Machine Screenshot](data/screenshoot3.png)
 
 ---
 
