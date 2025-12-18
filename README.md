@@ -24,6 +24,8 @@
 
 | **Main Dashboard** | ![Main Dashboard](static/screenshots/screenshot1.png) |
 | **File Restore** | ![File Restore](static/screenshots/screenshot2.png) |
+| **File Restore** | ![File Restore](static/screenshots/screenshot5.png) |
+| **File Restore** | ![File Restore](static/screenshots/screenshot6.png) |
 | **Device Management** | ![Device Management](static/screenshots/screenshot3.png) |
 | **Backup Settings** | ![Backup Settings](static/screenshots/screenshot4.png) |
 
@@ -37,7 +39,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/GeovaneJefferson/timemachine.git
+git clone [https://github.com/GeovaneJefferson/timemachine.git](https://github.com/GeovaneJefferson/timemachine.git)
 cd timemachine
 
 # Install dependencies
@@ -55,6 +57,11 @@ Then open your browser to `http://localhost:5000` and follow the setup wizard.
 
 #### Method 2: Headless Daemon Only
 ```bash
+## ⚠️ Important Notes
+
+# Real-time Backup Operation
+Important Note: You must launch the Web Interface at least once (python3 app.py) to choose a backup device and folders before using this method.
+
 # Run just the real-time backup daemon
 python3 daemon.py
 ```
