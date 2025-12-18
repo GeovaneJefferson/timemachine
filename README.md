@@ -21,10 +21,10 @@ A modern, robust backup application for Linux that provides automated, increment
 
 ## ✨ Screenshots
 
-| **Main Window** | ![Monitoring](.static/screenshots/screenshot1.png) |
-| **File Restore** | ![Monitoring](.static/screenshots/screenshot2.png) |
-| **Device Management** | ![Devices](.static/screenshots/screenshot3.png) |
-| **Backup Settings** | ![Settings](.static/screenshots/screenshot4.png) |
+| **Main Window** | ![Monitoring](static/screenshots/screenshot1.png) |
+| **File Restore** | ![Monitoring](static/screenshots/screenshot2.png) |
+| **Device Management** | ![Devices](static/screenshots/screenshot3.png) |
+| **Backup Settings** | ![Settings](static/screenshots/screenshot4.png) |
 
 ## ⚡ Quick Start
 
