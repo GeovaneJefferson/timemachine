@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/vendor/favicon.ico">
+    <title>Time Machine | Backup</title>
+    <link href="/static/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body class="h-screen flex overflow-hidden font-sans antialiased text-sm">
+    <aside class="w-64 flex-shrink-0 flex flex-col z-20 transition-colors duration-300 border-r border-main" style="background-color: var(--bg-sidebar);">
+        <div class="h-20 flex items-center px-6 gap-3">
+            <img src="/static/vendor/favicon.ico" class="w-7 h-7" alt="Time Machine icon">
+            <span class="font-bold text-lg tracking-tight text-main">Time Machine</span>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1 mt-2">
+            <div class="px-2 mb-2 text-xs font-bold text-muted uppercase tracking-wider">Navigate</div>
+            <button onclick="nav('overview')" id="btn-overview" class="btn-nav active"><i class="bi bi-grid-fill"></i> Dashboard</button>
+            <button onclick="nav('files')" id="btn-files" class="btn-nav"><i class="bi bi-folder-fill"></i> File Explorer</button>
+            <button onclick="nav('devices')" id="btn-devices" class="btn-nav"><i class="bi bi-hdd-fill"></i> Devices</button>
+
+            <div class="px-2 mt-8 mb-2 text-xs font-bold text-muted uppercase tracking-wider">System</div>
+            <!-- <button onclick="nav('migration')" id="btn-migration" class="btn-nav"><i class="bi bi-hdd-fill"></i> System Restore</button> -->
+            <button onclick="nav('settings')" id="btn-settings" class="btn-nav"><i class="bi bi-sliders"></i> Preferences</button>
+            </nav>
+
+        <div class="p-4 border-t border-main">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-card border border-main mb-3">
+                <div class="flex items-center gap-2">
+                    <i id="theme-icon" class="bi bi-moon-stars-fill text-brand-500"></i>
+                    <span class="font-medium text-main text-xs">Dark Mode</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="theme-toggle" onchange="toggleTheme(event)" class="sr-only peer">
+                    <div class="checkbox-normal"></div>
+                </label>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative bg-page">
+        <header class="h-20 flex items-center justify-between px-8 sticky top-0 z-10 bg-page/80 backdrop-blur-md">
+            <div>
+                <h2 id="page-title" class="text-xl font-bold text-main">Dashboard</h2>
+                <p id="greeting" class="text-xs text-muted mt-0.5">Hello, Macbook</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <button id="btn-daemon-control" class="btn-daemon-control run" title="Click to start daemon">
+                            <i class="bi bi-play-fill daemon-icon"></i>
+                            <span class="daemon-text">Run</span>
+                        </button>
+
+                        <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-800"></div>
+
+                        <div class="flex items-center gap-2" id="daemon-status-info">
+                            <span class="relative flex h-2 w-2">
+                                <span id="daemon-connection-ping-animation" class="animate-ping-disconnected"></span>
+                                <span id="daemon-connection-ping" class="absolute inline-flex h-full w-full rounded-full daemon-status-dot-disconnected"></span>
+                            </span>
+                            <p id="daemon-status-text" class="text-xs text-muted font-medium">Stopped</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-800"></div>
+
+                <div class="flex items-center gap-2">
+                    <span class="relative flex h-2 w-2">
+                        <span id="devices-connection-ping-animation" class="animate-ping-disconnected"></span>
+                        <span id="devices-connection-ping" class="absolute inline-flex h-full w-full rounded-full status-dot-disconnected"></span>
+                    </span>
+                    <p class="text-xs text-muted font-medium">Devices Connection</p>
+                </div>
+            </div>
+        </header>
+
+
+        <div class="flex-1 overflow-y-auto p-8 pt-2 no-scrollbar">
+
+            <div id="view-overview" class="space-y-6 animate-entry">
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-card p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-default">
+                            <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-xl">
+                                <i class="bi bi-image-fill"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-muted font-medium">Images</p>
+                                <h4 id="files-images-count" class="text-lg font-bold text-main">--</h4>
+                                <p id="files-images-size" class="text-[10px] text-secondary">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-card p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-default">
+                            <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center text-xl">
+                                <i class="bi bi-film"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-muted font-medium">Videos</p>
+                                <h4 id="files-videos-count" class="text-lg font-bold text-main">--</h4>
+                                <p id="files-videos-size" class="text-[10px] text-secondary">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-card p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-default">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center text-xl">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-muted font-medium">Documents</p>
+                                <h4 id="files-documents-count" class="text-lg font-bold text-main">--</h4>
+                                <p id="files-documents-size" class="text-[10px] text-secondary">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-card p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-default">
+                            <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center text-xl">
+                                <i class="bi bi-archive-fill"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-muted font-medium">Others</p>
+                                <h4 id="files-others-count" class="text-lg font-bold text-main">--</h4>
+                                <p id="files-others-size" class="text-[10px] text-secondary">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card p-6 flex flex-col justify-center items-center relative">
+                        <div class="absolute top-4 left-6 font-bold text-main">Storage</div>
+                        <div class="relative w-40 h-40 mt-4">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" stroke-width="8" class="text-gray-100 dark:text-gray-800" />
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" stroke-width="8" class="text-blue-500" stroke-dasharray="251.2" stroke-dashoffset="100" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="backup-usage-percent" class="text-2xl font-bold text-main">--%</span>
+                                <span class="text-xs text-muted">Used</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <div id="backup-usage" class="text-xs font-medium text-main bg-page px-3 py-1 rounded-full border border-main">--</div>
+                            <div id="backup-location-path" class="text-[10px] text-muted mt-2 font-mono">NaN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card flex flex-col">
+                    <div class="p-6 border-b border-main flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                            <h3 class="font-bold text-main">Transfers</h3>
+                        </div>
+                        <button onclick="ActivityFeedManager.clearFeed()" class="text-xs font-bold text-muted hover:text-main cursor-pointer">Clear</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="text-muted font-medium bg-page">
+                                <tr>
+                                    <th id="th-file-name" class="px-6 py-3 font-semibold">File Name</th>
+                                    <th id="th-status" class="px-6 py-3 font-semibold">Status</th>
+                                    <th id="th-size" class="px-6 py-3 font-semibold">Size</th>
+                                    <th id="th-action" class="px-6 py-3 font-semibold">Action</th>
+                                    <th id="th-time" class="px-6 py-3 text-right font-semibold">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="live-activities-feed" class="divide-y divide-gray-100 dark:divide-gray-800 text-main font-medium">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-files" class="hidden h-full flex gap-6 animate-entry">
+                <div class="w-1/3 min-w-0 bg-card flex flex-col overflow-hidden">
+                    <div class="p-4 border-b border-main space-y-3 bg-page/50">
+                        <div class="relative">
+                                <i class="bi bi-search absolute left-3 top-2.5 text-muted"></i>
+                                <input type="text" id="file-search-input" onkeyup="searchFiles()" placeholder="Search file..." class="pl-9 pr-4 py-2 bg-card border border-main rounded-xl text-sm w-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition text-main">
+                        </div>
+                        <div id="file-path-breadcrumb" class="text-xs flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap text-secondary font-mono py-1">
+                        </div>
+                    </div>
+                    <div id="file-list-container" class="flex-1 p-2 overflow-y-auto space-y-1 no-scrollbar">
+                    </div>
+                </div>
+
+                <div id="file-preview-panel" class="flex-1 min-w-0 bg-card flex flex-col h-full rounded-2xl border border-main overflow-hidden">
+                    <div class="p-4 border-b border-main bg-page/30">
+                        <h3 class="font-bold text-main">File Details</h3>
+                    </div>
+                    <div id="preview-content" class="flex-1 p-6 overflow-y-auto">
+                        <div class="h-full flex flex-col items-center justify-center text-center opacity-50">
+                            <i class="bi bi-file-earmark text-4xl mb-3 text-muted"></i>
+                            <p class="text-muted">Select a file to view history and metadata.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-devices" class="hidden space-y-6 animate-entry">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-muted text-xs mt-1">Select a drive to use for Time Machine</p>
+                    </div>
+                    <button onclick="refreshDevices()" class="btn-normal gap-2 flex items-center"><i class="bi bi-arrow-clockwise"></i> Refresh List</button>
+                </div>
+                <div id="device-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    </div>
+            </div>
+
+            <div id="view-migration" class="hidden h-full flex flex-col animate-entry">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <p id="mig-step-desc" class="text-sm text-muted mt-1">Step 1 of 3</p>
+                    </div>
+                </div>
+
+                <div id="mig-step-1-source" class="flex-1 flex flex-col items-center justify-center pb-20">
+                    <div class="text-center mb-10">
+                        <div class="w-20 h-20 bg-card border border-main rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl text-4xl text-brand-500">
+                            <i class="bi bi-hdd-network"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-main">Select Backup Source</h2>
+                        <p class="text-muted mt-2">Choose an external drive or network location.</p>
+                    </div>
+                    <div id="mig-source-list" class="w-full max-w-2xl grid gap-4">
+                        </div>
+                </div>
+
+                <div id="mig-step-2-content" class="hidden flex-1 flex flex-col">
+                    <button onclick="backToSourceStep()" class="self-start btn-normal mb-6 flex items-center gap-2"><i class="bi bi-arrow-left"></i> Back</button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div id="mig-card-home" onclick="toggleMigrationItem('home')" class="md:col-span-2 bg-gradient-to-br from-gray-900 to-black text-white rounded-2xl p-8 relative overflow-hidden cursor-pointer group border border-gray-800">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                            <div id="check-home" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center opacity-0 scale-75 transition-all"><i class="bi bi-check-lg"></i></div>
+
+                            <div class="relative z-10 flex gap-6">
+                                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl backdrop-blur-md"><i class="bi bi-person-fill"></i></div>
+                                <div>
+                                    <h4 class="text-2xl font-bold">User Data</h4>
+                                    <p class="text-gray-400 mt-1 mb-4">Documents, Pictures, Music etc.</p>
+                                    <div class="flex gap-3">
+                                        <span id="total-user-size-data" class="px-3 py-1 rounded-lg bg-white/10 text-xs font-bold">142 GB</span>
+                                        <button class="text-xs text-blue-300 hover:text-white font-bold cursor-pointer" onclick="event.stopPropagation(); openCustomizeModal('home')">Customize</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="mig-card-flatpaks" onclick="toggleMigrationItem('flatpaks')" class="bg-card border border-main rounded-2xl p-6 cursor-pointer relative hover:border-blue-500 transition-colors">
+                            <div id="check-flatpaks" class="absolute top-4 right-4 text-blue-500 opacity-0"><i class="bi bi-check-circle-fill text-xl"></i></div>
+                            <i class="bi bi-grid-fill text-2xl text-purple-500 mb-3 block"></i>
+                            <h4 class="font-bold text-main">Applications</h4>
+                            <p id="desc-flatpaks" class="text-xs text-muted mt-1">Scanning...</p>
+                        </div>
+
+                        <div id="mig-card-installers" onclick="toggleMigrationItem('installers')" class="bg-card border border-main rounded-2xl p-6 cursor-pointer relative hover:border-blue-500 transition-colors">
+                            <div id="check-installers" class="absolute top-4 right-4 text-blue-500 opacity-0"><i class="bi bi-check-circle-fill text-xl"></i></div>
+                            <i class="bi bi-box-seam-fill text-2xl text-orange-500 mb-3 block"></i>
+                            <h4 class="font-bold text-main">System Files</h4>
+                            <p id="desc-installers" class="text-xs text-muted mt-1">Scanning...</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto py-6 border-t border-main flex justify-end">
+                        <button id="btn-start-restore" onclick="checkProBeforeRestore()" class="btn-primary px-8 py-3 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+                            <span>Start Restore</span> <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mig-step-3-progress" class="hidden flex-1 flex flex-col items-center justify-center pb-20">
+                    <h2 class="text-2xl font-bold text-main mb-2">Restoring...</h2>
+                    <p id="migration-status-text" class="text-muted text-sm mb-8 font-mono bg-card px-3 py-1 rounded border border-main">Preparing files...</p>
+
+                    <div class="w-full max-w-lg bg-gray-200 dark:bg-gray-800 rounded-full h-2 overflow-hidden mb-2">
+                        <div id="migration-progress-bar" class="h-full bg-blue-600 w-0 rounded-full transition-all duration-300"></div>
+                    </div>
+                    <div class="w-full max-w-lg flex justify-between text-xs font-bold text-muted">
+                        <span id="progress-percent">0%</span>
+                        <span id="time-remaining">Calculating...</span>
+                    </div>
+
+                    <button id="cancel-restore-btn" onclick="cancelMigration()" class="mt-12 btn-normal text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-900">Cancel Operation</button>
+                </div>
+            </div>
+
+            <div id="view-settings" class="hidden animate-entry">
+                <div class="max-w-4xl mx-auto">
+                    <h3 class="text-xl font-bold text-main mb-6">Preferences</h3>
+
+                    <div class="flex gap-1 mb-6 border-b border-main">
+                        <button onclick="switchSettingsTab('folders')" id="sub-tab-btn-folders" class="px-6 py-3 text-sm font-bold text-blue-600 border-b-2 border-blue-600 cursor-pointer">Folders</button>
+                        </div>
+
+                    <div id="settings-tab-folders" class="space-y-4">
+                        <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-4 flex gap-4">
+                            <i class="bi bi-info-circle-fill text-blue-600 mt-0.5"></i>
+                            <div>
+                                <h4 class="text-sm font-bold text-main">Real-Time Monitoring</h4>
+                                <p class="text-xs text-highlight mt-1">Selected folders are watched for changes instantly.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-card rounded-2xl overflow-hidden border border-main">
+                            <div class="p-4 bg-page border-b border-main flex justify-between items-center">
+                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Home Directory</span>
+                                <div class="flex gap-2">
+                                    <button onclick="toggleAllFolders(true)" class="text-xs font-bold text-brand-500 hover:underline cursor-pointer">Select All</button>
+                                    <span class="text-muted">•</span>
+                                    <button onclick="toggleAllFolders(false)" class="text-xs font-bold text-muted hover:text-main cursor-pointer">None</button>
+                                </div>
+                            </div>
+                            <div id="folder-selection-list" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                </div>
+                            <div class="p-4 bg-page border-t border-main flex justify-between items-center">
+                                <span class="text-xs text-muted" id="backup-summary-text">0 folders selected</span>
+                                <button onclick="initiateSettingsSave()" class="btn-primary px-4 py-2 rounded-lg text-xs font-bold">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="settings-tab-general" class="hidden space-y-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-4 flex gap-4">
+                            <i class="bi bi-info-circle-fill text-blue-600 mt-0.5"></i>
+                            <div>
+                                <h4 class="text-sm font-bold text-main">General Preferences</h4>
+                                <p class="text-xs text-highlight mt-1">Configure application startup and behavior settings.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-card rounded-2xl overflow-hidden border border-main">
+                            <div class="p-4 bg-page border-b border-main">
+                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Application Settings</span>
+                            </div>
+
+                            <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                                <div class="flex items-center justify-between p-5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-bold text-main text-sm">Auto-check for Updates</h5>
+                                            <p class="text-xs text-muted mt-0.5">Automatically check for new versions on startup</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="chk-auto-updates" class="sr-only peer" onchange="toggleGeneralSetting('updates')">
+                                        <div class="checkbox-normal"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center">
+                                            <i class="bi bi-bell-fill"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-bold text-main text-sm">Show Notifications</h5>
+                                            <p class="text-xs text-muted mt-0.5">Display system notifications for backup events</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="chk-show-notifications" class="sr-only peer" onchange="toggleGeneralSetting('notifications')">
+                                        <div class="checkbox-normal"></div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-page border-t border-main flex justify-end items-center">
+                                <button onclick="saveGeneralSettings()" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2">
+                                    <i class="bi bi-check-lg"></i> Save General Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-logs" class="hidden animate-entry">
+                <h3 class="font-bold text-main mb-4">System Console</h3>
+                <div class="bg-black text-green-400 font-mono text-xs p-4 rounded-xl shadow-inner h-[600px] overflow-y-auto border border-gray-800">
+                    <div class="opacity-50 border-b border-gray-800 pb-2 mb-2">root@timemachine:~$ tail -f /var/log/syslog</div>
+                    <div class="space-y-1">
+                        <div><span class="text-gray-500">[10:00:01]</span> <span class="text-blue-400">INFO</span> Daemon initialized.</div>
+                        <div><span class="text-gray-500">[10:00:02]</span> <span class="text-blue-400">INFO</span> Watching /home/user/Documents</div>
+                        <div><span class="text-gray-500">[10:05:22]</span> <span class="text-yellow-400">WARN</span> Slow read speed detected on Disk 2</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="notification-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center space-y-3">
+    </main>
+
+
+    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div id="confirmation-modal-container" class="bg-card w-full p-6 rounded-2xl shadow-2xl border border-main text-center mx-4 transition-all duration-200">
+            <h3 id="modal-title" class="text-xl font-bold text-main mb-4">Confirm Action</h3>
+            <div id="modal-desc" class="text-main mb-6">Are you sure you want to proceed?</div>
+            <div class="flex gap-3 justify-center">
+                <button id="modal-cancel-btn" onclick="closeConfirmModal()" class="px-4 py-2 rounded-lg border border-main hover:bg-gray-50 dark:hover:bg-white/5 text-main font-bold transition cursor-pointer">Cancel</button>
+                <button id="modal-confirm-btn" onclick="confirmAction()" class="btn-primary px-4 py-2 rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="migration-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div id="detail-modal-container" class="bg-card w-full max-w-md p-6 rounded-2xl shadow-2xl border border-main mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="detail-modal-title" class="text-lg font-bold text-main">Select Items</h3>
+                <button onclick="closeCustomizeModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-muted">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div id="detail-list-container" class="max-h-[60vh] overflow-y-auto space-y-2 pr-2 no-scrollbar">
+                </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeCustomizeModal()" class="btn-primary px-6 py-2 rounded-lg font-bold text-sm">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+    </body>
+</html>
