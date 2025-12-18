@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Time Machine
-Comment=Backup Application
-Exec=AppRun
-Icon=timemachine
-Categories=Utility;
-Terminal=false

@@ -1,0 +1,40 @@
+# Standard .gitignore for a Go project
+
+# Binaries for programs and plugins
+# ----------------------------------------------------
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test execution files
+*.test
+*.out
+
+# Compiler/build output
+# ----------------------------------------------------
+# Go workspace directory (e.g. $GOPATH/pkg/)
+/pkg/
+/bin/
+
+# Dependency directories (using Go Modules)
+# The vendor directory is typically ignored if you commit Go.mod/Go.sum
+/vendor/
+/go.mod
+/go.sum
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor files
+# ----------------------------------------------------
+.vscode/        # VS Code settings
+.idea/          # IntelliJ/GoLand project files
+*.sublime-workspace
+*.swp           # Vim/Vi swap files
+
+# Frontend/Node.js files (often mixed with Go backends)
+# ----------------------------------------------------
+node_modules
+npm-debug.log
