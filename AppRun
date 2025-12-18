@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# --- Configuration ---
+APPDIR="$(dirname "$(readlink -f "${0}")")"
+
+cd "${APPDIR}/opt/TimeMachine"
+
+# --- Start Electron (which will start Flask internally) ---
+echo "Starting Time Machine..."
+
+"${APPDIR}/opt/TimeMachine/node_modules/electron/dist/electron" main.js --no-sandbox
+
+exit 0

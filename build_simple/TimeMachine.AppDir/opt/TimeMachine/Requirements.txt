@@ -1,0 +1,5 @@
+# Requirements
+setproctitle
+flask
+flask_sock
+watchdog

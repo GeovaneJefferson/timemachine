@@ -1,116 +1,231 @@
-# Time Machine 🛡️
+TimeMachine Backup
 
-**Your personal, vigilant backup assistant for Linux desktops.**
+A modern backup application for Linux (tested on Fedora) that provides automated file backup and synchronization with a web-based interface.
+Why Flask?
 
-Time Machine is a Python-based backup solution designed to safeguard your important files, settings, and applications on Linux desktops. It operates through a powerful daemon and a user-friendly GTK4-based GUI, offering a comprehensive and reliable data protection experience.
+I built this with Flask because I wanted to learn web application development. While Electron might not be ideal for all desktop applications, using Flask allowed me to:
 
----
+    Create a responsive web interface accessible from any browser
 
-⚠️ **Under Development:** Please note that Time Machine is currently under active development. While it offers many features, it may still contain bugs or undergo significant changes. Use with caution, especially for critical data!
+    Learn modern web development patterns
 
----
+    Build a system that can potentially be accessed remotely
 
-## ✨ Screenshots
+    Separate the UI from the backup engine for cleaner architecture
 
-![Time Machine Screenshot](data/screenshoot.png)
+The web interface approach also means I could quickly iterate on the UI without dealing with native toolkit complexities. That said, I'm considering rewriting the UI in Gtk4 or Qt6 in the future for better native integration.
+Features
 
----
+    Linux Desktop Application: Optimized for Linux systems (tested on Fedora)
 
-## Core Features
+    Modern Web Interface: Responsive UI built with HTML/CSS and Tailwind CSS
 
-### Daemon Features
+    Python Backend: Flask server handling backup logic and daemon management
 
-The daemon, the core of Time Machine, silently works in the background to manage your backups:
+    Automated Backups: Set up once and let the daemon handle the rest
 
-*   **Automatic Backups:** Runs at regular intervals to check for new or changed files.
-*   **Intelligent File Scanning:** Uses metadata caching for quick folder checks and SHA-256 hashing for precise file change detection.
-*   **Incremental Backups:** Creates a full initial backup, then saves only changes in timestamped increments, saving space.
-*   **Robust File Copying:** Employs atomic file operations, preserves metadata, and adjusts copy concurrency based on system load.
-*   **Interruption Handling:** Resumes interrupted backup processes intelligently.
-*   **Disk Space Management:** Checks backup drive space before starting.
-*   **Automatic Package Backup:** Backs up downloaded `.deb` and `.rpm` packages.
-*   **Backup Drive Monitoring:** Ensures the backup drive is connected and writable.
-*   **System Signal Handling:** Gracefully handles system signals (terminate, interrupt, pause, resume).
-*   **Detailed Logging:** Logs all significant actions and errors.
-*   **UI Communication:** Sends real-time status and progress to the GUI via a socket.
-*   **Single Instance Guarantee:** Prevents multiple daemon instances from running.
-*   **Configurable Exclusions:** Allows excluding specific folders, hidden files/folders, or by file extensions.
+    Folder Selection: Choose specific folders to include in your backups
 
-### GUI Features
+    Background Daemon: Runs continuously even after closing the UI
 
-The GTK4-based graphical user interface (GUI) provides an intuitive way to interact with Time Machine:
+    File Search & Restore: Find and restore files from backups with hash-based location tracking
 
-*   **Device Selection:** Easily select your external drive for backups.
-*   **Real-time Monitoring:** Displays daemon status, current scanning folder, and file transfer progress.
-*   **Configuration Options:** Manage automatic backups, excluded folders/files, and other settings.
-*   **File Browsing and Search:** Navigate and search within your backups.
-*   **File Restoration:** Restore individual files or entire directories.
-*   **Visual Overviews:** View backup summary statistics (file categories, frequent files).
-*   **Suggested Files:** Recommends files for backup based on usage patterns.
-*   **Starred Files:** Mark important backed-up files for quick access.
-*   **System Restore:** Restore applications (.deb/.rpm), files/folders, and Flatpaks.
-*   **Logging Access:** View daemon logs directly from the GUI.
-*   **Diff Viewing:** Compare different backed-up versions of text files against the current version in your home directory.
+    Version History: Access multiple versions of backed up files
 
----
+    Storage Device Management: Select and manage backup storage devices
 
-## 🛠️ Tech Stack
+Project Structure
+text
 
-*   **Python 3**
-*   **GTK4 & Libadwaita:** Native Linux desktop UI.
-*   **Asyncio & `concurrent.futures.ThreadPoolExecutor`:** Efficient, non-blocking operations and parallel file copying for the daemon.
-*   **Standard Libraries:** `os`, `shutil`, `hashlib`, `json`, `logging`, `signal`, `tempfile`, `socket`, `configparser`, `datetime`, `subprocess`, `psutil`, etc.
-*   **Third-party:** `setproctitle` for daemon process naming.
+timemachine-electron/
+├── config/              # Configuration files
+├── static/             # Static assets (CSS, JS, images)
+├── templates/          # HTML templates
+├── .gitignore          # Git ignore rules
+├── Requirements.txt    # Python dependencies
+├── app.py             # Flask application and web interface
+├── daemon.py          # Backup daemon with watchdog monitoring
+├── server.py          # Core server functionality
+└── [other modules]    # Additional Python modules
 
----
+To Run
 
-## 🚀 Getting Started
+    Install Python dependencies
+    bash
 
-### Prerequisites
+pip install -r Requirements.txt
 
-*   Python 3.8+
-*   GTK4 & Libadwaita (e.g., `gir1.2-gtk-4.0`, `libadwaita-1-0` on Debian/Ubuntu based systems)
-*   Python GObject bindings (`python3-gi`, `python3-gi-cairo`)
-*   `psutil` (install with `pip install psutil`)
-*   `setproctitle` (install with `pip install setproctitle`)
+Start the Flask server
+bash
 
-### Install from Source (for Development)
+python3 app.py
 
-This is the recommended method for development and local testing.
+    The server will typically run on http://localhost:5000
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/geovanejefferson/timemachine.git
-    cd timemachine
-    ```
+    Open the web interface in your browser and navigate to http://localhost:5000
 
-2.  **Install with flatpak builder:**
-    ```bash
-    flatpak-builder --user --install --force-clean build-dir io.github.geovanejefferson.timemachine.yaml
-    ```
+    Setup your backup:
 
-### Update from Source (for Development)
+        Under Devices, select your backup storage device
 
-This is the recommended method for development and local testing.
+        In Preferences, choose folders to be backed up
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/geovanejefferson/timemachine.git
-    cd timemachine
-    ```
-    
-2.  **Update with flatpak builder:**
-    ```bash
-    flatpak-builder --user --install --force-clean build-dir io.github.geovanejefferson.timemachine.yaml
-    ```
+        Click "RUN" at the top of the page to start the backup daemon
 
-### To Remove
-1.  **Remove with flatpak:**
-    ```bash
-    flatpak remove io.github.geovanejefferson.timemachine -y
-    ```
+    You may now:
 
-2.  **Delete the directory:**
-    ```bash
-    rm -rf /home/$USER/.var/app/io.github.geovanejefferson.timemachine
-    ```
+        Close the browser tab/window
+
+        Stop the Flask server (app.py)
+
+    The backup daemon will continue running in the background.
+
+Important: Starting the Daemon
+
+The daemon does NOT start automatically after configuration! You must explicitly:
+
+    Complete device selection and folder configuration
+
+    Click the "RUN" button at the top of the web interface
+
+    The daemon will start in the background and begin monitoring your selected folders
+
+Important: After System Reboot
+
+⚠️ AUTO-START NOT YET IMPLEMENTED ⚠️
+
+Currently, the backup daemon does NOT automatically start when your computer boots up. You need to manually start it after every system reboot:
+
+    Start the Flask server (if not already running):
+    bash
+
+python3 app.py
+
+    Open the web interface at http://localhost:5000
+
+    Click the "RUN" button again to restart the daemon
+
+Note: The autostart feature is on my TODO list. Until it's implemented, you'll need to manually start the daemon after each system restart.
+Key Components
+app.py - Web Interface
+
+    Flask-based web application
+
+    Device selection and management
+
+    Folder configuration interface
+
+    File search and restore functionality
+
+    Backup status monitoring
+
+    WebSocket for live transfer updates
+
+    "RUN" button to manually start the daemon
+
+daemon.py - Backup Engine
+
+    Watchdog-based file system monitoring
+
+    Incremental backup system
+
+    Atomic file operations
+
+    Hardlink optimization for unchanged files
+
+    Flatpak application backup
+
+    Background daemon with UNIX socket control
+
+    Manually started via the "RUN" button in the UI
+
+Backup Features
+
+    Real-time Monitoring: Watches selected folders for changes
+
+    Incremental Backups: Only copies changed files
+
+    Hardlink Optimization: Reuses unchanged file data
+
+    Atomic Operations: Safe file copying with journaling
+
+    Moved File Detection: Tracks renamed and moved files
+
+    Flatpak Backup: Periodically backs up installed Flatpak applications
+
+    Manual Control: You decide when to start/stop the backup process
+
+File Search & Restore
+
+    Hash-based Search: Find moved files using content hashing
+
+    Database Tracking: Tracks file locations across moves
+
+    Version History: Access previous versions of files
+
+    Quick Restore: Restore files to original or custom locations
+
+Development
+Technology Stack
+
+    Backend: Python, Flask
+
+    File Monitoring: Watchdog
+
+    Database: SQLite for file location tracking
+
+    System Integration: psutil, platform-specific tools
+
+Future Considerations
+
+    GTK4/Qt6 UI: Considering native toolkit for better integration
+
+    System Tray: Add tray icon for quick access
+
+    Native Notifications: Better system integration
+
+    Configuration Wizard: Improved setup experience
+
+    Auto-start: Implement systemd service or autostart entry (TODO)
+
+File Descriptions
+
+    app.py: Main web application with API endpoints
+
+    daemon.py: Core backup daemon with monitoring
+
+    server.py: Shared server functionality and constants
+
+    search_handler.py: File search and indexing
+
+    storage_util.py: Storage device detection
+
+    daemon_control.py: Daemon management utilities
+
+Requirements
+
+    Python 3.7+
+
+    Linux (tested on Fedora)
+
+    Required Python packages (see Requirements.txt):
+
+        Flask
+
+        watchdog
+
+        psutil
+
+        flask-sock
+
+Note
+
+This application is specifically designed and tested for Linux systems, with Fedora as the primary development platform. Some features may require adjustment for other Linux distributions.
+
+Important Reminders:
+
+    After configuring your backup, you must click the "RUN" button at the top of the page to actually start the backup daemon!
+
+    After system reboot, you need to manually start the Flask server and click "RUN" again (autostart not yet implemented)
+
+    The daemon continues running in the background even after closing the web interface

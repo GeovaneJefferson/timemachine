@@ -1,0 +1,611 @@
+/**
+ * =============================================================================
+ * STYLE.CSS - Time Machine Backup Application
+ * Modern White Theme with Dark Mode Support
+ * =============================================================================
+ */
+
+/* =============================================================================
+   1. CSS VARIABLES - LIGHT THEME
+   ============================================================================= */
+
+:root {
+    /* Background Colors */
+    --bg-page: #F8FAFC;
+    --bg-sidebar: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-hover: #F1F5F9;
+    --bg-active: #EFF6FF;
+
+    /* Border Colors */
+    --border-main: #E2E8F0;
+    --border-subtle: #F1F5F9;
+
+    /* Text Colors */
+    --text-main: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --text-highlight: #3B82F6;
+
+    /* Brand Colors */
+    --brand-primary: #3B82F6;
+    --brand-hover: #2563EB;
+    --brand-50: #EFF6FF;
+    --brand-100: #DBEAFE;
+    --brand-200: #BFDBFE;
+
+    /* Border Radius */
+    --radius-card: 1rem;
+    --radius-btn: 0.5rem;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-card-hover: 0 4px 12px rgba(15, 23, 42, 0.1), 0 2px 4px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
+}
+
+/* =============================================================================
+   2. CSS VARIABLES - DARK THEME
+   ============================================================================= */
+
+html.dark {
+    --bg-page: #0D0D0D;
+    --bg-card: #171717;
+    --bg-sidebar: #0A0A0A;
+    --bg-hover: #262626;
+    --bg-active: #1E1E1E;
+
+    --border-main: #262626;
+    --border-subtle: #1F1F1F;
+
+    --text-main: #FFFFFF;
+    --text-secondary: #A1A1AA;
+    --text-muted: #52525B;
+    --text-highlight: #93C5FD;
+
+    --brand-primary: #3B82F6;
+    --brand-hover: #60A5FA;
+
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.35);
+    --shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* =============================================================================
+   3. BASE STYLES
+   ============================================================================= */
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styles */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* =============================================================================
+   4. CARD COMPONENTS
+   ============================================================================= */
+
+.bg-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.bg-card:hover {
+    box-shadow: var(--shadow-card-hover);
+}
+
+.widget {
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+}
+
+/* =============================================================================
+   5. NAVIGATION BUTTONS
+   ============================================================================= */
+
+.btn-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius-btn);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}
+
+.btn-nav:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-main);
+}
+
+.btn-nav.active {
+    background-color: var(--bg-active);
+    color: var(--brand-primary);
+    box-shadow: inset 0 0 0 1px var(--brand-primary);
+}
+
+/* =============================================================================
+   6. BUTTON STYLES
+   ============================================================================= */
+
+/* Normal Button */
+.btn-normal {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--border-main);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-normal:hover:not(:disabled) {
+    background-color: var(--bg-hover);
+    border-color: var(--text-secondary);
+}
+
+/* Primary Button */
+.btn-primary {
+    background: linear-gradient(135deg, #4F8DFD 0%, #2C6CF6 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-btn);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(56, 129, 246, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 6px 14px rgba(56, 129, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Disabled Button States */
+button:disabled,
+.btn-normal:disabled,
+.btn-primary:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+}
+
+/* Version Action Buttons */
+.btn-version-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-btn);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-main);
+    background-color: var(--bg-card);
+    cursor: pointer;
+}
+
+.btn-version-action:hover:not(:disabled) {
+    background-color: var(--bg-hover);
+}
+
+.btn-version-action:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* =============================================================================
+   7. TOGGLE SWITCH (CHECKBOX)
+   ============================================================================= */
+
+.checkbox-normal {
+    width: 2.5rem;
+    height: 1.5rem;
+    background-color: var(--border-main);
+    border-radius: 9999px;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.checkbox-normal::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+input:checked ~ .checkbox-normal {
+    background-color: var(--brand-primary);
+}
+
+input:checked ~ .checkbox-normal::after {
+    transform: translateX(100%);
+}
+
+/* =============================================================================
+   8. ANIMATIONS
+   ============================================================================= */
+
+/* Fade In Scale */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-entry {
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ping Animation */
+@keyframes ping {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Pulse Stop Animation */
+@keyframes pulse-stop {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* =============================================================================
+   9. STATUS INDICATORS
+   ============================================================================= */
+
+/* Connection Status - Connected */
+.animate-ping-connected {
+    position: absolute;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    background-color: #10B981;
+    opacity: 0.75;
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-dot-connected,
+.daemon-status-dot-connected {
+    background-color: #10B981;
+}
+
+/* Connection Status - Starting */
+.animate-ping-starting {
+    position: absolute;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    background-color: #f59e0b;
+    opacity: 0.75;
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.daemon-status-dot-starting {
+    background-color: #f59e0b;
+}
+
+/* Connection Status - Disconnected */
+.animate-ping-disconnected {
+    position: absolute;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    background-color: #EF4444;
+    opacity: 0.75;
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-dot-disconnected,
+.daemon-status-dot-disconnected {
+    background-color: #EF4444;
+}
+
+/* Connection Status - Stopped */
+.animate-ping-stopped {
+    position: absolute;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    background-color: #9ca3af;
+    opacity: 0.5;
+    animation: none;
+}
+
+.daemon-status-dot-stopped {
+    background-color: #9ca3af;
+}
+
+/* Daemon Status Dot Styles */
+.daemon-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #9ca3af;
+}
+
+.daemon-status-dot.ready {
+    background-color: #10b981;
+    animation: pulse 2s infinite;
+}
+
+.daemon-status-dot.running {
+    background-color: #3b82f6;
+    animation: pulse 1.5s infinite;
+}
+
+.daemon-status-dot.starting {
+    background-color: #f59e0b;
+    animation: pulse 1s infinite;
+}
+
+.daemon-status-dot.stopped {
+    background-color: #9ca3af;
+}
+
+.daemon-status-dot.error {
+    background-color: #ef4444;
+    animation: pulse 0.8s infinite;
+}
+
+/* =============================================================================
+   10. DAEMON CONTROL STYLES
+   ============================================================================= */
+
+.daemon-control-group {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.btn-daemon-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 90px;
+    justify-content: center;
+}
+
+/* Daemon Button States */
+.btn-daemon-control.run {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #10b981;
+    color: white;
+}
+
+.btn-daemon-control.running {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #3b82f6;
+    color: white;
+}
+
+.btn-daemon-control.pause {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: #f59e0b;
+    color: white;
+}
+
+.btn-daemon-control.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #ef4444;
+    color: white;
+}
+
+.btn-daemon-control.stopping {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: #f59e0b;
+    color: white;
+    animation: pulse-stop 1.5s infinite;
+}
+
+.btn-daemon-control:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-daemon-control:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-daemon-control:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Daemon Status Info */
+.daemon-status-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.daemon-status-text {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.daemon-icon {
+    font-size: 14px;
+}
+
+.daemon-text {
+    font-weight: 600;
+}
+
+/* Daemon Starting Effect */
+.checkbox-container.daemon-starting {
+    position: relative;
+}
+
+.checkbox-container.daemon-starting::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.1) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+}
+
+.status-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+}
+
+/* =============================================================================
+   11. UTILITY CLASSES
+   ============================================================================= */
+
+.text-main {
+    color: var(--text-main);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.text-highlight {
+    color: var(--text-highlight);
+}
+
+.border-main {
+    border-color: var(--border-main);
+}
+
+.bg-page {
+    background-color: var(--bg-page);
+}
+
+.bg-hover {
+    background-color: var(--bg-hover);
+}
+
+.bg-active {
+    background-color: var(--bg-active);
+}
+
+/* =============================================================================
+   12. MODAL STYLES
+   ============================================================================= */
+
+#confirmation-modal .max-w-sm {
+    max-width: 24rem;
+}
+
+#confirmation-modal .max-w-md {
+    max-width: 28rem;
+}
+
+/* =============================================================================
+   13. RESPONSIVE STYLES
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .daemon-control-group {
+        margin-right: 8px;
+    }
+
+    .btn-daemon-control {
+        padding: 6px 12px;
+        min-width: 80px;
+        font-size: 12px;
+    }
+
+    .daemon-status-info {
+        display: none !important;
+    }
+}
