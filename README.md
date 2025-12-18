@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Time Machine 🛡️
+=======
+# Time Machine 🛡️ (GTK4 OLD CODE)
+>>>>>>> 61b5794 (Git push)
 
 **Your personal, vigilant backup assistant for Linux desktops.**
 
