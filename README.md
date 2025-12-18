@@ -1,231 +1,116 @@
-TimeMachine Backup
+# 🚀 TimeMachine Backup for Linux
 
-A modern backup application for Linux (tested on Fedora) that provides automated file backup and synchronization with a web-based interface.
-Why Flask?
+A modern, robust backup application for Linux that provides automated, incremental file backup and synchronization via a responsive web-based interface. Tested and optimized on Fedora Linux.
 
-I built this with Flask because I wanted to learn web application development. While Electron might not be ideal for all desktop applications, using Flask allowed me to:
+[![Python](https://img.shields.io/badge/Python-3.7%2B-blue)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-Web%20Interface-green)](https://flask.palletsprojects.com/)
+[![Linux](https://img.shields.io/badge/Platform-Linux-orange)](https://www.linux.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-    Create a responsive web interface accessible from any browser
+## ✨ Features
 
-    Learn modern web development patterns
+| Component | Feature | Description |
+|-----------|---------|-------------|
+| **Interface** | Modern Web UI | Responsive interface built with HTML/CSS and Tailwind CSS |
+| **Backend** | Python & Flask | Robust backend handling all logic and device management |
+| **Backup** | Automated & Incremental | Continuous background monitoring, only copies changed files |
+| **Optimization** | Hardlink Optimization | Reuses file data on backup target to save space |
+| **Monitoring** | Real-time Daemon | Uses watchdog for continuous folder monitoring |
+| **Restore** | Hash-based Tracking | Track files across moves and renames using content hashes |
+| **Flexibility** | Storage Management | Easy management of external backup storage devices |
 
-    Build a system that can potentially be accessed remotely
+## ⚡ Quick Start
 
-    Separate the UI from the backup engine for cleaner architecture
+### Prerequisites
+- Python 3.7+
+- Linux system (tested on Fedora)
 
-The web interface approach also means I could quickly iterate on the UI without dealing with native toolkit complexities. That said, I'm considering rewriting the UI in Gtk4 or Qt6 in the future for better native integration.
-Features
+### Installation
 
-    Linux Desktop Application: Optimized for Linux systems (tested on Fedora)
+```bash
+# Clone the repository
+git clone https://github.com/GeovaneJefferson/timemachine.git
+cd timemachine
 
-    Modern Web Interface: Responsive UI built with HTML/CSS and Tailwind CSS
+# Install dependencies
+pip install -r requirements.txt
+```
 
-    Python Backend: Flask server handling backup logic and daemon management
+### Running the Application
 
-    Automated Backups: Set up once and let the daemon handle the rest
+```bash
+# Start the server
+python3 app.py
+```
 
-    Folder Selection: Choose specific folders to include in your backups
+Then open your browser to `http://localhost:5000` and follow the setup wizard.
 
-    Background Daemon: Runs continuously even after closing the UI
+## 🔧 Architecture
 
-    File Search & Restore: Find and restore files from backups with hash-based location tracking
-
-    Version History: Access multiple versions of backed up files
-
-    Storage Device Management: Select and manage backup storage devices
-
-Project Structure
-text
-
+### Project Structure
+```
 timemachine-electron/
-├── config/              # Configuration files
-├── static/             # Static assets (CSS, JS, images)
-├── templates/          # HTML templates
-├── .gitignore          # Git ignore rules
-├── Requirements.txt    # Python dependencies
-├── app.py             # Flask application and web interface
-├── daemon.py          # Backup daemon with watchdog monitoring
-├── server.py          # Core server functionality
-└── [other modules]    # Additional Python modules
-
-To Run
-
-    Install Python dependencies
-    bash
-
-pip install -r Requirements.txt
-
-Start the Flask server
-bash
-
-python3 app.py
-
-    The server will typically run on http://localhost:5000
-
-    Open the web interface in your browser and navigate to http://localhost:5000
-
-    Setup your backup:
-
-        Under Devices, select your backup storage device
-
-        In Preferences, choose folders to be backed up
-
-        Click "RUN" at the top of the page to start the backup daemon
-
-    You may now:
-
-        Close the browser tab/window
-
-        Stop the Flask server (app.py)
-
-    The backup daemon will continue running in the background.
-
-Important: Starting the Daemon
-
-The daemon does NOT start automatically after configuration! You must explicitly:
-
-    Complete device selection and folder configuration
-
-    Click the "RUN" button at the top of the web interface
-
-    The daemon will start in the background and begin monitoring your selected folders
-
-Important: After System Reboot
-
-⚠️ AUTO-START NOT YET IMPLEMENTED ⚠️
-
-Currently, the backup daemon does NOT automatically start when your computer boots up. You need to manually start it after every system reboot:
-
-    Start the Flask server (if not already running):
-    bash
-
-python3 app.py
-
-    Open the web interface at http://localhost:5000
-
-    Click the "RUN" button again to restart the daemon
-
-Note: The autostart feature is on my TODO list. Until it's implemented, you'll need to manually start the daemon after each system restart.
-Key Components
-app.py - Web Interface
-
-    Flask-based web application
-
-    Device selection and management
-
-    Folder configuration interface
-
-    File search and restore functionality
-
-    Backup status monitoring
-
-    WebSocket for live transfer updates
-
-    "RUN" button to manually start the daemon
-
-daemon.py - Backup Engine
-
-    Watchdog-based file system monitoring
-
-    Incremental backup system
-
-    Atomic file operations
-
-    Hardlink optimization for unchanged files
-
-    Flatpak application backup
-
-    Background daemon with UNIX socket control
-
-    Manually started via the "RUN" button in the UI
-
-Backup Features
-
-    Real-time Monitoring: Watches selected folders for changes
-
-    Incremental Backups: Only copies changed files
-
-    Hardlink Optimization: Reuses unchanged file data
-
-    Atomic Operations: Safe file copying with journaling
-
-    Moved File Detection: Tracks renamed and moved files
-
-    Flatpak Backup: Periodically backs up installed Flatpak applications
-
-    Manual Control: You decide when to start/stop the backup process
-
-File Search & Restore
-
-    Hash-based Search: Find moved files using content hashing
-
-    Database Tracking: Tracks file locations across moves
-
-    Version History: Access previous versions of files
-
-    Quick Restore: Restore files to original or custom locations
-
-Development
-Technology Stack
-
-    Backend: Python, Flask
-
-    File Monitoring: Watchdog
-
-    Database: SQLite for file location tracking
-
-    System Integration: psutil, platform-specific tools
-
-Future Considerations
-
-    GTK4/Qt6 UI: Considering native toolkit for better integration
-
-    System Tray: Add tray icon for quick access
-
-    Native Notifications: Better system integration
-
-    Configuration Wizard: Improved setup experience
-
-    Auto-start: Implement systemd service or autostart entry (TODO)
-
-File Descriptions
-
-    app.py: Main web application with API endpoints
-
-    daemon.py: Core backup daemon with monitoring
-
-    server.py: Shared server functionality and constants
-
-    search_handler.py: File search and indexing
-
-    storage_util.py: Storage device detection
-
-    daemon_control.py: Daemon management utilities
-
-Requirements
-
-    Python 3.7+
-
-    Linux (tested on Fedora)
-
-    Required Python packages (see Requirements.txt):
-
-        Flask
-
-        watchdog
-
-        psutil
-
-        flask-sock
-
-Note
-
-This application is specifically designed and tested for Linux systems, with Fedora as the primary development platform. Some features may require adjustment for other Linux distributions.
-
-Important Reminders:
-
-    After configuring your backup, you must click the "RUN" button at the top of the page to actually start the backup daemon!
-
-    After system reboot, you need to manually start the Flask server and click "RUN" again (autostart not yet implemented)
-
-    The daemon continues running in the background even after closing the web interface
+├── config/              # Configuration Files
+├── static/              # Web assets (CSS, JS, images)
+├── templates/           # HTML templates
+├── app.py               # Flask application
+├── daemon.py            # Core Backup Daemon
+├── server.py            # Shared server functionality
+├── search_handler.py    # File search logic
+├── storage_util.py      # Storage device detection
+├── daemon_control.py    # Daemon management
+├── .gitignore
+└── requirements.txt
+```
+
+### Why Flask?
+- **Clean Architecture**: Clear separation of UI from core engine
+- **Rapid Development**: Quick iteration without complex native toolkits
+- **Remote Access**: Potential for network-based management
+- **Learning Platform**: Modern web application patterns
+
+## ⚠️ Important Notes
+
+### Daemon Auto-Start (Not Implemented)
+**After every system reboot, you must manually restart the daemon by:**
+1. Running `python3 app.py`
+2. Opening `http://localhost:5000`
+3. Clicking the "RUN" button
+4. Or after all its setup, just run daemon.py in terminal :D
+
+### System Compatibility
+Designed and tested for Linux systems, primarily Fedora. Other distributions may require adjustments.
+
+## 🛣️ Roadmap
+
+### High Priority
+- [ ] Auto startup
+
+### Medium Priority
+- [ ] Native UI integration (GTK4/Qt6)
+- [ ] System tray icon
+- [ ] Desktop notifications
+
+### Low Priority
+- [ ] Remote management
+- [ ] Multiple backup targets
+- [ ] Backup encryption
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **"Permission denied" errors**
+   - Ensure write access to backup target
+   - Use appropriate permissions for system folders
+
+2. **Daemon not starting**
+   - Check if port 5000 is in use
+   - Verify Python dependencies are installed
+
+3. **Device not detected**
+   - Ensure storage device is properly mounted
+   - Check USB connection if using external drive
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
