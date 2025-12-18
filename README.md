@@ -19,6 +19,13 @@ A modern, robust backup application for Linux that provides automated, increment
 | **Restore** | Hash-based Tracking | Track files across moves and renames using content hashes |
 | **Flexibility** | Storage Management | Easy management of external backup storage devices |
 
+## ✨ Screenshots
+
+| **Main Window** | ![Monitoring](.static/screenshots/screenshot1.png) |
+| **File Restore** | ![Monitoring](.static/screenshots/screenshot2.png) |
+| **Device Management** | ![Devices](.static/screenshots/screenshot3.png) |
+| **Backup Settings** | ![Settings](.static/screenshots/screenshot4.png) |
+
 ## ⚡ Quick Start
 
 ### Prerequisites
@@ -75,7 +82,7 @@ timemachine-electron/
 **After every system reboot, you must manually restart the daemon by:**
 1. Running `python3 app.py`
 2. Opening `http://localhost:5000`
-3. Clicking the "RUN" button
+3. Clicking the "Run" button
 4. Or after all its setup, just run daemon.py in terminal :D
 
 ### System Compatibility
