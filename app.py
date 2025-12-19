@@ -2983,7 +2983,7 @@ def search_moved_file():
                         return current_path
                     else:
                         # File moved again, remove stale entry
-                        remove_file_location(backup_path)
+                        DatabaseManager.remove_file_location(backup_path)
                         return None
                 return None
             except Exception as e:
@@ -4334,6 +4334,491 @@ def _calculate_backup_size_fast(path):
     except Exception:
         # Fallback to Python method
         return _calculate_backup_size(path)
+
+
+# =============================================================================
+# FOLDER RESTORATION LOGIC
+# =============================================================================
+# NEW
+def reconstruct_folder_from_backups(folder_path, target_date=None, target_time=None, destination=None):
+    """
+    Reconstruct folder state from backups up to target datetime.
+    """
+    try:
+        app.logger.info(f"Reconstructing folder: {folder_path}, date: {target_date}, time: {target_time}")
+
+        # 1. Get backup directories
+        main_backup_dir = server.app_main_backup_dir()
+        incremental_base = server.app_backup_dir()
+
+        # 2. Determine destination
+        if not destination:
+            home_dir = os.path.expanduser("~")
+            folder_name = os.path.basename(folder_path.rstrip('/'))
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            destination = os.path.join(home_dir, f"restored_{folder_name}_{timestamp}")
+
+        os.makedirs(destination, exist_ok=True)
+
+        # 3. Get all file versions up to target time
+        folder_files = find_all_files_in_folder(folder_path, main_backup_dir, incremental_base)
+
+        if not folder_files:
+            app.logger.warning(f"No files found for folder: {folder_path}")
+            return False
+
+        # 4. For each file, find appropriate version
+        restored_count = 0
+        total_files = len(folder_files)
+
+        app.logger.info(f"Found {total_files} files to restore")
+
+        for idx, rel_file_path in enumerate(folder_files):
+            if idx % 10 == 0:
+                app.logger.info(f"Restoring files: {idx}/{total_files}")
+
+            # Find the right version of this file
+            file_version = find_file_version_for_datetime(
+                rel_file_path,
+                main_backup_dir,
+                incremental_base,
+                target_date,
+                target_time
+            )
+
+            if file_version and os.path.exists(file_version):
+                # Restore this file
+                if restore_file_version(file_version, destination, main_backup_dir):
+                    restored_count += 1
+                else:
+                    app.logger.warning(f"Failed to restore: {rel_file_path}")
+            else:
+                app.logger.warning(f"Version not found for: {rel_file_path}")
+
+        app.logger.info(f"Restored {restored_count}/{total_files} files to {destination}")
+
+        # 5. Open restored location
+        open_restored_location(destination)
+
+        return True
+
+    except Exception as e:
+        app.logger.error(f"Error reconstructing folder: {e}", exc_info=True)
+        return False
+
+
+def find_all_files_in_folder(folder_path, main_backup_dir, incremental_base):
+    """
+    Find all files that ever existed in this folder across all backups.
+    Returns list of relative paths.
+    """
+    all_files = set()
+
+    # 1. Check main backup
+    main_folder_path = os.path.join(main_backup_dir, folder_path)
+    if os.path.exists(main_folder_path):
+        for root, dirs, files in os.walk(main_folder_path):
+            for file in files:
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, main_backup_dir)
+                all_files.add(rel_path)
+
+    # 2. Check all incremental backups
+    if os.path.exists(incremental_base):
+        # Walk through all date/time folders
+        for date_folder in os.listdir(incremental_base):
+            date_path = os.path.join(incremental_base, date_folder)
+            if not os.path.isdir(date_path):
+                continue
+
+            for time_folder in os.listdir(date_path):
+                time_path = os.path.join(date_path, time_folder)
+                if not os.path.isdir(time_path):
+                    continue
+
+                # Check if this incremental has our folder
+                inc_folder_path = os.path.join(time_path, folder_path)
+                if os.path.exists(inc_folder_path):
+                    for root, dirs, files in os.walk(inc_folder_path):
+                        for file in files:
+                            full_path = os.path.join(root, file)
+                            # Get path relative to this incremental backup
+                            rel_to_inc = os.path.relpath(full_path, time_path)
+                            all_files.add(rel_to_inc)
+
+    return list(all_files)
+
+# NEW
+def find_file_version_for_datetime(rel_file_path, main_backup_dir, incremental_base, target_date=None, target_time=None):
+    """
+    Find file version for specific datetime.
+    Uses folder timestamps (not file mtimes).
+    """
+    app.logger.info(f"Looking for {rel_file_path} at {target_date} {target_time}")
+
+    # If no target, use latest
+    if not target_date:
+        # Find latest incremental
+        if os.path.exists(incremental_base):
+            all_backups = []
+            for date_folder in os.listdir(incremental_base):
+                if date_folder.startswith('.'):
+                    continue
+
+                date_path = os.path.join(incremental_base, date_folder)
+                if not os.path.isdir(date_path):
+                    continue
+
+                for time_folder in os.listdir(date_path):
+                    time_path = os.path.join(date_path, time_folder)
+                    inc_file = os.path.join(time_path, rel_file_path)
+
+                    if os.path.exists(inc_file):
+                        try:
+                            # Parse folder timestamp
+                            day, month, year = map(int, date_folder.split('-'))
+                            hour, minute = map(int, time_folder.split('-'))
+                            dt = datetime(year, month, day, hour, minute)
+                            all_backups.append((dt.timestamp(), inc_file))
+                        except:
+                            continue
+
+            if all_backups:
+                # Return newest
+                all_backups.sort(reverse=True)
+                return all_backups[0][1]
+
+        # Fallback to main backup
+        main_file = os.path.join(main_backup_dir, rel_file_path)
+        if os.path.exists(main_file):
+            return main_file
+        return None
+
+    # We have target date/time - parse it
+    try:
+        target_day, target_month, target_year = map(int, target_date.split('-'))
+        target_hour, target_minute = map(int, target_time.split('-'))
+        target_dt = datetime(target_year, target_month, target_day, target_hour, target_minute)
+        target_timestamp = target_dt.timestamp()
+    except:
+        app.logger.error(f"Invalid target date/time: {target_date} {target_time}")
+        return None
+
+    # Start with main backup
+    main_file = os.path.join(main_backup_dir, rel_file_path)
+    best_version = main_file if os.path.exists(main_file) else None
+    best_timestamp = 0
+
+    # Check all incrementals
+    if os.path.exists(incremental_base):
+        for date_folder in os.listdir(incremental_base):
+            if date_folder.startswith('.'):
+                continue
+
+            try:
+                day, month, year = map(int, date_folder.split('-'))
+            except:
+                continue
+
+            date_path = os.path.join(incremental_base, date_folder)
+
+            for time_folder in os.listdir(date_path):
+                try:
+                    hour, minute = map(int, time_folder.split('-'))
+                except:
+                    continue
+
+                time_path = os.path.join(date_path, time_folder)
+                inc_file = os.path.join(time_path, rel_file_path)
+
+                if os.path.exists(inc_file):
+                    # Calculate backup timestamp from folder names
+                    backup_dt = datetime(year, month, day, hour, minute)
+                    backup_timestamp = backup_dt.timestamp()
+
+                    app.logger.debug(f"Found backup at {backup_dt}, timestamp: {backup_timestamp}, target: {target_timestamp}")
+
+                    # Check if this backup is at or before target AND newer than current best
+                    if backup_timestamp <= target_timestamp and backup_timestamp > best_timestamp:
+                        best_version = inc_file
+                        best_timestamp = backup_timestamp
+                        app.logger.debug(f"New best: {best_version}")
+
+    app.logger.info(f"Selected version: {best_version}")
+    return best_version
+
+
+# NEW
+def get_all_incremental_versions_fixed(rel_file_path, incremental_base):
+    """Use FOLDER timestamps, not file mtime."""
+    versions = []
+
+    if not os.path.exists(incremental_base):
+        return versions
+
+    for date_folder in os.listdir(incremental_base):
+        date_path = os.path.join(incremental_base, date_folder)
+        if not os.path.isdir(date_path):
+            continue
+
+        # Parse date from folder name
+        try:
+            day, month, year = map(int, date_folder.split('-'))
+        except:
+            continue
+
+        for time_folder in os.listdir(date_path):
+            time_path = os.path.join(date_path, time_folder)
+            if not os.path.isdir(time_path):
+                continue
+
+            # Check if file exists
+            inc_file_path = os.path.join(time_path, rel_file_path)
+            if os.path.exists(inc_file_path):
+                # Parse time from FOLDER NAME (not file mtime)
+                try:
+                    hour, minute = map(int, time_folder.split('-'))
+                    # Create datetime from folder name
+                    folder_dt = datetime(year, month, day, hour, minute)
+                    folder_timestamp = folder_dt.timestamp()
+
+                    versions.append((inc_file_path, folder_timestamp))
+                except:
+                    continue
+
+    # Sort by folder timestamp
+    versions.sort(key=lambda x: x[1])
+    return versions
+
+def restore_file_version(source_path, destination_root, main_backup_dir):
+    """
+    Copy a single file version to destination.
+    """
+    try:
+        # Determine relative path
+        if '.main_backup' in source_path or source_path.startswith(main_backup_dir):
+            # From main backup
+            rel_path = os.path.relpath(source_path, main_backup_dir)
+        else:
+            # From incremental backup
+            # Extract path after the time folder
+            parts = source_path.split(os.sep)
+            # Find the time folder (pattern: HH-MM)
+            for i, part in enumerate(parts):
+                if '-' in part and len(part) == 5 and part[2] == '-':
+                    # Found time folder, everything after is the relative path
+                    rel_path = os.sep.join(parts[i+1:])
+                    break
+            else:
+                # Fallback: use the last part
+                rel_path = os.path.basename(source_path)
+
+        dest_path = os.path.join(destination_root, rel_path)
+
+        # Create destination directory
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+
+        # Copy file with metadata
+        shutil.copy2(source_path, dest_path)
+
+        app.logger.debug(f"Restored: {rel_path}")
+        return True
+
+    except Exception as e:
+        app.logger.error(f"Error restoring {source_path}: {e}")
+        return False
+
+def open_restored_location(destination):
+    """Open restored folder in file manager."""
+    try:
+        if os.name == 'nt':
+            os.startfile(destination)
+        elif os.uname().sysname == 'Darwin':
+            sub.run(['open', destination])
+        else:
+            sub.run(['xdg-open', destination])
+    except Exception as e:
+        app.logger.warning(f"Could not open restored location: {e}")
+
+@app.route('/api/restore-folder', methods=['POST'])
+def restore_folder():
+    try:
+        data = request.get_json()
+        folder_path = data.get('folder_path')
+        target_date = data.get('target_date')
+        target_time = data.get('target_time')
+
+        if not folder_path:
+            return jsonify({'success': False, 'error': 'Missing folder_path'}), 400
+
+        main_backup = server.app_main_backup_dir()
+        incremental_base = server.app_backup_dir()
+
+        # Destination
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        dest = os.path.join(
+            os.path.expanduser('~'),
+            f"restored_{os.path.basename(folder_path)}_{timestamp}"
+        )
+
+        os.makedirs(dest, exist_ok=True)
+
+        # 1️⃣ RESTORE MAIN BACKUP FIRST (BASE)
+        main_source = os.path.join(main_backup, folder_path)
+        if not os.path.isdir(main_source):
+            return jsonify({
+                'success': False,
+                'error': 'Main backup not found for folder'
+            }), 404
+
+        shutil.copytree(
+            main_source,
+            dest,
+            symlinks=True,
+            copy_function=shutil.copy2,
+            dirs_exist_ok=True
+        )
+
+        # 2️⃣ APPLY INCREMENTALS UP TO TARGET DATETIME
+        if target_date and target_time:
+            for date in sorted(os.listdir(incremental_base)):
+                date_path = os.path.join(incremental_base, date)
+                if date > target_date:
+                    break
+
+                for time in sorted(os.listdir(date_path)):
+                    if date == target_date and time > target_time:
+                        break
+
+                    inc_source = os.path.join(
+                        date_path,
+                        time,
+                        folder_path
+                    )
+
+                    if os.path.isdir(inc_source):
+                        shutil.copytree(
+                            inc_source,
+                            dest,
+                            symlinks=True,
+                            copy_function=shutil.copy2,
+                            dirs_exist_ok=True
+                        )
+
+        try:
+            if os.name == 'nt':
+                os.startfile(dest)
+            elif os.uname().sysname == 'Darwin':
+                sub.run(['open', dest])
+            else:
+                sub.run(['xdg-open', dest])
+        except Exception as e:
+            print(f"Error while trying to open {dest}directory")
+
+        return jsonify({
+            'success': True,
+            'restored_to': dest
+        }), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/folder-snapshots', methods=['GET'])
+def get_folder_snapshots_api():
+    """
+    Get available snapshot dates for a folder.
+    Useful for UI dropdown.
+    """
+    folder_path = request.args.get('folder_path')
+
+    if not folder_path:
+        return jsonify({'success': False, 'error': 'No folder path provided'}), 400
+
+    try:
+        snapshots = []
+        main_backup_dir = server.app_main_backup_dir()
+        incremental_base = server.app_backup_dir()
+
+        # Check main backup
+        main_folder = os.path.join(main_backup_dir, folder_path)
+        if os.path.exists(main_folder):
+            try:
+                main_mtime = os.path.getmtime(main_backup_dir)
+                file_count = count_files_in_folder(main_folder)
+
+                snapshots.append({
+                    'date': 'Initial Backup',
+                    'time': datetime.fromtimestamp(main_mtime).strftime('%H:%M'),
+                    'timestamp': main_mtime,
+                    'type': 'main',
+                    'file_count': file_count,
+                    'display': 'Initial Backup'
+                })
+            except:
+                pass
+
+        # Check incremental backups
+        if os.path.exists(incremental_base):
+            for date_folder in sorted(os.listdir(incremental_base), reverse=True):
+                date_path = os.path.join(incremental_base, date_folder)
+                if not os.path.isdir(date_path):
+                    continue
+
+                for time_folder in sorted(os.listdir(date_path), reverse=True):
+                    time_path = os.path.join(date_path, time_folder)
+                    snapshot_folder = os.path.join(time_path, folder_path)
+
+                    if os.path.exists(snapshot_folder):
+                        # Count files in this snapshot
+                        file_count = count_files_in_folder(snapshot_folder)
+
+                        # Format for display
+                        display_time = time_folder.replace('-', ':')
+
+                        snapshots.append({
+                            'date': date_folder,
+                            'time': display_time,
+                            'timestamp': get_snapshot_timestamp(date_folder, time_folder),
+                            'type': 'incremental',
+                            'file_count': file_count,
+                            'path': time_path,
+                            'display': f"{date_folder} {display_time}"
+                        })
+
+        return jsonify({
+            'success': True,
+            'folder_path': folder_path,
+            'snapshots': snapshots,
+            'count': len(snapshots)
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error getting folder snapshots: {e}", exc_info=True)
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+def count_files_in_folder(folder_path):
+    """Count files in a folder."""
+    if not os.path.exists(folder_path):
+        return 0
+
+    count = 0
+    try:
+        for root, dirs, files in os.walk(folder_path):
+            count += len(files)
+    except:
+        pass
+    return count
+
+def get_snapshot_timestamp(date_str, time_str):
+    """Convert snapshot date/time to timestamp."""
+    try:
+        # Your format: "08-12-2025 21-41"
+        time_formatted = time_str.replace('-', ':')
+        dt = datetime.strptime(f"{date_str} {time_formatted}", "%d-%m-%Y %H:%M")
+        return dt.timestamp()
+    except:
+        # Fallback to current time
+        return time.time()
 
 
 # =============================================================================

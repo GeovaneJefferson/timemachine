@@ -48,6 +48,8 @@ server = SERVER()
 EXPANDUSER = os.path.expanduser("~")
 DEBOUNCE_COOLDOWN = 1.0  # 1s
 _LAST_EVENT_TIME: Dict[str, float] = {}
+DIR_PATTERNS = [".git", "node_modules", ".temp", "*.tmp", "__pycache__"]
+FILE_PATTERNS = ["*.tmp"]
 
 
 # --- CONFIGURATION ---
@@ -164,23 +166,46 @@ def _should_process(path: str) -> bool:
     # ------------------------------------------------------------------
     def _should_exclude(path: str) -> bool:
         """Check if path should be excluded."""
-        excludes_extras = [".git", "node_modules", ".temp", "*.tmp", "__pycache__"]
+        # Separate directory and file patterns
+        all_patterns = DIR_PATTERNS + FILE_PATTERNS  # For backward compatibility
+        
         _exclude_hidden_val = server.get_database_value('EXCLUDE', 'exclude_hidden_itens')
         _exclude_hidden = str(_exclude_hidden_val).lower() == 'true' if _exclude_hidden_val else False
         
-        # Hidden files
-        if _exclude_hidden:
-            relative = os.path.relpath(path, EXPANDUSER)
-            if any(part.startswith('.') for part in relative.split(os.sep)):
+        basename = os.path.basename(path)
+        is_directory = os.path.isdir(path) if os.path.exists(path) else False
+        
+        # Check patterns
+        for pattern in all_patterns:
+            if fnmatch.fnmatch(basename, pattern):
+                # If it's a directory pattern and we're checking a file inside it
+                if pattern in DIR_PATTERNS and not is_directory:
+                    # Check if parent directory matches the pattern
+                    parent = os.path.dirname(path)
+                    parent_name = os.path.basename(parent)
+                    if fnmatch.fnmatch(parent_name, pattern):
+                        return True
                 return True
-
-        # Pattern matching
-        filename = os.path.basename(path)
-        if any(fnmatch.fnmatch(filename, p) for p in excludes_extras):
-            return True
-
+        
+        # Hidden files/folders exclusion
+        if _exclude_hidden:
+            try:
+                relative = os.path.relpath(path, EXPANDUSER)
+                
+                # Check if the file/directory itself is hidden
+                if basename.startswith('.'):
+                    return True
+                
+                # Check if any parent directory is hidden (except home directory)
+                parts = relative.split(os.sep)
+                for part in parts[:-1]:  # Exclude the last part (already checked)
+                    if part.startswith('.'):
+                        return True
+                        
+            except ValueError:
+                pass
+        
         return False
-    
     if _should_exclude(path):
         return False
     
@@ -208,8 +233,9 @@ class BackupChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         """Universal event handler."""
         # ------------------------------------------------------------------
-        if event.is_directory:
-            return
+        # TO REMOVE
+        # if event.is_directory:
+        #     return
         
         # ------------------------------------------------------------------
         if not _should_process(event.src_path):

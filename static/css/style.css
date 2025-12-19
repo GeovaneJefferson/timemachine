@@ -609,3 +609,27 @@ input:checked ~ .checkbox-normal::after {
         display: none !important;
     }
 }
+
+
+/* ============================================================
+ *   FIX: Allow scrolling inside confirmation modal
+ *   ============================================================ */
+
+#confirmation-modal .no-scrollbar {
+scrollbar-width: auto !important;
+-ms-overflow-style: auto !important;
+}
+
+#confirmation-modal .no-scrollbar::-webkit-scrollbar {
+display: block !important;
+width: 8px;
+}
+
+#confirmation-modal .no-scrollbar::-webkit-scrollbar-thumb {
+background-color: rgba(100, 116, 139, 0.5);
+border-radius: 4px;
+}
+
+#confirmation-modal .no-scrollbar::-webkit-scrollbar-track {
+background: transparent;
+}

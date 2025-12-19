@@ -16,6 +16,8 @@
 | **Interface** | Modern Web UI | Responsive interface built with HTML/CSS and Tailwind CSS |
 | **Backend** | Python & Flask | Robust backend handling all logic and device management |
 | **Backup** | Automated & Incremental | Continuous background monitoring, only copies changed files |
+| **Restore File** | Restore file | Able to choose a restore a file from previous backups |
+| **Restore Folder** | Restore Folder | Able to choose a restore a folder from previous backups |
 | **Optimization** | Hardlink Optimization | Reuses file data on backup target to save space |
 | **Tracking** | Hash-based File Tracking | Track files across moves and renames using content hashes |
 | **Flexibility** | Storage Management | Easy management of external backup storage devices |

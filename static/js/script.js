@@ -1250,25 +1250,437 @@ async function loadFolderContents(folderPath = '') {
     }
 }
 
+// =====================================================================
+// --- FOLDER RESTORATION FUNCTIONS (SIMPLIFIED) ---
+// =====================================================================
+
+/**
+ * Show restore options modal for a folder with available snapshots
+ */
+function showFolderRestoreOptions(folderItem) {
+    const folderName = folderItem.name;
+    const folderPath = folderItem.path;
+
+    // Extract relative path from backup
+    const getRelativeFolderPath = (fullPath) => {
+        let backupIndex = fullPath.indexOf('.main_backup/');
+        if (backupIndex !== -1) {
+            return fullPath.substring(backupIndex + '.main_backup/'.length);
+        }
+
+        backupIndex = fullPath.indexOf('.incremental_version/');
+        if (backupIndex !== -1) {
+            return fullPath.substring(backupIndex + '.incremental_version/'.length);
+        }
+
+        return fullPath;
+    };
+
+    const relativePath = getRelativeFolderPath(folderPath);
+
+    console.log('Starting folder restore for:', {
+        folderName: folderName,
+        folderPath: folderPath,
+        relativePath: relativePath
+    });
+
+    // Show loading state
+    const loadingMessage = `
+    <div class="space-y-4">
+    <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+    <i class="bi bi-arrow-clockwise animate-spin text-lg"></i>
+    </div>
+    <div>
+    <h4 class="font-bold text-main text-sm">Loading Snapshots</h4>
+    <p class="text-xs text-muted">Scanning backup history for "${folderName}"...</p>
+    </div>
+    </div>
+    </div>
+    `;
+
+    openConfirmationModal(
+        'Folder Restore',
+        loadingMessage,
+        null,
+        {
+            showCancel: true,
+            cancelText: 'Cancel',
+            confirmText: '',
+            customButtons: true,
+            wideModal: true
+        }
+    );
+
+    // Store folder info globally for later use
+    window.currentFolderRestore = {
+        relativePath: relativePath,
+        folderName: folderName,
+        folderPath: folderPath
+    };
+
+    // Fetch available snapshots for this folder
+    fetch(`/api/folder-snapshots?folder_path=${encodeURIComponent(relativePath)}`)
+    .then(res => {
+        console.log('API Response status:', res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log('API Response data:', data);
+
+        if (data.success && data.snapshots && data.snapshots.length > 0) {
+            // Show snapshot selection
+            console.log('Found snapshots:', data.snapshots.length);
+            showSimpleSnapshotSelection(data.snapshots);
+        } else {
+            // No snapshots found
+            console.log('No snapshots found or API error:', data);
+            closeConfirmModal();
+            showSystemNotification('info', 'No Snapshots Found',
+                                   `No backup snapshots found for "${folderName}".`);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching snapshots:', error);
+        closeConfirmModal();
+        showSystemNotification('error', 'Error Loading Snapshots',
+                               'Failed to load backup snapshots. Please try again.');
+    });
+}
+
+/**
+ * SIMPLE snapshot selection - shows ALL dates/times
+ */
+function showSimpleSnapshotSelection(snapshots) {
+    // Sort newest first
+    snapshots.sort((a, b) => b.timestamp - a.timestamp);
+
+    window.availableSnapshots = snapshots;
+
+    const snapshotsHtml = snapshots.map((snapshot, idx) => {
+        const isMain = snapshot.type === 'main';
+
+        let dateTimeDisplay = 'Unknown';
+        if (isMain) {
+            dateTimeDisplay = 'Initial Backup';
+        } else if (snapshot.date && snapshot.time) {
+            dateTimeDisplay = `${snapshot.date} ${snapshot.time.replace('-', ':')}`;
+        }
+
+        return `
+        <div class="group cursor-pointer p-4 rounded-lg border hover:border-emerald-300
+        hover:bg-gray-50 dark:hover:bg-white/5 transition"
+        onclick="selectSnapshotForRestore(${idx})">
+        <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center
+        ${isMain
+            ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30'
+            : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30'}">
+            <i class="bi ${isMain ? 'bi-star-fill' : 'bi-calendar3'}"></i>
+            </div>
+            <div class="flex-1">
+            <div class="font-bold text-sm">${dateTimeDisplay}</div>
+            <div class="text-xs text-muted">
+            ${isMain ? 'Original backup' : 'Incremental backup'}
+            </div>
+            </div>
+            <i class="bi bi-chevron-right text-muted"></i>
+            </div>
+            </div>
+            `;
+    }).join('');
+
+    const message = `
+    <div class="space-y-4">
+    <div>
+    <h4 class="font-bold">${window.currentFolderRestore.folderName}</h4>
+    <p class="text-xs text-muted font-mono">
+    ${window.currentFolderRestore.relativePath}
+    </p>
+    </div>
+
+    <div>
+    <p class="text-xs font-bold text-muted mb-2">
+    Select snapshot to restore from
+    </p>
+
+    <!-- SCROLL FIX -->
+    <div id="snapshots-scroll-container"
+    style="max-height:420px; overflow-y:auto;"
+    class="space-y-2 pr-2">
+    ${snapshotsHtml}
+    </div>
+    </div>
+    </div>
+    `;
+
+    closeConfirmModal();
+
+    setTimeout(() => {
+        openConfirmationModal(
+            `Restore "${window.currentFolderRestore.folderName}"`,
+            message,
+            null,
+            {
+                showCancel: true,
+                customButtons: true,
+                wideModal: true
+            }
+        );
+
+        // Force scrollbar
+        setTimeout(() => {
+            const el = document.getElementById('snapshots-scroll-container');
+            if (el) {
+                el.style.overflowY = 'auto';
+                el.style.maxHeight = '420px';
+                el.style.scrollbarWidth = 'thin';
+            }
+        }, 50);
+    }, 100);
+}
+
+
+/**
+ * Handle snapshot selection
+ */
+function selectSnapshotForRestore(snapshotIndex) {
+    console.log('Selected snapshot index:', snapshotIndex);
+    console.log('Available snapshots:', window.availableSnapshots);
+
+    const snapshot = window.availableSnapshots[snapshotIndex];
+    const folderInfo = window.currentFolderRestore;
+
+    if (!snapshot || !folderInfo) {
+        console.error('Snapshot or folder info missing');
+        showSystemNotification('error', 'Selection Error', 'Failed to select snapshot.');
+        return;
+    }
+
+    console.log('Selected snapshot:', snapshot);
+
+    const isMain = snapshot.type === 'main';
+    let dateTimeStr = '';
+
+    if (isMain) {
+        dateTimeStr = 'Initial Backup';
+    } else if (snapshot.date && snapshot.time) {
+        dateTimeStr = `${snapshot.date} ${snapshot.time.replace('-', ':')}`;
+    } else {
+        dateTimeStr = 'Latest backup';
+    }
+
+    const message = `
+    <div class="space-y-4">
+    <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg ${isMain ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'} flex items-center justify-center">
+    <i class="bi ${isMain ? 'bi-star-fill' : 'bi-calendar3'} text-lg"></i>
+    </div>
+    <div>
+    <h4 class="font-bold text-main text-sm">Restore from ${isMain ? 'Initial Backup' : 'Snapshot'}</h4>
+    <p class="text-xs text-muted">${folderInfo.folderName}</p>
+    <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">${dateTimeStr}</p>
+    </div>
+    </div>
+
+    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+    <p class="text-xs text-yellow-700 dark:text-yellow-300">
+    <i class="bi bi-exclamation-triangle mr-1"></i>
+    A new folder will be created with the restored contents. Original files will not be modified.
+    </p>
+    </div>
+
+    <div class="text-xs text-muted">
+    <p>Destination:</p>
+    <p class="font-mono text-sm bg-white dark:bg-slate-800 px-3 py-2 rounded border">
+    ~/restored_${folderInfo.folderName}_[timestamp]
+    </p>
+    </div>
+    </div>
+    `;
+
+    closeConfirmModal();
+
+    setTimeout(() => {
+        openConfirmationModal(
+            `Confirm Restore`,
+            message,
+            () => {
+                console.log('Starting restore with:', {
+                    path: folderInfo.relativePath,
+                    date: snapshot.date,
+                    time: snapshot.time,
+                    name: folderInfo.folderName
+                });
+
+                startFolderRestore(
+                    folderInfo.relativePath,
+                    snapshot.date,
+                    snapshot.time,
+                    folderInfo.folderName
+                );
+            },
+            {
+                showCancel: true,
+                cancelText: 'Back',
+                confirmText: 'Start Restore',
+                confirmColor: 'bg-emerald-500 hover:bg-emerald-600',
+                wideModal: true,
+                onCancel: () => {
+                    // Go back to snapshot selection
+                    showSimpleSnapshotSelection(window.availableSnapshots);
+                }
+            }
+        );
+    }, 100);
+}
+
+/**
+ * Start folder restoration process
+ */
+function startFolderRestore(relativePath, targetDate, targetTime, folderName) {
+    closeConfirmModal();
+
+    let restoreMessage = `Restoring "${folderName}"`;
+    if (targetDate && targetDate !== 'Initial Backup') {
+        restoreMessage += ` from ${targetDate} ${targetTime}`;
+    }
+
+    const message = `
+    <div class="space-y-4">
+    <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+    <i class="bi bi-arrow-clockwise animate-spin text-lg"></i>
+    </div>
+    <div>
+    <h4 class="font-bold text-main text-sm">${restoreMessage}</h4>
+    <p class="text-xs text-muted">Please wait...</p>
+    </div>
+    </div>
+
+    <div class="space-y-2">
+    <div class="flex items-center justify-between text-xs text-muted">
+    <span id="folder-restore-status">Starting restoration...</span>
+    <span id="folder-restore-progress" class="text-emerald-600 font-medium">0%</span>
+    </div>
+    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+    <div id="folder-restore-progress-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+    </div>
+    </div>
+    </div>
+    `;
+
+    openConfirmationModal(
+        'Restoring Folder',
+        message,
+        null,
+        {
+            showCancel: true,
+            cancelText: 'Cancel',
+            confirmText: '',
+            customButtons: true,
+            mediumModal: true,
+            onCancel: () => {
+                window.cancelFolderRestore = true;
+            }
+        }
+    );
+
+    // Start folder restoration
+    startFolderRestoreProcess(relativePath, targetDate, targetTime, folderName);
+}
+
+/**
+ * Start folder restore process with progress monitoring
+ */
+function startFolderRestoreProcess(relativePath, targetDate, targetTime, folderName) {
+    window.cancelFolderRestore = false;
+
+    // Prepare request data
+    const requestData = {
+        folder_path: relativePath
+    };
+
+    // Add date/time if provided
+    if (targetDate && targetDate !== 'Initial Backup') {
+        requestData.target_date = targetDate;
+        requestData.target_time = targetTime;
+    }
+
+    console.log('Sending restore request:', requestData);
+
+    // Make API call to backend
+    fetch('/api/restore-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        console.log('Restore response status:', response.status);
+
+        if (window.cancelFolderRestore) {
+            return Promise.reject(new Error('Cancelled by user'));
+        }
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        console.log('Restore response data:', data);
+
+        if (window.cancelFolderRestore) return;
+
+        if (data && data.success) {
+            // Success
+            setTimeout(() => {
+                closeConfirmModal();
+                showSystemNotification('success', 'Restoration Started',
+                                       `"${folderName}" restoration has been started. Check your home directory for the restored folder.`);
+            }, 1000);
+        } else {
+            const errorMsg = data ? data.error : 'Unknown error occurred';
+            throw new Error(errorMsg);
+        }
+    })
+    .catch(error => {
+        console.error('Restore error:', error);
+
+        if (window.cancelFolderRestore) {
+            closeConfirmModal();
+            return;
+        }
+
+        closeConfirmModal();
+        showSystemNotification('error', 'Restoration Failed', error.message || 'Network error');
+    });
+}
+
+// =====================================================================
+// --- RENDER EXPLORER WITH RESTORE BUTTON ---
+// =====================================================================
 function renderExplorer(items = null) {
     const container = document.getElementById('file-list-container');
     const breadcrumb = document.getElementById('file-path-breadcrumb');
 
-    // Breadcrumbs (no change)
+    // Breadcrumbs
     breadcrumb.innerHTML = breadcrumbStack.map((folder, index) => {
         const isLast = index === breadcrumbStack.length - 1;
         const folderName = folder.name || '/';
-        const displayName = folderName.length > 20 ? folderName.substring(0, 17) + '...' : folderName;
+        // const displayName = folderName.length > 20 ? folderName.substring(0, 17) + '...' : folderName;
+        const displayName = folderName;
 
         return `
-            <div class="flex items-center flex-shrink-0">
-                <span class="${isLast ? 'font-bold text-main' : 'text-brand-500 hover:underline cursor-pointer'}"
-                      title="${folderName}"
-                      onclick="${!isLast ? `navigateFolder(${index})` : ''}">
-                    ${displayName}
-                </span>
-                ${!isLast ? '<i class="bi bi-chevron-right text-[10px] mx-2 text-muted"></i>' : ''}
-            </div>
+        <div class="flex items-center flex-shrink-0">
+        <span class="${isLast ? 'font-bold text-main' : 'text-brand-500 hover:underline cursor-pointer'}"
+        title="${folderName}"
+        onclick="${!isLast ? `navigateFolder(${index})` : ''}">
+        ${displayName}
+        </span>
+        ${!isLast ? '<i class="bi bi-chevron-right text-[10px] mx-2 text-muted"></i>' : ''}
+        </div>
         `;
     }).join('');
 
@@ -1280,7 +1692,7 @@ function renderExplorer(items = null) {
         return;
     }
 
-    // Sort: Folders first, then files, both alphabetically (no change)
+    // Sort: Folders first, then files
     itemsToRender.sort((a, b) => {
         if (a.type === 'folder' && b.type !== 'folder') return -1;
         if (a.type !== 'folder' && b.type === 'folder') return 1;
@@ -1292,32 +1704,24 @@ function renderExplorer(items = null) {
         const iconClass = isFolder ? 'bi-folder-fill text-blue-400' : getIconForFile(item.name);
         const iconColor = isFolder ? '' : getColorForFile(item.name);
 
-        // Truncate for display, keep full name in title (no change)
+        // Truncate for display
         let displayName = item.name;
-        if (item.name.length > 50) {
-            displayName = item.name.substring(0, 47) + '...';
-        }
+        // if (item.name.length > 50) {
+        //     displayName = item.name.substring(0, 47) + '...';
+        // }
 
-        console.log("ITEM", item);
-
-        // ------------------------------------------------------------------
-        // FIX: Update getRelativePath to check for both backup roots
-        // ------------------------------------------------------------------
+        // Get relative path
         const getRelativePath = (fullPath) => {
-            // 1. Check for the main backup root
             let backupIndex = fullPath.indexOf('.main_backup/');
             if (backupIndex !== -1) {
                 return fullPath.substring(backupIndex + '.main_backup/'.length);
             }
 
-            // 2. Check for the incremental version root
-            // Assuming the incremental folder is named '.incremental_version'
             backupIndex = fullPath.indexOf('.incremental_version/');
             if (backupIndex !== -1) {
                 return fullPath.substring(backupIndex + '.incremental_version/'.length);
             }
 
-            // Fallback: return the last few segments if neither is found
             const parts = fullPath.split('/');
             return parts.slice(-3).join('/');
         };
@@ -1325,21 +1729,43 @@ function renderExplorer(items = null) {
         const relativePath = getRelativePath(item.path);
 
         const el = document.createElement('div');
-        el.className = 'flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer transition-colors group';
-        el.innerHTML = `
-            <i class="bi ${iconClass} ${iconColor} text-lg flex-shrink-0"></i>
-            <div class="flex-1 min-w-0">
-            <div class="text-sm text-main font-medium truncate" title="${item.name}">${displayName}</div>
-            <div class="text-xs text-muted truncate mt-0.5" title="${item.path}">${relativePath}</div>
-            </div>
-            <i class="bi bi-chevron-right text-xs text-muted opacity-0 group-hover:opacity-100 transition-opacity"></i>
-        `;
+        el.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors group';
 
-        el.onclick = () => {
+        // Main content (clickable)
+        const mainContent = document.createElement('div');
+        mainContent.className = 'flex items-center gap-3 flex-1 min-w-0 cursor-pointer';
+        mainContent.innerHTML = `
+        <i class="bi ${iconClass} ${iconColor} text-xl flex-shrink-0"></i>
+        <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium text-main truncate" title="${item.name}">${displayName}</div>
+        <div class="text-xs text-muted truncate mt-0.5" title="${item.path}">${relativePath}</div>
+        </div>
+        `;
+        mainContent.onclick = () => {
             if(isFolder) openFolder(item);
             else selectFile(item);
         };
-        container.appendChild(el);
+
+            el.appendChild(mainContent);
+
+            // Add restore button for folders only
+            if (isFolder) {
+                const restoreBtn = document.createElement('button');
+                restoreBtn.className = 'px-3 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5 opacity-0 group-hover:opacity-100';
+                restoreBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Restore';
+                restoreBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    showFolderRestoreOptions(item);
+                };
+                restoreBtn.title = 'Restore this folder from backup';
+                el.appendChild(restoreBtn);
+            } else {
+                const chevron = document.createElement('i');
+                chevron.className = 'bi bi-chevron-right text-xs text-muted opacity-0 group-hover:opacity-100 transition-opacity';
+                el.appendChild(chevron);
+            }
+
+            container.appendChild(el);
     });
 }
 
@@ -5687,7 +6113,7 @@ const ActivityFeedManager = {
         }
     },
 
-    // FIXED: Create row with proper data-timestamp attribute and cell classes
+    // Create row with proper data-timestamp attribute and cell classes
     _createRowHtml(activity, rowId) {
         if (!activity) return '';
 
@@ -5696,6 +6122,12 @@ const ActivityFeedManager = {
         const safeTitle = title || "";
         const fileName = safeDescription.split('/').pop();
         const fileData = getFileIconDetails(fileName);
+
+        console.log("Act.:", activity);
+        console.log("Title:", safeTitle);
+        console.log("Description:", safeDescription);
+        console.log("fileName:", fileName);
+        console.log("fileData:", fileData);
 
         let actionLabel = "Processing";
         let actionColorClass = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
@@ -5790,7 +6222,7 @@ const ActivityFeedManager = {
         const actionCell = row.querySelector('.action-cell');
         const timeCell = row.querySelector('.time-ago-cell');
 
-        // FIX 1: Update timestamp attribute on the row
+        // Update timestamp attribute on the row
         row.setAttribute('data-timestamp', timestamp);
 
         // Update Status
