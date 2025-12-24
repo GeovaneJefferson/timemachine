@@ -229,7 +229,7 @@ def _should_process(path: str) -> bool:
 # WATCHDOG EVENT HANDLER
 # ------------------------------------------------------------------
 class BackupChangeHandler(FileSystemEventHandler):
-    """Simplified event handler with basic debouncing."""
+    """Event handler with basic debouncing."""
     def __init__(self, daemon: 'Daemon'):
         self.daemon = daemon
         self.queue = daemon.event_queue
@@ -246,13 +246,11 @@ class BackupChangeHandler(FileSystemEventHandler):
             return
 
         # ------------------------------------------------------------------
-        try:
+        if hasattr(event, 'dest_path'):
             src_path = os.path.normpath(event.src_path)
             dest_path = os.path.normpath(event.dest_path)
             self.queue.put((event.event_type, src_path, dest_path), timeout=1)
             logging.debug(f"Queued: {event.event_type} - {src_path}")
-        except queue.Full:
-            logging.warning(f"Event queue full, dropping event for {src_path}")
 
     def on_created(self, event):
         self.on_any_event(event)
