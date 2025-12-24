@@ -1,54 +1,79 @@
 #!/bin/bash
-# uninstall.sh - Removes Time Machine
 
-APP_NAME="Time Machine"
-APPIMAGE_FILE="TimeMachine-1.0.0-x86_64.AppImage"
-INSTALL_DIR="$HOME/.local/bin"
-CONFIG_DIR="$HOME/.config/timemachine"  # Better name
+# TimeMachine Backup - Uninstallation Script
 
-echo "🗑️  Uninstalling $APP_NAME..."
-echo "==============================="
+set -e
 
-# Remove configuration directory
-if [ -e "$CONFIG_DIR" ]; then
-    rm -rf "$CONFIG_DIR"
-    echo "✅ Removed configuration directory: $CONFIG_DIR"
-else
-    echo "ℹ️  No configuration directory found at $CONFIG_DIR"
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Installation paths
+INSTALL_DIR="$HOME/.local/share/timemachine"
+BIN_DIR="$HOME/.local/bin"
+DESKTOP_DIR="$HOME/.local/share/applications"
+ICON_DIR="$HOME/.local/share/icons"
+
+echo -e "${YELLOW}==================================${NC}"
+echo -e "${YELLOW}TimeMachine Backup - Uninstallation${NC}"
+echo -e "${YELLOW}==================================${NC}"
+echo ""
+echo "This will remove TimeMachine from your system."
+echo -e "${RED}Configuration and backup data will NOT be removed.${NC}"
+echo ""
+read -p "Continue? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Uninstallation cancelled."
+    exit 0
 fi
 
-# Remove AppImage
-if [ -f "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-    rm -f "$INSTALL_DIR/$APPIMAGE_FILE"
-    echo "✅ Removed: $INSTALL_DIR/$APPIMAGE_FILE"
-else
-    echo "ℹ️  AppImage not found in $INSTALL_DIR"
+echo ""
+echo "Removing TimeMachine..."
+
+# Stop any running instances
+if pgrep -f "timemachine" > /dev/null; then
+    echo "Stopping running TimeMachine processes..."
+    pkill -f "timemachine" || true
 fi
 
-# Remove desktop entry
-if [ -f ~/.local/share/applications/timemachine.desktop ]; then
-    rm -f ~/.local/share/applications/timemachine.desktop
-    echo "✅ Removed desktop entry"
+# Remove systemd service if exists
+if [ -f "$HOME/.config/systemd/user/timemachine.service" ]; then
+    echo "Removing systemd service..."
+    systemctl --user stop timemachine.service 2>/dev/null || true
+    systemctl --user disable timemachine.service 2>/dev/null || true
+    rm -f "$HOME/.config/systemd/user/timemachine.service"
+    systemctl --user daemon-reload 2>/dev/null || true
 fi
 
-# Remove icon
-if [ -f ~/.local/share/icons/hicolor/256x256/apps/timemachine.png ]; then
-    rm -f ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-    echo "✅ Removed icon"
+# Remove autostart entry if exists
+if [ -f "$HOME/.config/autostart/timemachine-daemon.desktop" ]; then
+    echo "Removing autostart entry..."
+    rm -f "$HOME/.config/autostart/timemachine-daemon.desktop"
 fi
 
-# Update databases
+# Remove files
+echo "Removing application files..."
+rm -rf "$INSTALL_DIR"
+rm -f "$BIN_DIR/timemachine"
+rm -f "$BIN_DIR/timemachine-daemon"
+rm -f "$DESKTOP_DIR/timemachine.desktop"
+rm -f "$ICON_DIR/timemachine.png"
+
+# Update desktop database
 if command -v update-desktop-database &> /dev/null; then
-    update-desktop-database ~/.local/share/applications 2>/dev/null
-    echo "✅ Updated desktop database"
-fi
-
-if command -v gtk-update-icon-cache &> /dev/null; then
-    gtk-update-icon-cache -f ~/.local/share/icons/hicolor 2>/dev/null || true
-    echo "✅ Updated icon cache"
+    update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
 fi
 
 echo ""
-echo "🎉 $APP_NAME uninstalled successfully!"
+echo -e "${GREEN}==================================${NC}"
+echo -e "${GREEN}Uninstallation completed!${NC}"
+echo -e "${GREEN}==================================${NC}"
 echo ""
-echo "To reinstall, run: ./install.sh"
+echo "TimeMachine has been removed from your system."
+echo "Your configuration and backup data remain in:"
+echo "  - Configuration: $HOME/.config/timemachine (if exists)"
+echo "  - Backup data: Your backup location"
+echo ""

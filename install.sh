@@ -1,371 +1,200 @@
 #!/bin/bash
-# install.sh - Builds, cleans, and installs Time Machine AppImage directly to ~/.local/bin/
 
-APP_NAME="TimeMachine"
-APP_VERSION="1.0.0"
-APPIMAGE_FILE="${APP_NAME}-${APP_VERSION}-x86_64.AppImage"
-BUILD_DIR="build"
-INSTALL_DIR="$HOME/.local/bin"
-PY_BUILDER="static/py/make-appimage.py"
+# TimeMachine Backup - Installation Script
+# This script installs TimeMachine to your system
 
-echo "🚀 Time Machine - Build & Install"
-echo "================================="
+set -e
 
-# Function to print colored output
-print_status() {
-    echo -e "📌 $1"
-}
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-print_success() {
-    echo -e "✅ $1"
-}
+# Installation paths
+INSTALL_DIR="$HOME/.local/share/timemachine"
+BIN_DIR="$HOME/.local/bin"
+DESKTOP_DIR="$HOME/.local/share/applications"
+ICON_DIR="$HOME/.local/share/icons"
 
-print_error() {
-    echo -e "❌ $1"
-}
+echo -e "${GREEN}==================================${NC}"
+echo -e "${GREEN}TimeMachine Backup - Installation${NC}"
+echo -e "${GREEN}==================================${NC}"
+echo ""
 
-# Function to clean old files
-clean_old_files() {
-    print_status "Cleaning old build files..."
-    
-    # Remove build directory
-    if [ -d "$BUILD_DIR" ]; then
-        rm -rf "$BUILD_DIR"
-        print_success "Removed build directory"
-    fi
-    
-    # Remove installed AppImage (this is now the main target)
-    if [ -f "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-        rm -f "$INSTALL_DIR/$APPIMAGE_FILE"
-        print_success "Removed installed AppImage"
-    fi
-    
-    # Also clean any local AppImage (in case of previous runs)
-    if [ -f "$APPIMAGE_FILE" ]; then
-        rm -f "$APPIMAGE_FILE"
-        print_success "Removed local $APPIMAGE_FILE"
-    fi
-    
-    # Clean Python cache
-    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null
-    find . -name "*.pyc" -type f -delete
-    print_success "Cleaned Python cache"
-}
+# Check if Python 3 is installed
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}Error: Python 3 is not installed!${NC}"
+    echo "Please install Python 3 first."
+    exit 1
+fi
 
-# Function to check requirements
-check_requirements() {
-    print_status "Checking requirements..."
-    
-    # Check for Python builder
-    if [ ! -f "$PY_BUILDER" ]; then
-        print_error "Builder not found: $PY_BUILDER"
-        print_error "Please ensure make-appimage.py is in static/py/"
-        exit 1
-    fi
-    
-    # Check for required files
-    required_files=("app.py" "main.js" "package.json" "Requirements.txt")
-    missing=0
-    
-    for file in "${required_files[@]}"; do
-        if [ ! -f "$file" ]; then
-            print_error "Missing: $file"
-            missing=1
-        fi
+echo -e "${YELLOW}Installing TimeMachine...${NC}"
+
+# Create directories
+echo "Creating directories..."
+mkdir -p "$INSTALL_DIR"
+mkdir -p "$BIN_DIR"
+mkdir -p "$DESKTOP_DIR"
+mkdir -p "$ICON_DIR"
+
+# Copy application files
+echo "Copying application files..."
+cp -r config "$INSTALL_DIR/"
+cp -r templates "$INSTALL_DIR/"
+cp -r static "$INSTALL_DIR/"
+cp app.py "$INSTALL_DIR/"
+cp main.js "$INSTALL_DIR/"
+cp package.json "$INSTALL_DIR/"
+cp requirements.txt "$INSTALL_DIR/"
+cp loading.html "$INSTALL_DIR/"
+cp error.html "$INSTALL_DIR/"
+
+# Copy additional Python files if they exist
+[ -f system.py ] && cp system.py "$INSTALL_DIR/"
+[ -f daemon.py ] && cp daemon.py "$INSTALL_DIR/"
+[ -f server.py ] && cp server.py "$INSTALL_DIR/"
+[ -f search_handler.py ] && cp search_handler.py "$INSTALL_DIR/"
+[ -f storage_util.py ] && cp storage_util.py "$INSTALL_DIR/"
+[ -f daemon_control.py ] && cp daemon_control.py "$INSTALL_DIR/"
+
+# Copy icon
+if [ -f icon.png ]; then
+    cp icon.png "$ICON_DIR/timemachine.png"
+    echo "Icon installed to $ICON_DIR/timemachine.png"
+fi
+
+# Install Python dependencies
+echo "Installing Python dependencies..."
+pip3 install --user -r requirements.txt
+
+# Check if Node.js and npm are installed for Electron
+if command -v npm &> /dev/null; then
+    echo "Installing Node.js dependencies..."
+    cd "$INSTALL_DIR"
+    npm install
+    cd - > /dev/null
+else
+    echo -e "${YELLOW}Warning: npm not found. Electron dependencies not installed.${NC}"
+    echo "You may need to install Node.js for the Electron interface."
+fi
+
+# Create launcher script
+echo "Creating launcher script..."
+cat > "$BIN_DIR/timemachine" << 'EOF'
+#!/bin/bash
+# TimeMachine Backup Launcher
+
+INSTALL_DIR="$HOME/.local/share/timemachine"
+PORT=5000
+
+# Function to find available port
+find_available_port() {
+    local port=$1
+    while lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1 ; do
+        port=$((port + 1))
     done
-    
-    if [ $missing -eq 1 ]; then
-        print_error "Missing required files. Cannot build."
-        exit 1
-    fi
-    
-    print_success "All requirements met"
+    echo $port
 }
 
-# Function to build AppImage directly to destination
-build_appimage() {
-    print_status "Building AppImage directly to $INSTALL_DIR..."
+# Function to kill existing TimeMachine instances
+kill_existing() {
+    pkill -f "python3.*app.py" 2>/dev/null || true
+    pkill -f "electron.*main.js" 2>/dev/null || true
+    sleep 1
+}
+
+# Change to installation directory
+cd "$INSTALL_DIR" || exit 1
+
+# Check if electron is available
+if command -v electron &> /dev/null || [ -d "node_modules/electron" ]; then
+    # Kill any existing instances
+    kill_existing
     
-    # Check if Python is available
-    if ! command -v python3 &> /dev/null; then
-        print_error "Python3 is not installed"
-        exit 1
+    # Launch with Electron
+    if [ -d "node_modules/electron" ]; then
+        npx electron main.js
+    else
+        electron main.js
     fi
+else
+    echo "Electron not found, launching web interface..."
+    echo ""
+    echo "To install Electron, run:"
+    echo "  cd ~/.local/share/timemachine"
+    echo "  npm install"
+    echo ""
     
-    # Create install directory if it doesn't exist
-    mkdir -p "$INSTALL_DIR"
-    
-    # Run the Python builder
-    print_status "Running builder: $PY_BUILDER"
-    
-    if python3 "$PY_BUILDER"; then
-        if [ -f "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-            size_mb=$(du -m "$INSTALL_DIR/$APPIMAGE_FILE" 2>/dev/null | cut -f1 || echo "unknown")
-            print_success "Built directly to: $INSTALL_DIR/$APPIMAGE_FILE (${size_mb}MB)"
-            return 0
+    # Check if port is in use
+    if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1; then
+        echo "Port $PORT is in use!"
+        echo ""
+        echo "Options:"
+        echo "  1. Kill existing instance: pkill -f 'python3.*app.py'"
+        echo "  2. Use different port: PORT=$((PORT + 1)) python3 app.py"
+        echo ""
+        
+        read -p "Kill existing instance and restart? (y/N) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            kill_existing
+            PORT=$(find_available_port $PORT)
+            echo "Using port: $PORT"
+            PORT=$PORT python3 app.py
         else
-            print_error "Builder ran but $APPIMAGE_FILE was not created in $INSTALL_DIR"
-            print_status "Checking current directory..."
-            if [ -f "$APPIMAGE_FILE" ]; then
-                print_status "Found in current directory, moving to $INSTALL_DIR..."
-                mv "$APPIMAGE_FILE" "$INSTALL_DIR/"
-                chmod +x "$INSTALL_DIR/$APPIMAGE_FILE"
-                print_success "Moved to $INSTALL_DIR/$APPIMAGE_FILE"
-                return 0
-            fi
-            return 1
+            echo "Opening existing instance in browser..."
+            xdg-open "http://localhost:$PORT" 2>/dev/null || echo "Open http://localhost:$PORT in your browser"
         fi
     else
-        print_error "Build failed"
-        return 1
+        python3 app.py
     fi
-}
+fi
+EOF
 
-# Function to create desktop entry
-create_desktop_entry() {
-    print_status "Creating desktop entry..."
-    
-    mkdir -p ~/.local/share/applications
-    
-    # Use the actual installed path
-    APP_PATH="$INSTALL_DIR/$APPIMAGE_FILE"
-    
-cat > ~/.local/share/applications/timemachine.desktop << 'DESKTOP'
+chmod +x "$BIN_DIR/timemachine"
+
+# Create .desktop file
+echo "Creating desktop entry..."
+cat > "$DESKTOP_DIR/timemachine.desktop" << EOF
 [Desktop Entry]
+Version=1.0
 Type=Application
-Name=Time Machine
-Comment=Backup Application
-Exec=$HOME/.local/bin/TimeMachine-1.0.0-x86_64.AppImage
-Icon=timemachine
-Categories=Utility;System;
+Name=TimeMachine
+Comment=Real-time backup solution for Linux
+Exec=$BIN_DIR/timemachine
+Icon=$ICON_DIR/timemachine.png
 Terminal=false
+Categories=Utility;System;Archiving;
+Keywords=backup;sync;timemachine;
 StartupNotify=true
-StartupWMClass=TimeMachine
-X-AppImage-Version=1.0.0
-Keywords=backup;time;files;
-DESKTOP
-    
-    print_success "Desktop entry created"
-}
+StartupWMClass=timemachine
+EOF
 
-# Function to install icon
-install_icon() {
-    print_status "Installing icon..."
-    
-    mkdir -p ~/.local/share/icons/hicolor/256x256/apps
-    
-    # Try to get icon from various sources
-    icon_installed=false
-    
-    # 1. Try from static/vendor/favicon.png
-    if [ -f "static/vendor/favicon.png" ]; then
-        cp "static/vendor/favicon.png" ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-        print_success "Icon from static/vendor/favicon.png"
-        icon_installed=true
-    
-    # 2. Try from favicon.png
-    elif [ -f "favicon.png" ]; then
-        cp "favicon.png" ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-        print_success "Icon from favicon.png"
-        icon_installed=true
-    
-    # 3. Try from icon.png
-    elif [ -f "icon.png" ]; then
-        cp "icon.png" ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-        print_success "Icon from icon.png"
-        icon_installed=true
-    
-    # 4. Try to extract from AppImage itself
-    elif [ -f "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-        print_status "Extracting icon from AppImage..."
-        
-        # Create temp directory
-        TEMP_DIR=$(mktemp -d)
-        cd "$TEMP_DIR"
-        
-        # Extract AppImage
-        if "$INSTALL_DIR/$APPIMAGE_FILE" --appimage-extract >/dev/null 2>&1; then
-            if [ -d "squashfs-root" ]; then
-                # Look for icon
-                if [ -f "squashfs-root/timemachine.png" ]; then
-                    cp "squashfs-root/timemachine.png" ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-                    print_success "Icon extracted from AppImage: timemachine.png"
-                    icon_installed=true
-                elif [ -f "squashfs-root/.DirIcon" ]; then
-                    cp "squashfs-root/.DirIcon" ~/.local/share/icons/hicolor/256x256/apps/timemachine.png
-                    print_success "Icon extracted from AppImage: .DirIcon"
-                    icon_installed=true
-                fi
-                # Cleanup
-                rm -rf squashfs-root
-            fi
-        fi
-        
-        # Cleanup and return to original directory
-        cd - >/dev/null
-        rm -rf "$TEMP_DIR"
-    fi
-    
-    if [ "$icon_installed" = false ]; then
-        print_error "No icon found - app will use default"
-    fi
-}
+chmod +x "$DESKTOP_DIR/timemachine.desktop"
 
-# Function to update desktop databases
-update_databases() {
-    print_status "Updating desktop database..."
-    
-    if command -v update-desktop-database &> /dev/null; then
-        update-desktop-database ~/.local/share/applications 2>/dev/null
-        print_success "Desktop database updated"
-    else
-        print_error "update-desktop-database not found"
-    fi
-    
-    print_status "Updating icon cache..."
-    
-    if command -v gtk-update-icon-cache &> /dev/null; then
-        gtk-update-icon-cache -f ~/.local/share/icons/hicolor 2>/dev/null || true
-        print_success "Icon cache updated"
-    else
-        print_error "gtk-update-icon-cache not found"
-    fi
-}
+# Update desktop database
+if command -v update-desktop-database &> /dev/null; then
+    update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
+fi
 
-# Function to verify installation
-verify_installation() {
-    print_status "Verifying installation..."
-    
-    checks_passed=0
-    checks_total=3
-    
-    # Check 1: AppImage exists in install directory
-    if [ -f "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-        # Check if it's executable
-        if [ -x "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-            print_success "AppImage installed and executable: $INSTALL_DIR/$APPIMAGE_FILE"
-            checks_passed=$((checks_passed + 1))
-        else
-            print_error "AppImage not executable, fixing..."
-            chmod +x "$INSTALL_DIR/$APPIMAGE_FILE"
-            if [ -x "$INSTALL_DIR/$APPIMAGE_FILE" ]; then
-                print_success "Fixed permissions"
-                checks_passed=$((checks_passed + 1))
-            else
-                print_error "AppImage not executable"
-            fi
-        fi
-    else
-        print_error "AppImage not found in $INSTALL_DIR"
-    fi
-    
-    # Check 2: Desktop entry exists
-    if [ -f ~/.local/share/applications/timemachine.desktop ]; then
-        print_success "Desktop entry created"
-        checks_passed=$((checks_passed + 1))
-    else
-        print_error "Desktop entry not found"
-    fi
-    
-    # Check 3: Icon exists
-    if [ -f ~/.local/share/icons/hicolor/256x256/apps/timemachine.png ]; then
-        print_success "Icon installed"
-        checks_passed=$((checks_passed + 1))
-    else
-        print_error "Icon not found"
-    fi
-    
-    if [ $checks_passed -eq $checks_total ]; then
-        print_success "Installation verified successfully!"
-        return 0
-    else
-        print_error "Installation incomplete ($checks_passed/$checks_total checks passed)"
-        return 1
-    fi
-}
+# Add to PATH if not already there
+if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
+    echo ""
+    echo -e "${YELLOW}Note: $BIN_DIR is not in your PATH${NC}"
+    echo "Add this line to your ~/.bashrc or ~/.zshrc:"
+    echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
+fi
 
-# Function to check if ~/.local/bin is in PATH
-check_path() {
-    print_status "Checking PATH..."
-    
-    if [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
-        print_success "~/.local/bin is in your PATH"
-        return 0
-    else
-        print_error "~/.local/bin is NOT in your PATH"
-        echo ""
-        echo "To add it to your PATH, add this to your ~/.bashrc or ~/.zshrc:"
-        echo 'export PATH="$HOME/.local/bin:$PATH"'
-        echo ""
-        echo "Then run: source ~/.bashrc  # or source ~/.zshrc"
-        return 1
-    fi
-}
-
-# Main execution
-main() {
-    echo ""
-    print_status "Starting Time Machine installation..."
-    echo ""
-    
-    # Step 1: Clean old files
-    clean_old_files
-    echo ""
-    
-    # Step 2: Check requirements
-    check_requirements
-    echo ""
-    
-#     # Step 3: Build AppImage directly to destination
-#     if ! build_appimage; then
-#         print_error "Build failed. Installation aborted."
-#         exit 1
-#     fi
-    echo ""
-    
-    # Step 4: Create desktop entry
-    create_desktop_entry
-    echo ""
-    
-    # Step 5: Install icon
-    install_icon
-    echo ""
-    
-    # Step 6: Update databases
-    update_databases
-    echo ""
-    
-    # Step 7: Verify installation
-    if verify_installation; then
-        echo ""
-        echo "🎉 INSTALLATION COMPLETE!"
-        echo "=========================="
-        echo ""
-        echo "Time Machine has been successfully installed!"
-        echo ""
-        
-        # Check PATH
-        check_path
-        echo ""
-        
-        echo "You can now:"
-        echo "1. Launch from your application menu"
-        echo "2. Run from terminal: $INSTALL_DIR/$APPIMAGE_FILE"
-        
-        if [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
-            echo "3. Run from anywhere: $APPIMAGE_FILE"
-        else
-            echo "3. Add ~/.local/bin to PATH to run from anywhere"
-        fi
-        
-        echo ""
-        echo "To uninstall, run: ./uninstall.sh"
-        echo ""
-    else
-        print_error "Installation verification failed."
-        exit 1
-    fi
-}
-
-# Run main function
-main
+echo ""
+echo -e "${GREEN}==================================${NC}"
+echo -e "${GREEN}Installation completed successfully!${NC}"
+echo -e "${GREEN}==================================${NC}"
+echo ""
+echo "You can now:"
+echo "  1. Launch from applications menu: Search for 'TimeMachine Backup'"
+echo "  2. Run from terminal: timemachine"
+echo "  3. Or run directly: $BIN_DIR/timemachine"
+echo ""
+echo "Installed to: $INSTALL_DIR"
+echo ""

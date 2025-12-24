@@ -75,15 +75,10 @@ class SERVER:
         # Frontend
         self.timeout = 2.0  # Set a sensible timeout for socket operations
 
-        # Get the directory where this script (server.py) is located
-#         script_dir = os.path.dirname(os.path.abspath(__file__))
-#         project_root = os.path.dirname(os.path.dirname(script_dir))  # Go up one level to the project root, then to config folder
-#         self.CONF_PATH = os.path.join(project_root, "config", "config.conf")
-#
-        xdg_config_base = Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config'))
+        xdg_config_base = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.config'))
         self.APP_CONFIG_DIR = xdg_config_base / self.APP_NAME_CLOSE_LOWER
         self.CONF_PATH: str = os.path.join(self.APP_CONFIG_DIR, 'config', '.config')
-
+        
         # Backup structure
         self.BACKUPS_LOCATION_DIR_NAME = "backups"
         self.MAIN_BACKUP_LOCATION = '.main_backup'

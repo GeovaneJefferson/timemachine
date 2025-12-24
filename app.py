@@ -2976,7 +2976,7 @@ def search_moved_file():
                 result = cursor.fetchone()
                 conn.close()
         
-                if result:
+                if result: 
                     current_path = result[0]
                     # Verify the file still exists at this location
                     if os.path.exists(current_path):

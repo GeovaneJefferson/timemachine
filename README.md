@@ -16,8 +16,8 @@
 | **Interface** | Modern Web UI | Responsive interface built with HTML/CSS and Tailwind CSS |
 | **Backend** | Python & Flask | Robust backend handling all logic and device management |
 | **Backup** | Automated & Incremental | Continuous background monitoring, only copies changed files |
-| **Restore File** | Restore file | Able to choose a restore a file from previous backups |
-| **Restore Folder** | Restore Folder | Able to choose a restore a folder from previous backups |
+| **Restore File** | Restore file | Able to restore a single file from any previous backup version |
+| **Restore Folder** | Restore Folder | Able to restore an entire folder from any previous backup version |
 | **Optimization** | Hardlink Optimization | Reuses file data on backup target to save space |
 | **Tracking** | Hash-based File Tracking | Track files across moves and renames using content hashes |
 | **Flexibility** | Storage Management | Easy management of external backup storage devices |
@@ -45,6 +45,15 @@ git clone [https://github.com/GeovaneJefferson/timemachine.git](https://github.c
 cd timemachine
 
 # Install dependencies
+### Fedora
+sudo dnf update
+sudo dnf install python3 python3-pip nodejs npm
+
+### Ubuntu
+sudo apt update
+sudo apt install python3 python3-pip nodejs npm
+
+# Pip install dependencies
 pip install -r requirements.txt
 ```
 
@@ -82,7 +91,6 @@ timemachine/
 ├── server.py            # Shared server functionality
 ├── search_handler.py    # File search logic
 ├── storage_util.py      # Storage device detection
-├── daemon_control.py    # Daemon management
 ├── .gitignore
 └── requirements.txt
 ```

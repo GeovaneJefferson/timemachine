@@ -5,21 +5,21 @@ MEDIA = '/media'
 RUN = '/run'
 USERNAME = os.getenv('USER', 'user')  # Default to 'user' if USER env var is not set
 LOG = logging.getLogger(__name__)
-
+# CONFIG_PATH = SERVER.CONF_PATH
 bytes_to_human = SERVER.bytes_to_human
 
 
 def get_storage_info(path=None):
     try:
-        if path is None:
-            config = configparser.ConfigParser()
-            config.read('config/config.conf')
-            path = config.get('DEVICE_INFO', 'path', fallback=None)
-            if not path:
-                return {
-                    'success': False,
-                    'error': 'No backup path configured'
-                }
+        # if path is None:
+        #     config = configparser.ConfigParser()
+        #     config.read(CONFIG_PATH)
+        #     path = config.get('DEVICE_INFO', 'path', fallback=None)
+        #     if not path:
+        #         return {
+        #             'success': False,
+        #             'error': 'No backup path configured'
+        #         }
         
         if not os.path.exists(path):
             return {

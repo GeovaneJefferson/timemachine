@@ -9,6 +9,10 @@ PURE THREADING MODEL: Eliminates async/threading complexity
 4. Flatpak Backup: Periodic backup of installed Flatpak applications
 """
 
+"""
+BUG:
+Why it seems that the same files are being target as New? 2025-12-22 08:26:18,556 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-circle-fill.svg 2025-12-22 08:26:18,563 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-circle.svg 2025-12-22 08:26:18,568 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-diamond-fill.svg 2025-12-22 08:26:18,574 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-diamond.svg 2025-12-22 08:26:18,578 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-lg.svg 2025-12-22 08:26:18,582 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-octagon-fill.svg 2025-12-22 08:26:18,587 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-octagon.svg 2025-12-22 08:26:18,592 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-square-fill.svg 2025-12-22 08:26:18,597 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x-square.svg 2025-12-22 08:26:18,599 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/x.svg 2025-12-22 08:26:18,604 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/xbox.svg 2025-12-22 08:26:18,610 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/yin-yang.svg 2025-12-22 08:26:18,614 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/youtube.svg 2025-12-22 08:26:18,617 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/zoom-in.svg 2025-12-22 08:26:18,621 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/zoom-out.svg 2025-12-22 08:26:18,626 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/yelp.svg 2025-12-22 08:26:18,630 - INFO - New: MEGA/python/timemachine/static/vendor/bs-icons/fonts/bootstrap-icons.woff2 2025-12-22 08:26:18,639 - INFO - Modified: MEGA/python/timemachine/static/py/daemon.py 2025-12-22 08:26:19,078 - INFO - Backed up: MEGA/python/timemachine/static/py/daemon.py -> /run/media/macbook/80GB/timemachine/backups/22-12-2025/08-24/MEGA/python/timemachine/static/py/daemon.py 2025-12-22 08:26:19,079 - INFO - Backed up: MEGA/python/timemachine/static/py/daemon.py -> /run/media/macbook/80GB/timemachine/backups/22-12-2025/08-24/MEGA/python/timemachine/static/py/daemon.py 2025-12-22 08:26:19,079 - INFO - Change processing complete 2025-12-22 08:26:19,297 - INFO - Deleted old metadata backup: .backup_manifest.json.bak.20251222-080413 2025-12-22 08:26:19,726 - INFO - Metadata saved after full scan 2025-12-22 08:26:19,728 - INFO - Starting backup summary generation... 2025-12-22 08:26:19,728 - INFO - Starting directory walk in main backup: /run/media/macbook/80GB/timemachine/backups/.main_backup 2025-12-22 08:26:21,517 - INFO - Completed main backup processing. Total files: 14493 2025-12-22 08:26:21,517 - INFO - Processing incremental backups from: /run/media/macbook/80GB/timemachine/backups 2025-12-22 08:26:21,781 - INFO - Completed incremental backup processing. Total files: 89 2025-12-22 08:26:21,815 - INFO - Backup summary successfully generated: /run/media/macbook/80GB/timemachine/.backup_summary.json 2025-12-22 08:26:21,815 - INFO - ============================================================ 2025-12-22 08:26:21,815 - INFO - FULL SCAN COMPLETED in 89.0s 2025-12-22 08:26:21,815 - INFO - ============================================================ 2025-12-22 08:26:21,816 - INFO - Initial scan completed 2025-12-22 08:26:21,816 - INFO - Scheduled Flatpak backup 2025-12-22 08:26:21,816 - INFO - Starting Flatpak application backup... 2025-12-22 08:26:21,940 - INFO - Flatpak application list saved to /run/media/macbook/80GB/timemachine/flatpaks/flatpak_applications.txt 2025-12-22 08:26:21,940 - INFO - Flatpak backup completed successfully
+"""
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional, List, Dict, Tuple, Any, Set
 from server import *
@@ -867,6 +871,9 @@ class Daemon:
         is_new_file = file_info['new_file']
         is_hardlink_candidate = file_info['is_hardlink_candidate']
 
+        # Debug logging
+        logging.debug(f"Processing: {rel_path} (new={is_new_file}, size={file_size})")
+
         # ---------------------------------------------------------------------------
         # Determine destination
         if is_new_file or event_type == 'created':
@@ -956,6 +963,11 @@ class Daemon:
                         'size': file_info.get('size'),
                         'hash': file_info.get('file_hash'),
                     }
+
+                    if rel_path in self.metadata:
+                        logging.debug(f"✓ Metadata updated for: {rel_path}")
+                    else:
+                        logging.error(f"✗ Metadata update FAILED for: {rel_path}")
 
                     file_hash = file_info.get('file_hash')
                     if file_hash:
@@ -1339,6 +1351,14 @@ class Daemon:
             with open(server.METADATA_FILE, 'r', encoding='utf-8') as f:
                 self.metadata = json.load(f)
 
+            # ADD THIS: Log sample of what was loaded
+            sample_keys = list(self.metadata.keys())[:5]
+            logging.info(f"✓ Loaded {len(self.metadata)} entries. Sample: {sample_keys}")
+
+            # Check if bootstrap icons are in metadata
+            bs_icon_files = [k for k in self.metadata.keys() if 'bs-icons' in k]
+            logging.info(f"✓ Bootstrap icon files in metadata: {len(bs_icon_files)}")
+
             # Rebuild hash map
             self.hash_to_path_map = {}
             for key, val in self.metadata.items():
@@ -1454,225 +1474,626 @@ class Daemon:
     # =========================================================================
     # SAFETY NET
     # =========================================================================
-    def start_full_scan(self):
-        """Start full scan in background thread to avoid blocking main loop."""
-        
-        # ---------------------------------------------------------------------------
+    def start_full_scan(self, initial=False):
+        """Start full scan in background thread."""
+
         if hasattr(self, '_scan_thread') and self._scan_thread.is_alive():
-            logging.warning("Full scan already in progress")
+            if not initial:  # Don't warn on startup
+                logging.warning("Full scan already in progress")
             return
-           
-        # ---------------------------------------------------------------------------
+
+        scan_type = "INITIAL" if initial else "PERIODIC"
+        logging.info(f"Starting {scan_type} full scan...")
+
         self._scan_thread = threading.Thread(
             target=self._full_scan_impl,
-            daemon=True
+            daemon=True,
+            name=f"FullScan-{scan_type}"
         )
         self._scan_thread.start()
 
-
     def _full_scan_impl(self):
-        """Background implementation of full scan."""
-        logging.info("Full scan started in background...")
-        
-        # ---------------------------------------------------------------------------
-        def _detect_and_sync_moved_files():
-            """
-            Periodic scan to detect files that were moved while daemon was offline.
-            With timeout and shutdown checks to prevent hanging.
-            """
-            
-            logging.info("Starting moved file detection scan...")
-            
-            # CRITICAL: Check if we should even start
-            if self.shutdown_event.is_set():
-                logging.info("Shutdown in progress, skipping moved file detection")
-                return
-            
-            # Time tracking for timeout
-            scan_start = time.time()
-            MAX_SCAN_TIME = 30  # 30 seconds max for moved detection
-            files_processed = 0
-            
-            moved_files_found = 0
-            synced_successfully = 0
-            
+        """Complete full scan implementation that catches all missed changes."""
+        logging.info("=" * 60)
+        logging.info("FULL SCAN STARTED")
+        logging.info("=" * 60)
+
+        scan_start = time.time()
+
+        try:
+            # 1. First, detect moved files
+            self._detect_and_sync_moved_files()
+
+            # 2. Then scan for new/modified/deleted files
+            self._scan_for_file_changes()
+
+            # 3. Save metadata after scan
             try:
-                current_hash_locations = {}
-                
-                # Get folders to scan
-                folders = self._get_target_folders()
-                logging.info(f"Scanning {len(folders)} folders for moved files")
-                
-                for folder_index, folder in enumerate(folders):
-                    # Check shutdown before starting each folder
-                    if self.shutdown_event.is_set():
-                        logging.info("Shutdown requested, aborting moved file scan")
-                        return
-                        
-                    # Check timeout
-                    if time.time() - scan_start > MAX_SCAN_TIME:
-                        logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
-                        return
-                    
-                    logging.debug(f"Scanning folder {folder_index+1}/{len(folders)}: {folder}")
-                    
-                    # Walk directory
-                    for root, dirs, files in os.walk(folder):
-                        # Check shutdown during walk
-                        if self.shutdown_event.is_set():
-                            logging.info("Shutdown requested, aborting moved file scan")
-                            return
-                            
-                        # Check timeout during walk
-                        if time.time() - scan_start > MAX_SCAN_TIME:
-                            logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
-                            return
-                        
-                        # Skip excluded directories
-                        dirs[:] = [d for d in dirs if not _should_process(os.path.join(root, d))]
-                        
-                        # Process files in this directory
-                        for filename in files:
-                            # Check shutdown for each file
-                            if self.shutdown_event.is_set():
-                                logging.info("Shutdown requested, aborting moved file scan")
-                                return
-                                
-                            # Check timeout for each file
-                            if time.time() - scan_start > MAX_SCAN_TIME:
-                                logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
-                                return
-                            
-                            filepath = os.path.join(root, filename)
-                            
-                            # Skip if file shouldn't be processed
-                            if not _should_process(filepath):
-                                continue
-                            
-                            files_processed += 1
-                            
-                            # Progress logging every 100 files
-                            if files_processed % 100 == 0:
-                                logging.debug(f"Moved scan progress: {files_processed} files processed")
-                            
-                            try:
-                                # OPTIMIZATION: Skip large files (>50MB) for moved detection
-                                # They're unlikely to be moved frequently and hashing is slow
-                                try:
-                                    file_size = os.path.getsize(filepath)
-                                    if file_size > LARGE_FILE_THRESHOLD:  # 50MB
-                                        continue
-                                except:
-                                    continue
-                                
-                                # Quick check: Only process files modified in last 7 days
-                                try:
-                                    mtime = os.path.getmtime(filepath)
-                                    if time.time() - mtime > 7 * 86400:  # 7 days
-                                        continue
-                                except:
-                                    continue
-                                
-                                # Calculate hash with potential timeout
-                                file_hash = calculate_sha256(filepath)
-                                if not file_hash:
-                                    continue
-                                
-                                rel_path = os.path.relpath(filepath, EXPANDUSER)
-                                
-                                # Store current location for this hash
-                                if file_hash not in current_hash_locations:
-                                    current_hash_locations[file_hash] = []
-                                
-                                current_hash_locations[file_hash].append(rel_path)
-                                
-                            except Exception as e:
-                                logging.debug(f"Error processing {filepath} in moved scan: {e}")
-                                continue
-                
-                logging.info(f"Moved file scan: processed {files_processed} files")
-                
-                # Now compare with metadata to find moved files
-                if not current_hash_locations:
-                    logging.info("No current files found to compare for moved detection")
-                    return
-                
-                # Compare with metadata
-                with self.state_lock:
-                    metadata_items = list(self.metadata.items())
-                
-                logging.info(f"Comparing with {len(metadata_items)} metadata entries")
-                
-                for old_rel_path, meta in metadata_items:
-                    # Check shutdown during comparison
-                    if self.shutdown_event.is_set():
-                        logging.info("Shutdown requested during moved file comparison")
-                        return
-                        
-                    # Check timeout during comparison
-                    if time.time() - scan_start > MAX_SCAN_TIME:
-                        logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
-                        return
-                    
-                    file_hash = meta.get('hash')
-                    if not file_hash:
-                        continue
-                    
-                    # Skip deleted files
-                    if meta.get('deleted'):
-                        continue
-                    
-                    # Check if file exists at old location
-                    old_full_path = os.path.join(EXPANDUSER, old_rel_path)
-                    if os.path.exists(old_full_path):
-                        # File still at original location
-                        continue
-                    
-                    # File not at old location - check if it moved
-                    current_locations = current_hash_locations.get(file_hash, [])
-                    if not current_locations:
-                        # File deleted (not found in current scan)
-                        logging.debug(f"File deleted (not found in scan): {old_rel_path}")
-                        # Don't call _handle_file_deletion here - let real-time events handle it
-                        continue
-                    
-                    # File moved to new location(s)
-                    for new_rel_path in current_locations:
-                        if new_rel_path == old_rel_path:
-                            continue
-                        
-                        moved_files_found += 1
-                        
-                        logging.info(f"Detected moved file: {old_rel_path} -> {new_rel_path}")
-                        
-                        # Sync backup locations
-                        try:
-                            new_full_path = os.path.join(EXPANDUSER, new_rel_path)
-                            self._handle_file_move(old_full_path, new_full_path)
-                            synced_successfully += 1
-                        except Exception as e:
-                            logging.error(f"Error syncing moved file {old_rel_path}: {e}")
-                
-                # Log results
-                if moved_files_found > 0:
-                    logging.info(f"Moved file detection complete: {synced_successfully}/{moved_files_found} synced successfully")
-                    # Save updated metadata
-                    try:
-                        server.save_metadata(self.metadata)
-                    except Exception as e:
-                        logging.error(f"Failed to save metadata after moved detection: {e}")
+                logging.info(f"Saving metadata with {len(self.metadata)} entries...")
+                server.save_metadata(self.metadata)
+                logging.info(f"✓ Metadata saved successfully to {server.METADATA_FILE}")
+
+                # Verify it was saved
+                if os.path.exists(server.METADATA_FILE):
+                    file_size = os.path.getsize(server.METADATA_FILE)
+                    logging.info(f"✓ Metadata file exists: {file_size} bytes")
                 else:
-                    logging.info("No moved files detected")
-                    
+                    logging.error(f"✗ Metadata file NOT found at {server.METADATA_FILE}")
+
             except Exception as e:
-                logging.error(f"Error in moved file detection: {e}", exc_info=True)
-            finally:
-                scan_duration = time.time() - scan_start
-                logging.info(f"Moved file scan completed in {scan_duration:.1f}s")
-        _detect_and_sync_moved_files()
-        
-        # ---------------------------------------------------------------------------
-        logging.info("Full scan complete")
+                logging.error(f"Failed to save metadata after scan: {e}", exc_info=True)
+
+            # 4. Generate summary
+            try:
+                from generate_backup_summary import generate_summary
+                generate_summary()
+            except Exception as e:
+                logging.error(f"Failed to generate summary: {e}")
+
+        except Exception as e:
+            logging.error(f"Full scan error: {e}", exc_info=True)
+        finally:
+            duration = time.time() - scan_start
+            logging.info("=" * 60)
+            logging.info(f"FULL SCAN COMPLETED in {duration:.1f}s")
+            logging.info("=" * 60)
+
+
+    def _scan_for_file_changes(self):
+        """
+        Scan filesystem and compare with metadata to find:
+        - New files (created while daemon offline)
+        - Modified files (changed while daemon offline)
+        - Deleted files (removed while daemon offline)
+        """
+
+        logging.info("Scanning for file changes...")
+
+        if self.shutdown_event.is_set():
+            return
+
+        # Track current filesystem state
+        current_files = {}  # rel_path -> (mtime, size, hash)
+
+        # Get folders to scan
+        folders = self._get_target_folders()
+        logging.info(f"Scanning {len(folders)} folders")
+
+        # Scan all watched folders
+        for folder_idx, folder in enumerate(folders):
+            if self.shutdown_event.is_set():
+                return
+
+            logging.info(f"Scanning folder {folder_idx + 1}/{len(folders)}: {folder}")
+
+            files_in_folder = 0
+            for root, dirs, files in os.walk(folder):
+                if self.shutdown_event.is_set():
+                    return
+
+                # Skip excluded directories
+                dirs[:] = [d for d in dirs if _should_process(os.path.join(root, d))]
+
+                for filename in files:
+                    if self.shutdown_event.is_set():
+                        return
+
+                    filepath = os.path.join(root, filename)
+
+                    # Skip excluded files
+                    if not _should_process(filepath):
+                        continue
+
+                    try:
+                        stat_result = os.stat(filepath)
+                        rel_path = os.path.relpath(filepath, EXPANDUSER)
+
+                        # Store current state
+                        current_files[rel_path] = {
+                            'mtime': stat_result.st_mtime,
+                            'size': stat_result.st_size,
+                            'path': filepath
+                        }
+
+                        files_in_folder += 1
+
+                    except (OSError, PermissionError) as e:
+                        logging.debug(f"Cannot access {filepath}: {e}")
+                        continue
+
+            logging.info(f"  Found {files_in_folder} files in {os.path.basename(folder)}")
+
+        # Check for new and modified files
+        logging.info(f"Comparing {len(current_files)} scanned files with {len(self.metadata)} metadata entries")
+
+        # ADD THIS: Sample comparison
+        if current_files:
+            sample_scan_path = list(current_files.keys())[0]
+            logging.info(f"Sample scan path: '{sample_scan_path}'")
+
+        if self.metadata:
+            # Find a bootstrap icon in metadata to compare
+            bs_metadata_keys = [k for k in self.metadata.keys() if 'bs-icons' in k]
+            if bs_metadata_keys:
+                sample_meta_path = bs_metadata_keys[0]
+                logging.info(f"Sample metadata path: '{sample_meta_path}'")
+
+                # Check if they match
+                if sample_meta_path in current_files:
+                    logging.info(f"✓ Metadata key found in scan")
+                else:
+                    logging.error(f"✗ Metadata key NOT found in scan - PATH MISMATCH!")
+
+
+        # Now compare with metadata
+        new_files = []
+        modified_files = []
+        deleted_files = []
+
+        # Check for new and modified files
+        for rel_path, file_info in current_files.items():
+            if self.shutdown_event.is_set():
+                return
+
+            metadata_entry = self.metadata.get(rel_path)
+
+            if not metadata_entry:
+                # New file (not in metadata)
+                new_files.append((rel_path, file_info))
+            else:
+                # File exists in metadata - check if modified
+                meta_mtime = metadata_entry.get('mtime', 0)
+                meta_size = metadata_entry.get('size', 0)
+
+                # Check if file changed (mtime or size different)
+                if (abs(file_info['mtime'] - meta_mtime) > 1 or
+                    file_info['size'] != meta_size):
+                    modified_files.append((rel_path, file_info))
+
+        # Check for deleted files
+        with self.state_lock:
+            metadata_paths = set(self.metadata.keys())
+
+        current_paths = set(current_files.keys())
+
+        for rel_path in metadata_paths:
+            if self.shutdown_event.is_set():
+                return
+
+            # Skip if already marked as deleted
+            if self.metadata.get(rel_path, {}).get('deleted'):
+                continue
+
+            if rel_path not in current_paths:
+                deleted_files.append(rel_path)
+
+        # Log findings
+        logging.info(f"Scan results:")
+        logging.info(f"  New files:      {len(new_files)}")
+        logging.info(f"  Modified files: {len(modified_files)}")
+        logging.info(f"  Deleted files:  {len(deleted_files)}")
+
+        # Process findings
+        if new_files or modified_files or deleted_files:
+            logging.info("Processing changes found during scan...")
+
+            # Process new files
+            for rel_path, file_info in new_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"New: {rel_path}")
+                    self._process_file_change(file_info['path'], 'created')
+
+                    # Verify it was added to metadata
+                    if rel_path in self.metadata:
+                        logging.debug(f"✓ Added to metadata: {rel_path}")
+                    else:
+                        logging.error(f"✗ FAILED to add to metadata: {rel_path}")
+
+                except Exception as e:
+                    logging.error(f"Error processing new file {rel_path}: {e}")
+
+            # Process modified files
+            for rel_path, file_info in modified_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"Modified: {rel_path}")
+                    self._process_file_change(file_info['path'], 'modified')
+                except Exception as e:
+                    logging.error(f"Error processing modified file {rel_path}: {e}")
+
+            # Process deleted files
+            for rel_path in deleted_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"Deleted: {rel_path}")
+                    full_path = os.path.join(EXPANDUSER, rel_path)
+                    self._handle_file_deletion(full_path)
+                except Exception as e:
+                    logging.error(f"Error processing deleted file {rel_path}: {e}")
+
+            logging.info("Change processing complete")
+        else:
+            logging.info("No changes detected")
+
+
+    def _detect_and_sync_moved_files(self):
+        """
+        Detect files moved while daemon was offline.
+        IMPROVED: No time restrictions, better timeout handling.
+        """
+
+        logging.info("Starting moved file detection...")
+
+        if self.shutdown_event.is_set():
+            return
+
+        scan_start = time.time()
+        MAX_SCAN_TIME = 120  # 2 minutes for moved detection
+
+        moved_files_found = 0
+        synced_successfully = 0
+
+        try:
+            current_hash_locations = {}
+
+            folders = self._get_target_folders()
+
+            for folder in folders:
+                if self.shutdown_event.is_set():
+                    return
+
+                if time.time() - scan_start > MAX_SCAN_TIME:
+                    logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
+                    break
+
+                for root, dirs, files in os.walk(folder):
+                    if self.shutdown_event.is_set():
+                        return
+
+                    if time.time() - scan_start > MAX_SCAN_TIME:
+                        break
+
+                    # Skip excluded directories
+                    dirs[:] = [d for d in dirs if _should_process(os.path.join(root, d))]
+
+                    for filename in files:
+                        if self.shutdown_event.is_set():
+                            return
+
+                        filepath = os.path.join(root, filename)
+
+                        if not _should_process(filepath):
+                            continue
+
+                        try:
+                            # Calculate hash
+                            file_hash = calculate_sha256(filepath)
+                            if not file_hash:
+                                continue
+
+                            rel_path = os.path.relpath(filepath, EXPANDUSER)
+
+                            if file_hash not in current_hash_locations:
+                                current_hash_locations[file_hash] = []
+
+                            current_hash_locations[file_hash].append(rel_path)
+
+                        except Exception as e:
+                            continue
+
+            # Compare with metadata
+            with self.state_lock:
+                metadata_items = list(self.metadata.items())
+
+            for old_rel_path, meta in metadata_items:
+                if self.shutdown_event.is_set():
+                    return
+
+                file_hash = meta.get('hash')
+                if not file_hash or meta.get('deleted'):
+                    continue
+
+                # Check if file exists at old location
+                old_full_path = os.path.join(EXPANDUSER, old_rel_path)
+                if os.path.exists(old_full_path):
+                    continue
+
+                # File not at old location - check if moved
+                current_locations = current_hash_locations.get(file_hash, [])
+                if not current_locations:
+                    continue
+
+                # File moved
+                for new_rel_path in current_locations:
+                    if new_rel_path == old_rel_path:
+                        continue
+
+                    moved_files_found += 1
+                    logging.info(f"Detected move: {old_rel_path} -> {new_rel_path}")
+
+                    try:
+                        new_full_path = os.path.join(EXPANDUSER, new_rel_path)
+                        self._handle_file_move(old_full_path, new_full_path)
+                        synced_successfully += 1
+                    except Exception as e:
+                        logging.error(f"Error syncing moved file: {e}")
+
+            if moved_files_found > 0:
+                logging.info(f"Moved files: {synced_successfully}/{moved_files_found} synced")
+            else:
+                logging.info("No moved files detected")
+
+        except Exception as e:
+            logging.error(f"Error in moved file detection: {e}", exc_info=True)
+
+
+    def _scan_for_file_changes(self):
+        """
+        Scan filesystem and compare with metadata to find:
+        - New files (created while daemon offline)
+        - Modified files (changed while daemon offline)
+        - Deleted files (removed while daemon offline)
+        """
+
+        logging.info("Scanning for file changes...")
+
+        if self.shutdown_event.is_set():
+            return
+
+        # Track current filesystem state
+        current_files = {}  # rel_path -> (mtime, size, hash)
+
+        # Get folders to scan
+        folders = self._get_target_folders()
+        logging.info(f"Scanning {len(folders)} folders")
+
+        # Scan all watched folders
+        for folder_idx, folder in enumerate(folders):
+            if self.shutdown_event.is_set():
+                return
+
+            logging.info(f"Scanning folder {folder_idx + 1}/{len(folders)}: {folder}")
+
+            files_in_folder = 0
+            for root, dirs, files in os.walk(folder):
+                if self.shutdown_event.is_set():
+                    return
+
+                # Skip excluded directories
+                dirs[:] = [d for d in dirs if _should_process(os.path.join(root, d))]
+
+                for filename in files:
+                    if self.shutdown_event.is_set():
+                        return
+
+                    filepath = os.path.join(root, filename)
+
+                    # Skip excluded files
+                    if not _should_process(filepath):
+                        continue
+
+                    try:
+                        stat_result = os.stat(filepath)
+                        rel_path = os.path.relpath(filepath, EXPANDUSER)
+
+                        # Store current state
+                        current_files[rel_path] = {
+                            'mtime': stat_result.st_mtime,
+                            'size': stat_result.st_size,
+                            'path': filepath
+                        }
+
+                        files_in_folder += 1
+
+                    except (OSError, PermissionError) as e:
+                        logging.debug(f"Cannot access {filepath}: {e}")
+                        continue
+
+            logging.info(f"  Found {files_in_folder} files in {os.path.basename(folder)}")
+
+        logging.info(f"Total files found: {len(current_files)}")
+
+        # Now compare with metadata
+        new_files = []
+        modified_files = []
+        deleted_files = []
+
+        # Check for new and modified files
+        for rel_path, file_info in current_files.items():
+            if self.shutdown_event.is_set():
+                return
+
+            metadata_entry = self.metadata.get(rel_path)
+
+            if not metadata_entry:
+                # New file (not in metadata)
+                new_files.append((rel_path, file_info))
+            else:
+                # File exists in metadata - check if modified
+                meta_mtime = metadata_entry.get('mtime', 0)
+                meta_size = metadata_entry.get('size', 0)
+
+                # Check if file changed (mtime or size different)
+                if (abs(file_info['mtime'] - meta_mtime) > 1 or
+                    file_info['size'] != meta_size):
+                    modified_files.append((rel_path, file_info))
+
+        # Check for deleted files
+        with self.state_lock:
+            metadata_paths = set(self.metadata.keys())
+
+        current_paths = set(current_files.keys())
+
+        for rel_path in metadata_paths:
+            if self.shutdown_event.is_set():
+                return
+
+            # Skip if already marked as deleted
+            if self.metadata.get(rel_path, {}).get('deleted'):
+                continue
+
+            if rel_path not in current_paths:
+                deleted_files.append(rel_path)
+
+        # Log findings
+        logging.info(f"Scan results:")
+        logging.info(f"  New files:      {len(new_files)}")
+        logging.info(f"  Modified files: {len(modified_files)}")
+        logging.info(f"  Deleted files:  {len(deleted_files)}")
+
+        # Process findings
+        if new_files or modified_files or deleted_files:
+            logging.info("Processing changes found during scan...")
+
+            # Process new files
+            for rel_path, file_info in new_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"New: {rel_path}")
+                    self._process_file_change(file_info['path'], 'created')
+                except Exception as e:
+                    logging.error(f"Error processing new file {rel_path}: {e}")
+
+            # Process modified files
+            for rel_path, file_info in modified_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"Modified: {rel_path}")
+                    self._process_file_change(file_info['path'], 'modified')
+                except Exception as e:
+                    logging.error(f"Error processing modified file {rel_path}: {e}")
+
+            # Process deleted files
+            for rel_path in deleted_files:
+                if self.shutdown_event.is_set():
+                    return
+                try:
+                    logging.info(f"Deleted: {rel_path}")
+                    full_path = os.path.join(EXPANDUSER, rel_path)
+                    self._handle_file_deletion(full_path)
+                except Exception as e:
+                    logging.error(f"Error processing deleted file {rel_path}: {e}")
+
+            logging.info("Change processing complete")
+        else:
+            logging.info("No changes detected")
+
+
+    def _detect_and_sync_moved_files(self):
+        """
+        Detect files moved while daemon was offline.
+        IMPROVED: No time restrictions, better timeout handling.
+        """
+
+        logging.info("Starting moved file detection...")
+
+        if self.shutdown_event.is_set():
+            return
+
+        scan_start = time.time()
+        MAX_SCAN_TIME = 120  # 2 minutes for moved detection
+
+        moved_files_found = 0
+        synced_successfully = 0
+
+        try:
+            current_hash_locations = {}
+
+            folders = self._get_target_folders()
+
+            for folder in folders:
+                if self.shutdown_event.is_set():
+                    return
+
+                if time.time() - scan_start > MAX_SCAN_TIME:
+                    logging.warning(f"Moved file scan timeout after {MAX_SCAN_TIME}s")
+                    break
+
+                for root, dirs, files in os.walk(folder):
+                    if self.shutdown_event.is_set():
+                        return
+
+                    if time.time() - scan_start > MAX_SCAN_TIME:
+                        break
+
+                    # Skip excluded directories
+                    dirs[:] = [d for d in dirs if _should_process(os.path.join(root, d))]
+
+                    for filename in files:
+                        if self.shutdown_event.is_set():
+                            return
+
+                        filepath = os.path.join(root, filename)
+
+                        if not _should_process(filepath):
+                            continue
+
+                        try:
+                            # Calculate hash
+                            file_hash = calculate_sha256(filepath)
+                            if not file_hash:
+                                continue
+
+                            rel_path = os.path.relpath(filepath, EXPANDUSER)
+
+                            if file_hash not in current_hash_locations:
+                                current_hash_locations[file_hash] = []
+
+                            current_hash_locations[file_hash].append(rel_path)
+
+                        except Exception as e:
+                            continue
+
+            # Compare with metadata
+            with self.state_lock:
+                metadata_items = list(self.metadata.items())
+
+            for old_rel_path, meta in metadata_items:
+                if self.shutdown_event.is_set():
+                    return
+
+                file_hash = meta.get('hash')
+                if not file_hash or meta.get('deleted'):
+                    continue
+
+                # Check if file exists at old location
+                old_full_path = os.path.join(EXPANDUSER, old_rel_path)
+                if os.path.exists(old_full_path):
+                    continue
+
+                # File not at old location - check if moved
+                current_locations = current_hash_locations.get(file_hash, [])
+                if not current_locations:
+                    continue
+
+                # File moved
+                for new_rel_path in current_locations:
+                    if new_rel_path == old_rel_path:
+                        continue
+
+                    moved_files_found += 1
+                    logging.info(f"Detected move: {old_rel_path} -> {new_rel_path}")
+
+                    try:
+                        new_full_path = os.path.join(EXPANDUSER, new_rel_path)
+                        self._handle_file_move(old_full_path, new_full_path)
+                        synced_successfully += 1
+                    except Exception as e:
+                        logging.error(f"Error syncing moved file: {e}")
+
+            if moved_files_found > 0:
+                logging.info(f"Moved files: {synced_successfully}/{moved_files_found} synced")
+            else:
+                logging.info("No moved files detected")
+
+        except Exception as e:
+            logging.error(f"Error in moved file detection: {e}", exc_info=True)
 
         
 # ---------------------------------------------------------------------------
@@ -1819,18 +2240,18 @@ def main():
         atexit.register(daemon._remove_lock_file)
 
         # Load state
+        logging.info("Loading metadata...")
         daemon._load_metadata()
         daemon._create_ready_state()
         daemon.journal.replay(daemon)
 
-        # Start control socket listener thread (NEW)
-        # This is where you initialize the thread object
-        control_thread = threading.Thread( 
-            target=daemon._socket_listener_thread, # The method to run
-            daemon=True                          # Ensures it dies if the main process dies
+        # Start control socket listener thread
+        control_thread = threading.Thread(
+            target=daemon._socket_listener_thread,
+            daemon=True
         )
         control_thread.start()
-        
+
         # Start message sender thread
         message_thread = threading.Thread(
             target=daemon.message_sender_thread,
@@ -1858,26 +2279,40 @@ def main():
 
         logging.info("Daemon started successfully")
 
+        # ================================================================
+        # CRITICAL FIX: Run initial full scan on startup
+        # This catches all changes that happened while daemon was offline
+        # ================================================================
+        logging.info("Running initial full scan to catch offline changes...")
+        daemon.start_full_scan(initial=True)
+
+        # Wait for initial scan to complete (with timeout)
+        if hasattr(daemon, '_scan_thread'):
+            daemon._scan_thread.join()
+            # daemon._scan_thread.join(timeout=300)  # 5 minute max
+            # TO REMOVE
+            # if daemon._scan_thread.is_alive():
+            #     logging.warning("Initial scan still running after 5 minutes")
+            # else:
+            #     logging.info("Initial scan completed")
+
         # Main loop - periodic full scans and flatpak backups
-        last_full_scan = 0
+        last_full_scan = time.time()  # Mark initial scan as done
+
         while not daemon.shutdown_event.is_set():
             current_time = time.time()
 
-            # Periodic full scan
+            # Periodic full scan (every 30 minutes)
             if current_time - last_full_scan >= POLLING_INTERVAL:
-                daemon.start_full_scan()
-                generate_summary()  # Generate backup summary
+                daemon.start_full_scan(initial=False)
                 last_full_scan = current_time
 
-            # Also check flatpak backup separately in case full scan doesn't run
-            def check_and_backup_flatpaks():
-                """Check if it's time to backup flatpaks and do it if needed."""
-                if current_time - daemon.last_flatpak_backup_time >= FLATPAK_BACKUP_INTERVAL:
-                    logging.info(f"Scheduled Flatpak backup")
-                    daemon.backup_flatpaks()
-            check_and_backup_flatpaks()
+            # Check flatpak backup
+            if current_time - daemon.last_flatpak_backup_time >= FLATPAK_BACKUP_INTERVAL:
+                logging.info("Scheduled Flatpak backup")
+                daemon.backup_flatpaks()
 
-            # Sleep with frequent checks
+            # Sleep with frequent shutdown checks
             for _ in range(100):  # Check every 100ms
                 if daemon.shutdown_event.is_set():
                     break
@@ -1905,6 +2340,9 @@ def main():
 
         if message_thread and message_thread.is_alive():
             message_thread.join(timeout=2)
+
+        if control_thread and control_thread.is_alive():
+            control_thread.join(timeout=2)
 
         if observer:
             observer.join(timeout=5)
