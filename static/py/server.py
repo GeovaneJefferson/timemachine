@@ -213,7 +213,7 @@ class SERVER:
         """
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            daemon_path = os.path.join(script_dir, "daemon.py")
+            daemon_path = os.path.join(script_dir, "main.py")
             
             # First fork
             pid = os.fork()
@@ -543,7 +543,7 @@ class SERVER:
         """Simple daemon start (original fixed version)"""
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            daemon_path = os.path.join(script_dir, "daemon.py")
+            daemon_path = os.path.join(script_dir, "main.py")
             
             original_dir = os.getcwd()
             os.chdir(os.path.dirname(daemon_path))
