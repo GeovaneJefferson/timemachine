@@ -1,66 +1,68 @@
 #!/bin/bash
-
-# TimeMachine Backup - Uninstallation Script
+# TimeMachine Electron - Uninstallation Script
+# Removes TimeMachine from ~/.local/share
 
 set -e
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+echo "🗑️  Uninstalling TimeMachine..."
+echo ""
 
-# Installation paths
+# Define directories
 INSTALL_DIR="$HOME/.local/share/timemachine"
 BIN_DIR="$HOME/.local/bin"
 DESKTOP_DIR="$HOME/.local/share/applications"
-ICON_DIR="$HOME/.local/share/icons"
+ICON_DIR="$HOME/.local/share/icons/hicolor/256x256/apps"
+LAUNCHER_SCRIPT="$BIN_DIR/timemachine"
 
-echo -e "${YELLOW}==================================${NC}"
-echo -e "${YELLOW}TimeMachine Backup - Uninstallation${NC}"
-echo -e "${YELLOW}==================================${NC}"
-echo ""
-echo "This will remove TimeMachine from your system."
-echo -e "${RED}Configuration and backup data will NOT be removed.${NC}"
-echo ""
-read -p "Continue? (y/N) " -n 1 -r
+# Confirm uninstall
+read -p "Are you sure you want to uninstall TimeMachine? (y/N) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Uninstallation cancelled."
+    echo "Cancelled."
     exit 0
 fi
 
-echo ""
-echo "Removing TimeMachine..."
-
-# Stop any running instances
-if pgrep -f "timemachine" > /dev/null; then
-    echo "Stopping running TimeMachine processes..."
-    pkill -f "timemachine" || true
+# Stop any running instance
+if pgrep -f "electron.*timemachine" > /dev/null; then
+    echo "⏹️  Stopping running TimeMachine instances..."
+    pkill -f "electron.*timemachine" || true
+    sleep 1
 fi
 
-# Remove systemd service if exists
-if [ -f "$HOME/.config/systemd/user/timemachine.service" ]; then
-    echo "Removing systemd service..."
-    systemctl --user stop timemachine.service 2>/dev/null || true
-    systemctl --user disable timemachine.service 2>/dev/null || true
-    rm -f "$HOME/.config/systemd/user/timemachine.service"
-    systemctl --user daemon-reload 2>/dev/null || true
+# Remove installation directory
+if [ -d "$INSTALL_DIR" ]; then
+    echo "📁 Removing application files..."
+    rm -rf "$INSTALL_DIR"
 fi
 
-# Remove autostart entry if exists
-if [ -f "$HOME/.config/autostart/timemachine-daemon.desktop" ]; then
-    echo "Removing autostart entry..."
-    rm -f "$HOME/.config/autostart/timemachine-daemon.desktop"
+# Remove old config directory
+if [ -d "$HOME/.config/timemachine" ]; then
+    echo "🧹 Removing old config directory..."
+    rm -rf "$HOME/.config/timemachine"
 fi
 
-# Remove files
-echo "Removing application files..."
-rm -rf "$INSTALL_DIR"
-rm -f "$BIN_DIR/timemachine"
-rm -f "$BIN_DIR/timemachine-daemon"
-rm -f "$DESKTOP_DIR/timemachine.desktop"
-rm -f "$ICON_DIR/timemachine.png"
+# Remove old electron config directory
+if [ -d "$HOME/.config/TimeMachineElectron" ]; then
+    echo "🧹 Removing old electron config directory..."
+    rm -rf "$HOME/.config/TimeMachineElectron"
+fi
+# Remove launcher script
+if [ -f "$LAUNCHER_SCRIPT" ]; then
+    echo "🔧 Removing launcher script..."
+    rm -f "$LAUNCHER_SCRIPT"
+fi
+
+# Remove desktop file
+if [ -f "$DESKTOP_DIR/timemachine.desktop" ]; then
+    echo "🖥️  Removing desktop launcher..."
+    rm -f "$DESKTOP_DIR/timemachine.desktop"
+fi
+
+# Remove icon
+if [ -f "$ICON_DIR/timemachine.png" ]; then
+    echo "🎨 Removing icon..."
+    rm -f "$ICON_DIR/timemachine.png"
+fi
 
 # Update desktop database
 if command -v update-desktop-database &> /dev/null; then
@@ -68,12 +70,12 @@ if command -v update-desktop-database &> /dev/null; then
 fi
 
 echo ""
-echo -e "${GREEN}==================================${NC}"
-echo -e "${GREEN}Uninstallation completed!${NC}"
-echo -e "${GREEN}==================================${NC}"
+echo "✅ Uninstallation complete!"
 echo ""
-echo "TimeMachine has been removed from your system."
-echo "Your configuration and backup data remain in:"
-echo "  - Configuration: $HOME/.config/timemachine (if exists)"
-echo "  - Backup data: Your backup location"
+echo "Removed:"
+echo "  • $INSTALL_DIR"
+echo "  • $HOME/.config/timemachine"
+echo "  • $LAUNCHER_SCRIPT"
+echo "  • $DESKTOP_DIR/timemachine.desktop"
+echo "  • $ICON_DIR/timemachine.png"
 echo ""

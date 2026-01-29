@@ -1,0 +1,65 @@
+name: Build Electron App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Electron App
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2 libxss1 python3-pip
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build AppImage
+        run: npm run build:appimage
+
+      - name: Build DEB
+        run: npm run build:deb
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: TimeMachine-AppImage
+          path: dist/*.AppImage
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v3
+        with:
+          name: TimeMachine-DEB
+          path: dist/*.deb
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

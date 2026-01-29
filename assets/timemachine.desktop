@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=TimeMachine
+Comment=Cross-platform backup daemon with modern UI
+Icon=timemachine
+Exec=timemachine %F
+Terminal=false
+Categories=Utility;System;Backup;
+Keywords=backup;restore;storage;
+StartupNotify=true
+Actions=Settings;Restore;
+
+[Desktop Action Settings]
+Name=Settings
+Exec=timemachine --settings
+
+[Desktop Action Restore]
+Name=Restore Files
+Exec=timemachine --restore

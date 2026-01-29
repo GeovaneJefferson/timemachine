@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Applications (Flatpak) - Light Theme</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#007AFF", // macOS System Blue
+              "background-light": "#f5f5f7",
+              "surface-light": "#ffffff",
+              "border-light": "#e5e5e5",
+              "text-secondary-light": "#6e6e73",
+              "surface-highlight": "#f2f2f7",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              'xl': '0.75rem',
+              '2xl': '1rem',
+            },
+            boxShadow: {
+                'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                'inner-light': 'inset 0 1px 2px rgba(0,0,0,0.05)',
+                'menu': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+            }
+          },
+        },
+      };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(107, 114, 128, 0.8);
+        }
+        .sidebar-item-active {
+            background-color: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+    </style>
+</head>
+<body class="bg-surface-light text-gray-900 font-sans h-screen overflow-hidden transition-colors duration-200">
+<div class="w-full h-full bg-surface-light flex flex-col md:flex-row overflow-hidden relative">
+<aside class="w-64 flex-shrink-0 bg-gray-50 border-r border-border-light flex flex-col pt-6 pb-4 pl-4 pr-2 select-none overflow-y-auto hidden md:flex">
+<div class="space-y-6">
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Navigate</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">backup</span>
+                            Dashboard
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md sidebar-item-active font-medium" href="#">
+<span class="material-icons-round text-lg">apps</span>
+                            Applications
+                        </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Folders</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">folder</span>
+                            Documents
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">music_note</span>
+                            Music
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">movie</span>
+                            Videos
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">work</span>
+                            Projects
+                        </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Locations</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors group" href="#">
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-lg">dns</span>
+                                Macintosh HD
+                            </div>
+<span class="material-icons-round text-lg text-gray-400 group-hover:text-gray-600">eject</span>
+</a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">public</span>
+                            Network
+                        </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Tags</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                            Urgent
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                            Work
+                        </a>
+</nav>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full bg-surface-light relative">
+<div class="flex items-center justify-between px-6 py-3 bg-white/80 border-b border-border-light backdrop-blur-sm sticky top-0 z-10 h-16">
+<div class="flex-1"></div>
+<div class="relative w-64 md:w-80 shrink-0 mx-auto">
+<span class="material-icons-round absolute left-2.5 top-1.5 text-gray-400 text-lg">search</span>
+<input class="w-full pl-9 pr-4 py-1.5 text-sm bg-gray-100 border-transparent rounded-md focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-500 text-gray-900" placeholder="Search applications..." type="text"/>
+</div>
+<div class="flex-1 flex justify-end items-center gap-4">
+<div class="flex items-center gap-2 text-xs font-medium text-text-secondary-light hover:text-gray-800 transition-colors cursor-default">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+</span>
+                        Monitoring files...
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-text-secondary-light hover:text-gray-800 transition-colors cursor-default">
+<span class="material-icons-round text-green-500 text-sm">wifi</span>
+                        Devices connection
+                    </div>
+<div class="w-px h-4 bg-gray-300 mx-1"></div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-gray-50 transition-colors text-xs font-semibold text-gray-700">
+<span class="material-icons-round text-sm">pause_circle</span>
+                        Pause
+                    </button>
+</div>
+</div>
+<div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
+<div>
+<h1 class="text-2xl font-bold text-gray-900 leading-tight">Installed Applications</h1>
+<p class="text-sm text-text-secondary-light mt-1">Your installed Flatpak applications are automatically saved for future clean reinstall usage.</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto bg-white">
+<table class="w-full text-left border-collapse">
+<thead class="bg-gray-50 sticky top-0 z-0 shadow-sm">
+<tr>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 flex-1">Application Name</th>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 flex-1">Identifier</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 text-sm">
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+<span class="material-icons-round text-lg">videocam</span>
+</div>
+<span class="font-medium text-gray-900">Zoom</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">us.zoom.Zoom</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+<span class="material-icons-round text-lg">sports_esports</span>
+</div>
+<span class="font-medium text-gray-900">Godot Engine</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">org.godotengine.Godot</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+<span class="material-icons-round text-lg">desktop_mac</span>
+</div>
+<span class="font-medium text-gray-900">AnyDesk</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">com.anydesk.Anydesk</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+<span class="material-icons-round text-lg">web</span>
+</div>
+<span class="font-medium text-gray-900">Firefox</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">org.mozilla.firefox</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-white shadow-sm border border-gray-600 flex-shrink-0">
+<span class="material-icons-round text-lg">terminal</span>
+</div>
+<span class="font-medium text-gray-900">VS Code</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">com.visualstudio.code</span>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+<span class="material-icons-round text-lg">music_note</span>
+</div>
+<span class="font-medium text-gray-900">Spotify</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">com.spotify.Client</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+
+</body></html>

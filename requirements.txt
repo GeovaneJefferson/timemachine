@@ -1,7 +1,27 @@
-# Requirements
-# sudo dnf install python3 python3-pip nodejs npm
-setproctitle
-flask
-flask_sock
-watchdog
+# Web Framework
+Flask==2.3.0
+Werkzeug==2.3.0
 
+# System utilities
+psutil==5.9.0
+watchdog==3.0.0
+
+# File handling
+python-magic==0.4.27
+
+# Database
+configparser==5.3.0
+
+# Data processing
+Pillow==10.0.0
+
+# Utilities
+requests==2.31.0
+python-dateutil==2.8.2
+
+# Optional: For better async support
+gevent==23.0.0
+
+# Development
+pytest==7.0.0
+pytest-cov==4.0.0

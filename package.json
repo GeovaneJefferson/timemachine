@@ -1,23 +1,21 @@
 {
-  "name": "timemachine-backup",
+  "name": "timemachine",
   "version": "1.0.0",
-  "description": "Linux Backup Application",
-  "main": "main.js",
-  
+  "description": "Cross-platform backup daemon with modern desktop UI",
+  "main": "electron/main.js",
+  "homepage": "./",
+  "type": "module",
   "scripts": {
-    "start": "electron . --no-sandbox",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["backup", "timemachine", "linux"],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "autoprefixer": "^10.4.22",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17",
-    "electron": "^28.0.0"
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "install": "bash install.sh",
+    "uninstall": "bash uninstall.sh"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.17"
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^40.1.0"
   }
 }

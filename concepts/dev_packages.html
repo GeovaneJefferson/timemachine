@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dev Packages - Manual Input</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#007AFF", // macOS System Blue
+              "background-light": "#f5f5f7",
+              "surface-light": "#ffffff",
+              "border-light": "#e5e5e5",
+              "text-secondary-light": "#6e6e73",
+              "surface-highlight": "#f2f2f7",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              'xl': '0.75rem',
+              '2xl': '1rem',
+            },
+            boxShadow: {
+                'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                'inner-light': 'inset 0 1px 2px rgba(0,0,0,0.05)',
+                'menu': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+            }
+          },
+        },
+      };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(107, 114, 128, 0.8);
+        }
+        .sidebar-item-active {
+            background-color: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+    </style>
+</head>
+<body class="bg-surface-light text-gray-900 font-sans h-screen overflow-hidden transition-colors duration-200">
+<div class="w-full h-full bg-surface-light flex flex-col md:flex-row overflow-hidden relative">
+<aside class="w-64 flex-shrink-0 bg-gray-50 border-r border-border-light flex flex-col pt-6 pb-4 pl-4 pr-2 select-none overflow-y-auto hidden md:flex">
+<div class="space-y-6">
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Navigate</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">backup</span>
+                            Dashboard
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">apps</span>
+                            Applications
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md sidebar-item-active font-medium" href="#">
+<span class="material-icons-round text-lg">code</span>
+                            Dev Packages
+                        </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Folders</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">folder</span>
+                            Documents
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">music_note</span>
+                            Music
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">movie</span>
+                            Videos
+                        </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">work</span>
+                            Projects
+                        </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light uppercase tracking-wide mb-1">Locations</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors group" href="#">
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-lg">dns</span>
+                                Macintosh HD
+                            </div>
+<span class="material-icons-round text-lg text-gray-400 group-hover:text-gray-600">eject</span>
+</a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-200 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">public</span>
+                            Network
+                        </a>
+</nav>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full bg-surface-light relative">
+<div class="flex items-center justify-between px-6 py-3 bg-white/80 border-b border-border-light backdrop-blur-sm sticky top-0 z-10 h-16">
+<div class="flex-1"></div>
+<div class="relative w-64 md:w-80 shrink-0 mx-auto">
+<span class="material-icons-round absolute left-2.5 top-1.5 text-gray-400 text-lg">search</span>
+<input class="w-full pl-9 pr-4 py-1.5 text-sm bg-gray-100 border-transparent rounded-md focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-500 text-gray-900" placeholder="Search packages..." type="text"/>
+</div>
+<div class="flex-1 flex justify-end items-center gap-4">
+<div class="flex items-center gap-2 text-xs font-medium text-text-secondary-light hover:text-gray-800 transition-colors cursor-default">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+</span>
+                        Syncing...
+                    </div>
+<div class="w-px h-4 bg-gray-300 mx-1"></div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors text-xs font-semibold">
+<span class="material-icons-round text-sm">save</span>
+                        Save Changes
+                    </button>
+</div>
+</div>
+<div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
+<div>
+<h1 class="text-2xl font-bold text-gray-900 leading-tight">Dev Packages</h1>
+<p class="text-sm text-text-secondary-light mt-1">Manually add package names to reinstall later (e.g. pip, npm).</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative flex-grow">
+<input class="w-80 pl-4 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-400 text-gray-900 shadow-sm" placeholder="e.g. pip install requests" type="text"/>
+<button class="absolute right-1.5 top-1.5 p-0.5 text-primary hover:text-blue-700 transition-colors">
+<span class="material-icons-round text-lg">add_circle</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto bg-white">
+<table class="w-full text-left border-collapse">
+<thead class="bg-gray-50 sticky top-0 z-0 shadow-sm">
+<tr>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 w-1/2">Package Command / Name</th>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200">Category</th>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200">Date Added</th>
+<th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 text-sm">
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-600 border border-yellow-200 shadow-sm">
+<span class="material-icons-round text-lg">api</span>
+</div>
+<span class="font-mono text-gray-900">pip install requests</span>
+</div>
+</td>
+<td class="px-6 py-3 whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Python</span>
+</td>
+<td class="px-6 py-3 text-gray-500 whitespace-nowrap">Today</td>
+<td class="px-6 py-3 whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-gray-400 hover:text-blue-600 transition-colors">
+<span class="material-icons-round text-lg">edit</span>
+</button>
+<button class="text-gray-400 hover:text-red-600 transition-colors">
+<span class="material-icons-round text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600 border border-blue-200 shadow-sm">
+<span class="material-icons-round text-lg">functions</span>
+</div>
+<span class="font-mono text-gray-900">pip install numpy pandas</span>
+</div>
+</td>
+<td class="px-6 py-3 whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Python</span>
+</td>
+<td class="px-6 py-3 text-gray-500 whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-3 whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-gray-400 hover:text-blue-600 transition-colors">
+<span class="material-icons-round text-lg">edit</span>
+</button>
+<button class="text-gray-400 hover:text-red-600 transition-colors">
+<span class="material-icons-round text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-600 border border-red-200 shadow-sm">
+<span class="material-icons-round text-lg">javascript</span>
+</div>
+<span class="font-mono text-gray-900">npm install -g typescript</span>
+</div>
+</td>
+<td class="px-6 py-3 whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-100">Node.js</span>
+</td>
+<td class="px-6 py-3 text-gray-500 whitespace-nowrap">Oct 22, 2023</td>
+<td class="px-6 py-3 whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-gray-400 hover:text-blue-600 transition-colors">
+<span class="material-icons-round text-lg">edit</span>
+</button>
+<button class="text-gray-400 hover:text-red-600 transition-colors">
+<span class="material-icons-round text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-600 border border-purple-200 shadow-sm">
+<span class="material-icons-round text-lg">terminal</span>
+</div>
+<span class="font-mono text-gray-900">cargo install ripgrep</span>
+</div>
+</td>
+<td class="px-6 py-3 whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-50 text-orange-700 border border-orange-100">Rust</span>
+</td>
+<td class="px-6 py-3 text-gray-500 whitespace-nowrap">Oct 20, 2023</td>
+<td class="px-6 py-3 whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-gray-400 hover:text-blue-600 transition-colors">
+<span class="material-icons-round text-lg">edit</span>
+</button>
+<button class="text-gray-400 hover:text-red-600 transition-colors">
+<span class="material-icons-round text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 group cursor-default transition-colors">
+<td class="px-6 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-white shadow-sm border border-gray-600">
+<span class="material-icons-round text-lg">layers</span>
+</div>
+<span class="font-mono text-gray-900">docker pull postgres:latest</span>
+</div>
+</td>
+<td class="px-6 py-3 whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">Docker</span>
+</td>
+<td class="px-6 py-3 text-gray-500 whitespace-nowrap">Sep 15, 2023</td>
+<td class="px-6 py-3 whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-gray-400 hover:text-blue-600 transition-colors">
+<span class="material-icons-round text-lg">edit</span>
+</button>
+<button class="text-gray-400 hover:text-red-600 transition-colors">
+<span class="material-icons-round text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-8 text-center" style="display: none;"> 
+<div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
+<span class="material-icons-round text-gray-300 text-3xl">playlist_add</span>
+</div>
+<h3 class="text-gray-900 font-medium">No packages added</h3>
+<p class="text-gray-500 text-sm mt-1">Add your development packages above to keep track of them.</p>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

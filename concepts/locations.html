@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Backup Device Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#007AFF", // macOS System Blue
+              "background-light": "#f5f5f7",
+              "background-dark": "#1e1e1e",
+              "surface-light": "#ffffff",
+              "surface-dark": "#2c2c2e",
+              "border-light": "#e5e5e5",
+              "border-dark": "#3a3a3c",
+              "text-secondary-light": "#6e6e73",
+              "text-secondary-dark": "#98989d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              'xl': '0.75rem',
+              '2xl': '1rem',
+            },
+            boxShadow: {
+                'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.1)',
+                'inner-light': 'inset 0 1px 2px rgba(0,0,0,0.05)',
+                'glow': '0 0 15px rgba(0, 122, 255, 0.3)',
+            }
+          },
+        },
+      };
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(107, 114, 128, 0.8);
+        }
+        .sidebar-item-active {
+            background-color: rgba(0, 122, 255, 0.15);color: #007AFF;
+        }
+        .dark .sidebar-item-active {
+            background-color: rgba(10, 132, 255, 0.2);
+            color: #409CFF;
+        }
+    </style>
+</head>
+<body class="bg-surface-light dark:bg-surface-dark text-gray-900 dark:text-gray-100 font-sans h-screen overflow-hidden transition-colors duration-200">
+<div class="w-full h-full bg-surface-light dark:bg-surface-dark flex flex-col md:flex-row overflow-hidden relative">
+<aside class="w-64 flex-shrink-0 bg-gray-50/80 dark:bg-gray-900/50 backdrop-blur-md border-r border-border-light dark:border-border-dark flex flex-col pt-6 pb-4 pl-4 pr-2 select-none overflow-y-auto hidden md:flex">
+<div class="space-y-6">
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Navigate</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">backup</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">apps</span>
+                        Applications
+                    </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Folders</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">folder</span>
+                        Documents
+                    </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">music_note</span>
+                        Music
+                    </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">movie</span>
+                        Videos
+                    </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">work</span>
+                        Projects
+                    </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Locations</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center justify-between px-2 py-1.5 text-sm rounded-md sidebar-item-active font-medium group transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-icons-round text-lg">dns</span>
+                            Macintosh HD
+                        </div>
+<span class="material-icons-round text-lg text-primary group-hover:text-primary dark:group-hover:text-blue-400">eject</span>
+</a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="material-icons-round text-lg">public</span>
+                        Network
+                    </a>
+</nav>
+</div>
+<div>
+<h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Tags</h3>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                        Urgent
+                    </a>
+<a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+<span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        Work
+                    </a>
+</nav>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full bg-surface-light dark:bg-surface-dark relative">
+<div class="flex items-center justify-between px-6 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-border-light dark:border-border-dark backdrop-blur-sm sticky top-0 z-10 h-16">
+<div class="flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#"><span class="material-icons-round text-lg">arrow_back</span> Back</a>
+<span class="mx-1 text-gray-300">/</span>
+<span class="font-medium text-gray-900 dark:text-white">Device Details</span>
+</div>
+<div class="flex-1 max-w-xl mx-8 relative">
+<span class="material-icons-round absolute left-2.5 top-1.5 text-gray-400 text-lg">search</span>
+<input class="w-full pl-9 pr-4 py-1.5 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-primary dark:text-white transition-all" placeholder="Search files in Macintosh HD" type="text"/>
+</div>
+<div class="flex justify-end items-center gap-4">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-primary border border-transparent rounded-md shadow-sm hover:bg-blue-600 transition-colors text-xs font-semibold text-white">
+<span class="material-icons-round text-sm">eject</span>
+                    Eject Device
+                </button>
+</div>
+</div>
+<div class="flex flex-col h-full overflow-hidden">
+<div class="px-8 py-6 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+<div class="flex gap-8 items-start">
+<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-soft border border-gray-200 dark:border-gray-600 flex-shrink-0">
+<span class="material-symbols-outlined text-5xl text-gray-500 dark:text-gray-400">hard_drive</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-2">
+<div>
+<h1 class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Macintosh HD</h1>
+<p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">APFS Volume • Encrypted</p>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-medium text-green-700 dark:text-green-300">Connected &amp; Healthy</span>
+</div>
+</div>
+<div class="mb-4">
+<div class="flex justify-between text-xs font-medium mb-1.5">
+<span class="text-gray-700 dark:text-gray-300">Storage Used</span>
+<span class="text-text-secondary-light dark:text-text-secondary-dark">1.4 TB of 2 TB</span>
+</div>
+<div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden flex">
+<div class="h-full bg-primary w-[45%]" title="Apps &amp; System"></div>
+<div class="h-full bg-purple-500 w-[20%]" title="Documents"></div>
+<div class="h-full bg-yellow-500 w-[10%]" title="Media"></div>
+<div class="h-full bg-transparent flex-1"></div>
+</div>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">System (900 GB)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-purple-500"></span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Documents (400 GB)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Media (200 GB)</span>
+</div>
+<div class="flex items-center gap-1.5 ml-auto">
+<span class="material-icons-round text-sm text-text-secondary-light">info</span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">500 GB Free</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-6 py-2 bg-gray-50/50 dark:bg-gray-800/30 border-b border-border-light dark:border-border-dark flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 disabled:opacity-50 transition-colors">
+<span class="material-icons-round text-lg">chevron_left</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 disabled:opacity-50 transition-colors">
+<span class="material-icons-round text-lg">chevron_right</span>
+</button>
+<div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
+<div class="flex items-center text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-border-light dark:border-border-dark rounded px-2 py-1 shadow-sm">
+<span class="material-icons-round text-base text-gray-400 mr-1.5">computer</span>
+<span>Macintosh HD</span>
+<span class="material-icons-round text-base text-gray-400 mx-1">chevron_right</span>
+<span>Users</span>
+<span class="material-icons-round text-base text-gray-400 mx-1">chevron_right</span>
+<span class="font-medium">johndoe</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-0.5">
+<button class="p-1 rounded-md bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white">
+<span class="material-icons-round text-lg">list</span>
+</button>
+<button class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+<span class="material-icons-round text-lg">grid_view</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-xs font-medium text-gray-700 dark:text-gray-200">
+<span class="material-icons-round text-sm">filter_list</span>
+                    Filter
+                </button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark">
+<table class="w-full text-left border-collapse">
+<thead class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-0">
+<tr>
+<th class="w-12 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 w-1/3">Name</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Date Modified</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Kind</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Size</th>
+<th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Desktop</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Today at 10:42 AM</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-primary hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Exclude</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Documents</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Yesterday at 4:20 PM</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-primary hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Exclude</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input checked="" class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Downloads</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Oct 20, 2023</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-primary hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Exclude</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Movies</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Oct 18, 2023</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-2 py-1 rounded">Include</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Music</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Oct 15, 2023</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-2 py-1 rounded">Include</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Pictures</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Oct 15, 2023</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-2 py-1 rounded">Include</button>
+</td>
+</tr>
+<tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-blue-400 text-xl">folder</span>
+<span class="font-medium text-gray-900 dark:text-gray-200">Public</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Oct 15, 2023</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">Folder</td>
+<td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<button class="text-xs font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-2 py-1 rounded">Include</button>
+</td>
+</tr>
+<tr class="bg-gray-50/50 dark:bg-gray-800/30 group cursor-not-allowed">
+<td class="px-4 py-3">
+<input class="rounded border-gray-300 text-gray-400 focus:ring-gray-400 h-4 w-4" disabled="" type="checkbox"/>
+</td>
+<td class="px-4 py-3 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-gray-400 text-xl">folder_shared</span>
+<span class="font-medium text-gray-500 dark:text-gray-500">Library</span>
+</div>
+</td>
+<td class="px-4 py-3 text-gray-400 whitespace-nowrap">--</td>
+<td class="px-4 py-3 text-gray-400 whitespace-nowrap">System Folder</td>
+<td class="px-4 py-3 text-gray-400 whitespace-nowrap">Locked</td>
+<td class="px-4 py-3 whitespace-nowrap text-right">
+<span class="text-xs font-medium text-gray-400 px-2 py-1">Protected</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-2 bg-gray-50 dark:bg-gray-800 border-t border-border-light dark:border-border-dark text-xs text-text-secondary-light dark:text-text-secondary-dark flex justify-between items-center flex-shrink-0">
+<span>8 items, 1.45 TB available</span>
+<div class="flex gap-4">
+<span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer">Read &amp; Write</span>
+<span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer">Permissions: Everyone</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<div aria-labelledby="modal-title" aria-modal="true" class="relative z-50" role="dialog">
+<div class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"></div>
+<div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+<div class="relative transform overflow-hidden rounded-2xl bg-[#1c1c1e] text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-gray-700">
+<div class="px-6 py-5 border-b border-gray-700 flex justify-between items-center bg-[#2c2c2e]">
+<div>
+<h3 class="text-xl font-semibold leading-6 text-white" id="modal-title">Restore Files</h3>
+<p class="mt-1 text-sm text-gray-400">Choose a recovery point for your files.</p>
+</div>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-icons-round">close</span>
+</button>
+</div>
+<div class="px-6 py-8 bg-[#1c1c1e]">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="relative flex cursor-pointer rounded-xl border-2 border-primary bg-primary/10 p-4 shadow-sm focus:outline-none ring-offset-2 ring-offset-[#1c1c1e] ring-primary">
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-blue-400">
+<span class="material-icons-round text-2xl">schedule</span>
+</div>
+<div>
+<p class="font-semibold text-white">Today</p>
+<p class="text-sm text-gray-400">10:42 AM (Latest)</p>
+</div>
+</div>
+<span class="material-icons-round text-primary text-xl">check_circle</span>
+</div>
+</div>
+<div class="relative flex cursor-pointer rounded-xl border border-gray-700 hover:border-gray-500 bg-[#2c2c2e] p-4 shadow-sm hover:bg-[#3a3a3c] transition-all">
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-700 text-gray-300">
+<span class="material-icons-round text-2xl">history</span>
+</div>
+<div>
+<p class="font-semibold text-gray-200">Yesterday</p>
+<p class="text-sm text-gray-500">4:20 PM</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative flex cursor-pointer rounded-xl border border-gray-700 hover:border-gray-500 bg-[#2c2c2e] p-4 shadow-sm hover:bg-[#3a3a3c] transition-all">
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-700 text-gray-300">
+<span class="material-icons-round text-2xl">date_range</span>
+</div>
+<div>
+<p class="font-semibold text-gray-200">Last Week</p>
+<p class="text-sm text-gray-500">Oct 15 - Oct 21</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative flex cursor-pointer rounded-xl border border-gray-700 hover:border-gray-500 bg-[#2c2c2e] p-4 shadow-sm hover:bg-[#3a3a3c] transition-all">
+<div class="flex w-full items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-700 text-gray-300">
+<span class="material-icons-round text-2xl">edit_calendar</span>
+</div>
+<div>
+<p class="font-semibold text-gray-200">Custom Date</p>
+<p class="text-sm text-gray-500">Choose from calendar</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-[#2c2c2e] border border-gray-700">
+<span class="material-icons-round text-blue-400 mt-0.5">info</span>
+<div class="text-sm text-gray-300">
+<p class="font-medium text-white mb-0.5">Restore Summary</p>
+<p>You are about to restore <span class="font-semibold text-white">8 items</span> from <span class="font-semibold text-white">Macintosh HD</span> to their state on <span class="font-semibold text-white">Today at 10:42 AM</span>.</p>
+</div>
+</div>
+</div>
+<div class="bg-[#2c2c2e] px-6 py-4 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-gray-700">
+<button class="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-blue-600 sm:w-auto transition-colors items-center gap-2" type="button">
+<span class="material-icons-round text-lg">restore</span>
+                  Restore Files
+              </button>
+<button class="mt-3 inline-flex w-full justify-center rounded-lg bg-[#3a3a3c] px-4 py-2.5 text-sm font-semibold text-gray-200 shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-[#48484a] sm:mt-0 sm:w-auto transition-colors" type="button">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
