@@ -2154,6 +2154,7 @@ Exec=sh -c 'python3 "$HOME/.local/share/timemachine/py/main.py"'
 Icon=timemachine
 Terminal=false
 Categories=Utility;
+X-GNOME-Autostart-Delay=10
 X-GNOME-Autostart-enabled=true
 """
         

@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Set app name for window title and taskbar
-app.name = 'TimeMachineElectron';
+app.name = 'TimeMachine';
 
 let mainWindow;
 let pythonProcess;

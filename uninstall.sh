@@ -42,10 +42,11 @@ if [ -d "$HOME/.config/timemachine" ]; then
 fi
 
 # Remove old electron config directory
-if [ -d "$HOME/.config/TimeMachineElectron" ]; then
+if [ -d "$HOME/.config/TimeMachine" ]; then
     echo "🧹 Removing old electron config directory..."
-    rm -rf "$HOME/.config/TimeMachineElectron"
+    rm -rf "$HOME/.config/TimeMachine"
 fi
+
 # Remove launcher script
 if [ -f "$LAUNCHER_SCRIPT" ]; then
     echo "🔧 Removing launcher script..."
@@ -75,6 +76,7 @@ echo ""
 echo "Removed:"
 echo "  • $INSTALL_DIR"
 echo "  • $HOME/.config/timemachine"
+echo "  • $HOME/.config/TimeMachine"
 echo "  • $LAUNCHER_SCRIPT"
 echo "  • $DESKTOP_DIR/timemachine.desktop"
 echo "  • $ICON_DIR/timemachine.png"
