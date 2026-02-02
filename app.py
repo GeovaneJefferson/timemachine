@@ -2138,30 +2138,36 @@ def get_autostart_path():
     autostart_dir = os.path.expanduser('~/.config/autostart')
     return os.path.join(autostart_dir, 'timemachine.desktop')
 
-
 def create_autostart_desktop():
-    """Create autostart .desktop file in ~/.config/autostart/."""
+    """Create autostart .desktop file with hardcoded absolute paths."""
     try:
-        autostart_dir = os.path.expanduser('~/.config/autostart')
+        home_dir = os.path.expanduser('~')
+        autostart_dir = os.path.join(home_dir, '.config', 'autostart')
         os.makedirs(autostart_dir, exist_ok=True)
-        
-        # We use a shell wrapper to ensure $HOME is expanded dynamically at runtime
-        desktop_content = """[Desktop Entry]
+
+        python_path = '/usr/bin/python3'
+        main_py_path = os.path.join(home_dir, '.local', 'share', 'timemachine', 'py', 'main.py')
+
+        desktop_content = f"""[Desktop Entry]
 Type=Application
 Name=TimeMachine
 Comment=Automatic Backup Application
-Exec=sh -c 'python3 "$HOME/.local/share/timemachine/py/main.py"'
+Exec={python_path} {main_py_path}
 Icon=timemachine
 Terminal=false
 Categories=Utility;
-X-GNOME-Autostart-Delay=10
 X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel
+StartupNotify=false
 """
-        
-        autostart_file = get_autostart_path()
+
+        autostart_file = os.path.join(autostart_dir, 'timemachine.desktop')
+
         with open(autostart_file, 'w') as f:
             f.write(desktop_content)
-        os.chmod(autostart_file, 0o644)
+
+        os.chmod(autostart_file, 0o755)
+        app.logger.info(f"Created autostart file: {autostart_file}")
         return True
     except Exception as e:
         app.logger.error(f"Error creating autostart file: {e}")
@@ -2285,4 +2291,3 @@ if __name__ == '__main__':
     print("=" * 60)
     
     app.run(host='127.0.0.1', port=5000, debug=True)
-                            
