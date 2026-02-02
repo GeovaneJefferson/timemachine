@@ -1,4 +1,4 @@
-# TimeMachine - New UI
+# TimeMachine
 
 A modern, cross-platform desktop application for file backups, inspired by Apple's Time Machine. It provides a user-friendly interface to manage, browse, and restore your files.
 
