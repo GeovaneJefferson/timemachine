@@ -418,7 +418,10 @@ export default class FoldersPage {
                 ${files.map(file => {
                     const versionCount = file.versionCount || 0;
                     const hasVersions = versionCount > 0;
-                    
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(ext);
+                    const previewUrl = isImage ? `/api/stream/file?path=${encodeURIComponent(file.path)}` : null;
+
                     return `
                         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all cursor-pointer group relative ${
                             this.selectedFiles.has(file.path) ? 'selected-highlight ring-1 ring-primary' : ''
@@ -429,6 +432,11 @@ export default class FoldersPage {
                             </div>
                             ` : ''}
                             <div class="flex flex-col items-center text-center mb-3">
+                                ${previewUrl ? `
+                                <div class="w-16 h-16 rounded-lg flex items-center justify-center mb-2 relative overflow-hidden">
+                                    <img src="${previewUrl}" class="w-full h-full object-cover" alt="${file.name}" onerror="this.onerror=null; this.parentElement.innerHTML = '<span class=\\'material-icons-round text-3xl text-gray-400\\'>broken_image</span>';">
+                                </div>
+                                ` : `
                                 <div class="w-16 h-16 rounded-lg bg-gradient-to-br ${
                                     file.type === 'folder' ? 
                                         'from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20' :
@@ -442,6 +450,7 @@ export default class FoldersPage {
                                         ${file.type === 'folder' ? 'folder' : this.getFileIcon(file.name)}
                                     </span>
                                 </div>
+                                `}
                                 <div class="w-full">
                                     <div class="text-sm font-medium text-gray-900 dark:text-white truncate mb-1" title="${file.name}">
                                         ${this.highlightSearchText(file.name)}
@@ -1382,10 +1391,10 @@ export default class FoldersPage {
                 previewActions.querySelectorAll('.preview-action-btn').forEach(btn => {
                     btn.setAttribute('data-file', file.path);
                     btn.setAttribute('data-type', file.type);
+                    btn.setAttribute('data-name', file.name);
                     
                     // Update button text for restore based on file type
                     if (btn.getAttribute('data-action') === 'restore') {
-                        const fileName = file.name;
                         const isFolder = file.type === 'folder';
                         btn.innerHTML = `
                             <span class="material-icons-round text-sm mr-2">restore</span>
@@ -1954,7 +1963,7 @@ export default class FoldersPage {
         const action = event.currentTarget.getAttribute('data-action');
         const filePath = event.currentTarget.getAttribute('data-file');
         const fileType = event.currentTarget.getAttribute('data-type');
-        const fileName = filePath ? filePath.split('/').pop() : '';
+        const fileName = event.currentTarget.getAttribute('data-name');
         
         if (!filePath || !fileType) return;
         

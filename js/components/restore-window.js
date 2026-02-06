@@ -165,7 +165,7 @@ export default class RestoreWindow {
             <div class="text-center py-8">
                 <span class="material-icons-round text-gray-400 text-4xl mb-3">history</span>
                 <p class="text-gray-500 dark:text-gray-400">No backup versions found</p>
-                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">This file hasn't been backed up yet</p>
+                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">This file or folder hasn't been backed up yet</p>
             </div>
             `;
         }
@@ -174,9 +174,12 @@ export default class RestoreWindow {
         <div class="space-y-2">
             ${this.snapshots.map((snapshot, index) => {
                 const isSelected = this.selectedSnapshot === snapshot.id;
-                const isMainBackup = snapshot.is_main_backup;
+                const isMainBackup = snapshot.is_main_backup || snapshot.type === 'main';
                 const isLatest = index === 0 && !isMainBackup;
-                
+                const sizeOrCount = snapshot.size !== undefined 
+                    ? snapshot.size 
+                    : (snapshot.file_count !== undefined ? `${snapshot.file_count} files` : '');
+
                 return `
                 <div class="p-3 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
                      onclick="window.restoreWindow.selectSnapshot('${snapshot.id}')">
@@ -186,7 +189,7 @@ export default class RestoreWindow {
                             ${isMainBackup ? '<span class="ml-2 text-xs px-2 py-0.5 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded font-medium">Primary</span>' : ''}
                             ${isLatest ? '<span class="ml-2 text-xs px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded font-medium">Latest</span>' : ''}
                         </div>
-                        <span class="text-xs ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}">${snapshot.size}</span>
+                        <span class="text-xs ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}">${sizeOrCount}</span>
                     </div>
                     <div class="text-sm ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}">
                         ${snapshot.date} • ${snapshot.type}
@@ -265,38 +268,40 @@ export default class RestoreWindow {
     }
 
     async loadSnapshots() {
-        if (!this.currentFile) return;
-        
         this.isLoading = true;
         this.updateUI();
-        
+
         try {
-            const response = await fetch(`/api/backup/snapshots?file_path=${encodeURIComponent(this.currentFile.path)}`);
+            const endpoint = `/api/backup/snapshots?file_path=${encodeURIComponent(this.currentFile.path)}`;
+
+            const response = await fetch(endpoint);
             const data = await response.json();
-            
-            if (data.success && data.snapshots) {
+
+            if (data.success) {
+                // Sort snapshots: latest first, initial backup last.
+                data.snapshots.sort((a, b) => {
+                    const isAMain = a.is_main_backup || a.type === 'main';
+                    const isBMain = b.is_main_backup || b.type === 'main';
+
+                    if (isAMain) return 1;
+                    if (isBMain) return -1;
+                    
+                    const a_ts = typeof a.timestamp === 'string' ? new Date(a.timestamp).getTime() : a.timestamp * 1000;
+                    const b_ts = typeof b.timestamp === 'string' ? new Date(b.timestamp).getTime() : b.timestamp * 1000;
+
+                    return b_ts - a_ts;
+                });
                 this.snapshots = data.snapshots;
-                if (this.snapshots.length > 0) {
-                    // Auto-select the first snapshot (usually the latest)
-                    this.selectedSnapshot = this.snapshots[0].id;
-                }
             } else {
-                console.error('Failed to load snapshots:', data.error);
-                this.showNotification('Failed to load file history', 'error');
+                console.error('API Error:', data.error);
                 this.snapshots = [];
             }
         } catch (error) {
-            console.error('Error loading snapshots:', error);
-            this.showNotification('Failed to load file history', 'error');
-            this.snapshots = [];
+            console.error('Network Error:', error);
+            this.snapshots = []; // Reset on error
         } finally {
             this.isLoading = false;
             this.updateUI();
-            
-            // Load preview for selected snapshot
-            if (this.selectedSnapshot) {
-                this.loadPreview();
-            }
         }
     }
 
@@ -602,6 +607,7 @@ export default class RestoreWindow {
             this.hideProgress();
         }
     }
+
 
     async downloadBackedUpFile() {
         if (!this.selectedSnapshot) {

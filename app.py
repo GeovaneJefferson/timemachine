@@ -164,8 +164,24 @@ def bytes_to_human(bytes_size):
     return f"{bytes_size:.1f} PB"
 
 
-format_file_size = bytes_to_human  # Alias for consistency
+def get_snapshot_timestamp(date_str, time_str):
+    """Helper to convert folder date/time strings to timestamp."""
+    try:
+        if date_str == 'Initial Backup':
+            return 0
+        
+        # Parse date (DD-MM-YYYY) and time (HH-MM)
+        dt = datetime.strptime(f"{date_str} {time_str}", "%d-%m-%Y %H-%M")
+        return dt.timestamp()
+    except ValueError:
+        return 0
 
+def count_files_in_folder(folder_path):
+    """Fast file count."""
+    count = 0
+    for _, _, files in os.walk(folder_path):
+        count += len(files)
+    return count
 
 # =============================================================================
 # UTILITY FUNCTIONS - Configuration
@@ -230,6 +246,115 @@ def get_backups_root():
         app.logger.error(f"Error getting backups root: {e}")
         return None
 
+def background_restore_folder_task(job_id, folder_path, target_date, target_time):
+    """
+    Full reconstruction of a folder using layering + manifest cleanup.
+    """
+    try:
+        JOBS[job_id]['status'] = 'preparing'
+        JOBS[job_id]['percentage'] = 0
+        
+        # Initialize your server config to get the right paths
+        backups_root: str = get_backups_root() # This is 'timemachine/backups'
+        
+        # Clean the folder path (e.g., "Documents/Work")
+        clean_folder_path: str = str(folder_path).lstrip('/')
+        
+        # 1. Setup the target timestamp for comparison
+        target_dt = datetime.strptime(f"{target_date} {target_time}", "%d-%m-%Y %H-%M")
+        target_ts = target_dt.timestamp()
+
+        # 2. Prepare Destination (Restored folder on Home)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        folder_name = os.path.basename(folder_path)
+        dest_path = os.path.join(os.path.expanduser('~'), f"restored_{folder_name}_{timestamp}")
+        os.makedirs(dest_path, exist_ok=True)
+        
+        JOBS[job_id]['restored_to'] = dest_path
+
+        # --- STEP 1: RESTORE BASE (Main Backup) ---
+        JOBS[job_id]['status'] = 'restoring_base'
+        # server.py defines MAIN_BACKUP_LOCATION as ".main_backup"
+        main_source = os.path.join(backups_root, server.MAIN_BACKUP_LOCATION, clean_folder_path)
+        
+        if os.path.isdir(main_source):
+            shutil.copytree(main_source, dest_path, dirs_exist_ok=True)
+        JOBS[job_id]['percentage'] = 20
+
+        # --- STEP 2: APPLY INCREMENTALS ---
+        JOBS[job_id]['status'] = 'applying_increments'
+        
+        # Get folders that match DD-MM-YYYY format
+        date_folders = sorted([
+            d for d in os.listdir(backups_root) 
+            if re.match(r'\d{2}-\d{2}-\d{4}', d)
+        ], key=lambda x: datetime.strptime(x, "%d-%m-%Y"))
+
+        for date_folder in date_folders:
+            dt_current = datetime.strptime(date_folder, "%d-%m-%Y")
+            dt_target = datetime.strptime(target_date, "%d-%m-%Y")
+
+            if dt_current > dt_target:
+                break
+
+            date_path = os.path.join(backups_root, date_folder)
+            # Time folders are inside date folders (e.g., 14-30)
+            time_folders = sorted([t for t in os.listdir(date_path) if os.path.isdir(os.path.join(date_path, t))])
+
+            for time_folder in time_folders:
+                if dt_current == dt_target and time_folder > target_time:
+                    break
+
+                inc_source = os.path.join(date_path, time_folder, clean_folder_path)
+                if os.path.isdir(inc_source):
+                    shutil.copytree(inc_source, dest_path, dirs_exist_ok=True)
+        
+        JOBS[job_id]['percentage'] = 70
+
+        # --- STEP 3: MANIFEST CLEANUP (THE ANTI-GHOST STEP) ---
+        JOBS[job_id]['status'] = 'cleaning_deleted_files'
+        
+        # In server.py, the manifest is inside the backups folder
+        manifest_path = os.path.join(backups_root, '.backup_manifest.json')
+        
+        if os.path.exists(manifest_path):
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
+
+            # Walk through the files we just restored to find what shouldn't be there
+            for root, dirs, files in os.walk(dest_path, topdown=False):
+                for file_name in files:
+                    full_path = os.path.join(root, file_name)
+                    
+                    # Create the manifest key (original relative path)
+                    rel_path = os.path.relpath(full_path, dest_path)
+                    manifest_key = os.path.join(clean_folder_path, rel_path)
+
+                    if manifest_key in manifest:
+                        data = manifest[manifest_key]
+                        
+                        # If deleted time is before or equal to our target, kill the ghost
+                        if data.get('deleted'):
+                            del_time = data.get('deleted_time', 0)
+                            if del_time <= target_ts:
+                                os.remove(full_path)
+                
+                # Remove folders if they became empty after cleaning
+                for d in dirs:
+                    dir_full = os.path.join(root, d)
+                    if os.path.exists(dir_full) and not os.listdir(dir_full):
+                        os.rmdir(dir_full)
+
+        # --- STEP 4: FINISH ---
+        JOBS[job_id]['status'] = 'completed'
+        JOBS[job_id]['percentage'] = 100
+        
+        # Open the final folder so the user can see their 7 files
+        open_path(dest_path)
+
+    except Exception as e:
+        JOBS[job_id]['status'] = 'error'
+        JOBS[job_id]['error'] = str(e)
 
 def convert_backup_to_home_path(backup_path):
     """Convert backup path to expected home path."""
@@ -1769,7 +1894,7 @@ def get_backup_snapshots():
                             size_str = "Folder"
                         else:
                             size = os.path.getsize(target_path)
-                            size_str = format_file_size(size)
+                            size_str = bytes_to_human(size)
                         
                         time_obj = datetime.strptime(time_str, '%H-%M')
                         timestamp = datetime.combine(date_obj.date(), time_obj.time())
@@ -1801,7 +1926,8 @@ def get_backup_snapshots():
                 size_str = "Folder"
             else:
                 size = os.path.getsize(main_backup_path)
-                size_str = format_file_size(size)
+                size_str = bytes_to_human(size)
+
             mtime = os.path.getmtime(main_backup_path)
             mtime_dt = datetime.fromtimestamp(mtime)
             
@@ -2050,6 +2176,143 @@ def restore_file():
     
     return {'success': True, 'job_id': job_id, 'message': 'Restore started'}
 
+@app.route('/api/folder-snapshots', methods=['GET'])
+@json_api
+def get_folder_snapshots_api():
+    """
+    Get available snapshot dates for a specific folder.
+    Logic: Scans Main Backup + Incrementals and checks if folder exists in them.
+    """
+    folder_path = request.args.get('folder_path')
+
+    if not folder_path:
+        return {'success': False, 'error': 'No folder path provided'}
+
+    try:
+        snapshots = []
+        backups_root = get_backups_root()
+        
+        if not backups_root:
+            return {'success': False, 'error': 'No backup device configured'}
+
+        clean_folder_path = folder_path.lstrip('/')
+        main_backup_dir = os.path.join(backups_root, server.MAIN_BACKUP_LOCATION)
+
+        # 1. Check Main Backup
+        main_folder = os.path.join(main_backup_dir, clean_folder_path)
+        if os.path.exists(main_folder):
+            try:
+                main_mtime = os.path.getmtime(main_folder)
+                file_count = count_files_in_folder(main_folder)
+
+                snapshots.append({
+                    'date': 'Initial Backup',
+                    'time': datetime.fromtimestamp(main_mtime).strftime('%H:%M'),
+                    'timestamp': main_mtime,
+                    'type': 'main',
+                    'file_count': file_count,
+                    'display': 'Initial Backup',
+                    'id': 'main'
+                })
+            except Exception as e:
+                app.logger.error(f"Error checking main backup for folder: {e}")
+
+        # 2. Check Incremental Backups
+        # Get all date folders (DD-MM-YYYY)
+        date_folders = [d for d in os.listdir(backups_root) 
+                       if os.path.isdir(os.path.join(backups_root, d)) 
+                       and re.match(r'\d{2}-\d{2}-\d{4}', d)]
+        
+        # Sort newest first for UI
+        date_folders.sort(key=lambda x: datetime.strptime(x, "%d-%m-%Y"), reverse=True)
+
+        for date_folder in date_folders:
+            date_path = os.path.join(backups_root, date_folder)
+            
+            # Get time folders (HH-MM)
+            time_folders = sorted(os.listdir(date_path), reverse=True)
+
+            for time_folder in time_folders:
+                time_path = os.path.join(date_path, time_folder)
+                snapshot_folder = os.path.join(time_path, clean_folder_path)
+
+                if os.path.exists(snapshot_folder):
+                    # Count files in this snapshot version
+                    file_count = count_files_in_folder(snapshot_folder)
+
+                    # Format for display
+                    display_time = time_folder.replace('-', ':')
+
+                    snapshots.append({
+                        'date': date_folder,
+                        'time': display_time,
+                        'timestamp': get_snapshot_timestamp(date_folder, time_folder),
+                        'type': 'incremental',
+                        'file_count': file_count,
+                        'id': f"{date_folder}|{time_folder}", # Unique ID for the restore request
+                        'display': f"{date_folder} {display_time}"
+                    })
+
+        return {
+            'success': True,
+            'folder_path': folder_path,
+            'snapshots': snapshots,
+            'count': len(snapshots)
+        }
+
+    except Exception as e:
+        app.logger.error(f"Error getting folder snapshots: {e}", exc_info=True)
+        return {'success': False, 'error': str(e)}
+
+@app.route('/api/restore-folder', methods=['POST'])
+@json_api
+def restore_folder():
+    """
+    Start the background process to restore a folder to a specific date.
+    """
+    data = request.get_json()
+    folder_path = data.get('folder_path')
+    snapshot_id = data.get('snapshot_id') # Format: "DD-MM-YYYY|HH-MM" or "main"
+
+    if not folder_path:
+        return {'success': False, 'error': 'Missing folder_path'}
+    
+    if not snapshot_id:
+        return {'success': False, 'error': 'Missing snapshot_id'}
+
+    # Parse snapshot ID
+    target_date = None
+    target_time = None
+    
+    if snapshot_id != 'main':
+        try:
+            target_date, target_time = snapshot_id.split('|')
+        except ValueError:
+            return {'success': False, 'error': 'Invalid snapshot ID format'}
+
+    # Create Background Job
+    job_id = str(uuid.uuid4())
+    JOBS[job_id] = {
+        'id': job_id,
+        'type': 'restore_folder',
+        'status': 'pending',
+        'percentage': 0,
+        'abort': False
+    }
+
+    # Start Thread
+    thread = threading.Thread(
+        target=background_restore_folder_task, 
+        args=(job_id, folder_path, target_date, target_time)
+    )
+    thread.daemon = True
+    thread.start()
+
+    return {
+        'success': True, 
+        'job_id': job_id, 
+        'message': 'Folder restore started'
+    }
 
 # =============================================================================
 # FILE STREAMING ROUTE
