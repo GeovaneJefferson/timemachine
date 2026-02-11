@@ -704,6 +704,14 @@ def get_system_memory():
     }
 
 
+@app.route('/api/check-for-updates')
+def check_for_updates_route():
+    from py.update_checker import get_update_info
+    # This runs your git-based update script
+    result = get_update_info()
+    return jsonify(result)
+
+
 # =============================================================================
 # HOME FOLDER ROUTES
 # =============================================================================

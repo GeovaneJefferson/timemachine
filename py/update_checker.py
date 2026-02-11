@@ -1,0 +1,48 @@
+import subprocess
+import requests
+import os
+
+# The API URL for the latest commit on your dev branch
+GITHUB_API_URL = "https://api.github.com/repos/GeovaneJefferson/timemachine/commits/dev"
+
+def get_local_commit():
+    """Gets the ID of the code currently on your machine."""
+    try:
+        # Get the folder where this script lives to run git in the right spot
+        repo_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        return subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], 
+            cwd=repo_path, 
+            stderr=subprocess.STDOUT
+        ).decode('utf-8').strip()
+    except Exception:
+        return None
+
+def get_update_info():
+    current_sha = get_local_commit()
+    
+    try:
+        # Ask GitHub for the newest commit ID
+        response = requests.get(GITHUB_API_URL, timeout=10)
+        response.raise_for_status()
+        latest_sha = response.json().get('sha')
+
+        if not latest_sha:
+            return {'success': False, 'error': 'Could not find latest commit on GitHub'}
+
+        # Compare IDs
+        update_available = (latest_sha != current_sha)
+
+        return {
+            'success': True,
+            'update_available': update_available,
+            'current_version': current_sha[:7] if current_sha else "Unknown",
+            'latest_version': latest_sha[:7],
+            # We keep these keys so about.js doesn't break
+            'release_url': "https://github.com/GeovaneJefferson/timemachine" 
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+if __name__ == "__main__":
+    print(get_update_info())
