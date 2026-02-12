@@ -4,6 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import axios from 'axios';
+import fs from 'fs';
+import ini from 'ini';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -232,6 +234,30 @@ function createMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+const configPath = path.join(os.homedir(), '.config', 'timemachine', 'config.conf');
+
+function applyLaunchAtStartup() {
+  try {
+    if (fs.existsSync(configPath)) {
+      const config = ini.parse(fs.readFileSync(configPath, 'utf-8'));
+      const launchAtStartup = config.BACKUP && config.BACKUP.launch_at_startup === 'true';
+
+      app.setLoginItemSettings({
+        openAtLogin: launchAtStartup,
+        path: app.getPath('exe'),
+      });
+    }
+  } catch (error) {
+    console.error('Failed to apply launch at startup setting:', error);
+  }
+}
+
+fs.watch(configPath, (eventType, filename) => {
+  if (eventType === 'change') {
+    applyLaunchAtStartup();
+  }
+});
+
 /**
  * Kill Python process on app quit
  */
@@ -267,6 +293,7 @@ app.on('ready', async () => {
     setupIPC();
     createWindow();
     createMenu();
+    applyLaunchAtStartup();
   } catch (error) {
     console.error('Failed to start application:', error);
     app.quit();

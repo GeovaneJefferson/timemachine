@@ -1,4 +1,5 @@
 // js/app.js
+
 // Import js/utils/notifications.js
 // import { NotificationSystem } from './utils/notifications.js';
 import './utils/notifications.js';

@@ -2460,25 +2460,19 @@ def remove_autostart_desktop():
 @app.route('/api/settings/preferences', methods=['GET'])
 @json_api
 def get_preferences():
-    """Get user preferences."""
+    """Get application preferences."""
     try:
         config = load_config()
         
-        # Get automatic backup setting
-        auto_backup = config.get('BACKUP', 'automatic_backups', fallback='false').lower() == 'true'
-        
-        # Check if autostart is enabled
-        autostart_enabled = os.path.exists(get_autostart_path())
-        
-        return {
-            'success': True,
-            'preferences': {
-                'automatic_backups': auto_backup,
-                'autostart_enabled': autostart_enabled,
-                'cloud_sync': config.get('BACKUP', 'cloud_sync', fallback='false').lower() == 'true',
-                'encryption': config.get('BACKUP', 'encryption', fallback='false').lower() == 'true'
-            }
+        # Default preferences
+        preferences = {
+            'automatic_backups': config.getboolean('BACKUP', 'automatically_backup', fallback=False),
+            'cloud_sync': config.getboolean('BACKUP', 'cloud_sync', fallback=False),
+            'encryption': config.getboolean('BACKUP', 'encryption', fallback=False),
+            'launch_at_startup': config.getboolean('BACKUP', 'launch_at_startup', fallback=False),
         }
+        
+        return {'success': True, 'preferences': preferences}
     except Exception as e:
         app.logger.error(f"Error getting preferences: {e}")
         return {'success': False, 'error': str(e)}
@@ -2487,48 +2481,22 @@ def get_preferences():
 @app.route('/api/settings/preferences', methods=['POST'])
 @json_api
 def save_preferences():
-    """Save user preferences."""
+    """Save application preferences."""
     try:
-        data = request.get_json() or {}
+        data = request.get_json()
         config = load_config()
-        
-        # Ensure BACKUP section exists
+
         if 'BACKUP' not in config:
             config['BACKUP'] = {}
-        
-        # Save automatic backups setting
-        if 'automatic_backups' in data:
-            is_enabled = data['automatic_backups']
-            config['BACKUP']['automatic_backups'] = 'true' if is_enabled else 'false'
-            
-            # When automatic backups is enabled, automatically enable autostart
-            # When automatic backups is disabled, automatically disable autostart
-            if is_enabled:
-                create_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'true'
-            else:
-                remove_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'false'
-        
-        # Save other settings
-        if 'cloud_sync' in data:
-            config['BACKUP']['cloud_sync'] = 'true' if data['cloud_sync'] else 'false'
-        
-        if 'encryption' in data:
-            config['BACKUP']['encryption'] = 'true' if data['encryption'] else 'false'
+
+        # Update each setting
+        for key, value in data.items():
+            if key in ['automatic_backups', 'cloud_sync', 'encryption', 'launch_at_startup']:
+                config['BACKUP'][key] = str(value)
         
         save_config(config)
         
-        return {
-            'success': True,
-            'message': 'Preferences saved successfully',
-            'preferences': {
-                'automatic_backups': config['BACKUP'].get('automatic_backups', 'false').lower() == 'true',
-                'autostart_enabled': os.path.exists(get_autostart_path()),
-                'cloud_sync': config['BACKUP'].get('cloud_sync', 'false').lower() == 'true',
-                'encryption': config['BACKUP'].get('encryption', 'false').lower() == 'true'
-            }
-        }
+        return {'success': True, 'message': 'Preferences saved'}
     except Exception as e:
         app.logger.error(f"Error saving preferences: {e}")
         return {'success': False, 'error': str(e)}
