@@ -252,11 +252,25 @@ function applyLaunchAtStartup() {
   }
 }
 
-fs.watch(configPath, (eventType, filename) => {
-  if (eventType === 'change') {
-    applyLaunchAtStartup();
+// Ensure the configuration directory and file exist before watching.
+try {
+  const configDir = path.dirname(configPath);
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir, { recursive: true });
   }
-});
+  if (!fs.existsSync(configPath)) {
+    // Create a default config file if it doesn't exist
+    fs.writeFileSync(configPath, '[BACKUP]\nlaunch_at_startup = false\n');
+  }
+
+  fs.watch(configPath, (eventType, filename) => {
+    if (eventType === 'change') {
+      applyLaunchAtStartup();
+    }
+  });
+} catch (error) {
+  console.error('Failed to set up config file watcher:', error);
+}
 
 /**
  * Kill Python process on app quit
