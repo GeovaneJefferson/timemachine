@@ -465,10 +465,15 @@ export default class RestoreWindow {
     canShowTextPreview() {
         if (!this.currentFile) return false;
         const ext = this.currentFile.name.split('.').pop().toLowerCase();
-        const textExts = ['txt', 'py', 'js', 'html', 'css', 'json', 'xml', 'md', 
-                         'csv', 'log', 'yml', 'yaml', 'ini', 'cfg', 'java', 'cpp', 
-                         'c', 'h', 'php', 'rb', 'go', 'rs', 'sh', 'bash', 'zsh', 
-                         'conf', 'properties'];
+        const textExts = [
+            'adoc', 'bash', 'bat', 'c', 'cfg', 'conf', 'cpp', 'csv', 'css',
+            'diff', 'dockerfile', 'env', 'gd', 'go', 'h', 'html', 'ini',
+            'java', 'js', 'json', 'jsx', 'kt', 'kts', 'less', 'log', 'lua',
+            'md', 'patch', 'php', 'pl', 'properties', 'ps1', 'py', 'rb',
+            'rs', 'rst', 'sass', 'scala', 'scss', 'sh', 'sql', 'svelte',
+            'swift', 'tex', 'toml', 'ts', 'tsx', 'txt', 'vb', 'vue', 'xml',
+            'yaml', 'yml', 'zsh'
+        ];
         return textExts.includes(ext);
     }
 
