@@ -374,6 +374,36 @@ export default class DashboardPage {
         return '/';
     }
 
+    // Format date for display
+    formatDate(dateString) {
+        if (!dateString) {
+            return '';
+        }
+
+        const date = new Date(dateString);
+        const now = new Date();
+
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const dateToCompare = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+        const dateOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+
+        const formattedTime = date.toLocaleTimeString('en-GB', timeOptions);
+        const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+
+        if (dateToCompare.getTime() === today.getTime()) {
+            return `Today, ${formattedDate} at ${formattedTime}`;
+        } else if (dateToCompare.getTime() === yesterday.getTime()) {
+            return `Yesterday, ${formattedDate} at ${formattedTime}`;
+        } else {
+            return `${formattedDate} at ${formattedTime}`;
+        }
+    }
+
     // Render the files table
     renderFilesTable() {
         if (this.data.files.length === 0) {
@@ -514,7 +544,7 @@ export default class DashboardPage {
                         <span class="font-medium text-gray-900 dark:text-gray-200">${file.name}</span>
                     </div>
                 </td>
-                <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">${file.date}</td>
+                <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">${this.formatDate(file.date)}</td>
                 <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">${file.size}</td>
                 <td class="px-6 py-3 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${changeTypeClasses[changeType] || ''}">
