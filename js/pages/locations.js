@@ -5,7 +5,7 @@ import { createLoadingSkeleton, createCardLoadingSkeleton } from '../utils/loadi
 export default class LocationsPage {
     constructor() {
         this.name = 'locations';
-        this.showRestoreModal = false;
+        this.showGetVersionsModal = false;
         this.loading = true;
         this.error = null;
         this.currentView = 'list';
@@ -15,7 +15,7 @@ export default class LocationsPage {
             deviceInfo: null, // Will be populated from real device
             currentPath: ['Home'],
             folders: [],
-            restorePoints: [
+            versionPoints: [
                 { id: 'today', name: 'Today', time: '10:42 AM (Latest)', icon: 'schedule', selected: true },
                 { id: 'yesterday', name: 'Yesterday', time: '4:20 PM', icon: 'history' },
                 { id: 'last-week', name: 'Last Week', time: 'Oct 15 - Oct 21', icon: 'date_range' },
@@ -498,7 +498,7 @@ export default class LocationsPage {
                     </div>
                 </div>
             </div>
-            ${this.showRestoreModal ? this.renderRestoreModal() : ''}
+            ${this.showGetVersionsModal ? this.renderGetVersionsModal() : ''}
         `;
     }
 
@@ -547,31 +547,31 @@ export default class LocationsPage {
         `).join('');
     }
 
-    renderRestoreModal() {
+    renderGetVersionsModal() {
         const selectedFolders = this.data.folders.filter(f => f.selected);
         const selectedCount = selectedFolders.length;
-        const selectedRestorePoint = this.data.restorePoints.find(rp => rp.selected);
+        const selectedVersionPoint = this.data.versionPoints.find(rp => rp.selected);
         const device = this.data.deviceInfo || {};
 
         return `
-            <div class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity z-50" id="restore-modal-backdrop"></div>
-            <div class="fixed inset-0 z-50 w-screen overflow-y-auto" id="restore-modal-container">
+            <div class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity z-50" id="get-versions-modal-backdrop"></div>
+            <div class="fixed inset-0 z-50 w-screen overflow-y-auto" id="get-versions-modal-container">
                 <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <div class="relative transform overflow-hidden rounded-2xl bg-[#1c1c1e] text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-gray-700">
                         <div class="px-6 py-5 border-b border-gray-700 flex justify-between items-center bg-[#2c2c2e]">
                             <div>
-                                <h3 class="text-xl font-semibold leading-6 text-white" id="modal-title">Restore Files</h3>
+                                <h3 class="text-xl font-semibold leading-6 text-white" id="modal-title">Get File Versions</h3>
                                 <p class="mt-1 text-sm text-gray-400">Choose a recovery point for your files.</p>
                             </div>
-                            <button class="text-gray-400 hover:text-white transition-colors" id="close-restore-modal">
+                            <button class="text-gray-400 hover:text-white transition-colors" id="close-get-versions-modal">
                                 <span class="material-icons-round">close</span>
                             </button>
                         </div>
                         <div class="px-6 py-8 bg-[#1c1c1e]">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="restore-points">
-                                ${this.data.restorePoints.map(point => `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="version-points">
+                                ${this.data.versionPoints.map(point => `
                                     <div class="relative flex cursor-pointer rounded-xl ${point.selected ? 'border-2 border-primary bg-primary/10' : 'border border-gray-700 hover:border-gray-500 bg-[#2c2c2e] hover:bg-[#3a3a3c]'} p-4 shadow-sm focus:outline-none ring-offset-2 ring-offset-[#1c1c1e] ring-primary transition-all" 
-                                         data-restore-point="${point.id}">
+                                         data-version-point="${point.id}">
                                         <div class="flex w-full items-center justify-between">
                                             <div class="flex items-center gap-4">
                                                 <div class="flex h-12 w-12 items-center justify-center rounded-full ${point.selected ? 'bg-primary/20 text-blue-400' : 'bg-gray-700 text-gray-300'}">
@@ -590,17 +590,17 @@ export default class LocationsPage {
                             <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-[#2c2c2e] border border-gray-700">
                                 <span class="material-icons-round text-blue-400 mt-0.5">info</span>
                                 <div class="text-sm text-gray-300">
-                                    <p class="font-medium text-white mb-0.5">Restore Summary</p>
-                                    <p>You are about to restore <span class="font-semibold text-white">${selectedCount} items</span> from <span class="font-semibold text-white">${device.name || 'Device'}</span> to their state on <span class="font-semibold text-white">${selectedRestorePoint?.name || ''} at ${selectedRestorePoint?.time || ''}</span>.</p>
+                                    <p class="font-medium text-white mb-0.5">Get Versions Summary</p>
+                                    <p>You are about to get versions for <span class="font-semibold text-white">${selectedCount} items</span> from <span class="font-semibold text-white">${device.name || 'Device'}</span> to their state on <span class="font-semibold text-white">${selectedVersionPoint?.name || ''} at ${selectedVersionPoint?.time || ''}</span>.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="bg-[#2c2c2e] px-6 py-4 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-gray-700">
-                            <button class="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-blue-600 sm:w-auto transition-colors items-center gap-2" id="confirm-restore" type="button">
-                                <span class="material-icons-round text-lg">restore</span>
-                                Restore Files
+                            <button class="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-blue-600 sm:w-auto transition-colors items-center gap-2" id="confirm-get-versions" type="button">
+                                <span class="material-icons-round text-lg">history</span>
+                                Get Versions
                             </button>
-                            <button class="mt-3 inline-flex w-full justify-center rounded-lg bg-[#3a3a3c] px-4 py-2.5 text-sm font-semibold text-gray-200 shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-[#48484a] sm:mt-0 sm:w-auto transition-colors" id="cancel-restore" type="button">Cancel</button>
+                            <button class="mt-3 inline-flex w-full justify-center rounded-lg bg-[#3a3a3c] px-4 py-2.5 text-sm font-semibold text-gray-200 shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-[#48484a] sm:mt-0 sm:w-auto transition-colors" id="cancel-get-versions" type="button">Cancel</button>
                         </div>
                     </div>
                 </div>

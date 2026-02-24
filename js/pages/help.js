@@ -52,8 +52,8 @@ export default class HelpPage {
                                 <p class="text-gray-600 dark:text-gray-400">Yes, you can configure multiple backup destinations including local drives and cloud storage.</p>
                             </div>
                             <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-                                <h3 class="font-medium text-gray-900 dark:text-white mb-2">How do I restore files from a backup?</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Navigate to the Files section, select the files you want to restore, and click the Restore button.</p>
+                                <h3 class="font-medium text-gray-900 dark:text-white mb-2">How do I get versions of files from a backup?</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Navigate to the Files section, select the files you want to get versions of, and click the Get Versions button.</p>
                             </div>
                         </div>
                     </div>

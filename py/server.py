@@ -506,11 +506,11 @@ class SERVER:
             logging.debug(f"[MessageSender] Failed to send message: {e}")
             return False
         
-    async def send_restoring_file(self, description: str, processed: int = 0, progress: int = 0) -> bool:
-        """Send restoring files activity."""
+    async def send_getting_versions_proccess(self, description: str, processed: int = 0, progress: int = 0) -> bool:
+        """Send getting versions files activity."""
         message = {
             "type": "restoring",
-            "title": "Restoring file...",
+            "title": "Getting versions...",
             "description": description,
             "progress": "progress",
             "processed": "processed",
@@ -518,11 +518,11 @@ class SERVER:
         }
         return await self.send_message(message)
     
-    def send_restore_notification(self, description: str, destination_path: str) -> bool:
-        """Send file restore completed activity."""
+    def send_get_versions_notification(self, description: str, destination_path: str) -> bool:
+        """Send file get versions completed activity."""
         message = {
-            "type": "restore",
-            "title": "File Restored", 
+            "type": "get_versions",
+            "title": "Versions available", 
             "description": description,
             "destination": destination_path,
             "timestamp": datetime.now().isoformat()

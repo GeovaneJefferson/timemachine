@@ -1,6 +1,6 @@
 // js/components/restore-window.js
 
-export default class RestoreWindow {
+export default class VersionsWindow {
     constructor() {
         this.isOpen = false;
         this.currentFile = null;
@@ -14,7 +14,7 @@ export default class RestoreWindow {
     }
 
     async open(filePath, fileType, fileName) {
-        console.log('Opening restore window for:', fileName);
+        console.log('Opening get versions window for:', fileName);
 
         this.currentFile = {
             path: filePath,
@@ -30,7 +30,7 @@ export default class RestoreWindow {
     }
 
     close() {
-        const modal = document.getElementById('restore-modal');
+        const modal = document.getElementById('versions-modal');
         if (modal) {
             modal.remove();
         }
@@ -48,12 +48,12 @@ export default class RestoreWindow {
 
     render() {
         // Remove existing modal
-        const existing = document.getElementById('restore-modal');
+        const existing = document.getElementById('versions-modal');
         if (existing) existing.remove();
 
         // Create modal
         const modal = document.createElement('div');
-        modal.id = 'restore-modal';
+        modal.id = 'versions-modal';
         modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50';
         modal.innerHTML = this.getModalHTML();
         
@@ -70,10 +70,10 @@ export default class RestoreWindow {
             <!-- Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Restore File</h2>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Get Versions</h2>
                     <p class="text-sm text-gray-600 dark:text-gray-400">${this.currentFile.name}</p>
                 </div>
-                <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onclick="window.restoreWindow.close()">
+                <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onclick="window.versionsWindow.close()">
                     <span class="material-icons-round">close</span>
                 </button>
             </div>
@@ -106,7 +106,7 @@ export default class RestoreWindow {
                     </div>
                     
                     <!-- Preview content -->
-                    <div class="flex-1 overflow-auto p-4" id="restore-preview-content">
+                    <div class="flex-1 overflow-auto p-4" id="versions-preview-content">
                         ${this.renderPreview()}
                     </div>
                 </div>
@@ -116,28 +116,28 @@ export default class RestoreWindow {
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                 <div class="flex justify-between items-center">
                     <div class="flex space-x-3">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.restoreWindow.openBackedUpFile()">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.openBackedUpFile()">
                             <span class="material-icons-round text-sm mr-2">open_in_new</span>
                             Open
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.restoreWindow.openBackedUpFileLocation()">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.openBackedUpFileLocation()">
                             <span class="material-icons-round text-sm mr-2">folder_open</span>
                             Open Location
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.restoreWindow.downloadBackedUpFile()">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.downloadBackedUpFile()">
                             <span class="material-icons-round text-sm mr-2">download</span>
                             Download
                         </button>
                     </div>
                     <div class="flex justify-end space-x-3">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600" onclick="window.restoreWindow.close()">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600" onclick="window.versionsWindow.close()">
                             Cancel
                         </button>
                         <button class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center" 
-                                id="restore-button"
+                                id="get-version-button"
                                 ${!this.selectedSnapshot ? 'disabled' : ''}>
-                            <span class="material-icons-round text-sm mr-2">restore</span>
-                            Restore Selected Version
+                            <span class="material-icons-round text-sm mr-2">history</span>
+                            Get Version
                         </button>
                     </div>
                 </div>
@@ -182,7 +182,7 @@ export default class RestoreWindow {
 
                 return `
                 <div class="p-3 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-                     onclick="window.restoreWindow.selectSnapshot('${snapshot.id}')">
+                     onclick="window.versionsWindow.selectSnapshot('${snapshot.id}')">
                     <div class="flex justify-between items-start mb-1">
                         <div class="flex items-center">
                             <span class="font-medium ${isSelected ? 'text-blue-700 dark:text-blue-400' : 'text-gray-900 dark:text-white'}">${snapshot.time}</span>
@@ -306,7 +306,7 @@ export default class RestoreWindow {
     }
 
     async loadPreview() {
-        const previewContainer = document.getElementById('restore-preview-content');
+        const previewContainer = document.getElementById('versions-preview-content');
         if (!previewContainer || !this.selectedSnapshot || !this.canShowTextPreview()) return;
         
         this.isLoadingPreview = true;
@@ -335,7 +335,7 @@ export default class RestoreWindow {
     }
 
     async loadSourcePreview() {
-        const previewContainer = document.getElementById('restore-preview-content');
+        const previewContainer = document.getElementById('versions-preview-content');
         if (!previewContainer) return;
         
         try {
@@ -372,7 +372,7 @@ export default class RestoreWindow {
     }
 
     async loadDiffPreview() {
-        const previewContainer = document.getElementById('restore-preview-content');
+        const previewContainer = document.getElementById('versions-preview-content');
         if (!previewContainer) return;
         
         try {
@@ -484,7 +484,7 @@ export default class RestoreWindow {
     }
 
     updateUI() {
-        const modal = document.getElementById('restore-modal');
+        const modal = document.getElementById('versions-modal');
         if (!modal) return;
         
         // Update snapshots panel
@@ -500,28 +500,28 @@ export default class RestoreWindow {
         }
         
         // Update preview
-        const previewContainer = document.getElementById('restore-preview-content');
+        const previewContainer = document.getElementById('versions-preview-content');
         if (previewContainer) {
             previewContainer.innerHTML = this.renderPreview();
         }
         
         // Update restore button
-        const restoreBtn = document.getElementById('restore-button');
-        if (restoreBtn) {
-            restoreBtn.disabled = !this.selectedSnapshot;
+        const getVersionsBtn = document.getElementById('get-version-button');
+        if (getVersionsBtn) {
+            getVersionsBtn.disabled = !this.selectedSnapshot;
             if (!this.selectedSnapshot) {
-                restoreBtn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                getVersionsBtn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
             } else {
-                restoreBtn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                getVersionsBtn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
             }
         }
     }
 
     addEventListeners() {
         // Make window accessible globally
-        window.restoreWindow = this;
+        window.versionsWindow = this;
         
-        const modal = document.getElementById('restore-modal');
+        const modal = document.getElementById('versions-modal');
         if (!modal) return;
         
         // View mode buttons
@@ -544,9 +544,9 @@ export default class RestoreWindow {
         });
         
         // Restore button
-        const restoreBtn = document.getElementById('restore-button');
-        if (restoreBtn) {
-            restoreBtn.addEventListener('click', () => this.restoreFile());
+        const getVersionsBtn = document.getElementById('get-version-button');
+        if (getVersionsBtn) {
+            getVersionsBtn.addEventListener('click', () => this.getVersion());
         }
         
         // Close on backdrop click
@@ -557,29 +557,29 @@ export default class RestoreWindow {
         });
     }
 
-    async restoreFile() {
+    async getVersion() {
         if (!this.selectedSnapshot) {
-            this.showNotification('Please select a version to restore', 'warning');
+            this.showNotification('Please select a version to get', 'warning');
             return;
         }
         
         const snapshot = this.snapshots.find(s => s.id === this.selectedSnapshot);
         const versionType = snapshot.is_main_backup ? 'Original Backup' : 'Snapshot';
-        // const confirmRestore = confirm(`Are you sure you want to restore "${this.currentFile.name}"?\nThis will replace the current version with the ${versionType} from ${snapshot.date} ${snapshot.time}`);
-        const confirmRestore = await showConfirm(
-            'Restore Confirmation',
-            `Are you sure you want to restore "${this.currentFile.name}"?\nThis will replace the current version with the ${versionType} from ${snapshot.date} ${snapshot.time}`,
+        // const confirmGetVersion = confirm(`Are you sure you want to get "${this.currentFile.name}"?\nThis will replace the current version with the ${versionType} from ${snapshot.date} ${snapshot.time}`);
+        const confirmGetVersion = await showConfirm(
+            'Confirm Get Version',
+            `This will replace the current version of "${this.currentFile.name}" with the selected version from ${snapshot.date} ${snapshot.time}.`,
             {
-                confirmText: 'Restore',
+                confirmText: 'Get Version',
                 cancelText: 'Cancel',
                 confirmType: 'primary'
             }
         );
 
-        if (!confirmRestore) return;
+        if (!confirmGetVersion) return;
         
         this.abortController = new AbortController();
-        this.showProgress('Starting restore...', () => this.abortOperation());
+        this.showProgress('Starting get version...', () => this.abortOperation());
         
         try {
             const response = await fetch('/api/backup/restore', {
@@ -597,17 +597,17 @@ export default class RestoreWindow {
             const data = await response.json();
             if (data.success && data.job_id) {
                 this.activeJobId = data.job_id;
-                await this.pollJob(data.job_id, 'Restoring');
+                await this.pollJob(data.job_id, 'Getting Version');
             } else {
-                this.showNotification(`Failed to restore: ${data.error}`, 'error');
+                this.showNotification(`Failed to get version: ${data.error}`, 'error');
                 this.hideProgress();
             }
         } catch (error) {
             if (error.name === 'AbortError') {
-                this.showNotification('Restore cancelled', 'info');
+                this.showNotification('Get version cancelled', 'info');
             } else {
-                console.error('Restore error:', error);
-                this.showNotification('Failed to restore file. Please try again.', 'error');
+                console.error('Get version error:', error);
+                this.showNotification('Failed to get version. Please try again.', 'error');
             }
             this.hideProgress();
         }
@@ -676,7 +676,7 @@ export default class RestoreWindow {
                             this.showNotification(`${actionName} completed successfully!`, 'success');
                         }
                         
-                        if (actionName === 'Restoring') {
+                        if (actionName === 'Getting Version') {
                             this.close();
                             if (window.foldersPage && window.foldersPage.loadFolderContents) {
                                 window.foldersPage.loadFolderContents();
@@ -801,7 +801,7 @@ export default class RestoreWindow {
     }
 
     showProgress(message, onCancel = null) {
-        const modalContent = document.querySelector('#restore-modal > div');
+        const modalContent = document.querySelector('#versions-modal > div');
         if (!modalContent) return;
 
         this.hideProgress();
@@ -817,7 +817,7 @@ export default class RestoreWindow {
         }
 
         const overlay = document.createElement('div');
-        overlay.id = 'restore-progress-overlay';
+        overlay.id = 'versions-progress-overlay';
         overlay.className = 'absolute inset-0 z-50 flex items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg transition-opacity duration-200';
         
         overlay.innerHTML = `
@@ -828,11 +828,11 @@ export default class RestoreWindow {
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">${message}</h3>
                 
                 <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 mt-2 mb-1 overflow-hidden">
-                    <div id="restore-progress-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    <div id="versions-progress-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
                 <div class="flex justify-between w-full px-1 mb-2">
-                    <p id="restore-progress-text" class="text-xs text-gray-500 dark:text-gray-400">Please wait...</p>
-                    <p id="restore-progress-speed" class="text-xs text-gray-500 dark:text-gray-400 font-mono"></p>
+                    <p id="versions-progress-text" class="text-xs text-gray-500 dark:text-gray-400">Please wait...</p>
+                    <p id="versions-progress-speed" class="text-xs text-gray-500 dark:text-gray-400 font-mono"></p>
                 </div>
                 ${cancelButtonHtml}
             </div>
@@ -846,9 +846,9 @@ export default class RestoreWindow {
     }
 
     updateProgress(percentage, statusText = null, speedText = null, etaText = null) {
-        const bar = document.getElementById('restore-progress-bar');
-        const text = document.getElementById('restore-progress-text');
-        const speed = document.getElementById('restore-progress-speed');
+        const bar = document.getElementById('versions-progress-bar');
+        const text = document.getElementById('versions-progress-text');
+        const speed = document.getElementById('versions-progress-speed');
         
         if (bar) {
             bar.style.width = `${Math.max(0, Math.min(100, percentage))}%`;
@@ -872,7 +872,7 @@ export default class RestoreWindow {
     }
 
     hideProgress() {
-        const overlay = document.getElementById('restore-progress-overlay');
+        const overlay = document.getElementById('versions-progress-overlay');
         if (overlay) overlay.remove();
     }
 
@@ -896,5 +896,5 @@ export default class RestoreWindow {
 
 // Make available globally
 if (typeof window !== 'undefined') {
-    window.RestoreWindow = RestoreWindow;
+    window.VersionsWindow = VersionsWindow;
 }

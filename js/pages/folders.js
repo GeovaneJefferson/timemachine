@@ -1,6 +1,6 @@
 // src/js/pages/folders.js
 
-import RestoreWindow from '../components/restore-window.js';
+import VersionsWindow from '../components/restore-window.js';
 import { createTableLoadingSkeleton } from '../utils/loading-skeleton.js';
 
 export default class FoldersPage {
@@ -36,7 +36,7 @@ export default class FoldersPage {
         this.handlePreviewAction = this.handlePreviewAction.bind(this);
 
         // Initialize RestoreWindow component
-        this.restoreWindow = new RestoreWindow();
+        this.versionsWindow = new VersionsWindow();
     }
 
     async render() {
@@ -1395,10 +1395,9 @@ export default class FoldersPage {
                     
                     // Update button text for restore based on file type
                     if (btn.getAttribute('data-action') === 'restore') {
-                        const isFolder = file.type === 'folder';
                         btn.innerHTML = `
-                            <span class="material-icons-round text-sm mr-2">restore</span>
-                            Restore ${isFolder ? 'Folder' : 'File'}
+                            <span class="material-icons-round text-sm mr-2">history</span>
+                            Get Versions
                         `;
                     }
                 });
@@ -2563,7 +2562,7 @@ export default class FoldersPage {
                 
             case 'restore':
                 // Use RestoreWindow instead of direct restore
-                this.restoreWindow.open(filePath, fileType, fileName);
+                this.versionsWindow.open(filePath, fileType, fileName);
                 break;
                 
             case 'download':

@@ -5,6 +5,9 @@ import logging
 import subprocess
 from datetime import datetime
 
+from py.server import SERVER
+server = SERVER()
+
 
 class FlatpakBackup:
     def __init__(self, daemon):
@@ -20,8 +23,8 @@ class FlatpakBackup:
             return
 
         commands_to_try = [
-            self.daemon.server.GET_FLATPAKS_APPLICATIONS_NAME_CONTAINER.split(),
-            self.daemon.server.GET_FLATPAKS_APPLICATIONS_NAME_NON_CONTAINER.split()
+            server.GET_FLATPAKS_APPLICATIONS_NAME_CONTAINER.split(),
+            server.GET_FLATPAKS_APPLICATIONS_NAME_NON_CONTAINER.split()
         ]
 
         output = None
@@ -61,7 +64,7 @@ class FlatpakBackup:
     def _save_flatpak_list(self, flatpak_list: str) -> bool:
         """Save flatpak list to backup location."""
         try:
-            flatpak_backup_dir = os.path.join(self.daemon.app_backup_dir, "flatpaks")
+            flatpak_backup_dir = os.path.join(server.app_backup_dir(), "flatpaks")
             os.makedirs(flatpak_backup_dir, exist_ok=True)
             flatpak_file = os.path.join(flatpak_backup_dir, "flatpak_applications.txt")
             
@@ -98,13 +101,13 @@ class FlatpakBackup:
 
     def _has_driver_connection(self) -> bool:
         """Check if backup location is available."""
-        return os.path.exists(self.daemon.app_backup_dir)
+        return os.path.exists(server.app_backup_dir())
 
     def _is_backup_location_writable(self) -> bool:
         """Check if backup location is writable."""
         try:
             import uuid
-            test_file = os.path.join(self.daemon.app_backup_dir, f".test_{uuid.uuid4().hex}")
+            test_file = os.path.join(server.app_backup_dir(), f".test_{uuid.uuid4().hex}")
             with open(test_file, 'w') as f:
                 f.write("test")
             os.remove(test_file)
