@@ -1,4 +1,9 @@
-import { contextBridge, ipcRenderer } from 'electron';
+// preload.js runs in a special, sandboxed renderer environment where CommonJS
+// `require` is guaranteed to work.  We used ESM before which caused the preload
+// loader to fail with "Unable to load preload script" when installed, so switch
+// back to a simple CommonJS style.
+
+const { contextBridge, ipcRenderer } = require('electron');
 
 /**
  * Exposed API for the renderer process

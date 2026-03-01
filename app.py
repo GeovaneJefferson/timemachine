@@ -2800,6 +2800,15 @@ def save_preferences():
             else:
                 remove_autostart_desktop()
                 config['BACKUP']['autostart_enabled'] = 'false'
+
+        # Allow manual control over launch-at-startup separate from automatic backups
+        if 'autostart_enabled' in data:
+            if data['autostart_enabled']:
+                create_autostart_desktop()
+                config['BACKUP']['autostart_enabled'] = 'true'
+            else:
+                remove_autostart_desktop()
+                config['BACKUP']['autostart_enabled'] = 'false'
         
         # Save other settings
         if 'cloud_sync' in data:

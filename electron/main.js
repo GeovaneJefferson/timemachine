@@ -70,6 +70,20 @@ function checkBackendReady(resolve, reject, attempts = 0) {
  * Create the main application window
  */
 function createWindow() {
+  // compute preload path and make sure it's there; helps debug installation issues
+  let preloadPath = path.join(__dirname, 'preload.js');
+  if (!fs.existsSync(preloadPath)) {
+    console.error('Preload script not found at expected location:', preloadPath);
+    // try a fallback that matches the installation layout used by our installer
+    const alt = path.join(process.resourcesPath || '', 'electron', 'preload.js');
+    if (fs.existsSync(alt)) {
+      console.warn('Using alternate preload path:', alt);
+      preloadPath = alt;
+    }
+  }
+
+  console.log('Using preload script:', preloadPath);
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -77,7 +91,7 @@ function createWindow() {
     minHeight: 900,
     title: 'TimeMachine',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: preloadPath,
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,

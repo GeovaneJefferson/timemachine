@@ -1,5 +1,7 @@
 // src/js/pages/about.js - FIXED
 
+import { electronAPI } from '../utils/electron-adapter.js';
+
 export default class AboutPage {
     constructor() {
         this.name = 'about';
@@ -218,7 +220,7 @@ export default class AboutPage {
                 if (info.update_available) {
                     this.showNotification(`A new version (${info.latest_version}) is available. The application will close for the update.`, 'info');
                     setTimeout(() => {
-                        window.electron.api('app-close');
+                        electronAPI.close();
                     }, 3000);
                 } else {
                     this.showNotification('You are using the latest version.', 'success');

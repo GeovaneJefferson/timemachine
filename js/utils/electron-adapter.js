@@ -62,7 +62,7 @@ export class ElectronAPIAdapter {
     }
   }
 
-  // Convenience methods
+  // Convenience methods for HTTP verbs
   get(endpoint) {
     return this.apiCall('GET', endpoint);
   }
@@ -77,6 +77,31 @@ export class ElectronAPIAdapter {
 
   delete(endpoint) {
     return this.apiCall('DELETE', endpoint);
+  }
+
+  // App window control helpers (bridge to preload API)
+  minimize() {
+    if (this.isElectron) {
+      return window.electronAPI.minimize();
+    }
+  }
+
+  maximize() {
+    if (this.isElectron) {
+      return window.electronAPI.maximize();
+    }
+  }
+
+  close() {
+    if (this.isElectron) {
+      return window.electronAPI.close();
+    }
+  }
+
+  toggleFullscreen() {
+    if (this.isElectron) {
+      return window.electronAPI.toggleFullscreen();
+    }
   }
 
   /**

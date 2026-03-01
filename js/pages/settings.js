@@ -1,6 +1,7 @@
 // src/js/pages/settings.js
 
 import { createLoadingSkeleton } from '../utils/loading-skeleton.js';
+import { electronAPI } from '../utils/electron-adapter.js';
 
 export default class SettingsPage {
     constructor() {
@@ -10,8 +11,10 @@ export default class SettingsPage {
 
     async loadPreferences() {
         try {
-            // Use the new endpoint
-            const response = await window.electron.api('GET', '/api/settings/preferences');
+            // Use the new endpoint through the adapter so we don't depend on the
+            // old `window.electron` global which was never exposed.  The adapter will
+            // fall back to fetch when running in a browser.
+            const response = await electronAPI.get('/api/settings/preferences');
             if (response.success) {
                 this.preferences = response.preferences;
             } else {
@@ -57,7 +60,7 @@ export default class SettingsPage {
                                         <p class="text-sm text-gray-500 dark:text-gray-400">Automatically start the application when you log in.</p>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer" ${this.preferences.launch_at_startup ? 'checked' : ''} id="launch-startup-toggle">
+                                        <input type="checkbox" class="sr-only peer" ${this.preferences.autostart_enabled ? 'checked' : ''} id="launch-startup-toggle">
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                                     </label>
                                 </div>
@@ -129,7 +132,7 @@ export default class SettingsPage {
                 if (info.update_available) {
                     this.showNotification(`A new version (${info.latest_version}) is available. The application will close for the update.`, 'info');
                     setTimeout(() => {
-                        window.electron.api('app-close');
+                        electronAPI.close();
                     }, 3000);
                 } else {
                     this.showNotification('You are using the latest version.', 'success');
@@ -144,15 +147,16 @@ export default class SettingsPage {
     }
 
     async saveSettings() {
-        const settings = {
+// backend expects "autostart_enabled" rather than the js-friendly name
+            const settings = {
             automatic_backups: document.getElementById('auto-backup-toggle')?.checked || false,
-            launch_at_startup: document.getElementById('launch-startup-toggle')?.checked || false,
+            autostart_enabled: document.getElementById('launch-startup-toggle')?.checked || false,
             cloud_sync: document.getElementById('cloud-sync-toggle')?.checked || false,
         };
         
         try {
             // Use the new endpoint
-            const result = await window.electron.api('POST', '/api/settings/preferences', settings);
+            const result = await electronAPI.post('/api/settings/preferences', settings);
             
             if (result.success) {
                 this.showNotification('Settings saved successfully!', 'success');
