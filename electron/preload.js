@@ -52,6 +52,11 @@ const api = {
   // Platform info
   async getPlatformInfo() {
     return ipcRenderer.invoke('get-platform-info');
+  },
+
+  // Show notification
+  showNotification(title, body) {
+    return ipcRenderer.invoke('show-notification', title, body);
   }
 };
 

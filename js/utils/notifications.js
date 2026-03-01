@@ -155,3 +155,24 @@ window.showSuccess = (message, duration) => window.NotificationSystem.success(me
 window.showError = (message, duration) => window.NotificationSystem.error(message, duration);
 window.showWarning = (message, duration) => window.NotificationSystem.warning(message, duration);
 window.showInfo = (message, duration) => window.NotificationSystem.info(message, duration);
+
+// Also export functions for module imports (keep globals for legacy callers)
+export function showToast(message, type = 'info', duration = 3000) {
+    return window.NotificationSystem.showToast(message, type, duration);
+}
+
+export function showConfirm(title, message, options = {}) {
+    return window.NotificationSystem.showConfirm(title, message, options);
+}
+
+export function showSuccess(message, duration = 3000) {
+    return window.NotificationSystem.success(message, duration);
+}
+
+export function showError(message, duration = 3000) {
+    return window.NotificationSystem.error(message, duration);
+}
+
+export function showWarning(message, duration = 3000) {
+    return window.NotificationSystem.warning(message, duration);
+}

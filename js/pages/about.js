@@ -210,37 +210,25 @@ export default class AboutPage {
     }
 
     async checkForUpdates() {
-        console.log('Checking for updates...');
-        const updateBtn = document.getElementById('check-updates-btn');
-        if (!updateBtn) return;
-
-        const originalText = updateBtn.textContent;
-        updateBtn.textContent = 'Checking...';
-        updateBtn.disabled = true;
-
+        // use the backend update checker so we have consistent logic
         try {
-            // We use fetch instead of window.apiAdapter.get
             const response = await fetch('/api/check-for-updates');
-            const updateInfo = await response.json();
-            
-            if (updateInfo.success) {
-                if (updateInfo.update_available) {
-                    alert(`New updates found!\nLocal: ${updateInfo.current_version}\nLatest: ${updateInfo.latest_version}`);
-                    if (updateInfo.release_url) {
-                        window.open(updateInfo.release_url, '_blank');
-                    }
+            const info = await response.json();
+            if (info.success) {
+                if (info.update_available) {
+                    this.showNotification(`A new version (${info.latest_version}) is available. The application will close for the update.`, 'info');
+                    setTimeout(() => {
+                        window.electron.api('app-close');
+                    }, 3000);
                 } else {
-                    alert('You are up to date! (Commit: ' + updateInfo.current_version + ')');
+                    this.showNotification('You are using the latest version.', 'success');
                 }
             } else {
-                alert(`Error: ${updateInfo.error}`);
+                this.showNotification(`Update check failed: ${info.error}`, 'error');
             }
         } catch (error) {
-            console.error('Failed to check for updates:', error);
-            alert('Could not connect to the server.');
-        } finally {
-            updateBtn.textContent = originalText;
-            updateBtn.disabled = false;
+            this.showNotification('Failed to check for updates.', 'error');
+            console.error('Error checking for updates:', error);
         }
     }
 
@@ -251,5 +239,27 @@ export default class AboutPage {
 
     destroy() {
         console.log('Cleaning up About page');
+    }
+
+    showNotification(message, type = 'info') {
+        // basic notification implementation same as sidebar
+        const notification = document.createElement('div');
+        notification.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+            type === 'success' ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
+            type === 'error' ? 'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
+            'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800'
+        }`;
+
+        notification.innerHTML = `
+        <span class="material-icons-round text-sm">
+        ${type === 'success' ? 'check_circle' :
+            type === 'error' ? 'error' :
+            'info'}
+            </span>
+            <span>${message}</span>
+            `;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
     }
 }

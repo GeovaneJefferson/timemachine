@@ -90,6 +90,20 @@ export class ElectronAPIAdapter {
   }
 
   /**
+   * Show a system notification
+   * @param {string} title - Notification title
+   * @param {string} body - Notification body
+   */
+  showNotification(title, body) {
+    if (this.isElectron) {
+      window.electronAPI.showNotification(title, body);
+    } else {
+      // Fallback for web version
+      alert(`${title}\n\n${body}`);
+    }
+  }
+
+  /**
    * Check if running in Electron
    */
   isRunningInElectron() {

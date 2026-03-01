@@ -9,6 +9,8 @@ class Router {
             '/dev-packages': 'devPackages',
             '/folders': 'folders',
             '/locations': 'locations',
+            '/network': 'network',
+            '/system-restore': 'system-restore',
             '/settings': 'settings',
             '/help': 'help',
             '/about': 'about'

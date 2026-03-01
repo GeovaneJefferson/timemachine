@@ -17,6 +17,7 @@ export default class Sidebar {
         ];
 
         this.settings = [
+            { id: 'system-restore', name: 'System Restore', icon: 'restore', active: false },
             { id: 'settings', name: 'Settings', icon: 'settings', active: false },
             { id: 'help', name: 'Help & Support', icon: 'help', active: false },
             { id: 'about', name: 'About', icon: 'info', active: false }
@@ -195,7 +196,7 @@ export default class Sidebar {
                 Connect a USB drive or check /media/ directory
                 </div>
                 </div>
-                <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer">
+                <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-400 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-not-allowed" disabled>
                 <span class="material-icons-round text-lg">public</span>
                 Network
                 </a>
@@ -703,10 +704,11 @@ export default class Sidebar {
                 devicesList.appendChild(emptyDiv);
             }
 
-            // Always include the Network option at the end
+            // Network option disabled for now
             const net = document.createElement('a');
             net.href = '#';
-            net.className = 'flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer';
+            net.className = 'flex items-center gap-2 px-2 py-1.5 text-sm text-gray-400 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-not-allowed';
+            net.setAttribute('disabled', 'true');
             net.innerHTML = '<span class="material-icons-round text-lg">public</span>Network';
             devicesList.appendChild(net);
 

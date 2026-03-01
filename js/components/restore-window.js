@@ -565,10 +565,16 @@ export default class VersionsWindow {
         
         const snapshot = this.snapshots.find(s => s.id === this.selectedSnapshot);
         const versionType = snapshot.is_main_backup ? 'Original Backup' : 'Snapshot';
-        // const confirmGetVersion = confirm(`Are you sure you want to get "${this.currentFile.name}"?\nThis will replace the current version with the ${versionType} from ${snapshot.date} ${snapshot.time}`);
+        const isFolder = this.currentFile.type === 'folder';
+        
+        // Customize confirmation message based on file type
+        const confirmMessage = isFolder 
+            ? `This will restore all files and folders inside "${this.currentFile.name}" to match the selected snapshot from ${snapshot.date} ${snapshot.time}. Files will be restored to a new folder in your home directory.`
+            : `This will replace the current version of "${this.currentFile.name}" with the selected version from ${snapshot.date} ${snapshot.time}.`;
+        
         const confirmGetVersion = await showConfirm(
             'Confirm Get Version',
-            `This will replace the current version of "${this.currentFile.name}" with the selected version from ${snapshot.date} ${snapshot.time}.`,
+            confirmMessage,
             {
                 confirmText: 'Get Version',
                 cancelText: 'Cancel',
@@ -582,22 +588,44 @@ export default class VersionsWindow {
         this.showProgress('Starting get version...', () => this.abortOperation());
         
         try {
-            const response = await fetch('/api/backup/restore', {
+            // Determine endpoint and data format based on file type
+            let endpoint, requestData;
+            
+            if (isFolder) {
+                // For folders, use the /api/restore-folder endpoint
+                // Convert snapshot_id from "DD-MM-YYYY/HH-MM" to "DD-MM-YYYY|HH-MM"
+                const snapshotIdForFolder = this.selectedSnapshot === '.main_backup' 
+                    ? 'main'
+                    : this.selectedSnapshot.replace('/', '|');
+                
+                endpoint = '/api/restore-folder';
+                requestData = {
+                    folder_path: this.currentFile.path,
+                    snapshot_id: snapshotIdForFolder
+                };
+            } else {
+                // For files, use the /api/backup/restore endpoint
+                endpoint = '/api/backup/restore';
+                requestData = {
+                    file_path: this.currentFile.path,
+                    snapshot_id: this.selectedSnapshot,
+                    restore_to: 'original'
+                };
+            }
+            
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    file_path: this.currentFile.path,
-                    snapshot_id: this.selectedSnapshot,
-                    restore_to: 'original'
-                })
+                body: JSON.stringify(requestData)
             });
             
             const data = await response.json();
             if (data.success && data.job_id) {
                 this.activeJobId = data.job_id;
-                await this.pollJob(data.job_id, 'Getting Version');
+                const actionName = isFolder ? 'Restoring Folder' : 'Getting Version';
+                await this.pollJob(data.job_id, actionName);
             } else {
                 this.showNotification(`Failed to get version: ${data.error}`, 'error');
                 this.hideProgress();

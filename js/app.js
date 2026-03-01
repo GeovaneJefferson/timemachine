@@ -1,8 +1,9 @@
 // js/app.js
 
-// Import js/utils/notifications.js
+// Import js/utils/notifications.js and update checker
 // import { NotificationSystem } from './utils/notifications.js';
 import './utils/notifications.js';
+import { checkUpdates } from './utils/update-checker.js';
 
 // Application State Manager
 class AppState {
@@ -96,6 +97,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Load dashboard
         await loadDashboard();
+
+        // perform an update check in the background; if an update is found a toast
+        // notification will be shown. we intentionally do not show an "up to date"
+        // message so the user isn't interrupted at startup.
+        checkUpdates(false);
 
         console.log('App initialized successfully');
     } catch (error) {
@@ -301,6 +307,19 @@ async function loadPage(pageName, params = {}) {
             window.currentPageInstance = page;
             appState.registerPage(pageName, page);
             
+        } else if (pageName === 'system-restore') {
+            // Import system restore module
+            const Module = await import('./pages/system-restore.js');
+            const SystemRestorePage = Module.default;
+            const page = new SystemRestorePage();
+
+            pageContent.innerHTML = await page.render();
+            if (page.afterRender) {
+                page.afterRender();
+            }
+            window.currentPageInstance = page;
+            appState.registerPage(pageName, page);
+
         } else if (pageName === 'locations') {
             // Import locations module
             const LocationsModule = await import('./pages/locations.js');
@@ -369,6 +388,19 @@ async function loadPage(pageName, params = {}) {
             window.currentPageInstance = page;
             appState.registerPage(pageName, page);
             
+        } else if (pageName === 'network') {
+            const NetworkModule = await import('./pages/network.js');
+            const NetworkPage = NetworkModule.default;
+            const page = new NetworkPage();
+
+            pageContent.innerHTML = await page.render();
+            if (page.afterRender) {
+                page.afterRender();
+            }
+
+            window.currentPageInstance = page;
+            appState.registerPage(pageName, page);
+
         } else {
             // Default/fallback
             pageContent.innerHTML = `

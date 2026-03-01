@@ -9,50 +9,10 @@ export default class DevPackagesPage {
     constructor() {
         this.name = 'dev-packages';
         this.data = {
-            packages: [
-                {
-                    id: 1,
-                    command: "pip install requests",
-                    category: "Python",
-                    date: "Today",
-                    icon: "api",
-                    color: "yellow"
-                },
-                {
-                    id: 2,
-                    command: "pip install numpy pandas",
-                    category: "Python",
-                    date: "Oct 24, 2023",
-                    icon: "functions",
-                    color: "blue"
-                },
-                {
-                    id: 3,
-                    command: "npm install -g typescript",
-                    category: "Node.js",
-                    date: "Oct 22, 2023",
-                    icon: "javascript",
-                    color: "red"
-                },
-                {
-                    id: 4,
-                    command: "cargo install ripgrep",
-                    category: "Rust",
-                    date: "Oct 20, 2023",
-                    icon: "terminal",
-                    color: "purple"
-                },
-                {
-                    id: 5,
-                    command: "docker pull postgres:latest",
-                    category: "Docker",
-                    date: "Sep 15, 2023",
-                    icon: "layers",
-                    color: "gray"
-                }
-            ],
+            packages: [],
             categories: ["Python", "Node.js", "Rust", "Docker", "Go", "Ruby", "Java"]
         };
+        this.loadPackages();
     }
 
     // Render the entire dev packages page
@@ -239,12 +199,9 @@ export default class DevPackagesPage {
             return;
         }
 
-        // Detect category from command
         const category = this.detectCategory(command);
-        
-        // Create new package object
         const newPackage = {
-            id: Date.now(), // Simple ID generation
+            id: Date.now(),
             command: command,
             category: category,
             date: "Today",
@@ -252,15 +209,10 @@ export default class DevPackagesPage {
             color: this.getColorForCategory(category)
         };
 
-        // Add to data
         this.data.packages.unshift(newPackage);
-
-        // Update UI
         this.updatePackagesTable();
-        
-        // Clear input
+        this.savePackages();
         input.value = '';
-        
         console.log('Package added:', newPackage);
     }
 
@@ -277,6 +229,7 @@ export default class DevPackagesPage {
             pkg.color = this.getColorForCategory(pkg.category);
             
             this.updatePackagesTable();
+            this.savePackages();
             console.log('Package updated:', pkg);
         }
     }
@@ -286,7 +239,65 @@ export default class DevPackagesPage {
         if (confirm('Are you sure you want to delete this package?')) {
             this.data.packages = this.data.packages.filter(p => p.id !== id);
             this.updatePackagesTable();
+            this.savePackages();
             console.log('Package deleted:', id);
+        }
+    }
+
+    savePackages() {
+        // Always save locally first for immediate responsiveness
+        try {
+            localStorage.setItem('devPackages', JSON.stringify(this.data.packages));
+        } catch (e) {}
+
+        // Attempt to persist to backend; fail silently but log for debugging
+        try {
+            fetch('/api/dev-packages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ packages: this.data.packages })
+            }).then(resp => resp.json())
+            .then(data => {
+                if (!data.success) {
+                    console.warn('Failed to save dev packages to server:', data.error);
+                    if (window.showError) window.showError('Failed to save dev packages');
+                } else {
+                    if (window.showSuccess) window.showSuccess('Dev packages saved');
+                }
+            }).catch(err => {
+                console.warn('Error saving dev packages to server:', err);
+                if (window.showError) window.showError('Error saving dev packages');
+            });
+        } catch (e) {
+            console.warn('Could not save dev packages to server', e);
+            if (window.showError) window.showError('Could not save dev packages');
+        }
+    }
+
+    loadPackages() {
+        try {
+            const raw = localStorage.getItem('devPackages');
+            if (raw) {
+                this.data.packages = JSON.parse(raw);
+            }
+        } catch (e) {
+            console.error('Failed to load dev packages from storage', e);
+        }
+        // Refresh from server in background and update UI if present
+        try {
+            fetch('/api/dev-packages')
+            .then(r => r.json())
+            .then(info => {
+                if (info && info.success && Array.isArray(info.packages)) {
+                    this.data.packages = info.packages;
+                    this.updatePackagesTable();
+                    try { localStorage.setItem('devPackages', JSON.stringify(this.data.packages)); } catch (e) {}
+                }
+            }).catch(err => {
+                console.debug('No dev packages on server or fetch failed:', err);
+            });
+        } catch (e) {
+            console.debug('Failed to fetch dev packages from server', e);
         }
     }
 

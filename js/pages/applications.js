@@ -7,7 +7,8 @@ export default class ApplicationsPage {
         this.name = 'applications';
         this.loading = true;
         this.data = {
-            applications: []
+            applications: [],
+            rawText: ''
         };
         this.loadRealData();
     }
@@ -19,16 +20,32 @@ export default class ApplicationsPage {
             
             if (result.success) {
                 this.data.applications = result.applications || [];
+                // backend now sends raw file contents for debugging/inspection
+                this.data.rawText = result.raw || '';
             } else {
                 console.warn('Failed to load applications:', result.error);
                 this.data.applications = [];
+                this.data.rawText = '';
             }
         } catch (error) {
             console.error('Error loading applications:', error);
             this.data.applications = [];
+            this.data.rawText = '';
         } finally {
             this.loading = false;
             window.applicationsLoaded = true;
+            // Update the DOM after data loads
+            await this.updateDom();
+        }
+    }
+
+    async updateDom() {
+        const pageContent = document.getElementById('page-content');
+        if (pageContent) {
+            pageContent.innerHTML = await this.render();
+            if (this.afterRender) {
+                this.afterRender();
+            }
         }
     }
 
@@ -74,6 +91,9 @@ export default class ApplicationsPage {
                     <h1 class="text-2xl font-bold text-gray-900 leading-tight">Installed Applications</h1>
                     <p class="text-sm text-text-secondary-light mt-1">Your installed Flatpak applications are automatically saved for future clean reinstall usage.</p>
                 </div>
+                <button id="refresh-apps-btn" title="Refresh list" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+                    <span class="material-icons-round">refresh</span>
+                </button>
             </div>
             <div class="flex-1 overflow-y-auto bg-white">
                 <table class="w-full text-left border-collapse">
@@ -88,6 +108,17 @@ export default class ApplicationsPage {
                     </tbody>
                 </table>
             </div>
+            <!-- raw file contents section -->
+            ${this.data.rawText ? `
+            <div class="p-4 bg-gray-50 border-t border-border-light">
+                <h2 class="text-lg font-medium">Raw flatpak_applications.txt</h2>
+                <pre class="whitespace-pre-wrap text-xs bg-white border rounded p-2" id="raw-flatpak-text">${this.data.rawText}</pre>
+            </div>
+            ` : `
+            <div class="p-4 bg-gray-50 border-t border-border-light text-gray-500 text-sm">
+                No raw file contents available
+            </div>
+            `}
         `;
     }
 
@@ -111,6 +142,15 @@ export default class ApplicationsPage {
 
     afterRender() {
         console.log('Applications page rendered with', this.data.applications.length, 'applications');
+        const btn = document.getElementById('refresh-apps-btn');
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                this.loading = true;
+                this.render(); // re-render quickly with loading state
+                await this.loadRealData();
+                this.updateDom();
+            });
+        }
     }
 
     destroy() {

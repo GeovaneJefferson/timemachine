@@ -249,6 +249,7 @@ def get_backups_root():
 def background_restore_folder_task(job_id, folder_path, target_date, target_time):
     """
     Full reconstruction of a folder using layering + manifest cleanup.
+    Handles both main backup and incremental snapshots.
     """
     try:
         JOBS[job_id]['status'] = 'preparing'
@@ -260,9 +261,11 @@ def background_restore_folder_task(job_id, folder_path, target_date, target_time
         # Clean the folder path (e.g., "Documents/Work")
         clean_folder_path: str = str(folder_path).lstrip('/')
         
-        # 1. Setup the target timestamp for comparison
-        target_dt = datetime.strptime(f"{target_date} {target_time}", "%d-%m-%Y %H-%M")
-        target_ts = target_dt.timestamp()
+        # 1. Setup the target timestamp for comparison (if not restoring from main backup)
+        target_ts = None
+        if target_date and target_time:
+            target_dt = datetime.strptime(f"{target_date} {target_time}", "%d-%m-%Y %H-%M")
+            target_ts = target_dt.timestamp()
 
         # 2. Prepare Destination (Restored folder on Home)
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -280,6 +283,13 @@ def background_restore_folder_task(job_id, folder_path, target_date, target_time
         if os.path.isdir(main_source):
             shutil.copytree(main_source, dest_path, dirs_exist_ok=True)
         JOBS[job_id]['percentage'] = 20
+
+        # If restoring from main backup only, skip incremental steps
+        if target_date is None or target_time is None:
+            JOBS[job_id]['status'] = 'completed'
+            JOBS[job_id]['percentage'] = 100
+            open_path(dest_path)
+            return
 
         # --- STEP 2: APPLY INCREMENTALS ---
         JOBS[job_id]['status'] = 'applying_increments'
@@ -336,25 +346,32 @@ def background_restore_folder_task(job_id, folder_path, target_date, target_time
                         # If deleted time is before or equal to our target, kill the ghost
                         if data.get('deleted'):
                             del_time = data.get('deleted_time', 0)
-                            if del_time <= target_ts:
-                                os.remove(full_path)
+                            if target_ts is not None and del_time <= target_ts:
+                                try:
+                                    os.remove(full_path)
+                                except OSError:
+                                    pass  # File may have already been deleted
                 
                 # Remove folders if they became empty after cleaning
                 for d in dirs:
                     dir_full = os.path.join(root, d)
                     if os.path.exists(dir_full) and not os.listdir(dir_full):
-                        os.rmdir(dir_full)
+                        try:
+                            os.rmdir(dir_full)
+                        except OSError:
+                            pass  # Folder may have other hidden files
 
         # --- STEP 4: FINISH ---
         JOBS[job_id]['status'] = 'completed'
         JOBS[job_id]['percentage'] = 100
         
-        # Open the final folder so the user can see their 7 files
+        # Open the final folder so the user can see their restored files
         open_path(dest_path)
 
     except Exception as e:
         JOBS[job_id]['status'] = 'error'
         JOBS[job_id]['error'] = str(e)
+        app.logger.error(f"Error in background_restore_folder_task: {e}", exc_info=True)
 
 def convert_backup_to_home_path(backup_path):
     """Convert backup path to expected home path."""
@@ -626,6 +643,58 @@ def background_copy_task(job_id, source_path, dest_path, open_when_done=False):
         JOBS[job_id]['error'] = str(e)
 
 
+def background_install_flatpaks(job_id, apps):
+    """Install a list of flatpak applications sequentially."""
+    try:
+        JOBS[job_id]['status'] = 'preparing'
+        total = len(apps)
+        JOBS[job_id]['total'] = total
+        JOBS[job_id]['percentage'] = 0
+
+        for idx, app_id in enumerate(apps, start=1):
+            if JOBS[job_id].get('abort'):
+                raise Exception("Operation aborted")
+            JOBS[job_id]['status'] = f'installing {app_id}'
+            # run flatpak install -y
+            try:
+                sub.run(['flatpak', 'install', '-y', app_id], check=True)
+            except Exception as e:
+                app.logger.error(f"Flatpak install failed for {app_id}: {e}")
+            JOBS[job_id]['percentage'] = int((idx/total)*100)
+        JOBS[job_id]['status'] = 'completed'
+        JOBS[job_id]['percentage'] = 100
+    except Exception as e:
+        status = 'aborted' if str(e) == "Operation aborted" else 'error'
+        JOBS[job_id]['status'] = status
+        JOBS[job_id]['error'] = str(e)
+
+
+def background_install_dev_packages(job_id, packages):
+    """Install a list of development packages (pip/npm etc) sequentially."""
+    try:
+        JOBS[job_id]['status'] = 'preparing'
+        total = len(packages)
+        JOBS[job_id]['total'] = total
+        JOBS[job_id]['percentage'] = 0
+
+        for idx, pkg in enumerate(packages, start=1):
+            if JOBS[job_id].get('abort'):
+                raise Exception("Operation aborted")
+            JOBS[job_id]['status'] = f'installing {pkg}'
+            try:
+                # simply run shell command; user is responsible for correct syntax
+                sub.run(pkg, shell=True, check=True)
+            except Exception as e:
+                app.logger.error(f"Dev package install failed for {pkg}: {e}")
+            JOBS[job_id]['percentage'] = int((idx/total)*100)
+        JOBS[job_id]['status'] = 'completed'
+        JOBS[job_id]['percentage'] = 100
+    except Exception as e:
+        status = 'aborted' if str(e) == "Operation aborted" else 'error'
+        JOBS[job_id]['status'] = status
+        JOBS[job_id]['error'] = str(e)
+
+
 # =============================================================================
 # STATIC FILE ROUTES
 # =============================================================================
@@ -763,6 +832,67 @@ def get_home_folders():
 # =============================================================================
 # DEVICE & LOCATION ROUTES
 # =============================================================================
+
+
+@app.route('/api/dev-packages', methods=['GET'])
+@json_api
+def get_dev_packages():
+    """Return saved developer packages from the current backup device.
+
+    The packages are stored as JSON in: <server.devices_path()>/dev/dev_packages.json
+    """
+    try:
+        # ensure a device is configured
+        device_root = server.devices_path()
+        if not device_root:
+            return {'success': False, 'error': 'No backup device configured'}
+
+        dev_dir = os.path.join(device_root, 'dev')
+        os.makedirs(dev_dir, exist_ok=True)
+        file_path = os.path.join(dev_dir, 'dev_packages.json')
+
+        if not os.path.exists(file_path):
+            return {'success': True, 'packages': []}
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        return {'success': True, 'packages': data}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
+@app.route('/api/dev-packages', methods=['POST'])
+@json_api
+def save_dev_packages():
+    """Save developer packages to the backup device as JSON.
+
+    Accepts JSON body: {"packages": [ ... ]}
+    """
+    try:
+        payload = request.get_json(force=True) or {}
+        packages = payload.get('packages', [])
+
+        device_root = server.devices_path()
+        if not device_root:
+            return {'success': False, 'error': 'No backup device configured'}
+
+        dev_dir = os.path.join(device_root, 'dev')
+        os.makedirs(dev_dir, exist_ok=True)
+        file_path = os.path.join(dev_dir, 'dev_packages.json')
+
+        tmp_path = file_path + '.tmp'
+        with open(tmp_path, 'w', encoding='utf-8') as f:
+            json.dump(packages, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+
+        os.replace(tmp_path, file_path)
+
+        return {'success': True, 'saved': len(packages)}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
 
 @app.route('/api/locations/devices')
 @json_api
@@ -1014,6 +1144,125 @@ def get_backup_path():
     """Get the main backup directory path."""
     info = get_backup_info()
     return {'success': True, **info}
+
+
+# -----------------------------------------------------------------------------
+# SYSTEM RESTORE ROUTES
+# -----------------------------------------------------------------------------
+
+@app.route('/api/system-restore/options')
+@json_api
+def system_restore_options():
+    """Return available folders in backup (top-level), plus flatpak list.
+    Dev packages are managed on the client side via localStorage.
+    """
+    try:
+        backups_root = get_backups_root()
+        if not backups_root:
+            return {'success': True, 'folders': [], 'flatpaks': []}
+
+        # reuse existing backup file browsing API to list root items
+        folders = []
+        try:
+            result = search_handler.browse_backup_folder('')
+            items = result.get('items', [])
+            for it in items:
+                if it.get('type') == 'folder':
+                    size = it.get('size', 0)
+                    size_str = bytes_to_human(size) if isinstance(size, (int, float)) else '--'
+                    folders.append({
+                        'name': it.get('name'),
+                        'path': it.get('path'),
+                        'size': size_str
+                    })
+        except Exception as e:
+            app.logger.error(f"Error listing top-level backup folders: {e}")
+
+        # get flatpak list - read directly to debug
+        flatpaks = []
+        try:
+            # Read flatpaks directly
+            device_path = server.devices_path()
+            flatpak_txt_file = os.path.join(device_path, 'flatpaks', 'flatpak_applications.txt')
+            
+            if os.path.exists(flatpak_txt_file):
+                with open(flatpak_txt_file, 'r') as f:
+                    app_identifiers = [line.strip() for line in f if line.strip()]
+                
+                # Icon and color mappings
+                icon_map = {
+                    'app.zen_browser.zen': 'web',
+                    'com.spotify.Client': 'music_note',
+                    'com.visualstudio.code': 'terminal',
+                    'us.zoom.Zoom': 'videocam',
+                    'org.godotengine.Godot': 'sports_esports',
+                    'com.anydesk.Anydesk': 'desktop_mac',
+                    'com.valvesoftware.Steam': 'sports_esports',
+                    'com.discordapp.Discord': 'chat',
+                    'org.blender.Blender': 'palette',
+                    'io.dbeaver.DBeaverCommunity': 'database',
+                }
+                
+                color_map = {
+                    'app.zen_browser.zen': 'bg-orange-500',
+                    'com.spotify.Client': 'bg-green-600',
+                    'com.visualstudio.code': 'bg-gray-800',
+                    'us.zoom.Zoom': 'bg-blue-500',
+                    'org.godotengine.Godot': 'bg-indigo-500',
+                    'com.anydesk.Anydesk': 'bg-red-500',
+                }
+                
+                # Build apps list
+                for identifier in app_identifiers:
+                    flatpaks.append({
+                        'name': identifier.split('.')[-1],
+                        'identifier': identifier,
+                        'icon': icon_map.get(identifier, 'apps'),
+                        'color': color_map.get(identifier, 'bg-blue-500')
+                    })
+                app.logger.info(f"Loaded {len(flatpaks)} flatpak applications")
+                
+        except Exception as e:
+            app.logger.error(f"Error reading flatpaks: {e}", exc_info=True)
+
+        return {
+            'success': True, 
+            'folders': folders, 
+            'flatpaks': flatpaks
+        }
+    except Exception as e:
+        app.logger.error(f"Error in system_restore/options: {e}", exc_info=True)
+        return {'success': False, 'error': str(e), 'folders': [], 'flatpaks': []}
+
+
+@app.route('/api/system-restore/install-flatpaks', methods=['POST'])
+@json_api
+def install_flatpaks():
+    data = request.get_json() or {}
+    apps = data.get('apps', [])
+    if not isinstance(apps, list):
+        return {'success': False, 'error': 'apps must be a list'}
+    job_id = str(uuid.uuid4())
+    JOBS[job_id] = {'id': job_id, 'type': 'install_flatpaks', 'status': 'pending', 'percentage': 0, 'abort': False}
+    thread = threading.Thread(target=background_install_flatpaks, args=(job_id, apps))
+    thread.daemon = True
+    thread.start()
+    return {'success': True, 'job_id': job_id, 'message': 'Flatpak install started'}
+
+
+@app.route('/api/system-restore/install-dev-packages', methods=['POST'])
+@json_api
+def install_dev_packages():
+    data = request.get_json() or {}
+    packages = data.get('packages', [])
+    if not isinstance(packages, list):
+        return {'success': False, 'error': 'packages must be a list'}
+    job_id = str(uuid.uuid4())
+    JOBS[job_id] = {'id': job_id, 'type': 'install_dev_packages', 'status': 'pending', 'percentage': 0, 'abort': False}
+    thread = threading.Thread(target=background_install_dev_packages, args=(job_id, packages))
+    thread.daemon = True
+    thread.start()
+    return {'success': True, 'job_id': job_id, 'message': 'Dev package installation started'}
 
 
 @app.route('/api/backup/files')
@@ -1304,39 +1553,38 @@ def get_recent_backup_files():
 def get_installed_applications():
     """Get list of installed Flatpak applications from backup."""
     try:
+        # Flatpak file is stored at: <device_path>/timemachine/flatpaks/flatpak_applications.txt
+        device_path = server.devices_path()
         flatpak_txt_file = os.path.join(
-            server.devices_path(), 
-            'flatpaks', 
+            device_path,
+            'flatpaks',
             'flatpak_applications.txt'
         )
         
         app.logger.info(f"Looking for flatpak file at: {flatpak_txt_file}")
         
         if not os.path.exists(flatpak_txt_file):
-            # Try alternative location in backups dir
-            alt_path = os.path.join(
-                server.app_backup_dir(),
-                'flatpaks',
-                'flatpak_applications.txt'
-            )
-            app.logger.info(f"Primary path not found, trying: {alt_path}")
-            
-            if os.path.exists(alt_path):
-                flatpak_txt_file = alt_path
-            else:
-                app.logger.warning(f"Flatpak file not found at either location")
-                return {
-                    'success': True,
-                    'applications': [],
-                    'count': 0,
-                    'message': f'No flatpak backup found'
-                }
+            app.logger.warning(f"Flatpak file not found at: {flatpak_txt_file}")
+            return {
+                'success': True,
+                'applications': [],
+                'count': 0,
+                'message': f'No flatpak backup found',
+                'raw': ''
+            }
         
         app.logger.info(f"Reading flatpak file from: {flatpak_txt_file}")
         with open(flatpak_txt_file, 'r') as f:
             app_identifiers = [line.strip() for line in f if line.strip()]
         
         app.logger.info(f"Found {len(app_identifiers)} flatpak applications")
+        
+        # read raw file contents so UI can display debug info
+        try:
+            with open(flatpak_txt_file, 'r') as rf:
+                raw_contents = rf.read()
+        except Exception:
+            raw_contents = ''
         
         # Map flatpak data to UI format
         ui_apps = []
@@ -1366,11 +1614,14 @@ def get_installed_applications():
                 'color': color_map.get(identifier, 'bg-blue-500')
             })
         
-        return {
+        response_data = {
             'success': True,
             'applications': ui_apps,
-            'count': len(ui_apps)
+            'count': len(ui_apps),
+            'raw': raw_contents
         }
+        app.logger.info(f"Returning {len(ui_apps)} applications in response")
+        return response_data
     except Exception as e:
         app.logger.error(f"Error getting installed applications: {e}")
         return {'success': False, 'error': str(e), 'applications': []}
@@ -2130,7 +2381,7 @@ def download_backup_file():
 @app.route('/api/backup/restore', methods=['POST'])
 @json_api
 def restore_file():
-    """Restore a file from a specific snapshot."""
+    """Restore a file from a specific snapshot. If it's a folder, use folder restoration logic."""
     data = request.get_json()
     file_path = data.get('file_path', '').strip()
     snapshot_id = data.get('snapshot_id', '').strip()
@@ -2145,6 +2396,7 @@ def restore_file():
     if not backups_root:
         return {'success': False, 'error': 'No backup device configured'}
     
+    # Parse snapshot ID
     if snapshot_id == server.MAIN_BACKUP_LOCATION:
         date_str = server.MAIN_BACKUP_LOCATION
         time_str = ''
@@ -2163,6 +2415,45 @@ def restore_file():
     if not os.path.exists(source_file):
         return {'success': False, 'error': f'Snapshot file not found: {source_file}'}
     
+    # Check if the source is a folder - if so, use folder restoration logic
+    if os.path.isdir(source_file):
+        # Convert snapshot_id format from "DD-MM-YYYY/HH-MM" to "DD-MM-YYYY|HH-MM"
+        if snapshot_id == server.MAIN_BACKUP_LOCATION:
+            folder_snapshot_id = 'main'
+        else:
+            folder_snapshot_id = snapshot_id.replace('/', '|')
+        
+        # Extract date and time from folder_snapshot_id
+        if folder_snapshot_id == 'main':
+            target_date = None
+            target_time = None
+        else:
+            try:
+                target_date, target_time = folder_snapshot_id.split('|')
+            except ValueError:
+                return {'success': False, 'error': 'Invalid folder restoration parameters'}
+        
+        # Create Background Job for folder restoration
+        job_id = str(uuid.uuid4())
+        JOBS[job_id] = {
+            'id': job_id,
+            'type': 'restore_folder',
+            'status': 'pending',
+            'percentage': 0,
+            'abort': False
+        }
+        
+        # Start folder restoration thread
+        thread = threading.Thread(
+            target=background_restore_folder_task, 
+            args=(job_id, file_path, target_date, target_time)
+        )
+        thread.daemon = True
+        thread.start()
+        
+        return {'success': True, 'job_id': job_id, 'message': 'Folder restore started'}
+    
+    # For regular files, proceed with file restoration
     if restore_to == 'original':
         home_path = os.path.expanduser('~')
         dest_file = os.path.join(home_path, file_path.lstrip('/'))

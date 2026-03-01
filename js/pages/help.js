@@ -76,17 +76,17 @@ export default class HelpPage {
     }
 
     openSection(section) {
-        console.log(`Opening: ${section}`);
-        
-        const sectionTitles = {
-            documentation: 'Documentation',
-            forum: 'Community Forum',
-            contact: 'Contact Support',
-            videos: 'Video Tutorials'
+        // Real URLs for documentation and forum
+        const urls = {
+            documentation: 'https://github.com/GeovaneJefferson/timemachine#readme',
+            forum: 'https://github.com/GeovaneJefferson/timemachine/issues'
         };
-        
-        const title = sectionTitles[section] || section;
-        alert(`This would open the ${title} section in a real application.`);
+        const url = urls[section];
+        if (url) {
+            window.open(url, '_blank');
+        } else {
+            console.warn('No URL defined for section', section);
+        }
     }
 
     destroy() {
