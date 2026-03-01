@@ -13,7 +13,8 @@ class Router {
             '/system-restore': 'system-restore',
             '/settings': 'settings',
             '/help': 'help',
-            '/about': 'about'
+            '/about': 'about',
+            '/update': 'update'
         };
         
         this.currentPage = null;

@@ -212,25 +212,36 @@ export default class AboutPage {
     }
 
     async checkForUpdates() {
-        // use the backend update checker so we have consistent logic
-        try {
-            const response = await fetch('/api/check-for-updates');
-            const info = await response.json();
-            if (info.success) {
-                if (info.update_available) {
-                    this.showNotification(`A new version (${info.latest_version}) is available. The application will close for the update.`, 'info');
-                    setTimeout(() => {
-                        electronAPI.close();
-                    }, 3000);
-                } else {
-                    this.showNotification('You are using the latest version.', 'success');
-                }
-            } else {
-                this.showNotification(`Update check failed: ${info.error}`, 'error');
+        // Instead of handling everything here, just send the user to the update
+        // page which will reload the information and allow them to trigger an
+        // update explicitly.
+        if (window.apiAdapter && window.apiAdapter.isRunningInElectron && window.apiAdapter.isRunningInElectron()) {
+            if (window.apiAdapter.openUpdateWindow) {
+                window.apiAdapter.openUpdateWindow();
+                return;
             }
-        } catch (error) {
-            this.showNotification('Failed to check for updates.', 'error');
-            console.error('Error checking for updates:', error);
+        }
+
+        if (typeof window.loadPage === 'function') {
+            window.loadPage('update');
+        } else {
+            // fallback to existing behaviour if router isn't available
+            try {
+                const response = await fetch('/api/check-for-updates');
+                const info = await response.json();
+                if (info.success) {
+                    if (info.update_available) {
+                        this.showNotification(`A new version (${info.latest_version}) is available.`, 'info');
+                    } else {
+                        this.showNotification('You are using the latest version.', 'success');
+                    }
+                } else {
+                    this.showNotification(`Update check failed: ${info.error}`, 'error');
+                }
+            } catch (error) {
+                this.showNotification('Failed to check for updates.', 'error');
+                console.error('Error checking for updates:', error);
+            }
         }
     }
 

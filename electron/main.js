@@ -181,9 +181,46 @@ function setupIPC() {
     }
   });
 
+  // open a dedicated update information window
+  ipcMain.handle('open-update-window', () => {
+    // recompute preload location, mimicking createWindow logic
+    let updatePreload = path.join(__dirname, 'preload.js');
+    if (!fs.existsSync(updatePreload)) {
+      const alt = path.join(process.resourcesPath || '', 'electron', 'preload.js');
+      if (fs.existsSync(alt)) {
+        updatePreload = alt;
+      }
+    }
+
+    const updateWin = new BrowserWindow({
+      width: 600,
+      height: 700,
+      title: 'Application Update',
+      webPreferences: {
+        preload: updatePreload,
+        nodeIntegration: false,
+        contextIsolation: true,
+        sandbox: true
+      }
+    });
+
+    // point it at the same server but with the /update path
+    updateWin.loadURL(`${API_BASE_URL}/update`);
+    updateWin.on('closed', () => {
+      // nothing special for now
+    });
+
+    return true;
+  });
+
   ipcMain.handle('show-notification', (event, title, body) => {
     const notification = new Notification({ title, body });
     notification.show();
+  });
+
+  // Quit application (close all windows)
+  ipcMain.handle('app-quit', () => {
+    app.quit();
   });
 
   // Platform info handler

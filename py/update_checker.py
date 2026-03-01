@@ -4,6 +4,8 @@ import os
 
 # The API URL for the latest commit on your dev branch
 GITHUB_API_URL = "https://api.github.com/repos/GeovaneJefferson/timemachine/commits/dev"
+# URL for release metadata (used when showing notes to user)
+GITHUB_RELEASE_URL = "https://api.github.com/repos/GeovaneJefferson/timemachine/releases/latest"
 
 def get_local_commit():
     """Gets the ID of the code currently on your machine."""
@@ -33,16 +35,41 @@ def get_update_info():
         # Compare IDs
         update_available = (latest_sha != current_sha)
 
-        return {
+        result = {
             'success': True,
             'update_available': update_available,
             'current_version': current_sha[:7] if current_sha else "Unknown",
             'latest_version': latest_sha[:7],
             # We keep these keys so about.js doesn't break
-            'release_url': "https://github.com/GeovaneJefferson/timemachine" 
+            'release_url': "https://github.com/GeovaneJefferson/timemachine"
         }
+
+        # if there's an update available, try to fetch release notes
+        if update_available:
+            try:
+                rel_resp = requests.get(GITHUB_RELEASE_URL, timeout=10)
+                rel_resp.raise_for_status()
+                result['release_notes'] = rel_resp.json().get('body', '')
+            except Exception:
+                result['release_notes'] = ''
+
+        return result
     except Exception as e:
         return {'success': False, 'error': str(e)}
 
 if __name__ == "__main__":
     print(get_update_info())
+def perform_update():
+    """Pull the latest code from the dev branch and return the output.
+    This is intentionally simple; more sophisticated installers would be
+    required for packaged apps.
+    """
+    repo_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    try:
+        output = subprocess.check_output(['git', 'pull', 'origin', 'dev'], cwd=repo_path,
+                                         stderr=subprocess.STDOUT)
+        return {'success': True, 'output': output.decode('utf-8', errors='ignore')}
+    except subprocess.CalledProcessError as e:
+        return {'success': False, 'error': e.output.decode('utf-8', errors='ignore')}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}

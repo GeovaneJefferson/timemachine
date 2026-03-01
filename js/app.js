@@ -354,6 +354,19 @@ async function loadPage(pageName, params = {}) {
             window.currentPageInstance = page;
             appState.registerPage(pageName, page);
             
+        } else if (pageName === 'update') {
+            // Import update module
+            const UpdateModule = await import('./pages/update.js');
+            const UpdatePage = UpdateModule.default;
+            const page = new UpdatePage();
+
+            pageContent.innerHTML = await page.render();
+            if (page.afterRender) {
+                page.afterRender();
+            }
+
+            window.currentPageInstance = page;
+            appState.registerPage(pageName, page);
         } else if (pageName === 'help') {
             // Import help module
             const HelpModule = await import('./pages/help.js');

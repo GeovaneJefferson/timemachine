@@ -105,6 +105,24 @@ export class ElectronAPIAdapter {
   }
 
   /**
+   * Open a dedicated update window (Electron only).
+   */
+  openUpdateWindow() {
+    if (this.isElectron && window.electronAPI.openUpdateWindow) {
+      return window.electronAPI.openUpdateWindow();
+    }
+  }
+
+  /**
+   * Quit the entire application.
+   */
+  quit() {
+    if (this.isElectron && window.electronAPI.quit) {
+      return window.electronAPI.quit();
+    }
+  }
+
+  /**
    * Get platform information
    */
   async getPlatformInfo() {

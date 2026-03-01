@@ -715,15 +715,23 @@ def serve_assets(filename):
 
 
 # =============================================================================
-# MAIN PAGE ROUTES
+# MAIN PAGE ROUTES (SPA fallback)
 # =============================================================================
 
-@app.route('/')
-def index():
-    """Main dashboard page."""
+# The frontend is a single-page app that uses HTML5 history; when the user
+# navigates to a deep link (/settings, /update, etc) the browser will request
+# that path from the server.  To keep things simple we render the same
+# `index.html` for any non-API route and let the client-side router take over.
+#
+# We still expose explicit static routes (/css/, /js/, /assets/) earlier so
+# those assets will be served normally.
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    """Render the SPA shell, ignoring the requested path."""
     devices = get_available_devices()
     username = os.path.basename(os.path.expanduser("~"))
-    
     return render_template(
         'index.html',
         devices=devices,
@@ -773,12 +781,30 @@ def get_system_memory():
     }
 
 
+
 @app.route('/api/check-for-updates')
 def check_for_updates_route():
     from py.update_checker import get_update_info
     # This runs your git-based update script
     result = get_update_info()
     return jsonify(result)
+
+
+@app.route('/api/update/perform', methods=['POST'])
+@json_api
+def perform_update_route():
+    """Trigger the backend to fetch and apply the latest code.
+    The frontend should only call this when we already know an update is
+    available; the routine will do a git pull and return the output.
+    """
+    try:
+        from py.update_checker import perform_update
+        update_result = perform_update()
+        # the helper already returns a dict with success/key
+        return update_result
+    except Exception as e:
+        app.logger.error(f"Error performing update: {e}")
+        return {'success': False, 'error': str(e)}
 
 
 # =============================================================================

@@ -16,10 +16,24 @@ export async function checkUpdates(showUpToDateMessage = false) {
 
                 if (updateInfo.release_url) {
                     const toastElement = document.querySelector('.global-notification');
-                    if(toastElement) {
+                    if (toastElement) {
                         toastElement.style.cursor = 'pointer';
                         toastElement.addEventListener('click', () => {
-                            window.open(updateInfo.release_url, '_blank');
+                            // if we're running in Electron prefer a separate window
+                            if (window.apiAdapter && window.apiAdapter.isRunningInElectron && window.apiAdapter.isRunningInElectron()) {
+                                if (window.apiAdapter.openUpdateWindow) {
+                                    window.apiAdapter.openUpdateWindow();
+                                    return;
+                                }
+                            }
+
+                            // otherwise navigate within SPA if possible
+                            if (typeof window.loadPage === 'function') {
+                                window.loadPage('update');
+                            } else {
+                                // fallback to opening the release URL
+                                window.open(updateInfo.release_url, '_blank');
+                            }
                         });
                     }
                 }

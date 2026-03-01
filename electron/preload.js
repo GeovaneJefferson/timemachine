@@ -62,6 +62,16 @@ const api = {
   // Show notification
   showNotification(title, body) {
     return ipcRenderer.invoke('show-notification', title, body);
+  },
+
+  // Open a dedicated update window
+  openUpdateWindow() {
+    return ipcRenderer.invoke('open-update-window');
+  },
+
+  // Quit entire application
+  quit() {
+    return ipcRenderer.invoke('app-quit');
   }
 };
 

@@ -19,6 +19,7 @@ export default class Sidebar {
         this.settings = [
             { id: 'system-restore', name: 'System Restore', icon: 'restore', active: false },
             { id: 'settings', name: 'Settings', icon: 'settings', active: false },
+            { id: 'update', name: 'Updates', icon: 'system_update', active: false },
             { id: 'help', name: 'Help & Support', icon: 'help', active: false },
             { id: 'about', name: 'About', icon: 'info', active: false }
         ];
