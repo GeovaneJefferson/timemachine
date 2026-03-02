@@ -2266,7 +2266,8 @@ def get_file_content():
     text_extensions = [
         '.txt', '.py', '.js', '.html', '.css', '.json', '.xml', '.md', '.csv',
         '.log', '.yml', '.yaml', '.ini', '.cfg', '.java', '.cpp', '.c', '.h',
-        '.php', '.rb', '.go', '.rs', '.sh', '.bash', '.zsh', '.conf', '.properties'
+        '.php', '.rb', '.go', '.rs', '.sh', '.bash', '.zsh', '.conf', '.properties',
+        '.gd'  # Godot script files (plain text)
     ]
     
     file_ext = os.path.splitext(full_path)[1].lower()

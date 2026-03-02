@@ -204,7 +204,7 @@ export default class FoldersPage {
                             </div>
                             <!-- Action buttons for selected file -->
                             <div id="preview-actions" class="p-4 border-t border-gray-200 dark:border-gray-700 hidden">
-                                <div class="grid grid-cols-2 gap-2">
+                                <div class="grid grid-cols-3 gap-2">
                                     <button class="preview-action-btn" data-action="open" data-file="" data-type="">
                                         <span class="material-icons-round text-sm mr-2">visibility</span>
                                         Open
@@ -217,10 +217,7 @@ export default class FoldersPage {
                                         <span class="material-icons-round text-sm mr-2">restore</span>
                                         Restore
                                     </button>
-                                    <button class="preview-action-btn" data-action="download" data-file="" data-type="">
-                                        <span class="material-icons-round text-sm mr-2">download</span>
-                                        Download
-                                    </button>
+                                    <!-- download button removed per user request - rarely used -->
                                 </div>
                             </div>
                         </div>
@@ -232,7 +229,7 @@ export default class FoldersPage {
                     <span id="file-summary">${this.isBackupDeviceConfigured ? 'Loading...' : 'No backup device configured'}</span>
                     <div class="flex gap-4">
                         <span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer ${this.selectedFiles.size === 0 || !this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" id="restore-all">Restore Selected</span>
-                        <span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer ${this.selectedFiles.size === 0 || !this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" id="download-selected">Download Selected</span>
+                        <!-- download-selected removed since bulk download unlikely -->
                     </div>
                 </div>
             </div> <!-- Closing flex container -->
@@ -922,7 +919,6 @@ export default class FoldersPage {
             
             const manageExclusions = document.getElementById('manage-exclusions');
             const restoreAll = document.getElementById('restore-all');
-            const downloadSelected = document.getElementById('download-selected');
             
             if (manageExclusions) manageExclusions.addEventListener('click', () => this.manageExclusions());
             
@@ -935,16 +931,8 @@ export default class FoldersPage {
                     this.restoreSelected();
                 });
             }
-            
-            if (downloadSelected) {
-                downloadSelected.addEventListener('click', () => {
-                    if (!this.isBackupDeviceConfigured) {
-                        showInfo('Please configure a backup device first', 'warning');
-                        return;
-                    }
-                    this.downloadSelected();
-                });
-            }
+            // download-selected UI removed, so no listener needed
+
 
             // Initial bind of sort listeners
             this.attachDynamicListeners();
@@ -1014,14 +1002,12 @@ export default class FoldersPage {
         }
         
         const restoreBtn = document.getElementById('restore-all');
-        const downloadBtn = document.getElementById('download-selected');
+        // download button removed - no need to update its state
         
-        if (restoreBtn && downloadBtn) {
+        if (restoreBtn) {
             const isDisabled = this.selectedFiles.size === 0 || !this.isBackupDeviceConfigured;
             restoreBtn.classList.toggle('opacity-50', isDisabled);
             restoreBtn.classList.toggle('cursor-not-allowed', isDisabled);
-            downloadBtn.classList.toggle('opacity-50', isDisabled);
-            downloadBtn.classList.toggle('cursor-not-allowed', isDisabled);
         }
         
         const filterDropdown = document.getElementById('filter-dropdown');
@@ -2565,9 +2551,7 @@ export default class FoldersPage {
                 this.versionsWindow.open(filePath, fileType, fileName);
                 break;
                 
-            case 'download':
-                this.downloadFile(filePath, fileName);
-                break;
+            // download actions removed from UI; keep handler for possible future use
         }
     }
     

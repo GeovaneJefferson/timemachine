@@ -27,13 +27,13 @@ export default class LocationsPage {
         this.currentBackupDevice = null;
         this.isDeviceActive = false;
         
-        // Fake storage breakdown data (for now)
+        // Fake storage breakdown data (sizes filled later based on real usage)
         this.storageBreakdown = [
-            { category: 'System', size: '900 GB', percentage: 45, color: 'bg-primary' },
-            { category: 'Documents', size: '400 GB', percentage: 20, color: 'bg-purple-500' },
-            { category: 'Media', size: '200 GB', percentage: 10, color: 'bg-yellow-500' },
-            { category: 'Applications', size: '150 GB', percentage: 7.5, color: 'bg-indigo-500' },
-            { category: 'Other', size: '350 GB', percentage: 17.5, color: 'bg-gray-400' }
+            { category: 'System', percentage: 45, color: 'bg-primary' },
+            { category: 'Documents', percentage: 20, color: 'bg-purple-500' },
+            { category: 'Media', percentage: 10, color: 'bg-yellow-500' },
+            { category: 'Applications', percentage: 7.5, color: 'bg-indigo-500' },
+            { category: 'Other', percentage: 17.5, color: 'bg-gray-400' }
         ];
     }
 
@@ -247,24 +247,59 @@ export default class LocationsPage {
         return 'bg-blue-500';
     }
 
-    // Generate fake storage breakdown based on real usage
-    getStorageBreakdown(realPercentUsed) {
-        // If we have real device data, use it to adjust the fake breakdown
-        if (realPercentUsed > 0) {
-            // Scale the fake percentages to match the real total used percentage
-            const totalFakePercentage = this.storageBreakdown.reduce((sum, item) => sum + item.percentage, 0);
-            const scaleFactor = realPercentUsed / totalFakePercentage;
-            
-            return this.storageBreakdown.map(item => ({
-                ...item,
-                percentage: Math.round(item.percentage * scaleFactor),
-                // Use real colors but keep the categories
-                color: item.color
-            }));
-        }
+    // Convert a human-readable size string (eg. "12.3 GB") into bytes
+    parseSize(str) {
+        if (!str || typeof str !== 'string') return 0;
+        const m = str.match(/([\d\.]+)\s*([KMGT]?B)/i);
+        if (!m) return 0;
+        const value = parseFloat(m[1]);
+        const unit = m[2].toUpperCase();
+        const units = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3, TB: 1024 ** 4 };
+        return value * (units[unit] || 1);
+    }
+
+    // Generate fake storage breakdown based on real usage and used bytes
+    getStorageBreakdown(realPercentUsed, usedHuman) {
+        // default base items (sum to 100%)
+        const base = [
+            { category: 'System', percentage: 45, color: 'bg-primary' },
+            { category: 'Documents', percentage: 20, color: 'bg-purple-500' },
+            { category: 'Media', percentage: 10, color: 'bg-yellow-500' },
+            { category: 'Applications', percentage: 7.5, color: 'bg-indigo-500' },
+            { category: 'Other', percentage: 17.5, color: 'bg-gray-400' }
+        ];
         
-        // Return default fake breakdown
-        return this.storageBreakdown;
+        if (realPercentUsed > 0) {
+            const scaleFactor = realPercentUsed / 100;
+            const usedBytes = this.parseSize(usedHuman);
+            // apply rounding but keep track of total so we can adjust last element
+            let acc = 0;
+            const result = base.map((item, idx) => {
+                let pct = Math.round(item.percentage * scaleFactor);
+                if (idx === base.length - 1) {
+                    // adjust for rounding error
+                    const target = Math.round(realPercentUsed);
+                    pct = target - acc;
+                }
+                acc += pct;
+
+                let sizeStr = '';
+                if (usedBytes && pct > 0) {
+                    const bytes = Math.round((usedBytes * pct) / 100);
+                    sizeStr = this.formatSize(bytes);
+                }
+                return {
+                    category: item.category,
+                    percentage: pct,
+                    color: item.color,
+                    size: sizeStr
+                };
+            });
+            return result;
+        }
+
+        // no real data; return base with static size labels if present
+        return base.map(item => ({ ...item, size: item.size || '' }));
     }
 
     async render() {
@@ -329,8 +364,8 @@ export default class LocationsPage {
                                statusColor === 'red' ? 'text-red-700 dark:text-red-300' :
                                'text-gray-700 dark:text-gray-300';
 
-        // Get storage breakdown (fake categories for now)
-        const storageBreakdown = this.getStorageBreakdown(percentUsed);
+        // Get storage breakdown (fake categories for now). Pass usedStorage so sizes can be computed.
+        const storageBreakdown = this.getStorageBreakdown(percentUsed, usedStorage);
         const totalBreakdownPercent = storageBreakdown.reduce((sum, item) => sum + item.percentage, 0);
         
         // Calculate free space percentage
