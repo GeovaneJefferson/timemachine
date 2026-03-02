@@ -72,6 +72,16 @@ export default class Header {
 
         window.appHeader = this;
 
+        // listen for external status changes (e.g. settings page toggles)
+        document.addEventListener('daemon-status-changed', (evt) => {
+            const running = evt.detail && evt.detail.running;
+            if (typeof running === 'boolean') {
+                this.daemonRunning = running;
+                this.updateDaemonButton();
+                this.updateMonitoringStatus();
+            }
+        });
+
         // Initial status check
         this.checkDaemonStatus();
     }

@@ -53,18 +53,6 @@ export default class SettingsPage {
                                     </label>
                                 </div>
                                 
-                                <!-- Launch at Startup -->
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="font-medium text-gray-900 dark:text-white">Launch at Startup</p>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Automatically start the application when you log in.</p>
-                                    </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer" ${this.preferences.autostart_enabled ? 'checked' : ''} id="launch-startup-toggle">
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                    </label>
-                                </div>
-                                
                                 <!-- Cloud Sync -->
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -147,23 +135,16 @@ export default class SettingsPage {
     }
 
     async saveSettings() {
-// backend expects "autostart_enabled" rather than the js-friendly name
+// backend expects the following keys; autostart is handled in tandem with
+        // automatic_backups and no longer has its own toggle.
             const settings = {
             automatic_backups: document.getElementById('auto-backup-toggle')?.checked || false,
-            autostart_enabled: document.getElementById('launch-startup-toggle')?.checked || false,
             cloud_sync: document.getElementById('cloud-sync-toggle')?.checked || false,
         };
         
         try {
             // Use the new endpoint
             const result = await electronAPI.post('/api/settings/preferences', settings);
-            
-            if (result.success) {
-                this.showNotification('Settings saved successfully!', 'success');
-                setTimeout(() => window.history.back(), 1500);
-            } else {
-                this.showNotification(`Failed to save settings: ${result.error}`, 'error');
-            }
         } catch (error) {
             this.showNotification(`Error saving settings: ${error.message}`, 'error');
         }

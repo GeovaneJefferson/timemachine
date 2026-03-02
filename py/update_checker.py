@@ -8,10 +8,16 @@ GITHUB_API_URL = "https://api.github.com/repos/GeovaneJefferson/timemachine/comm
 GITHUB_RELEASE_URL = "https://api.github.com/repos/GeovaneJefferson/timemachine/releases/latest"
 
 def get_local_commit():
-    """Gets the ID of the code currently on your machine."""
+    """Gets the ID of the code currently on your machine.
+
+    Returns None if the folder is not a git repository or the command fails.
+    """
     try:
         # Get the folder where this script lives to run git in the right spot
         repo_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if not os.path.isdir(os.path.join(repo_path, '.git')):
+            # not a git repo
+            return None
         return subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'], 
             cwd=repo_path, 
@@ -31,6 +37,10 @@ def get_update_info():
 
         if not latest_sha:
             return {'success': False, 'error': 'Could not find latest commit on GitHub'}
+
+        # if we don't have a local commit we probably aren't in a git repo
+        if current_sha is None:
+            return {'success': False, 'error': 'Local installation is not a git repository; automatic updates are unavailable'}
 
         # Compare IDs
         update_available = (latest_sha != current_sha)
@@ -65,6 +75,9 @@ def perform_update():
     required for packaged apps.
     """
     repo_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # verify git repository
+    if not os.path.isdir(os.path.join(repo_path, '.git')):
+        return {'success': False, 'error': 'Not a git repository; cannot perform update'}
     try:
         output = subprocess.check_output(['git', 'pull', 'origin', 'dev'], cwd=repo_path,
                                          stderr=subprocess.STDOUT)

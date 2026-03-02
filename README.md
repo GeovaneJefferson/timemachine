@@ -42,6 +42,33 @@ After running the installation script, you can launch the application in two way
 1.  Open your terminal and run `timemachine`.
 2.  Find "TimeMachine" in your computer's application menu.
 
+### Launch at Login / Boot
+
+The daemon needs to be running for backups to occur.  Starting with the
+recent update the application automatically manages its own startup entry
+whenever you toggle **Automatic Backups** in the settings – there is no longer
+any separate "launch at startup" switch.
+
+*Enabling* automatic backups does three things immediately:
+
+1. starts the daemon process (if it isn’t already running),
+2. writes a `.desktop` file to `~/.config/autostart`, and
+3. creates a `systemd --user` unit for systems that use it.
+
+Disabling the feature stops the daemon and removes those startup entries.
+The UI will display a notification when the settings are saved and will
+attempt to start/stop the service on your behalf, so you should never see a
+situation where backups are “on” but the daemon isn’t running.
+
+> ⚠️ If the daemon still doesn’t start after toggling backups, inspect the
+> contents of `~/.config/autostart/timemachine.desktop` and confirm the `Exec`
+> line points to an existing Python executable and `py/main.py`.  Likewise, if
+> you prefer systemd management you can manually enable the unit with
+> `systemctl --user enable --now timemachine.service`.
+
+On headless boots (no graphical session) only the systemd unit is relevant; the
+autostart entry is ignored.
+
 ### Running for Development
 
 If you want to run the application in a development environment:

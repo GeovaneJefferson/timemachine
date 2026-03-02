@@ -2,11 +2,25 @@
 
 """
 Main entry point for the backup daemon.
+
+This script may be executed from various working directories (the project
+root when launched by the web server or the ``py`` directory during
+development).  At import time many modules assume the workspace root is on
+``sys.path`` (e.g. ``from py.server import SERVER``), so we add the parent of
+``py`` to the path unconditionally.  This makes ``python py/main.py`` work
+without having to modify the shell environment.
 """
+import os
 import sys
 import logging
 import signal
 import atexit
+
+# make sure the repository root is on sys.path so package imports resolve
+# correctly regardless of cwd
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root not in sys.path:
+    sys.path.insert(0, root)
 
 try:
     import setproctitle

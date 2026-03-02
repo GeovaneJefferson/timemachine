@@ -359,14 +359,24 @@ class SERVER:
         return self.start_daemon_simple()
 
     def start_daemon_simple(self):
-        """Start daemon using subprocess (Simple Method)."""
+        """Start daemon using subprocess (Simple Method).
+
+        The original implementation changed into the ``py`` directory before
+        launching.  Imports inside ``main.py`` expect the repository root on
+        ``sys.path`` (they do ``from py.server import SERVER``), so running with
+        the working directory set to ``py`` resulted in immediate import errors
+        and a process that exited instantly.  We now switch to the *parent* of
+        ``py`` (the workspace root) and also record the PID to the expected
+        PID file so ``is_daemon_running`` can detect the service.
+        """
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
+            script_dir = os.path.dirname(os.path.abspath(__file__))  # .../py
             daemon_path = os.path.join(script_dir, "main.py")
-            
+            workspace_root = os.path.dirname(script_dir)  # one level up
+
             original_dir = os.getcwd()
-            os.chdir(os.path.dirname(daemon_path))
-            
+            os.chdir(workspace_root)
+
             process = sub.Popen(
                 [sys.executable, daemon_path],
                 start_new_session=True,
@@ -374,12 +384,20 @@ class SERVER:
                 stderr=sub.DEVNULL,
                 stdin=sub.DEVNULL,
                 close_fds=True,
+                cwd=workspace_root,
             )
-            
-            os.chdir(original_dir)
+
             pid = process.pid
+            # persist the PID so status checks work
+            try:
+                with open(self.DAEMON_PID_LOCATION, 'w') as f:
+                    f.write(str(pid))
+            except Exception:
+                pass
+
+            os.chdir(original_dir)
             del process
-            
+
             return {
                 "success": True,
                 "message": "Daemon started!",
@@ -399,7 +417,8 @@ class SERVER:
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
             daemon_path = os.path.join(script_dir, "main.py")
-            
+            workspace_root = os.path.dirname(script_dir)
+
             # First fork
             pid = os.fork()
             if pid > 0:
@@ -410,14 +429,34 @@ class SERVER:
                     "message": "Daemon started (double-fork)",
                     "pid": None  # Don't track PID (fully detached)
                 }
-            
+
             # First child - become session leader
             os.setsid()
-            
+
             # Second fork - prevent acquiring controlling terminal
             pid = os.fork()
             if pid > 0:
                 sys.exit(0)
+
+            # We're now in the grandchild (the actual daemon process)
+            # change to workspace root so imports resolve correctly
+            os.chdir(workspace_root)
+
+            # write our PID so the parent process (and the UI) can later
+            # detect that we're running
+            try:
+                with open(self.DAEMON_PID_LOCATION, 'w') as f:
+                    f.write(str(os.getpid()))
+            except Exception:
+                pass
+
+            # execute the script; execv replaces this process
+            os.execv(sys.executable, [sys.executable, daemon_path])
+        except Exception as e:
+            return {
+                "success": False,
+                "message": f"Double-fork failed: {str(e)}"
+            }
             
             # Second child - the actual daemon
             os.chdir(os.path.dirname(daemon_path))
@@ -449,11 +488,15 @@ class SERVER:
             }
     
     def get_daemon_status(self):
-        """Combines running status and autostart setting for the UI."""
-        # Note: 'self.config' is not defined in __init__, assuming self.CONF intended or configparser usage
+        """Return daemon running state for the UI.
+
+        Historically this also included an ``autostart_enabled`` flag, but the
+        front-end no longer needs that value since the autostart entry is synced
+        with the automatic backups preference.  Keeping it would just confuse
+        the UI code during the transition.
+        """
         return {
-            'running': self.is_daemon_running(),
-            'autostart_enabled': self.get_database_value('AUTOSTART', 'autostart_daemon') == True
+            'running': self.is_daemon_running()
         }
 
     # =============================================================================

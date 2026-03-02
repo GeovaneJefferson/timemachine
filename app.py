@@ -4,6 +4,7 @@ A Flask-based web interface for managing backup operations.
 """
 
 import os
+import sys
 import json
 import time
 import uuid
@@ -2727,14 +2728,21 @@ def get_autostart_path():
     return os.path.join(autostart_dir, 'timemachine.desktop')
 
 def create_autostart_desktop():
-    """Create autostart .desktop file with hardcoded absolute paths."""
+    """Create autostart .desktop file for the daemon/UI.
+
+    The paths are derived dynamically so that the entry still works if the
+    user installs the application to a custom location or is running inside a
+    virtual environment.  ``sys.executable`` is used for the interpreter and
+    ``__file__`` to locate ``py/main.py`` relative to the running module.
+    """
     try:
         home_dir = os.path.expanduser('~')
         autostart_dir = os.path.join(home_dir, '.config', 'autostart')
         os.makedirs(autostart_dir, exist_ok=True)
 
-        python_path = '/usr/bin/python3'
-        main_py_path = os.path.join(home_dir, '.local', 'share', 'timemachine', 'py', 'main.py')
+        python_path = sys.executable or shutil.which('python3') or '/usr/bin/python3'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        main_py_path = os.path.join(base_dir, 'py', 'main.py')
 
         desktop_content = f"""[Desktop Entry]
 Type=Application
@@ -2762,6 +2770,63 @@ StartupNotify=false
         return False
 
 
+def create_systemd_user_service():
+    """Write a basic systemd user unit pointing at the daemon.
+
+    This is offered as an alternative to the desktop autostart entry.
+    After the file is created the user can enable it with:
+
+        systemctl --user enable --now timemachine.service
+    """
+    try:
+        home_dir = os.path.expanduser('~')
+        service_dir = os.path.join(home_dir, '.config', 'systemd', 'user')
+        os.makedirs(service_dir, exist_ok=True)
+
+        python_path = sys.executable or shutil.which('python3') or '/usr/bin/python3'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        main_py_path = os.path.join(base_dir, 'py', 'main.py')
+
+        service_file = os.path.join(service_dir, 'timemachine.service')
+        service_content = f"""[Unit]
+Description=TimeMachine backup daemon
+After=network.target
+
+[Service]
+ExecStart={python_path} {main_py_path}
+Restart=on-failure
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=default.target
+"""
+        with open(service_file, 'w') as f:
+            f.write(service_content)
+        app.logger.info(f"Created systemd user service: {service_file}")
+        return True
+    except Exception as e:
+        app.logger.error(f"Error creating systemd service: {e}")
+        return False
+
+
+def remove_systemd_user_service():
+    """Delete the user.service file if present."""
+    try:
+        service_file = os.path.join(
+            os.path.expanduser('~'),
+            '.config',
+            'systemd',
+            'user',
+            'timemachine.service'
+        )
+        if os.path.exists(service_file):
+            os.remove(service_file)
+        return True
+    except Exception as e:
+        app.logger.error(f"Error removing systemd service: {e}")
+        return False
+
+
 def remove_autostart_desktop():
     """Remove autostart .desktop file."""
     try:
@@ -2777,21 +2842,23 @@ def remove_autostart_desktop():
 @app.route('/api/settings/preferences', methods=['GET'])
 @json_api
 def get_preferences():
-    """Get user preferences."""
+    """Get user preferences.
+
+    The front-end used to expose a separate "launch at startup" toggle, but
+    that option has been removed.  Now automatic backups automatically
+    enables/disables the autostart entry (and systemd unit) on the user's
+    behalf, so we no longer need to report the autostart state here.
+    """
     try:
         config = load_config()
         
         # Get automatic backup setting
         auto_backup = config.get('BACKUP', 'automatic_backups', fallback='false').lower() == 'true'
         
-        # Check if autostart is enabled
-        autostart_enabled = os.path.exists(get_autostart_path())
-        
         return {
             'success': True,
             'preferences': {
                 'automatic_backups': auto_backup,
-                'autostart_enabled': autostart_enabled,
                 'cloud_sync': config.get('BACKUP', 'cloud_sync', fallback='false').lower() == 'true',
                 'encryption': config.get('BACKUP', 'encryption', fallback='false').lower() == 'true'
             }
@@ -2814,27 +2881,35 @@ def save_preferences():
             config['BACKUP'] = {}
         
         # Save automatic backups setting
+        daemon_result = None
         if 'automatic_backups' in data:
             is_enabled = data['automatic_backups']
             config['BACKUP']['automatic_backups'] = 'true' if is_enabled else 'false'
-            
-            # When automatic backups is enabled, automatically enable autostart
-            # When automatic backups is disabled, automatically disable autostart
+
+            # keep autostart in sync with automatic backups; we no longer expose a
+            # manual toggle so this is the only place that can change the entry
             if is_enabled:
                 create_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'true'
+                create_systemd_user_service()
+                # starting the daemon right away avoids user confusion where
+                # backups are enabled but the service is down
+                try:
+                    if not server.is_daemon_running():
+                        daemon_result = server.start_daemon()
+                        app.logger.info(f"start_daemon invoked from prefs: {daemon_result}")
+                except Exception as e:
+                    app.logger.error(f"Exception while starting daemon in prefs: {e}")
+                    # best effort, preferences still saved even if daemon fails
+                    daemon_result = {'success': False, 'message': str(e)}
             else:
                 remove_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'false'
-
-        # Allow manual control over launch-at-startup separate from automatic backups
-        if 'autostart_enabled' in data:
-            if data['autostart_enabled']:
-                create_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'true'
-            else:
-                remove_autostart_desktop()
-                config['BACKUP']['autostart_enabled'] = 'false'
+                remove_systemd_user_service()
+                # if user turned off automatic backups, stop any running daemon
+                try:
+                    stopped = send_control_command('cancel', 'graceful')
+                    app.logger.info(f"stop command sent from prefs: {stopped}")
+                except Exception as e:
+                    app.logger.error(f"Exception while stopping daemon in prefs: {e}")
         
         # Save other settings
         if 'cloud_sync' in data:
@@ -2845,16 +2920,18 @@ def save_preferences():
         
         save_config(config)
         
-        return {
+        resp = {
             'success': True,
             'message': 'Preferences saved successfully',
             'preferences': {
                 'automatic_backups': config['BACKUP'].get('automatic_backups', 'false').lower() == 'true',
-                'autostart_enabled': os.path.exists(get_autostart_path()),
                 'cloud_sync': config['BACKUP'].get('cloud_sync', 'false').lower() == 'true',
                 'encryption': config['BACKUP'].get('encryption', 'false').lower() == 'true'
             }
         }
+        if daemon_result is not None:
+            resp['daemon_result'] = daemon_result
+        return resp
     except Exception as e:
         app.logger.error(f"Error saving preferences: {e}")
         return {'success': False, 'error': str(e)}

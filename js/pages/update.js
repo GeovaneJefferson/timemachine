@@ -29,7 +29,13 @@ export default class UpdatePage {
         const hasUpdate = info.update_available;
         const notes = info.release_notes || '';
         const releaseUrl = info.release_url || '#';
-        const noUpdateMsg = hasUpdate ? '' : '<div class="text-center text-gray-600 dark:text-gray-400">You are already running the latest version.</div>';
+        let noUpdateMsg = '';
+        let errorMsg = '';
+        if (!info.success) {
+            errorMsg = `<div class="text-center text-red-600 dark:text-red-400">Error: ${info.error}</div>`;
+        } else if (!hasUpdate) {
+            noUpdateMsg = '<div class="text-center text-gray-600 dark:text-gray-400">You are already running the latest version.</div>';
+        }
 
         return `
             <div class="px-8 py-6 flex items-end justify-between border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
@@ -58,7 +64,7 @@ export default class UpdatePage {
                         </div>
                     ` : ''}
 
-                    ${noUpdateMsg}
+                    ${errorMsg || noUpdateMsg}
                     <div class="flex justify-end gap-3">
                         <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600" id="back-btn">
                             Back
