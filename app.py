@@ -791,23 +791,6 @@ def check_for_updates_route():
     return jsonify(result)
 
 
-@app.route('/api/update/perform', methods=['POST'])
-@json_api
-def perform_update_route():
-    """Trigger the backend to fetch and apply the latest code.
-    The frontend should only call this when we already know an update is
-    available; the routine will do a git pull and return the output.
-    """
-    try:
-        from py.update_checker import perform_update
-        update_result = perform_update()
-        # the helper already returns a dict with success/key
-        return update_result
-    except Exception as e:
-        app.logger.error(f"Error performing update: {e}")
-        return {'success': False, 'error': str(e)}
-
-
 # =============================================================================
 # HOME FOLDER ROUTES
 # =============================================================================

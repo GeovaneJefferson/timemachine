@@ -99,8 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadDashboard();
 
         // perform an update check in the background; if an update is found a toast
-        // notification will be shown. we intentionally do not show an "up to date"
-        // message so the user isn't interrupted at startup.
+        // notification will be shown. this happens automatically on every startup.
         checkUpdates(false);
 
         console.log('App initialized successfully');
@@ -353,7 +352,6 @@ async function loadPage(pageName, params = {}) {
             
             window.currentPageInstance = page;
             appState.registerPage(pageName, page);
-            
         } else if (pageName === 'update') {
             // Import update module
             const UpdateModule = await import('./pages/update.js');

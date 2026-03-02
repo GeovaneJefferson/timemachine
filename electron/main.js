@@ -213,6 +213,7 @@ function setupIPC() {
     return true;
   });
 
+
   ipcMain.handle('show-notification', (event, title, body) => {
     const notification = new Notification({ title, body });
     notification.show();

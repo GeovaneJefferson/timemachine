@@ -64,9 +64,6 @@ export default class AboutPage {
                     </div>
                     
                     <div class="flex justify-center gap-4">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" id="check-updates-btn">
-                            Check for Updates
-                        </button>
                         <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-600 transition-colors" id="view-license-btn">
                             View License
                         </button>
@@ -159,12 +156,6 @@ export default class AboutPage {
         this.loadSystemResources();
         
         // Add event listeners
-        const checkUpdatesBtn = document.getElementById('check-updates-btn');
-        if (checkUpdatesBtn) {
-            checkUpdatesBtn.addEventListener('click', () => {
-                this.checkForUpdates();
-            });
-        }
         
         const viewLicenseBtn = document.getElementById('view-license-btn');
         if (viewLicenseBtn) {
@@ -211,39 +202,6 @@ export default class AboutPage {
         }
     }
 
-    async checkForUpdates() {
-        // Instead of handling everything here, just send the user to the update
-        // page which will reload the information and allow them to trigger an
-        // update explicitly.
-        if (window.apiAdapter && window.apiAdapter.isRunningInElectron && window.apiAdapter.isRunningInElectron()) {
-            if (window.apiAdapter.openUpdateWindow) {
-                window.apiAdapter.openUpdateWindow();
-                return;
-            }
-        }
-
-        if (typeof window.loadPage === 'function') {
-            window.loadPage('update');
-        } else {
-            // fallback to existing behaviour if router isn't available
-            try {
-                const response = await fetch('/api/check-for-updates');
-                const info = await response.json();
-                if (info.success) {
-                    if (info.update_available) {
-                        this.showNotification(`A new version (${info.latest_version}) is available.`, 'info');
-                    } else {
-                        this.showNotification('You are using the latest version.', 'success');
-                    }
-                } else {
-                    this.showNotification(`Update check failed: ${info.error}`, 'error');
-                }
-            } catch (error) {
-                this.showNotification('Failed to check for updates.', 'error');
-                console.error('Error checking for updates:', error);
-            }
-        }
-    }
 
     viewLicense() {
         console.log('Viewing license...');
@@ -254,25 +212,4 @@ export default class AboutPage {
         console.log('Cleaning up About page');
     }
 
-    showNotification(message, type = 'info') {
-        // basic notification implementation same as sidebar
-        const notification = document.createElement('div');
-        notification.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-            type === 'success' ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
-            type === 'error' ? 'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
-            'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800'
-        }`;
-
-        notification.innerHTML = `
-        <span class="material-icons-round text-sm">
-        ${type === 'success' ? 'check_circle' :
-            type === 'error' ? 'error' :
-            'info'}
-            </span>
-            <span>${message}</span>
-            `;
-
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    }
 }

@@ -67,19 +67,7 @@ export default class SettingsPage {
                             </div>
                         </div>
                         
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Application Updates</h2>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-medium text-gray-900 dark:text-white">Check for Updates</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Check for new versions of the application.</p>
-                                </div>
-                                <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-600" id="check-for-updates">
-                                    Check for Updates
-                                </button>
-                            </div>
-                        </div>
-                        
+
                         <div class="flex justify-end gap-3">
                             <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600" id="cancel-settings">
                                 Cancel
@@ -104,35 +92,8 @@ export default class SettingsPage {
         if (cancelButton) {
             cancelButton.addEventListener('click', () => window.history.back());
         }
-        const checkForUpdatesButton = document.getElementById('check-for-updates');
-        if (checkForUpdatesButton) {
-            checkForUpdatesButton.addEventListener('click', () => this.checkForUpdates());
-        }
     }
 
-    async checkForUpdates() {
-        try {
-            // Call the backend route which uses the git-based update checker.
-            const response = await fetch('/api/check-for-updates');
-            const info = await response.json();
-
-            if (info.success) {
-                if (info.update_available) {
-                    this.showNotification(`A new version (${info.latest_version}) is available. The application will close for the update.`, 'info');
-                    setTimeout(() => {
-                        electronAPI.close();
-                    }, 3000);
-                } else {
-                    this.showNotification('You are using the latest version.', 'success');
-                }
-            } else {
-                this.showNotification(`Update check failed: ${info.error}`, 'error');
-            }
-        } catch (error) {
-            this.showNotification('Failed to check for updates.', 'error');
-            console.error('Error checking for updates:', error);
-        }
-    }
 
     async saveSettings() {
 // backend expects the following keys; autostart is handled in tandem with

@@ -69,6 +69,16 @@ situation where backups are “on” but the daemon isn’t running.
 On headless boots (no graphical session) only the systemd unit is relevant; the
 autostart entry is ignored.
 
+### Updates
+
+Update checks are automatic on every launch; the application queries the
+backend and shows a toast notification when a new version is detected.  You
+can click that notification to open the dedicated update window (or navigate
+to it via the sidebar) which provides release notes and a manual "Update
+Now" button.  Only the settings and about‑page controls for initiating
+update checks have been stripped.
+
+
 ### Running for Development
 
 If you want to run the application in a development environment:
