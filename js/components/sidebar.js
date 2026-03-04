@@ -11,10 +11,7 @@ export default class Sidebar {
 
         this.folders = []; // Will be populated from backup
         this.backupFolders = []; // Store folders from backup
-        this.tags = [
-            { name: 'Urgent', color: 'bg-red-500' },
-            { name: 'Work', color: 'bg-blue-500' }
-        ];
+        this.tags = [];
 
         this.settings = [
             { id: 'system-restore', name: 'System Restore', icon: 'restore', active: false },
@@ -33,7 +30,6 @@ export default class Sidebar {
         ${this.renderNavigationSection()}
         ${await this.renderBackupFoldersSection()}
         ${await this.renderLocationsSection()}
-        ${this.renderTagsSection()}
         </div>
 
         <!-- Settings Section at Bottom -->
@@ -238,19 +234,7 @@ export default class Sidebar {
     }
 
     renderTagsSection() {
-        return `
-        <div>
-        <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Tags</h3>
-        <nav class="space-y-0.5">
-        ${this.tags.map(tag => `
-            <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer">
-            <span class="w-2.5 h-2.5 rounded-full ${tag.color}"></span>
-            ${tag.name}
-            </a>
-            `).join('')}
-            </nav>
-            </div>
-            `;
+        return ``;
     }
 
     renderSettingsSection() {
