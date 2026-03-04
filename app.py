@@ -36,7 +36,10 @@ from py.daemon_control import send_control_command
 # APPLICATION SETUP
 # =============================================================================
 
-app = Flask(__name__, template_folder='templates')
+# Get absolute path to project directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
 server = SERVER()
 search_handler = SearchHandler()
 
@@ -702,17 +705,17 @@ def background_install_dev_packages(job_id, packages):
 
 @app.route('/css/<path:filename>')
 def serve_css(filename):
-    return send_from_directory('css', filename)
+    return send_from_directory(os.path.join(BASE_DIR, 'css'), filename)
 
 
 @app.route('/js/<path:filename>')
 def serve_js(filename):
-    return send_from_directory('js', filename)
+    return send_from_directory(os.path.join(BASE_DIR, 'js'), filename)
 
 
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
-    return send_from_directory('assets', filename)
+    return send_from_directory(os.path.join(BASE_DIR, 'assets'), filename)
 
 
 # =============================================================================

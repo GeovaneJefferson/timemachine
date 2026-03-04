@@ -7,7 +7,7 @@ class NotificationSystem {
     }
 
     // Toast notification
-    showToast(message, type = 'info', duration = 3000) {
+    showToast(message, type = 'info', duration = 3000, buttons = []) {
         const notification = document.createElement('div');
         notification.className = `global-notification ${type}`;
         
@@ -19,9 +19,19 @@ class NotificationSystem {
             case 'info': icon = 'info'; break;
         }
 
+        let buttonsHTML = '';
+        if (buttons.length > 0) {
+            buttonsHTML = '<div class="buttons">';
+            buttons.forEach(button => {
+                buttonsHTML += `<button class="btn btn-primary">${button.label}</button>`;
+            });
+            buttonsHTML += '</div>';
+        }
+
         notification.innerHTML = `
             <span class="material-icons-round icon">${icon}</span>
             <span>${message}</span>
+            ${buttonsHTML}
             <button class="close-btn">
                 <span class="material-icons-round">close</span>
             </button>
@@ -35,12 +45,25 @@ class NotificationSystem {
             this.removeNotification(notification);
         });
 
+        // Button handlers
+        if (buttons.length > 0) {
+            const buttonElements = notification.querySelectorAll('.btn-primary');
+            buttonElements.forEach((buttonElement, index) => {
+                buttonElement.addEventListener('click', () => {
+                    buttons[index].action();
+                    this.removeNotification(notification);
+                });
+            });
+        }
+
         // Auto-remove after duration
-        setTimeout(() => {
-            if (notification.parentNode) {
-                this.removeNotification(notification);
-            }
-        }, duration);
+        if (duration) {
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    this.removeNotification(notification);
+                }
+            }, duration);
+        }
     }
 
     removeNotification(notification) {
@@ -149,7 +172,7 @@ class NotificationSystem {
 window.NotificationSystem = new NotificationSystem();
 
 // Shortcut functions for easy access
-window.showToast = (message, type, duration) => window.NotificationSystem.showToast(message, type, duration);
+window.showToast = (message, type, duration, buttons) => window.NotificationSystem.showToast(message, type, duration, buttons);
 window.showConfirm = (title, message, options) => window.NotificationSystem.showConfirm(title, message, options);
 window.showSuccess = (message, duration) => window.NotificationSystem.success(message, duration);
 window.showError = (message, duration) => window.NotificationSystem.error(message, duration);
@@ -157,8 +180,8 @@ window.showWarning = (message, duration) => window.NotificationSystem.warning(me
 window.showInfo = (message, duration) => window.NotificationSystem.info(message, duration);
 
 // Also export functions for module imports (keep globals for legacy callers)
-export function showToast(message, type = 'info', duration = 3000) {
-    return window.NotificationSystem.showToast(message, type, duration);
+export function showToast(message, type = 'info', duration = 3000, buttons = []) {
+    return window.NotificationSystem.showToast(message, type, duration, buttons);
 }
 
 export function showConfirm(title, message, options = {}) {
