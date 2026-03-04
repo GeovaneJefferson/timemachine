@@ -45,15 +45,11 @@ export default class HelpPage {
                         <div class="space-y-4">
                             <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
                                 <h3 class="font-medium text-gray-900 dark:text-white mb-2">How often should I backup my files?</h3>
-                                <p class="text-gray-600 dark:text-gray-400">We recommend backing up important files daily, and performing full system backups weekly.</p>
-                            </div>
-                            <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-                                <h3 class="font-medium text-gray-900 dark:text-white mb-2">Can I backup to multiple locations?</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Yes, you can configure multiple backup destinations including local drives and cloud storage.</p>
+                                <p class="text-gray-600 dark:text-gray-400">Time Machine backs up your files automatically and continuously — no manual scheduling needed. New and changed files are tracked in near real-time so your data is protected without extra effort.</p>
                             </div>
                             <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
                                 <h3 class="font-medium text-gray-900 dark:text-white mb-2">How do I get versions of files from a backup?</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Navigate to the Files section, select the files you want to get versions of, and click the Get Versions button.</p>
+                                <p class="text-gray-600 dark:text-gray-400">Go to Files, select the file you want, then click "Get Versions". Choose the version you want from the list and restore or download it. If you need multiple versions, select the file and open the Versions window to browse history and restore any snapshot.</p>
                             </div>
                         </div>
                     </div>

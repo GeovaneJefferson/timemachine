@@ -65,9 +65,7 @@ const api = {
   },
 
   // Open a dedicated update window
-  openUpdateWindow() {
-    return ipcRenderer.invoke('open-update-window');
-  },
+  // (removed) openUpdateWindow - update UI removed; updates are detected and notified via the web UI
 
   // Quit entire application
   quit() {

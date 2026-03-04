@@ -316,27 +316,7 @@ export default class FoldersPage {
         const displayFiles = this.filteredFiles;
         
         if (displayFiles.length === 0) {
-            return `
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center mb-6 shadow-soft border border-gray-200 dark:border-gray-600">
-                        <span class="material-icons-round text-5xl text-gray-400 dark:text-gray-500">${this.searchQuery ? 'search_off' : 'folder_open'}</span>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                        ${this.searchQuery ? 'No results found' : 'No files found'}
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 max-w-md text-center mb-4">
-                        ${this.searchQuery ? 
-                            `No files found matching "${this.searchQuery}" with current filters.` :
-                            'No files match the current filters.'
-                        }
-                    </p>
-                    ${this.searchQuery || this.getActiveFilterCount() > 0 ? `
-                        <button onclick="window.foldersPage.resetFilters(); window.foldersPage.clearHeaderSearch()" class="mt-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                            Clear Filters & Search
-                        </button>
-                    ` : ''}
-                </div>
-            `;
+            return createTableLoadingSkeleton();
         }
 
         if (this.viewMode === 'grid') {
@@ -347,19 +327,8 @@ export default class FoldersPage {
     }
 
     renderNoDeviceState() {
-        return `
-            <div class="flex flex-col items-center justify-center h-full p-8">
-                <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center mb-6 shadow-soft border border-gray-200 dark:border-gray-600">
-                    <span class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500">hard_drive</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    No Backup Device Configured
-                </h3>
-                <p class="text-gray-600 dark:text-gray-400 max-w-md text-center mb-4">
-                    You need to set up a backup device before you can view and manage backup files.
-                </p>
-            </div>
-        `;
+        // Use the table loading skeleton instead of long instructional text.
+        return createTableLoadingSkeleton();
     }
 
     renderListView(filesToDisplay) {

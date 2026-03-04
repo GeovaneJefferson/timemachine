@@ -107,11 +107,7 @@ export class ElectronAPIAdapter {
   /**
    * Open a dedicated update window (Electron only).
    */
-  openUpdateWindow() {
-    if (this.isElectron && window.electronAPI.openUpdateWindow) {
-      return window.electronAPI.openUpdateWindow();
-    }
-  }
+  // Update window removed; updates are detected and shown via notification toasts.
 
   /**
    * Quit the entire application.

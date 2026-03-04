@@ -420,42 +420,14 @@ export default class DashboardPage {
                 `;
             }
 
-            // Show empty state with setup tutorial
+            // Show a neutral loading skeleton instead of the setup tutorial
             return `
-                <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark flex items-center justify-center">
-                    <div class="text-center px-8 max-w-md">
-                        <div class="mb-6">
-                            <span class="material-icons-round text-6xl text-gray-300 dark:text-gray-600">backup</span>
-                        </div>
-                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">No Backup Files Found</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6">Start your first backup to see files here.</p>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-left mb-6">
-                            <h4 class="font-semibold text-blue-900 dark:text-blue-200 mb-3">Quick Setup Guide:</h4>
-                            <ol class="text-sm text-blue-800 dark:text-blue-300 space-y-2">
-                                <li class="flex gap-2">
-                                    <span class="font-bold flex-shrink-0">1.</span>
-                                    <span>Go to <strong>Locations</strong> (left sidebar) to see available backup devices</span>
-                                </li>
-                                <li class="flex gap-2">
-                                    <span class="font-bold flex-shrink-0">2.</span>
-                                    <span>Click on a device you want to use for backups</span>
-                                </li>
-                                <li class="flex gap-2">
-                                    <span class="font-bold flex-shrink-0">3.</span>
-                                    <span>Click <strong>"Use As Backup Device"</strong> button (top right)</span>
-                                </li>
-                                <li class="flex gap-2">
-                                    <span class="font-bold flex-shrink-0">4.</span>
-                                    <span>Go to <strong>Folders</strong> and select what to backup</span>
-                                </li>
-                                <li class="flex gap-2">
-                                    <span class="font-bold flex-shrink-0">5.</span>
-                                    <span>Enable <strong>"Automatic Backups"</strong> in Settings</span>
-                                </li>
-                            </ol>
-                        </div>
+                <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark">
+                    <div class="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
+                        <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2 animate-pulse"></div>
+                        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-32 animate-pulse"></div>
                     </div>
+                    ${createTableLoadingSkeleton(6)}
                 </div>
             `;
         }

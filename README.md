@@ -72,11 +72,11 @@ autostart entry is ignored.
 ### Updates
 
 Update checks are automatic on every launch; the application queries the
-backend and shows a toast notification when a new version is detected.  You
-can click that notification to open the dedicated update window (or navigate
-to it via the sidebar) which provides release notes and a manual "Update
-Now" button.  Only the settings and about‑page controls for initiating
-update checks have been stripped.
+backend and shows a toast notification when a new version is detected. The
+notification includes a "Tell me more" button which opens the project's
+GitHub releases page in the user's browser. The dedicated update window and
+sidebar update page have been removed — updates are detected and surfaced
+only via the notification bubble.
 
 
 ### Running for Development

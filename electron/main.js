@@ -90,6 +90,7 @@ function createWindow() {
     minWidth: 1400,
     minHeight: 900,
     title: 'TimeMachine',
+    autoHideMenuBar: true,
     webPreferences: {
       preload: preloadPath,
       nodeIntegration: false,
@@ -104,6 +105,15 @@ function createWindow() {
   const startUrl = 'http://localhost:5000';
 
   mainWindow.loadURL(startUrl);
+
+  // Hide the native menu bar by default and prevent the default application menu
+  try {
+    mainWindow.setAutoHideMenuBar(true);
+    mainWindow.setMenuBarVisibility(false);
+    Menu.setApplicationMenu(null);
+  } catch (e) {
+    console.warn('Could not hide menu bar:', e);
+  }
 
   // Don't open dev tools by default
   // mainWindow.webContents.openDevTools();
@@ -181,37 +191,7 @@ function setupIPC() {
     }
   });
 
-  // open a dedicated update information window
-  ipcMain.handle('open-update-window', () => {
-    // recompute preload location, mimicking createWindow logic
-    let updatePreload = path.join(__dirname, 'preload.js');
-    if (!fs.existsSync(updatePreload)) {
-      const alt = path.join(process.resourcesPath || '', 'electron', 'preload.js');
-      if (fs.existsSync(alt)) {
-        updatePreload = alt;
-      }
-    }
-
-    const updateWin = new BrowserWindow({
-      width: 600,
-      height: 700,
-      title: 'Application Update',
-      webPreferences: {
-        preload: updatePreload,
-        nodeIntegration: false,
-        contextIsolation: true,
-        sandbox: true
-      }
-    });
-
-    // point it at the same server but with the /update path
-    updateWin.loadURL(`${API_BASE_URL}/update`);
-    updateWin.on('closed', () => {
-      // nothing special for now
-    });
-
-    return true;
-  });
+  // (removed) dedicated update window IPC - update UI removed. Updates are detected by the frontend and shown as notification toasts.
 
 
   ipcMain.handle('show-notification', (event, title, body) => {
@@ -363,7 +343,6 @@ app.on('ready', async () => {
     await startPythonBackend();
     setupIPC();
     createWindow();
-    createMenu();
     applyLaunchAtStartup();
   } catch (error) {
     console.error('Failed to start application:', error);
