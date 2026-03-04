@@ -106,6 +106,18 @@ export default class SettingsPage {
         try {
             // Use the new endpoint
             const result = await electronAPI.post('/api/settings/preferences', settings);
+            if (result && result.success) {
+                // update local preferences and notify user
+                    this.preferences = result.preferences || {};
+                    if (window && typeof window.showToast === 'function') {
+                        window.showToast(result.message || 'Settings saved', 'success', 3000);
+                    }
+            } else {
+                const errMsg = result && result.error ? result.error : 'Unknown error';
+                    if (window && typeof window.showToast === 'function') {
+                        window.showToast(`Error saving settings: ${errMsg}`, 'error', 4000);
+                    }
+            }
         } catch (error) {
             this.showNotification(`Error saving settings: ${error.message}`, 'error');
         }
@@ -132,6 +144,7 @@ export default class SettingsPage {
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 3000);
     }
+        // Use global notification system (window.showToast) which renders top-center
 
     destroy() {
         // Cleanup if needed

@@ -6,6 +6,8 @@ set -e
 
 echo "🚀 Installing TimeMachine..."
 echo ""
+# installer now ensures launcher will kill any running Python app.py instances to
+# avoid port conflicts when starting via the desktop menu.
 
 # Define installation directories
 INSTALL_DIR="$HOME/.local/share/timemachine"
@@ -31,29 +33,62 @@ cp -r "$SCRIPT_DIR/css" "$INSTALL_DIR/"
 cp -r "$SCRIPT_DIR/templates" "$INSTALL_DIR/"
 cp -r "$SCRIPT_DIR/py" "$INSTALL_DIR/"
 cp -r "$SCRIPT_DIR/config" "$INSTALL_DIR/"
-cp -r "$SCRIPT_DIR/node_modules" "$INSTALL_DIR/"
 cp "$SCRIPT_DIR/app.py" "$INSTALL_DIR/"
+
+# Copy node_modules if it exists (optional for web-only mode)
+if [ -d "$SCRIPT_DIR/node_modules" ]; then
+    cp -r "$SCRIPT_DIR/node_modules" "$INSTALL_DIR/"
+else
+    echo "⚠️  node_modules not found. Run 'bash setup-electron.sh' first if you need Electron support."
+fi
 
 # Create launcher script
 echo "🔧 Creating launcher script..."
 cat > "$LAUNCHER_SCRIPT" << 'LAUNCHER_EOF'
 #!/bin/bash
-# TimeMachine Launcher
+# TimeMachine Launcher - A proper desktop app launcher
 INSTALL_DIR="$HOME/.local/share/timemachine"
-ELECTRON_BIN="$INSTALL_DIR/node_modules/.bin/electron"
 
-if [ ! -f "$ELECTRON_BIN" ]; then
-    echo "Error: Electron not found. Please run: bash setup-electron.sh"
-    exit 1
+# Suppress all output when launched from GUI (no terminal)
+if [ ! -t 0 ]; then
+    exec >/dev/null 2>&1
 fi
 
-# Force X11 instead of Wayland for proper display
-export QT_QPA_PLATFORM=xcb
-export GDK_BACKEND=x11
+# Check for Electron first
+if [ -d "$INSTALL_DIR/node_modules" ]; then
+    ELECTRON_BIN="$INSTALL_DIR/node_modules/.bin/electron"
+    
+    if [ -f "$ELECTRON_BIN" ]; then
+        # Electron mode - runs as pure desktop app
+        export QT_QPA_PLATFORM=xcb
+        export GDK_BACKEND=x11
+        export ELECTRON_ENABLE_LOGGING=false
+        export ELECTRON_ENABLE_STACK_DUMPING=false
+        
+        NODE_PATH="$INSTALL_DIR/node_modules" \
+        PYTHONPATH="$INSTALL_DIR" \
+        exec "$ELECTRON_BIN" --ozone-platform=x11 "$INSTALL_DIR/electron/main.js" "$@" 2>/dev/null
+        exit 0
+    fi
+fi
 
-NODE_PATH="$INSTALL_DIR/node_modules" \
+# Fallback: Flask web mode (no Electron)
+# Kill any old Flask processes on this port (handle python or python3)
+pkill -f "python.*app.py" >/dev/null 2>&1 || true
+
+# Start Flask in background with no output
 PYTHONPATH="$INSTALL_DIR" \
-exec "$ELECTRON_BIN" --ozone-platform=x11 "$INSTALL_DIR/electron/main.js" "$@"
+nohup python3 "$INSTALL_DIR/app.py" >/dev/null 2>&1 &
+
+# Open in browser
+sleep 1
+if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "http://localhost:5000" 2>/dev/null &
+elif command -v open >/dev/null 2>&1; then
+    open "http://localhost:5000" &
+fi
+
+exit 0
 LAUNCHER_EOF
 
 chmod +x "$LAUNCHER_SCRIPT"
@@ -97,6 +132,9 @@ echo ""
 echo "🚀 To launch TimeMachine:"
 echo "   timemachine"
 echo "   or find it in your Application Menu"
+echo ""
+echo "📌 For Electron support (desktop app), run:"
+echo "   bash setup-electron.sh"
 echo ""
 echo "To uninstall:"
 echo "   bash uninstall.sh"

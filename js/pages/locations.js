@@ -791,8 +791,63 @@ export default class LocationsPage {
                 this.isDeviceActive = true;
                 // Refresh sidebar and page state
                 document.dispatchEvent(new CustomEvent('devices-updated'));
-                // Reload current backup info and re-render page
-                await this.afterRender();
+                
+                // Reload current backup info without re-rendering yet
+                await this.loadDeviceInfo();
+                await this.loadHomeFolders();
+
+                // Update header device connection status to green
+                if (window.appHeader && typeof window.appHeader.checkBackupDevice === 'function') {
+                    try {
+                        await window.appHeader.checkBackupDevice();
+                        window.appHeader.updateDeviceStatus();
+                        console.log('Updated header device status to connected');
+                    } catch (e) {
+                        console.error('Error updating header device status:', e);
+                    }
+                }
+
+                // Auto-select default folders (Desktop, Documents, Music, Pictures, Videos)
+                const defaultFolders = ['Desktop', 'Documents', 'Music', 'Pictures', 'Videos'];
+                let autoSelectedCount = 0;
+                this.data.folders.forEach(folder => {
+                    if (defaultFolders.includes(folder.name)) {
+                        folder.selected = true;
+                        folder.included = true;
+                        autoSelectedCount++;
+                        console.log(`Auto-selected default folder: ${folder.name}`);
+                    }
+                });
+                
+                if (autoSelectedCount > 0) {
+                    // Auto-save selected folders
+                    const selectedPaths = this.data.folders.filter(f => f.selected).map(f => f.path);
+                    console.log(`Auto-saving ${autoSelectedCount} default folders: ${selectedPaths.join(', ')}`);
+                    try {
+                        const saveResp = await fetch('/api/locations/save-folders', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ folders: selectedPaths })
+                        });
+                        const saveData = await saveResp.json();
+                        if (saveData && saveData.success) {
+                            console.log('Auto-saved default folders successfully');
+                        } else {
+                            console.warn('Failed to auto-save folders:', saveData?.error);
+                        }
+                    } catch (e) {
+                        console.error('Error auto-saving folders:', e);
+                    }
+                }
+                
+                // Now re-render the page with auto-selected folders checked
+                const pageContent = document.getElementById('page-content');
+                if (pageContent) {
+                    pageContent.innerHTML = await this.render();
+                    // Setup event listeners for the newly rendered page
+                    this.setupEventListeners();
+                    this.setupSelection();
+                }
 
                 // Programmatically click the refresh button in the sidebar as requested
                 const refreshBtn = document.querySelector('.refresh-backup-folders-btn');
