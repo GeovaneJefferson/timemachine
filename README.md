@@ -9,9 +9,11 @@ The application combines a powerful Python backend for file system monitoring an
 - **Real-time File Monitoring:** Uses `watchdog` to efficiently detect file changes in real-time, ensuring your backups are always up-to-date.
 - **Automated Backups:** A background daemon manages the backup process automatically without user intervention.
 - **Modern Desktop UI:** A clean and intuitive interface built with Electron, HTML, and CSS for managing your backups.
+- **Theme Support:** Light/dark mode with optional system preference and native UI integration.
 - **Easy Restore:** A simple interface to browse your backup history and restore files or folders.
 - **Desktop Integration:** Includes a `.desktop` file for seamless integration with application menus on Linux.
 - **Dashboard:** A central view to monitor backup status and system health.
+- **Most Frequently Modified Files:** Smart recency-weighted analysis to highlight files you're actively using, rather than old archived files.
 
 ## Tech Stack
 

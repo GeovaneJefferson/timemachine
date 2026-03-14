@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 from watchdog.observers import Observer
 
 from config import server
+from filesystem import should_process
 from metadata import MetadataStore
 from backup_engine import BackupEngine
 from watchdog_handler import BackupChangeHandler
@@ -50,6 +51,32 @@ class Daemon:
         # FIX #1: Keep reference to observer for proper shutdown
         self.observer = None
         self.watcher_thread = None
+
+    def is_dir_excluded(self, dir_path):
+        """Check if a directory should be excluded from watching."""
+        # Use should_process logic - if it returns False, exclude
+        return not should_process(dir_path)
+
+    def schedule_selective_watching(self, observer, event_handler, root_path):
+        """Schedule watchers only on non-excluded directories to reduce inotify load."""
+        scheduled_count = 0
+        for dirpath, dirnames, filenames in os.walk(root_path):
+            # Filter out excluded subdirectories from dirnames to prevent walking into them
+            dirnames[:] = [d for d in dirnames if not self.is_dir_excluded(os.path.join(dirpath, d))]
+            
+            # Schedule watcher on this directory if it's not excluded
+            if not self.is_dir_excluded(dirpath):
+                try:
+                    observer.schedule(event_handler, dirpath, recursive=False)
+                    scheduled_count += 1
+                except Exception as e:
+                    logging.error(f"Failed to schedule watcher on {dirpath}: {e}")
+            else:
+                # If excluded, don't walk into subdirs
+                dirnames[:] = []
+        
+        logging.info(f"Scheduled {scheduled_count} watchers for {root_path}")
+        return scheduled_count
 
     def watch_worker(self):
         """Main worker thread that processes events."""
@@ -119,7 +146,7 @@ class Daemon:
         logging.info("Initial scan complete, starting watchdog observer...")
 
         # FIX #4: Start watchdog observer AFTER initial scan
-        event_handler = BackupChangeHandler(self.event_queue)
+        event_handler = BackupChangeHandler(self.event_queue, self)
         self.observer = Observer()  # Keep reference!
 
         folders = self._get_target_folders()
@@ -129,16 +156,9 @@ class Daemon:
         for path in folders:
             if os.path.isdir(path):
                 try:
-                    self.observer.schedule(event_handler, path, recursive=True)
-                    logging.info(f"Watching: {path}")
-                    # Log potential inotify impact
-                    try:
-                        subdir_count = sum([len(dirs) for _, dirs, _ in os.walk(path)])
-                        if subdir_count > 1000:
-                            logging.warning(f"High inotify load: {path} has {subdir_count} subdirectories. "
-                                          f"Consider adding exclusions (e.g., .git, node_modules).")
-                    except Exception:
-                        pass
+                    # Use selective scheduling to avoid watching excluded directories
+                    scheduled = self.schedule_selective_watching(self.observer, event_handler, path)
+                    logging.info(f"Watching: {path} ({scheduled} directories scheduled)")
                 except Exception as e:
                     logging.error(f"Failed to watch {path}: {e}")
 
@@ -244,6 +264,11 @@ class Daemon:
         # Save metadata
         logging.info("Saving metadata...")
         self.metadata.save()
+        # Close SQLite connection (if used)
+        try:
+            self.metadata.close()
+        except Exception:
+            pass
 
         # Cleanup
         self.lock_manager.remove_lock_file()

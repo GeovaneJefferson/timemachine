@@ -10,11 +10,110 @@ html {
     height: 100%;
 }
 
+/* Apple HIG-inspired color variables */
+:root {
+    /* Primary Colors */
+    --color-accent: #007aff;
+    --color-accent-hover: #0051cf;
+    --color-accent-light: rgba(0, 122, 255, 0.1);
+    --color-accent-lighter: rgba(0, 122, 255, 0.05);
+    
+    /* Backgrounds */
+    --color-system-background: #ffffff;
+    --color-system-fill: rgba(120, 120, 128, 0.2);
+    /* semi-transparent overlay used for modals and dialogs */
+    /* solid color matching app's secondary background */
+    --color-overlay: #f2f2f7;
+    --color-secondary-background: #f2f2f7;
+    --color-tertiary-background: #ffffff;
+    --color-separator: #e5e7eb;
+    
+    /* Text Colors */
+    --color-text-primary: #000000;
+    --color-text-secondary: #6b7280;
+    --color-icon: #3c3c43;
+    --color-icon-secondary: #6e6e73;
+    
+    /* Utility Grays (Tailwind-based for consistency) */
+    --color-gray-900: #111827;
+    --color-gray-800: #1f2937;
+    --color-gray-700: #374151;
+    --color-gray-600: #4b5563;
+    --color-gray-500: #6b7280;
+    --color-gray-400: #9ca3af;
+    --color-gray-300: #d1d5db;
+    --color-gray-200: #e5e7eb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-50: #f9fafb;
+    
+    /* Status Colors */
+    --color-status-success: rgb(5, 150, 100);
+    --color-status-success-bg: rgb(209, 250, 229);
+    --color-status-success-dark: rgb(16, 185, 129);
+    --color-status-success-bg-dark: rgba(16, 185, 129, 0.2);
+    
+    --color-status-archived: rgb(55, 65, 81);
+    --color-status-archived-bg: rgb(243, 244, 246);
+    --color-status-archived-dark: rgb(209, 213, 219);
+    --color-status-archived-bg-dark: rgba(107, 114, 128, 0.4);
+    
+    --color-status-error: rgb(185, 28, 28);
+    --color-status-error-bg: rgb(254, 226, 226);
+    --color-status-error-dark: rgb(239, 68, 68);
+    --color-status-error-bg-dark: rgba(239, 68, 68, 0.2);
+    
+    --color-status-warning: rgb(180, 83, 9);
+    --color-status-warning-bg: rgb(254, 243, 205);
+    --color-status-warning-dark: rgb(251, 191, 36);
+    --color-status-warning-bg-dark: rgba(251, 191, 36, 0.2);
+}
+
+.dark {
+    /* Primary Colors */
+    --color-accent: #0070E2;
+    --color-accent-hover: #0055b8;
+    --color-accent-light: rgba(0, 112, 226, 0.15);
+    --color-accent-lighter: rgba(0, 112, 226, 0.08);
+    
+    /* Backgrounds */
+    --color-system-background: #000000;
+    --color-system-fill: rgba(133, 133, 138, 0.15);
+    --color-secondary-background: #222224;
+    --color-tertiary-background: #2a2a2c;
+    --color-separator: rgba(133, 133, 138, 0.3);
+    --color-overlay: #222224;
+    
+    /* Text Colors */
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #85858A;
+    --color-icon: #ffffff;
+    --color-icon-secondary: #85858A;
+    
+    /* Utility Grays (inverted for dark mode) */
+    --color-gray-900: #f9fafb;
+    --color-gray-800: #f3f4f6;
+    --color-gray-700: #e5e7eb;
+    --color-gray-600: #d1d5db;
+    --color-gray-500: #9ca3af;
+    --color-gray-400: #6b7280;
+    --color-gray-300: #4b5563;
+    --color-gray-200: #374151;
+    --color-gray-100: #1f2937;
+    --color-gray-50: #111827;
+    
+    /* Blues (adjusted for dark mode readability) */
+    --color-blue-900: #60a5fa;
+    --color-blue-600: #60a5fa;
+    --color-blue-500: #3b82f6;
+    --color-blue-400: #2563eb;
+}
+
 body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     overflow: hidden;
+    background-color: var(--color-system-background);
 }
 
 /* ============================================
@@ -31,12 +130,20 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(156, 163, 175, 0.5);
+    background: var(--color-separator);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(107, 114, 128, 0.8);
+    background: var(--color-text-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: var(--color-text-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-icon-secondary);
 }
 
 /* ============================================
@@ -44,19 +151,19 @@ body {
    ============================================ */
 
 .sidebar-item-active {
-    background-color: rgba(0, 122, 255, 0.15);
-    color: #007AFF;
+    background-color: var(--color-system-fill);
+    color: var(--color-accent);
 }
 
 .dark .sidebar-item-active {
-    background-color: rgba(10, 132, 255, 0.2);
-    color: #409CFF;
+    background-color: var(--color-system-fill);
+    color: var(--color-text-secondary);
 }
 
 /* For light theme only pages */
 .sidebar-item-active-light {
-    background-color: rgba(0, 122, 255, 0.1);
-    color: #007AFF;
+    background-color: var(--color-secondary-background);
+    color: var(--color-accent);
 }
 
 /* ============================================
@@ -64,8 +171,8 @@ body {
    ============================================ */
 
 .checkbox-restore:checked {
-    background-color: #007AFF !important;
-    border-color: #007AFF !important;
+    background-color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
 }
 
 /* Custom checkbox for restore */
@@ -74,8 +181,8 @@ body {
 }
 
 .checkbox-restore:focus {
-    ring: 2px;
-    ring-color: #007AFF;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
 }
 
 /* ============================================
@@ -93,8 +200,21 @@ body {
    ============================================ */
 
 .modal-backdrop {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgb(255, 255, 255);
+    position: fixed;
+}
+
+.modal-backdrop > div {
+    position: relative !important;
+    z-index: 50 !important;
+    isolation: isolate !important;
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    transform: translateZ(0) !important;
+}
+
+.dark .modal-backdrop {
+    background: rgb(30, 30, 30);
 }
 
 /* ============================================
@@ -179,24 +299,24 @@ body {
    ============================================ */
 
 .selected-highlight {
-    background-color: rgba(147, 197, 253, 0.3) !important; /* lighter blue */
-    border-color: rgba(96, 165, 250, 0.5) !important;
+    background-color: var(--color-system-fill) !important;
+    border-color: var(--color-accent) !important;
 }
 
 .dark .selected-highlight {
-    background-color: rgba(30, 64, 175, 0.3) !important; /* darker blue for dark mode */
-    border-color: rgba(59, 130, 246, 0.5) !important;
+    background-color: var(--color-system-fill) !important;
+    border-color: var(--color-accent) !important;
 }
 
 /* For backup devices that are selected */
 .backup-device.selected-highlight {
-    background-color: rgba(147, 197, 253, 0.5) !important;
-    border-color: rgba(59, 130, 246, 0.7) !important;
+    background-color: var(--color-system-fill) !important;
+    border-color: var(--color-accent) !important;
 }
 
 .dark .backup-device.selected-highlight {
-    background-color: rgba(30, 64, 175, 0.5) !important;
-    border-color: rgba(59, 130, 246, 0.7) !important;
+    background-color: var(--color-system-fill) !important;
+    border-color: var(--color-accent) !important;
 }
 
 /* ============================================
@@ -204,20 +324,20 @@ body {
    ============================================ */
 
 .table-row-hover:hover {
-    background-color: rgba(0, 122, 255, 0.05);
+    background-color: var(--color-accent-lighter);
 }
 
 .dark .table-row-hover:hover {
-    background-color: rgba(10, 132, 255, 0.1);
+    background-color: var(--color-accent-light);
 }
 
 /* For files table specific hover */
 .file-row-hover:hover {
-    background-color: rgba(59, 130, 246, 0.05);
+    background-color: var(--color-accent-lighter);
 }
 
 .dark .file-row-hover:hover {
-    background-color: rgba(30, 64, 175, 0.2);
+    background-color: var(--color-accent-light);
 }
 
 /* ============================================
@@ -235,43 +355,43 @@ body {
 }
 
 .status-completed {
-    background-color: rgb(220, 252, 231);
-    color: rgb(22, 101, 52);
+    background-color: var(--color-status-success-bg);
+    color: var(--color-status-success);
 }
 
 .dark .status-completed {
-    background-color: rgba(34, 197, 94, 0.2);
-    color: rgb(134, 239, 172);
+    background-color: var(--color-status-success-bg-dark);
+    color: var(--color-status-success-dark);
 }
 
 .status-archived {
-    background-color: rgb(243, 244, 246);
-    color: rgb(55, 65, 81);
+    background-color: var(--color-status-archived-bg);
+    color: var(--color-status-archived);
 }
 
 .dark .status-archived {
-    background-color: rgba(107, 114, 128, 0.4);
-    color: rgb(209, 213, 219);
+    background-color: var(--color-status-archived-bg-dark);
+    color: var(--color-status-archived-dark);
 }
 
 .status-failed {
-    background-color: rgb(254, 226, 226);
-    color: rgb(153, 27, 27);
+    background-color: var(--color-status-error-bg);
+    color: var(--color-status-error);
 }
 
 .dark .status-failed {
-    background-color: rgba(239, 68, 68, 0.2);
-    color: rgb(252, 165, 165);
+    background-color: var(--color-status-error-bg-dark);
+    color: var(--color-status-error-dark);
 }
 
 .status-waiting {
-    background-color: rgb(254, 249, 195);
-    color: rgb(133, 77, 14);
+    background-color: var(--color-status-warning-bg);
+    color: var(--color-status-warning);
 }
 
 .dark .status-waiting {
-    background-color: rgba(234, 179, 8, 0.2);
-    color: rgb(253, 224, 71);
+    background-color: var(--color-status-warning-bg-dark);
+    color: var(--color-status-warning-dark);
 }
 
 /* ============================================
@@ -410,6 +530,7 @@ body {
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -417,6 +538,7 @@ body {
 .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -2231,11 +2353,7 @@ body {
     animation: slideInFromTop 0.2s ease-out;
 }
 
-/* Backdrop blur effect */
-.modal-backdrop {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
+/* Backdrop blur effect removed - using solid background color instead */
 
 /* Restore Modal Base */
 #restore-modal {
@@ -2641,6 +2759,12 @@ body {
     transition: all 0.3s ease-out;
 }
 
+/* ensure preview panel doesn’t cover entire content when visible */
+#preview-panel {
+    flex-shrink: 0;
+    width: 20rem; /* matches w-80 */
+}
+
 /* Calendar Day with Multiple Backups */
 .calendar-day-multiple-backups::after {
     width: 6px;
@@ -3029,9 +3153,59 @@ body {
 }
 
 .dark .filter-btn.active {
-    background-color: #007AFF;
+    background-color: #333333;
     color: white;
-    border-color: #007AFF;
+    border-color: #333333;
+}
+
+/* ============================================
+   DARK MODE COLOR OVERRIDES
+   ============================================
+   In dark mode, use dark gray/black (#333333) for accents and primary elements.
+   This replaces the neutral gray used in light mode.
+   ============================================ */
+
+.dark {
+    --color-primary: #333333;
+}
+
+/* dark mode sidebar active state */
+.dark .sidebar-item-active {
+    background-color: rgba(51, 51, 51, 0.3);
+    color: #333333;
+}
+
+/* dark mode checkbox states */
+.dark .checkbox-restore:checked {
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+}
+
+/* dark mode progress color */
+.dark .progress-primary {
+    background-color: #333333;
+}
+
+/* override all blue-* utility colors in dark mode to gray shades */
+.dark .bg-blue-50 { background-color: #1a1a1a; }
+.dark .bg-blue-100 { background-color: #252525; }
+.dark .bg-blue-500 { background-color: #333333; }
+.dark .bg-blue-600 { background-color: #2b2b2b; }
+
+.dark .text-blue-400 { color: #555555; }
+.dark .text-blue-500 { color: #666666; }
+.dark .text-blue-600 { color: #444444; }
+.dark .text-blue-700 { color: #333333; }
+
+.dark .border-blue-100 { border-color: #333333; }
+.dark .border-blue-300 { border-color: #333333; }
+.dark .border-blue-700 { border-color: #333333; }
+
+/* dark mode filter button active state */
+.dark .filter-btn.active {
+    background-color: #333333;
+    color: white;
+    border-color: #333333;
 }
 
 /* ============================================

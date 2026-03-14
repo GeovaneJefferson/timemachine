@@ -301,9 +301,9 @@ export class ThreePreview {
             const container = document.getElementById(containerId);
             container.innerHTML = `
                 <div class="flex flex-col items-center justify-center h-full">
-                    <span class="material-icons-round text-4xl text-red-400 mb-2">error</span>
-                    <p class="text-sm text-gray-300 text-center">Failed to load 3D model</p>
-                    <p class="text-xs text-gray-500 text-center mt-1">Format not supported or file corrupted</p>
+                    <span class="material-icons-round text-4xl text-[var(--color-status-error)] mb-2">error</span>
+                    <p class="text-sm text-[var(--color-text-secondary)] text-center">Failed to load 3D model</p>
+                    <p class="text-xs text-[var(--color-text-secondary)] text-center mt-1">Format not supported or file corrupted</p>
                 </div>
             `;
         }

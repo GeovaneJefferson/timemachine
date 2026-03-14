@@ -55,11 +55,11 @@ export default class ApplicationsPage {
             return `
                 <div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 leading-tight">Installed Applications</h1>
+                        <h1 class="text-2xl font-bold text-[var(--color-text-primary)] leading-tight">Installed Applications</h1>
                         <p class="text-sm text-text-secondary-light mt-1">Your installed Flatpak applications are automatically saved for future clean reinstall usage.</p>
                     </div>
                 </div>
-                <div class="flex-1 overflow-y-auto bg-white">
+                <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)]">
                     ${createListLoadingSkeleton(6)}
                 </div>
             `;
@@ -70,15 +70,15 @@ export default class ApplicationsPage {
             return `
                 <div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 leading-tight">Installed Applications</h1>
+                        <h1 class="text-2xl font-bold text-[var(--color-text-primary)] leading-tight">Installed Applications</h1>
                         <p class="text-sm text-text-secondary-light mt-1">Your installed Flatpak applications are automatically saved for future clean reinstall usage.</p>
                     </div>
                 </div>
-                <div class="flex-1 overflow-y-auto bg-white flex items-center justify-center">
+                <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)] flex items-center justify-center">
                     <div class="text-center">
-                        <span class="material-icons-round text-6xl text-gray-300 mb-4 block">apps</span>
-                        <p class="text-gray-500 text-lg">No Flatpak applications backed up yet</p>
-                        <p class="text-gray-400 text-sm mt-2">Applications will appear here once the daemon backs them up</p>
+                        <span class="material-icons-round text-6xl text-[var(--color-text-secondary)] mb-4 block">apps</span>
+                        <p class="text-[var(--color-text-secondary)] text-lg">No Flatpak applications backed up yet</p>
+                        <p class="text-[var(--color-text-secondary)] text-sm mt-2">Applications will appear here once the daemon backs them up</p>
                     </div>
                 </div>
             `;
@@ -88,34 +88,34 @@ export default class ApplicationsPage {
         return `
             <div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 leading-tight">Installed Applications</h1>
+                    <h1 class="text-2xl font-bold text-[var(--color-text-primary)] leading-tight">Installed Applications</h1>
                     <p class="text-sm text-text-secondary-light mt-1">Your installed Flatpak applications are automatically saved for future clean reinstall usage.</p>
                 </div>
-                <button id="refresh-apps-btn" title="Refresh list" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+                <button id="refresh-apps-btn" title="Refresh list" class="px-3 py-1 bg-[var(--color-gray-200)] rounded hover:bg-[var(--color-gray-300)]">
                     <span class="material-icons-round">refresh</span>
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto bg-white">
+            <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)]">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 sticky top-0 z-0 shadow-sm">
+                    <thead class="bg-[var(--color-gray-50)] sticky top-0 z-0 shadow-sm">
                         <tr>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 flex-1">Application Name</th>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 flex-1">Identifier</th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] flex-1">Application Name</th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] flex-1">Identifier</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm">
+                    <tbody class="divide-y divide-[var(--color-gray-100)] text-sm">
                         ${this.data.applications.map(app => this.renderApplicationRow(app)).join('')}
                     </tbody>
                 </table>
             </div>
             <!-- raw file contents section -->
             ${this.data.rawText ? `
-            <div class="p-4 bg-gray-50 border-t border-border-light">
+            <div class="p-4 bg-[var(--color-gray-50)] border-t border-border-light">
                 <h2 class="text-lg font-medium">Raw flatpak_applications.txt</h2>
-                <pre class="whitespace-pre-wrap text-xs bg-white border rounded p-2" id="raw-flatpak-text">${this.data.rawText}</pre>
+                <pre class="whitespace-pre-wrap text-xs bg-[var(--color-system-background)] border rounded p-2" id="raw-flatpak-text">${this.data.rawText}</pre>
             </div>
             ` : `
-            <div class="p-4 bg-gray-50 border-t border-border-light text-gray-500 text-sm">
+            <div class="p-4 bg-[var(--color-gray-50)] border-t border-border-light text-[var(--color-text-secondary)] text-sm">
                 No raw file contents available
             </div>
             `}
@@ -124,17 +124,17 @@ export default class ApplicationsPage {
 
     renderApplicationRow(app) {
         return `
-            <tr class="hover:bg-gray-50 group cursor-default transition-colors">
+            <tr class="hover:bg-[var(--color-gray-50)] group cursor-default transition-colors">
                 <td class="px-6 py-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg ${app.color} flex items-center justify-center text-white shadow-sm flex-shrink-0 ${app.color === 'bg-gray-800' ? 'border border-gray-600' : ''}">
+                        <div class="w-8 h-8 rounded-lg ${app.color} flex items-center justify-center text-white shadow-sm flex-shrink-0 ${app.color === 'bg-[var(--color-gray-800)]' ? 'border border-[var(--color-gray-600)]' : ''}">
                             <span class="material-icons-round text-lg">${app.icon}</span>
                         </div>
-                        <span class="font-medium text-gray-900">${app.name}</span>
+                        <span class="font-medium text-[var(--color-text-primary)]">${app.name}</span>
                     </div>
                 </td>
                 <td class="px-6 py-3">
-                    <span class="font-mono text-xs text-text-secondary-light bg-gray-100 px-2 py-1 rounded border border-gray-200">${app.identifier}</span>
+                    <span class="font-mono text-xs text-text-secondary-light bg-[var(--color-gray-100)] px-2 py-1 rounded border border-[var(--color-gray-200)]">${app.identifier}</span>
                 </td>
             </tr>
         `;

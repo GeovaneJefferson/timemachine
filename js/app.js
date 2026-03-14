@@ -1,9 +1,10 @@
 // js/app.js
 
-// Import js/utils/notifications.js and update checker
+// Import js/utils/notifications.js, update checker, and electron adapter
 // import { NotificationSystem } from './utils/notifications.js';
 import './utils/notifications.js';
 import { checkUpdates } from './utils/update-checker.js';
+import { electronAPI } from './utils/electron-adapter.js';
 
 // Application State Manager
 class AppState {
@@ -84,11 +85,86 @@ class AppState {
 // Initialize app state
 const appState = new AppState();
 
+// theme helpers -------------------------------------------------------------
+let currentThemePreference = 'system';
+let systemMediaQuery = null;
+
+/**
+ * Apply the specified theme.  Accepts 'light', 'dark', or 'system'.
+ */
+function applyTheme(theme) {
+    // remember preference
+    currentThemePreference = theme;
+
+    // inform electron (native UI) if available
+    if (electronAPI && typeof electronAPI.setTheme === 'function') {
+        electronAPI.setTheme(theme);
+    }
+
+    let useDark;
+    if (theme === 'dark') {
+        useDark = true;
+    } else if (theme === 'light') {
+        useDark = false;
+    } else {
+        // system
+        useDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    if (useDark) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    // store the user's preference (light/dark/system) for fast startup
+    try { localStorage.setItem('theme', theme); } catch {}
+}
+
+/**
+ * Event listener for system theme changes.
+ */
+function systemThemeChangeHandler(e) {
+    if (currentThemePreference === 'system') {
+        applyTheme('system');
+    }
+}
+
+/**
+ * Initialize theme by loading preference from backend and wiring up listeners.
+ */
+async function initializeTheme() {
+    try {
+        const resp = await electronAPI.get('/api/settings/preferences');
+        if (resp && resp.success && resp.preferences && resp.preferences.theme) {
+            currentThemePreference = resp.preferences.theme;
+        } else {
+            currentThemePreference = 'system';
+        }
+    } catch (err) {
+        console.error('Failed to load theme preference', err);
+        currentThemePreference = 'system';
+    }
+
+    applyTheme(currentThemePreference);
+
+    if (window.matchMedia) {
+        systemMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        systemMediaQuery.removeEventListener('change', systemThemeChangeHandler);
+        systemMediaQuery.addEventListener('change', systemThemeChangeHandler);
+    }
+}
+
+// expose helper for other modules
+window.applyTheme = applyTheme;
+
 // Wait for DOM
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing app...');
-    
+
     try {
+        // apply theme early so there is no flash when pages render
+        await initializeTheme();
+
         // Load header
         await loadHeader();
         
@@ -107,9 +183,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Failed to initialize app:', error);
         document.getElementById('page-content').innerHTML = `
             <div class="p-8 text-center">
-                <div class="text-red-500 text-5xl mb-4">⚠️</div>
+                <div class="text-[var(--color-status-error)] text-5xl mb-4">⚠️</div>
                 <h2 class="text-xl font-bold mb-2">Initialization Error</h2>
-                <p class="text-gray-600">${error.message}</p>
+                <p class="text-[var(--color-text-secondary)]">${error.message}</p>
                 <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-primary text-white rounded">
                     Reload Page
                 </button>
@@ -145,9 +221,9 @@ async function loadHeader() {
         console.error('Failed to load header:', error);
         // Fallback header
         document.getElementById('header-container').innerHTML = `
-            <div class="flex items-center justify-between px-6 py-3 bg-gray-50 border-b">
+            <div class="flex items-center justify-between px-6 py-3 bg-[var(--color-gray-50)] border-b">
                 <div class="text-lg font-bold">TimeMachine Backup</div>
-                <button onclick="loadPage('dashboard')" class="px-4 py-2 bg-blue-500 text-white rounded">
+                <button onclick="loadPage('dashboard')" class="px-4 py-2 bg-[var(--color-accent)] text-white rounded">
                     Dashboard
                 </button>
             </div>
@@ -192,13 +268,13 @@ async function loadSidebar() {
         document.getElementById('sidebar').innerHTML = `
         <div class="p-4">
         <h3 class="font-bold mb-4">Navigation</h3>
-        <button onclick="loadPage('dashboard')" class="block w-full text-left p-2 bg-blue-100 rounded mb-2">
+        <button onclick="loadPage('dashboard')" class="block w-full text-left p-2 bg-[var(--color-accent-light)] rounded mb-2">
         Dashboard
         </button>
-        <button onclick="loadPage('folders')" class="block w-full text-left p-2 hover:bg-gray-100 rounded mb-2">
+        <button onclick="loadPage('folders')" class="block w-full text-left p-2 hover:bg-[var(--color-gray-100)] rounded mb-2">
         Backup Files
         </button>
-        <button onclick="loadPage('locations')" class="block w-full text-left p-2 hover:bg-gray-100 rounded">
+        <button onclick="loadPage('locations')" class="block w-full text-left p-2 hover:bg-[var(--color-gray-100)] rounded">
         Locations
         </button>
         </div>
@@ -411,7 +487,7 @@ async function loadPage(pageName, params = {}) {
     } catch (error) {
         console.error(`Failed to load page ${pageName}:`, error);
         pageContent.innerHTML = `
-            <div class="p-8 text-red-600">
+            <div class="p-8 text-[var(--color-status-error)]">
                 <h2 class="text-xl font-bold">Error loading ${pageName}</h2>
                 <p>${error.message}</p>
             </div>

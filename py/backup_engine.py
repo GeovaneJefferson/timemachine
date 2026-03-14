@@ -307,12 +307,6 @@ class BackupEngine:
                 'deleted': False  # Mark as not deleted
             }
 
-            # Update hash to path mapping
-            file_hash = file_info.get('file_hash')
-            if file_hash:
-                if not hasattr(self.daemon.metadata, 'hash_to_path_map'):
-                    self.daemon.metadata.hash_to_path_map = {}
-                self.daemon.metadata.hash_to_path_map[file_hash] = dst_path
 
     def _handle_file_deletion(self, path: str):
         """Mark file as deleted in metadata."""
@@ -325,19 +319,12 @@ class BackupEngine:
 
                 logging.info(f"Marked as deleted: {rel_path}")
 
-                # Cleanup hash map if this was the last reference
+                # Optionally log if this hash is no longer referenced
                 file_hash = self.daemon.metadata.metadata[rel_path].get('hash')
                 if file_hash:
-                    # Count remaining non-deleted references to this hash
-                    all_refs = [k for k, v in self.daemon.metadata.metadata.items()
-                               if v.get('hash') == file_hash and not v.get('deleted', False)]
-
-                    # If no more references, remove from hash map
-                    if not all_refs:
-                        if hasattr(self.daemon.metadata, 'hash_to_path_map'):
-                            if file_hash in self.daemon.metadata.hash_to_path_map:
-                                del self.daemon.metadata.hash_to_path_map[file_hash]
-                                logging.debug(f"Removed hash from map: {file_hash}")
+                    remaining = self.daemon.metadata.count_hash_references(file_hash, include_deleted=False)
+                    if remaining == 0:
+                        logging.debug(f"No remaining references for hash: {file_hash}")
             else:
                 logging.debug(f"File not in metadata, cannot mark as deleted: {rel_path}")
 

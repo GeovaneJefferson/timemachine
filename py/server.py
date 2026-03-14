@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import json
 import socket
 import logging
 import shutil
@@ -207,72 +206,6 @@ class SERVER:
                 
         except Exception as e:
             logging.error(f"Error writing config: {e}")
-
-    # =============================================================================
-    # METADATA HANDLING
-    # =============================================================================
-    def get_metadata(self):
-        """Load metadata from JSON file."""
-        if not os.path.exists(self.METADATA_FILE):
-            return {}
-        try:
-            with open(self.METADATA_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception as e:
-            logging.error(f"Error loading metadata: {e}")
-            return {}
-
-    def save_metadata(self, metadata):
-        """Save metadata to JSON file with atomic write and backups."""
-        if not metadata and os.path.exists(self.METADATA_FILE):
-            logging.warning("Refusing to overwrite metadata with empty data")
-            return False
-        
-        # 1. Create Backup
-        if os.path.exists(self.METADATA_FILE):
-            try:
-                backup_path = f"{self.METADATA_FILE}.bak.{time.strftime('%Y%m%d-%H%M%S')}"
-                shutil.copy2(self.METADATA_FILE, backup_path)
-            except Exception as e:
-                logging.warning(f"Could not create metadata backup: {e}")
-
-        # 2. Cleanup Old Backups
-        try:
-            meta_backup_keep = 3  # Keep last 3 backups
-            backup_dir = os.path.dirname(self.METADATA_FILE)
-            meta_name = os.path.basename(self.METADATA_FILE)
-            
-            all_backups = sorted(
-                [f for f in os.listdir(backup_dir) if f.startswith(f"{meta_name}.bak.")],
-                reverse=True
-            )
-            
-            for old_backup in all_backups[meta_backup_keep:]:
-                os.remove(os.path.join(backup_dir, old_backup))
-                logging.info(f"Deleted old metadata backup: {old_backup}")
-        except Exception as e:
-            logging.warning(f"Could not clean up old metadata backups: {e}")
-        
-        # 3. Atomic Write
-        tmp_path = None
-        try:
-            os.makedirs(os.path.dirname(self.METADATA_FILE), exist_ok=True)
-            fd, tmp_path = tempfile.mkstemp(prefix=".meta_tmp_", dir=os.path.dirname(self.METADATA_FILE))
-            with os.fdopen(fd, 'w', encoding='utf-8') as f:
-                json.dump(metadata, f, indent=2)
-                f.flush()
-                os.fsync(f.fileno())
-            
-            os.replace(tmp_path, self.METADATA_FILE)
-            return True
-        except Exception as e:
-            logging.error(f"Failed to save metadata: {e}")
-            if tmp_path and os.path.exists(tmp_path):
-                try:
-                    os.remove(tmp_path)
-                except Exception:
-                    pass
-            return False
 
     # =============================================================================
     # PATHS & DEVICE INFO

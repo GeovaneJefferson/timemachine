@@ -44,13 +44,13 @@ export default class FoldersPage {
             <div class="flex flex-col h-full"> <!-- Added flex container -->
                 <div class="px-8 py-6 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
                     <div class="flex gap-6 items-center">
-                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/20 flex items-center justify-center shadow-sm border border-blue-100 dark:border-blue-800/50 flex-shrink-0">
-                            <span class="material-symbols-outlined text-4xl text-blue-500 dark:text-blue-400">folder_open</span>
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-[var(--color-gray-50)] to-[var(--color-gray-100)] dark:from-[var(--color-gray-900)]/40 dark:to-[var(--color-gray-800)]/20 flex items-center justify-center shadow-sm border border-[var(--color-gray-100)] dark:border-[var(--color-gray-700)]/50 flex-shrink-0">
+                            <span class="material-symbols-outlined text-4xl text-[var(--color-accent)] dark:text-[var(--color-accent)]">folder_open</span>
                         </div>
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-1">
                                 <div>
-                                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Backup Files</h1>
+                                    <h1 class="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white leading-tight">Backup Files</h1>
                                     <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-0.5" id="folder-stats">
                                         Loading...
                                     </p>
@@ -58,20 +58,20 @@ export default class FoldersPage {
                                         <div class="flex items-center gap-2">
                                             <span class="material-icons-round text-sm text-primary">search</span>
                                             <span class="text-xs text-primary font-medium" id="search-indicator-text"></span>
-                                            <button class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 ml-2 px-2 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700" id="clear-search-btn">
+                                            <button class="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)] ml-2 px-2 py-0.5 rounded hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]" id="clear-search-btn">
                                                 Clear
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <button class="text-sm text-primary hover:text-blue-700 font-medium px-3 py-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" id="manage-exclusions">
+                                    <button class="text-sm text-primary hover:text-[var(--color-accent)] font-medium px-3 py-1.5 rounded-md hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-accent-light)]/20 transition-colors" id="manage-exclusions">
                                         Manage Exclusions
                                     </button>
                                 </div>
                             </div>
                             <div class="flex gap-2 mt-2" id="folder-tags">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--color-gray-100)] text-[var(--color-text-secondary)] dark:bg-[var(--color-gray-700)] dark:text-[var(--color-text-secondary)]">
                                     Backup
                                 </span>
                                 <span id="search-tag" class="hidden inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
@@ -83,32 +83,32 @@ export default class FoldersPage {
                     </div>
                 </div>
                 
-                <div class="px-6 py-3 bg-gray-50/50 dark:bg-gray-800/30 border-b border-border-light dark:border-border-dark flex items-center justify-between flex-shrink-0">
+                <div class="px-6 py-3 bg-[var(--color-gray-50)]/50 dark:bg-[var(--color-gray-800)]/30 border-b border-border-light dark:border-border-dark flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center gap-2">
-                        <button class="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 disabled:opacity-50 transition-colors" 
+                        <button class="p-1.5 rounded-md hover:bg-[var(--color-gray-200)] dark:hover:bg-[var(--color-gray-700)] text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] disabled:opacity-50 transition-colors" 
                                 id="nav-back" 
                                 ${this.currentPath.length === 0 || !this.isBackupDeviceConfigured ? 'disabled' : ''}>
                             <span class="material-icons-round text-lg">chevron_left</span>
                         </button>
-                        <button class="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 disabled:opacity-50 transition-colors" id="nav-forward" disabled>
+                        <button class="p-1.5 rounded-md hover:bg-[var(--color-gray-200)] dark:hover:bg-[var(--color-gray-700)] text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] disabled:opacity-50 transition-colors" id="nav-forward" disabled>
                             <span class="material-icons-round text-lg">chevron_right</span>
                         </button>
-                        <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-border-light dark:border-border-dark rounded px-2 py-1.5 shadow-sm min-w-0" id="breadcrumbs-container">
+                        <div class="h-4 w-px bg-[var(--color-gray-300)] dark:bg-[var(--color-gray-600)] mx-1"></div>
+                        <div class="flex items-center text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-border-light dark:border-border-dark rounded px-2 py-1.5 shadow-sm min-w-0" id="breadcrumbs-container">
                             <div class="flex items-center overflow-x-auto hide-scrollbar max-w-md" id="breadcrumbs">
                                 ${this.renderBreadcrumbs()}
                             </div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-0.5" id="view-toggle">
-                            <button class="p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'list' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
+                        <div class="flex bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded-lg p-0.5" id="view-toggle">
+                            <button class="p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'list' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
                                     data-view="list" 
                                     title="List view" 
                                     ${!this.isBackupDeviceConfigured ? 'disabled' : ''}>
                                 <span class="material-icons-round text-lg">list</span>
                             </button>
-                            <button class="p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'grid' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
+                            <button class="p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'grid' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
                                     data-view="grid" 
                                     title="Grid view" 
                                     ${!this.isBackupDeviceConfigured ? 'disabled' : ''}>
@@ -117,38 +117,38 @@ export default class FoldersPage {
                         </div>
                         
                         <div class="relative" id="filter-container">
-                            <button class="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm font-medium text-gray-700 dark:text-gray-200 ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
+                            <button class="flex items-center gap-2 px-3 py-1.5 bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-[var(--color-gray-200)] dark:border-[var(--color-gray-600)] rounded-md shadow-sm hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-600)] transition-colors text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" 
                                     id="filter-btn" 
                                     ${!this.isBackupDeviceConfigured ? 'disabled' : ''}>
                                 <span class="material-icons-round text-base">filter_list</span>
                                 Filter
                             </button>
                             
-                            <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50 hidden glass-light dark:glass-dark animate-fade-in-down" id="filter-dropdown">
+                            <div class="absolute right-0 mt-2 w-56 bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)] rounded-lg shadow-xl border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] z-50 hidden glass-light dark:glass-dark animate-fade-in-down" id="filter-dropdown">
                                 <div class="p-3">
-                                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <h3 class="text-sm font-semibold text-[var(--color-text-primary)] dark:text-white mb-3 flex items-center gap-2">
                                         <span class="material-icons-round text-base">filter_alt</span>
                                         Filter Options
                                     </h3>
                                     
                                     <div class="space-y-3">
                                         <div>
-                                            <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">File Type</label>
+                                            <label class="text-xs font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-2 block">File Type</label>
                                             <div class="space-y-2">
                                                 <label class="flex items-center gap-2 cursor-pointer">
                                                     <input type="checkbox" class="rounded text-primary focus:ring-primary" data-filter="folder" ${this.activeFilters.showFolders ? 'checked' : ''}>
-                                                    <span class="text-sm text-gray-700 dark:text-gray-300">Folders</span>
+                                                    <span class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Folders</span>
                                                 </label>
                                                 <label class="flex items-center gap-2 cursor-pointer">
                                                     <input type="checkbox" class="rounded text-primary focus:ring-primary" data-filter="file" ${this.activeFilters.showFiles ? 'checked' : ''}>
-                                                    <span class="text-sm text-gray-700 dark:text-gray-300">Files</span>
+                                                    <span class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Files</span>
                                                 </label>
                                             </div>
                                         </div>
                                         
-                                        <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                                            <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">File Size</label>
-                                            <select class="w-full text-sm border border-gray-200 dark:border-gray-700 rounded px-3 py-2 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary transition-all dark:text-white" id="size-filter">
+                                        <div class="pt-3 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
+                                            <label class="text-xs font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-2 block">File Size</label>
+                                            <select class="w-full text-sm border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] rounded px-3 py-2 bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] focus:ring-2 focus:ring-primary focus:border-primary transition-all dark:text-white" id="size-filter">
                                                 <option value="all" ${this.activeFilters.sizeFilter === 'all' ? 'selected' : ''}>All Sizes</option>
                                                 <option value="small" ${this.activeFilters.sizeFilter === 'small' ? 'selected' : ''}>Small (&lt; 1 MB)</option>
                                                 <option value="medium" ${this.activeFilters.sizeFilter === 'medium' ? 'selected' : ''}>Medium (1-100 MB)</option>
@@ -157,9 +157,9 @@ export default class FoldersPage {
                                             </select>
                                         </div>
                                         
-                                        <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                                            <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">Sort By</label>
-                                            <select class="w-full text-sm border border-gray-200 dark:border-gray-700 rounded px-3 py-2 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-primary transition-all dark:text-white" id="sort-filter">
+                                        <div class="pt-3 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
+                                            <label class="text-xs font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-2 block">Sort By</label>
+                                            <select class="w-full text-sm border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] rounded px-3 py-2 bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] focus:ring-2 focus:ring-primary focus:border-primary transition-all dark:text-white" id="sort-filter">
                                                 <option value="name" ${this.activeFilters.sortBy === 'name' ? 'selected' : ''}>Name (A-Z)</option>
                                                 <option value="name-desc" ${this.activeFilters.sortBy === 'name-desc' ? 'selected' : ''}>Name (Z-A)</option>
                                                 <option value="date" ${this.activeFilters.sortBy === 'date' ? 'selected' : ''}>Date (Newest)</option>
@@ -171,11 +171,11 @@ export default class FoldersPage {
                                         </div>
                                     </div>
                                     
-                                    <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-                                        <button class="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md transition-colors" id="reset-filter">
+                                    <div class="flex gap-2 mt-4 pt-3 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
+                                        <button class="flex-1 px-3 py-2 bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] hover:bg-[var(--color-gray-200)] dark:hover:bg-[var(--color-gray-600)] text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] text-sm font-medium rounded-md transition-colors" id="reset-filter">
                                             Reset
                                         </button>
-                                        <button class="flex-1 px-3 py-2 bg-primary hover:bg-blue-600 text-white text-sm font-medium rounded-md transition-colors" id="apply-filter">
+                                        <button class="flex-1 px-3 py-2 bg-primary hover:bg-[var(--color-accent)] text-white text-sm font-medium rounded-md transition-colors" id="apply-filter">
                                             Apply
                                         </button>
                                     </div>
@@ -188,22 +188,22 @@ export default class FoldersPage {
                 <!-- Changed this to flex-1 to take remaining space -->
                 <div class="flex-1 overflow-hidden relative">
                     <div class="h-full flex"> <!-- Added h-full flex -->
-                        <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark" id="content-container">
+                        <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)] dark:bg-surface-dark" id="content-container">
                             ${this.isLoading ? this.renderLoading() : this.renderContent()}
                         </div>
                         
-                        <div class="w-100 bg-gray-50 dark:bg-gray-800 border-l border-border-light dark:border-border-dark flex flex-col hidden transition-all duration-300 ease-in-out" id="preview-panel">
-                            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">Preview</h3>
-                                <button id="close-preview" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <div class="w-80 max-w-xs bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] border-l border-border-light dark:border-border-dark flex flex-col hidden transition-all duration-300 ease-in-out" id="preview-panel">
+                            <div class="p-4 border-b border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] flex justify-between items-center">
+                                <h3 class="font-semibold text-[var(--color-text-primary)] dark:text-white">Preview</h3>
+                                <button id="close-preview" class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]">
                                     <span class="material-icons-round text-sm">close</span>
                                 </button>
                             </div>
                             <div id="preview-content" class="flex-1 overflow-y-auto p-4 flex flex-col">
-                                <p class="text-gray-500 text-center mt-10 text-sm">Select a file to preview</p>
+                                <p class="text-[var(--color-text-secondary)] text-center mt-10 text-sm">Select a file to preview</p>
                             </div>
                             <!-- Action buttons for selected file -->
-                            <div id="preview-actions" class="p-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                            <div id="preview-actions" class="p-4 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] hidden">
                                 <div class="grid grid-cols-3 gap-2">
                                     <button class="preview-action-btn" data-action="open" data-file="" data-type="">
                                         <span class="material-icons-round text-sm mr-2">visibility</span>
@@ -225,10 +225,10 @@ export default class FoldersPage {
                 </div>
 
                 <!-- This container will now stay at the bottom -->
-                <div class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border-t border-border-light dark:border-border-dark text-xs text-text-secondary-light dark:text-text-secondary-dark flex justify-between items-center flex-shrink-0" id="file-summary-container">
+                <div class="px-6 py-3 bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] border-t border-border-light dark:border-border-dark text-xs text-text-secondary-light dark:text-text-secondary-dark flex justify-between items-center flex-shrink-0" id="file-summary-container">
                     <span id="file-summary">${this.isBackupDeviceConfigured ? 'Loading...' : 'No backup device configured'}</span>
                     <div class="flex gap-4">
-                        <span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer ${this.selectedFiles.size === 0 || !this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" id="restore-all">Restore Selected</span>
+                        <span class="hover:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)] cursor-pointer ${this.selectedFiles.size === 0 || !this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}" id="restore-all">Restore Selected</span>
                         <!-- download-selected removed since bulk download unlikely -->
                     </div>
                 </div>
@@ -247,10 +247,10 @@ export default class FoldersPage {
             const displaySegment = segment.length > 15 ? segment.substring(0, 15) + '...' : segment;
             
             return `
-                ${index > 0 ? '<span class="material-icons-round text-base text-gray-400 mx-1 flex-shrink-0">chevron_right</span>' : ''}
+                ${index > 0 ? '<span class="material-icons-round text-base text-[var(--color-text-secondary)] mx-1 flex-shrink-0">chevron_right</span>' : ''}
                 ${isLast ? 
-                    `<span class="font-medium text-gray-900 dark:text-white flex-shrink-0" title="${segment}">${displaySegment}</span>` :
-                    `<button class="flex-shrink-0 text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors truncate max-w-32" data-breadcrumb="${segment}" data-index="${index}" title="${segment}">${displaySegment}</button>`
+                    `<span class="font-medium text-[var(--color-text-primary)] dark:text-white flex-shrink-0" title="${segment}">${displaySegment}</span>` :
+                    `<button class="flex-shrink-0 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-primary dark:hover:text-primary transition-colors truncate max-w-32" data-breadcrumb="${segment}" data-index="${index}" title="${segment}">${displaySegment}</button>`
                 }
             `;
         }).join('');
@@ -283,12 +283,12 @@ export default class FoldersPage {
             const gridButton = viewToggle.querySelector('[data-view="grid"]');
             
             if (listButton) {
-                listButton.className = `p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'list' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}`;
+                listButton.className = `p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'list' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}`;
                 listButton.disabled = !this.isBackupDeviceConfigured;
             }
             
             if (gridButton) {
-                gridButton.className = `p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'grid' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}`;
+                gridButton.className = `p-1.5 rounded-md flex items-center justify-center ${this.viewMode === 'grid' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white transition-colors'} ${!this.isBackupDeviceConfigured ? 'opacity-50 cursor-not-allowed' : ''}`;
                 gridButton.disabled = !this.isBackupDeviceConfigured;
             }
         }
@@ -298,7 +298,7 @@ export default class FoldersPage {
         return `
             <div class="flex flex-col items-center justify-center h-full">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-                <p class="text-gray-600 dark:text-gray-400">Loading folder contents...</p>
+                <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Loading folder contents...</p>
             </div>
         `;
     }
@@ -340,27 +340,27 @@ export default class FoldersPage {
         return `
             <div class="w-full overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-10">
+                    <thead class="bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] sticky top-0 z-10">
                         <tr>
-                            <th class="px-6 py-3 pl-8 text-xs font-semibold ${isEnabled ? 'text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : 'text-gray-400 dark:text-gray-500 cursor-default'} ${this.sortColumn === 'name' ? 'text-primary' : ''}" id="sort-name">
+                            <th class="px-6 py-3 pl-8 text-xs font-semibold ${isEnabled ? 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-pointer hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]/50 transition-colors' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-default'} ${this.sortColumn === 'name' ? 'text-primary' : ''}" id="sort-name">
                                 <div class="flex items-center gap-1">
                                     <span>Name</span>
                                     ${this.sortColumn === 'name' ? `<span class="text-xs">${sortIndicator}</span>` : ''}
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : 'text-gray-400 dark:text-gray-500 cursor-default'} ${this.sortColumn === 'path' ? 'text-primary' : ''}" id="sort-path">
+                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-pointer hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]/50 transition-colors' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-default'} ${this.sortColumn === 'path' ? 'text-primary' : ''}" id="sort-path">
                                 <div class="flex items-center gap-1">
                                     <span>Location</span>
                                     ${this.sortColumn === 'path' ? `<span class="text-xs">${sortIndicator}</span>` : ''}
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : 'text-gray-400 dark:text-gray-500 cursor-default'} ${this.sortColumn === 'type' ? 'text-primary' : ''}" id="sort-type">
+                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-pointer hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]/50 transition-colors' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-default'} ${this.sortColumn === 'type' ? 'text-primary' : ''}" id="sort-type">
                                 <div class="flex items-center gap-1">
                                     <span>Type</span>
                                     ${this.sortColumn === 'type' ? `<span class="text-xs">${sortIndicator}</span>` : ''}
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : 'text-gray-400 dark:text-gray-500 cursor-default'} ${this.sortColumn === 'size' ? 'text-primary' : ''}" id="sort-size">
+                            <th class="px-6 py-3 text-xs font-semibold ${isEnabled ? 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-pointer hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]/50 transition-colors' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] cursor-default'} ${this.sortColumn === 'size' ? 'text-primary' : ''}" id="sort-size">
                                 <div class="flex items-center gap-1">
                                     <span>Size</span>
                                     ${this.sortColumn === 'size' ? `<span class="text-xs">${sortIndicator}</span>` : ''}
@@ -389,28 +389,28 @@ export default class FoldersPage {
                     const previewUrl = isImage ? `/api/stream/file?path=${encodeURIComponent(file.path)}` : null;
 
                     return `
-                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all cursor-pointer group relative ${
+                        <div class="bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] rounded-lg p-4 border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] hover:shadow-md transition-all cursor-pointer group relative ${
                             this.selectedFiles.has(file.path) ? 'selected-highlight ring-1 ring-primary' : ''
                         }" data-file="${file.path}" data-type="${file.type}">
                             ${hasVersions ? `
-                            <div class="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-lg z-10">
+                            <div class="absolute -top-2 -right-2 w-6 h-6 bg-[var(--color-accent)] rounded-full flex items-center justify-center shadow-lg z-10">
                                 <span class="text-xs font-bold text-white">${versionCount}</span>
                             </div>
                             ` : ''}
                             <div class="flex flex-col items-center text-center mb-3">
                                 ${previewUrl ? `
                                 <div class="w-16 h-16 rounded-lg flex items-center justify-center mb-2 relative overflow-hidden">
-                                    <img src="${previewUrl}" class="w-full h-full object-cover" alt="${file.name}" onerror="this.onerror=null; this.parentElement.innerHTML = '<span class=\\'material-icons-round text-3xl text-gray-400\\'>broken_image</span>';">
+                                    <img src="${previewUrl}" class="w-full h-full object-cover" alt="${file.name}" onerror="this.onerror=null; this.parentElement.innerHTML = '<span class=\\'material-icons-round text-3xl text-[var(--color-text-secondary)]\\'>broken_image</span>';">
                                 </div>
                                 ` : `
                                 <div class="w-16 h-16 rounded-lg bg-gradient-to-br ${
                                     file.type === 'folder' ? 
-                                        'from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20' :
+                                        'from-[var(--color-gray-50)] to-[var(--color-gray-100)] dark:from-blue-900/30 dark:to-[var(--color-gray-800)]/20' :
                                         'from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700'
                                 } flex items-center justify-center mb-2 relative">
                                     <span class="material-icons-round text-3xl ${
                                         file.type === 'folder' ? 
-                                            'text-blue-500 dark:text-blue-400' :
+                                            'text-[var(--color-accent)] dark:text-[var(--color-accent)]' :
                                             this.getFileIconColor(file.name)
                                     }">
                                         ${file.type === 'folder' ? 'folder' : this.getFileIcon(file.name)}
@@ -418,15 +418,15 @@ export default class FoldersPage {
                                 </div>
                                 `}
                                 <div class="w-full">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-white truncate mb-1" title="${file.name}">
+                                    <div class="text-sm font-medium text-[var(--color-text-primary)] dark:text-white truncate mb-1" title="${file.name}">
                                         ${this.highlightSearchText(file.name)}
                                     </div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">
                                         ${file.type === 'folder' ? 'Folder' : file.size}
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                            <div class="flex justify-between items-center text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">
                                 <span class="truncate max-w-[100px]" title="${file.path}">${this.formatPathLocation(file.path)}</span>
                                 <!-- Removed the context menu button -->
                             </div>
@@ -455,35 +455,35 @@ export default class FoldersPage {
                                 }>
                                 <span class="material-icons-round ${
                                     file.type === 'folder' ? 
-                                        'text-blue-500 dark:text-blue-400' :
+                                        'text-[var(--color-accent)] dark:text-[var(--color-accent)]' :
                                         this.getFileIconColor(file.name)
                                 } text-xl">
                                     ${file.type === 'folder' ? 'folder' : this.getFileIcon(file.name)}
                                 </span>
                                 ${hasVersions ? `
-                                <div class="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                <div class="absolute -top-1 -right-1 w-5 h-5 bg-[var(--color-accent)] rounded-full flex items-center justify-center">
                                     <span class="text-[10px] font-bold text-white">${versionCount}</span>
                                 </div>
                                 ` : ''}
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="font-medium text-gray-900 dark:text-gray-200 truncate max-w-xs" title="${file.name}">
+                                <span class="font-medium text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)] truncate max-w-xs" title="${file.name}">
                                     ${this.highlightSearchText(file.name)}
                                 </span>
                                 ${hasVersions ? `
                                 <div class="flex items-center gap-1" title="${versionCount} backup versions available">
                                     <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span>
-                                    <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">${versionCount}</span>
+                                    <span class="text-xs text-[var(--color-accent)] dark:text-[var(--color-accent)] font-medium">${versionCount}</span>
                                 </div>
                                 ` : ''}
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap text-xs" title="${file.path}">
+                    <td class="px-6 py-3 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] whitespace-nowrap text-xs" title="${file.path}">
                         ${this.formatPathLocation(file.path)}
                     </td>
-                    <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">${file.type === 'folder' ? 'Folder' : this.getFileType(file.name)}</td>
-                    <td class="px-6 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">${file.type === 'folder' ? '--' : file.size}</td>
+                    <td class="px-6 py-3 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] whitespace-nowrap">${file.type === 'folder' ? 'Folder' : this.getFileType(file.name)}</td>
+                    <td class="px-6 py-3 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] whitespace-nowrap">${file.type === 'folder' ? '--' : file.size}</td>
                 </tr>
             `;
         }).join('');
@@ -525,14 +525,14 @@ export default class FoldersPage {
 
     getFileIconColor(filename) {
         const ext = filename.split('.').pop().toLowerCase();
-        if (['pdf'].includes(ext)) return 'text-red-500 dark:text-red-400';
-        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(ext)) return 'text-green-500 dark:text-green-400';
-        if (['doc', 'docx', 'txt', 'rtf', 'md'].includes(ext)) return 'text-blue-500 dark:text-blue-400';
-        if (['xls', 'xlsx', 'csv'].includes(ext)) return 'text-green-600 dark:text-green-500';
+        if (['pdf'].includes(ext)) return 'text-[var(--color-status-error)] dark:text-[var(--color-status-error)]';
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(ext)) return 'text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]';
+        if (['doc', 'docx', 'txt', 'rtf', 'md'].includes(ext)) return 'text-[var(--color-accent)] dark:text-[var(--color-accent)]';
+        if (['xls', 'xlsx', 'csv'].includes(ext)) return 'text-[var(--color-status-success)] dark:text-[var(--color-status-success)]';
         if (['zip', 'rar', 'tar', 'gz', '7z'].includes(ext)) return 'text-orange-500 dark:text-orange-400';
-        if (['py', 'js', 'java', 'cpp', 'c', 'html', 'css', 'json', 'xml'].includes(ext)) return 'text-purple-500 dark:text-purple-400';
-        if (['blend', 'fbx', 'obj', 'glb', 'gltf', 'stl'].includes(ext)) return 'text-orange-600 dark:text-orange-400';
-        return 'text-gray-500 dark:text-gray-400';
+        if (['py', 'js', 'java', 'cpp', 'c', 'html', 'css', 'json', 'xml'].includes(ext)) return 'text-purple-600 dark:text-purple-400';
+        if (['blend', 'fbx', 'obj', 'glb', 'gltf', 'stl'].includes(ext)) return 'text-orange-500 dark:text-orange-400';
+        return 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]';
     }
 
     getFileType(filename) {
@@ -1000,11 +1000,11 @@ export default class FoldersPage {
         [sortName, sortPath, sortType, sortSize].forEach(header => {
             if (header) {
                 if (this.isBackupDeviceConfigured) {
-                    header.classList.remove('text-gray-400', 'dark:text-gray-500', 'cursor-default');
-                    header.classList.add('text-gray-500', 'dark:text-gray-400', 'cursor-pointer', 'hover:bg-gray-100', 'dark:hover:bg-gray-700/50');
+                    header.classList.remove('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'cursor-default');
+                    header.classList.add('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'cursor-pointer', 'hover:bg-[var(--color-gray-100)]', 'dark:hover:bg-[var(--color-gray-700)]/50');
                 } else {
-                    header.classList.remove('text-gray-500', 'dark:text-gray-400', 'cursor-pointer', 'hover:bg-gray-100', 'dark:hover:bg-gray-700/50');
-                    header.classList.add('text-gray-400', 'dark:text-gray-500', 'cursor-default');
+                    header.classList.remove('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'cursor-pointer', 'hover:bg-[var(--color-gray-100)]', 'dark:hover:bg-[var(--color-gray-700)]/50');
+                    header.classList.add('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'cursor-default');
                 }
             }
         });
@@ -1076,11 +1076,11 @@ export default class FoldersPage {
             return `
                 <div class="preview-media-container relative group">
                     <img src="${previewUrl}" 
-                         class="w-full h-auto max-h-60 object-contain rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 group-hover:blur-sm group-hover:brightness-75" 
+                         class="w-full h-auto max-h-60 object-contain rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)] transition-all duration-300 group-hover:blur-sm group-hover:brightness-75" 
                          alt="${file.name}" 
-                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'text-center text-xs text-red-400\\'>Preview unavailable</div>';">
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'text-center text-xs text-[var(--color-status-error)]\\'>Preview unavailable</div>';">
                     <div class="preview-maximize-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button class="maximize-preview-btn bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                        <button class="maximize-preview-btn bg-[var(--color-system-background)]/90 dark:bg-[var(--color-gray-800)]/90 text-[var(--color-text-secondary)] dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-[var(--color-system-background)] dark:hover:bg-[var(--color-gray-700)] transition-colors"
                                 data-file="${file.path}"
                                 data-type="${file.type}"
                                 data-name="${file.name}">
@@ -1096,11 +1096,11 @@ export default class FoldersPage {
         if (['mp4', 'webm', 'mov'].includes(ext)) {
             return `
                 <div class="preview-media-container relative group">
-                    <video controls class="w-full max-h-60 rounded-lg border border-gray-200 dark:border-gray-700 bg-black transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
+                    <video controls class="w-full max-h-60 rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-black transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
                         <source src="${previewUrl}" type="video/${ext === 'mov' ? 'mp4' : ext}">
                     </video>
                     <div class="preview-maximize-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button class="maximize-preview-btn bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                        <button class="maximize-preview-btn bg-[var(--color-system-background)]/90 dark:bg-[var(--color-gray-800)]/90 text-[var(--color-text-secondary)] dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-[var(--color-system-background)] dark:hover:bg-[var(--color-gray-700)] transition-colors"
                                 data-file="${file.path}"
                                 data-type="${file.type}"
                                 data-name="${file.name}">
@@ -1116,16 +1116,16 @@ export default class FoldersPage {
         if (['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
             return `
                 <div class="preview-media-container relative group">
-                    <div class="w-full p-4 bg-gray-100 dark:bg-gray-700 rounded-lg transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
+                    <div class="w-full p-4 bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] rounded-lg transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
                         <div class="flex items-center justify-center mb-2">
-                            <span class="material-icons-round text-4xl text-gray-500">audiotrack</span>
+                            <span class="material-icons-round text-4xl text-[var(--color-text-secondary)]">audiotrack</span>
                         </div>
                         <audio controls class="w-full h-8">
                             <source src="${previewUrl}" type="audio/${ext}">
                         </audio>
                     </div>
                     <div class="preview-maximize-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button class="maximize-preview-btn bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                        <button class="maximize-preview-btn bg-[var(--color-system-background)]/90 dark:bg-[var(--color-gray-800)]/90 text-[var(--color-text-secondary)] dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-[var(--color-system-background)] dark:hover:bg-[var(--color-gray-700)] transition-colors"
                                 data-file="${file.path}"
                                 data-type="${file.type}"
                                 data-name="${file.name}">
@@ -1142,11 +1142,11 @@ export default class FoldersPage {
                 <div class="preview-media-container relative group">
                     <object data="${previewUrl}" 
                             type="application/pdf" 
-                            class="w-full h-64 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
-                        <div class="flex items-center justify-center h-full text-sm text-gray-500">PDF Preview Unavailable</div>
+                            class="w-full h-64 rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
+                        <div class="flex items-center justify-center h-full text-sm text-[var(--color-text-secondary)]">PDF Preview Unavailable</div>
                     </object>
                     <div class="preview-maximize-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button class="maximize-preview-btn bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                        <button class="maximize-preview-btn bg-[var(--color-system-background)]/90 dark:bg-[var(--color-gray-800)]/90 text-[var(--color-text-secondary)] dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-[var(--color-system-background)] dark:hover:bg-[var(--color-gray-700)] transition-colors"
                                 data-file="${file.path}"
                                 data-type="${file.type}"
                                 data-name="${file.name}">
@@ -1161,7 +1161,7 @@ export default class FoldersPage {
         if (['txt', 'md', 'html', 'css', 'js', 'py', 'json', 'xml', 'csv'].includes(ext)) {
             return `
                 <div class="preview-media-container relative group">
-                    <div class="w-full h-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
+                    <div class="w-full h-64 rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)] overflow-hidden transition-all duration-300 group-hover:blur-sm group-hover:brightness-75">
                         <div class="h-full overflow-auto p-3 text-sm font-mono">
                             <div class="text-preview-content" data-url="${previewUrl}">
                                 Loading text preview...
@@ -1169,7 +1169,7 @@ export default class FoldersPage {
                         </div>
                     </div>
                     <div class="preview-maximize-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button class="maximize-preview-btn bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                        <button class="maximize-preview-btn bg-[var(--color-system-background)]/90 dark:bg-[var(--color-gray-800)]/90 text-[var(--color-text-secondary)] dark:text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hover:bg-[var(--color-system-background)] dark:hover:bg-[var(--color-gray-700)] transition-colors"
                                 data-file="${file.path}"
                                 data-type="${file.type}"
                                 data-name="${file.name}">
@@ -1189,9 +1189,9 @@ export default class FoldersPage {
         
         if (!['glb', 'gltf', 'fbx', 'obj'].includes(ext)) {
             return `
-                <div class="flex flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <span class="material-icons-round text-4xl text-gray-400 mb-2">view_in_ar</span>
-                    <p class="text-xs text-gray-500 text-center">3D Preview not supported for ${ext.toUpperCase()}</p>
+                <div class="flex flex-col items-center justify-center p-6 bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] rounded-lg">
+                    <span class="material-icons-round text-4xl text-[var(--color-text-secondary)] mb-2">view_in_ar</span>
+                    <p class="text-xs text-[var(--color-text-secondary)] text-center">3D Preview not supported for ${ext.toUpperCase()}</p>
                 </div>`;
         }
         
@@ -1239,7 +1239,7 @@ export default class FoldersPage {
                     gltf.scene.scale.multiplyScalar(scale);
                 }, undefined, (error) => {
                     console.error('Error loading model:', error);
-                    container.innerHTML = '<div class="text-red-500 text-xs p-4">Failed to load model</div>';
+                    container.innerHTML = '<div class="text-[var(--color-status-error)] text-xs p-4">Failed to load model</div>';
                 });
             } else if (ext === 'fbx') {
                 const loader = new THREE.FBXLoader();
@@ -1254,7 +1254,7 @@ export default class FoldersPage {
                     fbx.scale.multiplyScalar(scale);
                 }, undefined, (error) => {
                     console.error('Error loading FBX:', error);
-                    container.innerHTML = '<div class="text-red-500 text-xs p-4">Failed to load FBX</div>';
+                    container.innerHTML = '<div class="text-[var(--color-status-error)] text-xs p-4">Failed to load FBX</div>';
                 });
             }
             
@@ -1273,16 +1273,16 @@ export default class FoldersPage {
             
         }, 100);
         
-        return `<div id="${containerId}" class="w-full h-[300px] rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-900"></div>`;
+        return `<div id="${containerId}" class="w-full h-[300px] rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-[var(--color-gray-900)]"></div>`;
     }
 
     renderPreviewPanel(file) {
         if (!file) {
-            return `<p class="text-gray-500 text-center mt-10 text-sm">Select a file to preview</p>`;
+            return `<p class="text-[var(--color-text-secondary)] text-center mt-10 text-sm">Select a file to preview</p>`;
         }
         
         const icon = file.type === 'folder' ? 'folder' : this.getFileIcon(file.name);
-        const iconColor = file.type === 'folder' ? 'text-blue-500 dark:text-blue-400' : this.getFileIconColor(file.name);
+        const iconColor = file.type === 'folder' ? 'text-[var(--color-accent)] dark:text-[var(--color-accent)]' : this.getFileIconColor(file.name);
         
         const mediaPreview = this.renderPreviewMedia(file);
 
@@ -1290,33 +1290,33 @@ export default class FoldersPage {
             <div class="flex flex-col items-center">
                 <div class="w-full mb-6 flex justify-center">
                     ${mediaPreview ? mediaPreview : `
-                    <div class="w-24 h-24 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <div class="w-24 h-24 rounded-2xl bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] flex items-center justify-center">
                         <span class="material-icons-round text-6xl ${iconColor}">${icon}</span>
                     </div>
                     `}
                 </div>
                 
-                <h4 class="text-lg font-bold text-gray-900 dark:text-white text-center break-all mb-1">${file.name}</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">${file.type === 'folder' ? 'Folder' : this.getFileType(file.name)}</p>
+                <h4 class="text-lg font-bold text-[var(--color-text-primary)] dark:text-white text-center break-all mb-1">${file.name}</h4>
+                <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-6">${file.type === 'folder' ? 'Folder' : this.getFileType(file.name)}</p>
                 
                 <div class="w-full space-y-4">
-                    <div class="bg-white dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                        <h5 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Details</h5>
+                    <div class="bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)]/50 rounded-lg p-3 border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
+                        <h5 class="text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">Details</h5>
                         <div class="grid grid-cols-[80px_1fr] gap-2 text-sm">
-                            <div class="text-gray-500 dark:text-gray-400">Size</div>
-                            <div class="text-gray-900 dark:text-gray-200 font-medium">${file.size}</div>
+                            <div class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Size</div>
+                            <div class="text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)] font-medium">${file.size}</div>
                             
-                            <div class="text-gray-500 dark:text-gray-400">Type</div>
-                            <div class="text-gray-900 dark:text-gray-200 font-medium">${file.type === 'folder' ? 'Folder' : file.name.split('.').pop().toUpperCase()}</div>
+                            <div class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Type</div>
+                            <div class="text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)] font-medium">${file.type === 'folder' ? 'Folder' : file.name.split('.').pop().toUpperCase()}</div>
                             
-                            <div class="text-gray-500 dark:text-gray-400">Modified</div>
-                            <div class="text-gray-900 dark:text-gray-200 font-medium">${this.formatDate(file.date)}</div>
+                            <div class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Modified</div>
+                            <div class="text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)] font-medium">${this.formatDate(file.date)}</div>
                         </div>
                     </div>
                     
-                    <div class="bg-white dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                        <h5 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Location</h5>
-                        <p class="text-sm text-gray-700 dark:text-gray-300 break-all font-mono bg-gray-50 dark:bg-gray-800 p-2 rounded border border-gray-100 dark:border-gray-700/50">
+                    <div class="bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)]/50 rounded-lg p-3 border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
+                        <h5 class="text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wider mb-2">Location</h5>
+                        <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] break-all font-mono bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] p-2 rounded border border-[var(--color-gray-100)] dark:border-[var(--color-gray-700)]/50">
                             ${file.path}
                         </p>
                     </div>
@@ -1368,9 +1368,9 @@ export default class FoldersPage {
         } else if (this.selectedFiles.size > 1) {
             previewContent.innerHTML = `
                 <div class="flex flex-col items-center justify-center h-full">
-                    <span class="material-icons-round text-4xl text-gray-400 mb-2">filter_none</span>
-                    <p class="text-gray-600 dark:text-gray-300 font-medium">${this.selectedFiles.size} items selected</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Select a single item to view details</p>
+                    <span class="material-icons-round text-4xl text-[var(--color-text-secondary)] mb-2">filter_none</span>
+                    <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] font-medium">${this.selectedFiles.size} items selected</p>
+                    <p class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mt-1">Select a single item to view details</p>
                 </div>
             `;
             previewActions.classList.add('hidden');
@@ -1486,7 +1486,7 @@ export default class FoldersPage {
 
     renderMaximizedPreview(file, containerId = null) {
         const icon = file.type === 'folder' ? 'folder' : this.getFileIcon(file.name);
-        const iconColor = file.type === 'folder' ? 'text-blue-500 dark:text-blue-400' : this.getFileIconColor(file.name);
+        const iconColor = file.type === 'folder' ? 'text-[var(--color-accent)] dark:text-[var(--color-accent)]' : this.getFileIconColor(file.name);
         const ext = file.name.split('.').pop().toLowerCase();
         const previewUrl = `/api/stream/file?path=${encodeURIComponent(file.path)}`;
         
@@ -1496,7 +1496,7 @@ export default class FoldersPage {
         if (['glb', 'gltf', 'fbx', 'obj', 'blend', 'stl'].includes(ext)) {
             const modelContainerId = containerId || `maximized-3d-${Date.now()}`;
             content = `
-                <div id="${modelContainerId}" class="w-full h-[85vh] rounded-lg shadow-2xl bg-gray-900"></div>
+                <div id="${modelContainerId}" class="w-full h-[85vh] rounded-lg shadow-2xl bg-[var(--color-gray-900)]"></div>
             `;
             
             // Store the container ID for cleanup
@@ -1522,14 +1522,14 @@ export default class FoldersPage {
             content = `
                 <object data="${previewUrl}" 
                         type="application/pdf" 
-                        class="w-full h-[85vh] rounded-lg shadow-2xl bg-white">
-                    <div class="flex items-center justify-center h-full text-lg text-gray-500">
+                        class="w-full h-[85vh] rounded-lg shadow-2xl bg-[var(--color-system-background)]">
+                    <div class="flex items-center justify-center h-full text-lg text-[var(--color-text-secondary)]">
                         PDF Preview Unavailable
                     </div>
                 </object>`;
         } else if (['txt', 'md', 'html', 'css', 'js', 'py', 'json', 'xml', 'csv'].includes(ext)) {
             content = `
-                <div class="w-full h-[85vh] rounded-lg shadow-2xl bg-white dark:bg-gray-900 overflow-hidden">
+                <div class="w-full h-[85vh] rounded-lg shadow-2xl bg-[var(--color-system-background)] dark:bg-[var(--color-gray-900)] overflow-hidden">
                     <div class="h-full overflow-auto p-6 text-base font-mono">
                         <div class="text-preview-content-maximized" data-url="${previewUrl}">
                             Loading text content...
@@ -1539,7 +1539,7 @@ export default class FoldersPage {
             `;
         } else {
             content = `
-                <div class="w-48 h-48 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-2xl">
+                <div class="w-48 h-48 rounded-2xl bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] flex items-center justify-center shadow-2xl">
                     <span class="material-icons-round text-8xl ${iconColor}">${icon}</span>
                 </div>
             `;
@@ -1551,9 +1551,9 @@ export default class FoldersPage {
                     ${content}
                 </div>
                 
-                <div class="mt-4 bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 w-full max-w-3xl">
+                <div class="mt-4 bg-[var(--color-system-background)]/10 dark:bg-[var(--color-gray-800)]/50 backdrop-blur-sm rounded-lg p-4 w-full max-w-3xl">
                     <h3 class="text-xl font-bold text-white mb-2">${file.name}</h3>
-                    <div class="flex flex-wrap gap-4 text-sm text-gray-300">
+                    <div class="flex flex-wrap gap-4 text-sm text-[var(--color-text-secondary)]">
                         <span class="flex items-center gap-2">
                             <span class="material-icons-round text-base">description</span>
                             ${file.type === 'folder' ? 'Folder' : this.getFileType(file.name)}
@@ -1578,9 +1578,9 @@ export default class FoldersPage {
             if (!window.THREE) {
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full">
-                        <span class="material-icons-round text-6xl text-gray-400 mb-2">view_in_ar</span>
-                        <p class="text-gray-300">3D Preview requires Three.js library</p>
-                        <p class="text-gray-400 text-sm mt-1">Please ensure Three.js is loaded</p>
+                        <span class="material-icons-round text-6xl text-[var(--color-text-secondary)] mb-2">view_in_ar</span>
+                        <p class="text-[var(--color-text-secondary)]">3D Preview requires Three.js library</p>
+                        <p class="text-[var(--color-text-secondary)] text-sm mt-1">Please ensure Three.js is loaded</p>
                     </div>
                 `;
             }
@@ -1593,11 +1593,11 @@ export default class FoldersPage {
             
             // Create a loading indicator
             const loadingIndicator = document.createElement('div');
-            loadingIndicator.className = 'flex flex-col items-center justify-center h-full text-gray-300';
+            loadingIndicator.className = 'flex flex-col items-center justify-center h-full text-[var(--color-text-secondary)]';
             loadingIndicator.innerHTML = `
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-accent)] mb-4"></div>
                 <p>Loading 3D model...</p>
-                <p class="text-sm text-gray-400 mt-1">${fileName}</p>
+                <p class="text-sm text-[var(--color-text-secondary)] mt-1">${fileName}</p>
             `;
             container.appendChild(loadingIndicator);
             
@@ -1683,20 +1683,20 @@ export default class FoldersPage {
                             // Progress callback
                             const percent = Math.round((xhr.loaded / xhr.total) * 100);
                             loadingIndicator.innerHTML = `
-                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-accent)] mb-4"></div>
                                 <p>Loading 3D model...</p>
-                                <p class="text-sm text-gray-400 mt-1">${percent}% loaded</p>
-                                <div class="w-48 h-2 bg-gray-700 rounded-full mt-2 overflow-hidden">
-                                    <div class="h-full bg-blue-500 transition-all duration-300" style="width: ${percent}%"></div>
+                                <p class="text-sm text-[var(--color-text-secondary)] mt-1">${percent}% loaded</p>
+                                <div class="w-48 h-2 bg-[var(--color-gray-700)] rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-[var(--color-accent)] transition-all duration-300" style="width: ${percent}%"></div>
                                 </div>
                             `;
                         },
                         (error) => {
                             console.error('Error loading 3D model:', error);
                             loadingIndicator.innerHTML = `
-                                <span class="material-icons-round text-6xl text-red-400 mb-2">error</span>
-                                <p class="text-red-300">Failed to load 3D model</p>
-                                <p class="text-gray-400 text-sm mt-1">${error.message || 'Unknown error'}</p>
+                                <span class="material-icons-round text-6xl text-[var(--color-status-error)] mb-2">error</span>
+                                <p class="text-[var(--color-status-error)]">Failed to load 3D model</p>
+                                <p class="text-[var(--color-text-secondary)] text-sm mt-1">${error.message || 'Unknown error'}</p>
                             `;
                         }
                     );
@@ -1732,20 +1732,20 @@ export default class FoldersPage {
                         (xhr) => {
                             const percent = Math.round((xhr.loaded / xhr.total) * 100);
                             loadingIndicator.innerHTML = `
-                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-accent)] mb-4"></div>
                                 <p>Loading FBX model...</p>
-                                <p class="text-sm text-gray-400 mt-1">${percent}% loaded</p>
-                                <div class="w-48 h-2 bg-gray-700 rounded-full mt-2 overflow-hidden">
-                                    <div class="h-full bg-blue-500 transition-all duration-300" style="width: ${percent}%"></div>
+                                <p class="text-sm text-[var(--color-text-secondary)] mt-1">${percent}% loaded</p>
+                                <div class="w-48 h-2 bg-[var(--color-gray-700)] rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-[var(--color-accent)] transition-all duration-300" style="width: ${percent}%"></div>
                                 </div>
                             `;
                         },
                         (error) => {
                             console.error('Error loading FBX:', error);
                             loadingIndicator.innerHTML = `
-                                <span class="material-icons-round text-6xl text-red-400 mb-2">error</span>
-                                <p class="text-red-300">Failed to load FBX model</p>
-                                <p class="text-gray-400 text-sm mt-1">${error.message || 'Unknown error'}</p>
+                                <span class="material-icons-round text-6xl text-[var(--color-status-error)] mb-2">error</span>
+                                <p class="text-[var(--color-status-error)]">Failed to load FBX model</p>
+                                <p class="text-[var(--color-text-secondary)] text-sm mt-1">${error.message || 'Unknown error'}</p>
                             `;
                         }
                     );
@@ -1781,20 +1781,20 @@ export default class FoldersPage {
                         (xhr) => {
                             const percent = Math.round((xhr.loaded / xhr.total) * 100);
                             loadingIndicator.innerHTML = `
-                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-accent)] mb-4"></div>
                                 <p>Loading OBJ model...</p>
-                                <p class="text-sm text-gray-400 mt-1">${percent}% loaded</p>
-                                <div class="w-48 h-2 bg-gray-700 rounded-full mt-2 overflow-hidden">
-                                    <div class="h-full bg-blue-500 transition-all duration-300" style="width: ${percent}%"></div>
+                                <p class="text-sm text-[var(--color-text-secondary)] mt-1">${percent}% loaded</p>
+                                <div class="w-48 h-2 bg-[var(--color-gray-700)] rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-[var(--color-accent)] transition-all duration-300" style="width: ${percent}%"></div>
                                 </div>
                             `;
                         },
                         (error) => {
                             console.error('Error loading OBJ:', error);
                             loadingIndicator.innerHTML = `
-                                <span class="material-icons-round text-6xl text-red-400 mb-2">error</span>
-                                <p class="text-red-300">Failed to load OBJ model</p>
-                                <p class="text-gray-400 text-sm mt-1">${error.message || 'Unknown error'}</p>
+                                <span class="material-icons-round text-6xl text-[var(--color-status-error)] mb-2">error</span>
+                                <p class="text-[var(--color-status-error)]">Failed to load OBJ model</p>
+                                <p class="text-[var(--color-text-secondary)] text-sm mt-1">${error.message || 'Unknown error'}</p>
                             `;
                         }
                     );
@@ -1803,7 +1803,7 @@ export default class FoldersPage {
                     loadingIndicator.innerHTML = `
                         <span class="material-icons-round text-6xl text-yellow-400 mb-2">view_in_ar</span>
                         <p class="text-yellow-300">3D Preview not supported</p>
-                        <p class="text-gray-400 text-sm mt-1">Format: ${ext.toUpperCase()}</p>
+                        <p class="text-[var(--color-text-secondary)] text-sm mt-1">Format: ${ext.toUpperCase()}</p>
                     `;
                 }
             };
@@ -1857,10 +1857,10 @@ export default class FoldersPage {
         } catch (error) {
             console.error('Error setting up 3D preview:', error);
             container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-red-300">
+                <div class="flex flex-col items-center justify-center h-full text-[var(--color-status-error)]">
                     <span class="material-icons-round text-6xl mb-2">error</span>
                     <p>Failed to initialize 3D preview</p>
-                    <p class="text-gray-400 text-sm mt-1">${error.message}</p>
+                    <p class="text-[var(--color-text-secondary)] text-sm mt-1">${error.message}</p>
                 </div>
             `;
         }

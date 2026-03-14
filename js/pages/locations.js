@@ -30,10 +30,10 @@ export default class LocationsPage {
         // Fake storage breakdown data (sizes filled later based on real usage)
         this.storageBreakdown = [
             { category: 'System', percentage: 45, color: 'bg-primary' },
-            { category: 'Documents', percentage: 20, color: 'bg-purple-500' },
-            { category: 'Media', percentage: 10, color: 'bg-yellow-500' },
+            { category: 'Documents', percentage: 20, color: 'bg-[var(--color-gray-50)]0' },
+            { category: 'Media', percentage: 10, color: 'bg-[var(--color-gray-50)]0' },
             { category: 'Applications', percentage: 7.5, color: 'bg-indigo-500' },
-            { category: 'Other', percentage: 17.5, color: 'bg-gray-400' }
+            { category: 'Other', percentage: 17.5, color: 'bg-[var(--color-gray-400)]' }
         ];
     }
 
@@ -224,27 +224,27 @@ export default class LocationsPage {
 
     getCategoryIconColor(category) {
         const colors = {
-            'System': 'text-blue-500',
-            'Documents': 'text-purple-500',
+            'System': 'text-[var(--color-accent)]',
+            'Documents': 'text-purple-600',
             'Media': 'text-yellow-500',
             'Applications': 'text-indigo-500',
-            'Other': 'text-gray-500'
+            'Other': 'text-[var(--color-text-secondary)]'
         };
-        return colors[category] || 'text-gray-500';
+        return colors[category] || 'text-[var(--color-text-secondary)]';
     }
 
     getDeviceIconColor(percentUsed, isDeviceActive) {
-        if (percentUsed > 90) return 'text-red-500 dark:text-red-400';
+        if (percentUsed > 90) return 'text-[var(--color-status-error)] dark:text-[var(--color-status-error)]';
         if (percentUsed > 75) return 'text-yellow-500 dark:text-yellow-400';
-        if (isDeviceActive) return 'text-green-500 dark:text-green-400';
-        return 'text-gray-500 dark:text-gray-400';
+        if (isDeviceActive) return 'text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]';
+        return 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]';
     }
 
     getUsageBarColor(percentUsed, isDeviceActive) {
-        if (percentUsed > 90) return 'bg-red-500';
-        if (percentUsed > 75) return 'bg-yellow-500';
-        if (isDeviceActive) return 'bg-green-500';
-        return 'bg-blue-500';
+        if (percentUsed > 90) return 'bg-[var(--color-status-error-bg)]';
+        if (percentUsed > 75) return 'bg-[var(--color-gray-50)]0';
+        if (isDeviceActive) return 'bg-[var(--color-status-success)]';
+        return 'bg-[var(--color-accent)]';
     }
 
     // Convert a human-readable size string (eg. "12.3 GB") into bytes
@@ -263,10 +263,10 @@ export default class LocationsPage {
         // default base items (sum to 100%)
         const base = [
             { category: 'System', percentage: 45, color: 'bg-primary' },
-            { category: 'Documents', percentage: 20, color: 'bg-purple-500' },
-            { category: 'Media', percentage: 10, color: 'bg-yellow-500' },
+            { category: 'Documents', percentage: 20, color: 'bg-[var(--color-gray-50)]0' },
+            { category: 'Media', percentage: 10, color: 'bg-[var(--color-gray-50)]0' },
             { category: 'Applications', percentage: 7.5, color: 'bg-indigo-500' },
-            { category: 'Other', percentage: 17.5, color: 'bg-gray-400' }
+            { category: 'Other', percentage: 17.5, color: 'bg-[var(--color-gray-400)]' }
         ];
         
         if (realPercentUsed > 0) {
@@ -306,10 +306,10 @@ export default class LocationsPage {
         if (this.loading) {
             return `
                 <div class="px-8 py-6 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark">
-                    <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64 animate-pulse mb-2"></div>
-                    <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-96 animate-pulse"></div>
+                    <div class="h-8 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded w-64 animate-pulse mb-2"></div>
+                    <div class="h-4 bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-800)] rounded w-96 animate-pulse"></div>
                 </div>
-                <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark p-8">
+                <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)] dark:bg-surface-dark p-8">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         ${createCardLoadingSkeleton(3)}
                     </div>
@@ -320,12 +320,12 @@ export default class LocationsPage {
         if (this.error) {
             return `
                 <div class="flex flex-col items-center justify-center h-full p-8">
-                    <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mb-4">
-                        <span class="material-icons-round text-red-600 dark:text-red-400 text-2xl">error</span>
+                    <div class="w-16 h-16 rounded-full bg-[var(--color-status-error-bg)] dark:bg-red-900 flex items-center justify-center mb-4">
+                        <span class="material-icons-round text-[var(--color-status-error)] dark:text-[var(--color-status-error)] text-2xl">error</span>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Error Loading Folders</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-center mb-6">${this.error}</p>
-                    <button onclick="window.location.reload()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <h3 class="text-lg font-medium text-[var(--color-text-primary)] dark:text-white mb-2">Error Loading Folders</h3>
+                    <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] text-center mb-6">${this.error}</p>
+                    <button onclick="window.location.reload()" class="px-4 py-2 bg-[var(--color-accent)] text-white rounded hover:bg-[var(--color-accent)]">
                         Try Again
                     </button>
                 </div>
@@ -349,20 +349,20 @@ export default class LocationsPage {
         // Determine status display
         const isDeviceActive = this.isDeviceActive;
         const statusText = isDeviceActive ? 'Configured as Backup' : deviceStatus;
-        const statusDotColor = isDeviceActive ? 'bg-green-500' : 
-                              statusColor === 'green' ? 'bg-green-500' :
-                              statusColor === 'yellow' ? 'bg-yellow-500' :
-                              statusColor === 'red' ? 'bg-red-500' : 'bg-gray-500';
-        const statusBgColor = isDeviceActive ? 'bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800' :
-                             statusColor === 'green' ? 'bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800' :
-                             statusColor === 'yellow' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800' :
-                             statusColor === 'red' ? 'bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800' :
-                             'bg-gray-50 dark:bg-gray-800/20 border border-gray-100 dark:border-gray-700';
-        const statusTextColor = isDeviceActive ? 'text-green-700 dark:text-green-300' :
-                               statusColor === 'green' ? 'text-green-700 dark:text-green-300' :
-                               statusColor === 'yellow' ? 'text-yellow-700 dark:text-yellow-300' :
-                               statusColor === 'red' ? 'text-red-700 dark:text-red-300' :
-                               'text-gray-700 dark:text-gray-300';
+        const statusDotColor = isDeviceActive ? 'bg-[var(--color-status-success)]' : 
+                              statusColor === 'green' ? 'bg-[var(--color-status-success)]' :
+                              statusColor === 'yellow' ? 'bg-[var(--color-gray-50)]0' :
+                              statusColor === 'red' ? 'bg-[var(--color-status-error-bg)]' : 'bg-[var(--color-gray-50)]0';
+        const statusBgColor = isDeviceActive ? 'bg-[var(--color-gray-50)] dark:bg-[var(--color-status-success-bg-dark)]/20 border border-[var(--color-status-success-bg)] dark:border-[var(--color-status-success-dark)]' :
+                             statusColor === 'green' ? 'bg-[var(--color-gray-50)] dark:bg-[var(--color-status-success-bg-dark)]/20 border border-[var(--color-status-success-bg)] dark:border-[var(--color-status-success-dark)]' :
+                             statusColor === 'yellow' ? 'bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]/20 border border-[var(--color-gray-100)] dark:border-[var(--color-gray-700)]' :
+                             statusColor === 'red' ? 'bg-[var(--color-status-error-bg)] dark:bg-[var(--color-status-error-bg-dark)]/20 border border-[var(--color-status-error)] dark:border-[var(--color-status-error-dark)]' :
+                             'bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]/20 border border-[var(--color-gray-100)] dark:border-[var(--color-gray-700)]';
+        const statusTextColor = isDeviceActive ? 'text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]' :
+                               statusColor === 'green' ? 'text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]' :
+                               statusColor === 'yellow' ? 'text-yellow-500 dark:text-yellow-300' :
+                               statusColor === 'red' ? 'text-[var(--color-status-error)] dark:text-[var(--color-status-error-dark)]' :
+                               'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]';
 
         // Get storage breakdown (fake categories for now). Pass usedStorage so sizes can be computed.
         const storageBreakdown = this.getStorageBreakdown(percentUsed, usedStorage);
@@ -375,13 +375,13 @@ export default class LocationsPage {
             <div class="flex flex-col h-full overflow-hidden">
                 <div class="px-8 py-6 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
                     <div class="flex gap-8 items-start">
-                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-soft border border-gray-200 dark:border-gray-600 flex-shrink-0">
+                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-soft border border-[var(--color-gray-200)] dark:border-[var(--color-gray-600)] flex-shrink-0">
                             <span class="material-symbols-outlined text-5xl ${this.getDeviceIconColor(percentUsed, isDeviceActive)}">hard_drive</span>
                         </div>
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-2">
                                 <div>
-                                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">${deviceName}</h1>
+                                    <h1 class="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white leading-tight">${deviceName}</h1>
                                     <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">
                                         ${deviceType} ${devicePath ? `• ${devicePath}` : ''}
                                     </p>
@@ -396,7 +396,7 @@ export default class LocationsPage {
                                             ${isDeviceActive ? `
                                                 <button class="px-3 py-1 rounded bg-green-600 text-white text-sm" disabled>Configured</button>
                                             ` : `
-                                                <button id="use-device-btn" class="px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">Use As Backup Device</button>
+                                                <button id="use-device-btn" class="px-3 py-1 rounded bg-[var(--color-accent)] text-white text-sm hover:bg-[var(--color-accent-hover)]">Use As Backup Device</button>
                                             `}
                                         </div>
                                     ` : ''}
@@ -404,10 +404,10 @@ export default class LocationsPage {
                             </div>
                             <div class="mb-4">
                                 <div class="flex justify-between text-xs font-medium mb-1.5">
-                                    <span class="text-gray-700 dark:text-gray-300">Storage Used</span>
+                                    <span class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Storage Used</span>
                                     <span class="text-text-secondary-light dark:text-text-secondary-dark">${usedStorage} of ${totalStorage} (${percentUsed}%)</span>
                                 </div>
-                                <div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden flex">
+                                <div class="w-full h-3 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded-full overflow-hidden flex">
                                     ${storageBreakdown.map(item => `
                                         <div class="h-full ${item.color}" style="width: ${item.percentage}%" title="${item.category} (${item.size})"></div>
                                     `).join('')}
@@ -415,20 +415,20 @@ export default class LocationsPage {
                                 </div>
                                 
                                 <!-- Compact horizontal breakdown with icons -->
-                                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <div class="mt-3 pt-3 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
                                     <div class="flex flex-wrap items-center gap-2 mb-1">
                                         ${storageBreakdown.map(item => {
                                             // Get icon for each category
                                             const icon = this.getCategoryIcon(item.category);
                                             return `
                                             <div class="group relative">
-                                                <div class="flex items-center gap-1 px-2 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg cursor-help hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                <div class="flex items-center gap-1 px-2 py-1 bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] rounded-lg cursor-help hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)] transition-colors">
                                                     <span class="material-icons-round text-sm ${this.getCategoryIconColor(item.category)}">${icon}</span>
-                                                    <span class="text-xs font-medium text-gray-700 dark:text-gray-200">${item.category}</span>
-                                                    <span class="text-xs text-gray-500 dark:text-gray-400">${item.percentage}%</span>
+                                                    <span class="text-xs font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${item.category}</span>
+                                                    <span class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${item.percentage}%</span>
                                                 </div>
                                                 <!-- Tooltip -->
-                                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-10">
+                                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-[var(--color-gray-900)] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-10">
                                                     ${item.category}: ${item.size}
                                                     <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div>
                                                 </div>
@@ -437,13 +437,13 @@ export default class LocationsPage {
                                         }).join('')}
                                         
                                         <div class="group relative">
-                                            <div class="flex items-center gap-1 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-lg cursor-help hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
-                                                <span class="material-icons-round text-sm text-green-600 dark:text-green-400">check_circle</span>
-                                                <span class="text-xs font-medium text-green-700 dark:text-green-300">Free</span>
-                                                <span class="text-xs text-green-600 dark:text-green-400">${freePercent}%</span>
+                                            <div class="flex items-center gap-1 px-2 py-1 bg-[var(--color-gray-50)] dark:bg-[var(--color-status-success-bg-dark)]/20 rounded-lg cursor-help hover:bg-[var(--color-status-success-bg)] dark:hover:bg-green-900/30 transition-colors">
+                                                <span class="material-icons-round text-sm text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]">check_circle</span>
+                                                <span class="text-xs font-medium text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]">Free</span>
+                                                <span class="text-xs text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)]">${freePercent}%</span>
                                             </div>
                                             <!-- Tooltip -->
-                                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-10">
+                                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-[var(--color-gray-900)] text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-10">
                                                 Free Space: ${freeStorage}
                                                 <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div>
                                             </div>
@@ -454,40 +454,40 @@ export default class LocationsPage {
                         </div>
                     </div>
                 </div>
-                <div class="px-6 py-2 bg-gray-50/50 dark:bg-gray-800/30 border-b border-border-light dark:border-border-dark flex items-center justify-between flex-shrink-0">
+                <div class="px-6 py-2 bg-[var(--color-gray-50)]/50 dark:bg-[var(--color-gray-800)]/30 border-b border-border-light dark:border-border-dark flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center gap-2">
-                        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-border-light dark:border-border-dark rounded px-2 py-1 shadow-sm" id="breadcrumbs">
+                        <div class="flex items-center text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-border-light dark:border-border-dark rounded px-2 py-1 shadow-sm" id="breadcrumbs">
                             ${this.renderBreadcrumbs()}
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-0.5" id="view-toggle">
-                            <button class="p-1 rounded-md ${this.currentView === 'list' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white'}" data-view="list">
+                        <div class="flex bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded-lg p-0.5" id="view-toggle">
+                            <button class="p-1 rounded-md ${this.currentView === 'list' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white'}" data-view="list">
                                 <span class="material-icons-round text-lg">list</span>
                             </button>
-                            <button class="p-1 rounded-md ${this.currentView === 'grid' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-800 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white'}" data-view="grid">
+                            <button class="p-1 rounded-md ${this.currentView === 'grid' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] shadow-sm text-[var(--color-text-secondary)] dark:text-white' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-white'}" data-view="grid">
                                 <span class="material-icons-round text-lg">grid_view</span>
                             </button>
                         </div>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 ${isDeviceActive ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed'} rounded-md shadow-sm transition-colors text-xs font-medium" id="save-changes-btn" ${isDeviceActive ? '' : 'disabled'}>
+                        <button class="flex items-center gap-1.5 px-3 py-1.5 ${isDeviceActive ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent)] text-white' : 'bg-[var(--color-gray-300)] text-[var(--color-text-secondary)] cursor-not-allowed'} rounded-md shadow-sm transition-colors text-xs font-medium" id="save-changes-btn" ${isDeviceActive ? '' : 'disabled'}>
                             <span class="material-icons-round text-sm">save</span>
                             Save Changes
                         </button>
                     </div>
                 </div>
-                <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark ${!isDeviceActive ? 'pointer-events-none opacity-60' : ''}">
+                <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)] dark:bg-surface-dark ${!isDeviceActive ? 'pointer-events-none opacity-60' : ''}">
                     ${this.data.folders.length > 0 ? (this.currentView === 'list' ? `
                         <table class="w-full text-left border-collapse">
-                            <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-0">
+                            <thead class="bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] sticky top-0 z-0">
                                 <tr>
-                                    <th class="w-12 px-4 py-2 border-b border-gray-200 dark:border-border-dark">
-                                        <input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4" type="checkbox" id="select-all" />
+                                    <th class="w-12 px-4 py-2 border-b border-[var(--color-gray-200)] dark:border-border-dark">
+                                        <input class="rounded border-[var(--color-gray-300)] text-primary focus:ring-primary h-4 w-4" type="checkbox" id="select-all" />
                                     </th>
-                                    <th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-border-dark w-1/3">Name</th>
-                                    <th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-border-dark">Date Modified</th>
-                                    <th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-border-dark">Kind</th>
-                                    <th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-border-dark">Size</th>
-                                    <th class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-border-dark text-right">Action</th>
+                                    <th class="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] dark:border-border-dark w-1/3">Name</th>
+                                    <th class="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] dark:border-border-dark">Date Modified</th>
+                                    <th class="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] dark:border-border-dark">Kind</th>
+                                    <th class="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] dark:border-border-dark">Size</th>
+                                    <th class="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] dark:border-border-dark text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm" id="folders-list">
@@ -497,35 +497,35 @@ export default class LocationsPage {
                     ` : `
                         <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="folders-grid">
                             ${this.data.folders.map(folder => `
-                                <div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between" data-folder="${folder.name}" data-type="${folder.type}">
+                                <div class="p-4 rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] flex items-center justify-between" data-folder="${folder.name}" data-type="${folder.type}">
                                     <div class="flex items-center gap-3">
-                                        <input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4 ${folder.protected ? 'opacity-50 cursor-not-allowed' : ''}" 
+                                        <input class="rounded border-[var(--color-gray-300)] text-primary focus:ring-primary h-4 w-4 ${folder.protected ? 'opacity-50 cursor-not-allowed' : ''}" 
                                             type="checkbox" 
                                             ${folder.selected ? 'checked' : ''}
                                             ${folder.protected || !isDeviceActive ? 'disabled' : ''}
                                             data-folder="${folder.name}" />
-                                        <span class="material-icons-round ${folder.protected ? 'text-gray-400' : 'text-blue-400'} text-3xl">${folder.icon}</span>
+                                        <span class="material-icons-round ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-accent)]'} text-3xl">${folder.icon}</span>
                                         <div>
-                                            <div class="font-medium ${folder.protected ? 'text-gray-500' : 'text-gray-900 dark:text-gray-200'}">${folder.name}</div>
+                                            <div class="font-medium ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)]'}">${folder.name}</div>
                                             <div class="text-xs text-text-secondary-light dark:text-text-secondary-dark">${folder.date} • ${folder.size}</div>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        ${folder.protected ? '<span class="text-xs font-medium text-gray-400 px-2 py-1">Protected</span>' : `<span class="text-xs font-medium ${folder.selected ? 'text-green-600' : 'text-text-secondary-light'} px-2 py-1 rounded">${folder.selected ? 'Included' : 'Excluded'}</span>`}
+                                        ${folder.protected ? '<span class="text-xs font-medium text-[var(--color-text-secondary)] px-2 py-1">Protected</span>' : `<span class="text-xs font-medium ${folder.selected ? 'text-[var(--color-status-success)]' : 'text-text-secondary-light'} px-2 py-1 rounded">${folder.selected ? 'Included' : 'Excluded'}</span>`}
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
                     `) : `
                         <div class="flex flex-col items-center justify-center h-full p-8">
-                            <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
-                                <span class="material-icons-round text-gray-400 text-2xl">folder_open</span>
+                            <div class="w-16 h-16 rounded-full bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-800)] flex items-center justify-center mb-4">
+                                <span class="material-icons-round text-[var(--color-text-secondary)] text-2xl">folder_open</span>
                             </div>
-                            <p class="text-gray-500 dark:text-gray-400">No folders found in home directory</p>
+                            <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">No folders found in home directory</p>
                         </div>
                     `}
                 </div>
-                <div class="px-6 py-2 bg-gray-50 dark:bg-gray-800 border-t border-border-light dark:border-border-dark text-xs text-text-secondary-light dark:text-text-secondary-dark flex justify-between items-center flex-shrink-0">
+                <div class="px-6 py-2 bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] border-t border-border-light dark:border-border-dark text-xs text-text-secondary-light dark:text-text-secondary-dark flex justify-between items-center flex-shrink-0">
                     <span id="folder-summary">${this.data.folders.length} items, ${freeStorage} available${deviceName !== 'No Device Selected' ? ` on ${deviceName}` : ''}</span>
                     <div class="flex gap-4">
                         ${mountpoint ? `<span class="text-text-secondary-light dark:text-text-secondary-dark">Mount: ${mountpoint}</span>` : ''}
@@ -541,7 +541,7 @@ export default class LocationsPage {
         return this.data.currentPath.map((segment, index) => {
             const isLast = index === this.data.currentPath.length - 1;
             return `
-                ${index > 0 ? '<span class="material-icons-round text-base text-gray-400 mx-1">chevron_right</span>' : ''}
+                ${index > 0 ? '<span class="material-icons-round text-base text-[var(--color-text-secondary)] mx-1">chevron_right</span>' : ''}
                 ${isLast ? 
                     `<span class="font-medium">${segment}</span>` :
                     `<span class="text-text-secondary-light">${segment}</span>`
@@ -553,11 +553,11 @@ export default class LocationsPage {
     renderFoldersList() {
         const isDeviceActive = this.isDeviceActive;
         return this.data.folders.map(folder => `
-            <tr class="hover:bg-blue-50 dark:hover:bg-blue-900/20 group cursor-default transition-colors ${folder.protected ? 'bg-gray-50/50 dark:bg-gray-800/30 cursor-not-allowed' : ''}" 
+            <tr class="hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-accent-light)]/20 group cursor-default transition-colors ${folder.protected ? 'bg-[var(--color-gray-50)]/50 dark:bg-[var(--color-gray-800)]/30 cursor-not-allowed' : ''}" 
                 data-folder="${folder.name}"
                 data-type="${folder.type}">
                 <td class="px-4 py-3">
-                    <input class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4 ${folder.protected ? 'opacity-50 cursor-not-allowed' : ''}" 
+                    <input class="rounded border-[var(--color-gray-300)] text-primary focus:ring-primary h-4 w-4 ${folder.protected ? 'opacity-50 cursor-not-allowed' : ''}" 
                            type="checkbox" 
                            ${folder.selected ? 'checked' : ''}
                            ${folder.protected || !isDeviceActive ? 'disabled' : ''}
@@ -565,17 +565,17 @@ export default class LocationsPage {
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
                     <div class="flex items-center gap-3">
-                        <span class="material-icons-round ${folder.protected ? 'text-gray-400' : 'text-blue-400'} text-xl">${folder.icon}</span>
-                        <span class="font-medium ${folder.protected ? 'text-gray-500 dark:text-gray-500' : 'text-gray-900 dark:text-gray-200'}">${folder.name}</span>
+                        <span class="material-icons-round ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-accent)]'} text-xl">${folder.icon}</span>
+                        <span class="font-medium ${folder.protected ? 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]' : 'text-[var(--color-text-primary)] dark:text-[var(--color-text-secondary)]'}">${folder.name}</span>
                     </div>
                 </td>
-                <td class="px-4 py-3 ${folder.protected ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400'} whitespace-nowrap">${folder.date}</td>
-                <td class="px-4 py-3 ${folder.protected ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400'} whitespace-nowrap">${folder.kind}</td>
-                <td class="px-4 py-3 ${folder.protected ? 'text-gray-400' : 'text-gray500 dark:text-gray-400'} whitespace-nowrap">${folder.size}</td>
+                <td class="px-4 py-3 ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]'} whitespace-nowrap">${folder.date}</td>
+                <td class="px-4 py-3 ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]'} whitespace-nowrap">${folder.kind}</td>
+                <td class="px-4 py-3 ${folder.protected ? 'text-[var(--color-text-secondary)]' : 'text-gray500 dark:text-[var(--color-text-secondary)]'} whitespace-nowrap">${folder.size}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                     ${folder.protected ? 
-                        `<span class="text-xs font-medium text-gray-400 px-2 py-1">Protected</span>` :
-                        `<span class="text-xs font-medium ${folder.selected ? 'text-green-600' : 'text-text-secondary-light'} px-2 py-1 rounded">${folder.selected ? 'Included' : 'Excluded'}</span>`
+                        `<span class="text-xs font-medium text-[var(--color-text-secondary)] px-2 py-1">Protected</span>` :
+                        `<span class="text-xs font-medium ${folder.selected ? 'text-[var(--color-status-success)]' : 'text-text-secondary-light'} px-2 py-1 rounded">${folder.selected ? 'Included' : 'Excluded'}</span>`
                     }
                 </td>
             </tr>
@@ -592,29 +592,29 @@ export default class LocationsPage {
             <div class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity z-50" id="get-versions-modal-backdrop"></div>
             <div class="fixed inset-0 z-50 w-screen overflow-y-auto" id="get-versions-modal-container">
                 <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                    <div class="relative transform overflow-hidden rounded-2xl bg-[#1c1c1e] text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-gray-700">
-                        <div class="px-6 py-5 border-b border-gray-700 flex justify-between items-center bg-[#2c2c2e]">
+                    <div class="relative transform overflow-hidden rounded-2xl bg-system-background text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-separator">
+                        <div class="px-6 py-5 border-b border-separator flex justify-between items-center bg-secondary-background">
                             <div>
                                 <h3 class="text-xl font-semibold leading-6 text-white" id="modal-title">Get File Versions</h3>
-                                <p class="mt-1 text-sm text-gray-400">Choose a recovery point for your files.</p>
+                                <p class="mt-1 text-sm text-[var(--color-text-secondary)]">Choose a recovery point for your files.</p>
                             </div>
-                            <button class="text-gray-400 hover:text-white transition-colors" id="close-get-versions-modal">
+                            <button class="text-[var(--color-text-secondary)] hover:text-white transition-colors" id="close-get-versions-modal">
                                 <span class="material-icons-round">close</span>
                             </button>
                         </div>
-                        <div class="px-6 py-8 bg-[#1c1c1e]">
+                        <div class="px-6 py-8 bg-system-background">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="version-points">
                                 ${this.data.versionPoints.map(point => `
-                                    <div class="relative flex cursor-pointer rounded-xl ${point.selected ? 'border-2 border-primary bg-primary/10' : 'border border-gray-700 hover:border-gray-500 bg-[#2c2c2e] hover:bg-[#3a3a3c]'} p-4 shadow-sm focus:outline-none ring-offset-2 ring-offset-[#1c1c1e] ring-primary transition-all" 
+                                    <div class="relative flex cursor-pointer rounded-xl ${point.selected ? 'border-2 border-accent bg-accent-light' : 'border border-separator hover:border-secondary-label bg-secondary-background hover:bg-tertiary-background'} p-4 shadow-sm focus:outline-none ring-offset-2 ring-offset-system-background ring-accent transition-all" 
                                          data-version-point="${point.id}">
                                         <div class="flex w-full items-center justify-between">
                                             <div class="flex items-center gap-4">
-                                                <div class="flex h-12 w-12 items-center justify-center rounded-full ${point.selected ? 'bg-primary/20 text-blue-400' : 'bg-gray-700 text-gray-300'}">
+                                                <div class="flex h-12 w-12 items-center justify-center rounded-full ${point.selected ? 'bg-primary/20 text-[var(--color-accent)]' : 'bg-[var(--color-gray-700)] text-[var(--color-text-secondary)]'}">
                                                     <span class="material-icons-round text-2xl">${point.icon}</span>
                                                 </div>
                                                 <div>
-                                                    <p class="font-semibold ${point.selected ? 'text-white' : 'text-gray-200'}">${point.name}</p>
-                                                    <p class="text-sm ${point.selected ? 'text-gray-400' : 'text-gray-500'}">${point.time}</p>
+                                                    <p class="font-semibold ${point.selected ? 'text-white' : 'text-[var(--color-text-secondary)]'}">${point.name}</p>
+                                                    <p class="text-sm ${point.selected ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'}">${point.time}</p>
                                                 </div>
                                             </div>
                                             ${point.selected ? '<span class="material-icons-round text-primary text-xl">check_circle</span>' : ''}
@@ -622,20 +622,20 @@ export default class LocationsPage {
                                     </div>
                                 `).join('')}
                             </div>
-                            <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-[#2c2c2e] border border-gray-700">
-                                <span class="material-icons-round text-blue-400 mt-0.5">info</span>
-                                <div class="text-sm text-gray-300">
+                            <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-secondary-background border border-separator">
+                                <span class="material-icons-round text-[var(--color-accent)] mt-0.5">info</span>
+                                <div class="text-sm text-[var(--color-text-secondary)]">
                                     <p class="font-medium text-white mb-0.5">Get Versions Summary</p>
                                     <p>You are about to get versions for <span class="font-semibold text-white">${selectedCount} items</span> from <span class="font-semibold text-white">${device.name || 'Device'}</span> to their state on <span class="font-semibold text-white">${selectedVersionPoint?.name || ''} at ${selectedVersionPoint?.time || ''}</span>.</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-[#2c2c2e] px-6 py-4 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-gray-700">
-                            <button class="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-blue-600 sm:w-auto transition-colors items-center gap-2" id="confirm-get-versions" type="button">
+                        <div class="bg-secondary-background px-6 py-4 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-separator">
+                            <button class="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-[var(--color-accent)] sm:w-auto transition-colors items-center gap-2" id="confirm-get-versions" type="button">
                                 <span class="material-icons-round text-lg">history</span>
                                 Get Versions
                             </button>
-                            <button class="mt-3 inline-flex w-full justify-center rounded-lg bg-[#3a3a3c] px-4 py-2.5 text-sm font-semibold text-gray-200 shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-[#48484a] sm:mt-0 sm:w-auto transition-colors" id="cancel-get-versions" type="button">Cancel</button>
+                            <button class="mt-3 inline-flex w-full justify-center rounded-lg bg-tertiary-background px-4 py-2.5 text-sm font-semibold text-secondary-label shadow-sm ring-1 ring-inset ring-separator hover:bg-system-fill sm:mt-0 sm:w-auto transition-colors" id="cancel-get-versions" type="button">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -933,11 +933,11 @@ export default class LocationsPage {
         const viewButtons = document.querySelectorAll('#view-toggle button');
         viewButtons.forEach(btn => {
             if (btn.getAttribute('data-view') === this.currentView) {
-                btn.classList.add('bg-white', 'dark:bg-gray-600', 'shadow-sm', 'text-gray-800', 'dark:text-white');
-                btn.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-800', 'dark:hover:text-white');
+                btn.classList.add('bg-[var(--color-system-background)]', 'dark:bg-[var(--color-gray-600)]', 'shadow-sm', 'text-[var(--color-text-secondary)]', 'dark:text-white');
+                btn.classList.remove('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'hover:text-[var(--color-text-secondary)]', 'dark:hover:text-white');
             } else {
-                btn.classList.remove('bg-white', 'dark:bg-gray-600', 'shadow-sm', 'text-gray-800', 'dark:text-white');
-                btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-800', 'dark:hover:text-white');
+                btn.classList.remove('bg-[var(--color-system-background)]', 'dark:bg-[var(--color-gray-600)]', 'shadow-sm', 'text-[var(--color-text-secondary)]', 'dark:text-white');
+                btn.classList.add('text-[var(--color-text-secondary)]', 'dark:text-[var(--color-text-secondary)]', 'hover:text-[var(--color-text-secondary)]', 'dark:hover:text-white');
             }
         });
     }
@@ -985,7 +985,7 @@ export default class LocationsPage {
                 const badge = row.querySelector('.text-xs.font-medium');
                 if (badge) {
                     badge.textContent = checked ? 'Included' : 'Excluded';
-                    badge.classList.toggle('text-green-600', checked);
+                    badge.classList.toggle('text-[var(--color-status-success)]', checked);
                     badge.classList.toggle('text-text-secondary-light', !checked);
                 }
             }
@@ -1010,7 +1010,7 @@ export default class LocationsPage {
             const badge = row.querySelector('.text-xs.font-medium');
             if (badge) {
                 badge.textContent = folder.selected ? 'Included' : 'Excluded';
-                badge.classList.toggle('text-green-600', folder.selected);
+                badge.classList.toggle('text-[var(--color-status-success)]', folder.selected);
                 badge.classList.toggle('text-text-secondary-light', !folder.selected);
             }
         }

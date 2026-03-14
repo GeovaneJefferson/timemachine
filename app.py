@@ -6,6 +6,7 @@ A Flask-based web interface for managing backup operations.
 import os
 import sys
 import json
+import sqlite3
 import time
 import uuid
 import hashlib
@@ -327,34 +328,38 @@ def background_restore_folder_task(job_id, folder_path, target_date, target_time
 
         # --- STEP 3: MANIFEST CLEANUP (THE ANTI-GHOST STEP) ---
         JOBS[job_id]['status'] = 'cleaning_deleted_files'
-        
-        # In server.py, the manifest is inside the backups folder
-        manifest_path = os.path.join(backups_root, '.backup_manifest.json')
-        
-        if os.path.exists(manifest_path):
-            with open(manifest_path, 'r') as f:
-                manifest = json.load(f)
 
-            # Walk through the files we just restored to find what shouldn't be there
-            for root, dirs, files in os.walk(dest_path, topdown=False):
-                for file_name in files:
-                    full_path = os.path.join(root, file_name)
-                    
-                    # Create the manifest key (original relative path)
-                    rel_path = os.path.relpath(full_path, dest_path)
-                    manifest_key = os.path.join(clean_folder_path, rel_path)
+        # Use SQLite metadata store directly (no need to load entire manifest into memory)
+        manifest_db = server.METADATA_FILE
+        if os.path.exists(manifest_db):
+            try:
+                conn = sqlite3.connect(manifest_db)
+                cur = conn.cursor()
+                stmt = "SELECT deleted, deleted_time FROM metadata WHERE path = ? AND deleted = 1 AND deleted_time <= ?"
 
-                    if manifest_key in manifest:
-                        data = manifest[manifest_key]
-                        
-                        # If deleted time is before or equal to our target, kill the ghost
-                        if data.get('deleted'):
-                            del_time = data.get('deleted_time', 0)
-                            if target_ts is not None and del_time <= target_ts:
-                                try:
-                                    os.remove(full_path)
-                                except OSError:
-                                    pass  # File may have already been deleted
+                # Walk through the files we just restored to find what shouldn't be there
+                for root, dirs, files in os.walk(dest_path, topdown=False):
+                    for file_name in files:
+                        full_path = os.path.join(root, file_name)
+
+                        # Create the manifest key (original relative path)
+                        rel_path = os.path.relpath(full_path, dest_path)
+                        manifest_key = os.path.join(clean_folder_path, rel_path).replace(os.sep, '/')
+
+                        cur.execute(stmt, (manifest_key, target_ts or float('inf')))
+                        row = cur.fetchone()
+                        if row:
+                            try:
+                                os.remove(full_path)
+                            except OSError:
+                                pass  # File may have already been deleted
+            except Exception as e:
+                app.logger.error(f"Error querying manifest database: {e}")
+            finally:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
                 
                 # Remove folders if they became empty after cleaning
                 for d in dirs:
@@ -1403,11 +1408,16 @@ def get_backup_summary():
 @app.route('/api/backup/recent-files')
 @json_api
 def get_recent_backup_files():
-    """Get recent backed-up files (not backup folders)."""
+    """Get most frequently modified files using recency-weighted frequency.
+    
+    Scans the latest 20 backups and weights files by recency:
+    - Last 5 backups: 2 points each (most active files)
+    - Next 5 backups: 1.5 points each
+    - Older 10 backups: 1 point each
+    
+    Returns top 5 files by weighted score.
+    """
     try:
-        # Get filter parameter from query
-        file_type_filter = request.args.get('type', 'all').lower()  # all, new, modified
-        
         config = load_config()
         device_path = config.get('DEVICE_INFO', 'path', fallback='')
         
@@ -1417,10 +1427,6 @@ def get_recent_backup_files():
         backups_path = os.path.join(device_path, 'timemachine', 'backups')
         if not os.path.exists(backups_path):
             return {'success': True, 'files': [], 'message': 'No backups found'}
-        
-        files = []
-        file_dict = {}  # Track files by name to get most recent
-        files_in_main = set()  # Track which files exist in main backup
         
         def get_file_icon(filename):
             """Get appropriate icon based on file extension."""
@@ -1437,123 +1443,122 @@ def get_recent_backup_files():
             }
             return icons.get(ext, 'description')
         
-        # Scan recent backups for files
+        # Collect all backup snapshots in chronological order (oldest first)
+        all_backups = []  # List of (date_str, time_str, backup_path, is_main_backup)
+        
         try:
-            # Track main backup file metadata (name + size + mtime)
-            main_file_metadata = {}  # filename -> (size, mtime) tuple
-            
-            # STEP 1: Check main backup first
+            # Add main backup first (oldest conceptually)
             main_backup_path = os.path.join(backups_path, server.MAIN_BACKUP_LOCATION)
             if os.path.exists(main_backup_path):
-                for dirpath, dirnames, filenames in os.walk(main_backup_path):
+                all_backups.append((server.MAIN_BACKUP_LOCATION, '', main_backup_path, True))
+            
+            # Collect incremental backups
+            date_folders = [item for item in os.listdir(backups_path) 
+                           if os.path.isdir(os.path.join(backups_path, item)) 
+                           and re.match(r'\d{2}-\d{2}-\d{4}', item)]
+            
+            # Sort chronologically (oldest first)
+            date_folders.sort(key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
+            
+            for date_str in date_folders:
+                date_path = os.path.join(backups_path, date_str)
+                try:
+                    time_folders = [item for item in os.listdir(date_path)
+                                   if os.path.isdir(os.path.join(date_path, item))
+                                   and re.match(r'\d{2}-\d{2}', item)]
+                    time_folders.sort()  # Sort chronologically oldest first
+                    
+                    for time_str in time_folders:
+                        time_path = os.path.join(date_path, time_str)
+                        all_backups.append((date_str, time_str, time_path, False))
+                except (OSError, PermissionError):
+                    continue
+        
+        except Exception as e:
+            app.logger.error(f"Error collecting backups: {e}")
+        
+        # Keep only the latest 20 backups
+        latest_backups = all_backups[-20:] if len(all_backups) > 20 else all_backups
+        
+        # Track weighted frequency for each file
+        file_frequency = {}  # filename -> {'weight': float, 'latest_mtime': float, 'size': bytes, 'icon': str}
+        
+        # Calculate weights based on position in latest 20 backups
+        for idx, (date_str, time_str, backup_path, is_main) in enumerate(latest_backups):
+            position_from_end = len(latest_backups) - idx - 1
+            
+            # Assign weight based on recency
+            if position_from_end < 5:
+                weight = 2.0  # Last 5 backups
+            elif position_from_end < 10:
+                weight = 1.5  # Next 5 backups
+            else:
+                weight = 1.0  # Older 10 backups
+            
+            # Scan files in this backup
+            try:
+                for dirpath, dirnames, filenames in os.walk(backup_path):
                     for filename in filenames:
                         filepath = os.path.join(dirpath, filename)
                         try:
                             mtime = os.path.getmtime(filepath)
                             size = os.path.getsize(filepath)
                             
-                            # Store metadata for comparison
-                            main_file_metadata[filename] = (size, mtime)
-                            files_in_main.add(filename)
-                            
-                            # Add to file_dict
-                            if filename not in file_dict or file_dict[filename]['mtime'] < mtime:
-                                file_dict[filename] = {
-                                    'name': filename,
-                                    'path': filepath,
-                                    'type': 'file',
+                            if filename not in file_frequency:
+                                file_frequency[filename] = {
+                                    'weight': 0.0,
+                                    'latest_mtime': mtime,
+                                    'size': size,
                                     'icon': get_file_icon(filename),
-                                    'date': datetime.fromtimestamp(mtime).isoformat(),
-                                    'size': bytes_to_human(size),
-                                    'status': 'completed',
-                                    'mtime': mtime,
-                                    'change_type': 'new',
-                                    'snapshotLink': '#'
+                                    'count': 0
                                 }
+                            
+                            # Add weight for this occurrence
+                            file_frequency[filename]['weight'] += weight
+                            file_frequency[filename]['count'] += 1
+                            
+                            # Update with most recent mtime
+                            if mtime > file_frequency[filename]['latest_mtime']:
+                                file_frequency[filename]['latest_mtime'] = mtime
+                                file_frequency[filename]['size'] = size
+                        
                         except (OSError, PermissionError):
                             continue
             
-            # STEP 2: Check incremental backups
-            date_folders = [item for item in os.listdir(backups_path) 
-                           if os.path.isdir(os.path.join(backups_path, item)) 
-                           and re.match(r'\d{2}-\d{2}-\d{4}', item)]
-            date_folders.sort(reverse=True)
-            
-            for date_str in date_folders[:5]:  # Check last 5 days
-                date_path = os.path.join(backups_path, date_str)
-                try:
-                    time_folders = [item for item in os.listdir(date_path)
-                                   if os.path.isdir(os.path.join(date_path, item))
-                                   and re.match(r'\d{2}-\d{2}', item)]
-                    time_folders.sort(reverse=True)
-                except (OSError, PermissionError):
-                    continue
-                
-                for time_str in time_folders[:5]:  # Check last 5 backups per day
-                    time_path = os.path.join(date_path, time_str)
-                    
-                    for dirpath, dirnames, filenames in os.walk(time_path):
-                        for filename in filenames:
-                            filepath = os.path.join(dirpath, filename)
-                            try:
-                                mtime = os.path.getmtime(filepath)
-                                size = os.path.getsize(filepath)
-                                
-                                # Simple detection: compare with main backup metadata
-                                if filename in main_file_metadata:
-                                    main_size, main_mtime = main_file_metadata[filename]
-                                    # Modified if size or mtime differs significantly
-                                    change_type = 'modified' if (size != main_size or abs(mtime - main_mtime) > 1) else 'new'
-                                else:
-                                    # New file not in main backup
-                                    change_type = 'new'
-                                
-                                # Keep most recent version of each file
-                                if filename not in file_dict or file_dict[filename]['mtime'] < mtime:
-                                    file_dict[filename] = {
-                                        'name': filename,
-                                        'path': filepath,
-                                        'type': 'file',
-                                        'icon': get_file_icon(filename),
-                                        'date': datetime.fromtimestamp(mtime).isoformat(),
-                                        'size': bytes_to_human(size),
-                                        'status': 'completed',
-                                        'mtime': mtime,
-                                        'change_type': change_type,
-                                        'snapshotLink': '#'
-                                    }
-                            except (OSError, PermissionError):
-                                continue
+            except (OSError, PermissionError):
+                continue
         
-        except Exception as e:
-            app.logger.error(f"Error scanning backup files: {e}")
+        # Sort by weighted score (descending) then by recency
+        sorted_files = sorted(
+            file_frequency.items(),
+            key=lambda x: (x[1]['weight'], x[1]['latest_mtime']),
+            reverse=True
+        )
         
-        # Convert to list and sort by modification time
-        files = list(file_dict.values())
-        files.sort(key=lambda x: x['mtime'], reverse=True)
-        
-        # Apply filter
-        if file_type_filter == 'new':
-            files = [f for f in files if f.get('change_type') == 'new']
-        elif file_type_filter == 'modified':
-            files = [f for f in files if f.get('change_type') == 'modified']
-        # 'all' shows everything
-        
-        files = files[:20]  # Limit to 20 most recent files
-        
-        # Remove mtime from response
-        for file in files:
-            del file['mtime']
+        # Build response with top 5 most frequently modified files
+        files = []
+        for filename, metadata in sorted_files[:5]:
+            files.append({
+                'name': filename,
+                'type': 'file',
+                'icon': metadata['icon'],
+                'date': datetime.fromtimestamp(metadata['latest_mtime']).isoformat(),
+                'size': bytes_to_human(metadata['size']),
+                'status': 'completed',
+                'frequency': metadata['count'],
+                'weighted_score': round(metadata['weight'], 1),
+                'snapshotLink': '#'
+            })
         
         return {
             'success': True,
             'files': files,
             'count': len(files),
-            'filter': file_type_filter,
+            'total_backups_scanned': len(latest_backups),
             'last_updated': datetime.now().isoformat()
         }
     except Exception as e:
-        app.logger.error(f"Error getting recent backup files: {e}")
+        app.logger.error(f"Error getting most frequently modified files: {e}")
         return {'success': False, 'error': str(e), 'files': []}
 
 
@@ -2757,62 +2762,6 @@ StartupNotify=false
         return False
 
 
-def create_systemd_user_service():
-    """Write a basic systemd user unit pointing at the daemon.
-
-    This is offered as an alternative to the desktop autostart entry.
-    After the file is created the user can enable it with:
-
-        systemctl --user enable --now timemachine.service
-    """
-    try:
-        home_dir = os.path.expanduser('~')
-        service_dir = os.path.join(home_dir, '.config', 'systemd', 'user')
-        os.makedirs(service_dir, exist_ok=True)
-
-        python_path = sys.executable or shutil.which('python3') or '/usr/bin/python3'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        main_py_path = os.path.join(base_dir, 'py', 'main.py')
-
-        service_file = os.path.join(service_dir, 'timemachine.service')
-        service_content = f"""[Unit]
-Description=TimeMachine backup daemon
-After=network.target
-
-[Service]
-ExecStart={python_path} {main_py_path}
-Restart=on-failure
-LimitNOFILE=infinity
-
-[Install]
-WantedBy=default.target
-"""
-        with open(service_file, 'w') as f:
-            f.write(service_content)
-        app.logger.info(f"Created systemd user service: {service_file}")
-        return True
-    except Exception as e:
-        app.logger.error(f"Error creating systemd service: {e}")
-        return False
-
-
-def remove_systemd_user_service():
-    """Delete the user.service file if present."""
-    try:
-        service_file = os.path.join(
-            os.path.expanduser('~'),
-            '.config',
-            'systemd',
-            'user',
-            'timemachine.service'
-        )
-        if os.path.exists(service_file):
-            os.remove(service_file)
-        return True
-    except Exception as e:
-        app.logger.error(f"Error removing systemd service: {e}")
-        return False
-
 
 def remove_autostart_desktop():
     """Remove autostart .desktop file."""
@@ -2842,12 +2791,21 @@ def get_preferences():
         # Get automatic backup setting
         auto_backup = config.get('BACKUP', 'automatic_backups', fallback='false').lower() == 'true'
         
+        # read theme preference from UI section (fallback to system)
+        try:
+            theme = config.get('UI', 'theme', fallback='system')
+            if theme not in ('light', 'dark', 'system'):
+                theme = 'system'
+        except Exception:
+            theme = 'system'
+
         return {
             'success': True,
             'preferences': {
                 'automatic_backups': auto_backup,
                 'cloud_sync': config.get('BACKUP', 'cloud_sync', fallback='false').lower() == 'true',
-                'encryption': config.get('BACKUP', 'encryption', fallback='false').lower() == 'true'
+                'encryption': config.get('BACKUP', 'encryption', fallback='false').lower() == 'true',
+                'theme': theme
             }
         }
     except Exception as e:
@@ -2877,7 +2835,6 @@ def save_preferences():
             # manual toggle so this is the only place that can change the entry
             if is_enabled:
                 create_autostart_desktop()
-                create_systemd_user_service()
                 # starting the daemon right away avoids user confusion where
                 # backups are enabled but the service is down
                 try:
@@ -2890,7 +2847,6 @@ def save_preferences():
                     daemon_result = {'success': False, 'message': str(e)}
             else:
                 remove_autostart_desktop()
-                remove_systemd_user_service()
                 # if user turned off automatic backups, stop any running daemon
                 try:
                     stopped = send_control_command('cancel', 'graceful')
@@ -2904,16 +2860,34 @@ def save_preferences():
         
         if 'encryption' in data:
             config['BACKUP']['encryption'] = 'true' if data['encryption'] else 'false'
+
+        # Save theme/UI preference
+        if 'theme' in data:
+            if 'UI' not in config:
+                config['UI'] = {}
+            if data['theme'] in ('light', 'dark', 'system'):
+                config['UI']['theme'] = data['theme']
+            else:
+                config['UI']['theme'] = 'system'
         
         save_config(config)
         
+        # compute theme to return
+        try:
+            resp_theme = config.get('UI', 'theme', fallback='system')
+            if resp_theme not in ('light', 'dark', 'system'):
+                resp_theme = 'system'
+        except Exception:
+            resp_theme = 'system'
+
         resp = {
             'success': True,
             'message': 'Preferences saved successfully',
             'preferences': {
                 'automatic_backups': config['BACKUP'].get('automatic_backups', 'false').lower() == 'true',
                 'cloud_sync': config['BACKUP'].get('cloud_sync', 'false').lower() == 'true',
-                'encryption': config['BACKUP'].get('encryption', 'false').lower() == 'true'
+                'encryption': config['BACKUP'].get('encryption', 'false').lower() == 'true',
+                'theme': resp_theme
             }
         }
         if daemon_result is not None:

@@ -54,7 +54,7 @@ export default class VersionsWindow {
         // Create modal
         const modal = document.createElement('div');
         modal.id = 'versions-modal';
-        modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop';
         modal.innerHTML = this.getModalHTML();
         
         document.body.appendChild(modal);
@@ -66,14 +66,14 @@ export default class VersionsWindow {
 
     getModalHTML() {
         return `
-        <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="relative isolation-isolate opacity-100 bg-[var(--color-system-background)] dark:bg-[var(--color-surface-dark)] rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
             <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Get Versions</h2>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">${this.currentFile.name}</p>
+                    <h2 class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">Get Versions</h2>
+                    <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${this.currentFile.name}</p>
                 </div>
-                <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700" onclick="window.versionsWindow.close()">
+                <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)] p-1 rounded hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-700)]" onclick="window.versionsWindow.close()">
                     <span class="material-icons-round">close</span>
                 </button>
             </div>
@@ -81,9 +81,9 @@ export default class VersionsWindow {
             <!-- Content -->
             <div class="flex flex-1 overflow-hidden">
                 <!-- Left sidebar - Snapshots -->
-                <div class="w-80 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+                <div class="w-80 border-r border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] overflow-y-auto">
                     <div class="p-4">
-                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Available Versions (${this.snapshots.length})</h3>
+                        <h3 class="text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-4">Available Versions (${this.snapshots.length})</h3>
                         
                         ${this.isLoading ? this.renderLoadingSnapshots() : this.renderSnapshots()}
                     </div>
@@ -92,15 +92,15 @@ export default class VersionsWindow {
                 <!-- Right panel - Preview -->
                 <div class="flex-1 flex flex-col">
                     <!-- Preview header -->
-                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <div class="px-4 py-3 border-b border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] flex items-center justify-between">
                         <div class="flex items-center space-x-2">
-                            <span class="material-icons-round text-gray-500">preview</span>
-                            <span class="font-medium text-gray-700 dark:text-gray-300">Preview</span>
+                            <span class="material-icons-round text-[var(--color-text-secondary)]">preview</span>
+                            <span class="font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Preview</span>
                         </div>
                         ${this.canShowTextPreview() ? `
-                        <div class="flex space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                            <button class="px-3 py-1 text-sm rounded ${this.viewMode === 'source' ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300'}" data-mode="source">Source</button>
-                            <button class="px-3 py-1 text-sm rounded ${this.viewMode === 'diff' ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300'}" data-mode="diff">Diff</button>
+                        <div class="flex space-x-1 bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] rounded-lg p-1">
+                            <button class="px-3 py-1 text-sm rounded ${this.viewMode === 'source' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] text-[var(--color-accent)] dark:text-[var(--color-accent)] shadow-sm' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]'}" data-mode="source">Source</button>
+                            <button class="px-3 py-1 text-sm rounded ${this.viewMode === 'diff' ? 'bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] text-[var(--color-accent)] dark:text-[var(--color-accent)] shadow-sm' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]'}" data-mode="diff">Diff</button>
                         </div>
                         ` : ''}
                     </div>
@@ -113,27 +113,27 @@ export default class VersionsWindow {
             </div>
             
             <!-- Footer -->
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <div class="px-6 py-4 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]">
                 <div class="flex justify-between items-center">
                     <div class="flex space-x-3">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.openBackedUpFile()">
+                        <button class="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-[var(--color-gray-300)] dark:border-[var(--color-gray-600)] rounded-lg hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-600)] flex items-center" onclick="window.versionsWindow.openBackedUpFile()">
                             <span class="material-icons-round text-sm mr-2">open_in_new</span>
                             Open
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.openBackedUpFileLocation()">
+                        <button class="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-[var(--color-gray-300)] dark:border-[var(--color-gray-600)] rounded-lg hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-600)] flex items-center" onclick="window.versionsWindow.openBackedUpFileLocation()">
                             <span class="material-icons-round text-sm mr-2">folder_open</span>
                             Open Location
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center" onclick="window.versionsWindow.downloadBackedUpFile()">
+                        <button class="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-[var(--color-gray-300)] dark:border-[var(--color-gray-600)] rounded-lg hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-600)] flex items-center" onclick="window.versionsWindow.downloadBackedUpFile()">
                             <span class="material-icons-round text-sm mr-2">download</span>
                             Download
                         </button>
                     </div>
                     <div class="flex justify-end space-x-3">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600" onclick="window.versionsWindow.close()">
+                        <button class="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-700)] border border-[var(--color-gray-300)] dark:border-[var(--color-gray-600)] rounded-lg hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-600)]" onclick="window.versionsWindow.close()">
                             Cancel
                         </button>
-                        <button class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center" 
+                        <button class="px-4 py-2 text-sm font-medium text-white bg-[var(--color-accent)] rounded-lg hover:bg-[var(--color-accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center" 
                                 id="get-version-button"
                                 ${!this.selectedSnapshot ? 'disabled' : ''}>
                             <span class="material-icons-round text-sm mr-2">history</span>
@@ -150,9 +150,9 @@ export default class VersionsWindow {
         return `
         <div class="space-y-3">
             ${[1, 2, 3].map(() => `
-            <div class="p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-2 animate-pulse"></div>
-                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+            <div class="p-3 border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] rounded-lg">
+                <div class="h-4 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded w-24 mb-2 animate-pulse"></div>
+                <div class="h-3 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] rounded w-16 animate-pulse"></div>
             </div>
             `).join('')}
         </div>
@@ -163,9 +163,9 @@ export default class VersionsWindow {
         if (this.snapshots.length === 0) {
             return `
             <div class="text-center py-8">
-                <span class="material-icons-round text-gray-400 text-4xl mb-3">history</span>
-                <p class="text-gray-500 dark:text-gray-400">No backup versions found</p>
-                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">This file or folder hasn't been backed up yet</p>
+                <span class="material-icons-round text-[var(--color-text-secondary)] text-4xl mb-3">history</span>
+                <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">No backup versions found</p>
+                <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mt-1">This file or folder hasn't been backed up yet</p>
             </div>
             `;
         }
@@ -181,17 +181,17 @@ export default class VersionsWindow {
                     : (snapshot.file_count !== undefined ? `${snapshot.file_count} files` : '');
 
                 return `
-                <div class="p-3 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                <div class="p-3 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'border-[var(--color-accent)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]' : 'border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] hover:bg-[var(--color-surface-light)] dark:hover:bg-[var(--color-surface-dark)]'}"
                      onclick="window.versionsWindow.selectSnapshot('${snapshot.id}')">
                     <div class="flex justify-between items-start mb-1">
                         <div class="flex items-center">
-                            <span class="font-medium ${isSelected ? 'text-blue-700 dark:text-blue-400' : 'text-gray-900 dark:text-white'}">${snapshot.time}</span>
-                            ${isMainBackup ? '<span class="ml-2 text-xs px-2 py-0.5 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded font-medium">Primary</span>' : ''}
-                            ${isLatest ? '<span class="ml-2 text-xs px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded font-medium">Latest</span>' : ''}
+                            <span class="font-medium ${isSelected ? 'text-[var(--color-accent)] dark:text-[var(--color-accent)]' : 'text-[var(--color-text-primary)] dark:text-white'}">${snapshot.time}</span>
+                            ${isMainBackup ? '<span class="ml-2 text-xs px-2 py-0.5 bg-[var(--color-gray-100)] text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded font-medium">Primary</span>' : ''}
+                            ${isLatest ? '<span class="ml-2 text-xs px-2 py-0.5 bg-[var(--color-status-success-bg)] text-[var(--color-status-success)] dark:bg-[var(--color-status-success-bg-dark)] dark:text-[var(--color-status-success-dark)] rounded font-medium">Latest</span>' : ''}
                         </div>
-                        <span class="text-xs ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}">${sizeOrCount}</span>
+                        <span class="text-xs ${isSelected ? 'text-[var(--color-accent)] dark:text-[var(--color-accent)]' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]'}">${sizeOrCount}</span>
                     </div>
-                    <div class="text-sm ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}">
+                    <div class="text-sm ${isSelected ? 'text-[var(--color-accent)] dark:text-[var(--color-accent)]' : 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]'}">
                         ${snapshot.date} • ${snapshot.type}
                     </div>
                 </div>
@@ -206,8 +206,8 @@ export default class VersionsWindow {
             return `
             <div class="flex items-center justify-center h-full">
                 <div class="text-center">
-                    <span class="material-icons-round text-gray-400 text-4xl mb-3">select_all</span>
-                    <p class="text-gray-500 dark:text-gray-400">Select a version to preview</p>
+                    <span class="material-icons-round text-[var(--color-text-secondary)] text-4xl mb-3">select_all</span>
+                    <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Select a version to preview</p>
                 </div>
             </div>
             `;
@@ -218,7 +218,7 @@ export default class VersionsWindow {
             <div class="flex items-center justify-center h-full">
                 <div class="text-center">
                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-                    <p class="text-gray-500 dark:text-gray-400">Loading preview...</p>
+                    <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Loading preview...</p>
                 </div>
             </div>
             `;
@@ -233,24 +233,24 @@ export default class VersionsWindow {
             
             return `
             <div class="flex flex-col items-center justify-center h-full p-8">
-                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mb-4">
-                    <span class="material-icons-round text-gray-500 dark:text-gray-400 text-3xl">${icon}</span>
+                <div class="w-16 h-16 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-lg flex items-center justify-center mb-4">
+                    <span class="material-icons-round text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] text-3xl">${icon}</span>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">${this.currentFile.name}</h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-6">Preview not available for this file type</p>
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 w-full max-w-md">
+                <h3 class="text-lg font-medium text-[var(--color-text-primary)] dark:text-white mb-2">${this.currentFile.name}</h3>
+                <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-6">Preview not available for this file type</p>
+                <div class="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-lg p-4 w-full max-w-md">
                     <div class="space-y-2">
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Version:</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">${snapshot.date} ${snapshot.time}</span>
+                            <span class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Version:</span>
+                            <span class="text-sm font-medium text-[var(--color-text-primary)] dark:text-white">${snapshot.date} ${snapshot.time}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Size:</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">${snapshot.size}</span>
+                            <span class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Size:</span>
+                            <span class="text-sm font-medium text-[var(--color-text-primary)] dark:text-white">${snapshot.size}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Backup Type:</span>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white">${snapshot.type}</span>
+                            <span class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Backup Type:</span>
+                            <span class="text-sm font-medium text-[var(--color-text-primary)] dark:text-white">${snapshot.type}</span>
                         </div>
                     </div>
                 </div>
@@ -260,7 +260,7 @@ export default class VersionsWindow {
 
         return `
         <div class="h-full">
-            <div class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+            <div class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-3">
                 Select a view mode above to preview
             </div>
         </div>
@@ -323,9 +323,9 @@ export default class VersionsWindow {
             previewContainer.innerHTML = `
             <div class="flex items-center justify-center h-full">
                 <div class="text-center">
-                    <span class="material-icons-round text-red-400 text-4xl mb-3">error</span>
-                    <p class="text-red-500 dark:text-red-400">Failed to load preview</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">${error.message || 'Unknown error'}</p>
+                    <span class="material-icons-round text-[var(--color-status-error)] text-4xl mb-3">error</span>
+                    <p class="text-[var(--color-status-error)] dark:text-[var(--color-status-error)]">Failed to load preview</p>
+                    <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mt-2">${error.message || 'Unknown error'}</p>
                 </div>
             </div>
             `;
@@ -354,9 +354,9 @@ export default class VersionsWindow {
                 }
                 
                 previewContainer.innerHTML = `
-                <div class="bg-gray-900 text-gray-100 rounded-lg overflow-hidden h-full flex flex-col">
-                    <div class="px-4 py-2 bg-gray-800 border-b border-gray-700">
-                        <div class="text-xs text-gray-400">${headerText}</div>
+                <div class="bg-[var(--color-gray-900)] text-gray-100 rounded-lg overflow-hidden h-full flex flex-col">
+                    <div class="px-4 py-2 bg-[var(--color-gray-800)] border-b border-[var(--color-gray-700)]">
+                        <div class="text-xs text-[var(--color-text-secondary)]">${headerText}</div>
                     </div>
                     <div class="flex-1 overflow-auto p-4 font-mono text-sm">
                         <pre class="whitespace-pre-wrap">${this.escapeHtml(data.content)}</pre>
@@ -387,8 +387,8 @@ export default class VersionsWindow {
                     <div class="flex items-center justify-center h-full">
                         <div class="text-center">
                             <span class="material-icons-round text-green-400 text-4xl mb-3">check_circle</span>
-                            <p class="text-green-600 dark:text-green-400 font-medium">No differences found</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">The snapshot is identical to the current version</p>
+                            <p class="text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)] font-medium">No differences found</p>
+                            <p class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mt-2">The snapshot is identical to the current version</p>
                         </div>
                     </div>
                     `;
@@ -409,16 +409,16 @@ export default class VersionsWindow {
                     let prefix = '';
                     
                     if (line.type === 'added') {
-                        bgClass = 'bg-green-50 dark:bg-green-900/20';
-                        textClass = 'text-green-800 dark:text-green-200';
-                        prefix = '<span class="text-green-600 dark:text-green-400 mr-2">+</span>';
+                        bgClass = 'bg-[var(--color-status-success-bg)] dark:bg-[var(--color-status-success-bg-dark)]';
+                        textClass = 'text-[var(--color-status-success)] dark:text-green-200';
+                        prefix = '<span class="text-[var(--color-status-success)] dark:text-[var(--color-status-success-dark)] mr-2">+</span>';
                     } else if (line.type === 'removed') {
-                        bgClass = 'bg-red-50 dark:bg-red-900/20';
-                        textClass = 'text-red-800 dark:text-red-200 line-through opacity-70';
-                        prefix = '<span class="text-red-600 dark:text-red-400 mr-2">-</span>';
+                        bgClass = 'bg-[var(--color-status-error-bg)] dark:bg-[var(--color-status-error-bg-dark)]';
+                        textClass = 'text-[var(--color-status-error-dark)] dark:text-[var(--color-status-error-dark)] line-through opacity-70';
+                        prefix = '<span class="text-[var(--color-status-error)] dark:text-[var(--color-status-error)] mr-2">-</span>';
                     } else {
-                        textClass = 'text-gray-700 dark:text-gray-300';
-                        prefix = '<span class="text-gray-500 dark:text-gray-500 mr-2">&nbsp;</span>';
+                        textClass = 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]';
+                        prefix = '<span class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mr-2">&nbsp;</span>';
                     }
                     
                     return `
@@ -432,19 +432,19 @@ export default class VersionsWindow {
                 }).join('');
                 
                 previewContainer.innerHTML = `
-                <div class="bg-white dark:bg-gray-900 rounded-lg overflow-hidden h-full flex flex-col">
-                    <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                        <div class="text-sm text-gray-600 dark:text-gray-400">
-                            Comparing <span class="font-medium text-gray-800 dark:text-gray-200">${headerText}</span> with current
+                <div class="bg-[var(--color-system-background)] dark:bg-[var(--color-gray-900)] rounded-lg overflow-hidden h-full flex flex-col">
+                    <div class="px-4 py-3 bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)] border-b border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] flex items-center justify-between">
+                        <div class="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">
+                            Comparing <span class="font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${headerText}</span> with current
                         </div>
                         <div class="flex items-center space-x-4 text-xs">
                             <div class="flex items-center space-x-1">
-                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                                <span class="text-gray-500">Removed</span>
+                                <span class="w-2 h-2 bg-[var(--color-status-error-bg)] rounded-full"></span>
+                                <span class="text-[var(--color-text-secondary)]">Removed</span>
                             </div>
                             <div class="flex items-center space-x-1">
-                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                <span class="text-gray-500">Added</span>
+                                <span class="w-2 h-2 bg-[var(--color-status-success)] rounded-full"></span>
+                                <span class="text-[var(--color-text-secondary)]">Added</span>
                             </div>
                         </div>
                     </div>
@@ -493,7 +493,7 @@ export default class VersionsWindow {
             const contentDiv = leftPanel.querySelector('.p-4');
             if (contentDiv) {
                 contentDiv.innerHTML = `
-                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Available Versions (${this.snapshots.length})</h3>
+                    <h3 class="text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mb-4">Available Versions (${this.snapshots.length})</h3>
                     ${this.isLoading ? this.renderLoadingSnapshots() : this.renderSnapshots()}
                 `;
             }
@@ -532,9 +532,9 @@ export default class VersionsWindow {
                 // Update button styles
                 modal.querySelectorAll('[data-mode]').forEach(b => {
                     if (b.getAttribute('data-mode') === this.viewMode) {
-                        b.className = `px-3 py-1 text-sm rounded bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm`;
+                        b.className = `px-3 py-1 text-sm rounded bg-[var(--color-system-background)] dark:bg-[var(--color-gray-600)] text-[var(--color-accent)] dark:text-[var(--color-accent)] shadow-sm`;
                     } else {
-                        b.className = `px-3 py-1 text-sm rounded text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300`;
+                        b.className = `px-3 py-1 text-sm rounded text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] hover:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]`;
                     }
                 });
                 
@@ -837,7 +837,7 @@ export default class VersionsWindow {
         let cancelButtonHtml = '';
         if (onCancel) {
             cancelButtonHtml = `
-                <button id="abort-operation-btn" class="mt-4 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg transition-colors flex items-center">
+                <button id="abort-operation-btn" class="mt-4 px-4 py-2 text-sm font-medium text-[var(--color-status-error)] bg-[var(--color-status-error-bg)] hover:bg-[var(--color-status-error-bg)] dark:bg-[var(--color-status-error-bg-dark)] dark:text-[var(--color-status-error)] dark:hover:bg-[var(--color-status-error-dark)]/30 rounded-lg transition-colors flex items-center">
                     <span class="material-icons-round text-sm mr-2">cancel</span>
                     Cancel
                 </button>
@@ -846,21 +846,21 @@ export default class VersionsWindow {
 
         const overlay = document.createElement('div');
         overlay.id = 'versions-progress-overlay';
-        overlay.className = 'absolute inset-0 z-50 flex items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg transition-opacity duration-200';
+        overlay.className = 'absolute inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] rounded-lg transition-opacity duration-200';
         
         overlay.innerHTML = `
             <div class="flex flex-col items-center max-w-sm w-full px-8 py-6">
-                <div class="w-16 h-16 mb-4 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
-                    <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-16 h-16 mb-4 rounded-full bg-[var(--color-gray-50)] dark:bg-[var(--color-accent-light)]/30 flex items-center justify-center">
+                    <div class="w-8 h-8 border-4 border-[var(--color-accent)] border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">${message}</h3>
+                <h3 class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white mb-2">${message}</h3>
                 
-                <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 mt-2 mb-1 overflow-hidden">
-                    <div id="versions-progress-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="w-full bg-[var(--color-gray-200)] rounded-full h-1.5 dark:bg-[var(--color-gray-700)] mt-2 mb-1 overflow-hidden">
+                    <div id="versions-progress-bar" class="bg-[var(--color-accent)] h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
                 <div class="flex justify-between w-full px-1 mb-2">
-                    <p id="versions-progress-text" class="text-xs text-gray-500 dark:text-gray-400">Please wait...</p>
-                    <p id="versions-progress-speed" class="text-xs text-gray-500 dark:text-gray-400 font-mono"></p>
+                    <p id="versions-progress-text" class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Please wait...</p>
+                    <p id="versions-progress-speed" class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] font-mono"></p>
                 </div>
                 ${cancelButtonHtml}
             </div>

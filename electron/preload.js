@@ -71,6 +71,11 @@ const api = {
   quit() {
     return ipcRenderer.invoke('app-quit');
   }
+
+  // Set application theme for native UI (light/dark/system)
+  setTheme(theme) {
+    return ipcRenderer.invoke('set-app-theme', theme);
+  }
 };
 
 /**

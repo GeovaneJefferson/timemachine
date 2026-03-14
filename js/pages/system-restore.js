@@ -40,7 +40,7 @@ export default class SystemRestorePage {
                     name: app.name || app.identifier,
                     identifier: app.identifier,
                     icon: app.icon || 'apps',
-                    color: app.color || 'bg-blue-500',
+                    color: app.color || 'bg-[var(--color-accent)]',
                     selected: false
                 }));
             }
@@ -115,10 +115,10 @@ export default class SystemRestorePage {
         return `
         <div class="px-8 py-6 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Select items to restore</h1>
+                <h1 class="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white">Select items to restore</h1>
                 <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">Choose the files, applications, and packages to include in this recovery.</p>
             </div>
-            <button id="restore-selected-btn" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium shadow-md transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm" style="background-color: #007AFF;">
+            <button id="restore-selected-btn" class="px-4 py-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent)] text-white rounded-lg font-medium shadow-md transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm" style="background-color: var(--color-accent);">
                 <span class="material-icons-round text-base">restore</span>
                 Restore Selected
             </button>
@@ -128,38 +128,38 @@ export default class SystemRestorePage {
 
     renderHomeFolders() {
         if (this.data.homeFolders.length === 0) {
-            return `<p class="text-sm text-gray-500 italic">No folders found in backup.</p>`;
+            return `<p class="text-sm text-[var(--color-text-secondary)] italic">No folders found in backup.</p>`;
         }
 
         return `
         <div class="mb-8">
             <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons-round text-blue-500" style="color: #007AFF;">folder</span>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Home Folders</h2>
+                <span class="material-icons-round text-[var(--color-accent)]" style="color: var(--color-text-secondary);">folder</span>
+                <h2 class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">Home Folders</h2>
             </div>
-            <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div class="overflow-hidden rounded-lg border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)]">
                 <table class="w-full text-sm">
-                    <thead class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                    <thead class="bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-900)] border-b border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]">
                         <tr>
-                            <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">NAME</th>
-                            <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">SIZE</th>
-                            <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">FILES COUNT</th>
-                            <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">SELECTION</th>
+                            <th class="px-6 py-3 text-left font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">NAME</th>
+                            <th class="px-6 py-3 text-left font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">SIZE</th>
+                            <th class="px-6 py-3 text-left font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">FILES COUNT</th>
+                            <th class="px-6 py-3 text-right font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">SELECTION</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         ${this.data.homeFolders.map((folder, idx) => `
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <tr class="hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-700)]/50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="material-icons-round text-blue-500 text-lg" style="color: #007AFF;">${folder.icon}</span>
-                                    <span class="font-medium text-gray-900 dark:text-white">${folder.name}</span>
+                                    <span class="material-icons-round text-[var(--color-accent)] text-lg" style="color: var(--color-text-secondary);">${folder.icon}</span>
+                                    <span class="font-medium text-[var(--color-text-primary)] dark:text-white">${folder.name}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-gray-600 dark:text-gray-400">${folder.size}</td>
-                            <td class="px-6 py-4 text-gray-600 dark:text-gray-400">${folder.filesCount || '-'}</td>
+                            <td class="px-6 py-4 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${folder.size}</td>
+                            <td class="px-6 py-4 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">${folder.filesCount || '-'}</td>
                             <td class="px-6 py-4 text-right">
-                                <input type="checkbox" class="folder-checkbox w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: #007AFF;" />
+                                <input type="checkbox" class="folder-checkbox w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: var(--color-accent);" />
                             </td>
                         </tr>
                         `).join('')}
@@ -172,25 +172,25 @@ export default class SystemRestorePage {
 
     renderFlatpakApps() {
         if (this.data.flatpakApps.length === 0) {
-            return `<p class="text-sm text-gray-500 italic">No flatpak applications found in backup.</p>`;
+            return `<p class="text-sm text-[var(--color-text-secondary)] italic">No flatpak applications found in backup.</p>`;
         }
 
         return `
         <div class="mb-8">
             <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons-round text-blue-500" style="color: #007AFF;">apps</span>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Flatpak Applications</h2>
+                <span class="material-icons-round text-[var(--color-accent)]" style="color: var(--color-text-secondary);">apps</span>
+                <h2 class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">Flatpak Applications</h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 ${this.data.flatpakApps.map((app, idx) => `
-                <label class="relative border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors bg-white dark:bg-gray-800">
-                    <input type="checkbox" class="app-checkbox absolute top-4 right-4 w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: #007AFF;" />
+                <label class="relative border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] rounded-lg p-4 cursor-pointer hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-800)] transition-colors bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)]">
+                    <input type="checkbox" class="app-checkbox absolute top-4 right-4 w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: var(--color-accent);" />
                     <div class="flex flex-col items-center text-center pt-2">
-                        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-3" style="background-color: rgba(0, 122, 255, 0.1);">
-                            <span class="material-icons-round text-2xl" style="color: #007AFF;">${app.icon}</span>
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-3" style="background-color: var(--color-accent-light);">
+                            <span class="material-icons-round text-2xl" style="color: var(--color-text-secondary);">${app.icon}</span>
                         </div>
-                        <div class="font-semibold text-gray-900 dark:text-white text-sm">${app.name}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${app.identifier}</div>
+                        <div class="font-semibold text-[var(--color-text-primary)] dark:text-white text-sm">${app.name}</div>
+                        <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] mt-1">${app.identifier}</div>
                     </div>
                 </label>
                 `).join('')}
@@ -203,22 +203,22 @@ export default class SystemRestorePage {
         const validPackages = this.data.devPackages.filter(pkg => pkg.command && pkg.command !== '[object Object]');
         
         if (validPackages.length === 0) {
-            return `<p class="text-sm text-gray-500 italic">No development packages found in backup.</p>`;
+            return `<p class="text-sm text-[var(--color-text-secondary)] italic">No development packages found in backup.</p>`;
         }
 
         return `
         <div class="mb-8">
             <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons-round text-blue-500" style="color: #007AFF;">code</span>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Development Packages</h2>
+                <span class="material-icons-round text-[var(--color-accent)]" style="color: var(--color-text-secondary);">code</span>
+                <h2 class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">Development Packages</h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 ${validPackages.map((pkg, idx) => `
-                <label class="relative border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors bg-white dark:bg-gray-800 package-label" data-package-idx="${idx}">
-                    <input type="checkbox" class="package-checkbox absolute top-4 right-4 w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: #007AFF;" />
+                <label class="relative border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] rounded-lg p-4 cursor-pointer hover:bg-[var(--color-gray-50)] dark:hover:bg-[var(--color-gray-800)] transition-colors bg-[var(--color-system-background)] dark:bg-[var(--color-gray-800)] package-label" data-package-idx="${idx}">
+                    <input type="checkbox" class="package-checkbox absolute top-4 right-4 w-5 h-5 rounded cursor-pointer" data-index="${idx}" style="accent-color: var(--color-accent);" />
                     <div class="flex flex-col gap-2 pr-8">
-                        <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">${this.escapeHtml(pkg.category)}</div>
-                        <div class="font-medium text-gray-900 dark:text-white text-sm break-words">${this.escapeHtml(pkg.command)}</div>
+                        <div class="text-xs font-medium text-[var(--color-accent)] dark:text-[var(--color-accent)] uppercase tracking-wide">${this.escapeHtml(pkg.category)}</div>
+                        <div class="font-medium text-[var(--color-text-primary)] dark:text-white text-sm break-words">${this.escapeHtml(pkg.command)}</div>
                     </div>
                 </label>
                 `).join('')}
@@ -238,10 +238,10 @@ export default class SystemRestorePage {
 
         if (this.loading) {
             return `
-            <div class="flex-1 flex items-center justify-center bg-white dark:bg-surface-dark">
+            <div class="flex-1 flex items-center justify-center bg-[var(--color-system-background)] dark:bg-surface-dark">
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 mx-auto mb-4 animate-spin" style="border-top-color: #007AFF;"></div>
-                    <p class="text-gray-600 dark:text-gray-400">Loading restore options...</p>
+                    <div class="w-12 h-12 rounded-full border-4 border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] border-t-blue-500 mx-auto mb-4 animate-spin" style="border-top-color: var(--color-accent);"></div>
+                    <p class="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Loading restore options...</p>
                 </div>
             </div>
             `;
@@ -250,7 +250,7 @@ export default class SystemRestorePage {
         return `
         <div class="flex flex-col h-full overflow-hidden">
             ${this.renderHeader()}
-            <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark p-8">
+            <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)] dark:bg-surface-dark p-8">
                 ${this.renderHomeFolders()}
                 ${this.renderFlatpakApps()}
                 ${this.renderDevPackages()}
@@ -262,38 +262,38 @@ export default class SystemRestorePage {
 
     renderRestoreModal() {
         return `
-        <div id="restore-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-lg">
+        <div id="restore-modal" class="hidden fixed inset-0 bg-[var(--color-overlay)] z-50 flex items-center justify-center">
+            <div class="bg-[var(--color-system-background)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl p-8 w-full max-w-lg">
                 <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Restoring System Files...</h3>
+                    <h3 class="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white">Restoring System Files...</h3>
                     <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-2">This process might take a while. Please do not disconnect or power off your device.</p>
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
+                <div class="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-lg p-6 mb-6">
                     <div class="mb-4">
                         <div class="flex items-baseline justify-between mb-2">
-                            <span class="text-xs font-semibold text-blue-500 uppercase tracking-wide" style="color: #007AFF;">Overall Progress</span>
-                            <span class="text-3xl font-bold text-gray-900 dark:text-white" id="modal-progress-percent">0%</span>
+                            <span class="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide" style="color: var(--color-text-secondary);">Overall Progress</span>
+                            <span class="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white" id="modal-progress-percent">0%</span>
                         </div>
-                        <div class="w-full h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                            <div id="modal-progress-bar" class="h-full transition-all duration-300" style="background-color: #007AFF; width: 0%"></div>
+                        <div class="w-full h-3 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-600)] rounded-full overflow-hidden">
+                            <div id="modal-progress-bar" class="h-full transition-all duration-300" style="background-color: var(--color-accent); width: 0%"></div>
                         </div>
                     </div>
 
                     <div class="space-y-3 text-sm">
                         <div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">CURRENT ITEM</div>
-                            <div id="modal-current-item" class="text-gray-900 dark:text-white font-medium truncate">Starting restore process...</div>
+                            <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">CURRENT ITEM</div>
+                            <div id="modal-current-item" class="text-[var(--color-text-primary)] dark:text-white font-medium truncate">Starting restore process...</div>
                         </div>
 
-                        <div class="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <div class="flex justify-between items-center pt-2 border-t border-[var(--color-gray-200)] dark:border-[var(--color-gray-600)]">
                             <div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">DETAILS</div>
-                                <div id="modal-details" class="text-gray-900 dark:text-white font-medium">0 GB / 12.0 GB restored</div>
+                                <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">DETAILS</div>
+                                <div id="modal-details" class="text-[var(--color-text-primary)] dark:text-white font-medium">0 GB / 12.0 GB restored</div>
                             </div>
                             <div class="text-right">
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">STATUS</div>
-                                <div id="modal-status" class="text-gray-900 dark:text-white font-medium">Preparing...</div>
+                                <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">STATUS</div>
+                                <div id="modal-status" class="text-[var(--color-text-primary)] dark:text-white font-medium">Preparing...</div>
                             </div>
                         </div>
                     </div>
@@ -301,32 +301,32 @@ export default class SystemRestorePage {
 
                 <div class="grid grid-cols-2 gap-3 mb-6">
                     <div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">TIME ELAPSED</div>
-                        <div id="modal-time-elapsed" class="text-lg font-semibold text-gray-900 dark:text-white">00:00:00</div>
+                        <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">TIME ELAPSED</div>
+                        <div id="modal-time-elapsed" class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">00:00:00</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">TIME LEFT</div>
-                        <div id="modal-time-left" class="text-lg font-semibold text-gray-900 dark:text-white">~ calculating...</div>
+                        <div class="text-xs text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">TIME LEFT</div>
+                        <div id="modal-time-left" class="text-lg font-semibold text-[var(--color-text-primary)] dark:text-white">~ calculating...</div>
                     </div>
                 </div>
 
                 <div class="flex gap-3 mb-6">
-                    <button id="pause-restore-btn" class="flex-1 px-4 py-2.5 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2" style="background-color: #007AFF;" onmouseover="this.style.backgroundColor='#0051D5'" onmouseout="this.style.backgroundColor='#007AFF'">
+                    <button id="pause-restore-btn" class="flex-1 px-4 py-2.5 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2" style="background-color: var(--color-accent);" onmouseover="this.style.backgroundColor='var(--color-accent-hover)'" onmouseout="this.style.backgroundColor='var(--color-accent)'">
                         <span class="material-icons-round text-lg">pause</span>
                         Pause Process
                     </button>
-                    <button id="cancel-restore-btn" class="flex-1 px-4 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                    <button id="cancel-restore-btn" class="flex-1 px-4 py-2.5 bg-[var(--color-gray-200)] dark:bg-[var(--color-gray-700)] hover:bg-[var(--color-gray-300)] dark:hover:bg-[var(--color-gray-600)] text-[var(--color-text-primary)] dark:text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
                         <span class="material-icons-round text-lg">close</span>
                         Cancel
                     </button>
                 </div>
 
-                <div class="rounded-lg p-4" style="background-color: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.3);">
+                <div class="rounded-lg p-4" style="background-color: var(--color-accent-light); border: 1px solid var(--color-accent-lighter);">
                     <div class="flex gap-3">
-                        <span class="material-icons-round flex-shrink-0" style="color: #007AFF;">info</span>
+                        <span class="material-icons-round flex-shrink-0" style="color: var(--color-text-secondary);">info</span>
                         <div>
-                            <div class="font-medium text-blue-900 dark:text-blue-300">Verification in progress</div>
-                            <div class="text-sm text-blue-800 dark:text-blue-200 mt-0.5">System is currently validating restored segments against original checksums to ensure data integrity.</div>
+                            <div class="font-medium text-[var(--color-accent)] dark:text-[var(--color-accent)]">Verification in progress</div>
+                            <div class="text-sm text-[var(--color-accent)] dark:text-[var(--color-accent)] mt-0.5">System is currently validating restored segments against original checksums to ensure data integrity.</div>
                         </div>
                     </div>
                 </div>
@@ -367,8 +367,8 @@ export default class SystemRestorePage {
                 // Update styling
                 const label = e.target.closest('.package-label');
                 if (e.target.checked) {
-                    label.style.borderColor = '#007AFF';
-                    label.style.backgroundColor = 'rgba(0, 122, 255, 0.1)';
+                    label.style.borderColor = 'var(--color-accent)';
+                    label.style.backgroundColor = 'var(--color-accent-light)';
                 } else {
                     label.style.borderColor = '';
                     label.style.backgroundColor = '';

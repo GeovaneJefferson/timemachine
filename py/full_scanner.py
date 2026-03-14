@@ -165,6 +165,7 @@ class FullScanner:
                 if (abs(file_info['mtime'] - meta_mtime) > 1 or
                     file_info['size'] != meta_size):
                     modified_files.append((rel_path, file_info))
+                    logging.info(f"Modified: {rel_path} - mtime {file_info['mtime']:.1f} vs {meta_mtime:.1f}, size {file_info['size']} vs {meta_size}")
 
         # Check for deleted files - FIXED: Proper metadata access
         with self.daemon.state_lock:

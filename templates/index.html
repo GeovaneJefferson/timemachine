@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backup Dashboard</title>
     
+    <!-- early theme script prevents flash-of-unstyled-light when a dark
+         preference is already known from a previous session -->
+    <script>
+        (function() {
+            try {
+                const t = localStorage.getItem('theme');
+                if (t === 'dark' || (t === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch(e) {
+                // ignore failures
+            }
+        })();
+    </script>
+
     <!-- External Styles -->
     <link rel="stylesheet" href="css/styles.css">
     
@@ -20,63 +35,26 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
+    <!-- Tailwind local build (replacing CDN/inlined config) -->
+    <!-- build the stylesheet with `npm run build:css` or `npm run dev` -->
+    <link rel="stylesheet" href="css/tailwind.css">
 
-    <!-- Tailwind via CDN (temporary) -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#007AFF",
-                        "background-light": "#f5f5f7",
-                        "background-dark": "#1e1e1e",
-                        "surface-light": "#ffffff",
-                        "surface-dark": "#2c2c2e",
-                        "border-light": "#e5e5e5",
-                        "border-dark": "#3a3a3c",
-                        "text-secondary-light": "#6e6e73",
-                        "text-secondary-dark": "#98989d",
-                        "surface-highlight": "#f2f2f7",
-                    },
-                    fontFamily: {
-                        display: ["Inter", "sans-serif"],
-                        sans: ["Inter", "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.5rem",
-                        'xl': '0.75rem',
-                        '2xl': '1rem',
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.1)',
-                        'inner-light': 'inset 0 1px 2px rgba(0,0,0,0.05)',
-                        'menu': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                        'glow': '0 0 15px rgba(0, 122, 255, 0.3)',
-                    }
-                },
-            },
-        };
-    </script>
-    
 </head>
-<body class="bg-surface-light dark:bg-surface-dark text-gray-900 dark:text-gray-100 font-sans h-screen overflow-hidden transition-colors duration-200">
-    
+<body class="bg-system-background dark:bg-system-background text-label dark:text-label font-sans h-screen overflow-hidden transition-colors duration-200">
     <!-- Main App Container -->
     <div id="app" class="w-full h-full flex">
         
         <!-- Sidebar (Persistent Navigation) -->
-        <aside id="sidebar" class="w-64 flex-shrink-0 bg-gray-50/80 dark:bg-gray-900/50 backdrop-blur-md border-r border-border-light dark:border-border-dark flex flex-col pt-6 pb-4 pl-4 pr-2 select-none overflow-y-auto hidden md:flex">
+        <aside id="sidebar" class="w-64 flex-shrink-0 bg-system-secondary-background/80 dark:bg-system-secondary-background/80 backdrop-blur-md border-r border-separator flex flex-col pt-6 pb-4 pl-4 pr-2 select-none overflow-y-auto hidden md:flex">
             <div class="space-y-6">
                 <div>
                     <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Navigate</h3>
                     <nav class="space-y-0.5">
-                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md sidebar-item-active font-medium" href="#">
+                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm text-label dark:text-label hover:bg-system-fill dark:hover:bg-system-fill rounded-md transition-colors sidebar-item-active font-medium" href="#">
                             <span class="material-icons-round text-lg">backup</span>
                             Dashboard
                         </a>
-                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm text-label dark:text-label hover:bg-system-fill dark:hover:bg-system-fill rounded-md transition-colors" href="#">
                             <span class="material-icons-round text-lg">apps</span>
                             Applications
                         </a>
@@ -89,14 +67,7 @@
                     <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Locations</h3>
                     <nav class="space-y-0.5">
                         <!-- Devices will be added dynamically here below -->
-                        <!-- <a class="flex items-center justify-between px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors group" href="#">
-                            <div class="flex items-center gap-2">
-                                <span class="material-icons-round text-lg">dns</span>
-                                Macintosh HD
-                            </div>
-                            <span class="material-icons-round text-lg text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">eject</span>
-                        </a> -->
-                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors" href="#">
+                        <a class="flex items-center gap-2 px-2 py-1.5 text-sm text-label dark:text-label hover:bg-system-fill dark:hover:bg-system-fill rounded-md transition-colors" href="#">
                             <span class="material-icons-round text-lg">public</span>
                             Network
                         </a>
@@ -107,7 +78,7 @@
         </aside>
         
         <!-- Main Content Area -->
-        <main id="main-content" class="flex-1 flex flex-col h-full bg-surface-light dark:bg-surface-dark relative overflow-hidden">
+        <main id="main-content" class="flex-1 flex flex-col h-full bg-system-background dark:bg-system-background relative overflow-hidden">
             
             <!-- Header Area -->
             <div id="header-container"></div>
@@ -115,14 +86,14 @@
             <!-- Page Content (Dynamic) -->
             <div id="page-content" class="flex-1 overflow-auto">
                 <!-- Dashboard Content -->
-                <div class="px-8 pt-8 pb-6 border-b border-border-light dark:border-border-dark flex gap-6 items-center bg-surface-light dark:bg-surface-dark">
-                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center shadow-soft border border-gray-200 dark:border-gray-700 flex-shrink-0">
-                        <span class="material-icons-round text-5xl text-gray-600 dark:text-gray-400">laptop_mac</span>
+                <div class="px-8 pt-8 pb-6 border-b border-separator flex gap-6 items-center bg-system-background dark:bg-system-background">
+                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-system-secondary-background to-system-background dark:from-system-secondary-background dark:to-system-background flex items-center justify-center shadow-soft border border-separator flex-shrink-0">
+                        <span class="material-icons-round text-5xl text-icon dark:text-icon-secondary">laptop_mac</span>
                     </div>
                     <div class="flex-1">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h1 class="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Macbook Pro</h1>
+                                <h1 class="text-2xl font-bold text-label dark:text-label leading-tight">Macbook Pro</h1>
                                 <div class="flex items-center gap-4 mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
                                     <span class="flex items-center gap-1.5">
                                         <span class="material-icons-round text-base">memory</span>
@@ -142,19 +113,19 @@
                         <div class="mt-4 flex gap-8">
                             <div>
                                 <p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">Last Backup</p>
-                                <p class="text-sm font-medium text-gray-900 dark:text-gray-200 mt-0.5">Oct 24, 2023</p>
+                                <p class="text-sm font-medium text-label dark:text-label mt-0.5">Oct 24, 2023</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">Next Scheduled</p>
-                                <p class="text-sm font-medium text-gray-900 dark:text-gray-200 mt-0.5">Tomorrow, 10:00 AM</p>
+                                <p class="text-sm font-medium text-label dark:text-label mt-0.5">Tomorrow, 10:00 AM</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">Disk Usage</p>
                                 <div class="flex items-center gap-2 mt-0.5">
-                                    <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="w-24 h-2 bg-system-fill dark:bg-system-fill rounded-full overflow-hidden">
                                         <div class="h-full bg-primary w-3/4 rounded-full"></div>
                                     </div>
-                                    <span class="text-xs font-medium text-gray-600 dark:text-gray-400">75%</span>
+                                    <span class="text-xs font-medium text-secondary-label dark:text-secondary-label">75%</span>
                                 </div>
                             </div>
                         </div>
@@ -162,18 +133,18 @@
                 </div>
                 
                 <!-- Table Section -->
-                <div class="flex-1 overflow-y-auto bg-white dark:bg-surface-dark">
+                <div class="flex-1 overflow-y-auto bg-system-background dark:bg-system-background">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-0 shadow-sm">
+                        <thead class="bg-system-secondary-background dark:bg-system-secondary-background sticky top-0 z-0 shadow-sm">
                             <tr>
-                                <th class="px-6 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 w-1/3">Name</th>
-                                <th class="px-6 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Date Modified</th>
-                                <th class="px-6 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Size</th>
-                                <th class="px-6 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Snapshot</th>
-                                <th class="px-6 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">Status</th>
+                                <th class="px-6 py-2 text-xs font-semibold text-secondary-label dark:text-secondary-label border-b border-separator w-1/3">Name</th>
+                                <th class="px-6 py-2 text-xs font-semibold text-secondary-label dark:text-secondary-label border-b border-separator">Date Modified</th>
+                                <th class="px-6 py-2 text-xs font-semibold text-secondary-label dark:text-secondary-label border-b border-separator">Size</th>
+                                <th class="px-6 py-2 text-xs font-semibold text-secondary-label dark:text-secondary-label border-b border-separator">Snapshot</th>
+                                <th class="px-6 py-2 text-xs font-semibold text-secondary-label dark:text-secondary-label border-b border-separator">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                        <tbody class="divide-y divide-separator text-sm">
                         </tbody>
                     </table>
                 </div>
@@ -186,29 +157,27 @@
     <!-- Global Modals Container -->
     <div id="modals-container">
         <!-- Context Menu -->
-        <div class="hidden fixed z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-lg shadow-menu border border-gray-200 dark:border-gray-700 py-1.5" id="context-menu">
-            <div class="flex flex-col text-sm text-gray-700 dark:text-gray-200">
-                <button class="text-left px-4 py-1.5 hover:bg-primary hover:text-white w-full flex items-center gap-2 group">
-                    <span>Open</span>
-                </button>
-                <button class="text-left px-4 py-1.5 hover:bg-primary hover:text-white w-full flex items-center gap-2 group">
-                    <span>Open Location</span>
-                </button>
-                <div class="h-px bg-gray-200 dark:bg-gray-700 my-1 mx-2"></div>
-                <button class="text-left px-4 py-1.5 hover:bg-primary hover:text-white w-full flex items-center gap-2 group" id="ctx-restore">
-                    <span>Restore</span>
-                </button>
-                <div class="h-px bg-gray-200 dark:bg-gray-700 my-1 mx-2"></div>
-                <button class="text-left px-4 py-1.5 hover:bg-primary hover:text-white w-full flex items-center gap-2 group">
-                    <span>Get Info</span>
-                </button>
+            <div class="hidden fixed z-50 bg-system-background/90 dark:bg-system-secondary-background/90 backdrop-blur-md rounded-lg shadow-menu border border-separator py-1.5" id="context-menu">
+                <div class="flex flex-col text-sm text-label dark:text-label">
+                    <button class="text-left px-4 py-1.5 hover:bg-system-fill hover:text-white w-full flex items-center gap-2 group">
+                        <span>Open</span>
+                    </button>
+                    <button class="text-left px-4 py-1.5 hover:bg-system-fill hover:text-white w-full flex items-center gap-2 group">
+                        <span>Open Location</span>
+                    </button>
+                    <div class="h-px bg-separator my-1 mx-2"></div>
+                    <button class="text-left px-4 py-1.5 hover:bg-system-fill hover:text-white w-full flex items-center gap-2 group" id="ctx-restore">
+                        <span>Restore</span>
+                    </button>
+                    <div class="h-px bg-separator my-1 mx-2"></div>
+                    <button class="text-left px-4 py-1.5 hover:bg-system-fill hover:text-white w-full flex items-center gap-2 group">
             </div>
         </div>
         
         <!-- Restore Confirmation Modal -->
-        <div class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" id="restore-overlay">
+        <div class="hidden fixed inset-0 bg-[var(--color-overlay)] z-50 flex items-center justify-center p-4" id="restore-overlay">
             <div class="bg-white dark:bg-surface-dark w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden animate-fade-in-up">
-                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-[var(--color-system-background)] dark:bg-[var(--color-surface-dark)]">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Restore Confirmation</h3>
                     <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onclick="hideModal('restore-overlay')">
                         <span class="material-icons-round">close</span>
@@ -216,7 +185,7 @@
                 </div>
                 <div class="p-6">
                     <div class="flex items-start gap-4 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400">
                             <span class="material-icons-round">restore</span>
                         </div>
                         <div>
@@ -224,14 +193,14 @@
                             <p class="text-sm text-gray-500 dark:text-gray-400">This will restore the selected item and its contents to the original location. Existing files with the same name will be overwritten.</p>
                         </div>
                     </div>
-                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800/30 rounded-lg p-3 flex gap-3 items-start">
+                    <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-100 dark:border-yellow-800 rounded-lg p-3 flex gap-3 items-start">
                         <span class="material-icons-round text-yellow-600 dark:text-yellow-500 text-sm mt-0.5">warning</span>
                         <p class="text-xs text-yellow-700 dark:text-yellow-400">Please ensure you have sufficient disk space before proceeding.</p>
                     </div>
                 </div>
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700">
-                    <button class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" onclick="hideModal('restore-overlay')">Cancel</button>
-                    <button class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-600 rounded-lg shadow-sm transition-colors flex items-center gap-2" onclick="hideModal('restore-overlay')">
+                <div class="px-6 py-4 bg-[var(--color-secondary-background)] dark:bg-[var(--color-tertiary-background)] flex justify-end gap-3 border-t border-separator">
+                    <button class="px-4 py-2 text-sm font-medium text-label dark:text-label hover:bg-system-fill dark:hover:bg-system-fill rounded-lg transition-colors" onclick="hideModal('restore-overlay')">Cancel</button>
+                    <button class="px-4 py-2 text-sm font-medium text-white bg-accent hover:opacity-80 dark:bg-accent dark:hover:opacity-80 rounded-lg shadow-sm transition-colors flex items-center gap-2" onclick="hideModal('restore-overlay')">
                         <span class="material-icons-round text-sm">check</span>
                         Confirm Restore
                     </button>

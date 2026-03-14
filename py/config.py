@@ -31,7 +31,15 @@ DIR_PATTERNS = [
     ".tox",
     "*.egg-info",
     "__pycache__*",
-    "*__pycache__"
+    "*__pycache__",
+    "cache",
+    "Cache",
+    ".cache",
+    "logs",
+    "Logs",
+    ".log",
+    "snap",       # Snap packages
+    "flatpak",    # Flatpak data
 ]
 
 FILE_PATTERNS = [

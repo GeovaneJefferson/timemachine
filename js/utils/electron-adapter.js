@@ -119,6 +119,16 @@ export class ElectronAPIAdapter {
   }
 
   /**
+   * Set the application theme, synchronizing with Electron's nativeTheme.
+   * @param {string} theme - 'light', 'dark', or 'system'
+   */
+  setTheme(theme) {
+    if (this.isElectron && window.electronAPI.setTheme) {
+      return window.electronAPI.setTheme(theme);
+    }
+  }
+
+  /**
    * Get platform information
    */
   async getPlatformInfo() {

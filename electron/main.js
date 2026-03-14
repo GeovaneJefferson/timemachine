@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, Notification } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Notification, nativeTheme } from 'electron';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -211,65 +211,25 @@ function setupIPC() {
     version: app.getVersion(),
     isDev
   }));
-}
 
-/**
- * Create application menu
- */
-function createMenu() {
-  const template = [
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Exit',
-          accelerator: 'CmdOrCtrl+Q',
-          click: () => {
-            app.quit();
-          }
-        }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
-        { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' }
-      ]
-    },
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-        { type: 'separator' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
-    },
-    {
-      label: 'Help',
-      submenu: [
-        {
-          label: 'About',
-          click: () => {
-            // Could open an about dialog
-          }
-        }
-      ]
+  // Allow renderer to request the native theme be changed
+  ipcMain.handle('set-app-theme', (event, theme) => {
+    try {
+      if (['light', 'dark', 'system'].includes(theme)) {
+        nativeTheme.themeSource = theme;
+      } else {
+        nativeTheme.themeSource = 'system';
+      }
+      return { success: true };
+    } catch (e) {
+      console.error('Failed to set app theme:', e);
+      return { success: false, error: e.message };
     }
-  ];
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  });
 }
+
+// menu creation removed; application uses a minimal UI with hidden native menu.
+
 
 const configPath = path.join(os.homedir(), '.config', 'timemachine', 'config.conf');
 
@@ -286,6 +246,26 @@ function applyLaunchAtStartup() {
     }
   } catch (error) {
     console.error('Failed to apply launch at startup setting:', error);
+  }
+}
+
+/**
+ * Read the configuration file and apply the theme setting to Electron's
+ * nativeTheme.  This ensures the titlebar/scrollbars/etc. match the
+ * user preference when the window is created.
+ */
+function applyElectronThemeFromConfig() {
+  try {
+    if (fs.existsSync(configPath)) {
+      const config = ini.parse(fs.readFileSync(configPath, 'utf-8'));
+      let theme = (config.UI && config.UI.theme) || 'system';
+      if (!['light', 'dark', 'system'].includes(theme)) {
+        theme = 'system';
+      }
+      nativeTheme.themeSource = theme;
+    }
+  } catch (e) {
+    console.error('Failed to apply electron theme from config:', e);
   }
 }
 
@@ -342,6 +322,8 @@ app.on('ready', async () => {
     console.log('Starting TimeMachine...');
     await startPythonBackend();
     setupIPC();
+    // set electron native theme from persisted config before window loads
+    applyElectronThemeFromConfig();
     createWindow();
     applyLaunchAtStartup();
   } catch (error) {

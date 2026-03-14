@@ -8,16 +8,24 @@
   "scripts": {
     "start": "electron .",
     "dev": "cross-env NODE_ENV=development electron .",
+    "build:css": "npx tailwindcss -i ./css/tailwind-input.css -o ./css/tailwind.css --minify",
     "install": "bash install.sh",
     "uninstall": "bash uninstall.sh"
   },
   "dependencies": {
     "axios": "^1.6.0",
     "electron-is-dev": "^3.0.1",
-    "ini": "^6.0.0"
+    "ini": "^6.0.0",
+    "electron-updater": "^5.3.0",
+    "electron-log": "^4.4.7"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "electron": "^40.1.0"
+    "electron": "^40.1.0",
+    "tailwindcss": "^3.4.19",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/container-queries": "^0.1.1"
   }
 }

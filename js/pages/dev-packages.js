@@ -34,19 +34,19 @@ export default class DevPackagesPage {
         return `
             <div class="px-8 py-6 flex items-end justify-between border-b border-border-light bg-surface-light">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 leading-tight">Dev Packages</h1>
+                    <h1 class="text-2xl font-bold text-[var(--color-text-primary)] leading-tight">Dev Packages</h1>
                     <p class="text-sm text-text-secondary-light mt-1">Manually add package names to reinstall later (e.g. pip, npm).</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="relative flex-grow">
                         <input 
-                            class="w-80 pl-4 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-400 text-gray-900 shadow-sm" 
+                            class="w-80 pl-4 pr-10 py-2 text-sm bg-[var(--color-system-background)] border border-[var(--color-gray-300)] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-400 text-[var(--color-text-primary)] shadow-sm" 
                             placeholder="e.g. pip install requests" 
                             type="text"
                             id="package-input"
                         />
                         <button 
-                            class="absolute right-1.5 top-1.5 p-0.5 text-primary hover:text-blue-700 transition-colors"
+                            class="absolute right-1.5 top-1.5 p-0.5 text-primary hover:text-[var(--color-accent)] transition-colors"
                             id="add-package-btn"
                         >
                             <span class="material-icons-round text-lg">add_circle</span>
@@ -60,14 +60,14 @@ export default class DevPackagesPage {
     // Render the packages table
     renderPackagesTable() {
         return `
-            <div class="flex-1 overflow-y-auto bg-white">
+            <div class="flex-1 overflow-y-auto bg-[var(--color-system-background)]">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 sticky top-0 z-0 shadow-sm">
+                    <thead class="bg-[var(--color-gray-50)] sticky top-0 z-0 shadow-sm">
                         <tr>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 w-1/2">Package Command / Name</th>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200">Category</th>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200">Date Added</th>
-                            <th class="px-6 py-2 text-xs font-semibold text-gray-500 border-b border-gray-200 w-10"></th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] w-1/2">Package Command / Name</th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)]">Category</th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)]">Date Added</th>
+                            <th class="px-6 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-b border-[var(--color-gray-200)] w-10"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm" id="packages-table-body">
@@ -81,22 +81,22 @@ export default class DevPackagesPage {
     // Render a single package row
     renderPackageRow(pkg) {
         const colorClasses = {
-            yellow: 'bg-yellow-500/10 text-yellow-600 border-yellow-200',
-            blue: 'bg-blue-500/10 text-blue-600 border-blue-200',
-            red: 'bg-red-500/10 text-red-600 border-red-200',
-            purple: 'bg-purple-500/10 text-purple-600 border-purple-200',
-            gray: 'bg-gray-800 text-white border-gray-600'
+            yellow: 'bg-[var(--color-gray-50)]/10 text-yellow-500 border-[var(--color-gray-200)]',
+            blue: 'bg-[var(--color-accent)]/10 text-[var(--color-accent)] border-[var(--color-accent)]',
+            red: 'bg-[var(--color-status-error-bg)]/10 text-[var(--color-status-error)] border-[var(--color-status-error)]',
+            purple: 'bg-[var(--color-gray-50)]/10 text-purple-600 border-[var(--color-gray-200)]',
+            gray: 'bg-[var(--color-gray-800)] text-white border-[var(--color-gray-600)]'
         };
 
         const categoryClasses = {
-            Python: 'bg-blue-50 text-blue-700 border-blue-100',
-            'Node.js': 'bg-yellow-50 text-yellow-700 border-yellow-100',
-            Rust: 'bg-orange-50 text-orange-700 border-orange-100',
-            Docker: 'bg-gray-100 text-gray-700 border-gray-200'
+            Python: 'bg-[var(--color-gray-50)] text-[var(--color-accent)] border-[var(--color-accent)]',
+            'Node.js': 'bg-[var(--color-gray-50)] text-yellow-500 border-[var(--color-gray-100)]',
+            Rust: 'bg-[var(--color-gray-50)] text-orange-500 border-[var(--color-gray-100)]',
+            Docker: 'bg-[var(--color-gray-100)] text-[var(--color-text-secondary)] border-[var(--color-gray-200)]'
         };
 
         return `
-            <tr class="hover:bg-gray-50 group cursor-default transition-colors package-row" 
+            <tr class="hover:bg-[var(--color-gray-50)] group cursor-default transition-colors package-row" 
                 data-id="${pkg.id}"
                 data-command="${pkg.command}"
                 data-category="${pkg.category}">
@@ -105,21 +105,21 @@ export default class DevPackagesPage {
                         <div class="w-8 h-8 rounded-lg ${colorClasses[pkg.color]} flex items-center justify-center border shadow-sm">
                             <span class="material-icons-round text-lg">${pkg.icon}</span>
                         </div>
-                        <span class="font-mono text-gray-900">${pkg.command}</span>
+                        <span class="font-mono text-[var(--color-text-primary)]">${pkg.command}</span>
                     </div>
                 </td>
                 <td class="px-6 py-3 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${categoryClasses[pkg.category] || 'bg-gray-50 text-gray-700 border-gray-200'}">
+                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${categoryClasses[pkg.category] || 'bg-[var(--color-gray-50)] text-[var(--color-text-secondary)] border-[var(--color-gray-200)]'}">
                         ${pkg.category}
                     </span>
                 </td>
-                <td class="px-6 py-3 text-gray-500 whitespace-nowrap">${pkg.date}</td>
+                <td class="px-6 py-3 text-[var(--color-text-secondary)] whitespace-nowrap">${pkg.date}</td>
                 <td class="px-6 py-3 whitespace-nowrap text-right">
                     <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button class="text-gray-400 hover:text-blue-600 transition-colors edit-package-btn" data-id="${pkg.id}">
+                        <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors edit-package-btn" data-id="${pkg.id}">
                             <span class="material-icons-round text-lg">edit</span>
                         </button>
-                        <button class="text-gray-400 hover:text-red-600 transition-colors delete-package-btn" data-id="${pkg.id}">
+                        <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-status-error)] transition-colors delete-package-btn" data-id="${pkg.id}">
                             <span class="material-icons-round text-lg">delete</span>
                         </button>
                     </div>
@@ -132,11 +132,11 @@ export default class DevPackagesPage {
     renderEmptyState() {
         return `
             <div class="p-8 text-center ${this.data.packages.length > 0 ? 'hidden' : ''}" id="empty-state">
-                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
-                    <span class="material-icons-round text-gray-300 text-3xl">playlist_add</span>
+                <div class="w-16 h-16 bg-[var(--color-gray-50)] rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--color-gray-100)]">
+                    <span class="material-icons-round text-[var(--color-text-secondary)] text-3xl">playlist_add</span>
                 </div>
-                <h3 class="text-gray-900 font-medium">No packages added</h3>
-                <p class="text-gray-500 text-sm mt-1">Add your development packages above to keep track of them.</p>
+                <h3 class="text-[var(--color-text-primary)] font-medium">No packages added</h3>
+                <p class="text-[var(--color-text-secondary)] text-sm mt-1">Add your development packages above to keep track of them.</p>
             </div>
         `;
     }
@@ -305,11 +305,11 @@ export default class DevPackagesPage {
     selectPackage(row) {
         // Remove previous selection
         document.querySelectorAll('.package-row').forEach(r => {
-            r.classList.remove('bg-blue-50', 'border-l-4', 'border-l-primary');
+            r.classList.remove('bg-[var(--color-gray-50)]', 'border-l-4', 'border-l-primary');
         });
         
         // Add selection to clicked row
-        row.classList.add('bg-blue-50', 'border-l-4', 'border-l-primary');
+        row.classList.add('bg-[var(--color-gray-50)]', 'border-l-4', 'border-l-primary');
         
         const id = parseInt(row.getAttribute('data-id'));
         const command = row.getAttribute('data-command');

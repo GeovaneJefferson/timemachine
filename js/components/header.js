@@ -15,20 +15,20 @@ export default class Header {
 
     async render() {
         return `
-    <div class="flex items-center justify-between px-6 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-border-light dark:border-border-dark backdrop-blur-sm sticky top-0 z-10 h-16">
+    <div class="flex items-center justify-between px-6 py-3 bg-[var(--color-secondary-background)]/50 dark:bg-[var(--color-tertiary-background)]/50 border-b border-[var(--color-separator)] backdrop-blur-sm sticky top-0 z-10 h-16">
         <!-- Left side: Search input -->
         <div class="flex items-center gap-2 flex-1">
             <div class="relative w-64 md:w-80 shrink-0">
-                <span class="material-icons-round absolute left-2.5 top-1.5 text-gray-400 text-lg pointer-events-none">search</span>
+                <span class="material-icons-round absolute left-2.5 top-1.5 text-[var(--color-text-secondary)] text-lg pointer-events-none">search</span>
                 <input
-                    class="search-input w-full pl-9 pr-9 py-1.5 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-primary dark:text-white transition-all"
+                    class="search-input w-full pl-9 pr-9 py-1.5 text-sm bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-separator)] rounded-md shadow-sm focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] dark:text-[var(--color-text-primary)] transition-all"
                     placeholder="Search files..."
                     type="text"
                     value="${this.query}"
                     id="global-search-input"
                     autocomplete="off">
                 <button
-                    class="clear-search-btn absolute right-2.5 top-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 ${this.query ? '' : 'hidden'}"
+                    class="clear-search-btn absolute right-2.5 top-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] ${this.query ? '' : 'hidden'}"
                     id="clear-search-icon"
                     type="button"
                     aria-label="Clear search">
@@ -42,19 +42,19 @@ export default class Header {
         
         <!-- Right side: Status indicators and buttons -->
         <div class="flex-1 flex justify-end items-center gap-4">
-            <div class="monitoring-status flex items-center gap-2 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-default">
+            <div class="monitoring-status flex items-center gap-2 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-default">
                 <span class="relative flex h-2 w-2">
-                    <span class="monitor-ping animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="monitor-dot relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    <span class="monitor-ping animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-status-success)] opacity-75"></span>
+                    <span class="monitor-dot relative inline-flex rounded-full h-2 w-2 bg-[var(--color-status-success)]"></span>
                 </span>
                 <span class="monitoring-text">Monitoring files...</span>
             </div>
-            <div class="device-status flex items-center gap-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-default">
-                <span class="material-icons-round device-icon text-green-500 text-sm">wifi</span>
+            <div class="device-status flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-default">
+                <span class="material-icons-round device-icon text-[var(--color-status-success)] text-sm">wifi</span>
                 <span>Devices connection</span>
             </div>
-            <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-            <button class="daemon-button flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-xs font-semibold text-gray-700 dark:text-gray-200">
+            <div class="w-px h-4 bg-[var(--color-separator)] mx-1"></div>
+            <button class="daemon-button flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-separator)] rounded-md shadow-sm hover:bg-[var(--color-secondary-background)] dark:hover:bg-[var(--color-tertiary-background)] transition-colors text-xs font-semibold text-[var(--color-text-secondary)]">
                 <span class="material-icons-round text-sm daemon-icon">sync</span>
                 <span class="daemon-text">Checking...</span>
             </button>
@@ -112,10 +112,10 @@ export default class Header {
         if (deviceIcon) {
             if (this.backupDeviceConnected) {
                 deviceIcon.textContent = 'wifi';
-                deviceIcon.className = 'material-icons-round device-icon text-green-500 text-sm';
+                deviceIcon.className = 'material-icons-round device-icon text-[var(--color-status-success)] text-sm';
             } else {
                 deviceIcon.textContent = 'wifi_off';
-                deviceIcon.className = 'material-icons-round device-icon text-gray-400 text-sm';
+                deviceIcon.className = 'material-icons-round device-icon text-[var(--color-text-secondary)] text-sm';
             }
         }
     }
@@ -661,7 +661,7 @@ export default class Header {
         }
 
         // Reset all classes
-        daemonBtn.className = 'daemon-button flex items-center gap-1.5 px-3 py-1.5 rounded-md shadow-sm transition-colors text-xs font-semibold';
+        daemonBtn.className = 'daemon-button flex items-center gap-1.5 px-3 py-1.5 rounded-md shadow-sm transition-colors text-xs font-semibold text-white border border-transparent';
 
         // Update monitoring status color based on daemon state
         this.updateMonitoringStatus();
@@ -670,13 +670,17 @@ export default class Header {
 
         if (this.daemonRunning) {
             // DAEMON IS RUNNING - Show "Stop" button (red/orange)
-            daemonBtn.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white', 'border', 'border-transparent');
+            daemonBtn.style.backgroundColor = 'var(--color-status-error)';
+            daemonBtn.onmouseenter = () => { daemonBtn.style.backgroundColor = 'var(--color-status-error-dark)'; };
+            daemonBtn.onmouseleave = () => { daemonBtn.style.backgroundColor = 'var(--color-status-error)'; };
             icon.textContent = 'stop';
             text.textContent = 'Stop';
             console.log('✓ Button set to STOP (daemon is running)');
         } else {
             // DAEMON IS STOPPED - Show "Run" button (green)
-            daemonBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'border', 'border-transparent');
+            daemonBtn.style.backgroundColor = 'var(--color-status-success)';
+            daemonBtn.onmouseenter = () => { daemonBtn.style.backgroundColor = 'var(--color-status-success)'; };
+            daemonBtn.onmouseleave = () => { daemonBtn.style.backgroundColor = 'var(--color-status-success)'; };
             icon.textContent = 'play_arrow';
             text.textContent = 'Run';
             console.log('✓ Button set to RUN (daemon is stopped)');
@@ -694,16 +698,16 @@ export default class Header {
         if (monitorPing && monitorDot) {
             if (this.daemonRunning) {
                 // Daemon running - green
-                monitorPing.classList.remove('bg-gray-400', 'opacity-50');
-                monitorPing.classList.add('bg-green-400', 'opacity-75');
-                monitorDot.classList.remove('bg-gray-500');
-                monitorDot.classList.add('bg-green-500');
+                monitorPing.classList.remove('bg-[var(--color-gray-400)]', 'opacity-50');
+                monitorPing.classList.add('bg-[var(--color-status-success)]', 'opacity-75');
+                monitorDot.classList.remove('bg-[var(--color-gray-50)]0');
+                monitorDot.classList.add('bg-[var(--color-status-success)]');
             } else {
                 // Daemon stopped - gray
-                monitorPing.classList.remove('bg-green-400', 'opacity-75');
-                monitorPing.classList.add('bg-gray-400', 'opacity-50');
-                monitorDot.classList.remove('bg-green-500');
-                monitorDot.classList.add('bg-gray-500');
+                monitorPing.classList.remove('bg-[var(--color-status-success)]', 'opacity-75');
+                monitorPing.classList.add('bg-[var(--color-gray-400)]', 'opacity-50');
+                monitorDot.classList.remove('bg-[var(--color-status-success)]');
+                monitorDot.classList.add('bg-[var(--color-gray-50)]0');
             }
         }
     }

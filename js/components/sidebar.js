@@ -33,7 +33,7 @@ export default class Sidebar {
         </div>
 
         <!-- Settings Section at Bottom -->
-        <div class="pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
+        <div class="pt-6 mt-6 border-t border-[var(--color-separator)]">
         <div class="space-y-1">
         ${this.renderSettingsSection()}
         </div>
@@ -54,7 +54,7 @@ export default class Sidebar {
     }
 
     renderNavItem(item) {
-        const activeClass = item.active ? 'sidebar-item-active font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50';
+        const activeClass = item.active ? 'sidebar-item-active font-medium' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)]';
 
         return `
         <a href="#"
@@ -99,7 +99,7 @@ export default class Sidebar {
                     if (this.backupFolders.length > 0) {
                         foldersHTML = this.backupFolders.map(folder => `
                         <a href="#"
-                        class="backup-folder-link flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer"
+                        class="backup-folder-link flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)] rounded-md transition-colors cursor-pointer"
                         data-folder-path="${folder.path}"
                         data-folder-name="${folder.name}">
                         <span class="material-icons-round text-lg">${this.getFolderIcon(folder.name)}</span>
@@ -108,21 +108,21 @@ export default class Sidebar {
                         `).join('');
                     } else {
                         foldersHTML = `
-                        <div class="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic">
+                        <div class="px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic">
                         No folders in backup
                         </div>
                         `;
                     }
                 } else {
                     foldersHTML = `
-                    <div class="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic">
+                    <div class="px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic">
                     No backup files found
                     </div>
                     `;
                 }
             } else {
                 foldersHTML = `
-                <div class="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic">
+                <div class="px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic">
                 No backup device configured or connected
                 </div>
                 `;
@@ -132,7 +132,7 @@ export default class Sidebar {
             <div id="backup-folders-section">
             <div class="flex items-center justify-between px-2 mb-1">
             <h3 class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">Backup Folders</h3>
-            <button class="material-icons-round text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 refresh-backup-folders-btn cursor-pointer"
+            <button class="material-icons-round text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] refresh-backup-folders-btn cursor-pointer"
             title="Refresh backup folders">
             refresh
             </button>
@@ -149,7 +149,7 @@ export default class Sidebar {
             <div id="backup-folders-section">
             <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Backup Folders</h3>
             <nav class="space-y-0.5">
-            <div class="px-2 py-1.5 text-sm text-red-500 dark:text-red-400 cursor-default">
+            <div class="px-2 py-1.5 text-sm text-[var(--color-status-error)] cursor-default">
             Failed to load backup folders
             </div>
             </nav>
@@ -185,14 +185,14 @@ export default class Sidebar {
                 // No devices found
                 locationsHTML = `
                 <div class="px-2 py-1.5 cursor-default">
-                <div class="text-sm text-gray-500 dark:text-gray-400 italic">
+                <div class="text-sm text-[var(--color-text-secondary)] italic">
                 ${data.error ? `Error: ${data.error}` : 'No storage devices found'}
                 </div>
-                <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                <div class="text-xs text-[var(--color-text-secondary)] mt-1">
                 Connect a USB drive or check /media/ directory
                 </div>
                 </div>
-                <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-400 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-not-allowed" disabled>
+                <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)] rounded-md transition-colors cursor-not-allowed" disabled>
                 <span class="material-icons-round text-lg">public</span>
                 Network
                 </a>
@@ -203,7 +203,7 @@ export default class Sidebar {
             <div id="locations-section">
             <div class="flex items-center justify-between px-2 mb-1">
             <h3 class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide">Locations</h3>
-            <button class="material-icons-round text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 refresh-btn cursor-pointer"
+            <button class="material-icons-round text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] refresh-btn cursor-pointer"
             title="Refresh devices">
             refresh
             </button>
@@ -220,10 +220,10 @@ export default class Sidebar {
             <div id="locations-section">
             <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">Locations</h3>
             <nav class="space-y-0.5">
-            <div class="px-2 py-1.5 text-sm text-red-500 dark:text-red-400 cursor-default">
+            <div class="px-2 py-1.5 text-sm text-[var(--color-status-error)] cursor-default">
             Failed to load devices
             </div>
-            <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer">
+            <a href="#" class="flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)] rounded-md transition-colors cursor-pointer">
             <span class="material-icons-round text-lg">public</span>
             Network
             </a>
@@ -243,7 +243,7 @@ export default class Sidebar {
         <h3 class="px-2 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide mb-1">System</h3>
         <nav class="space-y-0.5">
         ${this.settings.map(setting => {
-            const activeClass = setting.active ? 'sidebar-item-active font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50';
+            const activeClass = setting.active ? 'sidebar-item-active font-medium' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)]';
             return `
             <a href="#"
             data-route="${setting.id}"
@@ -283,8 +283,8 @@ export default class Sidebar {
                 const deviceLinks = document.querySelectorAll('[data-action="select-device"]');
                 deviceLinks.forEach(el => {
                     el.classList.remove('sidebar-item-active', 'font-medium');
-                    if (!el.classList.contains('text-gray-700')) {
-                        el.classList.add('text-gray-700', 'dark:text-gray-300');
+                    if (!el.classList.contains('text-[var(--color-text-secondary)]')) {
+                        el.classList.add('text-[var(--color-text-secondary)]');
                     }
                 });
 
@@ -427,9 +427,9 @@ export default class Sidebar {
             if (pageContent) {
                 pageContent.innerHTML = `
                 <div class="p-8 text-center">
-                <div class="text-red-500 text-5xl mb-4">⚠️</div>
+                <div class="text-[var(--color-status-error)] text-5xl mb-4">⚠️</div>
                 <h2 class="text-xl font-bold mb-2">Failed to Load Folders</h2>
-                <p class="text-gray-600 mb-4">${error.message}</p>
+                <p class="text-[var(--color-text-secondary)] mb-4">${error.message}</p>
                 <button onclick="window.loadPage('dashboard')" class="px-4 py-2 bg-primary text-white rounded">
                 Return to Dashboard
                 </button>
@@ -489,9 +489,9 @@ export default class Sidebar {
             if (pageContent) {
                 pageContent.innerHTML = `
                 <div class="p-8 text-center">
-                <div class="text-red-500 text-5xl mb-4">⚠️</div>
+                <div class="text-[var(--color-status-error)] text-5xl mb-4">⚠️</div>
                 <h2 class="text-xl font-bold mb-2">Failed to Load Locations</h2>
-                <p class="text-gray-600 mb-4">${error.message}</p>
+                <p class="text-[var(--color-text-secondary)] mb-4">${error.message}</p>
                 <button onclick="window.loadPage('dashboard')" class="px-4 py-2 bg-primary text-white rounded">
                 Return to Dashboard
                 </button>
@@ -545,7 +545,7 @@ export default class Sidebar {
                         this.backupFolders.forEach(folder => {
                             const a = document.createElement('a');
                             a.href = '#';
-                            a.className = 'backup-folder-link flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-pointer';
+                            a.className = 'backup-folder-link flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)] rounded-md transition-colors cursor-pointer';
                             a.setAttribute('data-folder-path', folder.path);
                             a.setAttribute('data-folder-name', folder.name);
                             a.title = `Open ${folder.name} in backup`;
@@ -565,19 +565,19 @@ export default class Sidebar {
                         });
                     } else {
                         const emptyDiv = document.createElement('div');
-                        emptyDiv.className = 'px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic';
+                        emptyDiv.className = 'px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic';
                         emptyDiv.textContent = 'No folders in backup';
                         foldersList.appendChild(emptyDiv);
                     }
                 } else {
                     const emptyDiv = document.createElement('div');
-                    emptyDiv.className = 'px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic';
+                    emptyDiv.className = 'px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic';
                     emptyDiv.textContent = 'No backup files found';
                     foldersList.appendChild(emptyDiv);
                 }
             } else {
                 const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 italic';
+                emptyDiv.className = 'px-2 py-1.5 text-sm text-[var(--color-text-secondary)] italic';
                 emptyDiv.textContent = 'No backup device configured';
                 foldersList.appendChild(emptyDiv);
             }
@@ -639,7 +639,7 @@ export default class Sidebar {
                     a.title = `Configure backup for ${device.name}`;
 
                     // All devices get consistent styling - NO automatic highlighting
-                    a.className = 'flex items-center justify-between px-2 py-1.5 text-sm rounded-md transition-colors cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50';
+                    a.className = 'flex items-center justify-between px-2 py-1.5 text-sm rounded-md transition-colors cursor-pointer text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)]';
 
                     const left = document.createElement('div');
                     left.className = 'flex items-center gap-2';
@@ -665,7 +665,7 @@ export default class Sidebar {
 
                     if (device.is_removable && device.is_current_backup) { // Only show eject if removable AND is current backup
                         const ejectBtn = document.createElement('button');
-                        ejectBtn.className = 'material-icons-round text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 eject-btn p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700';
+                        ejectBtn.className = 'material-icons-round text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] eject-btn p-1 rounded hover:bg-[var(--color-accent-lighter)]';
                         ejectBtn.setAttribute('data-mountpoint', device.mountpoint);
                         ejectBtn.setAttribute('data-device-name', device.name);
                         ejectBtn.title = `Eject ${device.name}`;
@@ -691,7 +691,7 @@ export default class Sidebar {
             // Network option disabled for now
             const net = document.createElement('a');
             net.href = '#';
-            net.className = 'flex items-center gap-2 px-2 py-1.5 text-sm text-gray-400 dark:text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700/50 rounded-md transition-colors cursor-not-allowed';
+            net.className = 'flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-lighter)] rounded-md transition-colors cursor-not-allowed';
             net.setAttribute('disabled', 'true');
             net.innerHTML = '<span class="material-icons-round text-lg">public</span>Network';
             devicesList.appendChild(net);
@@ -728,21 +728,21 @@ export default class Sidebar {
         // Clear ALL highlights - nav items, backup folders, and devices
         document.querySelectorAll('[data-route]').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
         document.querySelectorAll('.backup-folder-link').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
         document.querySelectorAll('[data-action="select-device"]').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
 
         // Highlight selected backup folder
         const selectedFolder = document.querySelector(`[data-folder-path="${folderPath}"]`);
         if (selectedFolder) {
-            selectedFolder.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700/50');
+            selectedFolder.classList.remove('text-[var(--color-text-secondary)]', 'hover:bg-[var(--color-accent-lighter)]');
             selectedFolder.classList.add('sidebar-item-active', 'font-medium');
         }
     }
@@ -751,21 +751,21 @@ export default class Sidebar {
         // Clear ALL highlights - nav items, backup folders, and devices
         document.querySelectorAll('[data-route]').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
         document.querySelectorAll('.backup-folder-link').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
         document.querySelectorAll('[data-action="select-device"]').forEach(el => {
             el.classList.remove('sidebar-item-active', 'font-medium');
-            el.classList.add('text-gray-700', 'dark:text-gray-300');
+            el.classList.add('text-[var(--color-text-secondary)]');
         });
 
         // Highlight selected device with consistent sidebar styling
         const selectedDevice = document.querySelector(`[data-device-mountpoint="${mountpoint}"]`);
         if (selectedDevice) {
-            selectedDevice.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700/50');
+            selectedDevice.classList.remove('text-[var(--color-text-secondary)]', 'hover:bg-[var(--color-accent-lighter)]');
             selectedDevice.classList.add('sidebar-item-active', 'font-medium');
         }
     }
@@ -858,7 +858,7 @@ export default class Sidebar {
             // Remove highlight from all devices
             document.querySelectorAll('[data-action="select-device"]').forEach(el => {
                 el.classList.remove('sidebar-item-active', 'font-medium');
-                el.classList.add('text-gray-700', 'dark:text-gray-300');
+                el.classList.add('text-[var(--color-text-secondary)]');
             });
         }
 
@@ -868,7 +868,7 @@ export default class Sidebar {
             // Remove highlight from all backup folders
             document.querySelectorAll('.backup-folder-link').forEach(el => {
                 el.classList.remove('sidebar-item-active', 'font-medium');
-                el.classList.add('text-gray-700', 'dark:text-gray-300');
+                el.classList.add('text-[var(--color-text-secondary)]');
             });
         }
 
@@ -896,10 +896,10 @@ export default class Sidebar {
             const isActive = (navItem && navItem.active) || (settingItem && settingItem.active);
 
             item.classList.remove('sidebar-item-active', 'font-medium');
-            item.classList.add('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700/50');
+            item.classList.add('text-[var(--color-text-secondary)]', 'hover:bg-[var(--color-accent-lighter)]');
 
             if (isActive) {
-                item.classList.remove('text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-200', 'dark:hover:bg-gray-700/50');
+                item.classList.remove('text-[var(--color-text-secondary)]', 'hover:bg-[var(--color-accent-lighter)]');
                 item.classList.add('sidebar-item-active', 'font-medium');
             }
         });
@@ -920,21 +920,22 @@ export default class Sidebar {
 
         // Create profile menu
         const menu = document.createElement('div');
-        menu.className = 'fixed bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 py-1 z-50';
+        // use CSS variables for background and border colors
+        menu.className = 'fixed bg-[var(--color-system-background)] shadow-lg rounded-md border border-[var(--color-separator)] py-1 z-50';
         menu.style.right = '20px';
         menu.style.bottom = '20px';
 
         menu.innerHTML = `
-        <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2">
+        <button class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-accent-lighter)] flex items-center gap-2">
         <span class="material-icons-round text-sm">account_circle</span>
         Profile Settings
         </button>
-        <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2">
+        <button class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-accent-lighter)] flex items-center gap-2">
         <span class="material-icons-round text-sm">notifications</span>
         Notifications
         </button>
-        <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-4"></div>
-        <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600">
+        <div class="h-px bg-[var(--color-separator)] my-1 mx-4"></div>
+        <button class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-accent-lighter)] flex items-center gap-2 text-[var(--color-status-error)]">
         <span class="material-icons-round text-sm">logout</span>
         Sign Out
         </button>
@@ -986,9 +987,9 @@ export default class Sidebar {
         // Simple notification implementation
         const notification = document.createElement('div');
         notification.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-            type === 'success' ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
-            type === 'error' ? 'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
-            'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800'
+            type === 'success' ? 'bg-[var(--color-status-success-bg)] text-[var(--color-status-success)] border border-[var(--color-status-success)] dark:bg-[var(--color-status-success-bg-dark)] dark:text-[var(--color-status-success-dark)] dark:border-[var(--color-status-success-dark)]' :
+            type === 'error' ? 'bg-[var(--color-status-error-bg)] text-[var(--color-status-error)] border border-[var(--color-status-error)] dark:bg-[var(--color-status-error-bg-dark)] dark:text-[var(--color-status-error-dark)] dark:border-[var(--color-status-error-dark)]' :
+            'bg-[var(--color-accent-light)] text-[var(--color-accent)] border border-[var(--color-accent)] dark:bg-[var(--color-accent-light)] dark:text-[var(--color-accent)] dark:border-[var(--color-accent)]'
         }`;
 
         notification.innerHTML = `
