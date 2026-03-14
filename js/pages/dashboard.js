@@ -89,7 +89,7 @@ export default class DashboardPage {
                 ];
             }
             
-            // NEW: Load recent backup files
+            // Load recent backup files
             if (recentFilesRes.ok) {
                 const recentFilesData = await recentFilesRes.json();
                 if (recentFilesData.success) {

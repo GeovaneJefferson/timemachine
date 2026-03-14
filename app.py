@@ -1408,14 +1408,13 @@ def get_backup_summary():
 @app.route('/api/backup/recent-files')
 @json_api
 def get_recent_backup_files():
-    """Get most frequently modified files using recency-weighted frequency.
-    
-    Scans the latest 20 backups and weights files by recency:
-    - Last 5 backups: 2 points each (most active files)
-    - Next 5 backups: 1.5 points each
-    - Older 10 backups: 1 point each
-    
-    Returns top 5 files by weighted score.
+    """Get most recently backed up files.
+
+    Scans the latest backup snapshot and returns the most recently modified files
+    within that snapshot. This gives users a quick view of what was backed up most
+    recently.
+
+    Returns top 10 files by modification time.
     """
     try:
         config = load_config()
@@ -1477,88 +1476,51 @@ def get_recent_backup_files():
         except Exception as e:
             app.logger.error(f"Error collecting backups: {e}")
         
-        # Keep only the latest 20 backups
-        latest_backups = all_backups[-20:] if len(all_backups) > 20 else all_backups
+        # Use only the most recent backup snapshot
+        if not all_backups:
+            return {'success': True, 'files': [], 'count': 0, 'last_updated': datetime.now().isoformat()}
         
-        # Track weighted frequency for each file
-        file_frequency = {}  # filename -> {'weight': float, 'latest_mtime': float, 'size': bytes, 'icon': str}
+        latest_date_str, latest_time_str, latest_backup_path, _ = all_backups[-1]
+        latest_snapshot_label = f"{latest_date_str} {latest_time_str}".strip()
         
-        # Calculate weights based on position in latest 20 backups
-        for idx, (date_str, time_str, backup_path, is_main) in enumerate(latest_backups):
-            position_from_end = len(latest_backups) - idx - 1
-            
-            # Assign weight based on recency
-            if position_from_end < 5:
-                weight = 2.0  # Last 5 backups
-            elif position_from_end < 10:
-                weight = 1.5  # Next 5 backups
-            else:
-                weight = 1.0  # Older 10 backups
-            
-            # Scan files in this backup
-            try:
-                for dirpath, dirnames, filenames in os.walk(backup_path):
-                    for filename in filenames:
-                        filepath = os.path.join(dirpath, filename)
-                        try:
-                            mtime = os.path.getmtime(filepath)
-                            size = os.path.getsize(filepath)
-                            
-                            if filename not in file_frequency:
-                                file_frequency[filename] = {
-                                    'weight': 0.0,
-                                    'latest_mtime': mtime,
-                                    'size': size,
-                                    'icon': get_file_icon(filename),
-                                    'count': 0
-                                }
-                            
-                            # Add weight for this occurrence
-                            file_frequency[filename]['weight'] += weight
-                            file_frequency[filename]['count'] += 1
-                            
-                            # Update with most recent mtime
-                            if mtime > file_frequency[filename]['latest_mtime']:
-                                file_frequency[filename]['latest_mtime'] = mtime
-                                file_frequency[filename]['size'] = size
-                        
-                        except (OSError, PermissionError):
-                            continue
-            
-            except (OSError, PermissionError):
-                continue
+        # Scan files in the latest snapshot and sort by modification time (newest first)
+        file_entries = []
+        try:
+            for dirpath, dirnames, filenames in os.walk(latest_backup_path):
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)
+                    try:
+                        mtime = os.path.getmtime(filepath)
+                        size = os.path.getsize(filepath)
+                        file_entries.append({
+                            'name': filename,
+                            'type': 'file',
+                            'icon': get_file_icon(filename),
+                            'date': datetime.fromtimestamp(mtime).isoformat(),
+                            'size': bytes_to_human(size),
+                            'status': 'completed',
+                            'snapshot': latest_snapshot_label,
+                            'snapshotLink': '#'
+                        })
+                    except (OSError, PermissionError):
+                        continue
+        except (OSError, PermissionError):
+            return {'success': False, 'error': 'Failed to scan latest backup', 'files': []}
         
-        # Sort by weighted score (descending) then by recency
-        sorted_files = sorted(
-            file_frequency.items(),
-            key=lambda x: (x[1]['weight'], x[1]['latest_mtime']),
-            reverse=True
-        )
+        file_entries.sort(key=lambda x: x['date'], reverse=True)
         
-        # Build response with top 5 most frequently modified files
-        files = []
-        for filename, metadata in sorted_files[:5]:
-            files.append({
-                'name': filename,
-                'type': 'file',
-                'icon': metadata['icon'],
-                'date': datetime.fromtimestamp(metadata['latest_mtime']).isoformat(),
-                'size': bytes_to_human(metadata['size']),
-                'status': 'completed',
-                'frequency': metadata['count'],
-                'weighted_score': round(metadata['weight'], 1),
-                'snapshotLink': '#'
-            })
+        # Return top 10 most recently modified files
+        files = file_entries[:10]
         
         return {
             'success': True,
             'files': files,
             'count': len(files),
-            'total_backups_scanned': len(latest_backups),
+            'total_backups_scanned': 1,
             'last_updated': datetime.now().isoformat()
         }
     except Exception as e:
-        app.logger.error(f"Error getting most frequently modified files: {e}")
+        app.logger.error(f"Error getting recent backup files: {e}")
         return {'success': False, 'error': str(e), 'files': []}
 
 

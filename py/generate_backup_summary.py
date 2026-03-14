@@ -28,7 +28,7 @@ FILE_CATEGORIES = {
 }
 
 # Configuration constants
-TOP_N_FREQUENT_FILES = 5
+TOP_N_FREQUENT_FILES = 10
 RECENT_DAYS_THRESHOLD = 5
 PROGRESS_LOG_INTERVAL = 2000  # Log progress every N files
 
